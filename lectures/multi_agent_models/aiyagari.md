@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (aiyagari)=
@@ -199,23 +199,23 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Parameters, Plots, QuantEcon
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 Household = @with_kw (r = 0.01,
                       w = 1.0,
                       σ = 1.0,
@@ -268,14 +268,14 @@ end
 
 As a first example of what we can do, let's compute and plot an optimal accumulation policy at fixed prices
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # Create an instance of Household
 am = Household(a_max = 20.0, r = 0.03, w = 0.956)
 
@@ -299,7 +299,7 @@ plot!(a_vals, a_vals, label = "", color = :black, linestyle = :dash)
 plot!(xlabel = "current assets", ylabel = "next period assets", grid = false)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -321,14 +321,14 @@ The following code draws aggregate supply and demand curves.
 
 The intersection gives equilibrium interest rates and capital
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # Firms' parameters
 const A = 1
 const N = 1
@@ -379,7 +379,7 @@ plot(k_vals, [demand r_vals], label = labels, lw = 2, alpha = 0.6)
 plot!(xlabel = "capital", ylabel = "interest rate", xlim = (2, 14), ylim = (0.0, 0.1))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

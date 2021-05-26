@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (discrete_dp)=
@@ -418,7 +418,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -426,19 +426,19 @@ using LinearAlgebra, Statistics, BenchmarkTools, Plots, QuantEcon
 using SparseArrays
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using BenchmarkTools, Plots, QuantEcon, Parameters
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 SimpleOG = @with_kw (B = 10, M = 5, α = 0.5, β = 0.9)
 
 function transition_matrices(g)
@@ -463,14 +463,14 @@ end
 
 Let's run this code and create an instance of `SimpleOG`
 
-```{code-block} julia
+```{code-cell} julia
 g = SimpleOG();
 Q, R = transition_matrices(g);
 ```
 
 In case the preceding code was too concise, we can see a more verbose form
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [output_scroll]
 ---
@@ -515,29 +515,29 @@ Instances of `DiscreteDP` are created using the signature `DiscreteDP(R, Q, β)`
 
 Let's create an instance using the objects stored in `g`
 
-```{code-block} julia
+```{code-cell} julia
 ddp = DiscreteDP(R, Q, g.β);
 ```
 
 Now that we have an instance `ddp` of `DiscreteDP` we can solve it as follows
 
-```{code-block} julia
+```{code-cell} julia
 results = solve(ddp, PFI)
 ```
 
 Let's see what we've got here
 
-```{code-block} julia
+```{code-cell} julia
 fieldnames(typeof(results))
 ```
 
 The most important attributes are `v`, the value function, and `σ`, the optimal policy
 
-```{code-block} julia
+```{code-cell} julia
 results.v
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -548,11 +548,11 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 results.sigma .- 1
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -567,11 +567,11 @@ Since we've used policy iteration, these results will be exact unless we hit the
 
 Let's make sure this didn't happen
 
-```{code-block} julia
+```{code-cell} julia
 results.num_iter
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -589,11 +589,11 @@ In other words, it gives the dynamics of the state when the agent follows the op
 Since this object is an instance of MarkovChain from  [QuantEcon.jl](http://quantecon.org/quantecon-jl) (see {doc}`this lecture <../tools_and_techniques/finite_markov>` for more discussion), we
 can easily simulate it, compute its stationary distribution and so on
 
-```{code-block} julia
+```{code-cell} julia
 stationary_distributions(results.mc)[1]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -612,7 +612,7 @@ Here's the same information in a bar graph
 
 What happens if the agent is more patient?
 
-```{code-block} julia
+```{code-cell} julia
 g_2 = SimpleOG(β=0.99);
 Q_2, R_2 = transition_matrices(g_2);
 
@@ -623,7 +623,7 @@ results_2 = solve(ddp_2, PFI)
 std_2 = stationary_distributions(results_2.mc)[1]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -632,7 +632,7 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 bar(std_2, label = "stationary dist")
 ```
 
@@ -654,7 +654,7 @@ The call signature of the second formulation is `DiscreteDP(R, Q, β, s_indices,
 
 Here's how we could set up these objects for the preceding example
 
-```{code-block} julia
+```{code-cell} julia
 B = 10
 M = 5
 α = 0.5
@@ -685,7 +685,7 @@ ddp = DiscreteDP(R, Q, β, s_indices, a_indices);
 results = solve(ddp, PFI)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -713,7 +713,7 @@ lecture](https://julia.quantecon.org/dynamic_programming/optgrowth.html). As in 
 we let $f(k) = k^{\alpha}$ with $\alpha = 0.65$,
 $u(c) = \log c$, and $\beta = 0.95$.
 
-```{code-block} julia
+```{code-cell} julia
 α = 0.65
 f(k) = k.^α
 u_log(x) = log(x)
@@ -724,7 +724,7 @@ Here we want to solve a finite state version of the continuous state
 model above. We discretize the state space into a grid of size
 `grid_size = 500`, from $10^{-6}$ to `grid_max=2`.
 
-```{code-block} julia
+```{code-cell} julia
 grid_max = 2
 grid_size = 500
 grid = range(1e-6, grid_max, length = grid_size)
@@ -752,7 +752,7 @@ format.
 
 We first construct indices for state-action pairs:
 
-```{code-block} julia
+```{code-cell} julia
 C = f.(grid) .- grid'
 coord = repeat(collect(1:grid_size), 1, grid_size) #coordinate matrix
 s_indices = coord[C .> 0]
@@ -760,7 +760,7 @@ a_indices = transpose(coord)[C .> 0]
 L = length(a_indices)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -772,11 +772,11 @@ end
 
 Now let's set up $R$ and $Q$
 
-```{code-block} julia
+```{code-cell} julia
 R = u_log.(C[C.>0]);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -786,7 +786,7 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using SparseArrays
 
 Q = spzeros(L, grid_size) # Formerly spzeros
@@ -799,19 +799,19 @@ end
 We're now in a position to create an instance of `DiscreteDP`
 corresponding to the growth model.
 
-```{code-block} julia
+```{code-cell} julia
 ddp = DiscreteDP(R, Q, β, s_indices, a_indices);
 ```
 
 ### Solving the Model
 
-```{code-block} julia
+```{code-cell} julia
 results = solve(ddp, PFI)
 v, σ, num_iter = results.v, results.sigma, results.num_iter
 num_iter
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -825,7 +825,7 @@ end
 Let us compare the solution of the discrete model with the exact
 solution of the original continuous model. Here's the exact solution:
 
-```{code-block} julia
+```{code-cell} julia
 c = f(grid) - grid[σ]
 
 ab = α * β
@@ -836,7 +836,7 @@ v_star(k) = c1 + c2 * log(k)
 c_star(k) = (1 - α * β) * k.^α
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -849,7 +849,7 @@ end
 
 Let's plot the value functions.
 
-```{code-block} julia
+```{code-cell} julia
 plot(grid, [v v_star.(grid)], ylim = (-40, -32), lw = 2, label = ["discrete" "continuous"])
 ```
 
@@ -859,18 +859,18 @@ you zoom).
 Now let's look at the discrete and exact policy functions for
 consumption.
 
-```{code-block} julia
+```{code-cell} julia
 plot(grid, [c c_star.(grid)], lw = 2, label = ["discrete" "continuous"], legend = :topleft)
 ```
 
 These functions are again close, although some difference is visible and
 becomes more obvious as you zoom. Here are some statistics:
 
-```{code-block} julia
+```{code-cell} julia
 maximum(abs(x - v_star(y)) for (x, y) in zip(v, grid))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -882,11 +882,11 @@ end
 This is a big error, but most of the error occurs at the lowest
 gridpoint. Otherwise the fit is reasonable:
 
-```{code-block} julia
+```{code-cell} julia
 maximum(abs(v[idx] - v_star(grid[idx])) for idx in 2:lastindex(v))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -897,11 +897,11 @@ end
 
 The value function is monotone, as expected:
 
-```{code-block} julia
+```{code-cell} julia
 all(x -> x ≥ 0, diff(v))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -916,25 +916,25 @@ Let's try different solution methods. The results below show that policy
 function iteration and modified policy function iteration are much
 faster that value function iteration.
 
-```{code-block} julia
+```{code-cell} julia
 @benchmark results = solve(ddp, PFI)
 results = solve(ddp, PFI);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 @benchmark res1 = solve(ddp, VFI, max_iter = 500, epsilon = 1e-4)
 res1 = solve(ddp, VFI, max_iter = 500, epsilon = 1e-4);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 res1.num_iter
 ```
 
-```{code-block} julia
+```{code-cell} julia
 σ == res1.sigma
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -943,20 +943,20 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 @benchmark res2 = solve(ddp, MPFI, max_iter = 500, epsilon = 1e-4)
 res2 = solve(ddp, MPFI, max_iter = 500, epsilon = 1e-4);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 res2.num_iter
 ```
 
-```{code-block} julia
+```{code-cell} julia
 σ == res2.sigma
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -970,7 +970,7 @@ end
 Let's visualize convergence of value function iteration, as in the
 lecture.
 
-```{code-block} julia
+```{code-cell} julia
 w_init = 5log.(grid) .- 25  # Initial condition
 n = 50
 
@@ -994,7 +994,7 @@ plot!(grid, ws,  label = "", color = reshape(colors, 1, length(colors)), lw = 2)
 plot!(grid, v_star.(grid), label = "true value function", color = :red, lw = 2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1008,7 +1008,7 @@ We next plot the consumption policies along the value iteration. First
 we write a function to generate the and record the policies at given
 stages of iteration.
 
-```{code-block} julia
+```{code-cell} julia
 function compute_policies(n_vals...)
     c_policies = []
     w = w_init
@@ -1026,7 +1026,7 @@ end
 
 Now let's generate the plots.
 
-```{code-block} julia
+```{code-cell} julia
 true_c = c_star.(grid)
 c_policies = compute_policies(2, 4, 6)
 plot_vecs = [c_policies[1] c_policies[2] c_policies[3] true_c true_c true_c]
@@ -1044,7 +1044,7 @@ plot(grid,
      title = ["2 iterations" "4 iterations" "6 iterations"])
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1064,7 +1064,7 @@ the trajectories of the capital stock for three different discount
 factors, $0.9$, $0.94$, and $0.98$, with initial
 condition $k_0 = 0.1$.
 
-```{code-block} julia
+```{code-cell} julia
 discount_factors = (0.9, 0.94, 0.98)
 k_init = 0.1
 
@@ -1094,7 +1094,7 @@ plot(k_paths,
      label = reshape(labels, 1, length(labels)))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

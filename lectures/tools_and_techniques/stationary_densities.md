@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (statd)=
@@ -72,7 +72,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -456,14 +456,14 @@ The function is vectorized, in the sense that if `psi` is such an instance and `
 
 The following code is example of usage for the stochastic growth model {ref}`described above <solow_swan>`
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Distributions, StatsPlots, Plots, QuantEcon, Random
 gr(fmt = :png)
 Random.seed!(42) # For deterministic results.
@@ -516,7 +516,7 @@ t = "Density of k_1 (lighter) to k_T (darker) for T=$T"
 plot!(title = t)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -848,14 +848,14 @@ A common way to compare distributions visually is with [boxplots](https://en.wik
 
 To illustrate, let's generate three artificial data sets and compare them with a boxplot
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42); # For determinism
 ```
 
-```{code-block} julia
+```{code-cell} julia
 n = 500
 x = randn(n)        # N(0, 1)
 x = exp.(x)         # Map x to lognormal
@@ -868,7 +868,7 @@ xlabels = reshape(repeat(l, n), 3n, 1)
 boxplot(xlabels, data, label = "", ylims = (-2, 14))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -921,7 +921,7 @@ Use $\theta = 0.9, n = 20, k = 5000, J = 8$.
 
 ## Solutions
 
-```{code-block} julia
+```{code-cell} julia
 using KernelDensity
 ```
 
@@ -937,14 +937,14 @@ $$
 and $\xi_t \sim N(0,1)$. Try running at n = 10, 100, 1000, 10000
 to get an idea of the speed of convergence.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);  # reproducible results
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ϕ = Normal()
 n = 500
 θ = 0.8
@@ -973,7 +973,7 @@ plot!(k_est.x, k_est.density, color = :black, lw = 2, alpha = 0.6,
       label = "kernel based estimate")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -988,14 +988,14 @@ end
 
 Here's one program that does the job.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);  # reproducible results
 ```
 
-```{code-block} julia
+```{code-cell} julia
 s = 0.2
 δ = 0.1
 a_σ = 0.4  # A = exp(B) where B ~ N(0, a_σ)
@@ -1048,7 +1048,7 @@ plot(ygrid, laes_plot, layout = (2,2), color = colors,
      legend = :none, xlabel = "capital", xlims = (0, xmax))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1065,14 +1065,14 @@ Here's a possible solution.
 Note the way we use vectorized code to simulate the $k$ time
 series for one boxplot all at once.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);  # reproducible results
 ```
 
-```{code-block} julia
+```{code-cell} julia
 n = 20
 k = 5000
 J = 6
@@ -1105,7 +1105,7 @@ for j in 1:J
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 plots = []
 for i in 1:J
     push!(plots, boxplot(vec(x_labels[i]), vec(data[i]), title = titles[i]))
@@ -1113,7 +1113,7 @@ end
 plot(plots..., layout = (J, 1), legend = :none, size = (800, 2000))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

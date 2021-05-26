@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (fundamental_types)=
@@ -53,7 +53,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -69,11 +69,11 @@ Later, we will see how arrays (and all other types in Julia) are handled in a ge
 
 We've already seen some Julia arrays in action
 
-```{code-block} julia
+```{code-cell} julia
 a = [10, 20, 30]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a = [1.0, 2.0, 3.0]
 ```
 
@@ -88,7 +88,7 @@ one dimensional (i.e., a `Vector`).
 
 This is the default for many Julia functions that create arrays
 
-```{code-block} julia
+```{code-cell} julia
 typeof(randn(100))
 ```
 
@@ -97,11 +97,11 @@ In Julia, one dimensional vectors are best interpreted as column vectors, which 
 We can check the dimensions of `a` using `size()` and `ndims()`
 functions
 
-```{code-block} julia
+```{code-cell} julia
 ndims(a)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 size(a)
 ```
 
@@ -112,7 +112,7 @@ The syntax `(3,)` displays a tuple containing one element -- the size along the 
 In Julia, `Vector` and `Matrix` are just aliases for one- and two-dimensional arrays
 respectively
 
-```{code-block} julia
+```{code-cell} julia
 Array{Int64, 1} == Vector{Int64}
 Array{Int64, 2} == Matrix{Int64}
 ```
@@ -121,11 +121,11 @@ Vector construction with `,` is then interpreted as a column vector.
 
 To see this, we can create a column vector and row vector more directly
 
-```{code-block} julia
+```{code-cell} julia
 [1, 2, 3] == [1; 2; 3]  # both column vectors
 ```
 
-```{code-block} julia
+```{code-cell} julia
 [1 2 3]  # a row vector is 2-dimensional
 ```
 
@@ -153,25 +153,25 @@ This is why many Julia functions return flat arrays by default.
 
 We've already seen some functions for creating a vector filled with `0.0`
 
-```{code-block} julia
+```{code-cell} julia
 zeros(3)
 ```
 
 This generalizes to matrices and higher dimensional arrays
 
-```{code-block} julia
+```{code-cell} julia
 zeros(2, 2)
 ```
 
 To return an array filled with a single value, use `fill`
 
-```{code-block} julia
+```{code-cell} julia
 fill(5.0, 2, 2)
 ```
 
 Finally, you can create an empty array using the `Array()` constructor
 
-```{code-block} julia
+```{code-cell} julia
 x = Array{Float64}(undef, 2, 2)
 ```
 
@@ -181,13 +181,13 @@ The printed values you see here are just garbage values.
 
 If you need more control over the types, fill with a non-floating point
 
-```{code-block} julia
+```{code-cell} julia
 fill(0, 2, 2)  # fills with 0, not 0.0
 ```
 
 Or fill with a boolean type
 
-```{code-block} julia
+```{code-cell} julia
 fill(false, 2, 2)  # produces a boolean matrix
 ```
 
@@ -201,7 +201,7 @@ One place this can be inconvenient is when we need to create an array based on a
 
 First, note that assignment in Julia binds a name to a value, but does not make a copy of that type
 
-```{code-block} julia
+```{code-cell} julia
 x = [1, 2, 3]
 y = x
 y[1] = 2
@@ -212,7 +212,7 @@ In the above, `y = x` simply creates a new named binding called `y` which refers
 
 To copy the data, you need to be more explicit
 
-```{code-block} julia
+```{code-cell} julia
 x = [1, 2, 3]
 y = copy(x)
 y[1] = 2
@@ -221,7 +221,7 @@ x
 
 However, rather than making a copy of `x`, you may want to just have a similarly sized array
 
-```{code-block} julia
+```{code-cell} julia
 x = [1, 2, 3]
 y = similar(x)
 y
@@ -229,14 +229,14 @@ y
 
 We can also use `similar` to pre-allocate a vector with a different size, but the same shape
 
-```{code-block} julia
+```{code-cell} julia
 x = [1, 2, 3]
 y = similar(x, 4)  # make a vector of length 4
 ```
 
 Which generalizes to higher dimensions
 
-```{code-block} julia
+```{code-cell} julia
 x = [1, 2, 3]
 y = similar(x, 2, 2)  # make a 2x2 matrix
 ```
@@ -245,41 +245,41 @@ y = similar(x, 2, 2)  # make a 2x2 matrix
 
 As we've seen, you can create one dimensional arrays from manually specified data like so
 
-```{code-block} julia
+```{code-cell} julia
 a = [10, 20, 30, 40]
 ```
 
 In two dimensions we can proceed as follows
 
-```{code-block} julia
+```{code-cell} julia
 a = [10 20 30 40]  # two dimensional, shape is 1 x n
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ndims(a)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a = [10 20; 30 40]  # 2 x 2
 ```
 
 You might then assume that `a = [10; 20; 30; 40]` creates a two dimensional column vector but this isn't the case.
 
-```{code-block} julia
+```{code-cell} julia
 a = [10; 20; 30; 40]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ndims(a)
 ```
 
 Instead transpose the matrix (or adjoint if complex)
 
-```{code-block} julia
+```{code-cell} julia
 a = [10 20 30 40]'
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ndims(a)
 ```
 
@@ -287,41 +287,41 @@ ndims(a)
 
 We've already seen the basics of array indexing
 
-```{code-block} julia
+```{code-cell} julia
 a = [10 20 30 40]
 a[end-1]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a[1:3]
 ```
 
 For 2D arrays the index syntax is straightforward
 
-```{code-block} julia
+```{code-cell} julia
 a = randn(2, 2)
 a[1, 1]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a[1, :]  # first row
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a[:, 1]  # first column
 ```
 
 Booleans can be used to extract elements
 
-```{code-block} julia
+```{code-cell} julia
 a = randn(2, 2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b = [true false; false true]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a[b]
 ```
 
@@ -329,15 +329,15 @@ This is useful for conditional extraction, as we'll see below.
 
 An aside: some or all elements of an array can be set equal to one number using slice notation.
 
-```{code-block} julia
+```{code-cell} julia
 a = zeros(4)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a[2:end] .= 42
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a
 ```
 
@@ -345,7 +345,7 @@ a
 
 Using the `:` notation provides a slice of an array, copying the sub-array to a new array with a similar type.
 
-```{code-block} julia
+```{code-cell} julia
 a = [1 2; 3 4]
 b = a[:, 2]
 @show b
@@ -356,7 +356,7 @@ a[:, 2] = [4, 5] # modify a
 
 A **view** on the other hand does not copy the value
 
-```{code-block} julia
+```{code-cell} julia
 a = [1 2; 3 4]
 @views b = a[:, 2]
 @show b
@@ -369,7 +369,7 @@ Note that the only difference is the `@views` macro, which will replace any slic
 
 An alternative is to call the `view` function directly -- though it is generally discouraged since it is a step away from the math.
 
-```{code-block} julia
+```{code-cell} julia
 @views b = a[:, 2]
 view(a, :, 2) == b
 ```
@@ -378,7 +378,7 @@ As with most programming in Julia, it is best to avoid prematurely assuming that
 
 Another important lesson about `@views` is that they **are not** normal, dense arrays.
 
-```{code-block} julia
+```{code-cell} julia
 a = [1 2; 3 4]
 b_slice = a[:, 2]
 @show typeof(b_slice)
@@ -391,7 +391,7 @@ The type of `b` is a good example of how types are not as they may seem.
 
 Similarly
 
-```{code-block} julia
+```{code-cell} julia
 a = [1 2; 3 4]
 b = a'   # transpose
 typeof(b)
@@ -399,7 +399,7 @@ typeof(b)
 
 To copy into a dense array
 
-```{code-block} julia
+```{code-cell} julia
 a = [1 2; 3 4]
 b = a' # transpose
 c = Matrix(b)  # convert to matrix
@@ -413,7 +413,7 @@ As we saw with `transpose`, sometimes types that look like matrices are not stor
 
 As an example, consider creating a diagonal matrix
 
-```{code-block} julia
+```{code-cell} julia
 d = [1.0, 2.0]
 a = Diagonal(d)
 ```
@@ -424,7 +424,7 @@ The reasons for this are both efficiency in storage, as well as efficiency in ar
 
 In every important sense, matrix types such as `Diagonal` are just as much a "matrix" as the dense matrices we have using (see the {doc}`introduction to types lecture <../getting_started_julia/introduction_to_types>` for more)
 
-```{code-block} julia
+```{code-cell} julia
 @show 2a
 b = rand(2,2)
 @show b * a;
@@ -432,21 +432,21 @@ b = rand(2,2)
 
 Another example is in the construction of an identity matrix, where a naive implementation is
 
-```{code-block} julia
+```{code-cell} julia
 b = [1.0 2.0; 3.0 4.0]
 b - Diagonal([1.0, 1.0])  # poor style, inefficient code
 ```
 
 Whereas you should instead use
 
-```{code-block} julia
+```{code-cell} julia
 b = [1.0 2.0; 3.0 4.0]
 b - I  # good style, and note the lack of dimensions of I
 ```
 
 While the implementation of `I` is a little abstract to go into at this point, a hint is:
 
-```{code-block} julia
+```{code-cell} julia
 typeof(I)
 ```
 
@@ -456,14 +456,14 @@ This is a `UniformScaling` type rather than an identity matrix, making it much m
 
 As discussed above, in Julia, the left hand side of an assignment is a "binding" or a label to a value.
 
-```{code-block} julia
+```{code-cell} julia
 x = [1 2 3]
 y = x  # name `y` binds to whatever value `x` bound to
 ```
 
 The consequence of this, is that you can re-bind that name.
 
-```{code-block} julia
+```{code-cell} julia
 x = [1 2 3]
 y = x        # name `y` binds to whatever `x` bound to
 z = [2 3 4]
@@ -475,7 +475,7 @@ What this means is that if `a` is an array and we set `b = a` then `a` and `b` p
 
 In the above, suppose you had meant to change the value of `x` to the values of `y`, you need to assign the values rather than the name.
 
-```{code-block} julia
+```{code-cell} julia
 x = [1 2 3]
 y = x       # name `y` binds to whatever `x` bound to
 z = [2 3 4]
@@ -489,7 +489,7 @@ This applies to in-place functions as well.
 
 First, define a simple function for a linear map
 
-```{code-block} julia
+```{code-cell} julia
 function f(x)
     return [1 2; 3 4] * x  # matrix * column vector
 end
@@ -500,7 +500,7 @@ f(val)
 
 In general, these "out-of-place" functions are preferred to "in-place" functions, which modify the arguments.
 
-```{code-block} julia
+```{code-cell} julia
 function f(x)
     return [1 2; 3 4] * x # matrix * column vector
 end
@@ -520,7 +520,7 @@ This demonstrates a key convention in Julia: functions which modify any of the a
 
 We can also see a common mistake, where instead of modifying the arguments, the name binding is swapped
 
-```{code-block} julia
+```{code-cell} julia
 function f(x)
     return [1 2; 3 4] * x  # matrix * column vector
 end
@@ -541,7 +541,7 @@ The frequency of making this mistake is one of the reasons to avoid in-place fun
 
 Note that scalars are always immutable, such that
 
-```{code-block} julia
+```{code-cell} julia
 y = [1 2]
 y .-= 2    # y .= y .- 2, no problem
 
@@ -552,7 +552,7 @@ x = x - 2  # subtle difference - creates a new value and rebinds the variable
 
 In particular, there is no way to pass any immutable into a function and have it modified
 
-```{code-block} julia
+```{code-cell} julia
 x = 2
 
 function f(x)
@@ -565,7 +565,7 @@ f(x)          # cannot modify immutables in place
 
 This is also true for other immutable types such as tuples, as well as some vector types
 
-```{code-block} julia
+```{code-cell} julia
 using StaticArrays
 xdynamic = [1, 2]
 xstatic = @SVector [1, 2]  # turns it into a highly optimized static vector
@@ -593,7 +593,7 @@ end
 Julia provides standard functions for acting on arrays, some of which we've
 already seen
 
-```{code-block} julia
+```{code-cell} julia
 a = [-1, 0, 1]
 
 @show length(a)
@@ -608,19 +608,19 @@ a = [-1, 0, 1]
 
 To sort an array
 
-```{code-block} julia
+```{code-cell} julia
 b = sort(a, rev = true)  # returns new array, original not modified
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b = sort!(a, rev = true)  # returns *modified original* array
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b == a  # tests if have the same values
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b === a  # tests if arrays are identical (i.e share same memory)
 ```
 
@@ -628,37 +628,37 @@ b === a  # tests if arrays are identical (i.e share same memory)
 
 For two dimensional arrays, `*` means matrix multiplication
 
-```{code-block} julia
+```{code-cell} julia
 a = ones(1, 2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b = ones(2, 2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a * b
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b * a'
 ```
 
 To solve the linear system $A X = B$ for $X$ use `A \ B`
 
-```{code-block} julia
+```{code-cell} julia
 A = [1 2; 2 3]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 B = ones(2, 2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 A \ B
 ```
 
-```{code-block} julia
+```{code-cell} julia
 inv(A) * B
 ```
 
@@ -670,7 +670,7 @@ More precisely, the error is that there isn't an implementation of `*` for two o
 
 The output explains this, and lists some other methods of `*` which Julia thinks are close to what we want.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [raises-exception]
 ---
@@ -679,13 +679,13 @@ ones(2) * ones(2)  # does not conform, expect error
 
 Instead, you could take the transpose to form a row vector
 
-```{code-block} julia
+```{code-cell} julia
 ones(2)' * ones(2)
 ```
 
 Alternatively, for inner product in this setting use `dot()` or the unicode `\cdot<TAB>`
 
-```{code-block} julia
+```{code-cell} julia
 @show dot(ones(2), ones(2))
 @show ones(2) ⋅ ones(2);
 ```
@@ -693,12 +693,12 @@ Alternatively, for inner product in this setting use `dot()` or the unicode `\cd
 Matrix multiplication using one dimensional vectors similarly follows from treating them as
 column vectors.  Post-multiplication requires a transpose
 
-```{code-block} julia
+```{code-cell} julia
 b = ones(2, 2)
 b * ones(2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ones(2)' * b
 ```
 
@@ -719,37 +719,37 @@ In that case we need to replace `*` (matrix multiplication) with `.*` (elementwi
 
 For example, compare
 
-```{code-block} julia
+```{code-cell} julia
 ones(2, 2) * ones(2, 2)   # matrix multiplication
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ones(2, 2) .* ones(2, 2)   # element by element multiplication
 ```
 
 This is a general principle: `.x` means apply operator `x` elementwise
 
-```{code-block} julia
+```{code-cell} julia
 A = -ones(2, 2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 A.^2  # square every element
 ```
 
 However in practice some operations are mathematically valid without broadcasting, and hence the `.` can be omitted.
 
-```{code-block} julia
+```{code-cell} julia
 ones(2, 2) + ones(2, 2)  # same as ones(2, 2) .+ ones(2, 2)
 ```
 
 Scalar multiplication is similar
 
-```{code-block} julia
+```{code-cell} julia
 A = ones(2, 2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 2 * A  # same as 2 .* A
 ```
 
@@ -757,7 +757,7 @@ In fact you can omit the `*` altogether and just write `2A`.
 
 Unlike MATLAB and other languages, scalar addition requires the `.+` in order to correctly broadcast
 
-```{code-block} julia
+```{code-cell} julia
 x = [1, 2]
 x .+ 1     # not x + 1
 x .- 1     # not x - 1
@@ -767,43 +767,43 @@ x .- 1     # not x - 1
 
 Elementwise comparisons also use the `.x` style notation
 
-```{code-block} julia
+```{code-cell} julia
 a = [10, 20, 30]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b = [-100, 0, 100]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b .> a
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a .== b
 ```
 
 We can also do comparisons against scalars with parallel syntax
 
-```{code-block} julia
+```{code-cell} julia
 b
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b .> 1
 ```
 
 This is particularly useful for *conditional extraction* -- extracting the elements of an array that satisfy a condition
 
-```{code-block} julia
+```{code-cell} julia
 a = randn(4)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a .< 0
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a[a .< 0]
 ```
 
@@ -811,15 +811,15 @@ a[a .< 0]
 
 The primary function for changing the dimensions of an array is `reshape()`
 
-```{code-block} julia
+```{code-cell} julia
 a = [10, 20, 30, 40]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b = reshape(a, 2, 2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b
 ```
 
@@ -828,25 +828,25 @@ Notice that this function returns a view on the existing array.
 This means that changing the data in the new array will modify the data in the
 old one.
 
-```{code-block} julia
+```{code-cell} julia
 b[1, 1] = 100  # continuing the previous example
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a
 ```
 
 To collapse an array along one dimension you can use `dropdims()`
 
-```{code-block} julia
+```{code-cell} julia
 a = [1 2 3 4]  # two dimensional
 ```
 
-```{code-block} julia
+```{code-cell} julia
 dropdims(a, dims = 1)
 ```
 
@@ -856,19 +856,19 @@ The return value is an array with the specified dimension "flattened".
 
 Julia provides standard mathematical functions such as `log`, `exp`, `sin`, etc.
 
-```{code-block} julia
+```{code-cell} julia
 log(1.0)
 ```
 
 By default, these functions act *elementwise* on arrays
 
-```{code-block} julia
+```{code-cell} julia
 log.(1:4)
 ```
 
 Note that we can get the same result as with a comprehension or more explicit loop
 
-```{code-block} julia
+```{code-cell} julia
 [ log(x) for x in 1:4 ]
 ```
 
@@ -880,23 +880,23 @@ Nonetheless the syntax is convenient.
 
 Julia provides some a great deal of additional functionality related to linear operations
 
-```{code-block} julia
+```{code-cell} julia
 A = [1 2; 3 4]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 det(A)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 tr(A)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 eigvals(A)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 rank(A)
 ```
 
@@ -904,7 +904,7 @@ rank(A)
 
 As with many other types, a `Range` can act as a vector.
 
-```{code-block} julia
+```{code-cell} julia
 a = 10:12        # a range, equivalent to 10:1:12
 @show Vector(a)  # can convert, but shouldn't
 
@@ -914,13 +914,13 @@ b * a .- [1.0; 2.0; 3.0]
 
 Ranges can also be created with floating point numbers using the same notation.
 
-```{code-block} julia
+```{code-cell} julia
 a = 0.0:0.1:1.0  # 0.0, 0.1, 0.2, ... 1.0
 ```
 
 But care should be taken if the terminal node is not a multiple of the set sizes.
 
-```{code-block} julia
+```{code-cell} julia
 maxval = 1.0
 minval = 0.0
 stepsize = 0.15
@@ -930,7 +930,7 @@ maximum(a) == maxval
 
 To evenly space points where the maximum value is important, i.e., `linspace` in other languages
 
-```{code-block} julia
+```{code-cell} julia
 maxval = 1.0
 minval = 0.0
 numpoints = 10
@@ -946,7 +946,7 @@ maximum(a) == maxval
 
 We were introduced to tuples earlier, which provide high-performance immutable sets of distinct types.
 
-```{code-block} julia
+```{code-cell} julia
 t = (1.0, "test")
 t[1]            # access by index
 a, b = t        # unpack
@@ -956,7 +956,7 @@ println("a = $a and b = $b")
 
 As well as **named tuples**, which extend tuples with names for each argument.
 
-```{code-block} julia
+```{code-cell} julia
 t = (val1 = 1.0, val2 = "test")
 t.val1      # access by index
 # a, b = t  # bad style, better to unpack by name with @unpack
@@ -965,14 +965,14 @@ println("val1 = $(t.val1) and val1 = $(t.val1)") # access by name
 
 While immutable, it is possible to manipulate tuples and generate new ones
 
-```{code-block} julia
+```{code-cell} julia
 t2 = (val3 = 4, val4 = "test!!")
 t3 = merge(t, t2)  # new tuple
 ```
 
 Named tuples are a convenient and high-performance way to manage and unpack sets of parameters
 
-```{code-block} julia
+```{code-cell} julia
 function f(parameters)
     α, β = parameters.α, parameters.β  # poor style, error prone if adding parameters
     return α + β
@@ -984,7 +984,7 @@ f(parameters)
 
 This functionality is aided by the `Parameters.jl` package and the `@unpack` macro
 
-```{code-block} julia
+```{code-cell} julia
 using Parameters
 
 function f(parameters)
@@ -998,7 +998,7 @@ f(parameters)
 
 In order to manage default values, use the `@with_kw` macro
 
-```{code-block} julia
+```{code-cell} julia
 using Parameters
 paramgen = @with_kw (α = 0.1, β = 0.2)  # create named tuples with defaults
 
@@ -1026,13 +1026,13 @@ There are two distinct use cases for this
 
 The value `nothing` is a single value of type `Nothing`
 
-```{code-block} julia
+```{code-cell} julia
 typeof(nothing)
 ```
 
 An example of a reasonable use of `nothing` is if you need to have a variable defined in an outer scope, which may or may not be set in an inner one
 
-```{code-block} julia
+```{code-cell} julia
 function f(y)
     x = nothing
     if y > 0.0
@@ -1057,7 +1057,7 @@ While in general you want to keep a variable name bound to a single type in Juli
 
 Similarly, if needed, you can return a `nothing` from a function to indicate that it did not calculate as expected.
 
-```{code-block} julia
+```{code-cell} julia
 function f(x)
     if x > 0.0
         return sqrt(x)
@@ -1082,7 +1082,7 @@ As an aside, an equivalent way to write the above function is to use the
 [ternary operator](https://docs.julialang.org/en/v1/manual/control-flow/index.html#man-conditional-evaluation-1),
 which gives a compact if/then/else structure
 
-```{code-block} julia
+```{code-cell} julia
 function f(x)
     x > 0.0 ? sqrt(x) : nothing  # the "a ? b : c" pattern is the ternary
 end
@@ -1098,7 +1098,7 @@ In this particular case, the compiler would deduce that the type would be a `Uni
 
 You will see this type directly if you use an array containing both types
 
-```{code-block} julia
+```{code-cell} julia
 x = [1.0, nothing]
 ```
 
@@ -1106,7 +1106,7 @@ When considering error handling, whether you want a function to return `nothing`
 
 For example, if you were calling on an array of parameters where a priori you were not sure which ones will succeed, then
 
-```{code-block} julia
+```{code-cell} julia
 x = [0.1, -1.0, 2.0, -2.0]
 y = f.(x)
 
@@ -1115,7 +1115,7 @@ y = f.(x)
 
 On the other hand, if the parameter passed is invalid and you would prefer not to handle a graceful failure, then using an assertion is more appropriate.
 
-```{code-block} julia
+```{code-cell} julia
 function f(x)
     @assert x > 0.0
     sqrt(x)
@@ -1126,7 +1126,7 @@ f(1.0)
 
 Finally, `nothing` is a good way to indicate an optional parameter in a function
 
-```{code-block} julia
+```{code-cell} julia
 function f(x; z = nothing)
 
     if isnothing(z)
@@ -1143,7 +1143,7 @@ f(1.0, z=3.0)
 An alternative to `nothing`, which can be useful and sometimes higher performance,
 is to use `NaN` to signal that a value is invalid returning from a function.
 
-```{code-block} julia
+```{code-cell} julia
 function f(x)
     if x > 0.0
         return x
@@ -1176,7 +1176,7 @@ The key distinction for when to use an exceptions vs. return a `nothing` is whet
 
 An example of an exception is a `DomainError`, which signifies that a value passed to a function is invalid.
 
-```{code-block} julia
+```{code-cell} julia
 # throws exception, turned off to prevent breaking notebook
 # sqrt(-1.0)
 
@@ -1186,7 +1186,7 @@ try sqrt(-1.0); catch err; err end  # catches the exception and prints it
 
 Another example you will see is when the compiler cannot convert between types.
 
-```{code-block} julia
+```{code-cell} julia
 # throws exception, turned off to prevent breaking notebook
 # convert(Int64, 3.12)
 
@@ -1198,7 +1198,7 @@ If these exceptions are generated from unexpected cases in your code, it may be 
 
 Occasionally you will want to catch these errors and try to recover, as we did above in the `try` block.
 
-```{code-block} julia
+```{code-cell} julia
 function f(x)
     try
         sqrt(x)
@@ -1220,13 +1220,13 @@ The value `missing` of type `Missing` is used to represent missing value in a st
 
 For example, if you loaded data from a panel, and gaps existed
 
-```{code-block} julia
+```{code-cell} julia
 x = [3.0, missing, 5.0, missing, missing]
 ```
 
 A key feature of `missing` is that it propagates through other function calls - unlike `nothing`
 
-```{code-block} julia
+```{code-cell} julia
 f(x) = x^2
 
 @show missing + 1.0
@@ -1240,7 +1240,7 @@ The purpose of this is to ensure that failures do not silently fail and provide 
 
 This even applies for the comparison of values, which
 
-```{code-block} julia
+```{code-cell} julia
 x = missing
 
 @show x == missing
@@ -1252,7 +1252,7 @@ Where `ismissing` is the canonical way to test the value.
 
 In the case where you would like to calculate a value without the missing values, you can use `skipmissing`.
 
-```{code-block} julia
+```{code-cell} julia
 x = [1.0, missing, 2.0, missing, missing, 5.0]
 
 @show mean(x)
@@ -1412,7 +1412,7 @@ Hint: Convert the matrix to a vector to use `fixedpoint`. e.g. `A = [1 2; 3 4]` 
 
 Here's the iterative approach
 
-```{code-block} julia
+```{code-cell} julia
 function compute_asymptotic_var(A, Σ;
                                 S0 = Σ * Σ',
                                 tolerance = 1e-6,
@@ -1431,7 +1431,7 @@ function compute_asymptotic_var(A, Σ;
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 A = [0.8  -0.2;
      -0.1  0.7]
 
@@ -1441,26 +1441,26 @@ A = [0.8  -0.2;
 
 Note that all eigenvalues of $A$ lie inside the unit disc.
 
-```{code-block} julia
+```{code-cell} julia
 maximum(abs, eigvals(A))
 ```
 
 Let's compute the asymptotic variance
 
-```{code-block} julia
+```{code-cell} julia
 our_solution = compute_asymptotic_var(A, Σ)
 ```
 
 Now let's do the same thing using QuantEcon's `solve_discrete_lyapunov()` function and check we get the same result.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
 using QuantEcon
 ```
 
-```{code-block} julia
+```{code-cell} julia
 norm(our_solution - solve_discrete_lyapunov(A, Σ * Σ'))
 ```
 

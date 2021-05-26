@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (schelling)=
@@ -146,26 +146,26 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Parameters, Plots, LinearAlgebra, Statistics
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 Agent = @with_kw (kind, location = rand(2))
 
 draw_location!(a) = a.location .= rand(2)
@@ -217,7 +217,7 @@ function plot_distribution(agents)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 num_of_type_0 = 250
 num_of_type_1 = 250
 neighborhood_size = 10 # Number of agents regarded as neighbors
@@ -251,7 +251,7 @@ plot(plot_array...,
      title = reshape(["Cycle $i" for i in 1:n], 1, n))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

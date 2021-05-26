@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (mccall)=
@@ -292,7 +292,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -300,20 +300,20 @@ using LinearAlgebra, Statistics
 using Distributions, Expectations, NLsolve, Roots, Random, Plots, Parameters
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 gr(fmt = :png);
 ```
 
 Here's the distribution of wage offers we'll work with
 
-```{code-block} julia
+```{code-cell} julia
 n = 50
 dist = BetaBinomial(n, 200, 100) # probability distribution
 @show support(dist)
@@ -325,7 +325,7 @@ plt = plot(w, pdf.(dist, support(dist)), xlabel = "wages", ylabel = "probabiliti
 
 We can explore taking expectations over this distribution
 
-```{code-block} julia
+```{code-cell} julia
 E = expectation(dist) # expectation operator
 
 # exploring the properties of the operator
@@ -346,7 +346,7 @@ Default parameter values are embedded in the function.
 
 Our initial guess $v$ is the value of accepting at every given wage
 
-```{code-block} julia
+```{code-cell} julia
 # parameters and constant objects
 
 c = 25
@@ -372,7 +372,7 @@ plot(vs)
 One approach to solving the model is to directly implement this sort of iteration, and continues until measured deviation
 between successive iterates is below tol
 
-```{code-block} julia
+```{code-cell} julia
 function compute_reservation_wage_direct(params; v_iv = collect(w ./(1-β)), max_iter = 500,
                                          tol = 1e-6)
     @unpack c, β, w = params
@@ -411,7 +411,7 @@ As usual, we are better off using a package, which may give a better algorithm a
 
 In this case, we can use the `fixedpoint` algorithm discussed in {doc}`our Julia by Example lecture <../getting_started_julia/julia_by_example>`  to find the fixed point of the $T$ operator.
 
-```{code-block} julia
+```{code-cell} julia
 function compute_reservation_wage(params; v_iv = collect(w ./(1-β)), iterations = 500,
                                   ftol = 1e-6, m = 6)
     @unpack c, β, w = params
@@ -425,13 +425,13 @@ end
 
 Let's compute the reservation wage at the default parameters
 
-```{code-block} julia
+```{code-cell} julia
 mcm = @with_kw (c=25.0, β=0.99, w=w) # named tuples
 
 compute_reservation_wage(mcm()) # call with default parameters
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -449,7 +449,7 @@ parameters.
 In particular, let's look at what happens when we change $\beta$ and
 $c$.
 
-```{code-block} julia
+```{code-cell} julia
 grid_size = 25
 R = rand(grid_size, grid_size)
 
@@ -463,7 +463,7 @@ for (i, c) in enumerate(c_vals)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -475,7 +475,7 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 contour(c_vals, β_vals, R',
         title = "Reservation Wage",
         xlabel = "c",
@@ -564,7 +564,7 @@ The big difference here, however, is that we're iterating on a single number, ra
 
 Here's an implementation:
 
-```{code-block} julia
+```{code-cell} julia
 function compute_reservation_wage_ψ(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500,
                                     tol = 1e-5)
     T_ψ(ψ) = [c + β * E*max.((w ./ (1 - β)), ψ[1])] # (7)
@@ -579,7 +579,7 @@ You can use this code to solve the exercise below.
 
 Another option is to solve for the root of the  $T_{\psi}(\psi) - \psi$ equation
 
-```{code-block} julia
+```{code-cell} julia
 function compute_reservation_wage_ψ2(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500,
                                      tol = 1e-5)
     root_ψ(ψ) = c + β * E*max.((w ./ (1 - β)), ψ) - ψ # (7)
@@ -589,7 +589,7 @@ end
 compute_reservation_wage_ψ2(c, β)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -623,7 +623,7 @@ Plot mean unemployment duration as a function of $c$ in `c_vals`.
 
 Here's one solution
 
-```{code-block} julia
+```{code-cell} julia
 function compute_stopping_time(w̄; seed=1234)
     Random.seed!(seed)
     stopping_time = 0
@@ -659,7 +659,7 @@ plot(c_vals, stop_times, label = "mean unemployment duration",
      xlabel = "unemployment compensation", ylabel = "months")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

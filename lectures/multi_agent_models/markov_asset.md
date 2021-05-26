@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (mass)=
@@ -293,27 +293,27 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using Parameters, Plots, QuantEcon
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 n = 25
 mc = tauchen(n, 0.96, 0.25)
 sim_length = 80
@@ -327,7 +327,7 @@ labels = ["X_t" "g_t" "d_t" "ln(d_t)"]
 plot(series, layout = 4, labels = labels)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -409,7 +409,7 @@ As before, we'll generate $\{X_t\}$  as a {ref}`discretized AR1 process <mc_ex3>
 
 Here's the code, including a test of the spectral radius condition
 
-```{code-block} julia
+```{code-cell} julia
 n = 25  # size of state space
 β = 0.9
 mc = tauchen(n, 0.96, 0.02)
@@ -427,7 +427,7 @@ plot(mc.state_values,
      label = "v")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -546,7 +546,7 @@ v = (I - \beta J)^{-1} \beta  J {\mathbb 1}
 We will define a function tree_price to solve for $v$ given parameters stored in
 the AssetPriceModel objects
 
-```{code-block} julia
+```{code-cell} julia
 # A default Markov chain for the state process
 ρ = 0.9
 σ = 0.02
@@ -589,7 +589,7 @@ end
 Here's a plot of $v$ as a function of the state for several values of $\gamma$,
 with a positively correlated Markov process and $g(x) = \exp(x)$
 
-```{code-block} julia
+```{code-cell} julia
 γs = [1.2, 1.4, 1.6, 1.8, 2.0]
 ap = AssetPriceModel()
 states = ap.mc.state_values
@@ -611,7 +611,7 @@ plot(lines,
      xlabel = "state")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -696,7 +696,7 @@ p = (I - \beta M)^{-1} \beta M \zeta {\mathbb 1}
 
 The above is implemented in the function consol_price
 
-```{code-block} julia
+```{code-cell} julia
 function consol_price(ap, ζ)
     # Simplify names, set up matrices
     @unpack β, γ, mc, g, n = ap
@@ -782,7 +782,7 @@ Start at some initial $w$ and iterate to convergence with $T$.
 
 We can find the solution with the following function call_option
 
-```{code-block} julia
+```{code-cell} julia
 # price of perpetual call on consol bond
 function call_option(ap, ζ, p_s, ϵ = 1e-7)
 
@@ -813,7 +813,7 @@ end
 
 Here's a plot of $w$ compared to the consol price when $P_S = 40$
 
-```{code-block} julia
+```{code-cell} julia
 ap = AssetPriceModel(β=0.9)
 ζ = 1.0
 strike_price = 40.0
@@ -826,7 +826,7 @@ plot(x, p, color = "blue", lw = 2, xlabel = "state", label = "consol price")
 plot!(x, w, color = "green", lw = 2, label = "value of call option")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -843,7 +843,7 @@ where the consol prices is high --- will eventually be visited.
 
 The reason is that $\beta=0.9$, so the future is discounted relatively rapidly
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -902,7 +902,7 @@ what is the equilibrium price of a cum-dividend asset?
 
 Consider the following primitives
 
-```{code-block} julia
+```{code-cell} julia
 n = 5
 P = fill(0.0125, n, n) + (0.95 - 0.0125)I
 s = [1.05, 1.025, 1.0, 0.975, 0.95]
@@ -966,7 +966,7 @@ Is one higher than the other?  Can you give intuition?
 
 ### Exercise 2
 
-```{code-block} julia
+```{code-cell} julia
 n = 5
 P = fill(0.0125, n, n) + (0.95 - 0.0125)I
 s = [0.95, 0.975, 1.0, 1.025, 1.05]  # state values
@@ -980,16 +980,16 @@ p_s = 150.0
 
 Next we'll create an instance of AssetPriceModel to feed into the functions.
 
-```{code-block} julia
+```{code-cell} julia
 ap = AssetPriceModel(β = β, mc = mc, γ = γ, g = x -> x)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 v = tree_price(ap)
 println("Lucas Tree Prices: $v\n")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -998,16 +998,16 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 v_consol = consol_price(ap, 1.0)
 println("Consol Bond Prices: $(v_consol)\n")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 w = call_option(ap, ζ, p_s)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1021,7 +1021,7 @@ end
 
 Here's a suitable function:
 
-```{code-block} julia
+```{code-cell} julia
 function finite_horizon_call_option(ap, ζ, p_s, k)
 
     # Simplify names, set up matrices
@@ -1045,7 +1045,7 @@ function finite_horizon_call_option(ap, ζ, p_s, k)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1055,7 +1055,7 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 lines = []
 labels = []
 for k in [5, 25]
@@ -1066,7 +1066,7 @@ end
 plot(lines, labels = reshape(labels, 1, length(labels)))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

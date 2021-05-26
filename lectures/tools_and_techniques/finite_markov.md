@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (mc)=
@@ -48,7 +48,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using Distributions, Plots, Printf, QuantEcon, Random
 gr(fmt = :png);
@@ -227,14 +227,14 @@ In order to implement this simulation procedure, we need a method for generating
 
 For this task we'll use a Categorical random variable (i.e. a discrete random variable with assigned probabilities)
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 d = Categorical([0.5, 0.3, 0.2]) # 3 discrete states
 @show rand(d, 5)
 @show supertype(typeof(d))
@@ -249,7 +249,7 @@ We'll write our code as a function that takes the following three arguments
 * An initial state `init`
 * A positive integer `sample_size` representing the length of the time series the function should return
 
-```{code-block} julia
+```{code-cell} julia
 function mc_sample_path(P; init = 1, sample_size = 1000)
     @assert size(P)[1] == size(P)[2] # square required
     N = size(P)[1] # should be square
@@ -287,20 +287,20 @@ As we'll see later, for a long series drawn from `P`, the fraction of the sample
 
 If you run the following code you should get roughly that answer
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);  # for result reproducibility
 ```
 
-```{code-block} julia
+```{code-cell} julia
 P = [0.4 0.6; 0.2 0.8]
 X = mc_sample_path(P, sample_size = 100_000); # note 100_000 = 100000
 μ_1 = count(X .== 1)/length(X) # .== broadcasts test for equality. Could use mean(X .== 1)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -316,21 +316,21 @@ As discussed above, [QuantEcon.jl](http://quantecon.org/quantecon-jl) has routin
 
 Here's an illustration using the same P as the preceding example
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);  # For reproducibility
 ```
 
-```{code-block} julia
+```{code-cell} julia
 P = [0.4 0.6; 0.2 0.8];
 mc = MarkovChain(P)
 X = simulate(mc, 100_000);
 μ_2 = count(X .== 1)/length(X) # or mean(x -> x == 1, X)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -349,20 +349,20 @@ These state values can be integers, floats, or even strings.
 
 The following code illustrates
 
-```{code-block} julia
+```{code-cell} julia
 mc = MarkovChain(P, ["unemployed", "employed"])
 simulate(mc, 4, init = 1) # start at state 1
 ```
 
-```{code-block} julia
+```{code-cell} julia
 simulate(mc, 4, init = 2) # start at state 2
 ```
 
-```{code-block} julia
+```{code-cell} julia
 simulate(mc, 4) # start with randomly chosen initial condition
 ```
 
-```{code-block} julia
+```{code-cell} julia
 simulate_indices(mc, 4)
 ```
 
@@ -569,13 +569,13 @@ reach any state from any other state eventually.
 
 We can also test this using [QuantEcon.jl](http://quantecon.org/quantecon-jl)'s MarkovChain class
 
-```{code-block} julia
+```{code-cell} julia
 P = [0.9 0.1 0.0; 0.4 0.4 0.2; 0.1 0.1 0.8];
 mc = MarkovChain(P)
 is_irreducible(mc)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -594,13 +594,13 @@ This stochastic matrix is not irreducible, since, for example, rich is not acces
 
 Let's confirm this
 
-```{code-block} julia
+```{code-cell} julia
 P = [1.0 0.0 0.0; 0.1 0.8 0.1; 0.0 0.2 0.8];
 mc = MarkovChain(P);
 is_irreducible(mc)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -611,7 +611,7 @@ end
 
 We can also determine the "communication classes," or the sets of communicating states (where communication refers to a nonzero probability of moving in each direction).
 
-```{code-block} julia
+```{code-cell} julia
 communication_classes(mc)
 ```
 
@@ -633,13 +633,13 @@ Here's a trivial example with three states
 
 The chain cycles with period 3:
 
-```{code-block} julia
+```{code-cell} julia
 P = [0 1 0; 0 0 1; 1 0 0];
 mc = MarkovChain(P);
 period(mc)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -667,7 +667,7 @@ For example, the stochastic matrix associated with the transition probabilities 
 
 We can confirm that the stochastic matrix is periodic as follows
 
-```{code-block} julia
+```{code-cell} julia
 P = zeros(4, 4);
 P[1, 2] = 1;
 P[2, 1] = P[2, 3] = 0.5;
@@ -677,7 +677,7 @@ mc = MarkovChain(P);
 period(mc)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -687,11 +687,11 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 is_aperiodic(mc)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -709,7 +709,7 @@ As seen in {eq}`fin_mc_fr`, we can shift probabilities forward one unit of time 
 
 Some distributions are invariant under this updating process --- for example,
 
-```{code-block} julia
+```{code-cell} julia
 P = [.4 .6; .2 .8];
 ψ = [0.25, 0.75];
 ψ' * P
@@ -806,7 +806,7 @@ Hence we need to impose the restriction that the solution must be a probability 
 
 A suitable algorithm is implemented in [QuantEcon.jl](http://quantecon.org/quantecon-jl) --- the next code block illustrates
 
-```{code-block} julia
+```{code-cell} julia
 P = [.4 .6; .2 .8];
 mc = MarkovChain(P);
 stationary_distributions(mc)
@@ -825,7 +825,7 @@ This adds considerable weight to our interpretation of $\psi^*$ as a stochastic 
 
 The convergence in the theorem is illustrated in the next figure
 
-```{code-block} julia
+```{code-cell} julia
 P = [0.971 0.029 0.000
      0.145 0.778 0.077
      0.000 0.508 0.492] # stochastic matrix
@@ -853,7 +853,7 @@ plt = scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colo
 plot!(plt, camera = (45,45))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1232,14 +1232,14 @@ $P$ as described above.
 Compute the fraction of time that the worker spends unemployed, and compare it
 to the stationary probability.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);  # For reproducibility
 ```
 
-```{code-block} julia
+```{code-cell} julia
 α = 0.1 # probability of getting hired
 β = 0.1 # probability of getting fired
 N = 10_000
@@ -1260,7 +1260,7 @@ plot(y_vals, color = [:blue :green], fillrange = 0, fillalpha = 0.1,
      ylims = (-0.25, 0.25), label = reshape(labels, 1, length(labels)))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1272,7 +1272,7 @@ end
 
 ### Exercise 2
 
-```{code-block} julia
+```{code-cell} julia
 web_graph_data = sort(Dict('a' => ['d', 'f'],
                            'b' => ['j', 'k', 'm'],
                            'c' => ['c', 'g', 'j', 'm'],
@@ -1289,7 +1289,7 @@ web_graph_data = sort(Dict('a' => ['d', 'f'],
                            'n' => ['c', 'j', 'm']))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 nodes = keys(web_graph_data)
 n = length(nodes)
 # create adjacency matrix of links (Q[i, j] = true for link, false otherwise)
@@ -1310,7 +1310,7 @@ println("Rankings\n ***")
 sort(collect(ranked_pages), by = x -> x[2], rev = true) # print sorted
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

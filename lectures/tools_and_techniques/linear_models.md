@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (lssm)=
@@ -60,7 +60,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -1224,21 +1224,21 @@ the bars are at dates 10, 50 and 75.
 
 ## Solutions
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon, Plots
 gr(fmt=:png);
 ```
 
 ### Exercise 1
 
-```{code-block} julia
+```{code-cell} julia
 ϕ0, ϕ1, ϕ2 = 1.1, 0.8, -0.8
 
 A = [1.0   0.0   0
@@ -1255,7 +1255,7 @@ plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
 plot!(xlabel="time", ylabel = "y_t", legend = :none)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1267,7 +1267,7 @@ end
 
 ### Exercise 2
 
-```{code-block} julia
+```{code-cell} julia
 using Random
 Random.seed!(42) # For deterministic results.
 
@@ -1291,7 +1291,7 @@ plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
 plot!(xlabel="time", ylabel = "y_t", legend = :none)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1303,14 +1303,14 @@ end
 
 ### Exercise 3
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
 σ = 0.1
 
@@ -1351,7 +1351,7 @@ plot!(pop_means, color = :green, linewidth = 2, label = "G mu_t")
 plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = "y_t", legendfont = font(12))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1365,14 +1365,14 @@ end
 
 ### Exercise 4
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
 σ = 0.1
 
@@ -1417,7 +1417,7 @@ plot!(ylims=(ymin, ymax), ylabel = "y_t", xticks =[], yticks = ymin:0.2:ymax)
 plot!(annotations = [(T0+1, -0.55, "T");(T1+1, -0.55, "T'");(T2+1, -0.55, "T''")])
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

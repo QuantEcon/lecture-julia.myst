@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (lqc)=
@@ -636,27 +636,27 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using Plots, Plots.PlotMeasures, QuantEcon
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # model parameters
 r = 0.05
 β = 1 / (1 + r)
@@ -692,7 +692,7 @@ p = plot([assets, c, zeros(T + 1), income, cumsum(income .- μ)],
          bottom_margin = 20mm, size = (600, 600))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -729,14 +729,14 @@ For example, let's increase $\beta$ from $1 / (1 + r) \approx 0.952$ to $0.96$ w
 This consumer is slightly more patient than the last one, and hence puts
 relatively more weight on later consumption values
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [output_scroll]
 ---
@@ -1305,7 +1305,7 @@ $p(t) = m_1 t + m_2 t^2$ has an inverted U shape with
 - $p(0) = 0, p(T/2) = \mu$, and
 - $p(T) = 0$.
 
-```{code-block} julia
+```{code-cell} julia
 # model parameters
 r = 0.05
 β = 1 / (1 + r)
@@ -1347,7 +1347,7 @@ p1 = plot(Vector[income, ap, c, zeros(T + 1)],
           bottom_margin = 20mm, size = (600, 600))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1363,7 +1363,7 @@ income over working life followed by a fixed retirement income. The
 model is solved by combining two LQ programming problems as described in
 the lecture.
 
-```{code-block} julia
+```{code-cell} julia
 # model parameters
 r = 0.05
 β = 1/(1 + r)
@@ -1441,7 +1441,7 @@ p2 = plot([income, assets, c, zeros(T + 1)],
           bottom_margin = 20mm, size = (600, 600))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1487,7 +1487,7 @@ $$
 
 Our solution code is
 
-```{code-block} julia
+```{code-cell} julia
 # model parameters
 a0 = 5.0
 a1 = 0.5
@@ -1527,7 +1527,7 @@ p3 = plot(eachindex(q), [q̄ q],
           size = (700, 500))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

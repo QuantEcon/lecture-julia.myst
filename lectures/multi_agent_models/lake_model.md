@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (lake_model)=
@@ -199,7 +199,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -208,18 +208,18 @@ using Distributions, Expectations, NLsolve, Parameters, Plots
 using QuantEcon, Roots, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 LakeModel = @with_kw (λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
 
 function transition_matrices(lm)
@@ -263,29 +263,29 @@ end
 
 Let's observe these matrices for the baseline model
 
-```{code-block} julia
+```{code-cell} julia
 lm = LakeModel()
 A, Â = transition_matrices(lm)
 A
 ```
 
-```{code-block} julia
+```{code-cell} julia
 Â
 ```
 
 And a revised model
 
-```{code-block} julia
+```{code-cell} julia
 lm = LakeModel(α = 2.0)
 A, Â = transition_matrices(lm)
 A
 ```
 
-```{code-block} julia
+```{code-cell} julia
 Â
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -299,7 +299,7 @@ end
 
 Let's run a simulation under the default parameters (see above) starting from $X_0 = (12, 138)$
 
-```{code-block} julia
+```{code-cell} julia
 lm = LakeModel()
 N_0 = 150      # population
 e_0 = 0.92     # initial employment rate
@@ -323,7 +323,7 @@ plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, lw = 2, grid = t
 plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -348,14 +348,14 @@ We also have $x_t \to \bar x$ as $t \to \infty$ provided that the remaining eige
 
 This is the case for our default parameters:
 
-```{code-block} julia
+```{code-cell} julia
 lm = LakeModel()
 A, Â = transition_matrices(lm)
 e, f = eigvals(Â)
 abs(e), abs(f)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -367,7 +367,7 @@ end
 
 Let's look at the convergence of the unemployment and employment rate to steady state levels (dashed red line)
 
-```{code-block} julia
+```{code-cell} julia
 lm = LakeModel()
 e_0 = 0.92     # initial employment rate
 u_0 = 1 - e_0  # initial unemployment rate
@@ -386,7 +386,7 @@ plot!(plt_emp, [xbar[2]], color=:red, linetype = :hline, linestyle = :dash, lw =
 plot(plt_unemp, plt_emp, layout = (2, 1), size=(700,500))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -486,11 +486,11 @@ MarkovChain type to investigate this.
 
 Let's plot the path of the sample averages over 5,000 periods
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon, Roots, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 lm = LakeModel(d = 0, b = 0)
 T = 5000                        # Simulation length
 
@@ -499,7 +499,7 @@ P = [(1 - λ)     λ
      α      (1 - α)]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 Random.seed!(42)
 mc = MarkovChain(P, [0; 1])     # 0=unemployed, 1=employed
 xbar = rate_steady_state(lm)
@@ -518,7 +518,7 @@ plot!(plt_emp, [xbar[2]], linetype = :hline, linestyle = :dash, color=:red, lw =
 plot(plt_unemp, plt_emp, layout = (2, 1), size=(700,500))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -636,7 +636,7 @@ Following {cite}`davis2006flow`, we set $\alpha$, the hazard rate of leaving emp
 
 We will make use of (with some tweaks) the code we wrote in the {doc}`McCall model lecture <../dynamic_programming/mccall_model>`, embedded below for convenience.
 
-```{code-block} julia
+```{code-cell} julia
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
                             iter = 2_000)
     @unpack α, β, σ, c, γ, w, E, u = mcm
@@ -673,7 +673,7 @@ end
 
 And the McCall object
 
-```{code-block} julia
+```{code-cell} julia
 # a default utility function
 u(c, σ) = c > 0 ? (c^(1 - σ) - 1) / (1 - σ) : -10e-6
 
@@ -691,7 +691,7 @@ McCallModel = @with_kw (α = 0.2,
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
 function of the unemployment compensation rate
 
-```{code-block} julia
+```{code-cell} julia
 # some global variables that will stay constant
 α = 0.013
 α_q = (1 - (1 - α)^3)
@@ -788,7 +788,7 @@ plt_welf = plot(title = "Welfare", c_vec, welfare_vec, color = :blue, lw = 2, al
 plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2,2), size = (800, 700))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -847,7 +847,7 @@ How long does the economy take to return to its original steady state?
 We begin by constructing an object containing the default parameters and assigning the
 steady state values to x0
 
-```{code-block} julia
+```{code-cell} julia
 lm = LakeModel()
 x0 = rate_steady_state(lm)
 println("Initial Steady State: $x0")
@@ -855,18 +855,18 @@ println("Initial Steady State: $x0")
 
 Initialize the simulation values
 
-```{code-block} julia
+```{code-cell} julia
 N0 = 100
 T = 50
 ```
 
 New legislation changes $\lambda$ to $0.2$
 
-```{code-block} julia
+```{code-cell} julia
 lm = LakeModel(λ = 0.2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 xbar = rate_steady_state(lm) # new steady state
 X_path = simulate_stock_path(lm, x0 * N0, T)
 x_path = simulate_rate_path(lm, x0, T)
@@ -875,7 +875,7 @@ println("New Steady State: $xbar")
 
 Now plot stocks
 
-```{code-block} julia
+```{code-cell} julia
 x1 = X_path[1, :]
 x2 = X_path[2, :]
 x3 = dropdims(sum(X_path, dims = 1), dims = 1)
@@ -890,7 +890,7 @@ plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, grid = true, lab
 plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -903,7 +903,7 @@ end
 
 And how the rates evolve
 
-```{code-block} julia
+```{code-cell} julia
 plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[1,:], color = :blue, grid = true,
                  label = "", bg_inside = :lightgrey)
 plot!(plt_unemp, [xbar[1]], linetype = :hline, linestyle = :dash, color =:red, label = "")
@@ -915,7 +915,7 @@ plot!(plt_emp, [xbar[2]], linetype = :hline, linestyle = :dash, color =:red, lab
 plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -938,12 +938,12 @@ For 20 periods the economy has a new entry rate into the labor market.
 Let's start off at the baseline parameterization and record the steady
 state
 
-```{code-block} julia
+```{code-cell} julia
 lm = LakeModel()
 x0 = rate_steady_state(lm)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -954,14 +954,14 @@ end
 
 Here are the other parameters:
 
-```{code-block} julia
+```{code-cell} julia
 b̂ = 0.003
 T̂ = 20
 ```
 
 Let's increase $b$ to the new value and simulate for 20 periods
 
-```{code-block} julia
+```{code-cell} julia
 lm = LakeModel(b=b̂)
 X_path1 = simulate_stock_path(lm, x0 * N0, T̂)   # simulate stocks
 x_path1 = simulate_rate_path(lm, x0, T̂)         # simulate rates
@@ -971,7 +971,7 @@ Now we reset $b$ to the original value and then, using the state
 after 20 periods for the new initial conditions, we simulate for the
 additional 30 periods
 
-```{code-block} julia
+```{code-cell} julia
 lm = LakeModel(b = 0.0124)
 X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T̂+1)    # simulate stocks
 x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T̂+1)     # simulate rates
@@ -979,12 +979,12 @@ x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T̂+1)     # simulate rate
 
 Finally we combine these two paths and plot
 
-```{code-block} julia
+```{code-cell} julia
 x_path = hcat(x_path1, x_path2[:, 2:end])  # note [2:] to avoid doubling period 20
 X_path = hcat(X_path1, X_path2[:, 2:end])
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x1 = X_path[1,:]
 x2 = X_path[2,:]
 x3 = dropdims(sum(X_path, dims = 1), dims = 1)
@@ -1003,7 +1003,7 @@ plot!(plt_labor, ylims = extrema(x3) .+ (-1, 1))
 plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1016,7 +1016,7 @@ end
 
 And the rates
 
-```{code-block} julia
+```{code-cell} julia
 plt_unemp = plot(title = "Unemployment Rate", 1:T, x_path[1,:], color = :blue, grid = true,
                  label = "", bg_inside = :lightgrey, lw = 2)
 plot!(plt_unemp, [x0[1]], linetype = :hline, linestyle = :dash, color =:red, label = "", lw = 2)
@@ -1028,7 +1028,7 @@ plot!(plt_emp, [x0[2]], linetype = :hline, linestyle = :dash, color =:red, label
 plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

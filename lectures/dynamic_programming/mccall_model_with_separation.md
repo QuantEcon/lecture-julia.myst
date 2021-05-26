@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (mccall_with_sep)=
@@ -48,7 +48,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -231,14 +231,14 @@ A proof can be obtained via the Banach contraction mapping theorem.
 
 Let's implement this iterative process
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Distributions, LinearAlgebra, Expectations, Parameters, NLsolve, Plots
 
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
@@ -289,7 +289,7 @@ Let's plot the approximate solutions $U$ and $V$ to see what they look like.
 
 We'll use the default parameterizations found in the code above.
 
-```{code-block} julia
+```{code-cell} julia
 # a default utility function
 u(c, σ) = (c^(1 - σ) - 1) / (1 - σ)
 
@@ -304,7 +304,7 @@ McCallModel = @with_kw (α = 0.2,
     dist = BetaBinomial(59, 600, 400)) # distribution over wage values
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # plots setting
 gr(fmt=:png);
 
@@ -315,7 +315,7 @@ U_vec = fill(U, length(mcm.w))
 plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = ["V" "U"])
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -412,7 +412,7 @@ Plot the reservation wage against the job offer rate $\gamma$.
 
 Use
 
-```{code-block} julia
+```{code-cell} julia
 γ_vals = range(0.05,  0.95, length = 25)
 ```
 
@@ -426,7 +426,7 @@ Using the solve_mccall_model function mentioned earlier in the lecture,
 we can create an array for reservation wages for different values of $c$,
 $\beta$ and $\alpha$ and plot the results like so
 
-```{code-block} julia
+```{code-cell} julia
 c_vals = range(2,  12, length = 25)
 
 models = [McCallModel(c = cval) for cval in c_vals]
@@ -444,12 +444,12 @@ plot(c_vals,
 
 Note that we could've done the above in one pass (which would be important if, for example, the parameter space was quite large).
 
-```{code-block} julia
+```{code-cell} julia
 w̄_vals = [solve_mccall_model(McCallModel(c = cval)).w̄ for cval in c_vals];
 # doesn't allocate new arrays for models and solutions
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -465,7 +465,7 @@ end
 
 Similar to above, we can plot $\bar w$ against $\gamma$ as follows
 
-```{code-block} julia
+```{code-cell} julia
 γ_vals = range(0.05,  0.95, length = 25)
 
 models = [McCallModel(γ = γval) for γval in γ_vals]
@@ -476,7 +476,7 @@ plot(γ_vals, w̄_vals, lw = 2, α = 0.7, xlabel = "job offer rate",
      ylabel = "reservation wage", label = "w̄ as a function of gamma")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

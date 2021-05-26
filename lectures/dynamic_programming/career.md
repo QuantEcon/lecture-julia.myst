@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (career)=
@@ -48,7 +48,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -152,14 +152,14 @@ Nice properties:
 Here's a figure showing the effect of different shape parameters when $n=50$.
 
 (beta-binom)=
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Plots, QuantEcon, Distributions
 gr(fmt=:png);
 
@@ -176,7 +176,7 @@ end
 plt
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -187,7 +187,7 @@ Implementation:
 
 The code for solving the DP problem described above is found below:
 
-```{code-block} julia
+```{code-cell} julia
 function CareerWorkerProblem(;β = 0.95,
                              B = 5.0,
                              N = 50,
@@ -274,7 +274,7 @@ value function and optimal policy respectively.
 
 Here's the value function
 
-```{code-block} julia
+```{code-cell} julia
 wp = CareerWorkerProblem()
 v_init = fill(100.0, wp.N, wp.N)
 func(x) = update_bellman(wp, x)
@@ -361,7 +361,7 @@ Now set `G_a = G_b = 100` and generate a new figure with these parameters.  Inte
 
 ### Exercise 1
 
-```{code-block} julia
+```{code-cell} julia
 wp = CareerWorkerProblem()
 
 function solve_wp(wp)
@@ -406,7 +406,7 @@ end
 plot(plot_array..., layout = (2,1))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -420,7 +420,7 @@ end
 
 The median for the original parameterization can be computed as follows
 
-```{code-block} julia
+```{code-cell} julia
 function gen_first_passage_time(optimal_policy)
     t = 0
     i = j = 1
@@ -445,7 +445,7 @@ end
 print(median(samples))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -458,7 +458,7 @@ To compute the median with $\beta=0.99$ instead of the default value $\beta=0.95
 
 The medians are subject to randomness, but should be about 7 and 14 respectively. Not surprisingly, more patient workers will wait longer to settle down to their final job.
 
-```{code-block} julia
+```{code-cell} julia
 wp2 = CareerWorkerProblem(β=0.99)
 
 v2, optimal_policy2 = solve_wp(wp2)
@@ -470,7 +470,7 @@ end
 print(median(samples2))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -483,7 +483,7 @@ end
 
 Here's the code to reproduce the original figure
 
-```{code-block} julia
+```{code-cell} julia
 wp = CareerWorkerProblem();
 v, optimal_policy = solve_wp(wp)
 
@@ -501,7 +501,7 @@ annotate!([(4.0,4.5, text("stay put", 14, :center))])
 
 Now, we need only swap out for the new parameters
 
-```{code-block} julia
+```{code-cell} julia
 wp = CareerWorkerProblem(G_a=100.0, G_b=100.0); # use new params
 v, optimal_policy = solve_wp(wp)
 

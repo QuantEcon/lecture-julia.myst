@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (odu)=
@@ -159,14 +159,14 @@ Following  section 6.6 of {cite}`Ljungqvist2012`, our baseline parameterization 
 
 With $w_m = 2$, the densities $f$ and $g$ have the following shape
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test # At the head of every lecture.
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using Distributions, Plots, QuantEcon, Interpolations, Parameters
 
@@ -181,7 +181,7 @@ plot(x, pdf.(G, x/w_max)/w_max, label="g")
 plot!(x, pdf.(F, x/w_max)/w_max, label="f")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -217,7 +217,7 @@ We begin by solving via value function iteration (VFI), which is natural but ult
 The code is as follows.
 
 (odu_vfi_code)=
-```{code-block} julia
+```{code-cell} julia
 # use key word argment
 function SearchProblem(;β = 0.95, c = 0.6, F_a = 1, F_b = 1,
                        G_a = 3, G_b = 1.2, w_max = 2.0,
@@ -332,7 +332,7 @@ Before explaining it let's look at solutions computed from value function iterat
 
 Here's the value function:
 
-```{code-block} julia
+```{code-cell} julia
 # Set up the problem and initial guess, solve by VFI
 sp = SearchProblem(;w_grid_size=100, π_grid_size=100)
 v_init = fill(sp.c / (1 - sp.β), sp.n_w, sp.n_π)
@@ -364,7 +364,7 @@ plot_value_function()
 (odu_pol_vfi)=
 The optimal policy:
 
-```{code-block} julia
+```{code-cell} julia
 function plot_policy_function(;w_plot_grid_size = 100,
                               π_plot_grid_size = 100)
     π_plot_grid = range(0.001,  0.99, length = π_plot_grid_size)
@@ -561,7 +561,7 @@ a guess of the reservation wage function. You should find that the run
 time is much shorter than that of the value function approach in
 `examples/odu_vfi_plots.jl`.
 
-```{code-block} julia
+```{code-cell} julia
 sp = SearchProblem(π_grid_size = 50)
 
 ϕ_init = ones(sp.n_π)
@@ -587,7 +587,7 @@ unemployment rate spikes.
 
 The code takes a few minutes to run.
 
-```{code-block} julia
+```{code-cell} julia
 # Determinism and random objects.
 using Random
 Random.seed!(42)

@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (lqramsey)=
@@ -81,7 +81,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -581,14 +581,14 @@ The following code provides functions for
 
 Description and clarifications are given below
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon, Plots, LinearAlgebra, Parameters
 gr(fmt = :png);
 
@@ -848,7 +848,7 @@ with $\rho = 0.7$, $\mu_g = 0.35$ and $C_g = \mu_g \sqrt{1 - \rho^2} / 10$.
 
 Here's the code
 
-```{code-block} julia
+```{code-cell} julia
 # for reproducible results
 using Random
 Random.seed!(42)
@@ -871,7 +871,7 @@ path = compute_paths(econ, T)
 gen_fig_1(path)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -893,7 +893,7 @@ The legends on the figures indicate the variables being tracked.
 Most obvious from the figure is tax smoothing in the sense that tax revenue is
 much less variable than government expenditure
 
-```{code-block} julia
+```{code-cell} julia
 gen_fig_2(path)
 ```
 
@@ -909,14 +909,14 @@ See the original [manuscript](https://lectures.quantecon.org/_downloads/firenze.
 
 Our second example adopts a discrete Markov specification for the exogenous process
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # Parameters
 β = 1 / 1.05
 P = [0.8 0.2 0.0
@@ -943,7 +943,7 @@ path = compute_paths(econ, T)
 gen_fig_1(path)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -963,7 +963,7 @@ end
 
 The call `gen_fig_2(path)` generates
 
-```{code-block} julia
+```{code-cell} julia
 gen_fig_2(path)
 ```
 
@@ -992,14 +992,14 @@ Produce the corresponding figures.
 
 ## Solutions
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -1024,7 +1024,7 @@ T = 50
 path = compute_paths(econ, T)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1039,11 +1039,11 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 gen_fig_1(path)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 gen_fig_2(path)
 ```
 

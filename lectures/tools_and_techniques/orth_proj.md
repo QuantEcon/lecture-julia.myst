@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (orth_proj)=
@@ -745,18 +745,18 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test # Put this before any code in the lecture.
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function gram_schmidt(X)
 
     U = similar(X, Float64) # for robustness
@@ -782,7 +782,7 @@ end
 
 Here are the arrays we'll work with
 
-```{code-block} julia
+```{code-cell} julia
 y = [1, 3, -3]
 X = [1 0; 0 -6; 2 2];
 ```
@@ -790,11 +790,11 @@ X = [1 0; 0 -6; 2 2];
 First let's do ordinary projection of $y$ onto the basis spanned
 by the columns of $X$.
 
-```{code-block} julia
+```{code-cell} julia
 Py1 = X * inv(X'X) * X' * y
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -805,18 +805,18 @@ end
 
 Now let's orthogonalize first, using Gram--Schmidt:
 
-```{code-block} julia
+```{code-cell} julia
 U = gram_schmidt(X)
 ```
 
 Now we can project using the orthonormal basis and see if we get the
 same thing:
 
-```{code-block} julia
+```{code-cell} julia
 Py2 = U * U' * y
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -828,16 +828,16 @@ end
 The result is the same. To complete the exercise, we get an orthonormal
 basis by QR decomposition and project once more.
 
-```{code-block} julia
+```{code-cell} julia
 Q, R = qr(X)
 Q = Matrix(Q)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 Py3 = Q * Q' * y
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

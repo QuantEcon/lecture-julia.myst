@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (tools_editors)=
@@ -50,17 +50,17 @@ Here, we'll consider some more advanced features.
 
 Hitting `;` brings you into shell mode, which lets you run bash commands (PowerShell on Windows)
 
-```{code-block} julia
+```{code-cell} julia
 ; pwd
 ```
 
 You can also use Julia variables from shell mode
 
-```{code-block} julia
+```{code-cell} julia
 x = 2
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ; echo $x
 ```
 
@@ -78,7 +78,7 @@ Hitting `]` brings you into package mode.
 
 You can get a full list of package mode commands by running
 
-```{code-block} julia
+```{code-cell} julia
 ] ?
 ```
 
@@ -226,7 +226,7 @@ The "workspace" pane is a snapshot of currently-defined objects.
 
 For example, if we define an object in the REPL
 
-```{code-block} julia
+```{code-cell} julia
 x = 2
 ```
 
@@ -281,25 +281,25 @@ Essentially, an environment is a dependency tree for a project, or a "frame of m
 
 * We can see the default (`v1.1`) environment as such
 
-```{code-block} julia
+```{code-cell} julia
 ] st
 ```
 
 * We can also create and activate a new environment
 
-```{code-block} julia
+```{code-cell} julia
 ] generate ExampleEnvironment
 ```
 
 * And go to it
 
-```{code-block} julia
+```{code-cell} julia
 ; cd ExampleEnvironment
 ```
 
 * To activate the directory, simply
 
-```{code-block} julia
+```{code-cell} julia
 ] activate .
 ```
 
@@ -307,7 +307,7 @@ where "." stands in for the "present working directory".
 
 * Let's make some changes to this
 
-```{code-block} julia
+```{code-cell} julia
 ] add Expectations Parameters
 ```
 
@@ -330,7 +330,7 @@ Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
 
 We can also
 
-```{code-block} julia
+```{code-cell} julia
 ] precompile
 ```
 
@@ -340,7 +340,7 @@ You can think of the TOML as specifying demands for resources, which are supplie
 
 * To return to the default Julia environment, simply
 
-```{code-block} julia
+```{code-cell} julia
 ] activate
 ```
 
@@ -348,11 +348,11 @@ without any arguments.
 
 * Lastly, let's clean up
 
-```{code-block} julia
+```{code-cell} julia
 ; cd ..
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ; rm -rf ExampleEnvironment
 ```
 

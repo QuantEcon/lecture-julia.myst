@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (perm_income)=
@@ -52,7 +52,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -474,14 +474,14 @@ Defining assets as $-b_t$, we see that assets are just the cumulative sum of una
 
 The next figure shows a typical realization with $r = 0.05$, $\mu = 1$, and $\sigma = 0.15$
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Plots, Random
 gr(fmt=:png);
 
@@ -513,7 +513,7 @@ plot!(xlabel = "Time", linewidth = 2, alpha = 0.7,
       xlims = (0, T), legend = :bottom)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -528,14 +528,14 @@ Observe that consumption is considerably smoother than income.
 
 The figure below shows the consumption paths of 250 consumers with independent income streams
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 time_paths = []
 n = 250
 
@@ -547,7 +547,7 @@ p = plot(time_paths, linewidth = 0.8, alpha=0.7, legend = :none)
 plot!(xlabel = "Time", ylabel = "Consumption", xlims = (0, T))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -834,7 +834,7 @@ This confirms that none of $\sigma_1 w_{1t}$ is saved, while all of $\sigma_2 w_
 The next figure illustrates these very different reactions to transitory and
 permanent income shocks using impulse-response functions
 
-```{code-block} julia
+```{code-cell} julia
 const r = 0.05
 const β = 1.0 / (1.0 + r)
 const T2 = 20  # Time horizon
@@ -877,7 +877,7 @@ plot!(title = reshape(t, 1, length(t)), xlabel = "Time", ylims = (-L, L),
 vline!([S S], color = :black, layout = (2, 1), label = "")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

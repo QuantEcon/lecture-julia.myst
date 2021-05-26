@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (julia_by_example)=
@@ -99,7 +99,7 @@ The careful selection of package versions is crucial for reproducibility, as oth
 
 After the installation and activation, `using` provides a way to say that a particular code or notebook will use the package.
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -108,13 +108,13 @@ using LinearAlgebra, Statistics
 
 Some functions are built into the base Julia, such as `randn`, which returns a single draw from a normal distibution with mean 0 and variance 1 if given no parameters.
 
-```{code-block} julia
+```{code-cell} julia
 randn()
 ```
 
 Other functions require importing all of the names from an external library
 
-```{code-block} julia
+```{code-cell} julia
 using Plots
 gr(fmt=:png); # setting for easier display in jupyter notebooks
 
@@ -144,11 +144,11 @@ In the above case, the `ϵ` and many other symbols can be typed in most Julia ed
 
 The return type is one of the most fundamental Julia data types: an array
 
-```{code-block} julia
+```{code-cell} julia
 typeof(ϵ)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ϵ[1:5]
 ```
 
@@ -197,7 +197,7 @@ In Julia v0.7 and up, the rules for variables accessed in `for` and `while` loop
 
 Starting with the most direct version, and pretending we are in a world where `randn` can only return a single value
 
-```{code-block} julia
+```{code-cell} julia
 # poor style
 n = 100
 ϵ = zeros(n)
@@ -222,7 +222,7 @@ While this example successfully fills in `ϵ` with the correct values, it is ver
 
 To fix this, use `eachindex`
 
-```{code-block} julia
+```{code-cell} julia
 # better style
 n = 100
 ϵ = zeros(n)
@@ -237,7 +237,7 @@ While iterators are memory efficient because the elements are generated on the f
 
 In Julia you can also loop directly over arrays themselves, like so
 
-```{code-block} julia
+```{code-cell} julia
 ϵ_sum = 0.0 # careful to use 0.0 here, instead of 0
 m = 5
 for ϵ_val in ϵ[1:m]
@@ -250,7 +250,7 @@ where `ϵ[1:m]` returns the elements of the vector at indices `1` to `m`.
 
 Of course, in Julia there are built in functions to perform this calculation which we can compare against
 
-```{code-block} julia
+```{code-cell} julia
 ϵ_mean ≈ mean(ϵ[1:m])
 ϵ_mean ≈ sum(ϵ[1:m]) / m
 ```
@@ -266,7 +266,7 @@ For the sake of the exercise, let's go back to the `for` loop but restructure ou
 
 To make things more interesting, instead of directly plotting the draws from the distribution, let's plot the squares of these draws
 
-```{code-block} julia
+```{code-cell} julia
 # poor style
 function generatedata(n)
     ϵ = zeros(n)
@@ -288,7 +288,7 @@ Here
 
 Let us make this example slightly better by "remembering" that `randn` can return a vectors.
 
-```{code-block} julia
+```{code-cell} julia
 # still poor style
 function generatedata(n)
     ϵ = randn(n) # use built in function
@@ -310,7 +310,7 @@ To be clear, unlike Python, R, and MATLAB (to a lesser extent), the reason to dr
 
 Loops of this sort are at least as efficient as vectorized approach in compiled languages like Julia, so use a for loop if you think it makes the code more clear.
 
-```{code-block} julia
+```{code-cell} julia
 # better style
 function generatedata(n)
     ϵ = randn(n) # use built in function
@@ -321,7 +321,7 @@ data = generatedata(5)
 
 We can even drop the `function` if we define it on a single line.
 
-```{code-block} julia
+```{code-cell} julia
 # good style
 generatedata(n) = randn(n).^2
 data = generatedata(5)
@@ -329,7 +329,7 @@ data = generatedata(5)
 
 Finally, we can broadcast any function, where squaring is only a special case.
 
-```{code-block} julia
+```{code-cell} julia
 # good style
 f(x) = x^2 # simple square function
 generatedata(n) = f.(randn(n)) # uses broadcast for some function `f`
@@ -338,7 +338,7 @@ data = generatedata(5)
 
 As a final -- abstract -- approach, we can make the `generatedata` function able to generically apply to a function.
 
-```{code-block} julia
+```{code-cell} julia
 generatedata(n, gen) = gen.(randn(n)) # uses broadcast for some function `gen`
 
 f(x) = x^2 # simple square function
@@ -351,7 +351,7 @@ High degrees of abstraction and generality, e.g. passing in a function `f` in th
 
 For this particular case, the clearest and most general solution is probably the simplest.
 
-```{code-block} julia
+```{code-cell} julia
 # direct solution with broadcasting, and small user-defined function
 n = 100
 f(x) = x^2
@@ -377,7 +377,7 @@ In doing so we'll make use of the `Distributions` package, which we assume was i
 
 Here's the code
 
-```{code-block} julia
+```{code-cell} julia
 using Distributions
 
 function plothistogram(distribution, n)
@@ -410,7 +410,7 @@ This looks like something of a mystery.
 
 The function `rand()` is defined in the base library such that `rand(n)` returns `n` uniform random variables on $[0, 1)$.
 
-```{code-block} julia
+```{code-cell} julia
 rand(3)
 ```
 
@@ -486,7 +486,7 @@ To implement the iteration in {eq}`fixed_point_naive`, we start by solving this 
 
 The syntax for the while loop contains no surprises, and looks nearly identical to a MATLAB implementation.
 
-```{code-block} julia
+```{code-cell} julia
 # poor style
 p = 1.0 # note 1.0 rather than 1
 β = 0.9
@@ -517,7 +517,7 @@ The other new function is the `println` with the string interpolation, which spl
 
 An alternative approach is to use a `for` loop, and check for convergence in each iteration.
 
-```{code-block} julia
+```{code-cell} julia
 # setup the algorithm
 v_old = v_iv
 normdiff = Inf
@@ -541,7 +541,7 @@ The new feature there is `break` , which leaves a `for` or `while` loop.
 
 The first problem with this setup is that it depends on being sequentially run -- which can be easily remedied with a function.
 
-```{code-block} julia
+```{code-cell} julia
 # better, but still poor style
 function v_fp(β, ρ, v_iv, tolerance, maxiter)
     # setup the algorithm
@@ -578,7 +578,7 @@ The chief issue is that the algorithm (finding a fixed point) is reusable and ge
 
 A key feature of languages like Julia, is the ability to efficiently handle functions passed to other functions.
 
-```{code-block} julia
+```{code-cell} julia
 # better style
 function fixedpointmap(f, iv, tolerance, maxiter)
     # setup the algorithm
@@ -613,7 +613,7 @@ Much closer, but there are still hidden bugs if the user orders the settings or 
 
 To enable this, Julia has two features:  named function parameters, and named tuples
 
-```{code-block} julia
+```{code-cell} julia
 # good style
 function fixedpointmap(f; iv, tolerance=1E-7, maxiter=1000)
     # setup the algorithm
@@ -647,7 +647,7 @@ The return type of the function also has named fields, `value, normdiff,` and `i
 
 To show the flexibilty of this code, we can use it to find a fixed point of the non-linear logistic equation, $x = f(x)$ where $f(x) := r x (1-x)$.
 
-```{code-block} julia
+```{code-cell} julia
 r = 2.0
 f(x) = r * x * (1 - x)
 
@@ -659,7 +659,7 @@ println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.i
 
 But best of all is to avoid writing code altogether.
 
-```{code-block} julia
+```{code-cell} julia
 # best style
 using NLsolve
 
@@ -677,7 +677,7 @@ Since the `NLsolve` library only accepts vector based inputs, we needed to make 
 
 While a key benefit of using a package is that the code is clearer, and the implementation is tested, by using an orthogonal library we also enable performance improvements.
 
-```{code-block} julia
+```{code-cell} julia
 # best style
 p = 1.0
 β = 0.9
@@ -707,7 +707,7 @@ As an example, consider if we want to solve the model with a higher-precision, a
 
 In Julia, this number can be calculated as
 
-```{code-block} julia
+```{code-cell} julia
 eps()
 ```
 
@@ -715,7 +715,7 @@ For many cases, this is sufficient precision -- but consider that in iterative a
 
 The only change we will need to our model in order to use a different floating point type is to call the function with an arbitrary precision floating point, `BigFloat`, for the initial value.
 
-```{code-block} julia
+```{code-cell} julia
 # use arbitrary precision floating points
 p = 1.0
 β = 0.9
@@ -737,7 +737,7 @@ The above example can be extended to multivariate maps without any modifications
 
 Using our own, homegrown iteration and simply passing in a bivariate map:
 
-```{code-block} julia
+```{code-cell} julia
 p = [1.0, 2.0]
 β = 0.9
 iv = [0.8, 2.0]
@@ -750,7 +750,7 @@ println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.i
 
 This also works without any modifications with the `fixedpoint` library function.
 
-```{code-block} julia
+```{code-cell} julia
 using NLsolve
 
 p = [1.0, 2.0, 0.1]
@@ -765,7 +765,7 @@ println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.ze
 
 Finally, to demonstrate the importance of composing different libraries, use a `StaticArrays.jl` type, which provides an efficient implementation for small arrays and matrices.
 
-```{code-block} julia
+```{code-cell} julia
 using NLsolve, StaticArrays
 p = @SVector [1.0, 2.0, 0.1]
 β = 0.9
@@ -902,7 +902,7 @@ until $| x^{n+1} - x^n|$ is below a tolerance
 
 For those impatient to use more advanced features of Julia, implement a version of Exercise 8(a) where `f_prime` is calculated with auto-differentiation.
 
-```{code-block} julia
+```{code-cell} julia
 using ForwardDiff
 
 # operator to get the derivative of this function using AD
@@ -922,7 +922,7 @@ f(0.1), f_prime(0.1)
 
 ### Exercise 1
 
-```{code-block} julia
+```{code-cell} julia
 function factorial2(n)
     k = 1
     for i in 1:n
@@ -934,13 +934,13 @@ end
 factorial2(4)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 factorial2(4) == factorial(4) # built-in function
 ```
 
 ### Exercise 2
 
-```{code-block} julia
+```{code-cell} julia
 function binomial_rv(n, p)
     count = 0
     U = rand(n)
@@ -976,7 +976,7 @@ by $r^2 = (1/2)^2 = 1/4$ gives an estimate of $\pi$.
 We estimate the area by sampling bivariate uniforms and looking at the
 fraction that fall into the unit circle.
 
-```{code-block} julia
+```{code-cell} julia
 n = 1000000
 count = 0
 for i in 1:n
@@ -994,7 +994,7 @@ print(area_estimate * 4)  # dividing by radius**2
 
 ### Exercise 4
 
-```{code-block} julia
+```{code-cell} julia
 payoff = 0
 count = 0
 
@@ -1018,17 +1018,17 @@ println("\npayoff = $payoff")
 We can simplify this somewhat using the **ternary operator**. Here are
 some examples
 
-```{code-block} julia
+```{code-cell} julia
 a = 1  < 2 ? "foo" : "bar"
 ```
 
-```{code-block} julia
+```{code-cell} julia
 a = 1 > 2 ? "foo" : "bar"
 ```
 
 Using this construction:
 
-```{code-block} julia
+```{code-cell} julia
 payoff = 0.0
 count = 0.0
 
@@ -1049,7 +1049,7 @@ println("\npayoff = $payoff")
 
 Here's one solution
 
-```{code-block} julia
+```{code-cell} julia
 using Plots
 gr(fmt=:png); # setting for easier display in jupyter notebooks
 α = 0.9
@@ -1064,7 +1064,7 @@ plot(x)
 
 ### Exercise 6
 
-```{code-block} julia
+```{code-cell} julia
 αs = [0.0, 0.8, 0.98]
 n = 200
 p = plot() # naming a plot to add to
@@ -1084,7 +1084,7 @@ p # display plot
 
 As a hint, notice the following pattern for finding the number of draws of a uniform random number until it is below a given threshold
 
-```{code-block} julia
+```{code-cell} julia
 function drawsuntilthreshold(threshold; maxdraws=100)
     for i in 1:maxdraws
         val = rand()
@@ -1100,7 +1100,7 @@ draws = drawsuntilthreshold(0.2, maxdraws=100)
 
 Additionally, it is sometimes convenient to add to just push numbers onto an array without indexing it directly
 
-```{code-block} julia
+```{code-cell} julia
 vals = zeros(0) # empty vector
 
 for i in 1:100

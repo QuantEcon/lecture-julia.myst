@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (perm_income_cons)=
@@ -73,7 +73,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -325,14 +325,14 @@ In what follows we set it equal to unity.
 
 First we create the objects for the optimal linear regulator
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon, LinearAlgebra
 using Plots
 gr(fmt=:png);
@@ -369,7 +369,7 @@ mxbewley = mxo
 sxbewley = sxo
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -380,7 +380,7 @@ end
 
 The next step is to create the matrices for the LQ system
 
-```{code-block} julia
+```{code-cell} julia
 A12 = zeros(3,1)
 ALQ_l = hcat(A, A12)
 ALQ_r = [0 -R 0 R]
@@ -399,7 +399,7 @@ CLQ = [0.0; σ; 0.0; 0.0]
 
 Let's print these out and have a look at them
 
-```{code-block} julia
+```{code-cell} julia
 println("A = $ALQ")
 println("B = $BLQ")
 println("R = $RLQ")
@@ -408,19 +408,19 @@ println("Q = $QLQ")
 
 Now create the appropriate instance of an LQ model
 
-```{code-block} julia
+```{code-cell} julia
 LQPI = QuantEcon.LQ(QLQ, RLQ, ALQ, BLQ, CLQ, bet=β_LQ);
 ```
 
 We'll save the implied optimal policy function soon and compare with what we get by
 employing an alternative solution method.
 
-```{code-block} julia
+```{code-cell} julia
 P, F, d = stationary_values(LQPI)    #  compute value function and decision rule
 ABF = ALQ - BLQ * F    #  form closed loop system
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -453,7 +453,7 @@ $$
 
 Now we'll apply the formulas in this system
 
-```{code-block} julia
+```{code-cell} julia
 # Use the above formulas to create the optimal policies for b_{t+1} and c_t
 b_pol = G * (inv(I - β * A)) * (A - I)
 c_pol = (1 - β) * (G * inv(I - β * A))
@@ -478,13 +478,13 @@ G_LSS = hcat(G_LSS1, G_LSS2)
 
 A_LSS calculated as we have here should equal ABF calculated above using the LQ model
 
-```{code-block} julia
+```{code-cell} julia
 ABF - A_LSS
 ```
 
 Now compare pertinent elements of c_pol and F
 
-```{code-block} julia
+```{code-cell} julia
 println(c_pol, -F)
 ```
 
@@ -526,7 +526,7 @@ A second graph  plots a collection of simulations against the population distrib
 
 Comparing sample paths with population distributions at each date $t$ is a useful exercise---see {ref}`our discussion <lln_mr>` of the laws of large numbers.
 
-```{code-block} julia
+```{code-cell} julia
 lss = LSS(A_LSS, C_LSS, G_LSS, mu_0=μ_0, Sigma_0=Σ_0);
 ```
 
@@ -539,7 +539,7 @@ In the code below, we use the [LSS](https://github.com/QuantEcon/QuantEcon.jl/bl
 - simulate a group of 25 consumers and plot sample paths on the same
   graph as the population distribution
 
-```{code-block} julia
+```{code-cell} julia
 function income_consumption_debt_series(A, C, G, μ_0, Σ_0, T = 150, npaths = 25)
 
     lss = LSS(A, C, G, mu_0=μ_0, Sigma_0=Σ_0)
@@ -639,7 +639,7 @@ end
 
 Now let's create figures with initial conditions of zero for $y_0$ and $b_0$
 
-```{code-block} julia
+```{code-cell} julia
 out = income_consumption_debt_series(A_LSS, C_LSS, G_LSS, μ_0, Σ_0)
 bsim0, csim0, ysim0 = out[1:3]
 cons_mean0, cons_var0, debt_mean0, debt_var0 = out[4:end]
@@ -647,7 +647,7 @@ cons_mean0, cons_var0, debt_mean0, debt_var0 = out[4:end]
 consumption_income_debt_figure(bsim0, csim0, ysim0)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 consumption_debt_fanchart(csim0, cons_mean0, cons_var0,
                           bsim0, debt_mean0, debt_var0)
 ```
@@ -711,7 +711,7 @@ behavior early in the sample.
 
 By altering initial conditions, we shall remove this transient in our second example to be presented below
 
-```{code-block} julia
+```{code-cell} julia
 function cointegration_figure(bsim, csim)
     # create figure
     plot((1 - β) * bsim[1, :] + csim[1, :], color=:black,lw=2,label="")
@@ -760,7 +760,7 @@ There is no need for foreigners to lend to our group.
 
 Let's have a look at the corresponding figures
 
-```{code-block} julia
+```{code-cell} julia
 out = income_consumption_debt_series(A_LSS, C_LSS, G_LSS, mxbewley, sxbewley)
 bsimb, csimb, ysimb = out[1:3]
 cons_meanb, cons_varb, debt_meanb, debt_varb = out[4:end]
@@ -768,7 +768,7 @@ cons_meanb, cons_varb, debt_meanb, debt_varb = out[4:end]
 consumption_income_debt_figure(bsimb, csimb, ysimb)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 consumption_debt_fanchart(csimb, cons_meanb, cons_varb,
                           bsimb, debt_meanb, debt_varb)
 ```
@@ -785,7 +785,7 @@ But now there is some initial dispersion because there is *ex ante* heterogeneit
 
 Let's have a look at the cointegration figure
 
-```{code-block} julia
+```{code-cell} julia
 cointegration_figure(bsimb, csimb)
 ```
 

@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (wald_friedman)=
@@ -166,7 +166,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -175,14 +175,14 @@ using Distributions, Parameters, Printf, Random, Roots, Plots
 gr(fmt = :png)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using StatsPlots
 
 begin
@@ -392,7 +392,7 @@ transition between the accept and reject space for each choice.
 
 Here's the code
 
-```{code-block} julia
+```{code-cell} julia
 accept_x0(p, L0) = (one(p) - p) * L0
 accept_x1(p, L1) = p * L1
 bayes_update(p, d0, d1) = p * pdf(d0, p) / pdf(MixtureModel([d0, d1], [p, one(p) - p]), p)
@@ -431,7 +431,7 @@ end
 
 Next we solve a problem by finding the α, β values for the decision rule
 
-```{code-block} julia
+```{code-cell} julia
 function decision_rule(d0, d1, L0, L1, c)
     function cost(p, d0, d1, L0, L1, c)
         if c < zero(c)
@@ -474,7 +474,7 @@ end
 
 We can simulate an agent facing a problem and the outcome with the following function
 
-```{code-block} julia
+```{code-cell} julia
 function simulation(problem)
     @unpack d0, d1, L0, L1, c, p, n, return_output = problem
     α, β = decision_rule(d0, d1, L0, L1, c)
@@ -516,7 +516,7 @@ Problem = @with_kw (d0 = Beta(1,1), d1 = Beta(9,9),
                     n = 100, return_output = false);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -541,12 +541,12 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 Random.seed!(0);
 simulation(Problem());
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -582,7 +582,7 @@ Before you look, think about what will happen:
 - Will the decision maker be correct more or less often?
 - Will he make decisions sooner or later?
 
-```{code-block} julia
+```{code-cell} julia
 Random.seed!(0);
 simulation(Problem(c = 0.4));
 ```

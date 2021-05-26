@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (julia_essentials)=
@@ -44,7 +44,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -64,15 +64,15 @@ Let's learn a bit more about them.
 A particularly simple data type is a Boolean value, which can be either `true` or
 `false`.
 
-```{code-block} julia
+```{code-cell} julia
 x = true
 ```
 
-```{code-block} julia
+```{code-cell} julia
 typeof(x)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 y = 1 > 2  # now y = false
 ```
 
@@ -82,11 +82,11 @@ floats.
 (Computers distinguish between floats and integers because arithmetic is
 handled in a different way)
 
-```{code-block} julia
+```{code-cell} julia
 typeof(1.0)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 typeof(1)
 ```
 
@@ -94,33 +94,33 @@ If you're running a 32 bit system you'll still see `Float64`, but you will see `
 
 Arithmetic operations are fairly standard.
 
-```{code-block} julia
+```{code-cell} julia
 x = 2; y = 1.0;
 ```
 
 The `;` can be used to suppress output from a line of code, or to combine two lines of code together (as above), but is otherwise not necessary.
 
-```{code-block} julia
+```{code-cell} julia
 x * y
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x^2
 ```
 
-```{code-block} julia
+```{code-cell} julia
 y / x
 ```
 
 Although the `*` can be omitted for multiplication between a numeric literal and a variable.
 
-```{code-block} julia
+```{code-cell} julia
 2x - 3y
 ```
 
 A useful tool for displaying both expressions and code is to use the `@show` macro, which displays the text and the results.
 
-```{code-block} julia
+```{code-cell} julia
 @show 2x - 3y
 @show x + y;
 ```
@@ -129,15 +129,15 @@ Here we have used `;` to suppress the output on the last line, which otherwise r
 
 Complex numbers are another primitive data type, with the imaginary part being specified by `im`.
 
-```{code-block} julia
+```{code-cell} julia
 x = 1 + 2im
 ```
 
-```{code-block} julia
+```{code-cell} julia
 y = 1 - 2im
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x * y  # complex multiplication
 ```
 
@@ -150,63 +150,63 @@ A string is a data type for storing a sequence of characters.
 In Julia, strings are created using double quotation marks (single quotations are
 reserved for the character type).
 
-```{code-block} julia
+```{code-cell} julia
 x = "foobar"
 ```
 
-```{code-block} julia
+```{code-cell} julia
 typeof(x)
 ```
 
 You've already seen examples of Julia's simple string formatting operations.
 
-```{code-block} julia
+```{code-cell} julia
 x = 10; y = 20
 ```
 
 The `$` inside of a string is used to interpolate a variable.
 
-```{code-block} julia
+```{code-cell} julia
 "x = $x"
 ```
 
 With parentheses, you can splice the results of expressions into strings as well.
 
-```{code-block} julia
+```{code-cell} julia
 "x + y = $(x + y)"
 ```
 
 To concatenate strings use `*`
 
-```{code-block} julia
+```{code-cell} julia
 "foo" * "bar"
 ```
 
 Julia provides many functions for working with strings.
 
-```{code-block} julia
+```{code-cell} julia
 s = "Charlie don't surf"
 ```
 
-```{code-block} julia
+```{code-cell} julia
 split(s)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 replace(s, "surf" => "ski")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 split("fee,fi,fo", ",")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 strip(" foobar ")  # remove whitespace
 ```
 
 Julia can also find and replace using [regular expressions](https://en.wikipedia.org/wiki/Regular_expression) ([see regular expressions documentation](https://docs.julialang.org/en/v1/manual/strings/#Regular-Expressions-1) for more info).
 
-```{code-block} julia
+```{code-cell} julia
 match(r"(\d+)", "Top 10")  # find digits in string
 ```
 
@@ -218,12 +218,12 @@ We have already discussed arrays.
 
 A related data type is a **tuple**, which is immutable and can contain different types.
 
-```{code-block} julia
+```{code-cell} julia
 x = ("foo", "bar")
 y = ("foo", 2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 typeof(x), typeof(y)
 ```
 
@@ -233,11 +233,11 @@ In particular, tuples do not support item assignment (i.e. `x[1] = "test"` would
 
 Tuples can be constructed with or without parentheses.
 
-```{code-block} julia
+```{code-cell} julia
 x = "foo", 1
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function f()
     return "foo", 1
 end
@@ -246,18 +246,18 @@ f()
 
 Tuples can also be unpacked directly into variables.
 
-```{code-block} julia
+```{code-cell} julia
 x = ("foo", 1)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 word, val = x
 println("word = $word, val = $val")
 ```
 
 Tuples can be created with a hanging `,` -- this is useful to create a tuple with one element.
 
-```{code-block} julia
+```{code-cell} julia
 x = ("foo", 1,)
 y = ("foo",)
 typeof(x), typeof(y)
@@ -267,31 +267,31 @@ typeof(x), typeof(y)
 
 The last element of a sequence type can be accessed with the keyword `end`.
 
-```{code-block} julia
+```{code-cell} julia
 x = [10, 20, 30, 40]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x[end]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x[end-1]
 ```
 
 To access multiple elements of an array or tuple, you can use slice notation.
 
-```{code-block} julia
+```{code-cell} julia
 x[1:3]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x[2:end]
 ```
 
 The same slice notation works on strings.
 
-```{code-block} julia
+```{code-cell} julia
 "foobar"[3:end]
 ```
 
@@ -301,11 +301,11 @@ Another container type worth mentioning is dictionaries.
 
 Dictionaries are like arrays except that the items are named instead of numbered.
 
-```{code-block} julia
+```{code-cell} julia
 d = Dict("name" => "Frodo", "age" => 33)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 d["age"]
 ```
 
@@ -339,7 +339,7 @@ An iterable is something you can put on the right hand side of `for` and loop ov
 
 These include sequence data types like arrays.
 
-```{code-block} julia
+```{code-cell} julia
 actions = ["surf", "ski"]
 for action in actions
     println("Charlie doesn't $action")
@@ -350,7 +350,7 @@ They also include so-called **iterators**.
 
 You've already come across these types of values
 
-```{code-block} julia
+```{code-cell} julia
 for i in 1:3
     print(i)
 end
@@ -358,11 +358,11 @@ end
 
 If you ask for the keys of dictionary you get an iterator
 
-```{code-block} julia
+```{code-cell} julia
 d = Dict("name" => "Frodo", "age" => 33)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 keys(d)
 ```
 
@@ -372,7 +372,7 @@ The benefit of providing an iterator rather than an array, say, is that the form
 
 Should you need to transform an iterator into an array you can always use `collect()`.
 
-```{code-block} julia
+```{code-cell} julia
 collect(keys(d))
 ```
 
@@ -383,17 +383,17 @@ neater code.
 
 For example compare
 
-```{code-block} julia
+```{code-cell} julia
 x_values = 1:5
 ```
 
-```{code-block} julia
+```{code-cell} julia
 for x in x_values
     println(x * x)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 for i in eachindex(x_values)
     println(x_values[i] * x_values[i])
 end
@@ -405,7 +405,7 @@ One is `zip()`, which is used for stepping through pairs from two sequences.
 
 For example, try running the following code
 
-```{code-block} julia
+```{code-cell} julia
 countries = ("Japan", "Korea", "China")
 cities = ("Tokyo", "Seoul", "Beijing")
 for (country, city) in zip(countries, cities)
@@ -417,7 +417,7 @@ If we happen to need the index as well as the value, one option is to use `enume
 
 The following snippet will give you the idea
 
-```{code-block} julia
+```{code-cell} julia
 countries = ("Japan", "Korea", "China")
 cities = ("Tokyo", "Seoul", "Beijing")
 for (i, country) in enumerate(countries)
@@ -434,33 +434,33 @@ Comprehensions are an elegant tool for creating new arrays, dictionaries, etc. f
 
 Here are some examples
 
-```{code-block} julia
+```{code-cell} julia
 doubles = [ 2i for i in 1:4 ]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 animals = ["dog", "cat", "bird"];   # Semicolon suppresses output
 ```
 
-```{code-block} julia
+```{code-cell} julia
 plurals = [ animal * "s" for animal in animals ]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 [ i + j for i in 1:3, j in 4:6 ]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 [ i + j + k for i in 1:3, j in 4:6, k in 7:9 ]
 ```
 
 Comprehensions can also create arrays of tuples or named tuples
 
-```{code-block} julia
+```{code-cell} julia
 [ (i, j) for i in 1:2, j in animals]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 [ (num = i, animal = j) for i in 1:2, j in animals]
 ```
 
@@ -476,7 +476,7 @@ than arrays without allocating and storing any temporary values.
 
 For example, the following code generates a temporary array of size 10,000 and finds the sum.
 
-```{code-block} julia
+```{code-cell} julia
 xs = 1:10000
 f(x) = x^2
 f_x = f.(xs)
@@ -486,7 +486,7 @@ sum(f_x)
 We could have created the temporary using a comprehension, or even done the comprehension
 within the `sum` function, but these all create temporary arrays.
 
-```{code-block} julia
+```{code-cell} julia
 f_x2 = [f(x) for x in xs]
 @show sum(f_x2)
 @show sum([f(x) for x in xs]); # still allocates temporary
@@ -499,13 +499,13 @@ vectors would be necessary.
 A generator can emulate this behavior, leading to clear (and sometimes more efficient) code when used
 with any function that accepts iterators.  All you need to do is drop the `]` brackets.
 
-```{code-block} julia
+```{code-cell} julia
 sum(f(x) for x in xs)
 ```
 
 We can use `BenchmarkTools` to investigate
 
-```{code-block} julia
+```{code-cell} julia
 using BenchmarkTools
 @btime sum([f(x) for x in $xs])
 @btime sum(f.($xs))
@@ -523,23 +523,23 @@ In this example you may see a speedup of over 1000x.  Whether using generators l
 
 As we saw earlier, when testing for equality we use `==`.
 
-```{code-block} julia
+```{code-cell} julia
 x = 1
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x == 2
 ```
 
 For "not equal" use `!=` or `≠` (`\ne<TAB>`).
 
-```{code-block} julia
+```{code-cell} julia
 x != 3
 ```
 
 Julia can also test approximate equality with `≈` (`\approx<TAB>`).
 
-```{code-block} julia
+```{code-cell} julia
 1 + 1E-8 ≈ 1
 ```
 
@@ -549,11 +549,11 @@ Be careful when using this, however, as there are subtleties involving the scale
 
 Here are the standard logical connectives (conjunction, disjunction)
 
-```{code-block} julia
+```{code-cell} julia
 true && false
 ```
 
-```{code-block} julia
+```{code-cell} julia
 true || false
 ```
 
@@ -587,7 +587,7 @@ For now let's just cover some of the different ways of defining functions.
 In Julia, the `return` statement is optional, so that the following functions
 have identical behavior
 
-```{code-block} julia
+```{code-cell} julia
 function f1(a, b)
     return a * b
 end
@@ -605,7 +605,7 @@ A function can have arbitrarily many `return` statements, with execution termina
 
 You can see this in action when experimenting with the following function
 
-```{code-block} julia
+```{code-cell} julia
 function foo(x)
     if x > 0
         return "positive"
@@ -621,13 +621,13 @@ For short function definitions Julia offers some attractive simplified syntax.
 First, when the function body is a simple expression, it can be defined
 without the `function` keyword or `end`.
 
-```{code-block} julia
+```{code-cell} julia
 f(x) = sin(1 / x)
 ```
 
 Let's check that it works
 
-```{code-block} julia
+```{code-cell} julia
 f(1 / pi)
 ```
 
@@ -641,7 +641,7 @@ How can you use a function with no name?
 
 Typically it's as an argument to another function
 
-```{code-block} julia
+```{code-cell} julia
 map(x -> sin(1 / x), randn(3))  # apply function to each element
 ```
 
@@ -651,17 +651,17 @@ map(x -> sin(1 / x), randn(3))  # apply function to each element
 
 Function arguments can be given default values
 
-```{code-block} julia
+```{code-cell} julia
 f(x, a = 1) = exp(cos(a * x))
 ```
 
 If the argument is not supplied, the default value is substituted.
 
-```{code-block} julia
+```{code-cell} julia
 f(pi)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 f(pi, 2)
 ```
 
@@ -672,7 +672,7 @@ they are parsed and bounded by name rather than the order in the function call.
 
 For example, in the call
 
-```{code-block} julia
+```{code-cell} julia
 f(x; a = 1) = exp(cos(a * x))  # note the ; in the definition
 
 f(pi, a = 2) # calling with ; is usually optional and generally discouraged
@@ -693,7 +693,7 @@ For example, suppose that we want to apply `sin` to `x_vec = [2.0, 4.0, 6.0, 8.0
 
 The following code will do the job
 
-```{code-block} julia
+```{code-cell} julia
 x_vec = [2.0, 4.0, 6.0, 8.0]
 y_vec = similar(x_vec)
 for (i, x) in enumerate(x_vec)
@@ -703,7 +703,7 @@ end
 
 But this is a bit unwieldy so Julia offers the alternative syntax
 
-```{code-block} julia
+```{code-cell} julia
 y_vec = sin.(x_vec)
 ```
 
@@ -715,7 +715,7 @@ To illustrate, let's write a function `chisq` such that `chisq(k)` returns a chi
 
 In doing this we'll exploit the fact that, if we take `k` independent standard normals, square them all and sum, we get a chi-squared with `k` degrees of freedom.
 
-```{code-block} julia
+```{code-cell} julia
 function chisq(k)
     @assert k > 0
     z = randn(k)
@@ -725,14 +725,14 @@ end
 
 The macro `@assert` will check that the next expression evaluates to `true`, and will stop and display an error otherwise.
 
-```{code-block} julia
+```{code-cell} julia
 chisq(3)
 ```
 
 Note that calls with integers less than 1 will trigger an assertion failure inside
 the function body.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [raises-exception]
 ---
@@ -741,13 +741,13 @@ chisq(-2)
 
 Let's try this out on an array of integers, adding the broadcast
 
-```{code-block} julia
+```{code-cell} julia
 chisq.([2, 4, 6])
 ```
 
 The broadcasting notation is not simply vectorization, as it is able to "fuse" multiple broadcasts together to generate efficient code.
 
-```{code-block} julia
+```{code-cell} julia
 x = 1.0:1.0:5.0
 y = [2.0, 4.0, 5.0, 6.0, 8.0]
 z = similar(y)
@@ -756,7 +756,7 @@ z .= x .+ y .- sin.(x) # generates efficient code instead of many temporaries
 
 A convenience macro for adding broadcasting on every function call is `@.`
 
-```{code-block} julia
+```{code-cell} julia
 @. z = x + y - sin(x)
 ```
 
@@ -764,7 +764,7 @@ Since the `+, -, =` operators are functions, behind the scenes this is broadcast
 
 The compiler will fix anything which is a scalar, and otherwise iterate across every vector
 
-```{code-block} julia
+```{code-cell} julia
 f(a, b) = a + b # bivariate function
 a = [1 2 3]
 b = [4 5 6]
@@ -778,7 +778,7 @@ For other types, you will need to wrap any scalars in `Ref` to fix them, or else
 
 Another place that you may use a `Ref` is to fix a function parameter you do not want to broadcast over.
 
-```{code-block} julia
+```{code-cell} julia
 f(x, y) = [1, 2, 3] ⋅ x + y   # "⋅" can be typed by \cdot<tab>
 f([3, 4, 5], 2)   # uses vector as first parameter
 f.(Ref([3, 4, 5]), [2, 3])   # broadcasting over 2nd parameter, fixing first
@@ -812,7 +812,7 @@ Different scopes could contain the same name but be assigned to different things
 
 An obvious place to start is to notice that functions introduce their own local names.
 
-```{code-block} julia
+```{code-cell} julia
 f(x) = x^2  # local `x` in scope
 
 # x is not bound to anything in this outer scope
@@ -822,7 +822,7 @@ f(y)
 
 This would be roughly equivalent to
 
-```{code-block} julia
+```{code-cell} julia
 function g() # scope within the `g` function
 
     f(x) = x^2 # local `x` in scope
@@ -836,7 +836,7 @@ g() # run the function
 
 This is also equivalent if the `y` was changed to `x`, since it is a different scope.
 
-```{code-block} julia
+```{code-cell} julia
 f(x) = x^2  # local `x` in scope
 
 # x is not bound to anything in this outer scope
@@ -846,7 +846,7 @@ f(x)    # calling `f` with `x`
 
 The scoping also applies to named arguments in functions.
 
-```{code-block} julia
+```{code-cell} julia
 f(x; y = 1) = x + y  # `x` and `y` are names local to the `f` function
 xval = 0.1
 yval = 2
@@ -855,7 +855,7 @@ f(xval; y = yval)
 
 Due to scoping, you could write this as
 
-```{code-block} julia
+```{code-cell} julia
 f(x; y = 1) = x + y  # `x` and `y` are names local to the `f` function
 x = 0.1
 y = 2
@@ -864,7 +864,7 @@ f(x; y = y) # left hand `y` is the local name of the argument in the function
 
 Similarly to named arguments, the local scope also works with named tuples.
 
-```{code-block} julia
+```{code-cell} julia
 xval = 0.1
 yval = 2
 @show (x = xval, y = yval)  # named tuple with names `x` and `y`
@@ -882,7 +882,7 @@ In fact, it frequently leads to clear code closer to the math when you don't nee
 
 Another example is with broadcasting
 
-```{code-block} julia
+```{code-cell} julia
 f(x) = x^2  # local `x` in scope
 
 x = 1:5     # not an integer
@@ -894,7 +894,7 @@ f.(x)       # broadcasts the x^2 function over the vector
 
 Frequently, you will want to have a function that calculates a value given some fixed parameters.
 
-```{code-block} julia
+```{code-cell} julia
 f(x, a) = a * x^2
 
 f(1, 0.2)
@@ -902,7 +902,7 @@ f(1, 0.2)
 
 While the above was convenient, there are other times when you want to simply fix a variable or refer to something already calculated.
 
-```{code-block} julia
+```{code-cell} julia
 a = 0.2
 f(x) = a * x^2     # refers to the `a` in the outer scope
 f(1)               # univariate function
@@ -915,7 +915,7 @@ code defines `a = 0.2` **after** the `f(x)` definition, it would fail.
 
 This also works when embedded in other functions
 
-```{code-block} julia
+```{code-cell} julia
 function g(a)
     f(x) = a * x^2  # refers to the `a` passed in the function
     f(1)            # univariate function
@@ -933,7 +933,7 @@ One place where this can be helpful is in a string of dependent calculations.
 
 For example, if you wanted to calculate a `(a, b, c)` from $a = f(x), b = g(a), c = h(a, b)$ where $f(x) = x^2, g(a) = 2 a, h(a, b) = a + b$
 
-```{code-block} julia
+```{code-cell} julia
 function solvemodel(x)
     a = x^2
     b = 2 * a
@@ -952,7 +952,7 @@ This leads to some natural programming patterns we have already been using, wher
 
 To see a simple example, consider functions that accept other functions (including closures)
 
-```{code-block} julia
+```{code-cell} julia
 twice(f, x) = f(f(x))  # applies f to itself twice
 f(x) = x^2
 @show twice(f, 2.0)
@@ -967,7 +967,7 @@ This pattern has already been used extensively in our code and is key to keeping
 
 One example of using this in a library is [Expectations.jl](https://github.com/QuantEcon/Expectations.jl), where we can pass a function to the `expectation` function.
 
-```{code-block} julia
+```{code-cell} julia
 using Expectations, Distributions
 
 @show d = Exponential(2.0)
@@ -978,7 +978,7 @@ f(x) = x^2
 
 Another example is for a function that returns a closure itself.
 
-```{code-block} julia
+```{code-cell} julia
 function multiplyit(a, g)
     return x -> a * g(x)  # function with `g` used in the closure
 end
@@ -990,7 +990,7 @@ h(2)     # returned function is like any other function
 
 You can create and define using `function` as well
 
-```{code-block} julia
+```{code-cell} julia
 function snapabove(g, a)
     function f(x)
         if x > a         # "a" is captured in the closure f
@@ -1016,7 +1016,7 @@ The `for` and `while` loops also introduce a local scope, and you can roughly re
 
 In particular
 
-```{code-block} julia
+```{code-cell} julia
 for i in 1:2  # introduces local i
     dval1 = i
     println(i)
@@ -1031,7 +1031,7 @@ end
 
 On the other hand just as with closures, if a variable is already defined it will be available in the inner scope.
 
-```{code-block} julia
+```{code-cell} julia
 dval2 = 0  # introduces variables
 for i in 1:2   # introduces local i
     dval2 = i  # refers to outer variable
@@ -1042,7 +1042,7 @@ dval2 # still can't refer to `i`
 
 Similarly, for while loops
 
-```{code-block} julia
+```{code-cell} julia
 val = 1.0
 tol = 0.002
 while val > tol
@@ -1063,7 +1063,7 @@ Here, global variables are used in an interactive editor because they are conven
 
 A simple test of the difference is to take a segment of code and wrap it in a function, for example
 
-```{code-block} julia
+```{code-cell} julia
 x = 2.0
 f(y) = x + y
 z = f(4.0)
@@ -1079,7 +1079,7 @@ Here, the `x` and `z` are global variables, the function `f` refers to the globa
 
 However, you can simply wrap the entire code in a function
 
-```{code-block} julia
+```{code-cell} julia
 function wrapped()
     x = 2.0
     f(y) = x + y
@@ -1174,7 +1174,7 @@ Copy this text into a text file called `us_cities.txt` and save it in your prese
 
 This can also be achieved by running the following Julia code:
 
-```{code-block} julia
+```{code-cell} julia
 open("us_cities.txt", "w") do f
   write(f,
 "new york: 8244910
@@ -1217,7 +1217,7 @@ Part 1 solution:
 
 Here's one possible solution
 
-```{code-block} julia
+```{code-cell} julia
 x_vals = [1, 2, 3]
 y_vals = [1, 1, 1]
 sum(x * y for (x, y) in zip(x_vals, y_vals))
@@ -1227,7 +1227,7 @@ Part 2 solution:
 
 One solution is
 
-```{code-block} julia
+```{code-cell} julia
 sum(iseven, 0:99)
 ```
 
@@ -1235,18 +1235,18 @@ Part 3 solution:
 
 Here's one possibility
 
-```{code-block} julia
+```{code-cell} julia
 pairs = ((2, 5), (4, 2), (9, 8), (12, 10))
 sum(xy -> all(iseven, xy), pairs)
 ```
 
 ### Exercise 2
 
-```{code-block} julia
+```{code-cell} julia
 p(x, coeff) = sum(a * x^(i-1) for (i, a) in enumerate(coeff))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 p(1, (2, 4))
 ```
 
@@ -1254,7 +1254,7 @@ p(1, (2, 4))
 
 Here's one solutions:
 
-```{code-block} julia
+```{code-cell} julia
 function f_ex3(string)
     count = 0
     for letter in string
@@ -1272,7 +1272,7 @@ f_ex3("The Rain in Spain")
 
 Here's one solutions:
 
-```{code-block} julia
+```{code-cell} julia
 function f_ex4(seq_a, seq_b)
     is_subset = true
     for a in seq_a
@@ -1290,7 +1290,7 @@ println(f_ex4([1, 2, 3], [1, 2]))
 
 if we use the Set data type then the solution is easier
 
-```{code-block} julia
+```{code-cell} julia
 f_ex4_2(seq_a, seq_b) = Set(seq_a) ⊆ Set(seq_b) # \subseteq (⊆) is unicode for `issubset`
 
 println(f_ex4_2([1, 2], [1, 2, 3]))
@@ -1299,7 +1299,7 @@ println(f_ex4_2([1, 2, 3], [1, 2]))
 
 ### Exercise 5
 
-```{code-block} julia
+```{code-cell} julia
 function linapprox(f, a, b, n, x)
     # evaluates the piecewise linear interpolant of f at x,
     # on the interval [a, b], with n evenly spaced grid points.
@@ -1323,12 +1323,12 @@ end
 
 Let's test it
 
-```{code-block} julia
+```{code-cell} julia
 f_ex5(x) = x^2
 g_ex5(x) = linapprox(f_ex5, -1, 1, 3, x)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x_grid = range(-1.0, 1.0, length = 100)
 y_vals = f_ex5.(x_grid)
 y = g_ex5.(x_grid)
@@ -1338,7 +1338,7 @@ plot!(x_grid, y, label = "approximation")
 
 ### Exercise 6
 
-```{code-block} julia
+```{code-cell} julia
 f_ex6 = open("us_cities.txt", "r")
 total_pop = 0
 for line in eachline(f_ex6)

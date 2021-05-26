@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (markov_perf)=
@@ -54,7 +54,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics, QuantEcon
 ```
 
@@ -427,14 +427,14 @@ Consider the previously presented duopoly model with parameter values of:
 
 From these we compute the infinite horizon MPE using the following code
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon, LinearAlgebra
 
 # parameters
@@ -469,7 +469,7 @@ println("F1 = $F1")
 println("F2 = $F2")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -487,14 +487,14 @@ In particular, let's take F2 as computed above, plug it into {eq}`eq_mpe_p1p` an
 
 We hope that the resulting policy will agree with F1 as computed above
 
-```{code-block} julia
+```{code-cell} julia
 Λ1 = A - (B2 * F2)
 lq1 = QuantEcon.LQ(Q1, R1, Λ1, B1, bet=β)
 P1_ih, F1_ih, d = stationary_values(lq1)
 F1_ih
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -511,7 +511,7 @@ This is close enough for rock and roll, as they say in the trade.
 
 Indeed, isapprox agrees with our assessment
 
-```{code-block} julia
+```{code-cell} julia
 isapprox(F1, F1_ih, atol=1e-7)
 ```
 
@@ -527,7 +527,7 @@ The following program
 * computes the evolution of $x_t$ using {eq}`eq_mpe_cle`
 * extracts and plots industry output $q_t = q_{1t} + q_{2t}$ and price $p_t = a_0 - a_1 q_t$
 
-```{code-block} julia
+```{code-cell} julia
 using Plots
 gr(fmt=:png);
 
@@ -548,7 +548,7 @@ plot!(plt, p, color=:green, lw=2, alpha=0.75, label="price")
 plot!(plt, title="Output and prices, duopoly MPE")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -658,7 +658,7 @@ The exercise is to calculate these matrices and compute the following figures.
 
 The first figure shows the dynamics of inventories for each firm when the parameters are
 
-```{code-block} julia
+```{code-cell} julia
 δ = 0.02
 D = [ -1  0.5;
      0.5   -1]
@@ -687,7 +687,7 @@ This is indeed the case, as the next figure shows
 
 First let's compute the duopoly MPE under the stated parameters
 
-```{code-block} julia
+```{code-cell} julia
 # parameters
 a0 = 10.0
 a1 = 2.0
@@ -715,7 +715,7 @@ F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2,
                        beta=β)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -730,7 +730,7 @@ end
 Now we evaluate the time path of industry output and prices given
 initial condition $q_{10} = q_{20} = 1$
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -747,7 +747,7 @@ q = q1 + q2       # Total output, MPE
 p = a0 .- a1 * q   # Price, MPE
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -786,7 +786,7 @@ in the law of motion $x_{t+1} = A x_t + B u_t$.
 We solve for the optimal policy $u_t = - Fx_t$ and track the
 resulting dynamics of $\{q_t\}$, starting at $q_0 = 2.0$.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -807,7 +807,7 @@ end
 pm = a0 .- a1 * qm
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -821,7 +821,7 @@ end
 
 Let's have a look at the different time paths
 
-```{code-block} julia
+```{code-cell} julia
 plt_q = plot(qm, color=:blue, lw=2, alpha=0.75, label="monopolist output")
 plot!(plt_q, q, color=:green, lw=2, alpha=0.75, label="MPE total output")
 plot!(plt_q, xlabel="time", ylabel="output", ylim=(2,4),legend=:topright)
@@ -837,7 +837,7 @@ plot(plt_q, plt_p, layout=(2,1), size=(700,600))
 
 We treat the case $\delta = 0.02$
 
-```{code-block} julia
+```{code-cell} julia
 δ = 0.02
 D = [-1  0.5;
      0.5 -1]
@@ -866,7 +866,7 @@ $$
 
 we set up the matrices as follows:
 
-```{code-block} julia
+```{code-cell} julia
 # create matrices needed to compute the Nash feedback equilibrium
 A = [δ_1     0   -δ_1 * b[1];
        0   δ_1   -δ_1 * b[2];
@@ -907,7 +907,7 @@ M1 = [0.0            0.0;
 M2 = copy(M1)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -921,7 +921,7 @@ end
 
 We can now compute the equilibrium using `qe.nnash`
 
-```{code-block} julia
+```{code-cell} julia
 F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2)
 
 println("\nFirm 1's feedback rule:\n")
@@ -931,7 +931,7 @@ println("\nFirm 2's feedback rule:\n")
 println(F2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -947,7 +947,7 @@ end
 Now let's look at the dynamics of inventories, and reproduce the graph
 corresponding to $\delta = 0.02$
 
-```{code-block} julia
+```{code-cell} julia
 AF = A - B1 * F1 - B2 * F2
 n = 25
 x = zeros(3, n)
@@ -963,7 +963,7 @@ plot!(I2, color=:green, lw=2, alpha=0.75, label="inventories, firm 2")
 plot!(title="delta = 0.02")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

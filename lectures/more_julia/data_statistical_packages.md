@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (data_statistical_packages)=
@@ -42,7 +42,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -68,7 +68,7 @@ There are a few different ways to create a DataFrame.
 
 The first is to set up columns and construct a dataframe by assigning names
 
-```{code-block} julia
+```{code-cell} julia
 using DataFrames, RDatasets  # RDatasets provides good standard data examples from R
 
 # note use of missing
@@ -79,32 +79,32 @@ df = DataFrame(commod = commodities, price = last_price)
 
 Columns of the `DataFrame` can be accessed by name using `df.col`, as below
 
-```{code-block} julia
+```{code-cell} julia
 df.price
 ```
 
 Note that the type of this array has values `Union{Missing, Float64}` since it was created with a `missing` value.
 
-```{code-block} julia
+```{code-cell} julia
 df.commod
 ```
 
 The `DataFrames.jl` package provides a number of methods for acting on `DataFrame`'s, such as `describe`.
 
-```{code-block} julia
+```{code-cell} julia
 DataFrames.describe(df)
 ```
 
 While often data will be generated all at once, or read from a file, you can add to a `DataFrame` by providing the key parameters.
 
-```{code-block} julia
+```{code-cell} julia
 nt = (commod = "nickel", price= 5.1)
 push!(df, nt)
 ```
 
 Named tuples can also be used to construct a `DataFrame`, and have it properly deduce all types.
 
-```{code-block} julia
+```{code-cell} julia
 nt = (t = 1, col1 = 3.0)
 df2 = DataFrame([nt])
 push!(df2, (t=2, col1 = 4.0))
@@ -112,13 +112,13 @@ push!(df2, (t=2, col1 = 4.0))
 
 In order to modify a column, access the mutating version by the symbol `df[!, :col]`.
 
-```{code-block} julia
+```{code-cell} julia
 df[!, :price]
 ```
 
 Which allows modifications, like other mutating `!` functions in julia.
 
-```{code-block} julia
+```{code-cell} julia
 df[!, :price] *= 2.0  # double prices
 ```
 
@@ -131,7 +131,7 @@ As we discussed in {ref}`fundamental types <missing>`, the semantics of `missing
 In order to allow `missing` in a column, you can create/load the `DataFrame`
 from a source with `missing`'s, or call `allowmissing!` on a column.
 
-```{code-block} julia
+```{code-cell} julia
 allowmissing!(df2, :col1) # necessary to add in a for col1
 push!(df2, (t=3, col1 = missing))
 push!(df2, (t=4, col1 = 5.1))
@@ -139,14 +139,14 @@ push!(df2, (t=4, col1 = 5.1))
 
 We can see the propagation of `missing` to caller functions, as well as a way to efficiently calculate with non-missing data.
 
-```{code-block} julia
+```{code-cell} julia
 @show mean(df2.col1)
 @show mean(skipmissing(df2.col1))
 ```
 
 And to replace the `missing`
 
-```{code-block} julia
+```{code-cell} julia
 df2.col1  .= coalesce.(df2.col1, 0.0) # replace all missing with 0.0
 ```
 
@@ -154,7 +154,7 @@ df2.col1  .= coalesce.(df2.col1, 0.0) # replace all missing with 0.0
 
 One way to do an additional calculation with a `DataFrame` is to tuse the `@transform` macro from `DataFramesMeta.jl`.
 
-```{code-block} julia
+```{code-cell} julia
 using DataFramesMeta
 f(x) = x^2
 df2 = @transform(df2, col2 = f.(:col1))
@@ -164,7 +164,7 @@ df2 = @transform(df2, col2 = f.(:col1))
 
 For data that is [categorical](https://juliadata.github.io/DataFrames.jl/stable/man/categorical/)
 
-```{code-block} julia
+```{code-cell} julia
 using CategoricalArrays
 id = [1, 2, 3, 4]
 y = ["old", "young", "young", "old"]
@@ -172,7 +172,7 @@ y = CategoricalArray(y)
 df = DataFrame(id=id, y=y)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 levels(df.y)
 ```
 
@@ -184,7 +184,7 @@ One set of them is the [QueryVerse](https://github.com/queryverse).
 
 **Note:** The QueryVerse, in the same spirit as R's tidyverse, makes heavy use of the pipeline syntax `|>`.
 
-```{code-block} julia
+```{code-cell} julia
 x = 3.0
 f(x) = x^2
 g(x) = log(x)
@@ -195,7 +195,7 @@ g(x) = log(x)
 
 To give an example directly from the source of the LINQ inspired [Query.jl](http://www.queryverse.org/Query.jl/stable/)
 
-```{code-block} julia
+```{code-cell} julia
 using Query
 
 df = DataFrame(name=["John", "Sally", "Kirk"], age=[23., 42., 59.], children=[3,5,2])
@@ -209,7 +209,7 @@ end
 
 While it is possible to just use the `Plots.jl` library, there may be better options for displaying tabular data -- such as [VegaLite.jl](https://github.com/queryverse/VegaLite.jl).
 
-```{code-block} julia
+```{code-cell} julia
 using RDatasets, VegaLite
 iris = dataset("datasets", "iris")
 
@@ -236,7 +236,7 @@ A few to point out
 
 To run linear regressions and similar statistics, use the [GLM](http://juliastats.github.io/GLM.jl/latest/) package.
 
-```{code-block} julia
+```{code-cell} julia
 using GLM
 
 x = randn(100)
@@ -249,7 +249,7 @@ To display the results in a useful tables for LaTeX and the REPL, use
 [RegressionTables](https://github.com/jmboehm/RegressionTables.jl/) for output
 similar to the Stata package esttab and the R package stargazer.
 
-```{code-block} julia
+```{code-cell} julia
 using RegressionTables
 regtable(ols)
 # regtable(ols,  renderSettings = latexOutput()) # for LaTex output
@@ -262,7 +262,7 @@ fixed-effects estimation with dummies for multiple variables are much more compu
 
 For a 2-way fixed-effect, taking the example directly from the documentation using [cigarette consumption data](https://github.com/johnmyleswhite/RDatasets.jl/blob/master/doc/plm/rst/Cigar.rst)
 
-```{code-block} julia
+```{code-cell} julia
 using FixedEffectModels
 cigar = dataset("plm", "Cigar")
 cigar.StateCategorical =  categorical(cigar.State)

@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (ifp)=
@@ -373,21 +373,21 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using BenchmarkTools, Optim, Parameters, Plots, QuantEcon, Random
 using Optim: converged, maximum, maximizer, minimizer, iterations
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # utility and marginal utility functions
 u(x) = log(x)
 du(x) = 1 / x
@@ -534,12 +534,12 @@ faster than iteration with $T$.
 
 In the Julia console, a comparison of the operators can be made as follows
 
-```{code-block} julia
+```{code-cell} julia
 cp = ConsumerProblem()
 v, c, = initialize(cp)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -549,11 +549,11 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 @btime T(cp, v);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 @btime K(cp, c);
 ```
 
@@ -583,7 +583,7 @@ We'll take r = 0.03 and otherwise use default parameters.
 
 The following figure is a 45 degree diagram showing the law of motion for assets when consumption is optimal
 
-```{code-block} julia
+```{code-cell} julia
 # solve for optimal consumption
 m = ConsumerProblem(r = 0.03, grid_max = 4)
 v_init, c_init = initialize(m)
@@ -605,7 +605,7 @@ plot!(xlabel = "Current assets", ylabel = "Next period assets")
 plot!(legend = :topleft)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -679,7 +679,7 @@ when $r=0$ for both cases shown here.
 
 ### Exercise 1
 
-```{code-block} julia
+```{code-cell} julia
 cp = ConsumerProblem()
 N = 80
 
@@ -702,7 +702,7 @@ plot!(xlabel = "asset level", ylabel = "Consumption (low income)")
 plot!(legend = :topleft)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -714,7 +714,7 @@ end
 
 ### Exercise 2
 
-```{code-block} julia
+```{code-cell} julia
 r_vals = range(0, 0.04, length = 4)
 traces = []
 legends = []
@@ -735,7 +735,7 @@ plot!(xlabel = "asset level", ylabel = "Consumption (low income)")
 plot!(legend = :topleft)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -747,7 +747,7 @@ end
 
 ### Exercise 3
 
-```{code-block} julia
+```{code-cell} julia
 function compute_asset_series(cp, T = 500_000; verbose = false)
     @unpack Π, z_vals, R = cp  # simplify names
     z_idx = 1:length(z_vals)
@@ -772,7 +772,7 @@ a = compute_asset_series(cp)
 histogram(a, nbins = 20, leg = false, normed = true, xlabel = "assets")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -783,14 +783,14 @@ end
 
 ### Exercise 4
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);  # for reproducibility
 ```
 
-```{code-block} julia
+```{code-cell} julia
 M = 25
 r_vals = range(0, 0.04, length = M)
 
@@ -814,7 +814,7 @@ plot!(xlabel = "capital", ylabel = "interest rate", yticks = ([0, 0.045]))
 plot!(legend = :bottomright)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

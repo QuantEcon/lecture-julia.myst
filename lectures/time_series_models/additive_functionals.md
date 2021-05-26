@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (additive_functionals)=
@@ -212,23 +212,23 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Distributions, Parameters, Plots, QuantEcon
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function AMF_LSS_VAR(A, B, D, F = nothing; ν = nothing)
 
     if B isa AbstractVector
@@ -642,14 +642,14 @@ end
 For now, we just plot $y_t$ and $x_t$, postponing until later a description of exactly how we compute them.
 
 (addfunc_egcode)=
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ϕ_1, ϕ_2, ϕ_3, ϕ_4 = 0.5, -0.2, 0, 0.5
 σ = 0.01
 ν = 0.01 # growth rate
@@ -683,7 +683,7 @@ plot!(plots[2], title = "Associated path of x_t")
 plot(plots)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -842,7 +842,7 @@ Let's use this code (embedded above) to explore the {ref}`example process descri
 If you run {ref}`the code that first simulated that example <addfunc_egcode>` again and then the method call
 you will generate (modulo randomness) the plot
 
-```{code-block} julia
+```{code-cell} julia
 plt = plot_additive(amf, T)
 plt[1]
 ```
@@ -897,7 +897,7 @@ Let's plot this multiplicative functional for our example.
 
 If you run {ref}`the code that first simulated that example <addfunc_egcode>` again and then the method call
 
-```{code-block} julia
+```{code-cell} julia
 plt = plot_multiplicative(amf, T)
 plt[1]
 ```
@@ -919,14 +919,14 @@ $\widetilde M_t$ of the multiplicative decomposition has a peculiar property.
 
 The following simulation of many paths of $\widetilde M_t$ illustrates this property
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(10021987);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 plt = plot_martingales(amf, 12000)
 plt[1]
 ```

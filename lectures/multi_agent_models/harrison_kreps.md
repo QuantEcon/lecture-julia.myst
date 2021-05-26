@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (harrison_kreps)=
@@ -63,7 +63,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -119,14 +119,14 @@ $$
 
 The stationary (i.e., invariant) distributions of these two matrices can be calculated as follows:
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon
 
 qa = [1/2 1/2; 2/3 1/3]
@@ -136,11 +136,11 @@ mcB = MarkovChain(qb)
 stA = stationary_distributions(mcA)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 stB = stationary_distributions(mcB)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -335,7 +335,7 @@ The first two rows of of the table report $p_a(s)$ and $p_b(s)$.
 
 Here's a function that can be used to compute these values
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra
 
 function price_single_beliefs(transition, dividend_payoff;
@@ -462,7 +462,7 @@ Investors of type $a$ want to sell the asset in state $1$ while investors of typ
 
 Here's code to solve for $\bar p$, $\hat p_a$ and $\hat p_b$ using the iterative method described above
 
-```{code-block} julia
+```{code-cell} julia
 function price_optimistic_beliefs(transitions,
                                   dividend_payoff;
                                   β=.75, max_iter=50000,
@@ -532,7 +532,7 @@ Constraints on short sales prevent that.
 
 Here's code to solve for $\check p$ using iteration
 
-```{code-block} julia
+```{code-cell} julia
 function price_pessimistic_beliefs(transitions,
                                    dividend_payoff;
                                    β=.75, max_iter=50000,
@@ -644,7 +644,7 @@ You will first need to define the transition matrices and dividend payoff vector
 First we will obtain equilibrium price vectors with homogeneous beliefs, including when all
 investors are optimistic or pessimistic
 
-```{code-block} julia
+```{code-cell} julia
 qa = [1/2 1/2; 2/3 1/3]     # Type a transition matrix
 qb = [2/3 1/3; 1/4 3/4]     # Type b transition matrix
 qopt = [1/2 1/2; 1/4 3/4]   # Optimistic investor transition matrix
@@ -665,7 +665,7 @@ for (transition, label) in zip(transitions, labels)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -681,7 +681,7 @@ end
 We will use the price_optimistic_beliefs function to find the price under
 heterogeneous beliefs.
 
-```{code-block} julia
+```{code-cell} julia
 opt_beliefs = price_optimistic_beliefs([qa, qb], dividendreturn)
 labels = ["p_optimistic", "p_hat_a", "p_hat_b"]
 
@@ -695,7 +695,7 @@ for (p, label) ∈ zip(opt_beliefs, labels)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

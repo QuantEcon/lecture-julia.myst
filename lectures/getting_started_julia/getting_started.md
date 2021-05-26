@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (getting_started)=
@@ -182,7 +182,7 @@ If your online Jupyter does not come with QuantEcon packages pre-installed, you 
 
 To add this package, in an online Jupyter notebook run (typically with `<Shift-Enter>`)
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---

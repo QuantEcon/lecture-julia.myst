@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (introduction_to_types)=
@@ -44,7 +44,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -54,7 +54,7 @@ using LinearAlgebra, Statistics
 
 As we have seen in the previous lectures, in Julia all values have a type, which can be queried using the `typeof` function
 
-```{code-block} julia
+```{code-cell} julia
 @show typeof(1)
 @show typeof(1.0);
 ```
@@ -64,7 +64,7 @@ language, and the compiler deduces their types (`Int64` and `Float64` respective
 
 You can also query the type of a value
 
-```{code-block} julia
+```{code-cell} julia
 x = 1
 typeof(x)
 ```
@@ -77,7 +77,7 @@ The name `x` binds to the value `1`, created as a literal.
 
 The next two types use curly bracket notation to express the fact that they are *parametric*
 
-```{code-block} julia
+```{code-cell} julia
 @show typeof(1.0 + 1im)
 @show typeof(ones(2, 2));
 ```
@@ -101,7 +101,7 @@ In the case of `Complex{Float64}`
 
 Another type to consider is the `Tuple` and `NamedTuple`
 
-```{code-block} julia
+```{code-cell} julia
 x = (1, 2.0, "test")
 @show typeof(x)
 ```
@@ -110,7 +110,7 @@ In this case, `Tuple` is the parametric type, and the three parameters are a lis
 
 For a named tuple
 
-```{code-block} julia
+```{code-cell} julia
 x = (a = 1, b = 2.0, c = "test")
 @show typeof(x)
 ```
@@ -119,7 +119,7 @@ The parametric `NamedTuple` type contains two parameters: first a list of names 
 
 Anytime a value is prefixed by a colon, as in the `:a` above, the type is `Symbol` -- a special kind of string used by the compiler.
 
-```{code-block} julia
+```{code-cell} julia
 typeof(:a)
 ```
 
@@ -132,7 +132,7 @@ Since variables and functions are lower case by convention, this can be used to 
 After assigning a variable name to a value, we can query the type of the
 value via the name.
 
-```{code-block} julia
+```{code-cell} julia
 x = 42
 @show typeof(x);
 ```
@@ -141,13 +141,13 @@ Thus, `x` is just a symbol bound to a value of type `Int64`.
 
 We can *rebind* the symbol `x` to any other value, of the same type or otherwise.
 
-```{code-block} julia
+```{code-cell} julia
 x = 42.0
 ```
 
 Now `x` "points to" another value, of type `Float64`
 
-```{code-block} julia
+```{code-cell} julia
 typeof(x)
 ```
 
@@ -180,7 +180,7 @@ In the Julia language specification, the types form a hierarchy.
 
 You can check if a type is a subtype of another with the `<:` operator.
 
-```{code-block} julia
+```{code-cell} julia
 @show Float64 <: Real
 @show Int64 <: Real
 @show Complex{Float64} <: Real
@@ -191,7 +191,7 @@ In the above, both `Float64` and `Int64` are **subtypes** of `Real`, whereas the
 
 They are, however, all subtypes of `Number`
 
-```{code-block} julia
+```{code-cell} julia
 @show Real <: Number
 @show Float64 <: Number
 @show Int64 <: Number
@@ -200,7 +200,7 @@ They are, however, all subtypes of `Number`
 
 `Number` in turn is a subtype of `Any`, which is a parent of all types.
 
-```{code-block} julia
+```{code-cell} julia
 Number <: Any
 ```
 
@@ -212,7 +212,7 @@ The point of abstract types is to categorize the concrete types, as well as othe
 
 There are some further functions to help you explore the type hierarchy, such as `show_supertypes` which walks up the tree of types to `Any` for a given type.
 
-```{code-block} julia
+```{code-cell} julia
 using Base: show_supertypes  # import the function from the `Base` package
 
 show_supertypes(Int64)
@@ -220,7 +220,7 @@ show_supertypes(Int64)
 
 And the `subtypes` which gives a list of the available subtypes for any packages or code currently loaded
 
-```{code-block} julia
+```{code-cell} julia
 @show subtypes(Real)
 @show subtypes(AbstractFloat);
 ```
@@ -233,7 +233,7 @@ but much of Julia's performance gains and generality of notation comes from its 
 
 For example
 
-```{code-block} julia
+```{code-cell} julia
 x1 = [1, 2, 3]
 x2 = [1.0, 2.0, 3.0]
 
@@ -245,7 +245,7 @@ These return `Array{Int64,1}` and `Array{Float64,1}` respectively, which the com
 
 Given the information on the type, the compiler can work through the sequence of expressions to infer other types.
 
-```{code-block} julia
+```{code-cell} julia
 f(y) = 2y # define some function
 
 
@@ -260,7 +260,7 @@ the compiler can always deduce a single type from any function or expression.
 
 An example of bad practice is to use an array to hold unrelated types
 
-```{code-block} julia
+```{code-cell} julia
 x = [1.0, "test", 1]  # typically poor style
 ```
 
@@ -272,7 +272,7 @@ The other place this can come up is in the declaration of functions.
 
 As an example, consider a function which returns different types depending on the arguments.
 
-```{code-block} julia
+```{code-cell} julia
 function f(x)
     if x > 0
         return 1.0
@@ -305,7 +305,7 @@ It is also in contrast to some of the sample code you will see in other Julia so
 
 To give an example of the declaration of types, the following are equivalent
 
-```{code-block} julia
+```{code-cell} julia
 function f(x, A)
     b = [5.0, 6.0]
     return A * x .+ b
@@ -314,7 +314,7 @@ end
 val = f([0.1, 2.0], [1.0 2.0; 3.0 4.0])
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function f2(x::Vector{Float64}, A::Matrix{Float64})::Vector{Float64}
     # argument and return types
     b::Vector{Float64} = [5.0, 6.0]
@@ -332,7 +332,7 @@ Furthermore, it can lead to confusion and inefficiencies since many things that 
 
 Here, the first line works and the second line fails
 
-```{code-block} julia
+```{code-cell} julia
 @show f([0.1; 2.0], [1 2; 3 4])
 @show f([0.1; 2.0], Diagonal([1.0, 2.0]))
 
@@ -360,7 +360,7 @@ While other sorts of types exist, we almost always use the `struct` keyword, whi
 
 Let's start with a trivial example where the `struct` we build has fields named `a, b, c`, are not typed
 
-```{code-block} julia
+```{code-cell} julia
 struct FooNotTyped  # immutable by default, use `mutable struct` otherwise
     a # BAD! not typed
     b
@@ -370,7 +370,7 @@ end
 
 And another where the types of the fields are chosen
 
-```{code-block} julia
+```{code-cell} julia
 struct Foo
     a::Float64
     b::Int64
@@ -382,7 +382,7 @@ In either case, the compiler generates a function to create new values of the da
 
 It has the same name as the data type but uses function call notion
 
-```{code-block} julia
+```{code-cell} julia
 foo_nt = FooNotTyped(2.0, 3, [1.0, 2.0, 3.0])  # new `FooNotTyped`
 foo = Foo(2.0, 3, [1.0, 2.0, 3.0]) # creates a new `Foo`
 
@@ -411,7 +411,7 @@ Moreover, it is very easy to use the wrong type, or unnecessarily constrain the 
 
 The first example, which is usually just as low-performance as no declaration of types at all, is to accidentally declare it with an abstract type
 
-```{code-block} julia
+```{code-cell} julia
 struct Foo2
     a::Float64
     b::Integer  # BAD! Not a concrete type
@@ -422,7 +422,7 @@ end
 The second issue is that by choosing a type (as in the `Foo` above), you may
 be unnecessarily constraining what is allowed
 
-```{code-block} julia
+```{code-cell} julia
 f(x) = x.a + x.b + sum(x.c) # use the type
 a = 2.0
 b = 3
@@ -447,7 +447,7 @@ foo_nt = FooNotTyped(a, b, c)
 
 Motivated by the above, we can create a type which can adapt to holding fields of different types.
 
-```{code-block} julia
+```{code-cell} julia
 struct Foo3{T1, T2, T3}
     a::T1   # could be any type
     b::T2
@@ -467,7 +467,7 @@ Of course, this is probably too flexible, and the `f` function might not work on
 
 You could constrain the types based on the abstract parent type using the `<:` operator
 
-```{code-block} julia
+```{code-cell} julia
 struct Foo4{T1 <: Real, T2 <: Real, T3 <: AbstractVecOrMat{<:Real}}
     a::T1
     b::T2
@@ -491,7 +491,7 @@ There is no way to avoid learning parametric types to achieve high performance c
 
 However, the other issue where constructor arguments are error-prone, can be remedied with the `Parameters.jl` library.
 
-```{code-block} julia
+```{code-cell} julia
 using Parameters
 
 @with_kw  struct Foo5
@@ -535,7 +535,7 @@ A few simple programming patterns ensure that this is possible
 
 * Do not declare types when declaring variables or functions unless necessary.
   
-  ```{code-block} julia
+  ```{code-cell} julia
   # BAD
   x = [5.0, 6.0, 2.1]
   
@@ -563,7 +563,7 @@ A few simple programming patterns ensure that this is possible
   
 * Preallocate related vectors with `similar` where possible, and use `eltype` or `typeof`. This is important when using Multiple Dispatch given the different input types the function can call
   
-  ```{code-block} julia
+  ```{code-cell} julia
   function g(x)
       y = similar(x)
       for i in eachindex(x)
@@ -577,14 +577,14 @@ A few simple programming patterns ensure that this is possible
   
 * Use `typeof` or `eltype` to declare a type
   
-  ```{code-block} julia
+  ```{code-cell} julia
   @show typeof([1.0, 2.0, 3.0])
   @show eltype([1.0, 2.0, 3.0]);
   ```
   
 * Beware of hidden floating points
   
-  ```{code-block} julia
+  ```{code-cell} julia
   @show typeof(ones(3))
   @show typeof(ones(Int64, 3))
   @show typeof(zeros(3))
@@ -593,7 +593,7 @@ A few simple programming patterns ensure that this is possible
   
 * Use `one` and `zero` to write generic code
   
-  ```{code-block} julia
+  ```{code-cell} julia
   @show typeof(1)
   @show typeof(1.0)
   @show typeof(BigFloat(1.0))
@@ -611,7 +611,7 @@ This last example is a subtle, because of something called [type promotion](http
 
 * Assume reasonable type promotion exists for numeric types
   
-  ```{code-block} julia
+  ```{code-cell} julia
   # ACCEPTABLE
   function g(x::AbstractFloat)
       return x + 1.0   # assumes `1.0` can be converted to something compatible with `typeof(x)`
@@ -623,7 +623,7 @@ This last example is a subtle, because of something called [type promotion](http
   ```
   But sometimes assuming promotion is not enough
   
-  ```{code-block} julia
+  ```{code-cell} julia
   # BAD
   function g2(x::AbstractFloat)
       if x > 0.0   # can't efficiently call with `x::Integer`
@@ -719,7 +719,7 @@ Without realizing it, in nearly every function call within packages or the stand
 
 To see this in action, consider the absolute value function `abs`
 
-```{code-block} julia
+```{code-cell} julia
 @show abs(-1)   # `Int64`
 @show abs(-1.0)  # `Float64`
 @show abs(0.0 - 1.0im);  # `Complex{Float64}`
@@ -733,7 +733,7 @@ Unlike most cases we have seen before, this requires a type annotation.
 
 To rewrite the `abs` function
 
-```{code-block} julia
+```{code-cell} julia
 function ourabs(x::Real)
     if x > zero(x)   # note, not 0!
         return x
@@ -753,7 +753,7 @@ end
 
 Note that in the above, `x` works for any type of `Real`, including `Int64`, `Float64`, and ones you may not have realized exist
 
-```{code-block} julia
+```{code-cell} julia
 x = -2//3  # `Rational` number, -2/3
 @show typeof(x)
 @show ourabs(x);
@@ -782,7 +782,7 @@ To implement this calculation for a vector of inputs, we notice that there is a 
 The uniform grid can be implemented using an `AbstractRange`, which we can analyze with
 `typeof`, `supertype` and `show_supertypes`.
 
-```{code-block} julia
+```{code-cell} julia
 x = range(0.0, 1.0, length = 20)
 x_2 = 1:1:20   # if integers
 
@@ -793,24 +793,24 @@ x_2 = 1:1:20   # if integers
 
 To see the entire tree about a particular type, use `show_supertypes`.
 
-```{code-block} julia
+```{code-cell} julia
 show_supertypes(typeof(x))  # or typeof(x) |> show_supertypes
 ```
 
-```{code-block} julia
+```{code-cell} julia
 show_supertypes(typeof(x_2))
 ```
 
 The types of the range objects can be very complicated, but are both subtypes of `AbstractRange`.
 
-```{code-block} julia
+```{code-cell} julia
 @show typeof(x) <: AbstractRange
 @show typeof(x_2) <: AbstractRange;
 ```
 
 While you may not know the exact concrete type, any `AbstractRange` has an informal set of operations that are available.
 
-```{code-block} julia
+```{code-cell} julia
 @show minimum(x)
 @show maximum(x)
 @show length(x)
@@ -819,7 +819,7 @@ While you may not know the exact concrete type, any `AbstractRange` has an infor
 
 Similarly, there are a number of operations available for any `AbstractVector`, such as `length`.
 
-```{code-block} julia
+```{code-cell} julia
 f(x) = x^2
 f_x = f.(x)  # calculating at the range values
 
@@ -829,7 +829,7 @@ f_x = f.(x)  # calculating at the range values
 @show length(f_x);   # and many more
 ```
 
-```{code-block} julia
+```{code-cell} julia
 show_supertypes(typeof(f_x))
 ```
 
@@ -850,13 +850,13 @@ Hence, we can call this function for anything of type `AbstractVector`.
 
 Finally, we can make a high performance specialization for any `AbstractVector` and `AbstractRange`.
 
-```{code-block} julia
+```{code-cell} julia
 slopes(f_x::AbstractVector, x::AbstractRange) = diff(f_x) / step(x)
 ```
 
 We can use auto-differentiation to compare the results.
 
-```{code-block} julia
+```{code-cell} julia
 using Plots, ForwardDiff
 gr(fmt = :png);
 
@@ -877,7 +877,7 @@ plot!(x[1:end-1], q_slopes_x, label = "q slopes")
 
 Consider a variation where we pass a function instead of an `AbstractArray`
 
-```{code-block} julia
+```{code-cell} julia
 slopes(f::Function, x::AbstractRange) = diff(f.(x)) / step(x)  # broadcast function
 
 @show typeof(q) <: Function
@@ -890,7 +890,7 @@ Finally, if `x` was an `AbstractArray` and not an `AbstractRange` we can no long
 
 For this, we add in a version calculating slopes with forward first-differences
 
-```{code-block} julia
+```{code-cell} julia
 # broadcasts over the diff
 slopes(f::Function, x::AbstractArray) = diff(f.(x)) ./ diff(x)
 
@@ -914,7 +914,7 @@ Explore the package [StaticArrays.jl](https://github.com/JuliaArrays/StaticArray
 * Benchmark the calculation of some simple linear algebra with a static array
   compared to the following for a dense array for `N = 3` and `N = 15`.
 
-```{code-block} julia
+```{code-cell} julia
 using BenchmarkTools
 
 N = 3
@@ -931,7 +931,7 @@ A key step in the calculation of the Kalman Filter is calculation of the Kalman 
 
 Using what you learned from Exercise 1, benchmark this using Static Arrays
 
-```{code-block} julia
+```{code-cell} julia
 Σ = [0.4  0.3;
      0.3  0.45]
 G = I
@@ -947,7 +947,7 @@ How many times faster are static arrays in this example?
 
 The [Polynomial.jl](https://github.com/JuliaMath/Polynomials.jl) provides a package for simple univariate Polynomials.
 
-```{code-block} julia
+```{code-cell} julia
 using Polynomials
 
 p = Polynomial([2, -5, 2], :x)  # :x just gives a symbol for display
@@ -997,7 +997,7 @@ With these:
 When trying different functions, instead of integrating by hand consider using a high-accuracy
 library for numerical integration such as [QuadGK.jl](https://juliamath.github.io/QuadGK.jl/latest/)
 
-```{code-block} julia
+```{code-cell} julia
 using QuadGK
 
 f(x) = x^2
@@ -1017,7 +1017,7 @@ $$
 Hint: See the following code for the general pattern, and be careful to
 follow the {ref}`rules for generic programming <generic_tips_tricks>`.
 
-```{code-block} julia
+```{code-cell} julia
 using ForwardDiff
 
 function f(a, b; N = 50)

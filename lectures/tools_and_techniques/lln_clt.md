@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (lln_clt)=
@@ -218,20 +218,20 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using Plots, Distributions, Random, Statistics
 gr(fmt = :png, size = (900, 500))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function ksl(distribution, n = 100)
     title = nameof(typeof(distribution))
     observations = rand(distribution, n)
@@ -251,22 +251,22 @@ function ksl(distribution, n = 100)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 distributions = [TDist(10), Beta(2, 2), Gamma(5, 2), Poisson(4), LogNormal(0.5),
                  Exponential(1)]
 ```
 
 Here is in an example for the standard normal distribution
 
-```{code-block} julia
+```{code-cell} julia
 ksl(Normal())
 ```
 
-```{code-block} julia
+```{code-cell} julia
 Random.seed!(0); # reproducible results
 ```
 
-```{code-block} julia
+```{code-cell} julia
 plot(ksl.(sample(distributions, 3, replace = false))..., layout = (3, 1), legend = false)
 ```
 
@@ -285,11 +285,11 @@ $$
 
 The next figure shows 100 independent draws from this distribution
 
-```{code-block} julia
+```{code-cell} julia
 Random.seed!(0); # reproducible results
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ksl(Cauchy())
 ```
 
@@ -297,11 +297,11 @@ Notice how extreme observations are far more prevalent here than the previous fi
 
 Let's now have a look at the behavior of the sample mean
 
-```{code-block} julia
+```{code-cell} julia
 Random.seed!(0); # reproducible results
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function plot_means(n = 1000)
     sample_mean = cumsum(rand(Cauchy(), n)) ./ (1:n)
     plot(1:n, sample_mean, color = :red, alpha = 0.6, label = "Sample Mean", linewidth = 3)
@@ -400,14 +400,14 @@ Think of $X_i = 1$ as a "success", so that $Y_n = \sum_{i=1}^n X_i$ is the numbe
 
 The next figure plots the probability mass function of $Y_n$ for $n = 1, 2, 4, 8$
 
-```{code-block} julia
+```{code-cell} julia
 binomial_pdf(n) =
     bar(0:n, pdf.(Binomial(n), 0:n),
         xticks = 0:10, ylim = (0, 1), yticks = 0:0.1:1,
         label = "Binomial($n, 0.5)", legend = :topleft)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 plot(binomial_pdf.((1,2,4,8))...)
 ```
 
@@ -452,7 +452,7 @@ $F(x) = 1 - e^{- \lambda x}$.
 
 (Please experiment with other choices of $F$, but remember that, to conform with the conditions of the CLT, the distribution must have finite second moment)
 
-```{code-block} julia
+```{code-cell} julia
 using StatsPlots
 
 function simulation1(distribution, n = 250, k = 10_000)
@@ -467,7 +467,7 @@ function simulation1(distribution, n = 250, k = 10_000)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 simulation1(Exponential(0.5))
 ```
 
@@ -495,7 +495,7 @@ specified as the convex combination of three different beta densities.
 
 (Taking a convex combination is an easy way to produce an irregular shape for $f$)
 
-```{code-block} julia
+```{code-cell} julia
 function simulation2(distribution = Beta(2, 2), n = 5, k = 10_000)
     y = rand(distribution, k, n)
     for col in 1:n
@@ -506,7 +506,7 @@ function simulation2(distribution = Beta(2, 2), n = 5, k = 10_000)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ys = simulation2()
 plots = [] # would preallocate in optimized code
 for i in 1:size(ys, 2)
@@ -790,14 +790,14 @@ Hints:
 
 Here is one solution
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(0);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function exercise1(distribution = Uniform(0, π/2); n = 250, k = 10_000, g = sin, g′ = cos)
     μ, σ = mean(distribution), std(distribution)
     y = rand(distribution, n, k)
@@ -868,14 +868,14 @@ Now we turn to the simulation exercise.
 
 Our solution is as follows
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(0);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function exercise2(;n = 250, k = 50_000, dw = Uniform(-1, 1), du = Uniform(-2, 2))
     vw = var(dw)
     vu = var(du)

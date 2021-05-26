@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (rob)=
@@ -149,7 +149,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -932,14 +932,14 @@ We compute value-entropy correspondences for two policies.
 
 The code for producing the graph shown above, with blue being for the robust policy, is as follows
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon, Plots, LinearAlgebra, Interpolations
 gr(fmt = :png);
 
@@ -1041,7 +1041,7 @@ plot!(egrid, egrid_data[3], fillrange=egrid_data[4],
 plot!(xlabel="Entropy", ylabel="Value")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

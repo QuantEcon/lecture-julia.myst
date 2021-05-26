@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (kalman)=
@@ -51,7 +51,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -110,19 +110,19 @@ $2 \times 2$ covariance matrix.  In our simulations, we will suppose that
 
 This density $p(x)$ is shown below as a contour map, with the center of the red ellipse being equal to $\hat x$
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Plots, Distributions
 gr(fmt = :png); # plots setup
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [output_scroll]
 ---
@@ -157,7 +157,7 @@ contour!(x_grid, y_grid, two_args_to_pdf(dist), fill = false, lw=1,
          color = :grays, cbar = false)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -176,7 +176,7 @@ The good news is that the missile has been located by our sensors, which report 
 The next figure shows the original prior $p(x)$ and the new reported
 location $y$
 
-```{code-block} julia
+```{code-cell} julia
 # plot the figure
 annotate!(y[1], y[2], "y", color = :black)
 ```
@@ -239,7 +239,7 @@ This new density $p(x \,|\, y) = N(\hat x^F, \Sigma^F)$ is shown in the next fig
 
 The original density is left in as contour lines for comparison
 
-```{code-block} julia
+```{code-cell} julia
 # define posterior objects
 M = Σ * G' * inv(G * Σ * G' + R)
 x̂_F = x̂ + M * (y - G * x̂)
@@ -255,7 +255,7 @@ contour!(x_grid, y_grid, two_args_to_pdf(dist), fill = false, levels = 7, lw=1,
          color = :grays, cbar = false)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -355,7 +355,7 @@ A
 Q = 0.3 * \Sigma
 $$
 
-```{code-block} julia
+```{code-cell} julia
 # get the predictive distribution
 new_x̂ = A * x̂_F
 new_Σ = A * Σ_F * A' + Q
@@ -371,7 +371,7 @@ contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false, levels = 7,
 annotate!(y[1], y[2], "y", color = :black)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -606,13 +606,13 @@ The interpretation is that more randomness in the law of motion for $x_t$ causes
 
 ## Solutions
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon
 ```
 
 ### Exercise 1
 
-```{code-block} julia
+```{code-cell} julia
 # parameters
 θ = 10
 A, G, Q, R = 1.0, 1.0, 0.0, 1.0
@@ -641,7 +641,7 @@ plot(xgrid, densities, label = labels, legend = :topleft, grid = false,
      title = "First 5 densities when theta = $θ")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -653,7 +653,7 @@ end
 
 ### Exercise 2
 
-```{code-block} julia
+```{code-cell} julia
 using Random, Expectations
 Random.seed!(43)  # reproducible results
 ϵ = 0.1
@@ -678,7 +678,7 @@ plot(1:T, z, fillrange = 0, color = :blue, fillalpha = 0.2, grid = false, xlims=
      legend = false)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -690,14 +690,14 @@ end
 
 ### Exercise 3
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);  # reproducible results
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # define A, Q, G, R
 G = I + zeros(2, 2)
 R = 0.5 .* G
@@ -748,7 +748,7 @@ plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6,
       label = "conditional expectation error")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

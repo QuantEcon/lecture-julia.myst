@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (opt_tax_recur)=
@@ -63,7 +63,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using QuantEcon, NLsolve, NLopt, Interpolations
 ```
@@ -716,14 +716,14 @@ R_0 =  \beta  \sum_{s=1}^S \Pi(s | s_0) \frac{u_c(s)}{u_{c,0}}
 
 The above steps are implemented in a type called SequentialAllocation
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [output_scroll]
 ---
@@ -1299,7 +1299,7 @@ through them, the value of initial government debt $b_0$.
 
 The above steps are implemented in a type called RecursiveAllocation
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [output_scroll]
 ---
@@ -1496,7 +1496,7 @@ utility as a function of $n$ rather than leisure $l$.
 
 This utility function is implemented in the type CRRAutility
 
-```{code-block} julia
+```{code-cell} julia
 function crra_utility(;
     β = 0.9,
     σ = 2.0,
@@ -1532,7 +1532,7 @@ We can now plot the Ramsey tax  under both realizations of time $t = 3$ governme
 * black when $g_3 = .1$, and
 * red when $g_3 = .2$
 
-```{code-block} julia
+```{code-cell} julia
 using Random
 Random.seed!(42) # For reproducible results.
 
@@ -1579,7 +1579,7 @@ end
 plot(plots)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1633,7 +1633,7 @@ rate under both realizations of the time $t=3$ government expenditure shock.
 The following plot illustrates how the government lowers the interest rate at
 time 0 by raising consumption
 
-```{code-block} julia
+```{code-cell} julia
 plot(sim_seq_l[end], color=:black, lw=2,
         marker=:circle, markersize=2, label="")
 plot!(sim_seq_h[end], color=:red, lw=2,
@@ -1699,14 +1699,14 @@ $t=0$ and time $t\geq1$ as functions of the initial government debt
 (using the sequential allocation solution and a CRRA utility function defined
 above)
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42); # For reproducible results.
 ```
 
-```{code-block} julia
+```{code-cell} julia
 M2 = crra_utility(G=[0.15], Π=ones(1, 1), Θ=[1.0])
 
 PP_seq_time0 = SequentialAllocation(M2) # solve sequential problem
@@ -1725,7 +1725,7 @@ end
 plot(plots)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1780,7 +1780,7 @@ The figure below shows both  the tax rate  at time 1 chosen by our original
 Ramsey planner and what a new Ramsey planner would choose for its
 time $t=0$ tax rate
 
-```{code-block} julia
+```{code-cell} julia
 # Compute the debt entered with at time 1
 B1_vec = hcat([simulate(PP_seq_time0, B_, 1, 2)[3][2] for B_ in B_vec]...)'
 
@@ -1824,7 +1824,7 @@ $$
 
 We will write a new constructor LogUtility to represent this utility function
 
-```{code-block} julia
+```{code-cell} julia
 function log_utility(;β = 0.9,
                       ψ = 0.69,
                       Π = 0.5 * ones(2, 2),
@@ -1850,14 +1850,14 @@ To compute the tax rate, we will use both the sequential and recursive approache
 
 The figure below plots a sample path of the Ramsey tax rate
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42); # For reproducible results.
 ```
 
-```{code-block} julia
+```{code-cell} julia
 M1 = log_utility()
 μ_grid = range(-0.6,  0.0, length = 200)
 PP_seq = SequentialAllocation(M1)         # Solve sequential problem
@@ -1893,7 +1893,7 @@ end
 plot(plots)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

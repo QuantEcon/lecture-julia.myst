@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (iterative_methods_sparsity)=
@@ -38,7 +38,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -105,7 +105,7 @@ and should be thought of as roughly equivalent to doing an eigendecomposition.  
 
 Let's look at the condition number of a few matrices using the `cond` function (which allows a choice of the norm, but we'll stick with the default 2-norm).
 
-```{code-block} julia
+```{code-cell} julia
 A = I(2)
 cond(A)
 ```
@@ -114,7 +114,7 @@ Here we see an example of the best-conditioned matrix, the identity matrix with 
 
 On the other hand, notice that
 
-```{code-block} julia
+```{code-cell} julia
 ϵ = 1E-6
 A = [1.0 0.0
      1.0 ϵ]
@@ -124,19 +124,19 @@ cond(A)
 has a condition number of order `10E6` - and hence (taking the base-10 log) you would expect to be introducing numerical errors of about 6 significant digits if you
 are not careful.  For example, note that the inverse has both extremely large and extremely small negative numbers
 
-```{code-block} julia
+```{code-cell} julia
 inv(A)
 ```
 
 Since we know that the determinant of nearly collinear matrices is close to zero, this shows another symptom of poor conditioning
 
-```{code-block} julia
+```{code-cell} julia
 det(A)
 ```
 
 However, be careful since the determinant has a scale, while the condition number is dimensionless.  That is,
 
-```{code-block} julia
+```{code-cell} julia
 @show det(1000 * A)
 @show cond(1000 * A);
 ```
@@ -150,7 +150,7 @@ Multiplying a matrix by a constant does not change the condition number.  What a
 
 For this example, we see that the inverse has the same condition number (though this will not always be the case).
 
-```{code-block} julia
+```{code-cell} julia
 @show cond(A)
 @show cond(inv(A));
 ```
@@ -160,7 +160,7 @@ even more ill-conditioned.
 
 This comes up frequently when calculating the product of a matrix and its transpose (e.g., forming the covariance matrix).  A classic example is the [Läuchli matrix](https://link.springer.com/article/10.1007%2FBF01386022).
 
-```{code-block} julia
+```{code-cell} julia
 lauchli(N, ϵ) = [ones(N)'; ϵ * I(N)]'
 ϵ = 1E-8
 L = lauchli(3, ϵ) |> Matrix
@@ -168,7 +168,7 @@ L = lauchli(3, ϵ) |> Matrix
 
 Note that the condition number increases substantially
 
-```{code-block} julia
+```{code-cell} julia
 @show cond(L)
 @show cond(L' * L);
 ```
@@ -179,26 +179,26 @@ means it is difficult to distinguish these from $0$.
 This comes up when conducting [Principal Component Analysis](https://en.wikipedia.org/wiki/Principal_component_analysis#Singular_value_decomposition), which
 requires calculations of the eigenvalues of the covariance matrix
 
-```{code-block} julia
+```{code-cell} julia
 sort(sqrt.(Complex.(eigen(L*L').values)), lt = (x,y) -> abs(x) < abs(y))
 ```
 
 Note that these are significantly different than the known analytic solution and, in particular, are difficult to distinguish from 0.
 
-```{code-block} julia
+```{code-cell} julia
 sqrt.([3 + ϵ^2, ϵ^2, ϵ^2]) |> sort
 ```
 
 Alternatively, we could calculate these by taking the square of the singular values of $L$ itself, which is much more accurate
 and lets us clearly distinguish from zero
 
-```{code-block} julia
+```{code-cell} julia
 svd(L).S  |> sort
 ```
 
 Similarly, we are better off calculating least squares directly rather than forming the normal equation (i.e., $A' A x = A' b$) ourselves
 
-```{code-block} julia
+```{code-cell} julia
 N = 3
 A = lauchli(N, 1E-7)' |> Matrix
 b = rand(N+1)
@@ -247,7 +247,7 @@ $$
 
 Implementing this for the interpolation of the $exp(x)$ function
 
-```{code-block} julia
+```{code-cell} julia
 N = 5
 f(x) = exp(x)
 x = range(0.0, 10.0, length = N+1)
@@ -266,14 +266,14 @@ is reasonable for many problems.
 
 But note that with $N=5$ the condition number is already of order `1E6`.
 
-```{code-block} julia
+```{code-cell} julia
 cond(A)
 ```
 
 What if we increase the degree of the polynomial with the hope of increasing the precision of the
 interpolation?
 
-```{code-block} julia
+```{code-cell} julia
 N = 10
 f(x) = exp(x)
 x = range(0.0, 10.0, length = N+1)
@@ -290,7 +290,7 @@ introduced an error of about `1E-5`, even at the interpolation points themselves
 
 This blows up quickly
 
-```{code-block} julia
+```{code-cell} julia
 N = 20
 f(x) = exp(x)
 x = range(0.0, 10.0, length = N+1)
@@ -304,7 +304,7 @@ norm(A * c - f.(x), Inf)
 
 To see the source of the problem, note that the condition number is astronomical.
 
-```{code-block} julia
+```{code-cell} julia
 cond(A)
 ```
 
@@ -312,7 +312,7 @@ At this point, you should be suspicious of the use of `inv(A)`, since we have co
 linear systems by taking the inverse as verboten.  Indeed, this made things much worse.  The
 error drops dramatically if we solve it as a linear system
 
-```{code-block} julia
+```{code-cell} julia
 c = A \ y
 norm(A * c - f.(x), Inf)
 ```
@@ -338,7 +338,7 @@ $$
 
 First, interpolate with $N = 5$ and avoid taking the inverse.  In that case, as long as we avoid taking an inverse, the numerical errors from the ill-conditioned matrix are manageable.
 
-```{code-block} julia
+```{code-cell} julia
 using Plots
 gr(fmt=:png);
 
@@ -367,7 +367,7 @@ approximation has a great deal of error everywhere else.
 The oscillations near the boundaries are the hallmarks of Runge's Phenomenon.  You might guess that increasing the number
 of grid points and the order of the polynomial will lead to better approximations:
 
-```{code-block} julia
+```{code-cell} julia
 N = 9
 x = range(-1.0, 1.0, length = N+1)
 y = g.(x)
@@ -390,7 +390,7 @@ We can minimize the numerical problems of an ill-conditioned basis matrix by cho
 
 For example, [Chebyshev polynomials](https://en.wikipedia.org/wiki/Chebyshev_polynomials) form an orthonormal basis under an appropriate inner product, and we can form precise high-order approximations, with very little numerical error
 
-```{code-block} julia
+```{code-cell} julia
 using ApproxFun
 N = 10000
 S = Chebyshev(-1.0..1.0)  # form Chebyshev basis
@@ -457,7 +457,7 @@ the characteristics of convergence and how they relate to matrix conditioning.
 
 First, we will solve with a direct method, which will give the solution to machine precision.
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, IterativeSolvers, Statistics
 α = 0.1
 N = 100
@@ -542,7 +542,7 @@ The package [IterativeSolvers.jl](https://github.com/JuliaMath/IterativeSolvers.
 
 For our example, we start with a guess and solve for the value function and iterate
 
-```{code-block} julia
+```{code-cell} julia
 using IterativeSolvers, LinearAlgebra, SparseArrays
 v = zeros(N)
 jacobi!(v, A, r, maxiter = 40)
@@ -564,7 +564,7 @@ $$
 
 In that case, since the $L$ matrix is triangular, the system can be solved in $O(N^2)$ operations after $b - U x^k$ is formed
 
-```{code-block} julia
+```{code-cell} julia
 v = zeros(N)
 gauss_seidel!(v, A, r, maxiter = 40)
 @show norm(v - v_direct, Inf);
@@ -582,7 +582,7 @@ $$
 
 In that case, $D + \omega L$ is a triangular matrix, and hence the linear solution is $O(N^2)$.
 
-```{code-block} julia
+```{code-cell} julia
 v = zeros(N)
 sor!(v, A, r, 1.1, maxiter = 40)
 @show norm(v - v_direct, Inf);
@@ -603,7 +603,7 @@ symmetric and positive definite.
 
 Solving an example:
 
-```{code-block} julia
+```{code-cell} julia
 N = 100
 A = sprand(100, 100, 0.1)   # 10 percent non-zeros
 A = A * A'  # easy way to generate a symmetric positive-definite matrix
@@ -617,7 +617,7 @@ Notice that the condition numbers tend to be large for large random matrices.
 
 Solving this system with the conjugate gradient method:
 
-```{code-block} julia
+```{code-cell} julia
 x = zeros(N)
 sol = cg!(x, A, b, log=true, maxiter = 1000)
 sol[end]
@@ -653,7 +653,7 @@ resulting system and they lower the condition number of the matrix.  To see this
 
 The diagonal precondition is simply `P = Diagonal(A)`.  Depending on the matrix, this can change the condition number a little or a lot.
 
-```{code-block} julia
+```{code-cell} julia
 AP = A * inv(Diagonal(A))
 @show cond(Matrix(A))
 @show cond(Matrix(AP));
@@ -661,7 +661,7 @@ AP = A * inv(Diagonal(A))
 
 But it may or may not decrease the number of iterations
 
-```{code-block} julia
+```{code-cell} julia
 using Preconditioners
 x = zeros(N)
 P = DiagonalPreconditioner(A)
@@ -671,7 +671,7 @@ sol[end]
 
 Another classic preconditioner is the incomplete LU decomposition
 
-```{code-block} julia
+```{code-cell} julia
 using IncompleteLU
 x = zeros(N)
 P = ilu(A, τ = 0.1)
@@ -685,7 +685,7 @@ A good rule of thumb is that you should almost always be using a preconditioner 
 
 Finally, naively trying another preconditioning approach (called [Algebraic Multigrid](https://en.wikipedia.org/wiki/Multigrid_method#Algebraic_MultiGrid_%28AMG%29)) gives us a further drop in the number of iterations.
 
-```{code-block} julia
+```{code-cell} julia
 x = zeros(N)
 P = AMGPreconditioner{RugeStuben}(A)
 sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
@@ -703,7 +703,7 @@ On the other hand, if there is no structure to a sparse matrix, then GMRES is a 
 
 To experiment with these methods, we will use our ill-conditioned interpolation problem with a monomial basis.
 
-```{code-block} julia
+```{code-cell} julia
 using IterativeSolvers
 
 N = 10
@@ -718,7 +718,7 @@ println("cond(A) = $(cond(Matrix(A))), $(results[end]) Norm error $(norm(A*c - y
 
 That method converged in 11 iterations.  Now if we try it with an incomplete LU preconditioner, we see that it converges immediately.
 
-```{code-block} julia
+```{code-cell} julia
 N = 10
 f(x) = exp(x)
 x = range(0.0, 10.0, length = N+1)
@@ -737,7 +737,7 @@ however, to consider the cost of the preconditioning process in your problem.
 
 First, lets use a Krylov method to solve our simple valuation problem
 
-```{code-block} julia
+```{code-cell} julia
 α = 0.1
 N = 100
 Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
@@ -767,7 +767,7 @@ $$
 
 This can be implemented as a function (either in-place or out-of-place) which calculates $y = A x$
 
-```{code-block} julia
+```{code-cell} julia
 A_mul(x) = [ (ρ + α) * x[1] - α * x[2];
              [-α * x[i-1] + (ρ + 2*α) * x[i] - α * x[i+1] for i in 2:N-1];  # comprehension
              - α * x[end-1] + (ρ + α) * x[end]]
@@ -788,14 +788,14 @@ is just one possible implementation of the abstract concept of a linear operator
 Convenience wrappers can provide some of the boilerplate which turns the `A_mul` function into something that behaves like a matrix.  One
 package is [LinearMaps.jl](https://github.com/Jutho/LinearMaps.jl) and another is [LinearOperators.jl](https://github.com/JuliaSmoothOptimizers/LinearOperators.jl)
 
-```{code-block} julia
+```{code-cell} julia
 using LinearMaps
 A_map = LinearMap(A_mul, N)  # map uses the A_mul function
 ```
 
 Now, with the `A_map` object, we can fulfill many of the operations we would expect from a matrix
 
-```{code-block} julia
+```{code-cell} julia
 x = rand(N)
 @show norm(A_map * x  - A * x)
 y = similar(x)
@@ -811,7 +811,7 @@ the full matrix.  This should be used only for testing purposes.
 
 But notice that as the linear operator does not have indexing operations, it is not an array or a matrix.
 
-```{code-block} julia
+```{code-cell} julia
 typeof(A_map) <: AbstractArray
 ```
 
@@ -820,7 +820,7 @@ unnecessarily constrained to be `Matrix` or `AbstractArray` when it isn't strict
 
 For example, the Krylov methods in `IterativeSolvers.jl` are written for generic left-multiplication
 
-```{code-block} julia
+```{code-cell} julia
 results = gmres(A_map, r, log = true)  # Krylov method using the matrix-free type
 println("$(results[end])")
 ```
@@ -829,7 +829,7 @@ These methods are typically not competitive with sparse, direct methods unless t
 we often want to work with pre-allocated vectors.  Instead of using `y = A * x` for matrix-vector products,
 we would use the in-place `mul!(y, A, x)` function.  The wrappers for linear operators all support in-place non-allocating versions for this purpose.
 
-```{code-block} julia
+```{code-cell} julia
 function A_mul!(y, x)  # in-place version
     y[1] = (ρ + α) * x[1] - α * x[2]
     for i in 2:N-1
@@ -851,7 +851,7 @@ it would be for matrices $A, B$ and scalars $c_1, c_2$.
 
 For example, take $2 A x + x = (2 A + I) x \equiv B x$ as a new linear map,
 
-```{code-block} julia
+```{code-cell} julia
 B = 2.0 * A_map  + I  # composite linear operator
 B * rand(N)  # left-multiply works with the composition
 typeof(B)
@@ -863,7 +863,7 @@ graph of the expression (i.e., `LinearCombination`) and implementing the left-mu
 Another example is to solve the $\rho v = r + Q v$ equation for $v$ with composition of matrix-free methods for $L$
 rather than by creating the full $A = \rho - Q$ operator, which we implemented as `A_mul`
 
-```{code-block} julia
+```{code-cell} julia
 Q_mul(x) = [ -α * x[1] +     α * x[2];
             [α * x[i-1] - 2*α * x[i] + α*x[i+1] for i in 2:N-1];  # comprehension
             α * x[end-1] - α * x[end];]
@@ -894,7 +894,7 @@ damping parameter, the normalized equations would become $(A'A + \lambda^2 I) x 
 
 We can compare solving the least-squares problem with LSMR and direct methods
 
-```{code-block} julia
+```{code-cell} julia
 M = 1000
 N = 10000
 σ = 0.1
@@ -913,7 +913,7 @@ Note that rather than forming this version of the normal equations, the LSMR alg
 solution.  Unlike the previous versions, the left-multiply is insufficient since the least squares also deals with the transpose of the operator.  For this reason, in order to use
 matrix-free methods, we need to define the `A * x` and `transpose(A) * y` functions separately.
 
-```{code-block} julia
+```{code-cell} julia
 # Could implement as matrix-free functions.
 X_func(u) = X * u  # matrix-vector product
 X_T_func(v) = X' * v  # i.e., adjoint-vector product
@@ -942,7 +942,7 @@ to use is [Arpack.jl](https://julialinearalgebra.github.io/Arpack.jl/latest/).
 
 As an example,
 
-```{code-block} julia
+```{code-cell} julia
 using Arpack, LinearAlgebra
 N = 1000
 A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
@@ -969,7 +969,7 @@ take the Markov chain for a simple counting process:
 
 First, finding the transition matrix $P$ and its adjoint directly as a check
 
-```{code-block} julia
+```{code-cell} julia
 θ = 0.1
 ζ = 0.05
 N = 5
@@ -979,7 +979,7 @@ P'
 
 Implementing the adjoint-vector product directly, and verifying that it gives the same matrix as the adjoint
 
-```{code-block} julia
+```{code-cell} julia
 P_adj_mul(x) = [ (1-θ) * x[1] + ζ * x[2];
                 [θ * x[i-1] + (1-θ-ζ) * x[i] + ζ * x[i+1] for i in 2:N-1];  # comprehension
             θ * x[end-1] + (1-ζ) * x[end];]
@@ -989,7 +989,7 @@ P_adj_map = LinearMap(P_adj_mul, N)
 
 Finally, solving for the stationary distribution using the matrix-free method (which could be verified against the decomposition approach of $P'$)
 
-```{code-block} julia
+```{code-cell} julia
 λ, ϕ = eigs(P_adj_map, nev=1, which=:LM, maxiter=1000)
 ϕ = real(ϕ) ./ sum(real(ϕ))
 @show λ
@@ -1039,7 +1039,7 @@ approach is to enumerate them in the same order as the $K$-dimensional Cartesian
 
 This can be done with the `CartesianIndices` function, which is used internally in Julia for the `eachindex` function.  For example,
 
-```{code-block} julia
+```{code-cell} julia
 N = 2
 M = 3
 shape = Tuple(fill(N, M))
@@ -1054,14 +1054,14 @@ The added benefit of this approach is that it will be the most efficient way to 
 
 For the counting process with arbitrary dimensions, we will frequently be incrementing or decrementing the $m$ unit vectors of the `CartesianIndex` type with
 
-```{code-block} julia
+```{code-cell} julia
 e_m = [CartesianIndex((1:M .== i)*1...)  for i in 1:M]
 ```
 
 and then use the vector to increment.  For example, if the current count is `(1, 2, 2)` and we want to add a count of `1` to the first index and remove a count
 of `1` from the third index, then
 
-```{code-block} julia
+```{code-cell} julia
 ind = CartesianIndex(1, 2, 2)  # example counts coming from CartesianIndices
 @show ind + e_m[1]  # increment the first index
 @show ind - e_m[3];  # decrement the third index
@@ -1069,7 +1069,7 @@ ind = CartesianIndex(1, 2, 2)  # example counts coming from CartesianIndices
 
 This works, of course, because the `CartesianIndex` type is written to support efficient addition and subtraction.  Finally, to implement the operator, we need to count the indices in the states where increment and decrement occurs.
 
-```{code-block} julia
+```{code-cell} julia
 @show ind
 @show count(ind.I .> 1)
 @show count(ind.I .< N);
@@ -1078,7 +1078,7 @@ This works, of course, because the `CartesianIndex` type is written to support e
 With this, we are now able to write the $Q$ operator on the $f$ vector, which is enumerated by the Cartesian indices.  First, collect the
 parameters in a named tuple generator
 
-```{code-block} julia
+```{code-cell} julia
 using Parameters, BenchmarkTools
 default_params = @with_kw (θ = 0.1, ζ = 0.05, ρ = 0.03, N = 10, M = 6,
                            shape = Tuple(fill(N, M)),  # for reshaping vector to M-d array
@@ -1087,7 +1087,7 @@ default_params = @with_kw (θ = 0.1, ζ = 0.05, ρ = 0.03, N = 10, M = 6,
 
 Next, implement the in-place matrix-free product
 
-```{code-block} julia
+```{code-cell} julia
 function Q_mul!(dv, v, p)
     @unpack θ, ζ, N, M, shape, e_m = p
     v = reshape(v, shape)  # now can access v, dv as M-dim arrays
@@ -1123,7 +1123,7 @@ customer of type $m$.  For example, if the state of the firm is $(n_1, n_2, n_3)
 
 Given this profit function, we can write the simple Bellman equation in our standard form of $\rho v = r + Q v$, defining the appropriate payoff $r$.  For example, if $z_m = m^2$, then
 
-```{code-block} julia
+```{code-cell} julia
 function r_vec(p)
     z = (1:p.M).^2  # payoffs per type m
     r = [0.5 * dot(ind.I, z)  for ind in CartesianIndices(p.shape)]
@@ -1140,7 +1140,7 @@ Since the ordering of $r$ is consistent with that of $Q$, we can solve $(\rho - 
 Below, we create a linear operator and compare the algorithm for a few different iterative methods [(GMRES, BiCGStab(l), IDR(s), etc.)](https://juliamath.github.io/IterativeSolvers.jl/dev/#What-method-should-I-use-for-linear-systems?-1) with a small problem
 of only 10,000 possible states.
 
-```{code-block} julia
+```{code-cell} julia
 p = default_params(N=10, M=4)
 Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
 A = p.ρ * I - Q
@@ -1166,7 +1166,7 @@ The different iterative methods have tradeoffs when it comes to accuracy, speed,
 
 Putting everything together to solving much larger systems with GMRES as our linear solvers
 
-```{code-block} julia
+```{code-cell} julia
 function solve_bellman(p; iv = zeros(p.N^p.M))
     @unpack ρ, N, M = p
     Q = LinearMap((df, f) -> Q_mul!(df, f, p), N^M, ismutating = true)
@@ -1210,7 +1210,7 @@ $$
 \end{align}
 $$
 
-```{code-block} julia
+```{code-cell} julia
 function Q_T_mul!(dψ, ψ, p)
     @unpack θ, ζ, N, M, shape, e_m = p
     ψ = reshape(ψ, shape)
@@ -1235,7 +1235,7 @@ end
 The `sparse` function for the operator is useful for testing that the function is correct, and is the adjoint of
 our `Q` operator.
 
-```{code-block} julia
+```{code-cell} julia
 p = default_params(N=5, M=4)  # sparse is too slow for the full matrix
 Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
 Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
@@ -1245,7 +1245,7 @@ Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
 As discussed previously, the steady state can be found as the eigenvector associated with the zero eigenvalue (i.e., the one that solves $Q^T \psi = 0 \psi$).  We could
 do this with a dense eigenvalue solution for relatively small matrices
 
-```{code-block} julia
+```{code-cell} julia
 p = default_params(N=5, M=4)
 eig_Q_T = eigen(Matrix(Q_T))
 vec = real(eig_Q_T.vectors[:,end])
@@ -1267,7 +1267,7 @@ iteratively from a non-zero initial condition will converge to a point in the nu
 We can use various Krylov methods for this trick (e.g., if the matrix is symmetric and positive definite, we could use Conjugate Gradient) but in our case we will
 use GMRES since we do not have any structure.
 
-```{code-block} julia
+```{code-cell} julia
 p = default_params(N=5, M=4)  # sparse is too slow for the full matrix
 Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
 ψ = fill(1/(p.N^p.M), p.N^p.M) # can't use 0 as initial guess
@@ -1278,7 +1278,7 @@ sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
 
 The speed and memory differences between these methods can be orders of magnitude.
 
-```{code-block} julia
+```{code-cell} julia
 p = default_params(N=4, M=4)  # Dense and sparse matrices are too slow for the full dataset.
 Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
 Q_T_dense = Matrix(Q_T)
@@ -1293,7 +1293,7 @@ The differences become even more stark as the matrix grows.  With `default_param
 
 The algorithm can solve for the steady state of $10^5$ states in a few seconds
 
-```{code-block} julia
+```{code-cell} julia
 function stationary_ψ(p)
     Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
     ψ = fill(1/(p.N^p.M), p.N^p.M) # can't use 0 as initial guess
@@ -1311,7 +1311,7 @@ Matrix-free Krylov methods using a technique called [exponential integration](ht
 
 For this, we can set up a `MatrixFreeOperator` for our `Q_T_mul!` function (equivalent to the `LinearMap`, but with some additional requirements for the ODE solver) and use the [LinearExponential](http://docs.juliadiffeq.org/latest/solvers/ode_solve.html#Exponential-Methods-for-Linear-and-Affine-Problems-1) time-stepping method.
 
-```{code-block} julia
+```{code-cell} julia
 using OrdinaryDiffEq, DiffEqOperators
 
 function solve_transition_dynamics(p, t)

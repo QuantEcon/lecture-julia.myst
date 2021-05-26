@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (types_methods)=
@@ -67,7 +67,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -93,7 +93,7 @@ This process is called **multiple dispatch**.
 
 Like all "infix" operators, 1 + 1 has the alternative syntax +(1, 1)
 
-```{code-block} julia
+```{code-cell} julia
 +(1, 1)
 ```
 
@@ -101,7 +101,7 @@ This operator + is itself a function with multiple methods.
 
 We can investigate them using the @which macro, which shows the method to which a given call is dispatched
 
-```{code-block} julia
+```{code-cell} julia
 x, y = 1.0, 1.0
 @which +(x, y)
 ```
@@ -111,7 +111,7 @@ floating point numbers.
 
 Here's the integer case
 
-```{code-block} julia
+```{code-cell} julia
 x, y = 1, 1
 @which +(x, y)
 ```
@@ -123,7 +123,7 @@ responsible for handling integer values.
 
 Here's another example, with complex numbers
 
-```{code-block} julia
+```{code-cell} julia
 x, y = 1.0 + 1.0im, 1.0 + 1.0im
 @which +(x, y)
 ```
@@ -138,7 +138,7 @@ For example, we can't at present add an integer and a string in Julia (i.e. `100
 
 This is sensible behavior, but if you want to change it there's nothing to stop you.
 
-```{code-block} julia
+```{code-cell} julia
 import Base: +  # enables adding methods to the + function
 
 +(x::Integer, y::String) = x + parse(Int, y)
@@ -165,11 +165,11 @@ If not, it looks to see whether the pair `(S, T)` matches any method defined for
 For example, if `S` is `Float64` and `T` is `ComplexF32` then the
 immediate parents are `AbstractFloat` and `Number` respectively
 
-```{code-block} julia
+```{code-cell} julia
 supertype(Float64)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 supertype(ComplexF32)
 ```
 
@@ -182,7 +182,7 @@ If the interpreter can't find a match in immediate parents (supertypes) it proce
 
 This is the process that leads to the following error (since we only added the `+` for adding `Integer` and `String` above)
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [raises-exception]
 ---
@@ -207,7 +207,7 @@ data in a less optimal way.
 
 Here's another simple example, involving a user-defined function
 
-```{code-block} julia
+```{code-cell} julia
 function q(x)  # or q(x::Any)
     println("Default (Any) method invoked")
 end
@@ -224,15 +224,15 @@ end
 Let's now run this and see how it relates to our discussion of method dispatch
 above
 
-```{code-block} julia
+```{code-cell} julia
 q(3)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 q(3.0)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 q("foo")
 ```
 
@@ -250,7 +250,7 @@ For the most part, time spent "optimizing" Julia code to run faster is about ens
 
 The macro `@code_warntype` gives us a hint
 
-```{code-block} julia
+```{code-cell} julia
 x = [1, 2, 3]
 f(x) = 2x
 @code_warntype f(x)
@@ -263,7 +263,7 @@ function, when called with types like `[1, 2, 3]`, is always a vector of integer
 
 In contrast, consider a function potentially returning `nothing`, as in {doc}`this lecture <../getting_started_julia/fundamental_types>`
 
-```{code-block} julia
+```{code-cell} julia
 f(x) = x > 0.0 ? x : nothing
 @code_warntype f(1)
 ```
@@ -272,7 +272,7 @@ This states that the compiler determines the return type when called with an int
 
 A final example is a variation on the above, which returns the maximum of `x` and `0`.
 
-```{code-block} julia
+```{code-cell} julia
 f(x) = x > 0.0 ? x : 0.0
 @code_warntype f(1)
 ```
@@ -281,7 +281,7 @@ Which shows that, when called with an integer, the type could be that integer or
 
 On the other hand, if we use change the function to return `0` if x <= 0, it is type-unstable with  floating point.
 
-```{code-block} julia
+```{code-cell} julia
 f(x) = x > 0.0 ? x : 0
 @code_warntype f(1.0)
 ```
@@ -290,7 +290,7 @@ The solution is to use the `zero(x)` function which returns the additive identit
 
 On the other hand, if we change the function to return `0` if `x <= 0`, it is type-unstable with  floating point.
 
-```{code-block} julia
+```{code-cell} julia
 @show zero(2.3)
 @show zero(4)
 @show zero(2.0 + 3im)
@@ -337,7 +337,7 @@ If you ever feel tempted to start rewriting your economic model in assembly, ple
 It's far more sensible to give these instructions in a language like Julia,
 where they can be easily written and understood.
 
-```{code-block} julia
+```{code-cell} julia
 function f(a, b)
     y = 2a + 8b
     return y
@@ -447,7 +447,7 @@ In such a setting, Julia will be on par with machine code from low level languag
 
 Consider the function
 
-```{code-block} julia
+```{code-cell} julia
 function f(a, b)
     y = (a + 8b)^2
     return 7y
@@ -467,7 +467,7 @@ stores it in memory.
 
 We can view the corresponding machine code using the @code_native macro
 
-```{code-block} julia
+```{code-cell} julia
 @code_native f(1, 2)
 ```
 
@@ -477,7 +477,7 @@ If we now call `f` again, but this time with floating point arguments, the JIT c
 
 It then compiles a new version to handle this type of argument.
 
-```{code-block} julia
+```{code-cell} julia
 @code_native f(1.0, 2.0)
 ```
 
@@ -538,7 +538,7 @@ variable, or even that the type will stay constant while a given function runs.
 
 To illustrate, consider this code, where `b` is global
 
-```{code-block} julia
+```{code-cell} julia
 b = 1.0
 function g(a)
     global b
@@ -550,7 +550,7 @@ end
 
 The code executes relatively slowly and uses a huge amount of memory.
 
-```{code-block} julia
+```{code-cell} julia
 using BenchmarkTools
 
 @btime g(1.0)
@@ -558,13 +558,13 @@ using BenchmarkTools
 
 If you look at the corresponding machine code you will see that it's a mess.
 
-```{code-block} julia
+```{code-cell} julia
 @code_native g(1.0)
 ```
 
 If we eliminate the global variable like so
 
-```{code-block} julia
+```{code-cell} julia
 function g(a, b)
     for i ∈ 1:1_000_000
         tmp = a + b
@@ -574,7 +574,7 @@ end
 
 then execution speed improves dramatically
 
-```{code-block} julia
+```{code-cell} julia
 @btime g(1.0, 1.0)
 ```
 
@@ -586,7 +586,7 @@ Notice also how small the memory footprint of the execution is.
 
 Also, the machine code is simple and clean
 
-```{code-block} julia
+```{code-cell} julia
 @code_native g(1.0, 1.0)
 ```
 
@@ -598,7 +598,7 @@ hence can optimize accordingly.
 Another way to stabilize the code above is to maintain the global variable but
 prepend it with `const`
 
-```{code-block} julia
+```{code-cell} julia
 const b_const = 1.0
 function g(a)
     global b_const
@@ -629,7 +629,7 @@ As we'll see, the last of these options gives us the best performance, while sti
 
 Here's the untyped case
 
-```{code-block} julia
+```{code-cell} julia
 struct Foo_generic
     a
 end
@@ -637,7 +637,7 @@ end
 
 Here's the case of an abstract type on the field `a`
 
-```{code-block} julia
+```{code-cell} julia
 struct Foo_abstract
     a::Real
 end
@@ -645,7 +645,7 @@ end
 
 Finally, here's the parametrically typed case
 
-```{code-block} julia
+```{code-cell} julia
 struct Foo_concrete{T <: Real}
     a::T
 end
@@ -653,7 +653,7 @@ end
 
 Now we generate instances
 
-```{code-block} julia
+```{code-cell} julia
 fg = Foo_generic(1.0)
 fa = Foo_abstract(1.0)
 fc = Foo_concrete(1.0)
@@ -661,7 +661,7 @@ fc = Foo_concrete(1.0)
 
 In the last case, concrete type information for the fields is embedded in the object
 
-```{code-block} julia
+```{code-cell} julia
 typeof(fc)
 ```
 
@@ -671,7 +671,7 @@ This is significant because such information is detected by the compiler.
 
 Here's a function that uses the field `a` of our objects
 
-```{code-block} julia
+```{code-cell} julia
 function f(foo)
     for i ∈ 1:1_000_000
         tmp = i + foo.a
@@ -681,7 +681,7 @@ end
 
 Let's try timing our code, starting with the generic case:
 
-```{code-block} julia
+```{code-cell} julia
 @btime f($fg)
 ```
 
@@ -689,13 +689,13 @@ The timing is not very impressive.
 
 Here's the nasty looking machine code
 
-```{code-block} julia
+```{code-cell} julia
 @code_native f(fg)
 ```
 
 The abstract case is similar
 
-```{code-block} julia
+```{code-cell} julia
 @btime f($fa)
 ```
 
@@ -705,7 +705,7 @@ The machine code is also long and complex, although we omit details.
 
 Finally, let's look at the parametrically typed version
 
-```{code-block} julia
+```{code-cell} julia
 @btime f($fc)
 ```
 
@@ -713,7 +713,7 @@ Some of this time is JIT compilation, and one more execution gets us down to.
 
 Here's the corresponding machine code
 
-```{code-block} julia
+```{code-cell} julia
 @code_native f(fc)
 ```
 
@@ -725,7 +725,7 @@ Another way we can run into trouble is with abstract container types.
 
 Consider the following function, which essentially does the same job as Julia's `sum()` function but acts only on floating point data
 
-```{code-block} julia
+```{code-cell} julia
 function sum_float_array(x::AbstractVector{<:Number})
     sum = 0.0
     for i ∈ eachindex(x)
@@ -737,13 +737,13 @@ end
 
 Calls to this function run very quickly
 
-```{code-block} julia
+```{code-cell} julia
 x = range(0,  1, length = Int(1e6))
 x = collect(x)
 typeof(x)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 @btime sum_float_array($x)
 ```
 
@@ -759,7 +759,7 @@ Finally, data types are stable --- for example, the local variable `sum` starts 
 
 Here's the same function minus the type annotation in the function signature
 
-```{code-block} julia
+```{code-cell} julia
 function sum_array(x)
     sum = 0.0
     for i ∈ eachindex(x)
@@ -772,7 +772,7 @@ end
 When we run it with the same array of floating point numbers it executes at a
 similar speed as the function with type information.
 
-```{code-block} julia
+```{code-cell} julia
 @btime sum_array($x)
 ```
 
@@ -788,17 +788,17 @@ Things get tougher for the interpreter when the data type within the array is im
 
 For example, the following snippet creates an array where the element type is `Any`
 
-```{code-block} julia
+```{code-cell} julia
 x = Any[ 1/i for i ∈ 1:1e6 ];
 ```
 
-```{code-block} julia
+```{code-cell} julia
 eltype(x)
 ```
 
 Now summation is much slower and memory management is less efficient.
 
-```{code-block} julia
+```{code-cell} julia
 @btime sum_array($x)
 ```
 

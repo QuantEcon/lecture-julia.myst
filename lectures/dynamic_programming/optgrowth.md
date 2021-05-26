@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (optgrowth)=
@@ -466,7 +466,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -475,14 +475,14 @@ using Plots, QuantEcon, Interpolations, NLsolve, Optim, Random
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 f(x) = 2 .* cos.(6x) .+ sin.(14x) .+ 2.5
 c_grid = 0:.2:1
 f_grid = range(0,  1, length = 150)
@@ -504,7 +504,7 @@ Another advantage of piecewise linear interpolation is that it preserves useful 
 
 Here's a function that implements the Bellman operator using linear interpolation
 
-```{code-block} julia
+```{code-cell} julia
 using Optim
 
 function T(w, grid, β, u, f, shocks; compute_policy = false)
@@ -568,7 +568,7 @@ $$
 
 Let's code this up now so we can test against it below
 
-```{code-block} julia
+```{code-cell} julia
 α = 0.4
 β = 0.96
 μ = 0
@@ -596,7 +596,7 @@ c_star(y) = (1 - α * β) * y
 v_star(y) = c1 + c2 * (c3 - c4) + c4 * log(y)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -614,7 +614,7 @@ To test our code, we want to see if we can replicate the analytical solution num
 
 We need a grid and some shock draws for Monte Carlo integration.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -629,7 +629,7 @@ grid_y = range(1e-5,  grid_max, length = grid_size)
 shocks = exp.(μ .+ s * randn(shock_size))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -646,7 +646,7 @@ In theory, the resulting function should again be $v^*$.
 
 In practice we expect some small numerical error.
 
-```{code-block} julia
+```{code-cell} julia
 w = T(v_star.(grid_y), grid_y, β, log, k -> k^α, shocks)
 
 plt = plot(ylim = (-35,-24))
@@ -655,7 +655,7 @@ plot!(plt, v_star, grid_y, linewidth = 2, alpha=0.6, label = "v_star")
 plot!(plt, legend = :bottomright)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -672,7 +672,7 @@ from an arbitrary initial condition.
 
 The initial condition we'll start with is $w(y) = 5 \ln (y)$
 
-```{code-block} julia
+```{code-cell} julia
 w = 5 * log.(grid_y)  # An initial condition -- fairly arbitrary
 n = 35
 
@@ -690,7 +690,7 @@ plot!(plt, v_star, grid_y, color = :black, linewidth = 2, alpha = 0.8, label = l
 plot!(plt, legend = :bottomright)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -710,7 +710,7 @@ We are clearly getting closer.
 
 We can write a function that computes the exact fixed point
 
-```{code-block} julia
+```{code-cell} julia
 function solve_optgrowth(initial_w; tol = 1e-6, max_iter = 500)
     fixedpoint(w -> T(w, grid_y, β, u, f, shocks), initial_w).zero # gets returned
 end
@@ -718,7 +718,7 @@ end
 
 We can check our result by plotting it against the true value
 
-```{code-block} julia
+```{code-cell} julia
 initial_w = 5 * log.(grid_y)
 v_star_approx = solve_optgrowth(initial_w)
 
@@ -729,7 +729,7 @@ plot!(plt, v_star, grid_y, linewidth = 2, alpha = 0.6, label = "true value funct
 plot!(plt, legend = :bottomright)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -751,7 +751,7 @@ function we just calculated and then compute the corresponding greedy policy.
 The next figure compares the result to the exact solution, which, as mentioned
 above, is $\sigma(y) = (1 - \alpha \beta) y$.
 
-```{code-block} julia
+```{code-cell} julia
 Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks;
                          compute_policy = true)
 cstar = (1 - α * β) * grid_y
@@ -761,7 +761,7 @@ plot!(plt, grid_y, cstar, lw = 2, alpha = 0.6, label = "true policy function")
 plot!(plt, legend = :bottomright)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -791,14 +791,14 @@ The discount factors are `discount_factors = (0.8, 0.9, 0.98)`.
 
 We have also dialed down the shocks a bit.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -806,7 +806,7 @@ s = 0.05
 shocks = exp.(μ .+ s * randn(shock_size))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -827,7 +827,7 @@ Replicate the figure modulo randomness.
 
 Here's one solution (assuming as usual that you've executed everything above)
 
-```{code-block} julia
+```{code-cell} julia
 function simulate_og(σ, y0 = 0.1, ts_length=100)
     y = zeros(ts_length)
     ξ = randn(ts_length-1)
@@ -857,7 +857,7 @@ end
 plot!(plt, legend = :bottomright)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

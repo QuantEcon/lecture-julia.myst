@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (multiplicative_functionals)=
@@ -110,21 +110,21 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using Distributions, Parameters, Plots, QuantEcon
 import Distributions: loglikelihood
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 AMF_LSS_VAR = @with_kw (A, B, D, F = 0.0, ν = 0.0, lss = construct_ss(A, B, D, F, ν))
 
 function construct_ss(A, B, D, F, ν)
@@ -194,7 +194,7 @@ The heavy lifting is done inside the AMF_LSS_VAR struct.
 
 The following code adds some simple functions that make it straightforward to generate sample paths from an instance of AMF_LSS_VAR
 
-```{code-block} julia
+```{code-cell} julia
 function simulate_xy(amf, T)
     foo, bar = simulate(amf.lss, T)
     x = bar[1, :]
@@ -247,14 +247,14 @@ Then we compute averages of $\frac{1}{I} \sum_i x_t^i$ and $\frac{1}{I} \sum_i y
 
 Here goes
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 F = 0.2
 amf = AMF_LSS_VAR(A = 0.8, B = 1.0, D = 0.5, F = F)
 
@@ -281,7 +281,7 @@ plot!(plt_2, title = "y_t", xlim = (0, T), legend = :bottomleft)
 plot(plt_1, plt_2, layout = (2, 1), size = (800,500))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -306,14 +306,14 @@ Then we to compare these objects.
 
 Below we plot the histogram of $\log L_T^i / T$ for realizations $i = 1, \ldots, 5000$
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function simulate_likelihood(amf, Xit, Yit)
     # Get size
     I, T = size(Xit)
@@ -339,7 +339,7 @@ plot!(title = "Distribution of (I/T)log(L_T)|theta_0")
 vline!([LLmean_t], linestyle = :dash, color = :black, lw = 2, alpha = 0.6, label = "")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -359,7 +359,7 @@ This implies that approximately $75\%$ of the time (a bit more than one sigma de
 
 Let's see this in a simulation
 
-```{code-block} julia
+```{code-cell} julia
 normdist = Normal(0, F)
 mult = 1.175
 println("The pdf at +/- $mult sigma takes the value: $(pdf(normdist,mult*F))")
@@ -373,7 +373,7 @@ frac_nonegative = sum(L_increment.>=0)/(c*r)
 print("Fraction of dlogL being nonnegative in the sample is: $(frac_nonegative)")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -385,7 +385,7 @@ end
 
 Let's also plot the conditional pdf of $\Delta y_{t+1}$
 
-```{code-block} julia
+```{code-cell} julia
 xgrid = range(-1,  1, length = 100)
 println("The pdf at +/- one sigma takes the value: $(pdf(normdist, F)) ")
 plot(xgrid, pdf.(normdist, xgrid), label = "")
@@ -425,14 +425,14 @@ We make three graphs
 
 Here's the code
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # Create the second (wrong) alternative model
 amf2 = AMF_LSS_VAR(A = 0.9, B = 1.0, D = 0.55, F = 0.25) # parameters for θ_1 closer to θ_0
 
@@ -447,7 +447,7 @@ vline!([LLmean_t2], color = :black, lw = 2, linestyle = :dash, alpha = 0.6, labe
 plot!(title = "Distribution of (1/T)log(L_T) | theta_1)")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -459,7 +459,7 @@ end
 
 Let's see a histogram of the log-likelihoods under the true and the alternative model (same sample paths)
 
-```{code-block} julia
+```{code-cell} julia
 plot(seriestype = :histogram, LLT, bin = 50, alpha = 0.5, label = "True", normed = true)
 plot!(seriestype = :histogram, LLT2, bin = 50, alpha = 0.5, label = "Alternative",
       normed = true)
@@ -469,7 +469,7 @@ vline!([mean(LLT2)], color = :black, lw = 2, linestyle = :dash, label = "")
 
 Now we'll plot the histogram of the difference in log likelihood ratio
 
-```{code-block} julia
+```{code-cell} julia
 LLT_diff = LLT - LLT2
 
 plot(seriestype = :histogram, LLT_diff, bin = 50, label = "")
@@ -578,14 +578,14 @@ $T=1000$.
 
 Here is code that accomplishes these tasks
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function simulate_martingale_components(amf, T = 1_000, I = 5_000)
     # Get the multiplicative decomposition
     @unpack A, B, D, F, ν, lss = amf
@@ -621,7 +621,7 @@ println("The (min, mean, max) of multiplicative Martingale component in period T
 println("\t ($(minimum(mmcT)), $(mean(mmcT)), $(maximum(mmcT)))")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -648,14 +648,14 @@ end
 
 Here's a histogram of the additive martingale component
 
-```{code-block} julia
+```{code-cell} julia
 plot(seriestype = :histogram, amcT, bin = 25, normed = true, label = "")
 plot!(title = "Histogram of Additive Martingale Component")
 ```
 
 Here's a histogram of the multiplicative martingale component
 
-```{code-block} julia
+```{code-cell} julia
 plot(seriestype = :histogram, mmcT, bin = 25, normed = true, label = "")
 plot!(title = "Histogram of Multiplicative Martingale Component")
 ```
@@ -681,7 +681,7 @@ We will plot the densities of $\log {\widetilde M}_t$ for different values of $t
 
 Here is some code that tackles these tasks
 
-```{code-block} julia
+```{code-cell} julia
 function Mtilde_t_density(amf, t; xmin = 1e-8, xmax = 5.0, npts = 5000)
 
     # Pull out the multiplicative decomposition
@@ -754,7 +754,7 @@ $\nu = \tilde{\nu}$.
 
 Here's our code
 
-```{code-block} julia
+```{code-cell} julia
 function Uu(amf, δ, γ)
     @unpack A, B, D, F, ν = amf
     ν_tilde, H, g = multiplicative_decomp(A, B, D, F, ν)
@@ -811,7 +811,7 @@ $$
 
 Let's compute this
 
-```{code-block} julia
+```{code-cell} julia
 x0 = 0.0  # initial conditions
 logVC_r = U_r * x0 + u_r
 logVC_d = U_d * x0 + u_d
@@ -820,7 +820,7 @@ perc_reduct = 100 * (1 - exp(logVC_r - logVC_d))
 perc_reduct
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

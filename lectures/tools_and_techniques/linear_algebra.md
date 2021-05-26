@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (linear_algebra)=
@@ -98,19 +98,19 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test # Should put this near the top of every notebook.
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics, Plots
 gr(fmt=:png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x_vals = [0 0 0 ; 2 -3 -4]
 y_vals = [0 0 0 ; 4 3 -3.5]
 
@@ -181,7 +181,7 @@ $$
 
 Scalar multiplication is illustrated in the next figure
 
-```{code-block} julia
+```{code-cell} julia
 # illustrate scalar multiplication
 
 x = [2]
@@ -199,19 +199,19 @@ In Julia, a vector can be represented as a one dimensional Array.
 
 Julia Arrays allow us to express scalar multiplication and addition with a very natural syntax
 
-```{code-block} julia
+```{code-cell} julia
 x = ones(3)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 y = [2, 4, 6]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x + y
 ```
 
-```{code-block} julia
+```{code-cell} julia
 4x  # equivalent to 4 * x and 4 .* x
 ```
 
@@ -242,27 +242,27 @@ The expression $\| x - y\|$ is thought of as the distance between $x$ and $y$.
 Continuing on from the previous example, the inner product and norm can be computed as
 follows
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra
 ```
 
-```{code-block} julia
+```{code-cell} julia
 dot(x, y)               # Inner product of x and y
 ```
 
-```{code-block} julia
+```{code-cell} julia
 sum(prod, zip(x, y))    # Gives the same result
 ```
 
-```{code-block} julia
+```{code-cell} julia
 norm(x)                 # Norm of x
 ```
 
-```{code-block} julia
+```{code-cell} julia
 sqrt(sum(abs2, x))         # Gives the same result
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -294,7 +294,7 @@ The next figure shows the span of $A = \{a_1, a_2\}$ in $\mathbb R ^3$.
 The span is a 2 dimensional plane passing through these two points and the origin.
 
 (la_3dvec)=
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [output_scroll]
 ---
@@ -315,7 +315,7 @@ plot!(x_vec, y_vec, z_vec, color = [:blue :green], linewidth = 3, labels = "",
       colorbar = false)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -599,16 +599,16 @@ Julia arrays are also used as matrices, and have fast, efficient functions and m
 
 You can create them as follows
 
-```{code-block} julia
+```{code-cell} julia
 A = [1 2
      3 4]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 typeof(A)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 size(A)
 ```
 
@@ -620,15 +620,15 @@ There are many convenient functions for creating common matrices (matrices of ze
 
 Since operations are performed elementwise by default, scalar multiplication and addition have very natural syntax
 
-```{code-block} julia
+```{code-cell} julia
 A = ones(3, 3)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 2I
 ```
 
-```{code-block} julia
+```{code-cell} julia
 A + I
 ```
 
@@ -682,7 +682,7 @@ If so, is it always unique?
 
 The answer to both these questions is negative, as the next figure shows
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [output_scroll]
 ---
@@ -861,31 +861,31 @@ In other words, uniqueness fails.
 
 Here's an illustration of how to solve linear equations with Julia's built-in linear algebra facilities
 
-```{code-block} julia
+```{code-cell} julia
 A = [1.0 2.0; 3.0 4.0];
 ```
 
-```{code-block} julia
+```{code-cell} julia
 y = ones(2, 1);  # A column vector
 ```
 
-```{code-block} julia
+```{code-cell} julia
 det(A)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 A_inv = inv(A)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x = A_inv * y  # solution
 ```
 
-```{code-block} julia
+```{code-cell} julia
 A * x  # should equal y (a vector of ones)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 A \ y  # produces the same solution
 ```
 
@@ -921,7 +921,7 @@ The next figure shows two eigenvectors (blue arrows) and their images under $A$ 
 
 As expected, the image $Av$ of each $v$ is just a scaled version of the original
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [output_scroll]
 ---
@@ -944,7 +944,7 @@ plot!(x, y, color = :blue, lw = 0.4, alpha = 0.6)
 plot!(x, x, color = :blue, lw = 0.4, alpha = 0.6)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -981,19 +981,19 @@ A corollary of the first statement is that a matrix is invertible if and only if
 Using Julia, we can solve for the eigenvalues and eigenvectors of a matrix as
 follows
 
-```{code-block} julia
+```{code-cell} julia
 A = [1.0 2.0; 2.0 1.0];
 ```
 
-```{code-block} julia
+```{code-cell} julia
 evals, evecs = eigen(A);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 evals
 ```
 
-```{code-block} julia
+```{code-cell} julia
 evecs
 ```
 

@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (arellano)=
@@ -303,7 +303,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -311,14 +311,14 @@ using LinearAlgebra, Statistics
 using Parameters, QuantEcon, DataFrames, Plots, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function ArellanoEconomy(;β = .953,
                           γ = 2.,
                           r = 0.017,
@@ -590,14 +590,14 @@ To the extent that you can, replicate the figures shown above
 
 ## Solutions
 
-```{code-block} julia
+```{code-cell} julia
 using DataFrames, Plots
 gr(fmt=:png);
 ```
 
 Compute the value function, policy and equilibrium prices
 
-```{code-block} julia
+```{code-cell} julia
 ae = ArellanoEconomy(β = .953,     # time discount rate
                      γ = 2.,       # risk aversion
                      r = 0.017,    # international interest rate
@@ -611,7 +611,7 @@ ae = ArellanoEconomy(β = .953,     # time discount rate
 vfi!(ae)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -623,7 +623,7 @@ end
 
 Compute the bond price schedule as seen in figure 3 of Arellano (2008)
 
-```{code-block} julia
+```{code-cell} julia
 # create "Y High" and "Y Low" values as 5% devs from mean
 high, low = 1.05 * mean(ae.ygrid), 0.95 * mean(ae.ygrid)
 iy_high, iy_low = map(x -> searchsortedfirst(ae.ygrid, x), (high, low))
@@ -648,7 +648,7 @@ plot!(title = "Bond price schedule q(y, B')",
       xlabel = "B'", ylabel = "q", legend_title = "y", legend = :topleft)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -661,7 +661,7 @@ end
 
 Draw a plot of the value functions
 
-```{code-block} julia
+```{code-cell} julia
 plot(ae.Bgrid, ae.vf[:, iy_low], label = "Low")
 plot!(ae.Bgrid, ae.vf[:, iy_high], label = "High")
 plot!(xlabel = "B", ylabel = "V(y,B)", title = "Value functions",
@@ -670,7 +670,7 @@ plot!(xlabel = "B", ylabel = "V(y,B)", title = "Value functions",
 
 Draw a heat map for default probability
 
-```{code-block} julia
+```{code-cell} julia
 heatmap(ae.Bgrid[1:end-1],
     ae.ygrid[2:end],
     reshape(clamp.(vec(ae.defprob[1:end - 1, 1:end - 1]), 0, 1), 250, 20)')
@@ -680,7 +680,7 @@ plot!(xlabel = "B'", ylabel = "y", title = "Probability of default",
 
 Plot a time series of major variables simulated from the model
 
-```{code-block} julia
+```{code-cell} julia
 using Random
 # set random seed for consistent result
 Random.seed!(348938)
@@ -713,7 +713,7 @@ end
 plot(plots)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

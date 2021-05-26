@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (dyn_stack)=
@@ -918,12 +918,12 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon, Plots, LinearAlgebra, Statistics, Parameters, Random
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -933,7 +933,7 @@ using Test
 We define named tuples and default values for the model and solver settings, and
 instantiate one copy of each
 
-```{code-block} julia
+```{code-cell} julia
 model = @with_kw (a0 = 10,
                   a1 = 2,
                   β = 0.96,
@@ -951,7 +951,7 @@ defaultSettings = settings();
 
 Now we can compute the actual policy using the LQ routine from QuantEcon.jl
 
-```{code-block} julia
+```{code-cell} julia
 @unpack a0, a1, β, γ, n = defaultModel
 @unpack tol0, tol1, tol2 = defaultSettings
 
@@ -991,7 +991,7 @@ end
 println("Computed policy for Stackelberg leader: $F")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1002,7 +1002,7 @@ tags: [remove-cell]
 
 The following code plots the price and quantities
 
-```{code-block} julia
+```{code-cell} julia
 q_leader = yt[2, 1:end];
 q_follower = yt[3, 1:end];
 q = q_leader + q_follower;
@@ -1021,7 +1021,7 @@ We'll compute the present value earned by the Stackelberg leader.
 We'll compute it two ways (they give identical answers -- just a check
 on coding and thinking)
 
-```{code-block} julia
+```{code-cell} julia
 v_leader_forward = sum(βs .* π_leader);
 v_leader_direct = -yt[:, 1]' * P * yt[:, 1];
 
@@ -1029,7 +1029,7 @@ println("v_leader_forward (forward sim) is $v_leader_forward")
 println("v_leader_direct is $v_leader_direct")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1037,20 +1037,20 @@ tags: [remove-cell]
 @test v_leader_direct ≈ 150.03237147548967
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # manually check whether P is an approximate fixed point
 P_next = (R + F' * Q * F + β * (A - B * F)' * P * (A - B * F));
 all(P - P_next .< tol0)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 @test all(P - P_next .< tol0)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # manually checks whether two different ways of computing the
 # value function give approximately the same answer
 v_expanded = -((y0' * R * y0 + ut[:, 1]' * Q * ut[:, 1] +
@@ -1058,7 +1058,7 @@ v_expanded = -((y0' * R * y0 + ut[:, 1]' * Q * ut[:, 1] +
 (v_leader_direct - v_expanded < tol0)[1, 1]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1077,7 +1077,7 @@ In the code below we compare two values
 The difference between these two values is a tell-tale time of the time
 inconsistency of the Stackelberg plan
 
-```{code-block} julia
+```{code-cell} julia
 # Compute value function over time with reset at time t
 vt_leader = zeros(n);
 vt_reset_leader = similar(vt_leader);
@@ -1106,7 +1106,7 @@ problem.
 We check that the recursive **Big** $K$ **, little** $k$ formulation of the follower's problem produces the same output path
 $\vec q_1$ that we computed when we solved the Stackelberg problem
 
-```{code-block} julia
+```{code-cell} julia
 Ã = I + zeros(5, 5);
 Ã[1:4, 1:4] .= A - B * F;
 R̃ = [0 0 0 0 -a0/2; 0 0 0 0 a1/2; 0 0 0 0 0; 0 0 0 0 0; -a0/2 a1/2 0 0 a1];
@@ -1119,7 +1119,7 @@ y0_tilde = vcat(y0, y0[3]);
 yt_tilde = compute_sequence(lq_tilde, y0_tilde, n)[1];
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # checks that the recursive formulation of the follower's problem gives
 # the same solution as the original Stackelberg problem
 plot(1:n+1, [yt_tilde[5, :], yt_tilde[3, :]], labels = ["q_tilde", "q"])
@@ -1128,24 +1128,24 @@ plot(1:n+1, [yt_tilde[5, :], yt_tilde[3, :]], labels = ["q_tilde", "q"])
 Note: Variables with `_tilde` are obtained from solving the follower's
 problem -- those without are from the Stackelberg problem.
 
-```{code-block} julia
+```{code-cell} julia
 # maximum absolute difference in quantities over time between the first and second solution methods
 max(abs(yt_tilde[5] - yt_tilde[3]))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 @test max(abs(yt_tilde[5] - yt_tilde[3])) ≈ 0. atol = 1e-15
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # x0 == x0_tilde
 yt[:, 1][end] - (yt_tilde[:, 2] - yt_tilde[:, 1])[end] < tol0
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1163,31 +1163,31 @@ Can you spot what features of $\tilde F$ imply this?
 
 Hint: remember the components of $X_t$
 
-```{code-block} julia
+```{code-cell} julia
 F̃ # policy function in the follower's problem
 ```
 
-```{code-block} julia
+```{code-cell} julia
 P # value function in the Stackelberg problem
 ```
 
-```{code-block} julia
+```{code-cell} julia
 P̃ # value function in the follower's problem
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # manually check that P is an approximate fixed point
 all((P  - ((R + F' * Q * F) + β * (A - B * F)' * P * (A - B * F)) .< tol0))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 @test all((P  - ((R + F' * Q * F) + β * (A - B * F)' * P * (A - B * F)) .< tol0))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # compute `P_guess` using `F_tilde_star`
 F̃_star = -[0, 0, 0, 1, 0]';
 P_guess = zeros(5, 5);
@@ -1199,31 +1199,31 @@ for i in 1:1000
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # value function in the follower's problem
 -(y0_tilde' * P̃ * y0_tilde)[1, 1]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 @test -(y0_tilde' * P̃ * y0_tilde)[1, 1] ≈ 112.65590740578173
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # value function using P_guess
 -(y0_tilde' * P_guess * y0_tilde)[1, 1]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 @test -(y0_tilde' * P_guess * y0_tilde)[1, 1] ≈ 112.65590740578186
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # c policy using policy iteration algorithm
 F_iter = (β * inv(Q + β * B̃' * P_guess * B̃)
       * B̃' * P_guess * Ã);
@@ -1260,7 +1260,7 @@ else
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 yt_tilde_star = zeros(n, 5);
 yt_tilde_star[1, :] = y0_tilde;
 
@@ -1271,11 +1271,11 @@ end
 plot([yt_tilde_star[:, 5], yt_tilde[3, :]], labels = ["q_tilde", "q"])
 ```
 
-```{code-block} julia
+```{code-cell} julia
 maximum(abs.(yt_tilde_star[:, 5] - yt_tilde[3, 1:end-1]))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1315,7 +1315,7 @@ $$
 z_{t+1} = (A - B_1 F_1 - B_2 F_2) z_t
 $$
 
-```{code-block} julia
+```{code-cell} julia
 # in LQ form
 A = I + zeros(3, 3);
 B1 = [0, 0, 1];
@@ -1343,7 +1343,7 @@ println("Policy for F1 is $F1")
 println("Policy for F2 is $F2")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1351,7 +1351,7 @@ tags: [remove-cell]
 @test round(F2[2], digits = 4) == 0.0945
 ```
 
-```{code-block} julia
+```{code-cell} julia
 q1 = z[2, :];
 q2 = z[3, :];
 q = q1 + q2; # total output, MPE
@@ -1359,19 +1359,19 @@ p = a0 .- a1 * q; # total price, MPE
 plot([q, p], labels = ["total ouput", "total price"], title = "Output and prices, duopoly MPE", xlabel = "t")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # computes the maximum difference in quantities across firms
 maximum(abs.(q1 - q2))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 @test maximum(abs.(q1 - q2)) < 1e-14
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # compute values
 u1 = -F1 * z;
 u2 = -F2 * z;
@@ -1388,7 +1388,7 @@ println("Firm 1: Direct is $v1_direct, Forward is $(v1_forward[1])");
 println("Firm 2: Direct is $v2_direct, Forward is $(v2_forward[1])");
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -1398,7 +1398,7 @@ tags: [remove-cell]
 @test round(v2_forward[1], digits = 4) == 133.3303
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # sanity check
 Λ_1 = A - B2 * F2;
 lq1 = QuantEcon.LQ(Q1, R1, Λ_1, B1, bet = β);
@@ -1410,7 +1410,7 @@ all(abs.(v2_direct - v2_direct_alt) < tol2)
 
 ## MPE vs. Stackelberg
 
-```{code-block} julia
+```{code-cell} julia
 vt_MPE = zeros(n);
 vt_follower = zeros(n);
 
@@ -1424,19 +1424,19 @@ plot([vt_MPE, vt_leader, vt_follower], labels = ["MPE", "Stackelberg leader",
         xlabel = "t")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # display values
 println("vt_leader(y0) = $(vt_leader[1])");
 println("vt_follower(y0) = $(vt_follower[1])")
 println("vt_MPE(y0) = $(vt_MPE[1])");
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # total difference in value b/t Stackelberg and MPE
 vt_leader[1] + vt_follower[1] - 2*vt_MPE[1]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

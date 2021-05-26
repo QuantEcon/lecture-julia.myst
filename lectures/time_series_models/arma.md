@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (arma)=
@@ -88,7 +88,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -228,14 +228,14 @@ Applying {eq}`ma_inf_ac` to the previous expression for $X_t$, we get the AR(1) 
 
 The next figure plots an example of this function for $\phi = 0.8$ and $\phi = -0.8$ with $\sigma = 1$
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Plots
 gr(fmt=:png);
 
@@ -255,7 +255,7 @@ end
 plot(plots[1], plots[2], layout=(2,1), size=(700,500))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -485,7 +485,7 @@ It is a nice exercise to verify that {eq}`ma1_sd_ed` and {eq}`ar1_sd_ed` are ind
 
 Plotting {eq}`ar1_sd_ed` reveals the shape of the spectral density for the AR(1) model when $\phi$ takes the values 0.8 and -0.8 respectively
 
-```{code-block} julia
+```{code-cell} julia
 ar1_sd(ϕ, ω) = 1 ./ (1 .- 2 * ϕ * cos.(ω) .+ ϕ.^2)
 
 ω_s = range(0, π, length = 180)
@@ -503,7 +503,7 @@ end
 plot(plots[1], plots[2], layout=(2,1), size=(700,500))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -541,7 +541,7 @@ products on the right-hand side of {eq}`sumpr` is large.
 
 These ideas are illustrated in the next figure, which has $k$ on the horizontal axis
 
-```{code-block} julia
+```{code-cell} julia
 ϕ = -0.8
 times = 0:16
 y1 = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
@@ -572,7 +572,7 @@ plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3), yticks=[-1, 0, 1, 2, 3]
 plot(plt_1, plt_2, plt_3, layout=(3,1), size=(800,600))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -588,7 +588,7 @@ On the other hand, if we evaluate $f(\omega)$ at $\omega = \pi / 3$, then the cy
 not matched, the sequence $\gamma(k) \cos(\omega k)$ contains
 both positive and negative terms, and hence the sum of these terms is much smaller
 
-```{code-block} julia
+```{code-cell} julia
 ϕ = -0.8
 times = 0:16
 y1 = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
@@ -619,7 +619,7 @@ plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3), yticks=[-1, 0, 1, 2, 3]
 plot(plt_1, plt_2, plt_3, layout=(3,1), size=(600,600))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -754,7 +754,7 @@ Let's use this code to replicate the plots on pages 68--69 of {cite}`Ljungqvist2
 
 Here are some functions to generate the plots
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon, Random
 
 # plot functions
@@ -843,7 +843,7 @@ Now let's call these functions to generate the plots.
 
 We'll use the model $X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}$
 
-```{code-block} julia
+```{code-cell} julia
 Random.seed!(42) # For reproducible results.
 ϕ = 0.5;
 θ = [0, -0.8];
@@ -851,7 +851,7 @@ arma = ARMA(ϕ, θ, 1.0)
 quad_plot(arma)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

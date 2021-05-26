@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (estspec)=
@@ -53,7 +53,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -220,14 +220,14 @@ X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}
 
 where $\{ \epsilon_t \}$ is white noise with unit variance, and compares the periodogram to the actual spectral density
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon, Plots, Random
 gr(fmt = :png);
 Random.seed!(42) # For reproducible results.
@@ -246,7 +246,7 @@ plot(x, y,linecolor="blue", linewidth=2, linealpha=0.5, lab="periodogram")
 plot!(x_sd, y_sd, linecolor="red", linewidth=2, linealpha=0.8, lab="spectral density")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -318,7 +318,7 @@ The next figure shows the kind of sequence typically used.
 
 Note the smaller weights towards the edges and larger weights in the center, so that more distant values from $I(\omega_j)$ have less weight than closer ones in the sum {eq}`estspec_ws`
 
-```{code-block} julia
+```{code-cell} julia
 function hanning_window(M)
     w = [0.5 - 0.5 * cos(2 * pi * n / (M - 1)) for n = 0:(M-1)]
     return w
@@ -330,7 +330,7 @@ plot(x, window, color="darkblue", title="Hanning window", ylabel="Weights",
     xlabel="Position in sequence of weights", legend=false, grid=false)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -518,7 +518,7 @@ All periodograms are fit with the "hamming" window and window length of 65.
 
 ### Exercise 1
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -526,7 +526,7 @@ using Random
 Random.seed!(42);  # reproducible results
 ```
 
-```{code-block} julia
+```{code-cell} julia
 n = 400
 ϕ = 0.5
 θ = [0, -0.8]
@@ -560,7 +560,7 @@ for (i, wl) in enumerate([15, 55, 175])  # window lengths
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -571,7 +571,7 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 plot(xs, ys, layout=(3,1), color=:blue, alpha=0.5,
     linewidth=2, label=["periodogram" "" ""])
 plot!(x_sds, y_sds, layout=(3,1), color=:red, alpha=0.8,
@@ -583,14 +583,14 @@ plot!(title=reshape(titles,1,length(titles)))
 
 ### Exercise 2
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);  # reproducible results
 ```
 
-```{code-block} julia
+```{code-cell} julia
 lp2 = ARMA(-0.9, 0.0, 1.0)
 wl = 65
 p = plot(layout=(3,1))
@@ -617,7 +617,7 @@ end
 p
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

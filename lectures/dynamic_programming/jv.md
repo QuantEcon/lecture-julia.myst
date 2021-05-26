@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (jv)=
@@ -45,7 +45,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -182,14 +182,14 @@ Now let's turn to implementation, and see if we can match our predictions.
 
 The following code solves the DP problem described above
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Distributions, QuantEcon, Interpolations, Expectations, Parameters
 
   # model object
@@ -379,7 +379,7 @@ Let's plot the optimal policies and see what they look like.
 
 The code is as follows
 
-```{code-block} julia
+```{code-cell} julia
 wp = JvWorker(grid_size=25)
 v_init = collect(wp.x_grid) .* 0.5
 
@@ -407,7 +407,7 @@ Overall, the policies match well with our predictions from {ref}`section <jvboec
 * For low values of $x$, the best option is to search for a new job.
 * Once $x$ is larger, worker does better by investing in human capital specific to the current position.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -479,7 +479,7 @@ Can you give a rough interpretation for the value that you see?
 
 Here's code to produce the 45 degree diagram
 
-```{code-block} julia
+```{code-cell} julia
 wp = JvWorker(grid_size=25)
 # simplify notation
 @unpack G, π_func, F = wp
@@ -497,7 +497,7 @@ s = LinearInterpolation(wp.x_grid, s_policy, extrapolation_bc=Line())
 h_func(x, b, U) = (1 - b) * G(x, ϕ(x)) + b * max(G(x, ϕ(x)), U)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -507,7 +507,7 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Random
 Random.seed!(42)
 K = 50
@@ -533,7 +533,7 @@ scatter!(xs, ys, alpha=0.25, color=:green, lims=(0, plot_grid_max), ticks=ticks)
 plot!(xlabel="x_t", ylabel="x_{t+1}", guidefont=font(16))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -562,7 +562,7 @@ $\phi_t = \phi(x_t) \approx 0.6$.
 
 ### Exercise 2
 
-```{code-block} julia
+```{code-cell} julia
 wp = JvWorker(grid_size=25)
 
 xbar(ϕ) = (wp.A * ϕ^wp.α)^(1.0 / (1.0 - wp.α))

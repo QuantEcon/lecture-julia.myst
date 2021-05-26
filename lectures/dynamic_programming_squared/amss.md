@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (opt_tax_amss)=
@@ -51,7 +51,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -392,14 +392,14 @@ while the multiplier $\Phi$ in the Lucas-Stokey economy is time invariant.
 We need some code from our {doc}`an earlier lecture <../dynamic_programming_squared/opt_tax_recur>`
 on optimal taxation with state-contingent debt  sequential allocation implementation:
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [output_scroll]
 ---
@@ -966,7 +966,7 @@ assets, returning any excess revenues to the household as nonnegative lump sum t
 
 The recursive formulation is implemented as follows
 
-```{code-block} julia
+```{code-cell} julia
 using Dierckx
 
 
@@ -1439,7 +1439,7 @@ We assume the same utility parameters as in the {doc}`Lucas-Stokey economy <../d
 
 This utility function is implemented in the following constructor
 
-```{code-block} julia
+```{code-cell} julia
 function crra_utility(;
     β = 0.9,
     σ = 2.0,
@@ -1478,7 +1478,7 @@ free bond are in red.
 Paths with circles are histories in which there is peace, while those with
 triangle denote war.
 
-```{code-block} julia
+```{code-cell} julia
 time_example = crra_utility(G=[0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
                             Θ = ones(6)) # Θ can in principle be random
 
@@ -1584,7 +1584,7 @@ $$
 
 In accordance, we will re-define our utility function
 
-```{code-block} julia
+```{code-cell} julia
 function log_utility(;β = 0.9,
                     ψ = 0.69,
                     Π = 0.5 * ones(2, 2),
@@ -1610,7 +1610,7 @@ The figure below plots optimal tax policies for both the economy with
 state contingent debt (circles) and the economy with only a risk-free bond
 (triangles)
 
-```{code-block} julia
+```{code-cell} julia
 log_example = log_utility()
 
 log_example.transfers = true                             # Government can use transfers
@@ -1654,14 +1654,14 @@ depends on the history of shocks.
 This is even more evident in the following figure that plots the evolution of
 the two policies over 200 periods
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 T_long = 200
 sim_seq_long = simulate(log_sequential, 0.5, 1, T_long)
 sHist_long = sim_seq_long[end-2]
@@ -1682,7 +1682,7 @@ end
 p
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

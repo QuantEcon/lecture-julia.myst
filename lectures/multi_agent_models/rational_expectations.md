@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (ree)=
@@ -154,7 +154,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -593,14 +593,14 @@ Compare your results with the previous exercise.  Comment.
 
 ### Exercise 1
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon, Printf, LinearAlgebra
 ```
 
@@ -665,7 +665,7 @@ $$
 
 Here's our solution
 
-```{code-block} julia
+```{code-cell} julia
 # model parameters
 a0 = 100
 a1 = 0.05
@@ -699,7 +699,7 @@ hh = h0, h1, h2 = -F[3], 1 - F[1], -F[2]
 @printf("(h0, h1, h2) = [%.3f, %.3f, %.3f]\n", h0, h1, h2)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -749,7 +749,7 @@ $\kappa_1 = h_1 + h_2$.
 
 The following code implements this test
 
-```{code-block} julia
+```{code-cell} julia
 candidates = ([94.0886298678, 0.923409232937],
               [93.2119845412, 0.984323478873],
               [95.0818452486, 0.952459076301])
@@ -769,7 +769,7 @@ for (k0, k1) in candidates
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -832,7 +832,7 @@ $$
 we can obtain the implied aggregate law of motion via
 $\kappa_0 = -F_1$ and $\kappa_1 = 1-F_0$
 
-```{code-block} julia
+```{code-cell} julia
 # formulate the planner's LQ problem
 A = I + zeros(2, 2)
 B = [1.0, 0.0]
@@ -851,7 +851,7 @@ P, F, d = stationary_values(lq)
 println("κ0=$κ0\tκ1=$κ1")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -878,7 +878,7 @@ $$
 
 The problem can be solved as follows
 
-```{code-block} julia
+```{code-cell} julia
 # formulate the monopolist's LQ problem
 A = I + zeros(2, 2)
 B = [1.0, 0.0]
@@ -897,7 +897,7 @@ m0, m1 = -F[2], 1 - F[1]
 println("m0=$m0\tm1=$m1")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

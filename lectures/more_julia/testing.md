@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (testing)=
@@ -425,7 +425,7 @@ This will place the repository inside their `~/.julia/dev` folder.
 
 Recall that the path to your `~/.julia` folder is
 
-```{code-block} julia
+```{code-cell} julia
 DEPOT_PATH[1]
 ```
 
@@ -465,7 +465,7 @@ Julia provides testing features through a built-in package called `Test`, which 
 
 The basic object is the macro `@test`
 
-```{code-block} julia
+```{code-cell} julia
 using Test
 @test 1 == 1
 @test 1 ≈ 1
@@ -475,7 +475,7 @@ Tests will pass if the condition is `true`, or fail otherwise.
 
 If a test is failing, we should flag it with `@test_broken` as below
 
-```{code-block} julia
+```{code-cell} julia
 @test_broken 1 == 2
 ```
 
@@ -665,7 +665,7 @@ Make sure you do this from the base Julia environment (i.e., after running `] ac
 
 As a reminder, you can find the location of your `~/.julia` folder (called the "user depot"), by running
 
-```{code-block} julia
+```{code-cell} julia
 DEPOT_PATH[1]
 ```
 

@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (coleman_policy_iter)=
@@ -379,7 +379,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -388,20 +388,20 @@ using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Roots
 using Optim, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Roots
 
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function K!(Kg, g, grid, β, ∂u∂c, f, f′, shocks)
 # This function requires the container of the output value as argument Kg
 
@@ -430,7 +430,7 @@ For example, it evaluates integrals by Monte Carlo and approximates functions us
 
 Here's that Bellman operator code again, which needs to be executed because we'll use it in some tests below
 
-```{code-block} julia
+```{code-cell} julia
 using Optim
 
 function T(w, grid, β, u, f, shocks, Tw = similar(w);
@@ -470,7 +470,7 @@ solution.
 
 Here's an object containing data from the log-linear growth model we used in the {doc}`value function iteration lecture <../dynamic_programming/optgrowth>`
 
-```{code-block} julia
+```{code-cell} julia
 isoelastic(c, γ) = isone(γ) ? log(c) : (c^(1 - γ) - 1) / (1 - γ)
 Model = @with_kw (α = 0.65,                            # Productivity parameter
                   β = 0.95,                            # Discount factor
@@ -490,13 +490,13 @@ Model = @with_kw (α = 0.65,                            # Productivity parameter
 
 Next we generate an instance
 
-```{code-block} julia
+```{code-cell} julia
 m = Model();
 ```
 
 We also need some shock draws for Monte Carlo integration
 
-```{code-block} julia
+```{code-cell} julia
 using Random
 Random.seed!(42) # for reproducible results.
 
@@ -507,7 +507,7 @@ shocks = collect(exp.(m.μ .+ m.s * randn(shock_size))); # generate shocks
 As a preliminary test, let's see if $K c^* = c^*$, as implied by the
 theory
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -517,7 +517,7 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function verify_true_policy(m, shocks, c_star)
     # compute (Kc_star)
     @unpack grid, β, ∂u∂c, f, f′ = m
@@ -530,12 +530,12 @@ function verify_true_policy(m, shocks, c_star)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 c_star = (1 - m.α * m.β) * m.grid # true policy (c_star)
 verify_true_policy(m, shocks, c_star)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -554,7 +554,7 @@ converge towards $c^*$.
 
 The initial condition we'll use is the one that eats the whole pie: $c(y) = y$
 
-```{code-block} julia
+```{code-cell} julia
 function check_convergence(m, shocks, c_star, g_init; n_iter = 15)
     @unpack grid, β, ∂u∂c, f, f′ = m
     g = g_init;
@@ -570,7 +570,7 @@ function check_convergence(m, shocks, c_star, g_init; n_iter = 15)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 check_convergence(m, shocks, c_star, m.grid, n_iter = 15)
 ```
 
@@ -591,7 +591,7 @@ and hence the same errors.
 But in fact we expect the first method to be more accurate for reasons
 discussed above
 
-```{code-block} julia
+```{code-cell} julia
 function iterate_updating(func, arg_init; sim_length = 20)
     arg = arg_init;
     for i in 1:sim_length
@@ -623,7 +623,7 @@ function compare_error(m, shocks, g_init, w_init; sim_length = 20)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 compare_error(m, shocks, m.grid, m.u.(m.grid), sim_length=20)
 ```
 
@@ -740,13 +740,13 @@ The fundamental theorem of calculus then implies that $v = w$ on $\mathbb R_+$.
 
 Here's the code, which will execute if you've run all the code above
 
-```{code-block} julia
+```{code-cell} julia
 # Model instance with risk aversion = 1.5
 # others are the same as the previous instance
 m_ex = Model(γ = 1.5);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid); sim_length = 20)
 
     @unpack grid, β, u, ∂u∂c, f, f′ = m
@@ -766,7 +766,7 @@ function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid); sim_length
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 exercise2(m_ex, shocks, m.grid, m.u.(m.grid), sim_length=20)
 ```
 
@@ -778,7 +778,7 @@ Here's the code.
 
 It assumes that you've just run the code from the previous exercise
 
-```{code-block} julia
+```{code-cell} julia
 function bellman(m, shocks)
     @unpack grid, β, u, ∂u∂c, f, f′ = m
     bellman_single_arg(w) = T(w, grid, β, u, f, shocks)
@@ -791,11 +791,11 @@ function coleman(m, shocks)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 @benchmark bellman(m_ex, shocks)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 @benchmark bellman(m_ex, shocks)
 ```
 

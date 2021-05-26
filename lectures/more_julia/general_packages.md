@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (general_packages)=
@@ -46,7 +46,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -63,7 +63,7 @@ Many applications require directly calculating a numerical derivative and calcul
 
 A high accuracy solution for calculating numerical integrals is [QuadGK](https://github.com/JuliaMath/QuadGK.jl).
 
-```{code-block} julia
+```{code-cell} julia
 using QuadGK
 @show value, tol = quadgk(cos, -2π, 2π);
 ```
@@ -78,7 +78,7 @@ Alternatively, many integrals can be done efficiently with (non-adaptive) [Gauss
 
 For example, using [FastGaussQuadrature.jl](https://github.com/ajt60gaibb/FastGaussQuadrature.jl)
 
-```{code-block} julia
+```{code-cell} julia
 using FastGaussQuadrature
 x, w = gausslegendre( 100_000 ); # i.e. find 100,000 nodes
 
@@ -91,7 +91,7 @@ The only problem with the `FastGaussQuadrature` package is that you will need to
 
 Alternatively, `QuantEcon.jl` has routines for Gaussian quadrature that translate the domains.
 
-```{code-block} julia
+```{code-cell} julia
 using QuantEcon
 
 x, w = qnwlege(65, -2π, 2π);
@@ -104,7 +104,7 @@ If the calculations of the numerical integral is simply for calculating mathemat
 
 Under the hood, it is finding the appropriate Gaussian quadrature scheme for the distribution using `FastGaussQuadrature`.
 
-```{code-block} julia
+```{code-cell} julia
 using Distributions, Expectations
 dist = Normal()
 E = expectation(dist)
@@ -132,7 +132,7 @@ Let's start with the univariate case.
 
 We begin by creating some data points, using a sine function
 
-```{code-block} julia
+```{code-cell} julia
 using Interpolations
 using Plots
 gr(fmt=:png);
@@ -147,7 +147,7 @@ scatter!(x, y, label = "sampled data", markersize = 4)
 
 To implement linear and cubic [spline](https://en.wikipedia.org/wiki/Spline_%28mathematics%29) interpolation
 
-```{code-block} julia
+```{code-cell} julia
 li = LinearInterpolation(x, y)
 li_spline = CubicSplineInterpolation(x, y)
 
@@ -165,7 +165,7 @@ for regular grids since `x` is a `Range` type.
 
 For an arbitrary, irregular grid
 
-```{code-block} julia
+```{code-cell} julia
 x = log.(range(1, exp(4), length = 10)) .+ 1  # uneven grid
 y = log.(x) # corresponding y points
 
@@ -183,7 +183,7 @@ At this point, `Interpolations.jl` does not have support for cubic splines with 
 
 Interpolating a regular multivariate function uses the same function
 
-```{code-block} julia
+```{code-cell} julia
 f(x,y) = log(x+y)
 xs = 1:0.2:5
 ys = 2:0.1:5
@@ -224,7 +224,7 @@ See [here](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/) for further d
 
 When you need to properly escape latex code (e.g. for equation labels), use [LaTeXStrings.jl](https://github.com/stevengj/LaTeXStrings.jl).
 
-```{code-block} julia
+```{code-cell} julia
 using LaTeXStrings
 L"an equation: $1 + \alpha^2$"
 ```
@@ -237,7 +237,7 @@ To use the package, you simply put a macro in front of `for` loops, etc.
 
 From the documentation
 
-```{code-block} julia
+```{code-cell} julia
 using ProgressMeter
 
 @showprogress 1 "Computing..." for i in 1:50

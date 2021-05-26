@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (generic_programming)=
@@ -67,7 +67,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -82,7 +82,7 @@ The connection between data structures and the algorithms which operate on them 
 
 Concrete types (i.e., `Float64` or `Array{Float64, 2}`) are the data structures we apply an algorithm to, and the abstract types (e.g. the corresponding `Number` and `AbstractArray`) provide the mapping between a set of related data structures and algorithms.
 
-```{code-block} julia
+```{code-cell} julia
 using Distributions
 x = 1
 y = Normal()
@@ -100,19 +100,19 @@ z = "foo"
 
 Beyond the `typeof` and `supertype` functions, a few other useful tools for analyzing the tree of types are discussed in the {doc}`introduction to types lecture <../getting_started_julia/introduction_to_types>`
 
-```{code-block} julia
+```{code-cell} julia
 using Base: show_supertypes # import the function from the `Base` package
 
 show_supertypes(Int64)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 subtypes(Integer)
 ```
 
 Using the `subtypes` function, we can write an algorithm to traverse the type tree below any time `t` -- with the confidence that all types support `subtypes`
 
-```{code-block} julia
+```{code-cell} julia
 #  from https://github.com/JuliaLang/julia/issues/24741
 function subtypetree(t, level=1, indent=4)
         if level == 1
@@ -127,7 +127,7 @@ function subtypetree(t, level=1, indent=4)
 
 Applying this to `Number`, we see the tree of types currently loaded
 
-```{code-block} julia
+```{code-cell} julia
 subtypetree(Number) # warning: do not use this function on ``Any``!
 ```
 
@@ -141,7 +141,7 @@ There are a few functions that work in the "most generalized" context: usable wi
 
 We have already called `typeof`, `show` and `supertype` -- which will apply to a custom `struct` type since `MyType <: Any`
 
-```{code-block} julia
+```{code-cell} julia
 # custom type
 struct MyType
     a::Float64
@@ -160,7 +160,7 @@ The `@show` macro (1) prints the expression as a string; (2) evaluates the expre
 
 To see this with built-in types
 
-```{code-block} julia
+```{code-cell} julia
 x = [1, 2]
 show(x)
 ```
@@ -169,7 +169,7 @@ The `Any` type is useful, because it provides a fall-back implementation for a v
 
 Hence, calling `show` on our custom type dispatches to the fallback function
 
-```{code-block} julia
+```{code-cell} julia
 myval = MyType(2.0)
 show(myval)
 ```
@@ -185,7 +185,7 @@ end
 
 To implement a specialized implementation of the `show` function for our type, rather than using this fallback
 
-```{code-block} julia
+```{code-cell} julia
 import Base.show  # to extend an existing function
 
 function show(io::IO, x::MyType)
@@ -197,7 +197,7 @@ show(myval)  # it creates an IO value first and then calls the above show
 
 At that point, we can use the `@show` macro, which in turn calls `show`
 
-```{code-block} julia
+```{code-cell} julia
 @show myval;
 ```
 
@@ -221,7 +221,7 @@ The superficial similarity can lead to misuse: types are *not* classes with poor
 
 In particular, previous OO knowledge often leads people to write Julia code such as
 
-```{code-block} julia
+```{code-cell} julia
 # BAD! Replicating an OO design in Julia
 mutable struct MyModel
     a::Float64
@@ -288,7 +288,7 @@ to the creation of the [Distributions.jl](https://github.com/JuliaStats/Distribu
 
 Let's examine the tree of types for a Normal distribution
 
-```{code-block} julia
+```{code-cell} julia
 using Distributions
 d1 = Normal(1.0, 2.0) # an example type to explore
 @show d1
@@ -297,7 +297,7 @@ show_supertypes(typeof(d1))
 
 The `Sampleable{Univariate,Continuous}` type has a limited number of functions, chiefly the ability to draw a random number
 
-```{code-block} julia
+```{code-cell} julia
 @show rand(d1);
 ```
 
@@ -310,7 +310,7 @@ iid shocks, where you did not need to assume an existing pdf etc., this is a nat
 For example, to simulate $x_{t+1} = a x_t + b \epsilon_{t+1}$ where
 $\epsilon \sim D$ for some $D$, which allows drawing random values.
 
-```{code-block} julia
+```{code-cell} julia
 function simulateprocess(x₀; a = 1.0, b = 1.0, N = 5, d::Sampleable{Univariate,Continuous})
     x = zeros(typeof(x₀), N+1) # preallocate vector, careful on the type
     x[1] = x₀
@@ -328,7 +328,7 @@ Moving down the tree, the `Distributions{Univariate, Continuous}` abstract type 
 
 These match the mathematics, such as `pdf`, `cdf`, `quantile`, `support`, `minimum`, `maximum`, etc.
 
-```{code-block} julia
+```{code-cell} julia
 d1 = Normal(1.0, 2.0)
 d2 = Exponential(0.1)
 @show d1
@@ -354,7 +354,7 @@ If you fulfill all of the conditions of a particular interface, you can use algo
 
 As an example, consider the [StatsPlots](https://github.com/JuliaPlots/StatsPlots.jl) package
 
-```{code-block} julia
+```{code-cell} julia
 using StatsPlots
 d = Normal(2.0, 1.0)
 plot(d) # note no other arguments!
@@ -365,7 +365,7 @@ displays the `pdf` and uses `minimum` and `maximum` to determine the range.
 
 Let's create our own distribution type
 
-```{code-block} julia
+```{code-cell} julia
 struct OurTruncatedExponential <: Distribution{Univariate,Continuous}
     α::Float64
     xmax::Float64
@@ -378,7 +378,7 @@ Distributions.maximum(d::OurTruncatedExponential) = d.xmax
 
 To demonstrate this
 
-```{code-block} julia
+```{code-cell} julia
 d = OurTruncatedExponential(1.0,2.0)
 @show minimum(d), maximum(d)
 @show support(d) # why does this work?
@@ -400,7 +400,7 @@ implementation as a fallback.
 
 These functions are enough to use the  `StatsPlots.jl` package
 
-```{code-block} julia
+```{code-cell} julia
 plot(d) # uses the generic code!
 ```
 
@@ -410,7 +410,7 @@ A few things to point out
 * We also did not implement the `rand` function, which means we are breaking the implicit contract of the `Sampleable` abstract type.
 * It turns out that there is a better way to do this precise thing already built into `Distributions`.
 
-```{code-block} julia
+```{code-cell} julia
 d = Truncated(Exponential(0.1), 0.0, 2.0)
 @show typeof(d)
 plot(d)
@@ -459,7 +459,7 @@ Furthermore, that generality in designing algorithms comes with no compromises o
 
 To demonstrate this for a complex number, where `Complex{Float64} <: Number`
 
-```{code-block} julia
+```{code-cell} julia
 a = 1.0 + 1.0im
 b = 0.0 + 2.0im
 @show typeof(a)
@@ -475,7 +475,7 @@ b = 0.0 + 2.0im
 And for an arbitrary precision integer where `BigInt <: Number`
 (i.e., a different type than the `Int64` you have worked with, but nevertheless a `Number`)
 
-```{code-block} julia
+```{code-cell} julia
 a = BigInt(10)
 b = BigInt(4)
 @show typeof(a)
@@ -496,7 +496,7 @@ The `Complex` numbers require some sort of storage for their underlying real and
 
 This data structure is defined to work with any type `<: Number`, and is parameterized (e.g. `Complex{Float64}` is a complex number storing the imaginary and real parts in `Float64`)
 
-```{code-block} julia
+```{code-cell} julia
 x = 4.0 + 1.0im
 @show x, typeof(x)
 
@@ -508,7 +508,7 @@ The implementation of the `Complex` numbers use the underlying operations of
 storage type, so as long as `+`, `*` etc. are defined -- as they should be
 for any `Number` -- the complex operation can be defined
 
-```{code-block} julia
+```{code-cell} julia
 @which +(x,x)
 ```
 
@@ -524,7 +524,7 @@ The rest of the function has been carefully written to use functions defined for
 
 To follow another example , look at the implementation of `abs` specialized for complex numbers
 
-```{code-block} julia
+```{code-cell} julia
 @which abs(x)
 ```
 
@@ -540,11 +540,11 @@ That function, in turn, relies on the underlying `abs` for the type of `real(z)`
 
 This would dispatch to the appropriate `abs` for the type
 
-```{code-block} julia
+```{code-cell} julia
 @which abs(1.0)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 @which abs(BigFloat(1.0))
 ```
 
@@ -594,7 +594,7 @@ We have already shown these with the `Float64` and `BigFloat`.
 
 To show this for the `Rational` number type, where `a // b` constructs a rational number $\frac{a}{b}$
 
-```{code-block} julia
+```{code-cell} julia
 a = 1 // 10
 b = 4 // 6
 @show typeof(a)
@@ -621,7 +621,7 @@ Moving further down the tree of types provides more operations more directly tie
 
 For example, floating point numbers have a machine precision, below which numbers become indistinguishable due to lack of sufficient "bits" of information
 
-```{code-block} julia
+```{code-cell} julia
 @show Float64 <: AbstractFloat
 @show BigFloat <: AbstractFloat
 @show eps(Float64)
@@ -632,7 +632,7 @@ The `isless` function also has multiple methods.
 
 First let's try with integers
 
-```{code-block} julia
+```{code-cell} julia
 @which isless(1, 2)
 ```
 
@@ -652,7 +652,7 @@ Note that this is not defined for `Number` because not all `Number` types have t
 
 In order to generate fast code, the implementation details may define specialized versions of these operations.
 
-```{code-block} julia
+```{code-cell} julia
 isless(1.0, 2.0)  # applied to two floats
 @which isless(1.0, 2.0)
 ```
@@ -669,7 +669,7 @@ Syntactically, a univariate "function" is any `f` that can call an argument `x` 
 
 For example, we can use a standard function
 
-```{code-block} julia
+```{code-cell} julia
 using QuadGK
 f(x) = x^2
 @show quadgk(f, 0.0, 1.0)  # integral
@@ -687,7 +687,7 @@ plotfunctions(f)  # call with our f
 
 Of course, univariate polynomials are another type of univariate function
 
-```{code-block} julia
+```{code-cell} julia
 using Polynomials
 p = Polynomial([2, -5, 2], :x)  # :x just gives a symbol for display
 @show p
@@ -698,7 +698,7 @@ plotfunctions(p)  # same generic function
 
 Similarly, the result of interpolating data is also a function
 
-```{code-block} julia
+```{code-cell} julia
 using Interpolations
 x = 0.0:0.2:1.0
 f(x) = x^2
@@ -751,7 +751,7 @@ $$
 
 The quadrature rule can be implemented easily as
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra
 function trap_weights(x)
     return step(x) * [0.5; ones(length(x) - 2); 0.5]
@@ -768,7 +768,7 @@ implement the modified `trap_weights` and integration.
 
 Hint:  create a type such as
 
-```{code-block} julia
+```{code-cell} julia
 struct UniformTrapezoidal
     count::Int
     Δ::Float64

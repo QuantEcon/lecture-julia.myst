@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (smoothing)=
@@ -354,20 +354,20 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using Parameters, Plots, QuantEcon, Random
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ConsumptionProblem = @with_kw (β = 0.96,
                                y = [2.0, 1.5],
                                b0 = 3.0,
@@ -423,14 +423,14 @@ end
 
 Let's test by checking that $\bar c$ and $b_2$ satisfy the budget constraint
 
-```{code-block} julia
+```{code-cell} julia
 cp = ConsumptionProblem()
 c̄, b1, b2 = consumption_complete(cp)
 debt_complete = [b1, b2]
 isapprox((c̄ + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -587,7 +587,7 @@ The code above also contains a function called consumption_incomplete() that use
 
 Let's try this, using the same parameters in both complete and incomplete markets economies
 
-```{code-block} julia
+```{code-cell} julia
 Random.seed!(42)
 N_simul = 150
 cp = ConsumptionProblem()
@@ -612,7 +612,7 @@ plot!(plt_debt, legend = :bottomleft)
 plot(plt_cons, plt_debt, layout = (1,2), size = (800, 400))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -636,7 +636,7 @@ income $y_t$, notice that
 
 We can simply relabel variables to acquire tax-smoothing interpretations of our two models
 
-```{code-block} julia
+```{code-cell} julia
 plt_tax = plot(title = "Tax collection paths", x_label = "Periods", ylim = [1.4,2.1])
 plot!(plt_tax, 1:N_simul, c_path, label = "incomplete market", lw = 2)
 plot!(plt_tax, 1:N_simul, fill(c̄, N_simul), label = "complete market", lw = 2)
@@ -652,7 +652,7 @@ hline!(plt_gov, [0], linestyle = :dash, color = :black, lw = 2, label = "")
 plot(plt_tax, plt_gov, layout = (1,2), size = (800, 400))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -697,7 +697,7 @@ asset level to $0$, so that $b_1 =0$.
 
 Here's our code to compute a quantitative example with zero debt in peace time:
 
-```{code-block} julia
+```{code-cell} julia
 # Parameters
 
 β = .96
@@ -755,7 +755,7 @@ exant = Π .* P
 println("Ex ante returns to purchase of Arrow securities = $exant")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -918,14 +918,14 @@ the state $x_t$ described by {eq}`cs_15`.
 Here's an example that shows how in this setting the availability of insurance against fluctuating nonfinancial income
 allows the consumer completely to smooth consumption across time and across states of the world.
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function complete_ss(β, b0, x0, A, C, S_y, T = 12)
 
     # Create a linear state space for simulation purposes
@@ -991,7 +991,7 @@ plot(plt_cons, plt_debt, layout = (1,2), size = (800, 400))
 plot!(legend = :bottomleft)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

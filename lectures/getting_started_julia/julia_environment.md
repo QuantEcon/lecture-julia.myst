@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (julia_environment)=
@@ -124,7 +124,7 @@ This might take 15-20 minutes depending on your setup, as it installs a large se
 
 Run the following cell
 
-```{code-block} julia
+```{code-cell} julia
 using Plots
 gr(fmt=:png);
 plot(sin, -2π, 2π, label="sin(x)")

@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (lu_tricks)=
@@ -70,7 +70,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Polynomials, Plots, Random, Parameters
 using LinearAlgebra, Statistics
 ```
@@ -903,7 +903,7 @@ above can be found in file [control_and_filter.jl](https://github.com/QuantEcon/
 
 Here's how it looks
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [output_scroll]
 ---
@@ -1142,14 +1142,14 @@ The $\{a_t\}$ sequence we'll choose as a stationary cyclic process plus some whi
 
 Here's some code that generates a plot when $\gamma = 0.8$
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 gr(fmt=:png);
 
 # set seed and generate a_t sequence
@@ -1179,17 +1179,17 @@ plot_simulation()
 
 Here's what happens when we change $\gamma$ to 5.0
 
-```{code-block} julia
+```{code-cell} julia
 plot_simulation(γ=5.0)
 ```
 
 And here's $\gamma = 10$
 
-```{code-block} julia
+```{code-cell} julia
 plot_simulation(γ=10.0)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

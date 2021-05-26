@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (seir_model)=
@@ -59,11 +59,11 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics, Random, SparseArrays
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -72,7 +72,7 @@ using Test # Put this before any code in the lecture.
 
 In addition, we will be exploring the [Ordinary Differential Equations](https://diffeq.sciml.ai/dev/tutorials/ode_example/) package within the [SciML ecosystem](https://github.com/SciML/).
 
-```{code-block} julia
+```{code-cell} julia
 using OrdinaryDiffEq
 using Parameters, Plots
 gr(fmt=:png);
@@ -177,7 +177,7 @@ We begin by implementing a simple version of this model with a constant $R_0$ an
 
 First, define the system of equations
 
-```{code-block} julia
+```{code-cell} julia
 function F_simple(x, p, t; γ = 1/18, R₀ = 3.0, σ = 1/5.2)
     s, e, i, r = x
 
@@ -191,7 +191,7 @@ end
 
 Given this system, we choose an initial condition and a timespan, and create a `ODEProblem` encapsulating the system.
 
-```{code-block} julia
+```{code-cell} julia
 i_0 = 1E-7                  # 33 = 1E-7 * 330 million population = initially infected
 e_0 = 4.0 * i_0             # 132 = 1E-7 *330 million = initially exposed
 s_0 = 1.0 - i_0 - e_0
@@ -204,7 +204,7 @@ prob = ODEProblem(F_simple, x_0, tspan)
 
 With this, choose an ODE algorithm and solve the initial value problem.  A good default algorithm for non-stiff ODEs of this sort might be `Tsit5()`, which is the Tsitouras 5/4 Runge-Kutta method).
 
-```{code-block} julia
+```{code-cell} julia
 sol = solve(prob, Tsit5())
 plot(sol, labels = ["s" "e" "i" "r"], title = "SEIR Dynamics", lw = 2)
 ```
@@ -213,7 +213,7 @@ We did not provide either a set of time steps or a `dt` time step size to the `s
 
 Or, as an alternative visualization, the proportions in each state over time
 
-```{code-block} julia
+```{code-cell} julia
 areaplot(sol.t, sol', labels = ["s" "e" "i" "r"], title = "SEIR Proportions")
 ```
 
@@ -294,7 +294,7 @@ As we will initially consider the case where $R_0(0) = \bar{R}_0(0)$, the parame
 
 First, construct our $F$ from {eq}`dfcv`
 
-```{code-block} julia
+```{code-cell} julia
 function F(x, p, t)
     s, e, i, r, R₀, c, d = x
     @unpack σ, γ, R̄₀, η, δ = p
@@ -318,7 +318,7 @@ The only confusing part of the notation is the `R̄₀(t, p)` which evaluates th
 
 The baseline parameters are put into a named tuple generator (see previous lectures using [Parameters.jl](https://github.com/mauro3/Parameters.jl)) with default values discussed above.
 
-```{code-block} julia
+```{code-cell} julia
 p_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
                 R₀_n = 1.6, δ = 0.01, N = 3.3E8,
                 R̄₀ = (t, p) -> p.R₀_n);
@@ -328,7 +328,7 @@ Note that the default $\bar{R}_0(t)$ function always equals $R_{0n}$ -- a parame
 
 Setting initial conditions, we choose a fixed $s, i, e, r$, as well as $R_0(0) = R_{0n}$ and $m(0) = 0.01$
 
-```{code-block} julia
+```{code-cell} julia
 p = p_gen()  # use all default parameters
 
 i_0 = 1E-7
@@ -349,7 +349,7 @@ The time period we investigate will be 550 days, or around 18 months:
 
 Let's run some experiments using this code.
 
-```{code-block} julia
+```{code-cell} julia
 sol = solve(prob, Tsit5())
 @show length(sol.t);
 ```
@@ -360,7 +360,7 @@ While it may seem that 45 time intervals is extremely small for that range, for 
 
 The solution object has [built in](https://docs.sciml.ai/stable/basics/plot/) plotting support.
 
-```{code-block} julia
+```{code-cell} julia
 plot(sol, vars = [6, 7], label = ["c(t)" "d(t)"], lw = 2,
      title = ["Cumulative Infected" "Death Proportion"],
      layout = (1,2), size = (900, 300))
@@ -378,7 +378,7 @@ Let's start with the case where $\bar{R}_0(t) = R_{0n}$ is constant.
 
 We calculate the time path of infected people under different assumptions of $R_{0n}$:
 
-```{code-block} julia
+```{code-cell} julia
 R₀_n_vals = range(1.6, 3.0, length = 6)
 sols = [solve(ODEProblem(F, x_0, tspan, p_gen(R₀_n = R₀_n)),
               Tsit5(), saveat=0.5) for R₀_n in R₀_n_vals];
@@ -390,7 +390,7 @@ Changing the saved points is just a question of storage/interpolation, and does 
 
 Let's plot current cases as a fraction of the population.
 
-```{code-block} julia
+```{code-cell} julia
 labels = permutedims(["R_0 = $r" for r in R₀_n_vals])
 infecteds = [sol[3,:] for sol in sols]
 plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = "t",
@@ -403,7 +403,7 @@ They also lead to a lower peak in current cases.
 
 Here is cumulative cases, as a fraction of population:
 
-```{code-block} julia
+```{code-cell} julia
 cumulative_infected = [sol[6,:] for sol in sols]
 plot(cumulative_infected, label=labels ,legend=:topleft, lw = 2, xlabel = "t",
      ylabel = "c(t)", title = "Cumulative Cases")
@@ -425,21 +425,21 @@ imposed.
 
 We consider several different rates:
 
-```{code-block} julia
+```{code-cell} julia
 η_vals = [1/5, 1/10, 1/20, 1/50, 1/100]
 labels = permutedims(["eta = $η" for η in η_vals]);
 ```
 
 Let's calculate the time path of infected people, current cases, and mortality
 
-```{code-block} julia
+```{code-cell} julia
 x_0 = [s_0, e_0, i_0, 0.0, 3.0, 0.0, 0.0]
 sols = [solve(ODEProblem(F, x_0, tspan, p_gen(η=η)), Tsit5(), saveat=0.5) for η in η_vals];
 ```
 
 Next, plot the $R_0$ over time:
 
-```{code-block} julia
+```{code-cell} julia
 Rs = [sol[5,:] for sol in sols]
 plot(Rs, label=labels, legend=:topright, lw = 2, xlabel = "t",
      ylabel = "R_0(t)", title = "Basic Reproduction Number")
@@ -448,13 +448,13 @@ plot(Rs, label=labels, legend=:topright, lw = 2, xlabel = "t",
 Now let's plot the number of infected persons and the cumulative number
 of infected persons:
 
-```{code-block} julia
+```{code-cell} julia
 infecteds = [sol[3,:] for sol in sols]
 plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = "t",
      ylabel = "i(t)", title = "Current Infected")
 ```
 
-```{code-block} julia
+```{code-cell} julia
 cumulative_infected = [sol[6,:] for sol in sols]
 plot(cumulative_infected, label=labels ,legend=:topleft, lw = 2, xlabel = "t",
      ylabel = "c(t)", title = "Cumulative Infected")
@@ -474,7 +474,7 @@ For both of these, we will choose a large $\eta$ to focus on the case where rapi
 The parameters considered here start the model with 25,000 active infections
 and 75,000 agents already exposed to the virus and thus soon to be contagious.
 
-```{code-block} julia
+```{code-cell} julia
 R₀_L = 0.5  # lockdown
 R̄₀_lift_early(t, p) = t < 30.0 ? R₀_L : 2.0
 R̄₀_lift_late(t, p) = t < 120.0 ? R₀_L : 2.0
@@ -498,7 +498,7 @@ Unlike the previous examples, the $\bar{R}_0(t)$ functions have discontinuities 
 
 Let's calculate the paths:
 
-```{code-block} julia
+```{code-cell} julia
 sol_early = solve(prob_early, Tsit5(), tstops = [30.0, 120.0])
 sol_late = solve(prob_late, Tsit5(), tstops = [30.0, 120.0])
 plot(sol_early, vars = [7], title = "Total Mortality", label = "Lift Early", legend = :topleft)
@@ -507,7 +507,7 @@ plot!(sol_late, vars = [7], label = "Lift Late")
 
 Next we examine the daily deaths, $\frac{d D(t)}{dt} = N \delta \gamma i(t)$.
 
-```{code-block} julia
+```{code-cell} julia
 flow_deaths(sol, p) = p.N * p.δ * p.γ * sol[3,:]
 
 plot(sol_early.t, flow_deaths(sol_early, p_early), title = "Flow Deaths", label = "Lift Early")

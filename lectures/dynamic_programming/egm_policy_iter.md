@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (egm_policy_iter)=
@@ -148,20 +148,20 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Random, Roots
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function coleman_egm(g, k_grid, β, u′, u′_inv, f, f′, shocks)
 
     # Allocate memory for value of consumption on endogenous grid points
@@ -187,7 +187,7 @@ Note the lack of any root finding algorithm.
 
 We'll also run our original implementation, which uses an exogenous grid and requires root finding, so we can perform some comparisons
 
-```{code-block} julia
+```{code-cell} julia
 function K!(Kg, g, grid, β, u′, f, f′, shocks)
 
     # This function requires the container of the output value as argument Kg
@@ -219,7 +219,7 @@ As we {doc}`did for value function iteration <../dynamic_programming/optgrowth>`
 
 The first step is to bring in the model that we used in the {doc}`Coleman policy function iteration <../dynamic_programming/coleman_policy_iter>`
 
-```{code-block} julia
+```{code-cell} julia
 # model
 
 Model = @with_kw (α = 0.65, # productivity parameter
@@ -239,20 +239,20 @@ Model = @with_kw (α = 0.65, # productivity parameter
 
 Next we generate an instance
 
-```{code-block} julia
+```{code-cell} julia
 mlog = Model(); # Log Linear model
 ```
 
 We also need some shock draws for Monte Carlo integration
 
-```{code-block} julia
+```{code-cell} julia
 Random.seed!(42); # For reproducible behavior.
 
 shock_size = 250     # Number of shock draws in Monte Carlo integral
 shocks = exp.(mlog.μ .+ mlog.s * randn(shock_size));
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -264,7 +264,7 @@ end
 
 As a preliminary test, let's see if $K c^* = c^*$, as implied by the theory
 
-```{code-block} julia
+```{code-cell} julia
 c_star(y) = (1 - mlog.α * mlog.β) * y
 
 # some useful constants
@@ -277,7 +277,7 @@ c4 = 1 / (1 - ab)
 v_star(y) = c1 + c2 * (c3 - c4) + c4 * log(y)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -287,7 +287,7 @@ tags: [remove-cell]
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function verify_true_policy(m, shocks, c_star)
     k_grid = m.grid
     c_star_new = coleman_egm(c_star, k_grid, m.β, m.u′, m.u′, m.f, m.f′, shocks)
@@ -299,11 +299,11 @@ function verify_true_policy(m, shocks, c_star)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 verify_true_policy(mlog, shocks, c_star)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -320,13 +320,13 @@ We can't really distinguish the two plots.
 
 In fact it's easy to see that the difference is essentially zero:
 
-```{code-block} julia
+```{code-cell} julia
 c_star_new = coleman_egm(c_star, mlog.grid, mlog.β, mlog.u′,
                          mlog.u′, mlog.f, mlog.f′, shocks)
 maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -343,7 +343,7 @@ converge towards $c^*$.
 
 Let's start from the consumption policy that eats the whole pie: $c(y) = y$
 
-```{code-block} julia
+```{code-cell} julia
 n = 15
 function check_convergence(m, shocks, c_star, g_init, n_iter)
     k_grid = m.grid
@@ -364,7 +364,7 @@ function check_convergence(m, shocks, c_star, g_init, n_iter)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 check_convergence(mlog, shocks, c_star, identity, n)
 ```
 
@@ -379,12 +379,12 @@ We'll do so using the CRRA model adopted in the exercises of the {doc}`Euler equ
 
 Here's the model and some convenient functions
 
-```{code-block} julia
+```{code-cell} julia
 mcrra = Model(α = 0.65, β = 0.95, γ = 1.5)
 u′_inv(c) = c^(-1 / mcrra.γ)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -396,7 +396,7 @@ end
 
 Here's the result
 
-```{code-block} julia
+```{code-cell} julia
 crra_coleman(g, m, shocks) = K(g, m.grid, m.β, m.u′, m.f, m.f′, shocks)
 crra_coleman_egm(g, m, shocks) = coleman_egm(g, m.grid, m.β, m.u′,
                                              u′_inv, m.f, m.f′, shocks)
@@ -415,11 +415,11 @@ function egm(m, g = identity, shocks = shocks; sim_length = 20)
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 @benchmark coleman($mcrra)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 @benchmark egm($mcrra)
 ```
 

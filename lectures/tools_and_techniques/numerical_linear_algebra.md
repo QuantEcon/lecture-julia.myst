@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (numerical_linear_algebra)=
@@ -56,7 +56,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [hide-output]
 ---
@@ -121,7 +121,7 @@ That is, changing the constant of proportionality for a given size can help, but
 
 As a first example of a structured matrix, consider a [sparse array](https://docs.julialang.org/en/v1/stdlib/SparseArrays/index.html).
 
-```{code-block} julia
+```{code-cell} julia
 A = sprand(10, 10, 0.45)  # random sparse 10x10, 45 percent filled with non-zeros
 
 @show nnz(A)  # counts the number of non-zeros
@@ -134,7 +134,7 @@ This increase from less than 50 to 100 percent dense demonstrates that significa
 The results can be even more extreme.  Consider a tridiagonal matrix of size $N \times N$
 that might come out of a Markov chain or a discretization of a diffusion process,
 
-```{code-block} julia
+```{code-cell} julia
 N = 5
 A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
 ```
@@ -143,7 +143,7 @@ The number of non-zeros here is approximately $3 N$, linear, which scales well f
 
 But consider the inverse
 
-```{code-block} julia
+```{code-cell} julia
 inv(A)
 ```
 
@@ -151,7 +151,7 @@ Now, the matrix is fully dense and has $N^2$ non-zeros.
 
 This also applies to the $A' A$ operation when forming the normal equations of linear least squares.
 
-```{code-block} julia
+```{code-cell} julia
 A = sprand(20, 21, 0.3)
 @show nnz(A)/20^2
 @show nnz(A'*A)/21^2;
@@ -166,7 +166,7 @@ have a lower computational order than unstructured dense, or even unstructured s
 
 First, create a convenient function for benchmarking linear solvers
 
-```{code-block} julia
+```{code-cell} julia
 using BenchmarkTools
 function benchmark_solve(A, b)
     println("A\\b for typeof(A) = $(string(typeof(A)))")
@@ -176,7 +176,7 @@ end
 
 Then, take away structure to see the impact on performance,
 
-```{code-block} julia
+```{code-cell} julia
 N = 1000
 b = rand(N)
 A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
@@ -206,24 +206,24 @@ By the rules of computational order, that means any algorithm requiring a matrix
 
 The other important question is what is the structure of the resulting matrix.  For example, multiplying an upper triangular matrix by a lower triangular matrix
 
-```{code-block} julia
+```{code-cell} julia
 N = 5
 U = UpperTriangular(rand(N,N))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 L = U'
 ```
 
 But the product is fully dense (e.g., think of a Cholesky multiplied by itself to produce a covariance matrix)
 
-```{code-block} julia
+```{code-cell} julia
 L * U
 ```
 
 On the other hand, a tridiagonal matrix times a diagonal matrix is still tridiagonal - and can use specialized $O(N)$ algorithms.
 
-```{code-block} julia
+```{code-cell} julia
 A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
 D = Diagonal(rand(N))
 D * A
@@ -249,7 +249,7 @@ What if we do not (directly) use a factorization?
 
 Take a simple linear system of a dense matrix,
 
-```{code-block} julia
+```{code-cell} julia
 N = 4
 A = rand(N,N)
 b = rand(N)
@@ -257,7 +257,7 @@ b = rand(N)
 
 On paper, we try to solve the system $A x = b$ by inverting the matrix,
 
-```{code-block} julia
+```{code-cell} julia
 x = inv(A) * b
 ```
 
@@ -267,7 +267,7 @@ Solving a system by inverting a matrix is always a little slower, is potentially
 
 Even if you need to solve a system with the same matrix multiple times, you are better off factoring the matrix and using the solver rather than calculating an inverse.
 
-```{code-block} julia
+```{code-cell} julia
 N = 100
 A = rand(N,N)
 M = 30
@@ -305,14 +305,14 @@ Some matrices are already in a convenient form and require no further factoring.
 
 For example, consider solving a system with an `UpperTriangular` matrix,
 
-```{code-block} julia
+```{code-cell} julia
 b = [1.0, 2.0, 3.0]
 U = UpperTriangular([1.0 2.0 3.0; 0.0 5.0 6.0; 0.0 0.0 9.0])
 ```
 
 This system is especially easy to solve using [back substitution](https://en.wikipedia.org/wiki/Triangular_matrix#Forward_and_back_substitution).  In particular, $x_3 = b_3 / U_{33}, x_2 = (b_2 - x_3 U_{23})/U_{22}$, etc.
 
-```{code-block} julia
+```{code-cell} julia
 U \ b
 ```
 
@@ -334,7 +334,7 @@ or sparse matrices, that order drops.
 We can see which algorithm Julia will use for the `\` operator by looking at the `factorize` function for a given
 matrix.
 
-```{code-block} julia
+```{code-cell} julia
 N = 4
 A = rand(N,N)
 b = rand(N)
@@ -346,11 +346,11 @@ In this case, it provides an $L$ and $U$ factorization (with [pivoting](https://
 
 With the factorization complete, we can solve different `b` right hand sides.
 
-```{code-block} julia
+```{code-cell} julia
 Af \ b
 ```
 
-```{code-block} julia
+```{code-cell} julia
 b2 = rand(N)
 Af \ b2
 ```
@@ -358,19 +358,19 @@ Af \ b2
 In practice, the decomposition also includes a $P$ which is a [permutation matrix](https://en.wikipedia.org/wiki/Permutation_matrix) such
 that $P A = L U$.
 
-```{code-block} julia
+```{code-cell} julia
 Af.P * A ≈ Af.L * Af.U
 ```
 
 We can also directly calculate an LU decomposition with `lu` but without the pivoting,
 
-```{code-block} julia
+```{code-cell} julia
 L, U = lu(A, Val(false))  # the Val(false) provides a solution without permutation matrices
 ```
 
 And we can verify the decomposition
 
-```{code-block} julia
+```{code-cell} julia
 A ≈ L * U
 ```
 
@@ -388,18 +388,18 @@ As we saw above, this is the solution to two triangular systems, which can be ef
 
 To demonstrate this, first using
 
-```{code-block} julia
+```{code-cell} julia
 y = L \ b
 ```
 
-```{code-block} julia
+```{code-cell} julia
 x = U \ y
 x ≈ A \ b  # Check identical
 ```
 
 The LU decomposition also has specialized algorithms for structured matrices, such as a `Tridiagonal`
 
-```{code-block} julia
+```{code-cell} julia
 N = 1000
 b = rand(N)
 A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
@@ -412,12 +412,12 @@ LU decomposition is $O(N^2)$.
 Finally, just as a dense matrix without any structure uses an LU decomposition to solve a system,
 so will the sparse solvers
 
-```{code-block} julia
+```{code-cell} julia
 A_sparse = sparse(A)
 factorize(A_sparse) |> typeof  # dropping the tridiagonal structure to just become sparse
 ```
 
-```{code-block} julia
+```{code-cell} julia
 benchmark_solve(A, b)
 benchmark_solve(A_sparse, b);
 ```
@@ -432,7 +432,7 @@ The Cholesky is directly useful on its own (e.g., {doc}`Classical Control with L
 
 As always, symmetry allows specialized algorithms.
 
-```{code-block} julia
+```{code-cell} julia
 N = 500
 B = rand(N,N)
 A_dense = B' * B  # an easy way to generate a symmetric positive semi-definite matrix
@@ -444,13 +444,13 @@ factorize(A) |> typeof
 Here, the $A$ decomposition is [Bunch-Kaufman](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/index.html#LinearAlgebra.bunchkaufman) rather than
 Cholesky, because Julia doesn't know that the matrix is positive semi-definite.  We can manually factorize with a Cholesky,
 
-```{code-block} julia
+```{code-cell} julia
 cholesky(A) |> typeof
 ```
 
 Benchmarking,
 
-```{code-block} julia
+```{code-cell} julia
 b = rand(N)
 cholesky(A) \ b  # use the factorization to solve
 
@@ -485,7 +485,7 @@ where, as discussed above, the upper-triangular structure of $R$ can be solved e
 
 The `\` operator solves the linear least-squares problem whenever the given `A` is rectangular
 
-```{code-block} julia
+```{code-cell} julia
 N = 10
 M = 3
 x_true = rand(3)
@@ -497,7 +497,7 @@ x = A \ b
 
 To manually use the QR decomposition in solving linear least squares:
 
-```{code-block} julia
+```{code-cell} julia
 Af = qr(A)
 Q = Af.Q
 R = [Af.R; zeros(N - M, M)] # Stack with zeros
@@ -539,7 +539,7 @@ maintain sparsity.
 Without implementing the full process, you can form a QR
 factorization with `qr` and then use it to solve a system
 
-```{code-block} julia
+```{code-cell} julia
 N = 5
 A = rand(N,N)
 b = rand(N)
@@ -561,7 +561,7 @@ In Julia, whenever you ask for a full set of eigenvectors and eigenvalues, it  d
 
 To see this,
 
-```{code-block} julia
+```{code-cell} julia
 A = Symmetric(rand(5, 5))  # symmetric matrices have real eigenvectors/eigenvalues
 A_eig = eigen(A)
 Λ = Diagonal(A_eig.values)
@@ -624,7 +624,7 @@ In the above example, transitions occur only between adjacent states with the sa
 
 Implementing the $Q$ using its tridiagonal structure
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra
 α = 0.1
 N = 6
@@ -648,7 +648,7 @@ $$
 
 For our example, exploiting the tridiagonal structure,
 
-```{code-block} julia
+```{code-cell} julia
 r = range(0.0, 10.0, length=N)
 ρ = 0.05
 
@@ -658,7 +658,7 @@ A = ρ * I - Q
 Note that this $A$ matrix is maintaining the tridiagonal structure of the problem, which leads to an efficient solution to the
 linear problem.
 
-```{code-block} julia
+```{code-cell} julia
 v = A \ r
 ```
 
@@ -682,14 +682,14 @@ Notice that this is of the form $0 ψ^{*} = Q^T ψ^{*}$ and hence is equivalent 
 
 With our example, we can calculate all of the eigenvalues and eigenvectors
 
-```{code-block} julia
+```{code-cell} julia
 λ, vecs = eigen(Array(Q'))
 ```
 
 Indeed, there is a $\lambda = 0$ eigenvalue, which is associated with the last column in the eigenvector.  To turn that into a probability,
 we need to normalize it.
 
-```{code-block} julia
+```{code-cell} julia
 vecs[:,N] ./ sum(vecs[:,N])
 ```
 
@@ -702,7 +702,7 @@ enumerate it as a single state variable.
 
 To see this, consider states $i$ and $j$ governed by infinitesimal generators $Q$ and $A$.
 
-```{code-block} julia
+```{code-cell} julia
 function markov_chain_product(Q, A)
     M = size(Q, 1)
     N = size(A, 1)
@@ -724,7 +724,7 @@ L |> Matrix  # display as a dense matrix
 
 This provides the combined Markov chain for the $(i,j)$ process.  To see the sparsity pattern,
 
-```{code-block} julia
+```{code-cell} julia
 using Plots
 gr(fmt = :png);
 spy(L, markersize = 10)
@@ -732,14 +732,14 @@ spy(L, markersize = 10)
 
 To calculate a simple dynamic valuation, consider whether the payoff of being in state $(i,j)$ is $r_{ij} = i + 2j$
 
-```{code-block} julia
+```{code-cell} julia
 r = [i + 2.0j for i in 1:N, j in 1:M]
 r = vec(r)  # vectorize it since stacked in same order
 ```
 
 Solving the equation $\rho v = r + L v$
 
-```{code-block} julia
+```{code-cell} julia
 ρ = 0.05
 v = (ρ * I - L) \ r
 reshape(v, N, M)
@@ -750,7 +750,7 @@ The `reshape` helps to rearrange it back to being two-dimensional.
 To find the stationary distribution, we calculate the eigenvalue and choose the eigenvector associated with $\lambda=0$ .  In this
 case, we can verify that it is the last one.
 
-```{code-block} julia
+```{code-cell} julia
 L_eig = eigen(Matrix(L'))
 @assert norm(L_eig.values[end]) < 1E-10
 
@@ -760,7 +760,7 @@ L_eig = eigen(Matrix(L'))
 
 Reshape this to be two-dimensional if it is helpful for visualization.
 
-```{code-block} julia
+```{code-cell} julia
 reshape(ψ, N, size(A,1))
 ```
 
@@ -769,7 +769,7 @@ reshape(ψ, N, size(A,1))
 As with the discrete-time Markov chains, a key question is whether CTMCs are reducible, i.e., whether states communicate.  The problem
 is isomorphic to determining whether the directed graph of the Markov chain is [strongly connected](https://en.wikipedia.org/wiki/Strongly_connected_component).
 
-```{code-block} julia
+```{code-cell} julia
 using LightGraphs
 α = 0.1
 N = 6
@@ -778,14 +778,14 @@ Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
 
 We can verify that it is possible to move between every pair of states in a finite number of steps with
 
-```{code-block} julia
+```{code-cell} julia
 Q_graph = DiGraph(Q)
 @show is_strongly_connected(Q_graph);  # i.e., can follow directional edges to get to every state
 ```
 
 Alternatively, as an example of a reducible Markov chain where states $1$ and $2$ cannot jump to state $3$.
 
-```{code-block} julia
+```{code-cell} julia
 Q = [-0.2 0.2 0
     0.2 -0.2 0
     0.2 0.6 -0.8]
@@ -804,32 +804,32 @@ An $N \times N$ banded matrix with bandwidth $P$ has about $N P$ nonzeros in its
 
 These can be created directly as a dense matrix with `diagm`.  For example, with a bandwidth of three and a zero diagonal,
 
-```{code-block} julia
+```{code-cell} julia
 diagm(1 => [1,2,3], -1 => [4,5,6])
 ```
 
 Or as a sparse matrix,
 
-```{code-block} julia
+```{code-cell} julia
 spdiagm(1 => [1,2,3], -1 => [4,5,6])
 ```
 
 Or directly using [BandedMatrices.jl](https://github.com/JuliaMatrices/BandedMatrices.jl)
 
-```{code-block} julia
+```{code-cell} julia
 using BandedMatrices
 BandedMatrix(1 => [1,2,3], -1 => [4,5,6])
 ```
 
 There is also a convenience function for generating random banded matrices
 
-```{code-block} julia
+```{code-cell} julia
 A = brand(7, 7, 3, 1)  # 7x7 matrix, 3 subdiagonals, 1 superdiagonal
 ```
 
 And, of course, specialized algorithms will be used to exploit the structure when solving linear systems.  In particular, the complexity is related to the $O(N P_L P_U)$ for upper and lower bandwidths $P$
 
-```{code-block} julia
+```{code-cell} julia
 @show factorize(Symmetric(A)) |> typeof
 A \ rand(7)
 ```
@@ -896,7 +896,7 @@ smaller matrices/vectors since it can lead to better [cache locality](https://en
 
 To see this, a convenient tool is the benchmarking
 
-```{code-block} julia
+```{code-cell} julia
 using BenchmarkTools
 A = rand(10,10)
 B = rand(10,10)
@@ -916,7 +916,7 @@ In the `f!` function, notice that the `D` is a temporary variable which is creat
 
 This is an example of where an in-place version of the matrix multiplication can help avoid the allocation.
 
-```{code-block} julia
+```{code-cell} julia
 function f2!(C, A, B)
     mul!(C, A, B)  # in-place multiplication
     C .+= 1
@@ -933,7 +933,7 @@ Note that in the output of the benchmarking, the `f2!` is non-allocating and is 
 Another example of this is solutions to linear equations, where for large solutions you may pre-allocate and reuse the
 solution vector.
 
-```{code-block} julia
+```{code-cell} julia
 A = rand(10,10)
 y = rand(10)
 z = A \ y  # creates temporary
@@ -948,7 +948,7 @@ idea - and worrying about it prior to benchmarking is premature optimization.
 
 There are a variety of other non-allocating versions of functions.  For example,
 
-```{code-block} julia
+```{code-cell} julia
 A = rand(10,10)
 B = similar(A)
 
@@ -958,14 +958,14 @@ transpose!(B, A)  # non-allocating version of B = transpose(A)
 Finally, a common source of unnecessary allocations is when taking slices or portions of
 matrices.  For example, the following allocates a new matrix `B` and copies the values.
 
-```{code-block} julia
+```{code-cell} julia
 A = rand(5,5)
 B = A[2,:]  # extract a vector
 ```
 
 To see that these are different matrices, note that
 
-```{code-block} julia
+```{code-cell} julia
 A[2,1] = 100.0
 @show A[2,1]
 @show B[1];
@@ -974,7 +974,7 @@ A[2,1] = 100.0
 Instead of allocating a new matrix, you can take a `view` of a matrix, which provides an
 appropriate `AbstractArray` type that doesn't allocate new memory with the `@view` matrix.
 
-```{code-block} julia
+```{code-cell} julia
 A = rand(5,5)
 B = @view A[2,:]  #  does not copy the data
 
@@ -1028,7 +1028,7 @@ Here we will calculate the evolution of the pdf of a discrete-time Markov chain,
 
 Start with a simple symmetric tridiagonal matrix
 
-```{code-block} julia
+```{code-cell} julia
 N = 100
 A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2)])
 A_adjoint = A';

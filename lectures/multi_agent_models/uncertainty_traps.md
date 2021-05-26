@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (uncertainty_traps)=
@@ -228,20 +228,20 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test, Random
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using DataFrames, Parameters, Plots
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 UncertaintyTrapEcon = @with_kw (a = 1.5, # risk aversion
                                 γ_x = 0.5, # production shock precision
                                 ρ = 0.99, # correlation coefficient for θ
@@ -364,7 +364,7 @@ Here $M$ is the number of active firms. The next figure plots
 $\gamma_{t+1}$ against $\gamma_t$ on a 45 degree diagram for
 different values of $M$
 
-```{code-block} julia
+```{code-cell} julia
 econ = UncertaintyTrapEcon()
 @unpack ρ, σ_θ, γ_x = econ # simplify names
 
@@ -380,7 +380,7 @@ plot!(γ, γp, lw = 2, label = labels)
 plot!(xlabel = "Gamma", ylabel = "Gamma'", legend_title = "M", legend = :bottomright)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -399,7 +399,7 @@ long run steady state of precision.
 Next let's generate time series for beliefs and the aggregates -- that
 is, the number of active firms and average output
 
-```{code-block} julia
+```{code-cell} julia
 function simulate(uc, capT = 2_000)
     # unpack parameters
     @unpack a, γ_x, ρ, σ_θ, num_firms, σ_F, c, μ_init, γ_init, θ_init, σ_x = uc
@@ -455,14 +455,14 @@ end
 First let's see how well $\mu$ tracks $\theta$ in these
 simulations
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);  # set random seed for reproducible results
 ```
 
-```{code-block} julia
+```{code-cell} julia
 df = simulate(econ)
 
 plot(eachindex(df.μ), df.μ, lw = 2, label = "Mu")
@@ -470,7 +470,7 @@ plot!(eachindex(df.θ), df.θ, lw = 2, label = "Theta")
 plot!(xlabel = "x", ylabel = "y", legend_title = "Variable", legend = :bottomright)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -483,7 +483,7 @@ end
 
 Now let's plot the whole thing together
 
-```{code-block} julia
+```{code-cell} julia
 len = eachindex(df.θ)
 yvals = [df.θ, df.μ, df.γ, df.M]
 vars = ["Theta", "Mu", "Gamma", "M"]
@@ -497,7 +497,7 @@ end
 plot(plt)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

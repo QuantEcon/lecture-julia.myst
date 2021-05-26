@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (lucas_asset)=
@@ -385,20 +385,20 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using Distributions, Interpolations, Parameters, Plots, QuantEcon, Random
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 # model
 function LucasTree(;γ = 2.0,
                     β = 0.95,
@@ -463,14 +463,14 @@ end
 
 An example of usage is given in the docstring and repeated here
 
-```{code-block} julia
+```{code-cell} julia
 Random.seed!(42) # For reproducible results.
 
 tree = LucasTree(γ = 2.0, β = 0.95, α = 0.90, σ = 0.1)
 price_vals = solve_lucas_model(tree);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -483,7 +483,7 @@ end
 
 Here's the resulting price function
 
-```{code-block} julia
+```{code-cell} julia
 plot(tree.grid, price_vals, lw = 2, label = "p*(y)")
 plot!(xlabel = "y", ylabel = "price", legend = :topleft)
 ```
@@ -517,14 +517,14 @@ Replicate {ref}`the figure <mass_lt_cb>` to show how discount rates affect price
 
 ## Solutions
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 Random.seed!(42);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 plot()
 for β in (.95, 0.98)
     tree = LucasTree(;β = β)
@@ -536,7 +536,7 @@ end
 plot!(xlabel = "y", ylabel = "price", legend = :topleft)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

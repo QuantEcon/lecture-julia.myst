@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (covid_sde)=
@@ -61,11 +61,11 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics, Random, SparseArrays
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -75,7 +75,7 @@ using Test # Put this before any code in the lecture.
 In addition, we will be exploring packages within the [SciML ecosystem](https://github.com/SciML/) and
 others covered in previous lectures
 
-```{code-block} julia
+```{code-cell} julia
 using OrdinaryDiffEq, StochasticDiffEq
 using Parameters, Plots
 gr(fmt=:png);
@@ -236,7 +236,7 @@ G(x, t) &:= diag\left(\begin{bmatrix} 0 & 0 & 0 & 0 & \sigma \sqrt{R_0} & \xi \s
 
 First, construct our $F$ from {eq}`dfcvsde` and $G$ from {eq}`dG`
 
-```{code-block} julia
+```{code-cell} julia
 function F(x, p, t)
     s, i, r, d, R₀, δ = x
     @unpack γ, R̄₀, η, σ, ξ, θ, δ_bar = p
@@ -260,7 +260,7 @@ end
 
 Next create a settings generator, and then define a [SDEProblem](https://docs.sciml.ai/stable/tutorials/sde_example/#Example-2:-Systems-of-SDEs-with-Diagonal-Noise-1)  with Diagonal Noise.
 
-```{code-block} julia
+```{code-cell} julia
 p_gen = @with_kw (T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
                   R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, δ_bar = 0.01,
                   σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8)
@@ -278,7 +278,7 @@ prob = SDEProblem(F, G, x_0, (0, p.T), p)
 
 We solve the problem with the [SOSRI](https://docs.sciml.ai/stable/solvers/sde_solve/#Full-List-of-Methods-1) algorithm (Adaptive strong order 1.5 methods for diagonal noise Ito and Stratonovich SDEs).
 
-```{code-block} julia
+```{code-cell} julia
 sol_1 = solve(prob, SOSRI());
 @show length(sol_1.t);
 ```
@@ -289,7 +289,7 @@ With stochastic differential equations, a "solution" is akin to a simulation for
 
 If we take two solutions and plot the number of infections, we will see differences over time:
 
-```{code-block} julia
+```{code-cell} julia
 sol_2 = solve(prob, SOSRI())
 plot(sol_1, vars=[2], title = "Number of Infections", label = "Trajectory 1",
      lm = 2, xlabel = "t", ylabel = "i(t)")
@@ -298,7 +298,7 @@ plot!(sol_2, vars=[2], label = "Trajectory 2", lm = 2, ylabel = "i(t)")
 
 The same holds for other variables such as the cumulative deaths, mortality, and $R_0$:
 
-```{code-block} julia
+```{code-cell} julia
 plot_1 = plot(sol_1, vars=[4], title = "Cumulative Death Proportion", label = "Trajectory 1",
               lw = 2, xlabel = "t", ylabel = "d(t)", legend = :topleft)
 plot!(plot_1, sol_2, vars=[4], label = "Trajectory 2", lw = 2)
@@ -329,7 +329,7 @@ To do this, use the `EnsembleProblem` in order to have the solution compute mult
 
 For example:
 
-```{code-block} julia
+```{code-cell} julia
 ensembleprob = EnsembleProblem(prob)
 sol = solve(ensembleprob, SOSRI(), EnsembleSerial(), trajectories = 10)
 plot(sol, vars = [2], title = "Infection Simulations", ylabel = "i(t)", xlabel = "t", lm = 2)
@@ -337,7 +337,7 @@ plot(sol, vars = [2], title = "Infection Simulations", ylabel = "i(t)", xlabel =
 
 Or, more frequently, you may want to run many trajectories and plot quantiles, which can be automatically run in [parallel](https://docs.sciml.ai/stable/features/ensemble/) using multiple threads, processes, or GPUs. Here we showcase `EnsembleSummary` which calculates summary information from an ensemble and plots the mean of the solution along with calculated quantiles of the simulation:
 
-```{code-block} julia
+```{code-cell} julia
 trajectories = 100  # choose larger for smoother quantiles
 sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), trajectories = trajectories)
 summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.95 quantiles
@@ -347,7 +347,7 @@ plot(summ, idxs = (2,), title = "Quantiles of Infections Ensemble", ylabel = "i(
 
 In addition, you can calculate more quantiles and stack graphs
 
-```{code-block} julia
+```{code-cell} julia
 sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), trajectories = trajectories)
 summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.95 quantiles
 summ2 = EnsembleSummary(sol, quantiles = (0.25, 0.75))
@@ -377,7 +377,7 @@ We will shut down the shocks to the mortality rate (i.e. $\xi = 0$) to focus on 
 
 Consider $\eta = 1/50$ and $\eta = 1/20$, where we start at the same initial condition of $R_0(0) = 0.5$.
 
-```{code-block} julia
+```{code-cell} julia
 function generate_η_experiment(η; p_gen = p_gen, trajectories = 100,
                               saveat = 1.0, x_0 = x_0, T = 120.0)
     p = p_gen(η = η, ξ = 0.0)
@@ -418,7 +418,7 @@ Since empirical estimates of $R_0(t)$ discussed in {cite}`NBERw27128` and other 
 
 We start the model with 100,000 active infections.
 
-```{code-block} julia
+```{code-cell} julia
 R₀_L = 0.5  # lockdown
 η_experiment = 1.0/10
 σ_experiment = 0.04
@@ -443,7 +443,7 @@ prob_late = SDEProblem(F, G, x_0, (0, p_late.T), p_late)
 
 Simulating for a single realization of the shocks, we see the results are qualitatively similar to what we had before
 
-```{code-block} julia
+```{code-cell} julia
 sol_early = solve(prob_early, SOSRI())
 sol_late = solve(prob_late, SOSRI())
 plot(sol_early, vars = [5, 1,2,4],
@@ -459,7 +459,7 @@ plot!(sol_late, vars = [5, 1,2,4],
 
 However, note that this masks highly volatile values induced by the in $R_0$ variation, as seen in the ensemble
 
-```{code-block} julia
+```{code-cell} julia
 trajectories = 400
 saveat = 1.0
 ensemble_sol_early = solve(EnsembleProblem(prob_early), SOSRI(),
@@ -483,7 +483,7 @@ Finally, rather than looking at the ensemble summary, we can use data directly f
 
 For example, evaluating at an intermediate (`t = 350`) and final time step.
 
-```{code-block} julia
+```{code-cell} julia
 N = p_early.N
 t_1 = 350
 t_2 = p_early.T  # i.e. the last element
@@ -541,7 +541,7 @@ This change modifies the underlying `F` function and adds a parameter, but other
 
 We will redo the "Ending Lockdown" simulation from above, where the only difference is the new transition.
 
-```{code-block} julia
+```{code-cell} julia
 function F_reinfect(x, p, t)
     s, i, r, d, R₀, δ = x
     @unpack γ, R̄₀, η, σ, ξ, θ, δ_bar, ν = p
@@ -576,7 +576,7 @@ summ_re_late = EnsembleSummary(ensemble_sol_re_late)
 
 The ensemble simulations for the $\nu = 0$ and $\nu > 0$ can be compared to see the impact in the absence of medical innovations.
 
-```{code-block} julia
+```{code-cell} julia
 plot(summ_late, idxs = (1, 2, 3, 4),
     title = ["Susceptible" "Infected" "Recovered" "Dead"],
     layout = (2, 2), size = (900, 600),
@@ -590,7 +590,7 @@ plot!(summ_re_late, idxs =  (1, 2, 3, 4),
 
 Finally, we can examine the same early vs. late lockdown histogram
 
-```{code-block} julia
+```{code-cell} julia
 bins_re_1 = range(0.003, 0.010, length = 50)
 bins_re_2 = range(0.0085, 0.0102, length = 50)
 hist_re_1 = histogram([ensemble_sol_re_early.u[i](t_1)[4] for i in 1:trajectories],

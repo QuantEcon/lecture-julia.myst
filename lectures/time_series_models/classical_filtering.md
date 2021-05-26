@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (classical_filtering)=
@@ -68,7 +68,7 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
 
@@ -585,14 +585,14 @@ Code that computes solutions to  LQ control and filtering problems  using the me
 
 Here's how it looks
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using Polynomials.PolyCompat, LinearAlgebra
 import Polynomials.PolyCompat: roots, coeffs
 
@@ -830,7 +830,7 @@ We want to use the Wiener-Kolmogorov formula {eq}`eq_36` to compute the linear l
 
 We can do everything we want by setting $d = r$, generating an instance of LQFilter, then invoking pertinent methods of LQFilter
 
-```{code-block} julia
+```{code-cell} julia
 m = 1
 y_m = zeros(m)
 d = [1.0, -2.0]
@@ -843,15 +843,15 @@ The Wold representation is computed by example.coefficients_of_c().
 
 Let's check that it "flips roots" as required
 
-```{code-block} julia
+```{code-cell} julia
 coeffs_of_c(example)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 roots_of_characteristic(example)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -866,24 +866,24 @@ and put it in $V$.
 
 Then we'll take a Cholesky decomposition of $V = L^{-1} L^{-1} = Li Li'$ and use it to form the vector of "moving average representations" $x = Li \varepsilon$ and the vector of "autoregressive representations" $L x = \varepsilon$
 
-```{code-block} julia
+```{code-cell} julia
 V = construct_V(example,N=5)
 ```
 
 Notice how the lower rows of the "moving average representations" are converging to the appropriate infinite history Wold representation
 
-```{code-block} julia
+```{code-cell} julia
 F = cholesky(V)
 Li = F.L
 ```
 
 Notice how the lower rows of the "autoregressive representations" are converging to the appropriate infinite history autoregressive representation
 
-```{code-block} julia
+```{code-cell} julia
 L = inv(Li)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
@@ -933,7 +933,7 @@ $\mathbb{\hat E}\left[X_{t+j} \mid X_{t-1}, \ldots\right] \hbox { for } j = 1,\,
 
 We proceed in the same way as example 1
 
-```{code-block} julia
+```{code-cell} julia
 m = 2
 y_m = [0.0, 0.0]
 d = [1, 0, -sqrt(2)]
@@ -942,29 +942,29 @@ h = 0.0
 example = LQFilter(d, h, y_m, r = d)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 coeffs_of_c(example)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 roots_of_characteristic(example)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 V = construct_V(example, N = 8)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 F = cholesky(V)
 Li = F.L
 Li[end-2:end, :]
 ```
 
-```{code-block} julia
+```{code-cell} julia
 L = inv(Li)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---

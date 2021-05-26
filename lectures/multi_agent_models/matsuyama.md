@@ -4,9 +4,9 @@ jupytext:
     extension: .md
     format_name: myst
 kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
+  display_name: Julia
+  language: julia
+  name: julia
 ---
 
 (matsuyama)=
@@ -334,20 +334,20 @@ tags: [hide-output]
 ---
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 using Test
 ```
 
-```{code-block} julia
+```{code-cell} julia
 using LinearAlgebra, Statistics
 using Plots, Parameters
 gr(fmt = :png);
 ```
 
-```{code-block} julia
+```{code-cell} julia
 function h_j(j, nk, s1, s2, θ, δ, ρ)
     # Find out who's h we are evaluating
     if j == 1
@@ -518,7 +518,7 @@ The time series share parameters but differ in their initial condition.
 
 Here's the function
 
-```{code-block} julia
+```{code-cell} julia
 function plot_timeseries(n1_0, n2_0, s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
     model = MSGSync(s1, θ, δ, ρ)
     n1, n2 = simulate_n(model, n1_0, n2_0, 25)
@@ -532,7 +532,7 @@ data_s = plot_timeseries(0.4, 0.3)
 plot(data_ns, title = "Not Synchronized", legend = false)
 ```
 
-```{code-block} julia
+```{code-cell} julia
 plot(data_s, title = "Synchronized", legend = false)
 ```
 
@@ -574,7 +574,7 @@ Replicate the figure {ref}`shown above <matsrep>` by coloring initial conditions
 
 ### Exercise 1
 
-```{code-block} julia
+```{code-cell} julia
 function plot_attraction_basis(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2; npts = 250)
     # Create attraction basis
     unitrange = range(0,  1, length = npts)
@@ -584,7 +584,7 @@ function plot_attraction_basis(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2; npts = 25
 end
 ```
 
-```{code-block} julia
+```{code-cell} julia
 params = [[0.5, 2.5, 0.7, 0.2],
           [0.5, 2.5, 0.7, 0.4],
           [0.5, 2.5, 0.7, 0.6],
@@ -594,7 +594,7 @@ plots = (plot_attraction_basis(p...) for p in params)
 plot(plots..., size = (1000, 1000))
 ```
 
-```{code-block} julia
+```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
