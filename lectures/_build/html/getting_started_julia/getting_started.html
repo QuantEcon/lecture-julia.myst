@@ -1,0 +1,904 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1. Setting up Your Julia Environment &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/getting_started_julia/getting_started.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2. Interacting with Julia" href="julia_environment.html" />
+    <link rel="prev" title="Quantitative Economics with Julia" href="../intro.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Setting up Your Julia Environment"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Setting up Your Julia Environment" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/getting_started_julia/getting_started.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=getting_started_julia/getting_started>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   1.1. Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#a-note-on-jupyter">
+   1.2. A Note on Jupyter
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#desktop-installation-of-julia-and-jupyter">
+   1.3. Desktop Installation of Julia and Jupyter
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#installing-jupyter">
+     1.3.1. Installing Jupyter
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#starting-jupyter">
+     1.3.2. Starting Jupyter
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#github-desktop-approach">
+       1.3.2.1. GitHub Desktop Approach
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#git-command-line-approach">
+       1.3.2.2. Git Command Line Approach
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#using-julia-on-the-web">
+   1.4. Using Julia on the Web
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-julia-with-jupyterhub">
+     1.4.1. Using Julia with JupyterHub
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#obtaining-notebooks">
+       1.4.1.1. Obtaining Notebooks
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#installing-packages">
+   1.5. Installing Packages
+  </a>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Setting up Your Julia Environment</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="setting-up-your-julia-environment">
+<h1><a class="toc-backref" href="#id1"><span class="section-number">1. </span>Setting up Your Julia Environment</a><a class="headerlink" href="#setting-up-your-julia-environment" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#setting-up-your-julia-environment" id="id1">Setting up Your Julia Environment</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id2">Overview</a></p></li>
+<li><p><a class="reference internal" href="#a-note-on-jupyter" id="id3">A Note on Jupyter</a></p></li>
+<li><p><a class="reference internal" href="#desktop-installation-of-julia-and-jupyter" id="id4">Desktop Installation of Julia and Jupyter</a></p></li>
+<li><p><a class="reference internal" href="#using-julia-on-the-web" id="id5">Using Julia on the Web</a></p></li>
+<li><p><a class="reference internal" href="#installing-packages" id="id6">Installing Packages</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id2"><span class="section-number">1.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>In this lecture we will cover how to get up and running with Julia.</p>
+<p>There are a few different options for using Julia, including a <a class="reference internal" href="#jl-jupyterlocal"><span class="std std-ref">local desktop installation</span></a> and <a class="reference internal" href="#jl-jupyterhub"><span class="std std-ref">Jupyter hosted on the web</span></a>.</p>
+<p>If you have access to a web-based Jupyter and Julia setup, it is typically the most straightforward way to get started.</p>
+</div>
+<div class="section" id="a-note-on-jupyter">
+<h2><a class="toc-backref" href="#id3"><span class="section-number">1.2. </span>A Note on Jupyter</a><a class="headerlink" href="#a-note-on-jupyter" title="Permalink to this headline">¶</a></h2>
+<p>Like Python and R, and unlike products such as Matlab and Stata, there is a looser connection between Julia as a programming language and Julia as a specific development environment.</p>
+<p>While you will eventually use other editors, there are some advantages to starting with the <a class="reference external" href="http://jupyter.org/">Jupyter</a> environment while learning Julia.</p>
+<ul class="simple">
+<li><p>The ability to mix formatted text (including mathematical expressions) and code in a single document.</p></li>
+<li><p>Nicely formatted output including tables, figures, animation, video, etc.</p></li>
+<li><p>Conversion tools to generate PDF slides, static HTML, etc.</p></li>
+<li><p><a class="reference internal" href="#jl-jupyterhub"><span class="std std-ref">Online Jupyter</span></a> may be available, and requires no installation.</p></li>
+</ul>
+<p>We’ll discuss the workflow on these features in the <a class="reference internal" href="julia_environment.html"><span class="doc">next lecture</span></a>.</p>
+</div>
+<div class="section" id="desktop-installation-of-julia-and-jupyter">
+<span id="jl-jupyterlocal"></span><h2><a class="toc-backref" href="#id4"><span class="section-number">1.3. </span>Desktop Installation of Julia and Jupyter</a><a class="headerlink" href="#desktop-installation-of-julia-and-jupyter" title="Permalink to this headline">¶</a></h2>
+<p>If you want to install these tools locally on your machine</p>
+<ul class="simple">
+<li><p>Download and install Julia, from <a class="reference external" href="http://julialang.org/downloads/">download page</a> , accepting all default options.</p></li>
+<li><p>Currently, these instructions and packages will work with Julia 1.4.X or 1.5.X</p></li>
+</ul>
+<ul class="simple" id="intro-repl">
+<li><p>Open Julia, by either</p>
+<ol class="simple">
+<li><p>Navigating to Julia through your menus or desktop icons (Windows, Mac), or</p></li>
+<li><p>Opening a terminal and typing <code class="docutils literal notranslate"><span class="pre">julia</span></code> (Linux; to set this up on Mac, see end of section)</p></li>
+</ol>
+</li>
+</ul>
+<p>You should now be looking at something like this</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/julia_term_1.png"><img alt="../_images/julia_term_1.png" src="../_images/julia_term_1.png" style="width: 100%;" /></a>
+</div>
+<p>This is called the JULIA <em>REPL</em> (Read-Evaluate-Print-Loop), which we discuss more <a class="reference internal" href="../more_julia/tools_editors.html#repl-main"><span class="std std-ref">later</span></a>.</p>
+<ul class="simple">
+<li><p>In the Julia REPL, hit <code class="docutils literal notranslate"><span class="pre">]</span></code> to enter package mode and then enter.</p></li>
+</ul>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">add</span> <span class="n">IJulia</span> <span class="n">InstantiateFromURL</span>
+</pre></div>
+</div>
+<p>This adds packages for</p>
+<ul class="simple">
+<li><p>The  <code class="docutils literal notranslate"><span class="pre">IJulia</span></code> kernel which links Julia to Jupyter (i.e., allows your browser to run Julia code, manage Julia packages, etc.).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">InstantiateFromURL</span></code> which is a tool written by the QE team to manage package dependencies for the lectures.</p></li>
+</ul>
+<p>Note: To set up the Julia terminal command on Mac, see <a class="reference external" href="https://julialang.org/downloads/platform/#macos">here</a>.</p>
+<p><strong>Note</strong>: To obtain the full set of packages we use, at this stage you can run the following (see <a class="reference internal" href="#package-setup"><span class="std std-ref">the package setup section</span></a>.)</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">InstantiateFromURL</span>
+<span class="n">github_project</span><span class="p">(</span><span class="s">&quot;QuantEcon/quantecon-notebooks-julia&quot;</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="s">&quot;0.8.0&quot;</span><span class="p">,</span> <span class="n">instantiate</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">precompile</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="installing-jupyter">
+<span id="jupyter-installation"></span><h3><span class="section-number">1.3.1. </span>Installing Jupyter<a class="headerlink" href="#installing-jupyter" title="Permalink to this headline">¶</a></h3>
+<p>If you have previously installed Jupyter (e.g., installing Anaconda Python by downloading the binary <a class="reference external" href="https://www.anaconda.com/download/">https://www.anaconda.com/download/</a>)
+then the <code class="docutils literal notranslate"><span class="pre">add</span> <span class="pre">IJulia</span></code> installs everything you need into your existing environment.</p>
+<p>Otherwise, you can let <code class="docutils literal notranslate"><span class="pre">IJulia</span></code> install its own version of Conda by following <a class="reference external" href="https://julialang.github.io/IJulia.jl/dev/manual/running/">these instructions</a>.</p>
+</div>
+<div class="section" id="starting-jupyter">
+<span id="clone-lectures"></span><h3><span class="section-number">1.3.2. </span>Starting Jupyter<a class="headerlink" href="#starting-jupyter" title="Permalink to this headline">¶</a></h3>
+<p>Next, let’s install the QuantEcon lecture notes to our machine and run them (for more details on the tools we’ll use, see our lecture on <a class="reference internal" href="../more_julia/version_control.html"><span class="doc">version control</span></a>).</p>
+<ol class="simple">
+<li><p>Install <a class="reference external" href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/">git</a>.</p></li>
+<li><p>(<strong>Optional, but strongly recommended</strong>) Install the <a class="reference external" href="https://desktop.github.com/">GitHub Desktop</a>.</p></li>
+</ol>
+<div class="section" id="github-desktop-approach">
+<h4><span class="section-number">1.3.2.1. </span>GitHub Desktop Approach<a class="headerlink" href="#github-desktop-approach" title="Permalink to this headline">¶</a></h4>
+<p>After installing the Git Desktop application, click <span class="xref myst">this link</span> on your desktop computer to automatically install the notebooks.</p>
+<p>It should open a window in the GitHub desktop app like this</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-desktop-intro.png"><img alt="../_images/git-desktop-intro.png" src="../_images/git-desktop-intro.png" style="width: 100%;" /></a>
+</div>
+<p>Choose a path you like and clone the repo.</p>
+<p><strong>Note:</strong> the workflow will be easiest if you clone the repo to the default location relative to the home folder for your user.</p>
+<p>Then, you can run Jupyterlab using the Conda installation with</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>jupyter lab
+</pre></div>
+</div>
+<p>Or following <a class="reference external" href="https://julialang.github.io/IJulia.jl/dev/manual/running/">these instructions</a> instructions if you didn’t install Anaconda separately.</p>
+<p>Navigate to the location you stored the lecture notes, and open the <a class="reference internal" href="julia_environment.html"><span class="doc">Interacting with Julia</span></a> notebook to explore this interface and start writing code.</p>
+</div>
+<div class="section" id="git-command-line-approach">
+<h4><span class="section-number">1.3.2.2. </span>Git Command Line Approach<a class="headerlink" href="#git-command-line-approach" title="Permalink to this headline">¶</a></h4>
+<p>If you do not wish to install the GitHub Desktop, you can get the notebooks using the Git command-line tool.</p>
+<p>Open a new terminal session and run</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/quantecon/quantecon-notebooks-julia
+</pre></div>
+</div>
+<p>This will download the repository with the notebooks in the working directory.</p>
+<p>Then, <code class="docutils literal notranslate"><span class="pre">cd</span></code> to that location in your Mac, Linux, or Windows PowerShell terminal</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd quantecon-notebooks-julia
+</pre></div>
+</div>
+<p>Then, either using the <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">IJulia;</span> <span class="pre">jupyterlab()</span></code> or execute <code class="docutils literal notranslate"><span class="pre">jupyter</span> <span class="pre">lab</span></code> within your shell.</p>
+<p>And open the <a class="reference internal" href="julia_environment.html"><span class="doc">Interacting With Julia</span></a> lecture (the file <code class="docutils literal notranslate"><span class="pre">julia_environment.ipynb</span></code> in the list of notebooks in JupyterLab) to continue.</p>
+</div>
+</div>
+</div>
+<div class="section" id="using-julia-on-the-web">
+<h2><a class="toc-backref" href="#id5"><span class="section-number">1.4. </span>Using Julia on the Web</a><a class="headerlink" href="#using-julia-on-the-web" title="Permalink to this headline">¶</a></h2>
+<p>If you have access to an online Julia installation, it is the easiest way to get started.</p>
+<p>Eventually, you will want to do a <a class="reference internal" href="#jl-jupyterlocal"><span class="std std-ref">local installation</span></a> in order to use other
+<a class="reference internal" href="../more_julia/tools_editors.html"><span class="doc">tools and editors</span></a> such as <a class="reference external" href="http://junolab.org/">Atom/Juno</a>, but
+don’t let the environment get in the way of learning the language.</p>
+<div class="section" id="using-julia-with-jupyterhub">
+<span id="jl-jupyterhub"></span><h3><span class="section-number">1.4.1. </span>Using Julia with JupyterHub<a class="headerlink" href="#using-julia-with-jupyterhub" title="Permalink to this headline">¶</a></h3>
+<p>If you have access to a web-based solution for Jupyter, then that is typically a straightforward option</p>
+<ul class="simple">
+<li><p>Students: ask your department if these resources are available.</p></li>
+<li><p>Universities and workgroups: email <a class="reference external" href="mailto:contact&#37;&#52;&#48;quantecon&#46;org%22">contact<span>&#64;</span>quantecon<span>&#46;</span>org</a> for
+help on setting up a shared JupyterHub instance with precompiled packages ready for these lecture notes.</p></li>
+</ul>
+<div class="section" id="obtaining-notebooks">
+<h4><span class="section-number">1.4.1.1. </span>Obtaining Notebooks<a class="headerlink" href="#obtaining-notebooks" title="Permalink to this headline">¶</a></h4>
+<p>Your first step is to get a copy of the notebooks in your JupyterHub environment.</p>
+<p>While you can individually download the notebooks from the website, the easiest way to access the notebooks is usually to clone the repository with Git into your JupyterHub environment.</p>
+<p>JupyterHub installations have different methods for cloning repositories, with which you can use the url for the notebooks repository: <a class="reference external" href="https://github.com/QuantEcon/quantecon-notebooks-julia">https://github.com/QuantEcon/quantecon-notebooks-julia</a>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="installing-packages">
+<span id="package-setup"></span><h2><a class="toc-backref" href="#id6"><span class="section-number">1.5. </span>Installing Packages</a><a class="headerlink" href="#installing-packages" title="Permalink to this headline">¶</a></h2>
+<p>After you have some of the notebooks available, as in <a class="reference internal" href="#clone-lectures"><span class="std std-ref">above</span></a>, these lectures depend on functionality (like packages for plotting, benchmarking, and statistics) that are not installed with every Jupyter installation on the web.</p>
+<p>If your online Jupyter does not come with QuantEcon packages pre-installed, you can install the <code class="docutils literal notranslate"><span class="pre">InstantiateFromURL</span></code> package, which is a tool written by the QE team to manage package dependencies for the lectures.</p>
+<p>To add this package, in an online Jupyter notebook run (typically with <code class="docutils literal notranslate"><span class="pre">&lt;Shift-Enter&gt;</span></code>)</p>
+<p>Then, run</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">InstantiateFromURL</span>
+<span class="n">github_project</span><span class="p">(</span><span class="s">&quot;QuantEcon/quantecon-notebooks-julia&quot;</span><span class="p">,</span> <span class="n">version</span> <span class="o">=</span> <span class="s">&quot;0.8.0&quot;</span><span class="p">,</span> <span class="n">instantiate</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">precompile</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If your online Jupyter environment does not have the packages pre-installed, it may take 15-20 minutes for your first QuantEcon notebook to run.</p>
+<p>After this step, open the downloaded <a class="reference internal" href="julia_environment.html"><span class="doc">Interacting with Julia</span></a> notebook to begin writing code.</p>
+<p>If the QuantEcon notebooks do not work after this installation step, you may need to speak to the JupyterHub administrator.</p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./getting_started_julia"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="julia_by_example.html">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Packages and Software Engineering in Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   22. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   23. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   24. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   25. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   26. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   27. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   28. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   29. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   30. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   31. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   33. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   34. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   35. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   36. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   37. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   39. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   40. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   41. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   42. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   44. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   45. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   46. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   47. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   48. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   49. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   50. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   51. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   52. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   53. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   54. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   55. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   56. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   57. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   58. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   59. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   60. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   61. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   62. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   63. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   64. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   65. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   66. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   67. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   68. Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/getting_started_julia/getting_started.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/getting_started_julia/getting_started.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/getting_started_julia/getting_started.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/getting_started_julia/getting_started.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

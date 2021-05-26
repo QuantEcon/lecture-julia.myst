@@ -1,0 +1,1306 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>12. Git, GitHub, and Version Control &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/more_julia/version_control.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="13. Packages, Testing, and Continuous Integration" href="testing.html" />
+    <link rel="prev" title="11. Julia Tools and Editors" href="tools_editors.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Git, GitHub, and Version Control"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Git, GitHub, and Version Control" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/more_julia/version_control.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=more_julia/version_control>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#setup">
+   12.1. Setup
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#git-vs-github-vs-github-desktop">
+     12.1.1. Git vs. GitHub vs. GitHub Desktop
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#basic-objects">
+   12.2. Basic Objects
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#repositories">
+     12.2.1. Repositories
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#commits">
+     12.2.2. Commits
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#common-files">
+     12.2.3. Common Files
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#individual-workflow">
+   12.3. Individual Workflow
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#creating-a-repository">
+     12.3.1. Creating a Repository
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#cloning-a-repository">
+     12.3.2. Cloning a Repository
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#making-and-managing-changes">
+     12.3.3. Making and Managing Changes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#pushing-to-the-server">
+     12.3.4. Pushing to the Server
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#reading-and-reverting-history">
+     12.3.5. Reading and Reverting History
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#working-across-machines">
+     12.3.6. Working across Machines
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#collaborative-work">
+   12.4. Collaborative Work
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#adding-collaborators">
+     12.4.1. Adding Collaborators
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#project-management">
+     12.4.2. Project Management
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#reviewing-code">
+     12.4.3. Reviewing Code
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#merge-conflicts">
+     12.4.4. Merge Conflicts
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#collaboration-via-pull-request">
+   12.5. Collaboration via Pull Request
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#quick-fixes">
+     12.5.1. Quick Fixes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#no-access-case">
+     12.5.2. No-Access Case
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#write-access-case">
+     12.5.3. Write Access Case
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#julia-package-case">
+     12.5.4. Julia Package Case
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#additional-resources-and-troubleshooting">
+   12.6. Additional Resources and Troubleshooting
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#command-line-basics">
+     12.6.1. Command-Line Basics
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   12.7. Exercises
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1a">
+     12.7.1. Exercise 1a
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1b">
+     12.7.2. Exercise 1b
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1c">
+     12.7.3. Exercise 1c
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-2a">
+     12.7.4. Exercise 2a
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-2b">
+     12.7.5. Exercise 2b
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Git, GitHub, and Version Control</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="git-github-and-version-control">
+<h1><a class="toc-backref" href="#id1"><span class="section-number">12. </span>Git, GitHub, and Version Control</a><a class="headerlink" href="#git-github-and-version-control" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#git-github-and-version-control" id="id1">Git, GitHub, and Version Control</a></p>
+<ul>
+<li><p><a class="reference internal" href="#setup" id="id2">Setup</a></p></li>
+<li><p><a class="reference internal" href="#basic-objects" id="id3">Basic Objects</a></p></li>
+<li><p><a class="reference internal" href="#individual-workflow" id="id4">Individual Workflow</a></p></li>
+<li><p><a class="reference internal" href="#collaborative-work" id="id5">Collaborative Work</a></p></li>
+<li><p><a class="reference internal" href="#collaboration-via-pull-request" id="id6">Collaboration via Pull Request</a></p></li>
+<li><p><a class="reference internal" href="#additional-resources-and-troubleshooting" id="id7">Additional Resources and Troubleshooting</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id8">Exercises</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Co-authored with Arnav Sood</p>
+<p>An essential part of modern software engineering is using version control.</p>
+<p>We use version control because</p>
+<ul class="simple">
+<li><p>Not all iterations on a file are perfect, and you may want to revert changes.</p></li>
+<li><p>We want to be able to see who has changed what and how.</p></li>
+<li><p>We want a uniform version scheme to do this between people and machines.</p></li>
+<li><p>Concurrent editing on code is necessary for collaboration.</p></li>
+<li><p>Version control is an essential part of creating reproducible research.</p></li>
+</ul>
+<p>In this lecture, we’ll discuss how to use Git and GitHub.</p>
+<div class="section" id="setup">
+<h2><a class="toc-backref" href="#id2"><span class="section-number">12.1. </span>Setup</a><a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<ol>
+<li><p>Make sure you create an account on <a class="reference external" href="http://github.com/">GitHub.com</a>.</p>
+<ul class="simple">
+<li><p>If you are a student, be sure to use the GitHub <a class="reference external" href="https://education.github.com/pack/">Student Developer Pack</a>.</p></li>
+<li><p>Otherwise, see if you qualify for a free <a class="reference external" href="https://help.github.com/articles/about-github-education-for-educators-and-researchers/">Non-Profit/Academic Plan</a>.</p></li>
+<li><p>These come with things like unlimited private repositories, testing support, etc.</p></li>
+</ul>
+</li>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">git</span></code> and the GitHub Desktop application.</p>
+<ol class="simple">
+<li><p>Install <a class="reference external" href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/">git</a>.</p></li>
+<li><p>Install the <a class="reference external" href="https://desktop.github.com/">GitHub Desktop</a> application.</p></li>
+</ol>
+</li>
+<li><p>Optionally (but strongly recommended):  On Windows, change the default line-ending by:</p>
+<ol>
+<li><p>Opening a Windows/Powershell console, or the “Git Bash” installed in the previous step.</p></li>
+<li><p>Running the following</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git config --global core.eol lf
+git config --global core.autocrlf false
+</pre></div>
+</div>
+</li>
+</ol>
+</li>
+</ol>
+<div class="section" id="git-vs-github-vs-github-desktop">
+<h3><span class="section-number">12.1.1. </span>Git vs. GitHub vs. GitHub Desktop<a class="headerlink" href="#git-vs-github-vs-github-desktop" title="Permalink to this headline">¶</a></h3>
+<p>To understand the relationship</p>
+<ul class="simple">
+<li><p>Git is an infrastructure for versioning and merging files (it is not specific to GitHub and does not even require an online server).</p></li>
+<li><p>GitHub provides an online service to coordinate working with Git repositories, and adds some additional features for managing projects.</p></li>
+<li><p>GitHub Desktop is just one of many GUI-based clients to make Git and GitHub easier to use.</p></li>
+</ul>
+<p>Later, you may find yourself using alternatives</p>
+<ul class="simple">
+<li><p>GitHub is the market leader for open source projects and Julia, but there are other options, e.g. <a class="reference external" href="https://about.gitlab.com/">GitLab</a> and <a class="reference external" href="https://bitbucket.org">Bitbucket</a>.</p></li>
+<li><p>Instead of the GitHub Desktop, you may directly use the Git command line, <a class="reference external" href="https://www.gitkraken.com/">GitKraken</a>, or use the Git functionality built into editors such as <a class="reference external" href="https://atom.io/">Atom</a> or <a class="reference external" href="https://code.visualstudio.com/">VS Code</a>.</p></li>
+</ul>
+<p>Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct products.</p>
+</div>
+</div>
+<div class="section" id="basic-objects">
+<h2><a class="toc-backref" href="#id3"><span class="section-number">12.2. </span>Basic Objects</a><a class="headerlink" href="#basic-objects" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="repositories">
+<h3><span class="section-number">12.2.1. </span>Repositories<a class="headerlink" href="#repositories" title="Permalink to this headline">¶</a></h3>
+<p>The fundamental object in GitHub is a <em>repository</em> (or “repo”) – this is the master directory for a project.</p>
+<p>One example of a repo is the QuantEcon <a class="reference external" href="https://github.com/quantecon/expectations.jl/">Expectations.jl</a> package.</p>
+<p>On the machine, a repo is a normal directory, along with a subdirectory called <code class="docutils literal notranslate"><span class="pre">.git</span></code> which contains the history of changes.</p>
+</div>
+<div class="section" id="commits">
+<h3><span class="section-number">12.2.2. </span>Commits<a class="headerlink" href="#commits" title="Permalink to this headline">¶</a></h3>
+<p>GitHub stores history as a sequence of changes to text, called <em>commits</em>.</p>
+<p><a class="reference external" href="https://github.com/QuantEcon/lecture-source-jl/commit/ba59c3ea9a0dec10def3f4f3928af5e2827f3b92">Here</a> is an example of a commit, which revises the style guide in a QuantEcon repo.</p>
+<p>In particular, commits have the following features</p>
+<ul class="simple">
+<li><p>An ID (formally, an “SHA-1 hash”)</p></li>
+<li><p>Content (i.e., a before and after state)</p></li>
+<li><p>Metadata (author, timestamp, commit message, etc.)</p></li>
+</ul>
+<p><strong>Note:</strong> It’s crucial to remember that what’s stored in a commit is only the actual changes you make to text.</p>
+<p>This is a key reason why git can store long and complicated histories without consuming massive amounts of memory.</p>
+</div>
+<div class="section" id="common-files">
+<h3><span class="section-number">12.2.3. </span>Common Files<a class="headerlink" href="#common-files" title="Permalink to this headline">¶</a></h3>
+<p>In addition, each GitHub repository typically comes with a few standard text files</p>
+<ul class="simple">
+<li><p>A <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file, which lists files/extensions/directories that GitHub shouldn’t try to track (e.g., LaTeX compilation byproducts).</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file, which is a Markdown file which GitHub puts on the repository website.</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">LICENSE.txt</span></code> file, which describes the terms under which the repository’s contents are made available.</p></li>
+</ul>
+<p>For an example of all three, see the <a class="reference external" href="https://github.com/quantecon/expectations.jl/">Expectations.jl</a> repo.</p>
+<p>Of these, the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> is the most important, as GitHub will display it as <a class="reference external" href="https://guides.github.com/features/mastering-markdown/">Markdown</a> when accessing the repository online.</p>
+</div>
+</div>
+<div class="section" id="individual-workflow">
+<span id="new-repo-workflow"></span><h2><a class="toc-backref" href="#id4"><span class="section-number">12.3. </span>Individual Workflow</a><a class="headerlink" href="#individual-workflow" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we’ll describe how to use GitHub to version your own projects.</p>
+<p>Much of this will carry over to the collaborative section.</p>
+<div class="section" id="creating-a-repository">
+<h3><span class="section-number">12.3.1. </span>Creating a Repository<a class="headerlink" href="#creating-a-repository" title="Permalink to this headline">¶</a></h3>
+<p>In general, we will always want to repos for new projects using the following dropdown</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-makerepo.png"><img alt="../_images/git-makerepo.png" src="../_images/git-makerepo.png" style="width: 75%;" /></a>
+</div>
+<p>We can then configure repository options as such</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-makerepo-full.png"><img alt="../_images/git-makerepo-full.png" src="../_images/git-makerepo-full.png" style="width: 100%;" /></a>
+</div>
+<p>In this case, we’re making a public repo <code class="docutils literal notranslate"><span class="pre">github.com/quantecon_user/example_repository</span></code>, which will come with a <code class="docutils literal notranslate"><span class="pre">README.md</span></code>, is licensed under the MIT License, and will ignore Julia compilation byproducts.</p>
+<p><strong>Note</strong> This workflow is for creating projects <em>de novo</em>; the process for turning existing directories into git repos is a bit more complicated.</p>
+<p>In particular, in that case we recommend that you create a new repo via this method, then copy in and commit your files (see below), and then delete the old directory.</p>
+</div>
+<div class="section" id="cloning-a-repository">
+<h3><span class="section-number">12.3.2. </span>Cloning a Repository<a class="headerlink" href="#cloning-a-repository" title="Permalink to this headline">¶</a></h3>
+<p>The next step is to get this to our local machine</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-clone.png"><img alt="../_images/git-clone.png" src="../_images/git-clone.png" style="width: 100%;" /></a>
+</div>
+<p>This dropdown gives us a few options</p>
+<ul class="simple">
+<li><p>“Open in Desktop” will call to the GitHub Desktop application that we’ve installed.</p></li>
+<li><p>“Download Zip” will download the directory <em>without the .git</em> subdirectory (avoid this option).</p></li>
+<li><p>The copy/paste button next to the link lets us use the command line, i.e. <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/quanteconuser/example_repository.git</span></code>.</p></li>
+</ul>
+</div>
+<div class="section" id="making-and-managing-changes">
+<h3><span class="section-number">12.3.3. </span>Making and Managing Changes<a class="headerlink" href="#making-and-managing-changes" title="Permalink to this headline">¶</a></h3>
+<p>Now that we have the repository, we can start working with it.</p>
+<p>For example, let’s say that we’ve amended the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> (using our editor of choice), and also added a new file <code class="docutils literal notranslate"><span class="pre">economics.jl</span></code> which we’re still working on.</p>
+<p>Returning to GitHub Desktop, we should see something like</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-desktop-commit.png"><img alt="../_images/git-desktop-commit.png" src="../_images/git-desktop-commit.png" style="width: 50%;" /></a>
+</div>
+<p>To select individual files for commit, we can use the check boxes to the left of each file.</p>
+<p>Let’s say you select only the README to commit. Going to the history tab should show you our change</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-desktop-commit2.png"><img alt="../_images/git-desktop-commit2.png" src="../_images/git-desktop-commit2.png" style="width: 100%;" /></a>
+</div>
+<p>The Julia file is unchanged.</p>
+</div>
+<div class="section" id="pushing-to-the-server">
+<h3><span class="section-number">12.3.4. </span>Pushing to the Server<a class="headerlink" href="#pushing-to-the-server" title="Permalink to this headline">¶</a></h3>
+<p>As of now, this commit lives only on our local machine.</p>
+<p>To upload it to the server, you can simply click the “Push Origin” button at the top the screen.</p>
+<p>The small “1^” to the right of the text indicates we have one commit to upload.</p>
+</div>
+<div class="section" id="reading-and-reverting-history">
+<h3><span class="section-number">12.3.5. </span>Reading and Reverting History<a class="headerlink" href="#reading-and-reverting-history" title="Permalink to this headline">¶</a></h3>
+<p>As mentioned, one of the key features of GitHub is the ability to scan through history.</p>
+<p>By clicking the “commits” tab on the repo front page,
+we see <a class="reference external" href="https://github.com/quanteconuser/example_repository/commits/master">this page</a>
+(as an example).</p>
+<p>Clicking an individual commit gives us the difference view, (e.g., <a class="reference external" href="https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/">example commit</a>).</p>
+<p>Sometimes, however, we want to not only inspect what happened before, but reverse the commit.</p>
+<ul class="simple">
+<li><p>If you haven’t made the commit yet, just right-click the file in the “changes” tab and hit “discard changes” to reset the file to the last known commit.</p></li>
+<li><p>If you have made the commit but haven’t pushed to the server yet, go to the “history” tab as above, right click the commit and click “revert this commit.” This will create the inverse commit, shown below.</p></li>
+</ul>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-revert-commit.png"><img alt="../_images/git-revert-commit.png" src="../_images/git-revert-commit.png" style="width: 100%;" /></a>
+</div>
+</div>
+<div class="section" id="working-across-machines">
+<h3><span class="section-number">12.3.6. </span>Working across Machines<a class="headerlink" href="#working-across-machines" title="Permalink to this headline">¶</a></h3>
+<p>Generally, you want to work on the same project but across multiple machines (e.g., a home laptop and a lab workstation).</p>
+<p>The key is to push changes from one machine, and then to pull changes from the other machine.</p>
+<p>Pushing can be done as above.</p>
+<p>To pull, simply click pull under the “repository” dropdown at the top of the screen</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-pull.png"><img alt="../_images/git-pull.png" src="../_images/git-pull.png" style="width: 100%;" /></a>
+</div>
+</div>
+</div>
+<div class="section" id="collaborative-work">
+<h2><a class="toc-backref" href="#id5"><span class="section-number">12.4. </span>Collaborative Work</a><a class="headerlink" href="#collaborative-work" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="adding-collaborators">
+<h3><span class="section-number">12.4.1. </span>Adding Collaborators<a class="headerlink" href="#adding-collaborators" title="Permalink to this headline">¶</a></h3>
+<p>First, let’s add a collaborator to the <code class="docutils literal notranslate"><span class="pre">quanteconuser/example_repository</span></code> lecture we created earlier.</p>
+<p>We can do this by clicking “settings =&gt; collaborators,” as follows</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-collab.png"><img alt="../_images/git-collab.png" src="../_images/git-collab.png" style="width: 100%;" /></a>
+</div>
+</div>
+<div class="section" id="project-management">
+<h3><span class="section-number">12.4.2. </span>Project Management<a class="headerlink" href="#project-management" title="Permalink to this headline">¶</a></h3>
+<p>GitHub’s website also comes with project management tools to coordinate work between people.</p>
+<p>The main one is an <em>issue</em>, which we can create from the issues tab.</p>
+<p>You should see something like this</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-issue.png"><img alt="../_images/git-issue.png" src="../_images/git-issue.png" style="width: 100%;" /></a>
+</div>
+<p>Let’s unpack the different components</p>
+<ul class="simple">
+<li><p>The <em>assignees</em> dropdown lets you select people tasked to work on the issue.</p></li>
+<li><p>The <em>labels</em> dropdown lets you tag the issue with labels visible from the issues page, such as “high priority” or “feature request”.</p></li>
+<li><p>It’s possible to tag other issues and collaborators (including in different repos) by linking to them in the comments – this is part of what’s called <em>GitHub-Flavored Markdown</em>.</p></li>
+</ul>
+<p>For an example of an issue, see <a class="reference external" href="https://github.com/quanteconuser/example_repository/issues/1">here</a>.</p>
+<p>You can see open issues at a glance from the general issues tab</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-issue-tab.png"><img alt="../_images/git-issue-tab.png" src="../_images/git-issue-tab.png" style="width: 100%;" /></a>
+</div>
+<p>The checkboxes are common in GitHub to manage project tasks.</p>
+</div>
+<div class="section" id="reviewing-code">
+<h3><span class="section-number">12.4.3. </span>Reviewing Code<a class="headerlink" href="#reviewing-code" title="Permalink to this headline">¶</a></h3>
+<p>There are a few different ways to review people’s code in GitHub</p>
+<ul class="simple">
+<li><p>Whenever people push to a project you’re working on, you’ll receive an email notification.</p></li>
+<li><p>You can also review individual line items or commits by opening commits in the difference view as <a class="reference external" href="https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/">above</a>.</p></li>
+</ul>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-review.png"><img alt="../_images/git-review.png" src="../_images/git-review.png" style="width: 100%;" /></a>
+</div>
+</div>
+<div class="section" id="merge-conflicts">
+<span id="merge-conflict"></span><h3><span class="section-number">12.4.4. </span>Merge Conflicts<a class="headerlink" href="#merge-conflicts" title="Permalink to this headline">¶</a></h3>
+<p>Any project management tool needs to figure out how to reconcile conflicting changes between people.</p>
+<p>In GitHub, this event is called a “merge conflict,” and occurs whenever people make conflicting changes to the same <em>line</em> of code.</p>
+<p>Note that this means that two people touching the same file is OK, so long as the differences are compatible.</p>
+<p>A common use case is when we try to push changes to the server, but someone else has pushed conflicting changes.</p>
+<p>GitHub will give us the following window</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-merge-conflict.png"><img alt="../_images/git-merge-conflict.png" src="../_images/git-merge-conflict.png" style="width: 100%;" /></a>
+</div>
+<ul class="simple">
+<li><p>The warning symbol next to the file indicates the existence of a merge conflict.</p></li>
+<li><p>The viewer tries to show us the discrepancy (I changed the word repository to repo, but someone else tried to change it to “repo” with quotes).</p></li>
+</ul>
+<p>To fix the conflict, we can go into a text editor (such as Atom)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/atom-merge-conflict.png"><img alt="../_images/atom-merge-conflict.png" src="../_images/atom-merge-conflict.png" style="width: 100%;" /></a>
+</div>
+<p>Let’s say we click the first “use me” (to indicate that my changes should win out), and then save the file.</p>
+<p>Returning to GitHub Desktop gives us a pre-formed commit to accept</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-merge-commit.png"><img alt="../_images/git-merge-commit.png" src="../_images/git-merge-commit.png" style="width: 100%;" /></a>
+</div>
+<p>Clicking “commit to master” will let us push and pull from the server as normal.</p>
+</div>
+</div>
+<div class="section" id="collaboration-via-pull-request">
+<h2><a class="toc-backref" href="#id6"><span class="section-number">12.5. </span>Collaboration via Pull Request</a><a class="headerlink" href="#collaboration-via-pull-request" title="Permalink to this headline">¶</a></h2>
+<p>One of the defining features of GitHub is that it is the dominant platform for <em>open source</em> code, which anyone can access and use.</p>
+<p>However, while anyone can make a copy of the source code, not everyone has access to modify the particular version stored on GitHub.</p>
+<p>A maintainer (i.e. someone with “write” access to directly modify a repository)
+might consider different contributions and “merge” the changes into the main
+repository if the changes meet their criteria.</p>
+<p>A <em>pull request</em> (“PR”) allows <strong>any</strong> outsiders to suggest changes to open source repositories.</p>
+<p>A PR requests the project maintainer to merge (“pull”) changes you’ve worked on into their repository.</p>
+<p>There are a few different workflows for creating and handling PRs, which we’ll walk through below.</p>
+<p><strong>Note:</strong> If the changes are for a Julia Package, you will need to follow a different workflow – described in the <a class="reference internal" href="testing.html"><span class="doc">testing lecture</span></a>.</p>
+<div class="section" id="quick-fixes">
+<span id="web-interface"></span><h3><span class="section-number">12.5.1. </span>Quick Fixes<a class="headerlink" href="#quick-fixes" title="Permalink to this headline">¶</a></h3>
+<p>GitHub’s website provides an online editor for quick and dirty changes, such as fixing typos in documentation.</p>
+<p>To use it, open a file in GitHub and click the small pencil to the upper right</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-quick-pr.png"><img alt="../_images/git-quick-pr.png" src="../_images/git-quick-pr.png" style="width: 100%;" /></a>
+</div>
+<p>Here, we’re trying to add the QuantEcon link to the Julia project’s <code class="docutils literal notranslate"><span class="pre">README</span></code> file.</p>
+<p>After making our changes, we can then describe and propose them for review by maintainers.</p>
+<p>But what if we want to make more in-depth changes?</p>
+</div>
+<div class="section" id="no-access-case">
+<span id="fork-workflow"></span><h3><span class="section-number">12.5.2. </span>No-Access Case<a class="headerlink" href="#no-access-case" title="Permalink to this headline">¶</a></h3>
+<p>A common problem is when we don’t have write access (i.e. we can’t directly modify)  the repo in question.</p>
+<p>In that case, click the “Fork” button that lives in the top-right of every repo’s main page</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-fork-button.png"><img alt="../_images/git-fork-button.png" src="../_images/git-fork-button.png" style="width: 100%;" /></a>
+</div>
+<p>This will copy the repo into your own GitHub account.</p>
+<p>For example, <a class="reference external" href="https://github.com/ubcecon/example_repository">this repo</a> is a fork of our original <a class="reference external" href="https://github.com/quanteconuser/example_repository/">git setup</a>.</p>
+<p>Clone this fork to our desktop and work with it in exactly the same way as we would a repo we own
+(as the fork is in your account, you now have write access).</p>
+<p>That is, click the “clone” button on our fork</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-clone-fork.png"><img alt="../_images/git-clone-fork.png" src="../_images/git-clone-fork.png" style="width: 100%;" /></a>
+</div>
+<p>You’ll see a new repo with the same name but different URL in your GitHub Desktop repo list, along with a special icon to indicate that it’s a fork</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-repo-list.png"><img alt="../_images/git-repo-list.png" src="../_images/git-repo-list.png" style="width: 100%;" /></a>
+</div>
+<p>Commit some changes by selecting the files and writing a commit message</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-fork-changes.png"><img alt="../_images/git-fork-changes.png" src="../_images/git-fork-changes.png" style="width: 25%;" /></a>
+</div>
+<p>And push by using the dropdown</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-dropdown.png"><img alt="../_images/git-dropdown.png" src="../_images/git-dropdown.png" style="width: 75%;" /></a>
+</div>
+<p>Below, for example, we’ve committed and pushed some changes to the fork that we want to upstream into the main repo</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-edit-fork.png"><img alt="../_images/git-edit-fork.png" src="../_images/git-edit-fork.png" style="width: 100%;" /></a>
+</div>
+<p>We should make sure that these changes are on the server (which we can get to by going to the <a class="reference external" href="https://github.com/ubcecon/example_repository">fork</a> and clicking “commits”)</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-fork-history.png"><img alt="../_images/git-fork-history.png" src="../_images/git-fork-history.png" style="width: 100%;" /></a>
+</div>
+<p>Next, go to the pull requests menu and click “New Pull Request”.</p>
+<p>You’ll see something like this</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-create-pr.png"><img alt="../_images/git-create-pr.png" src="../_images/git-create-pr.png" style="width: 100%;" /></a>
+</div>
+<p>This gives us a quick overview of the commits we want to merge in, as well as the overall differences.</p>
+<p>Hit create and then click through the following form.</p>
+<p>This opens a page like this on the main repo</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-create-pr-2.png"><img alt="../_images/git-create-pr-2.png" src="../_images/git-create-pr-2.png" style="width: 100%;" /></a>
+</div>
+<p>The key pieces are</p>
+<ul class="simple">
+<li><p>A list of the commits we’re proposing.</p></li>
+<li><p>A list of reviewers, who can approve or modify our changes.</p></li>
+<li><p>Labels, Markdown space, assignees, and the ability to tag other git issues and PRs, just as with issues.</p></li>
+</ul>
+<p>Here’s an <a class="reference external" href="https://github.com/quanteconuser/example_repository/pull/3">example pull request</a>.</p>
+<p>To edit a PR, simply push changes to the fork you cloned to your desktop.</p>
+<p>For example, let’s say we commit a new change to the README <em>after</em> we create the PR</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-pr-modification.png"><img alt="../_images/git-pr-modification.png" src="../_images/git-pr-modification.png" style="width: 100%;" /></a>
+</div>
+<p>After pushing to the server, the change is reflected on the PR <a class="reference external" href="https://github.com/quanteconuser/example_repository/pull/3">page</a></p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-pr-expost.png"><img alt="../_images/git-pr-expost.png" src="../_images/git-pr-expost.png" style="width: 100%;" /></a>
+</div>
+<p>That is, creating a pull request is not like bundling up your changes and delivering them, but rather like opening an <em>ongoing connection</em> between two repositories, that is only severed when the PR is closed or merged.</p>
+</div>
+<div class="section" id="write-access-case">
+<h3><span class="section-number">12.5.3. </span>Write Access Case<a class="headerlink" href="#write-access-case" title="Permalink to this headline">¶</a></h3>
+<p>As you become more familiar with GitHub, and work on larger projects, you will find yourself making PRs even when it isn’t strictly required.</p>
+<p>If you are a maintainer of the repo (e.g. you created it or are a collaborator) then you don’t need to create a fork, but will rather work with a <em>git branch</em>.</p>
+<p>Branches in git represent parallel development streams (i.e., sequences of commits) that the PR is trying to merge.</p>
+<p>First, load the repo in GitHub Desktop and use the branch dropdown</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-pr-branch.png"><img alt="../_images/git-pr-branch.png" src="../_images/git-pr-branch.png" style="width: 100%;" /></a>
+</div>
+<p>Click “New Branch” and choose an instructive name (make sure there are no spaces or special characters).</p>
+<p>This will “check out” a new branch with the same history as the old one (but new commits will be added only to this branch).</p>
+<p>We can see the active branch in the top dropdown</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-branch.png"><img alt="../_images/git-branch.png" src="../_images/git-branch.png" style="width: 100%;" /></a>
+</div>
+<p>For example, let’s say we add some stuff to the Julia code file and commit it</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-pr-edits.png"><img alt="../_images/git-pr-edits.png" src="../_images/git-pr-edits.png" style="width: 100%;" /></a>
+</div>
+<p>To put this branch (with changes) on the server, we simply need to click “Publish Branch”.</p>
+<p>Navigating to the <a class="reference external" href="https://github.com/quanteconuser/example_repository">repo page</a>, we will see a suggestion about a new branch</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-new-branch.png"><img alt="../_images/git-new-branch.png" src="../_images/git-new-branch.png" style="width: 100%;" /></a>
+</div>
+<p>At which point the process of creating a PR is identical to the previous case.</p>
+</div>
+<div class="section" id="julia-package-case">
+<h3><span class="section-number">12.5.4. </span>Julia Package Case<a class="headerlink" href="#julia-package-case" title="Permalink to this headline">¶</a></h3>
+<p>One special case is when the repo in question is actually a Julia project or package.</p>
+<p>We cover that (along with package workflow in general) in the <a class="reference internal" href="testing.html"><span class="doc">testing lecture</span></a>.</p>
+</div>
+</div>
+<div class="section" id="additional-resources-and-troubleshooting">
+<h2><a class="toc-backref" href="#id7"><span class="section-number">12.6. </span>Additional Resources and Troubleshooting</a><a class="headerlink" href="#additional-resources-and-troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>You may want to go beyond the scope of this tutorial when working with GitHub.</p>
+<p>For example, perhaps you run into a bug, or you’re working with a setup that doesn’t have GitHub Desktop installed.</p>
+<p>Here are some resources to help</p>
+<ul class="simple">
+<li><p>Kate Hudson’s excellent <a class="reference external" href="https://github.com/k88hudson/git-flight-rules/">git flight rules</a>, which is a near-exhaustive list of situations you could encounter, and command-line fixes.</p></li>
+<li><p>The GitHub <a class="reference external" href="https://lab.github.com/">Learning Lab</a>, an interactive sandbox environment for git.</p></li>
+<li><p>The docs for forking on <a class="reference external" href="https://help.github.com/desktop/guides/contributing-to-projects/cloning-a-repository-from-github-to-github-desktop/">GitHub Desktop</a> and <a class="reference external" href="https://guides.github.com/activities/forking/">the GitHub Website</a>.</p></li>
+</ul>
+<div class="section" id="command-line-basics">
+<span id="version-control-commandline"></span><h3><span class="section-number">12.6.1. </span>Command-Line Basics<a class="headerlink" href="#command-line-basics" title="Permalink to this headline">¶</a></h3>
+<p>Git also comes with a set of command-line tools.</p>
+<p>They’re optional, but many people like using them.</p>
+<p>Furthermore, in some environments (e.g. JupyterHub installations) you may only have access to the command line.</p>
+<ul class="simple">
+<li><p>On Windows, downloading <code class="docutils literal notranslate"><span class="pre">git</span></code> will have installed a program called <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">bash</span></code>, which installs these tools along with a general Linux-style shell.</p></li>
+<li><p>On Linux/MacOS, these tools are integrated into your usual terminal.</p></li>
+</ul>
+<p>To open the terminal in a directory, either right click and hit “open git bash” (in Windows), or use Linux commands like <code class="docutils literal notranslate"><span class="pre">cd</span></code> and <code class="docutils literal notranslate"><span class="pre">ls</span></code> to navigate.</p>
+<p>See <a class="reference external" href="https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/command-line-101">here</a> for a short introduction to the command line.</p>
+<p>As above, you can clone by grabbing the repo URL (say, GitHub’s <a class="reference external" href="https://github.com/github/site-policy/">site-policy repo</a>) and running <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/github/site-policy.git</span></code>.</p>
+<p>This won’t be connected to your GitHub Desktop, so you’d need to use it manually (<code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">=&gt;</span> <span class="pre">Add</span> <span class="pre">Local</span> <span class="pre">Repository</span></code>) or drag-and-drop from the file explorer onto the GitHub Desktop</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/git-add-local.png"><img alt="../_images/git-add-local.png" src="../_images/git-add-local.png" style="width: 50%;" /></a>
+</div>
+<p>From here, you can get the latest files on the server by <code class="docutils literal notranslate"><span class="pre">cd</span></code>-ing into the directory and running <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code>.</p>
+<p>When you <code class="docutils literal notranslate"><span class="pre">pull</span></code> from the server, it will never overwrite your modified files, so it is impossible to lose local changes.</p>
+<p>Instead, to do a hard reset of all files and overwrite any of your local changes, you can run <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">reset</span> <span class="pre">--hard</span> <span class="pre">origin/master</span></code>.</p>
+</div>
+</div>
+<div class="section" id="exercises">
+<h2><a class="toc-backref" href="#id8"><span class="section-number">12.7. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1a">
+<h3><span class="section-number">12.7.1. </span>Exercise 1a<a class="headerlink" href="#exercise-1a" title="Permalink to this headline">¶</a></h3>
+<p>Follow the instructions to create a <a class="reference internal" href="#new-repo-workflow"><span class="std std-ref">new repository</span></a> for one of your GitHub accounts.
+In this repository</p>
+<ul class="simple">
+<li><p>Take the code from one of your previous assignments, such as <a class="reference internal" href="../getting_started_julia/julia_by_example.html#jbe-ex8a"><span class="std std-ref">Newton’s method</span></a> in <a class="reference internal" href="../getting_started_julia/julia_by_example.html"><span class="doc">Introductory Examples</span></a> (either as a <code class="docutils literal notranslate"><span class="pre">.jl</span></code> file or a Jupyter notebook).</p></li>
+<li><p>Put in a <code class="docutils literal notranslate"><span class="pre">README.md</span></code> with some text.</p></li>
+<li><p>Put in a <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file, ignoring the Jupyter files <code class="docutils literal notranslate"><span class="pre">.ipynb_checkpoints</span></code> and the project files, <code class="docutils literal notranslate"><span class="pre">.projects</span></code>.</p></li>
+</ul>
+</div>
+<div class="section" id="exercise-1b">
+<h3><span class="section-number">12.7.2. </span>Exercise 1b<a class="headerlink" href="#exercise-1b" title="Permalink to this headline">¶</a></h3>
+<p>Pair-up with another student who has done Exercise 1a and find out their GitHub ID, and each do the following</p>
+<ul class="simple">
+<li><p>Add the GitHub ID as a collaborators on your repository.</p></li>
+<li><p>Clone the repositories to your local desktop.</p></li>
+<li><p>Assign each other an issue.</p></li>
+<li><p>Submit a commit from GitHub Desktop which references the issue by number.</p></li>
+<li><p>Comment on the commits.</p></li>
+<li><p>Ensure you can run their code without any modifications.</p></li>
+</ul>
+</div>
+<div class="section" id="exercise-1c">
+<h3><span class="section-number">12.7.3. </span>Exercise 1c<a class="headerlink" href="#exercise-1c" title="Permalink to this headline">¶</a></h3>
+<p>Pair-wise with the results of Exercise 1b examine a merge-conflict by editing the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file for your repository that you have both setup as collaborators.</p>
+<p>Start by ensuring there are multiple lines in the file so that some changes may have conflicts, and some may not.</p>
+<ul class="simple">
+<li><p>Clone the repository to your local desktops.</p></li>
+<li><p>Modify <strong>different</strong> lines of code in the file and both commit and push to the server (prior to pulling from each other)–and see how it merges things “automatically”.</p></li>
+<li><p>Modify <strong>the same</strong> line of code in the file, and deal with the <a class="reference internal" href="#merge-conflict"><span class="std std-ref">merge conflict</span></a>.</p></li>
+</ul>
+</div>
+<div class="section" id="exercise-2a">
+<h3><span class="section-number">12.7.4. </span>Exercise 2a<a class="headerlink" href="#exercise-2a" title="Permalink to this headline">¶</a></h3>
+<p>Just using GitHub’s <a class="reference internal" href="#web-interface"><span class="std std-ref">web interface</span></a>, submit a Pull Request for a simple change of documentation to a public repository.</p>
+<p>The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. <code class="docutils literal notranslate"><span class="pre">https://github.com/QuantEcon/lecture-source-jl</span></code>.</p>
+<p>Note: The source for that repository is in <code class="docutils literal notranslate"><span class="pre">.rst</span></code> files, but you should be able to find spelling mistakes/etc. without much effort.</p>
+</div>
+<div class="section" id="exercise-2b">
+<h3><span class="section-number">12.7.5. </span>Exercise 2b<a class="headerlink" href="#exercise-2b" title="Permalink to this headline">¶</a></h3>
+<p>Following the <a class="reference internal" href="#fork-workflow"><span class="std std-ref">instructions</span></a> for forking and cloning a public repository to your local desktop, submit a Pull Request to a public repository.</p>
+<p>Again, you could submit it for a typo in the source repository for these notes, i.e. <code class="docutils literal notranslate"><span class="pre">https://github.com/QuantEcon/lecture-source-jl</span></code>, but you are also encouraged to instead look for a small change that could help the documentation in another repository.</p>
+<p>If you are ambitious, then go to the Exercise Solutions for one of the Exercises in these lecture notes and submit a PR for your own modified version (if you think it is an improvement!).</p>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./more_julia"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Packages and Software Engineering in Julia
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="generic_programming.html">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="general_packages.html">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tools_editors.html">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   22. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   23. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   24. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   25. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   26. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   27. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   28. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   29. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   30. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   31. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   33. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   34. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   35. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   36. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   37. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   39. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   40. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   41. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   42. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   44. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   45. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   46. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   47. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   48. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   49. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   50. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   51. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   52. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   53. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   54. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   55. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   56. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   57. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   58. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   59. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   60. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   61. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   62. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   63. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   64. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   65. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   66. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   67. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   68. Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/more_julia/version_control.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/more_julia/version_control.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/more_julia/version_control.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/more_julia/version_control.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

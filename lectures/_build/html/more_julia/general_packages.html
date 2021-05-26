@@ -1,0 +1,967 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>8. General Purpose Packages &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/more_julia/general_packages.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="9. Data and Statistics Packages" href="data_statistical_packages.html" />
+    <link rel="prev" title="7. Generic Programming" href="generic_programming.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="General Purpose Packages"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="General Purpose Packages" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/more_julia/general_packages.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=more_julia/general_packages>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   8.1. Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#setup">
+     8.1.1. Setup
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#numerical-integration">
+   8.2. Numerical Integration
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#adaptive-quadrature">
+     8.2.1. Adaptive Quadrature
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#gaussian-quadrature">
+     8.2.2. Gaussian Quadrature
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#expectations">
+     8.2.3. Expectations
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#interpolation">
+   8.3. Interpolation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#univariate-with-a-regular-grid">
+     8.3.1. Univariate with a Regular Grid
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#univariate-with-irregular-grid">
+     8.3.2. Univariate with Irregular Grid
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multivariate-interpolation">
+     8.3.3. Multivariate Interpolation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#linear-algebra">
+   8.4. Linear Algebra
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#standard-library">
+     8.4.1. Standard Library
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#general-tools">
+   8.5. General Tools
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#latexstrings-jl">
+     8.5.1. LaTeXStrings.jl
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#progressmeter-jl">
+     8.5.2. ProgressMeter.jl
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">General Purpose Packages</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="general-purpose-packages">
+<h1><a class="toc-backref" href="#id1"><span class="section-number">8. </span>General Purpose Packages</a><a class="headerlink" href="#general-purpose-packages" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#general-purpose-packages" id="id1">General Purpose Packages</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id2">Overview</a></p></li>
+<li><p><a class="reference internal" href="#numerical-integration" id="id3">Numerical Integration</a></p></li>
+<li><p><a class="reference internal" href="#interpolation" id="id4">Interpolation</a></p></li>
+<li><p><a class="reference internal" href="#linear-algebra" id="id5">Linear Algebra</a></p></li>
+<li><p><a class="reference internal" href="#general-tools" id="id6">General Tools</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id2"><span class="section-number">8.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Julia has both a large number of useful, well written libraries and many incomplete poorly maintained proofs of concept.</p>
+<p>A major advantage of Julia libraries is that, because Julia itself is sufficiently fast, there is less need to mix in low level languages like C and Fortran.</p>
+<p>As a result, most Julia libraries are written exclusively in Julia.</p>
+<p>Not only does this make the libraries more portable, it makes them much easier to dive into, read, learn from and modify.</p>
+<p>In this lecture we introduce a few of the Julia libraries that we’ve found particularly useful for quantitative work in economics.</p>
+<p>Also see <a class="reference internal" href="data_statistical_packages.html"><span class="doc">data and statistical packages</span></a> and <a class="reference internal" href="optimization_solver_packages.html"><span class="doc">optimization, solver, and related packages</span></a> for more domain specific packages.</p>
+<div class="section" id="setup">
+<h3><span class="section-number">8.1.1. </span>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="numerical-integration">
+<h2><a class="toc-backref" href="#id3"><span class="section-number">8.2. </span>Numerical Integration</a><a class="headerlink" href="#numerical-integration" title="Permalink to this headline">¶</a></h2>
+<p>Many applications require directly calculating a numerical derivative and calculating expectations.</p>
+<div class="section" id="adaptive-quadrature">
+<h3><span class="section-number">8.2.1. </span>Adaptive Quadrature<a class="headerlink" href="#adaptive-quadrature" title="Permalink to this headline">¶</a></h3>
+<p>A high accuracy solution for calculating numerical integrals is <a class="reference external" href="https://github.com/JuliaMath/QuadGK.jl">QuadGK</a>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">QuadGK</span>
+<span class="nd">@show</span> <span class="n">value</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="n">quadgk</span><span class="p">(</span><span class="n">cos</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="nb">π</span><span class="p">,</span> <span class="mi">2</span><span class="nb">π</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This is an adaptive Gauss-Kronrod integration technique that’s relatively accurate for smooth functions.</p>
+<p>However, its adaptive implementation makes it slow and not well suited to inner loops.</p>
+</div>
+<div class="section" id="gaussian-quadrature">
+<h3><span class="section-number">8.2.2. </span>Gaussian Quadrature<a class="headerlink" href="#gaussian-quadrature" title="Permalink to this headline">¶</a></h3>
+<p>Alternatively, many integrals can be done efficiently with (non-adaptive) <a class="reference external" href="https://en.wikipedia.org/wiki/Gaussian_quadrature">Gaussian quadrature</a>.</p>
+<p>For example, using <a class="reference external" href="https://github.com/ajt60gaibb/FastGaussQuadrature.jl">FastGaussQuadrature.jl</a></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">FastGaussQuadrature</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">gausslegendre</span><span class="p">(</span> <span class="mi">100_000</span> <span class="p">);</span> <span class="c"># i.e. find 100,000 nodes</span>
+
+<span class="c"># integrates f(x) = x^2 from -1 to 1</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span>
+<span class="nd">@show</span> <span class="n">w</span> <span class="o">⋅</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="c"># calculate integral</span>
+</pre></div>
+</div>
+<p>The only problem with the <code class="docutils literal notranslate"><span class="pre">FastGaussQuadrature</span></code> package is that you will need to deal with affine transformations to the non-default domains yourself.</p>
+<p>Alternatively, <code class="docutils literal notranslate"><span class="pre">QuantEcon.jl</span></code> has routines for Gaussian quadrature that translate the domains.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">QuantEcon</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">qnwlege</span><span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="nb">π</span><span class="p">,</span> <span class="mi">2</span><span class="nb">π</span><span class="p">);</span>
+<span class="nd">@show</span> <span class="n">w</span> <span class="o">⋅</span> <span class="n">cos</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="c"># i.e. on [-2π, 2π] domain</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="expectations">
+<h3><span class="section-number">8.2.3. </span>Expectations<a class="headerlink" href="#expectations" title="Permalink to this headline">¶</a></h3>
+<p>If the calculations of the numerical integral is simply for calculating mathematical expectations of a particular distribution, then <a class="reference external" href="https://github.com/QuantEcon/Expectations.jl">Expectations.jl</a> provides a convenient interface.</p>
+<p>Under the hood, it is finding the appropriate Gaussian quadrature scheme for the distribution using <code class="docutils literal notranslate"><span class="pre">FastGaussQuadrature</span></code>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Expectations</span>
+<span class="n">dist</span> <span class="o">=</span> <span class="n">Normal</span><span class="p">()</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">expectation</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span>
+<span class="nd">@show</span> <span class="n">E</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="c">#i.e. identity</span>
+
+<span class="c"># Or using as a linear operator</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">weights</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+<span class="n">E</span> <span class="o">*</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">⋅</span> <span class="n">w</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="interpolation">
+<h2><a class="toc-backref" href="#id4"><span class="section-number">8.3. </span>Interpolation</a><a class="headerlink" href="#interpolation" title="Permalink to this headline">¶</a></h2>
+<p>In economics we often wish to interpolate discrete data (i.e., build continuous functions that join discrete sequences of points).</p>
+<p>The package we usually turn to for this purpose is <a class="reference external" href="https://github.com/JuliaMath/Interpolations.jl">Interpolations.jl</a>.</p>
+<p>There are a variety of options, but we will only demonstrate the convenient notations.</p>
+<div class="section" id="univariate-with-a-regular-grid">
+<h3><span class="section-number">8.3.1. </span>Univariate with a Regular Grid<a class="headerlink" href="#univariate-with-a-regular-grid" title="Permalink to this headline">¶</a></h3>
+<p>Let’s start with the univariate case.</p>
+<p>We begin by creating some data points, using a sine function</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Interpolations</span>
+<span class="k">using</span> <span class="n">Plots</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=:</span><span class="n">png</span><span class="p">);</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">7</span><span class="o">:</span><span class="mi">7</span> <span class="c"># x points, coase grid</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">sin</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c"># corresponding y points</span>
+
+<span class="n">xf</span> <span class="o">=</span> <span class="o">-</span><span class="mi">7</span><span class="o">:</span><span class="mf">0.1</span><span class="o">:</span><span class="mi">7</span>        <span class="c"># fine grid</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">xf</span><span class="p">,</span> <span class="n">sin</span><span class="o">.</span><span class="p">(</span><span class="n">xf</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;sin function&quot;</span><span class="p">)</span>
+<span class="n">scatter!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;sampled data&quot;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To implement linear and cubic <a class="reference external" href="https://en.wikipedia.org/wiki/Spline_%28mathematics%29">spline</a> interpolation</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">li</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">li_spline</span> <span class="o">=</span> <span class="n">CubicSplineInterpolation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="nd">@show</span> <span class="n">li</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span> <span class="c"># evaluate at a single point</span>
+
+<span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;sampled data&quot;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xf</span><span class="p">,</span> <span class="n">li</span><span class="o">.</span><span class="p">(</span><span class="n">xf</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;linear&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xf</span><span class="p">,</span> <span class="n">li_spline</span><span class="o">.</span><span class="p">(</span><span class="n">xf</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;spline&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="univariate-with-irregular-grid">
+<h3><span class="section-number">8.3.2. </span>Univariate with Irregular Grid<a class="headerlink" href="#univariate-with-irregular-grid" title="Permalink to this headline">¶</a></h3>
+<p>In the above, the <code class="docutils literal notranslate"><span class="pre">LinearInterpolation</span></code> function uses a specialized function
+for regular grids since <code class="docutils literal notranslate"><span class="pre">x</span></code> is a <code class="docutils literal notranslate"><span class="pre">Range</span></code> type.</p>
+<p>For an arbitrary, irregular grid</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">exp</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">10</span><span class="p">))</span> <span class="o">.+</span> <span class="mi">1</span>  <span class="c"># uneven grid</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c"># corresponding y points</span>
+
+<span class="n">interp</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">xf</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span>  <span class="n">exp</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">100</span><span class="p">))</span> <span class="o">.+</span> <span class="mi">1</span> <span class="c"># finer grid</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">xf</span><span class="p">,</span> <span class="n">interp</span><span class="o">.</span><span class="p">(</span><span class="n">xf</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;linear&quot;</span><span class="p">)</span>
+<span class="n">scatter!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;sampled data&quot;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>At this point, <code class="docutils literal notranslate"><span class="pre">Interpolations.jl</span></code> does not have support for cubic splines with irregular grids, but there are plenty of other packages that do (e.g. <a class="reference external" href="https://github.com/kbarbary/Dierckx.jl">Dierckx.jl</a>  and <a class="reference external" href="https://github.com/sisl/GridInterpolations.jl">GridInterpolations.jl</a>).</p>
+</div>
+<div class="section" id="multivariate-interpolation">
+<h3><span class="section-number">8.3.3. </span>Multivariate Interpolation<a class="headerlink" href="#multivariate-interpolation" title="Permalink to this headline">¶</a></h3>
+<p>Interpolating a regular multivariate function uses the same function</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">)</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="mi">1</span><span class="o">:</span><span class="mf">0.2</span><span class="o">:</span><span class="mi">5</span>
+<span class="n">ys</span> <span class="o">=</span> <span class="mi">2</span><span class="o">:</span><span class="mf">0.1</span><span class="o">:</span><span class="mi">5</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="kp">in</span> <span class="n">xs</span><span class="p">,</span> <span class="n">y</span> <span class="kp">in</span> <span class="n">ys</span><span class="p">]</span>
+
+<span class="c"># linear interpolation</span>
+<span class="n">interp_linear</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">((</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">),</span> <span class="n">A</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">interp_linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c"># exactly log(3 + 2)</span>
+<span class="nd">@show</span> <span class="n">interp_linear</span><span class="p">(</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">)</span> <span class="c"># approximately log(3.1 + 2.1)</span>
+
+<span class="c"># cubic spline interpolation</span>
+<span class="n">interp_cubic</span> <span class="o">=</span> <span class="n">CubicSplineInterpolation</span><span class="p">((</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">),</span> <span class="n">A</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">interp_cubic</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c"># exactly log(3 + 2)</span>
+<span class="nd">@show</span> <span class="n">interp_cubic</span><span class="p">(</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">)</span> <span class="c"># approximately log(3.1 + 2.1);</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://github.com/JuliaMath/Interpolations.jl#convenience-notation">Interpolations.jl documentation</a> for more details on options and settings.</p>
+</div>
+</div>
+<div class="section" id="linear-algebra">
+<h2><a class="toc-backref" href="#id5"><span class="section-number">8.4. </span>Linear Algebra</a><a class="headerlink" href="#linear-algebra" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="standard-library">
+<h3><span class="section-number">8.4.1. </span>Standard Library<a class="headerlink" href="#standard-library" title="Permalink to this headline">¶</a></h3>
+<p>The standard library contains many useful routines for linear algebra, in
+addition to standard functions such as <code class="docutils literal notranslate"><span class="pre">det()</span></code>, <code class="docutils literal notranslate"><span class="pre">inv()</span></code>, <code class="docutils literal notranslate"><span class="pre">factorize()</span></code>, etc.</p>
+<p>Routines are available for</p>
+<ul class="simple">
+<li><p>Cholesky factorization</p></li>
+<li><p>LU decomposition</p></li>
+<li><p>Singular value decomposition,</p></li>
+<li><p>Schur factorization, etc.</p></li>
+</ul>
+<p>See <a class="reference external" href="https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/">here</a> for further details.</p>
+</div>
+</div>
+<div class="section" id="general-tools">
+<h2><a class="toc-backref" href="#id6"><span class="section-number">8.5. </span>General Tools</a><a class="headerlink" href="#general-tools" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="latexstrings-jl">
+<h3><span class="section-number">8.5.1. </span>LaTeXStrings.jl<a class="headerlink" href="#latexstrings-jl" title="Permalink to this headline">¶</a></h3>
+<p>When you need to properly escape latex code (e.g. for equation labels), use <a class="reference external" href="https://github.com/stevengj/LaTeXStrings.jl">LaTeXStrings.jl</a>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LaTeXStrings</span>
+<span class="n">L</span><span class="s">&quot;an equation: $1 + </span><span class="se">\a</span><span class="s">lpha^2$&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="progressmeter-jl">
+<h3><span class="section-number">8.5.2. </span>ProgressMeter.jl<a class="headerlink" href="#progressmeter-jl" title="Permalink to this headline">¶</a></h3>
+<p>For long-running operations, you can use the <a class="reference external" href="https://github.com/timholy/ProgressMeter.jl">ProgressMeter.jl</a> package.</p>
+<p>To use the package, you simply put a macro in front of <code class="docutils literal notranslate"><span class="pre">for</span></code> loops, etc.</p>
+<p>From the documentation</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">ProgressMeter</span>
+
+<span class="nd">@showprogress</span> <span class="mi">1</span> <span class="s">&quot;Computing...&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">50</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="c"># some computation....</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./more_julia"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Packages and Software Engineering in Julia
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="generic_programming.html">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tools_editors.html">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="version_control.html">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   22. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   23. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   24. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   25. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   26. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   27. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   28. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   29. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   30. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   31. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   33. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   34. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   35. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   36. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   37. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   39. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   40. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   41. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   42. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   44. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   45. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   46. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   47. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   48. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   49. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   50. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   51. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   52. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   53. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   54. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   55. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   56. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   57. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   58. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   59. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   60. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   61. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   62. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   63. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   64. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   65. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   66. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   67. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   68. Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/more_julia/general_packages.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/more_julia/general_packages.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/more_julia/general_packages.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/more_julia/general_packages.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

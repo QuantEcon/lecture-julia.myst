@@ -1,0 +1,1327 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>28. A Problem that Stumped Milton Friedman &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/wald_friedman.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="29. Job Search III: Search with Learning" href="odu.html" />
+    <link rel="prev" title="27. Job Search II: Search and Separation" href="mccall_model_with_separation.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="A Problem that Stumped Milton Friedman"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="A Problem that Stumped Milton Friedman" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/dynamic_programming/wald_friedman.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=dynamic_programming/wald_friedman>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   28.1. Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#origin-of-the-problem">
+   28.2. Origin of the problem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#a-dynamic-programming-approach">
+   28.3. A dynamic programming approach
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#setup">
+     28.3.1. Setup
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#losses-and-costs">
+     28.3.2. Losses and costs
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#digression-on-type-i-and-type-ii-errors">
+     28.3.3. Digression on type I and type II errors
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#intuition">
+     28.3.4. Intuition
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#a-bellman-equation">
+     28.3.5. A Bellman equation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#implementation">
+   28.4. Implementation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#comparative-statics">
+     28.4.1. Comparative statics
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#comparison-with-neyman-pearson-formulation">
+   28.5. Comparison with Neyman-Pearson formulation
+  </a>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">A Problem that Stumped Milton Friedman</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="a-problem-that-stumped-milton-friedman">
+<h1><a class="toc-backref" href="#id9"><span class="section-number">28. </span><span class="target" id="index-0"></span>A Problem that Stumped Milton Friedman</a><a class="headerlink" href="#a-problem-that-stumped-milton-friedman" title="Permalink to this headline">¶</a></h1>
+<p>(and that Abraham Wald solved by inventing sequential analysis)</p>
+<div class="contents topic" id="contents">
+<span id="index-1"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#a-problem-that-stumped-milton-friedman" id="id9">A Problem that Stumped Milton Friedman</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id10">Overview</a></p></li>
+<li><p><a class="reference internal" href="#origin-of-the-problem" id="id11">Origin of the problem</a></p></li>
+<li><p><a class="reference internal" href="#a-dynamic-programming-approach" id="id12">A dynamic programming approach</a></p></li>
+<li><p><a class="reference internal" href="#implementation" id="id13">Implementation</a></p></li>
+<li><p><a class="reference internal" href="#comparison-with-neyman-pearson-formulation" id="id14">Comparison with Neyman-Pearson formulation</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Co-authored with Chase Coleman</p>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id10"><span class="section-number">28.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This lecture describes a statistical decision problem encountered  by Milton Friedman and W. Allen Wallis during World War II when they were analysts at the U.S. Government’s  Statistical Research Group at Columbia University.</p>
+<p>This problem led Abraham Wald <span id="id1">[<a class="reference internal" href="../zreferences.html#id28"><span>Wal47</span></a>]</span> to formulate <strong>sequential analysis</strong>, an approach to statistical decision problems intimately related to dynamic programming.</p>
+<p>In this lecture, we apply dynamic programming algorithms to Friedman and Wallis and Wald’s problem.</p>
+<p>Key ideas in play will be:</p>
+<ul class="simple">
+<li><p>Bayes’ Law</p></li>
+<li><p>Dynamic programming</p></li>
+<li><p>Type I and type II statistical errors</p>
+<ul>
+<li><p>a type I error occurs when you reject a null hypothesis that is true</p></li>
+<li><p>a type II error is when you accept a null hypothesis that is false</p></li>
+</ul>
+</li>
+<li><p>Abraham Wald’s <strong>sequential probability ratio test</strong></p></li>
+<li><p>The <strong>power</strong> of a statistical test</p></li>
+<li><p>The <strong>critical region</strong> of a statistical test</p></li>
+<li><p>A <strong>uniformly most powerful test</strong></p></li>
+</ul>
+</div>
+<div class="section" id="origin-of-the-problem">
+<h2><a class="toc-backref" href="#id11"><span class="section-number">28.2. </span>Origin of the problem</a><a class="headerlink" href="#origin-of-the-problem" title="Permalink to this headline">¶</a></h2>
+<p>On pages 137-139 of his 1998 book <em>Two Lucky People</em> with Rose Friedman <span id="id2">[<a class="reference internal" href="../zreferences.html#id24"><span>FF98</span></a>]</span>,
+Milton Friedman described a problem presented to him and Allen Wallis
+during World War II, when they worked at the US Government’s
+Statistical Research Group at Columbia University.</p>
+<p>Let’s listen to Milton Friedman tell us what happened.</p>
+<p>“In order to understand the story, it is necessary to have an idea of a
+simple statistical problem, and of the standard procedure for dealing
+with it. The actual problem out of which sequential analysis grew will
+serve. The Navy has two alternative designs (say A and B) for a
+projectile. It wants to determine which is superior. To do so it
+undertakes a series of paired firings. On each round it assigns the
+value 1 or 0 to A accordingly as its performance is superior or inferior
+to that of B and conversely 0 or 1 to B. The Navy asks the statistician
+how to conduct the test and how to analyze the results.</p>
+<p>“The standard statistical answer was to specify a number of firings (say
+1,000) and a pair of percentages (e.g., 53% and 47%) and tell the client
+that if A receives a 1 in more than 53% of the firings, it can be
+regarded as superior; if it receives a 1 in fewer than 47%, B can be
+regarded as superior; if the percentage is between 47% and 53%, neither
+can be so regarded.</p>
+<p>“When Allen Wallis was discussing such a problem with (Navy) Captain
+Garret L. Schyler, the captain objected that such a test, to quote from
+Allen’s account, may prove wasteful. If a wise and seasoned ordnance
+officer like Schyler were on the premises, he would see after the first
+few thousand or even few hundred [rounds] that the experiment need not
+be completed either because the new method is obviously inferior or
+because it is obviously superior beyond what was hoped for
+<span class="math notranslate nohighlight">\(\ldots\)</span> ‘’</p>
+<p>Friedman and Wallis struggled with the problem but, after realizing that
+they were not able to solve it,  described the problem to  Abraham Wald.</p>
+<p>That started Wald on the path that led him  to <em>Sequential Analysis</em> <span id="id3">[<a class="reference internal" href="../zreferences.html#id28"><span>Wal47</span></a>]</span>.</p>
+<p>We’ll formulate the problem using dynamic programming.</p>
+</div>
+<div class="section" id="a-dynamic-programming-approach">
+<h2><a class="toc-backref" href="#id12"><span class="section-number">28.3. </span>A dynamic programming approach</a><a class="headerlink" href="#a-dynamic-programming-approach" title="Permalink to this headline">¶</a></h2>
+<p>The following presentation of the problem closely follows Dmitri
+Berskekas’s treatment in <strong>Dynamic Programming and Stochastic Control</strong> <span id="id4">[<a class="reference internal" href="../zreferences.html#id27"><span>Ber75</span></a>]</span>.</p>
+<p>A decision maker observes iid draws of a random variable <span class="math notranslate nohighlight">\(z\)</span>.</p>
+<p>He (or she) wants to know which of two probability distributions <span class="math notranslate nohighlight">\(f_0\)</span> or <span class="math notranslate nohighlight">\(f_1\)</span> governs <span class="math notranslate nohighlight">\(z\)</span>.</p>
+<p>After a number of draws, also to be determined, he makes a decision as to which of the distributions is generating the draws he observers.</p>
+<p>To help formalize the problem, let <span class="math notranslate nohighlight">\(x \in \{x_0, x_1\}\)</span> be a hidden state that indexes the two distributions:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\mathbb P\{z = v \mid x \}
+= \begin{cases}
+    f_0(v) &amp; \mbox{if } x = x_0, \\
+    f_1(v) &amp; \mbox{if } x = x_1
+\end{cases}
+\end{split}\]</div>
+<p>Before observing any outcomes, the decision maker believes that the probability that <span class="math notranslate nohighlight">\(x = x_0\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+p_{-1} =
+\mathbb P \{ x=x_0 \mid \textrm{ no observations} \} \in (0, 1)
+\]</div>
+<p>After observing <span class="math notranslate nohighlight">\(k+1\)</span> observations <span class="math notranslate nohighlight">\(z_k, z_{k-1}, \ldots, z_0\)</span>, he updates this value to</p>
+<div class="math notranslate nohighlight">
+\[
+p_k = \mathbb P \{ x = x_0 \mid z_k, z_{k-1}, \ldots, z_0 \},
+\]</div>
+<p>which is calculated recursively by applying Bayes’ law:</p>
+<div class="math notranslate nohighlight">
+\[
+p_{k+1} = \frac{ p_k f_0(z_{k+1})}{ p_k f_0(z_{k+1}) + (1-p_k) f_1 (z_{k+1}) },
+\quad k = -1, 0, 1, \ldots
+\]</div>
+<p>After observing <span class="math notranslate nohighlight">\(z_k, z_{k-1}, \ldots, z_0\)</span>, the decision maker believes that <span class="math notranslate nohighlight">\(z_{k+1}\)</span> has probability distribution</p>
+<div class="math notranslate nohighlight">
+\[
+f(v) = p_k f_0(v) + (1-p_k) f_1 (v)
+\]</div>
+<p>This is a mixture of distributions <span class="math notranslate nohighlight">\(f_0\)</span> and <span class="math notranslate nohighlight">\(f_1\)</span>, with the weight on <span class="math notranslate nohighlight">\(f_0\)</span> being the posterior probability that <span class="math notranslate nohighlight">\(x = x_0\)</span> <a class="footnote-reference brackets" href="#f1" id="id5">1</a>.</p>
+<p>To help illustrate this kind of distribution, let’s inspect some mixtures of beta distributions.</p>
+<p>The density of a beta probability distribution with parameters <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+f(z; a, b) = \frac{\Gamma(a+b) z^{a-1} (1-z)^{b-1}}{\Gamma(a) \Gamma(b)}
+\quad \text{where} \quad
+\Gamma(t) := \int_{0}^{\infty} x^{t-1} e^{-x} dx
+\]</div>
+<p>We’ll discretize this distribution to make it more straightforward to work with.</p>
+<p>The next figure shows two discretized beta distributions in the top panel.</p>
+<p>The bottom panel presents mixtures of these distributions, with various mixing probabilities <span class="math notranslate nohighlight">\(p_k\)</span>.</p>
+<div class="section" id="setup">
+<h3><span class="section-number">28.3.1. </span>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">StatsPlots</span>
+
+<span class="k">begin</span>
+    <span class="n">base_dist</span> <span class="o">=</span> <span class="p">[</span><span class="n">Beta</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Beta</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
+    <span class="n">mixed_dist</span> <span class="o">=</span> <span class="n">MixtureModel</span><span class="o">.</span><span class="p">(</span><span class="kt">Ref</span><span class="p">(</span><span class="n">base_dist</span><span class="p">),</span> <span class="p">(</span><span class="n">p</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">one</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">p</span><span class="p">])</span><span class="o">.</span><span class="p">(</span><span class="mf">0.25</span><span class="o">:</span><span class="mf">0.25</span><span class="o">:</span><span class="mf">0.75</span><span class="p">))</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">plot</span><span class="p">(</span><span class="n">base_dist</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;f_0&quot;</span><span class="p">,</span> <span class="s">&quot;f_1&quot;</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Original Distributions&quot;</span><span class="p">),</span>
+         <span class="n">plot</span><span class="p">(</span><span class="n">mixed_dist</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;1/4-3/4&quot;</span><span class="p">,</span> <span class="s">&quot;1/2-1/2&quot;</span><span class="p">,</span> <span class="s">&quot;3/4-1/4&quot;</span><span class="p">],</span>
+              <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Distribution Mixtures&quot;</span><span class="p">),</span>
+         <span class="c"># Global settings across both plots</span>
+         <span class="n">ylab</span> <span class="o">=</span> <span class="s">&quot;Density&quot;</span><span class="p">,</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+         <span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="losses-and-costs">
+<h3><span class="section-number">28.3.2. </span>Losses and costs<a class="headerlink" href="#losses-and-costs" title="Permalink to this headline">¶</a></h3>
+<p>After observing <span class="math notranslate nohighlight">\(z_k, z_{k-1}, \ldots, z_0\)</span>, the decision maker
+chooses among three distinct actions:</p>
+<ul class="simple">
+<li><p>He decides that <span class="math notranslate nohighlight">\(x = x_0\)</span> and draws no more <span class="math notranslate nohighlight">\(z\)</span>’s.</p></li>
+<li><p>He decides that <span class="math notranslate nohighlight">\(x = x_1\)</span> and draws no more <span class="math notranslate nohighlight">\(z\)</span>’s.</p></li>
+<li><p>He postpones deciding now and instead chooses to draw a
+<span class="math notranslate nohighlight">\(z_{k+1}\)</span>.</p></li>
+</ul>
+<p>Associated with these three actions, the decision maker can suffer three
+kinds of losses:</p>
+<ul class="simple">
+<li><p>A loss <span class="math notranslate nohighlight">\(L_0\)</span> if he decides <span class="math notranslate nohighlight">\(x = x_0\)</span> when actually
+<span class="math notranslate nohighlight">\(x=x_1\)</span>.</p></li>
+<li><p>A loss <span class="math notranslate nohighlight">\(L_1\)</span> if he decides <span class="math notranslate nohighlight">\(x = x_1\)</span> when actually
+<span class="math notranslate nohighlight">\(x=x_0\)</span>.</p></li>
+<li><p>A cost <span class="math notranslate nohighlight">\(c\)</span> if he postpones deciding and chooses instead to draw
+another <span class="math notranslate nohighlight">\(z\)</span>.</p></li>
+</ul>
+</div>
+<div class="section" id="digression-on-type-i-and-type-ii-errors">
+<h3><span class="section-number">28.3.3. </span>Digression on type I and type II errors<a class="headerlink" href="#digression-on-type-i-and-type-ii-errors" title="Permalink to this headline">¶</a></h3>
+<p>If we regard  <span class="math notranslate nohighlight">\(x=x_0\)</span> as a null hypothesis and <span class="math notranslate nohighlight">\(x=x_1\)</span> as an alternative hypothesis,
+then <span class="math notranslate nohighlight">\(L_1\)</span> and <span class="math notranslate nohighlight">\(L_0\)</span> are losses associated with two types of statistical errors.</p>
+<ul class="simple">
+<li><p>a type I error is an incorrect rejection of a true null hypothesis (a “false positive”)</p></li>
+<li><p>a type II error is a failure to reject a false null hypothesis (a “false negative”)</p></li>
+</ul>
+<p>So when we treat <span class="math notranslate nohighlight">\(x=x_0\)</span> as the null hypothesis</p>
+<ul class="simple">
+<li><p>We can think of <span class="math notranslate nohighlight">\(L_1\)</span> as the loss associated with a type I
+error.</p></li>
+<li><p>We can think of <span class="math notranslate nohighlight">\(L_0\)</span> as the loss associated with a type II
+error.</p></li>
+</ul>
+</div>
+<div class="section" id="intuition">
+<h3><span class="section-number">28.3.4. </span>Intuition<a class="headerlink" href="#intuition" title="Permalink to this headline">¶</a></h3>
+<p>Let’s try to guess what an optimal decision rule might look like before we go further.</p>
+<p>Suppose at some given point in time that <span class="math notranslate nohighlight">\(p\)</span> is close to 1.</p>
+<p>Then our prior beliefs and the evidence so far point strongly to <span class="math notranslate nohighlight">\(x = x_0\)</span>.</p>
+<p>If, on the other hand, <span class="math notranslate nohighlight">\(p\)</span> is close to 0, then <span class="math notranslate nohighlight">\(x = x_1\)</span> is strongly favored.</p>
+<p>Finally, if <span class="math notranslate nohighlight">\(p\)</span> is in the middle of the interval <span class="math notranslate nohighlight">\([0, 1]\)</span>, then we have little information in either direction.</p>
+<p>This reasoning suggests a decision rule such as the one shown in the figure</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/wald_dec_rule.png"><img alt="../_images/wald_dec_rule.png" src="../_images/wald_dec_rule.png" style="width: 50%;" /></a>
+</div>
+<p>As we’ll see, this is indeed the correct form of the decision rule.</p>
+<p>The key problem is to determine the threshold values <span class="math notranslate nohighlight">\(\alpha, \beta\)</span>,
+which will depend on the parameters listed above.</p>
+<p>You might like to pause at this point and try to predict the impact of a
+parameter such as <span class="math notranslate nohighlight">\(c\)</span> or <span class="math notranslate nohighlight">\(L_0\)</span> on <span class="math notranslate nohighlight">\(\alpha\)</span> or <span class="math notranslate nohighlight">\(\beta\)</span>.</p>
+</div>
+<div class="section" id="a-bellman-equation">
+<h3><span class="section-number">28.3.5. </span>A Bellman equation<a class="headerlink" href="#a-bellman-equation" title="Permalink to this headline">¶</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(J(p)\)</span> be the total loss for a decision maker with current belief <span class="math notranslate nohighlight">\(p\)</span> who chooses optimally.</p>
+<p>With some thought, you will agree that <span class="math notranslate nohighlight">\(J\)</span> should satisfy the Bellman equation</p>
+<div class="math notranslate nohighlight" id="equation-new1">
+<span class="eqno">(28.1)<a class="headerlink" href="#equation-new1" title="Permalink to this equation">¶</a></span>\[J(p) =
+    \min
+    \left\{
+        (1-p) L_0, \; p L_1, \;
+        c + \mathbb E [ J (p') ]
+    \right\}\]</div>
+<p>where <span class="math notranslate nohighlight">\(p'\)</span> is the random variable defined by</p>
+<div class="math notranslate nohighlight" id="equation-wf-new2">
+<span class="eqno">(28.2)<a class="headerlink" href="#equation-wf-new2" title="Permalink to this equation">¶</a></span>\[p' = \frac{ p f_0(z)}{ p f_0(z) + (1-p) f_1 (z) }\]</div>
+<p>when <span class="math notranslate nohighlight">\(p\)</span> is fixed and <span class="math notranslate nohighlight">\(z\)</span> is drawn from the current best guess, which is the distribution <span class="math notranslate nohighlight">\(f\)</span> defined by</p>
+<div class="math notranslate nohighlight" id="equation-wf-new3">
+<span class="eqno">(28.3)<a class="headerlink" href="#equation-wf-new3" title="Permalink to this equation">¶</a></span>\[f(v) = p f_0(v) + (1-p) f_1 (v)\]</div>
+<p>In the Bellman equation, minimization is over three actions:</p>
+<ol class="simple">
+<li><p>accept <span class="math notranslate nohighlight">\(x_0\)</span></p></li>
+<li><p>accept <span class="math notranslate nohighlight">\(x_1\)</span></p></li>
+<li><p>postpone deciding and draw again</p></li>
+</ol>
+<p>Let</p>
+<div class="math notranslate nohighlight" id="equation-new4">
+<span class="eqno">(28.4)<a class="headerlink" href="#equation-new4" title="Permalink to this equation">¶</a></span>\[A(p)
+:= \mathbb E [ J (p') ]\]</div>
+<p>Then we can represent the  Bellman equation as</p>
+<div class="math notranslate nohighlight" id="equation-new5">
+<span class="eqno">(28.5)<a class="headerlink" href="#equation-new5" title="Permalink to this equation">¶</a></span>\[J(p) =
+\min \left\{ (1-p) L_0, \; p L_1, \; c + A(p) \right\}\]</div>
+<p>where <span class="math notranslate nohighlight">\(p \in [0,1]\)</span>.</p>
+<p>Here</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\((1-p) L_0\)</span> is the expected loss associated with accepting
+<span class="math notranslate nohighlight">\(x_0\)</span> (i.e., the cost of making a type II error).</p></li>
+<li><p><span class="math notranslate nohighlight">\(p L_1\)</span> is the expected loss associated with accepting
+<span class="math notranslate nohighlight">\(x_1\)</span> (i.e., the cost of making a type I error).</p></li>
+<li><p><span class="math notranslate nohighlight">\(c + A(p)\)</span> is the expected cost associated with drawing one more <span class="math notranslate nohighlight">\(z\)</span>.</p></li>
+</ul>
+<p>The optimal decision rule is characterized by two numbers <span class="math notranslate nohighlight">\(\alpha, \beta \in (0,1) \times (0,1)\)</span> that satisfy</p>
+<div class="math notranslate nohighlight" id="equation-new6">
+<span class="eqno">(28.6)<a class="headerlink" href="#equation-new6" title="Permalink to this equation">¶</a></span>\[(1- p) L_0 &lt; \min \{ p L_1, c + A(p) \}  \textrm { if } p \geq \alpha\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight" id="equation-new7">
+<span class="eqno">(28.7)<a class="headerlink" href="#equation-new7" title="Permalink to this equation">¶</a></span>\[p L_1 &lt; \min \{ (1-p) L_0,  c + A(p) \} \textrm { if } p \leq \beta\]</div>
+<p>The optimal decision rule is then</p>
+<div class="math notranslate nohighlight" id="equation-new8">
+<span class="eqno">(28.8)<a class="headerlink" href="#equation-new8" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+\textrm { accept } x=x_0 \textrm{ if } p \geq \alpha \\
+\textrm { accept } x=x_1 \textrm{ if } p \leq \beta \\
+\textrm { draw another }  z \textrm{ if }  \beta \leq p \leq \alpha
+\end{aligned}\end{split}\]</div>
+<p>Our aim is to compute the value function <span class="math notranslate nohighlight">\(J\)</span>, and from it the associated cutoffs <span class="math notranslate nohighlight">\(\alpha\)</span>
+and <span class="math notranslate nohighlight">\(\beta\)</span>.</p>
+<p>One sensible approach is to write the three components of <span class="math notranslate nohighlight">\(J\)</span>
+that appear on the right side of the Bellman equation as separate functions.</p>
+<p>Later, doing this will help us obey <strong>the don’t repeat yourself (DRY)</strong> golden rule of coding.</p>
+</div>
+</div>
+<div class="section" id="implementation">
+<h2><a class="toc-backref" href="#id13"><span class="section-number">28.4. </span>Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p>Let’s code this problem up and solve it.</p>
+<p>We implement the cost functions for each choice considered in the
+Bellman equation <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html#equation-new3">(61.7)</a>.</p>
+<p>First, consider the cost associated to accepting either distribution and
+compare the minimum of the two to the expected benefit of drawing again.</p>
+<p>Drawing again will only be worthwhile if the expected marginal benefit of
+learning from an additional draw is greater than the explicit cost.</p>
+<p>For every belief <span class="math notranslate nohighlight">\(p\)</span>, we can compute the difference between accepting a
+distribution and choosing to draw again.</p>
+<p>The solution <span class="math notranslate nohighlight">\(\alpha\)</span>, <span class="math notranslate nohighlight">\(\beta\)</span> occurs at indifference points.</p>
+<p>Define the cost function be the minimum of the pairwise differences in cost among
+the choices.</p>
+<p>Then we can find the indifference points when the cost function is zero.</p>
+<p>We can use any roots finding algorithm to solve for the solutions in the
+interval [0, 1].</p>
+<p>Lastly, verify which indifference points correspond to the definition of a permanent
+transition between the accept and reject space for each choice.</p>
+<p>Here’s the code</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">accept_x0</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">L0</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">one</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">*</span> <span class="n">L0</span>
+<span class="n">accept_x1</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">L1</span><span class="p">)</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">L1</span>
+<span class="n">bayes_update</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">)</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">pdf</span><span class="p">(</span><span class="n">d0</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">/</span> <span class="n">pdf</span><span class="p">(</span><span class="n">MixtureModel</span><span class="p">([</span><span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">],</span> <span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">one</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">p</span><span class="p">]),</span> <span class="n">p</span><span class="p">)</span>
+<span class="k">function</span> <span class="n">draw_again</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="n">candidate</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">cost</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">while</span> <span class="n">candidate</span> <span class="o">&lt;</span> <span class="n">target</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">bayes_update</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">)</span>
+        <span class="n">cost</span> <span class="o">+=</span> <span class="n">c</span>
+        <span class="n">candidate</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">accept_x0</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">L0</span><span class="p">),</span> <span class="n">accept_x1</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">L1</span><span class="p">))</span> <span class="o">+</span> <span class="n">cost</span>
+        <span class="k">if</span> <span class="n">candidate</span> <span class="o">&gt;=</span> <span class="n">target</span>
+            <span class="k">break</span>
+        <span class="k">end</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">candidate</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">candidate</span>
+<span class="k">end</span>
+<span class="k">function</span> <span class="n">choice</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">isone</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">elseif</span> <span class="n">iszero</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">elseif</span> <span class="n">zero</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">p</span> <span class="o">&lt;</span> <span class="n">one</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">target</span><span class="p">,</span> <span class="n">option</span> <span class="o">=</span> <span class="n">findmin</span><span class="p">([</span><span class="n">accept_x0</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">L0</span><span class="p">),</span> <span class="n">accept_x1</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">L1</span><span class="p">)])</span>
+        <span class="n">candidate</span> <span class="o">=</span> <span class="n">draw_again</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">candidate</span> <span class="o">&lt;</span> <span class="n">target</span>
+            <span class="n">target</span><span class="p">,</span> <span class="n">option</span> <span class="o">=</span> <span class="p">(</span><span class="n">candidate</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">end</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="n">option</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
+    <span class="k">else</span>
+        <span class="n">throw</span><span class="p">(</span><span class="kt">ArgumentError</span><span class="p">(</span><span class="s">&quot;p must be ∈ [0, 1]&quot;</span><span class="p">))</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">output</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>Next we solve a problem by finding the α, β values for the decision rule</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">decision_rule</span><span class="p">(</span><span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+    <span class="k">function</span> <span class="n">cost</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">zero</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="n">throw</span><span class="p">(</span><span class="kt">ArgumentError</span><span class="p">(</span><span class="s">&quot;Cost must be non-negative&quot;</span><span class="p">))</span>
+        <span class="k">end</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">accept_x0</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">L0</span><span class="p">)</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">accept_x1</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">L1</span><span class="p">)</span>
+        <span class="n">draw</span> <span class="o">=</span> <span class="n">draw_again</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">min</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">))</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">min</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">draw</span> <span class="o">-</span> <span class="n">x0</span><span class="p">),</span> <span class="n">abs</span><span class="p">(</span><span class="n">draw</span> <span class="o">-</span> <span class="n">x1</span><span class="p">),</span> <span class="n">abs</span><span class="p">(</span><span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">output</span>
+    <span class="k">end</span>
+    <span class="c"># Find the indifference points</span>
+    <span class="n">roots</span> <span class="o">=</span> <span class="n">find_zeros</span><span class="p">(</span><span class="n">p</span> <span class="o">-&gt;</span> <span class="n">cost</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">),</span> <span class="mi">0</span> <span class="o">+</span> <span class="n">eps</span><span class="p">(),</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">eps</span><span class="p">())</span>
+    <span class="c"># Compute the choice at both sides</span>
+    <span class="n">left</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="p">(</span><span class="n">choice</span><span class="o">.</span><span class="p">(</span><span class="n">roots</span> <span class="o">.-</span> <span class="n">eps</span><span class="p">(),</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+    <span class="n">right</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="p">(</span><span class="n">choice</span><span class="o">.</span><span class="p">(</span><span class="n">roots</span> <span class="o">.+</span> <span class="n">eps</span><span class="p">(),</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+    <span class="c"># Find β by checking for a permanent transition from the area accepting to</span>
+    <span class="c"># x₁ to never again accepting x₁ at the various indifference points</span>
+    <span class="c"># Find α by checking for a permanent transition from the area accepting of</span>
+    <span class="c"># x₀ to never again accepting x₀ at the various indifference points</span>
+    <span class="n">β</span> <span class="o">=</span> <span class="n">findlast</span><span class="p">((</span><span class="n">left</span> <span class="o">.==</span> <span class="mi">2</span><span class="p">)</span> <span class="o">.&amp;</span> <span class="p">(</span><span class="n">right</span> <span class="o">.≠</span> <span class="mi">2</span><span class="p">))</span> <span class="o">|&gt;</span> <span class="p">(</span><span class="n">x</span> <span class="o">-&gt;</span> <span class="kp">isa</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">?</span> <span class="n">roots</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">:</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">α</span> <span class="o">=</span> <span class="n">findfirst</span><span class="p">((</span><span class="n">left</span> <span class="o">.≠</span> <span class="mi">1</span><span class="p">)</span> <span class="o">.&amp;</span> <span class="p">(</span><span class="n">right</span> <span class="o">.==</span> <span class="mi">1</span><span class="p">))</span> <span class="o">|&gt;</span> <span class="p">(</span><span class="n">x</span> <span class="o">-&gt;</span> <span class="kp">isa</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">?</span> <span class="n">roots</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">:</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">β</span> <span class="o">&lt;</span> <span class="n">α</span>
+        <span class="nd">@printf</span><span class="p">(</span><span class="s">&quot;Accept x1 if p ≤ </span><span class="si">%.2f</span><span class="se">\n</span><span class="s">Continue to draw if </span><span class="si">%.2f</span><span class="s"> ≤ p ≤ </span><span class="si">%.2f</span><span class="s"></span>
+<span class="s">                </span><span class="se">\n</span><span class="s">Accept x0 if p ≥ </span><span class="si">%.2f</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">α</span><span class="p">,</span> <span class="n">α</span><span class="p">)</span>
+    <span class="k">else</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">accept_x0</span><span class="p">(</span><span class="n">β</span><span class="p">,</span> <span class="n">L0</span><span class="p">)</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">accept_x1</span><span class="p">(</span><span class="n">β</span><span class="p">,</span> <span class="n">L1</span><span class="p">)</span>
+        <span class="n">draw</span> <span class="o">=</span> <span class="n">draw_again</span><span class="p">(</span><span class="n">β</span><span class="p">,</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">min</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">draw</span> <span class="o">==</span> <span class="n">min</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">draw</span><span class="p">)</span>
+            <span class="nd">@printf</span><span class="p">(</span><span class="s">&quot;Accept x1 if p ≤ </span><span class="si">%.2f</span><span class="se">\n</span><span class="s">Continue to draw if </span><span class="si">%.2f</span><span class="s"> ≤ p ≤ </span><span class="si">%.2f</span><span class="s"></span>
+<span class="s">                    </span><span class="se">\n</span><span class="s">Accept x0 if p ≥ </span><span class="si">%.2f</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">α</span><span class="p">,</span> <span class="n">α</span><span class="p">)</span>
+        <span class="k">else</span>
+            <span class="nd">@printf</span><span class="p">(</span><span class="s">&quot;Accept x1 if p ≤ </span><span class="si">%.2f</span><span class="se">\n</span><span class="s">Accept x0 if p ≥ </span><span class="si">%.2f</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">α</span><span class="p">)</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>We can simulate an agent facing a problem and the outcome with the following function</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">simulation</span><span class="p">(</span><span class="n">problem</span><span class="p">)</span>
+    <span class="nd">@unpack</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">return_output</span> <span class="o">=</span> <span class="n">problem</span>
+    <span class="n">α</span><span class="p">,</span> <span class="n">β</span> <span class="o">=</span> <span class="n">decision_rule</span><span class="p">(</span><span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+    <span class="n">outcomes</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">costs</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">trials</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">trial</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+        <span class="c"># Nature chooses</span>
+        <span class="n">truth</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c"># The true distribution and loss are defined based on the truth</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">)[</span><span class="n">truth</span><span class="p">]</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="p">(</span><span class="n">L0</span><span class="p">,</span> <span class="n">L1</span><span class="p">)[</span><span class="n">truth</span><span class="p">]</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">choice</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">iszero</span><span class="p">(</span><span class="n">choice</span><span class="p">)</span>
+            <span class="n">t</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">outcome</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">bayes_update</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">d0</span><span class="p">,</span> <span class="n">d1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">p</span> <span class="o">&lt;=</span> <span class="n">β</span>
+                <span class="n">choice</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elseif</span> <span class="n">p</span> <span class="o">&gt;=</span> <span class="n">α</span>
+                <span class="n">choice</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="k">end</span>
+        <span class="k">end</span>
+        <span class="n">correct</span> <span class="o">=</span> <span class="n">choice</span> <span class="o">==</span> <span class="n">truth</span>
+        <span class="n">cost</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">c</span> <span class="o">+</span> <span class="p">(</span><span class="n">correct</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="n">l</span><span class="p">)</span>
+        <span class="n">outcomes</span><span class="p">[</span><span class="n">trial</span><span class="p">]</span> <span class="o">=</span> <span class="n">correct</span>
+        <span class="n">costs</span><span class="p">[</span><span class="n">trial</span><span class="p">]</span> <span class="o">=</span> <span class="n">cost</span>
+        <span class="n">trials</span><span class="p">[</span><span class="n">trial</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+    <span class="k">end</span>
+    <span class="nd">@printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Correct: </span><span class="si">%.2f</span><span class="se">\n</span><span class="s">Average Cost: </span><span class="si">%.2f</span><span class="se">\n</span><span class="s">Average number of trials: </span><span class="si">%.2f</span><span class="s">&quot;</span><span class="p">,</span>
+            <span class="n">mean</span><span class="p">(</span><span class="n">outcomes</span><span class="p">),</span> <span class="n">mean</span><span class="p">(</span><span class="n">costs</span><span class="p">),</span> <span class="n">mean</span><span class="p">(</span><span class="n">trials</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">return_output</span> <span class="o">?</span> <span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">,</span> <span class="n">costs</span><span class="p">,</span> <span class="n">trials</span><span class="p">)</span> <span class="o">:</span> <span class="nb">nothing</span>
+<span class="k">end</span>
+
+<span class="n">Problem</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">d0</span> <span class="o">=</span> <span class="n">Beta</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">d1</span> <span class="o">=</span> <span class="n">Beta</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">9</span><span class="p">),</span>
+                    <span class="n">L0</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">L1</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="n">c</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">return_output</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">simulation</span><span class="p">(</span><span class="n">Problem</span><span class="p">());</span>
+</pre></div>
+</div>
+<div class="section" id="comparative-statics">
+<h3><span class="section-number">28.4.1. </span>Comparative statics<a class="headerlink" href="#comparative-statics" title="Permalink to this headline">¶</a></h3>
+<p>Now let’s consider the following exercise.</p>
+<p>We double the cost of drawing an additional observation.</p>
+<p>Before you look, think about what will happen:</p>
+<ul class="simple">
+<li><p>Will the decision maker be correct more or less often?</p></li>
+<li><p>Will he make decisions sooner or later?</p></li>
+</ul>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">simulation</span><span class="p">(</span><span class="n">Problem</span><span class="p">(</span><span class="n">c</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Notice what happens?</p>
+<p>The average number of trials decreased.</p>
+<p>Increased cost per draw has induced the decision maker to decide in 0.18 less trials on average.</p>
+<p>Because he decides with less experience, the percentage of time he is correct drops.</p>
+<p>This leads to him having a higher expected loss when he puts equal weight on both models.</p>
+</div>
+</div>
+<div class="section" id="comparison-with-neyman-pearson-formulation">
+<h2><a class="toc-backref" href="#id14"><span class="section-number">28.5. </span>Comparison with Neyman-Pearson formulation</a><a class="headerlink" href="#comparison-with-neyman-pearson-formulation" title="Permalink to this headline">¶</a></h2>
+<p>For several reasons, it is useful to describe the theory underlying the test
+that Navy Captain G. S. Schuyler had been told to use and that led him
+to approach Milton Friedman and Allan Wallis to convey his conjecture
+that superior practical procedures existed.</p>
+<p>Evidently, the Navy had told Captail Schuyler to use what it knew to be a
+state-of-the-art Neyman-Pearson test.</p>
+<p>We’ll rely on Abraham Wald’s <span id="id6">[<a class="reference internal" href="../zreferences.html#id28"><span>Wal47</span></a>]</span> elegant summary of Neyman-Pearson theory.</p>
+<p>For our purposes, watch for there features of the setup:</p>
+<ul class="simple">
+<li><p>the assumption of a <em>fixed</em> sample size <span class="math notranslate nohighlight">\(n\)</span></p></li>
+<li><p>the application of laws of large numbers, conditioned on alternative
+probability models, to interpret the probabilities <span class="math notranslate nohighlight">\(\alpha\)</span> and
+<span class="math notranslate nohighlight">\(\beta\)</span> defined in the Neyman-Pearson theory</p></li>
+</ul>
+<p>Recall that in the sequential analytic formulation above, that</p>
+<ul class="simple">
+<li><p>The sample size <span class="math notranslate nohighlight">\(n\)</span> is not fixed but rather an object to be
+chosen; technically <span class="math notranslate nohighlight">\(n\)</span> is a random variable.</p></li>
+<li><p>The parameters <span class="math notranslate nohighlight">\(\beta\)</span> and <span class="math notranslate nohighlight">\(\alpha\)</span> characterize cut-off
+rules used to determine <span class="math notranslate nohighlight">\(n\)</span> as a random variable.</p></li>
+<li><p>Laws of large numbers make no appearances in the sequential
+construction.</p></li>
+</ul>
+<p>In chapter 1 of <strong>Sequential Analysis</strong> <span id="id7">[<a class="reference internal" href="../zreferences.html#id28"><span>Wal47</span></a>]</span> Abraham Wald summarizes the
+Neyman-Pearson approach to hypothesis testing.</p>
+<p>Wald frames the problem as making a decision about a probability
+distribution that is partially known.</p>
+<p>(You have to assume that <em>something</em> is already known in order to state a well posed problem.
+Usually, <em>something</em> means <em>a lot</em>.)</p>
+<p>By limiting  what is unknown, Wald uses the following simple structure
+to illustrate the main ideas.</p>
+<ul class="simple">
+<li><p>A decision maker wants to decide which of two distributions
+<span class="math notranslate nohighlight">\(f_0\)</span>, <span class="math notranslate nohighlight">\(f_1\)</span> govern an i.i.d. random variable <span class="math notranslate nohighlight">\(z\)</span>.</p></li>
+<li><p>The null hypothesis <span class="math notranslate nohighlight">\(H_0\)</span> is the statement that <span class="math notranslate nohighlight">\(f_0\)</span>
+governs the data.</p></li>
+<li><p>The alternative hypothesis <span class="math notranslate nohighlight">\(H_1\)</span> is the statement that
+<span class="math notranslate nohighlight">\(f_1\)</span> governs the data.</p></li>
+<li><p>The problem is to devise and analyze a test of hypothesis
+<span class="math notranslate nohighlight">\(H_0\)</span> against the alternative hypothesis <span class="math notranslate nohighlight">\(H_1\)</span> on the
+basis of a sample of a fixed number <span class="math notranslate nohighlight">\(n\)</span> independent
+observations <span class="math notranslate nohighlight">\(z_1, z_2, \ldots, z_n\)</span> of the random variable
+<span class="math notranslate nohighlight">\(z\)</span>.</p></li>
+</ul>
+<p>To quote Abraham Wald,</p>
+<ul class="simple">
+<li><p>A test procedure leading to the acceptance or rejection of the
+hypothesis in question is simply a rule specifying, for each possible
+sample of size <span class="math notranslate nohighlight">\(n\)</span>, whether the hypothesis should be accepted
+or rejected on the basis of the sample. This may also be expressed as
+follows: A test procedure is simply a subdivision of the totality of
+all possible samples of size <span class="math notranslate nohighlight">\(n\)</span> into two mutually exclusive
+parts, say part 1 and part 2, together with the application of the
+rule that the hypothesis be accepted if the observed sample is
+contained in part 2. Part 1 is also called the critical region. Since
+part 2 is the totality of all samples of size 2 which are not
+included in part 1, part 2 is uniquely determined by part 1. Thus,
+choosing a test procedure is equivalent to determining a critical
+region.</p></li>
+</ul>
+<p>Let’s listen to Wald longer:</p>
+<ul class="simple">
+<li><p>As a basis for choosing among critical regions the following
+considerations have been advanced by Neyman and Pearson: In accepting
+or rejecting <span class="math notranslate nohighlight">\(H_0\)</span> we may commit errors of two kinds. We commit
+an error of the first kind if we reject <span class="math notranslate nohighlight">\(H_0\)</span> when it is true;
+we commit an error of the second kind if we accept <span class="math notranslate nohighlight">\(H_0\)</span> when
+<span class="math notranslate nohighlight">\(H_1\)</span> is true. After a particular critical region <span class="math notranslate nohighlight">\(W\)</span> has
+been chosen, the probability of committing an error of the first
+kind, as well as the probability of committing an error of the second
+kind is uniquely determined. The probability of committing an error
+of the first kind is equal to the probability, determined by the
+assumption that <span class="math notranslate nohighlight">\(H_0\)</span> is true, that the observed sample will be
+included in the critical region <span class="math notranslate nohighlight">\(W\)</span>. The probability of
+committing an error of the second kind is equal to the probability,
+determined on the assumption that <span class="math notranslate nohighlight">\(H_1\)</span> is true, that the
+probability will fall outside the critical region <span class="math notranslate nohighlight">\(W\)</span>. For any
+given critical region <span class="math notranslate nohighlight">\(W\)</span> we shall denote the probability of an
+error of the first kind by <span class="math notranslate nohighlight">\(\alpha\)</span> and the probability of an
+error of the second kind by <span class="math notranslate nohighlight">\(\beta\)</span>.</p></li>
+</ul>
+<p>Let’s listen carefully to how Wald applies a law of large numbers to
+interpret <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span>:</p>
+<ul class="simple">
+<li><p>The probabilities <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> have the
+following important practical interpretation: Suppose that we draw a
+large number of samples of size <span class="math notranslate nohighlight">\(n\)</span>. Let <span class="math notranslate nohighlight">\(M\)</span> be the
+number of such samples drawn. Suppose that for each of these
+<span class="math notranslate nohighlight">\(M\)</span> samples we reject <span class="math notranslate nohighlight">\(H_0\)</span> if the sample is included in
+<span class="math notranslate nohighlight">\(W\)</span> and accept <span class="math notranslate nohighlight">\(H_0\)</span> if the sample lies outside
+<span class="math notranslate nohighlight">\(W\)</span>. In this way we make <span class="math notranslate nohighlight">\(M\)</span> statements of rejection or
+acceptance. Some of these statements will in general be wrong. If
+<span class="math notranslate nohighlight">\(H_0\)</span> is true and if <span class="math notranslate nohighlight">\(M\)</span> is large, the probability is
+nearly <span class="math notranslate nohighlight">\(1\)</span> (i.e., it is practically certain) that the
+proportion of wrong statements (i.e., the number of wrong statements
+divided by <span class="math notranslate nohighlight">\(M\)</span>) will be approximately <span class="math notranslate nohighlight">\(\alpha\)</span>. If
+<span class="math notranslate nohighlight">\(H_1\)</span> is true, the probability is nearly <span class="math notranslate nohighlight">\(1\)</span> that the
+proportion of wrong statements will be approximately <span class="math notranslate nohighlight">\(\beta\)</span>.
+Thus, we can say that in the long run [ here Wald applies a law of
+large numbers by driving <span class="math notranslate nohighlight">\(M \rightarrow \infty\)</span> (our comment,
+not Wald’s) ] the proportion of wrong statements will be
+<span class="math notranslate nohighlight">\(\alpha\)</span> if <span class="math notranslate nohighlight">\(H_0\)</span>is true and <span class="math notranslate nohighlight">\(\beta\)</span> if
+<span class="math notranslate nohighlight">\(H_1\)</span> is true.</p></li>
+</ul>
+<p>The quantity <span class="math notranslate nohighlight">\(\alpha\)</span> is called the <em>size</em> of the critical region,
+and the quantity <span class="math notranslate nohighlight">\(1-\beta\)</span> is called the <em>power</em> of the critical
+region.</p>
+<p>Wald notes that</p>
+<ul class="simple">
+<li><p>one critical region <span class="math notranslate nohighlight">\(W\)</span> is more desirable than another if it
+has smaller values of <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span>. Although
+either <span class="math notranslate nohighlight">\(\alpha\)</span> or <span class="math notranslate nohighlight">\(\beta\)</span> can be made arbitrarily small
+by a proper choice of the critical region <span class="math notranslate nohighlight">\(W\)</span>, it is possible
+to make both <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> arbitrarily small for a
+fixed value of <span class="math notranslate nohighlight">\(n\)</span>, i.e., a fixed sample size.</p></li>
+</ul>
+<p>Wald summarizes Neyman and Pearson’s setup as follows:</p>
+<ul>
+<li><p>Neyman and Pearson show that a region consisting of all samples
+<span class="math notranslate nohighlight">\((z_1, z_2, \ldots, z_n)\)</span> which satisfy the inequality</p>
+<div class="math notranslate nohighlight">
+\[
+  \frac{ f_1(z_1) \cdots f_1(z_n)}{f_0(z_1) \cdots f_1(z_n)} \geq k
+  \]</div>
+<p>is a most powerful critical region for testing the hypothesis
+<span class="math notranslate nohighlight">\(H_0\)</span> against the alternative hypothesis <span class="math notranslate nohighlight">\(H_1\)</span>. The term
+<span class="math notranslate nohighlight">\(k\)</span> on the right side is a constant chosen so that the region
+will have the required size <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
+</li>
+</ul>
+<p>Wald goes on to discuss Neyman and Pearson’s concept of <em>uniformly most
+powerful</em> test.</p>
+<p>Here is how Wald introduces the notion of a sequential test</p>
+<ul class="simple">
+<li><p>A rule is given for making one of the following three decisions at any stage of
+the experiment (at the m th trial for each integral value of m ): (1) to
+accept the hypothesis H , (2) to reject the hypothesis H , (3) to
+continue the experiment by making an additional observation. Thus, such
+a test procedure is carried out sequentially. On the basis of the first
+observation one of the aforementioned decisions is made. If the first or
+second decision is made, the process is terminated. If the third
+decision is made, a second trial is performed. Again, on the basis of
+the first two observations one of the three decisions is made. If the
+third decision is made, a third trial is performed, and so on. The
+process is continued until either the first or the second decisions is
+made. The number n of observations required by such a test procedure is
+a random variable, since the value of n depends on the outcome of the
+observations.</p></li>
+</ul>
+<hr class="footnotes docutils" />
+<dl class="footnote brackets">
+<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id5">1</a></span></dt>
+<dd><p>Because the decision maker believes that <span class="math notranslate nohighlight">\(z_{k+1}\)</span> is
+drawn from a mixture of two i.i.d. distributions, he does <em>not</em>
+believe that the sequence <span class="math notranslate nohighlight">\([z_{k+1}, z_{k+2}, \ldots]\)</span> is i.i.d.
+Instead, he believes that it is <em>exchangeable</em>. See <span id="id8">[<a class="reference internal" href="../zreferences.html#id26"><span>Kre88</span></a>]</span>
+chapter 11, for a discussion of exchangeability.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./dynamic_programming"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Packages and Software Engineering in Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   22. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   23. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   24. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="short_path.html">
+   25. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="mccall_model.html">
+   26. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="mccall_model_with_separation.html">
+   27. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   28. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="odu.html">
+   29. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="career.html">
+   30. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="jv.html">
+   31. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="optgrowth.html">
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="coleman_policy_iter.html">
+   33. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="egm_policy_iter.html">
+   34. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lqcontrol.html">
+   35. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="perm_income.html">
+   36. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="perm_income_cons.html">
+   37. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="smoothing.html">
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ifp.html">
+   39. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="robustness.html">
+   40. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="discrete_dp.html">
+   41. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   42. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   44. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   45. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   46. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   47. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   48. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   49. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   50. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   51. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   52. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   53. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   54. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   55. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   56. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   57. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   58. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   59. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   60. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   61. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   62. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   63. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   64. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   65. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   66. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   67. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   68. Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/dynamic_programming/wald_friedman.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/wald_friedman.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/wald_friedman.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/wald_friedman.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

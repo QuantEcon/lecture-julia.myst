@@ -1,0 +1,1267 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>43. Modeling Shocks in COVID 19 with Stochastic Differential Equations &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/continuous_time/covid_sde.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="44. Schelling’s Segregation Model" href="../multi_agent_models/schelling.html" />
+    <link rel="prev" title="42. Modeling COVID 19 with Differential Equations" href="seir_model.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Modeling Shocks in COVID 19 with Stochastic Differential Equations"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Modeling Shocks in COVID 19 with Stochastic Differential Equations" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/continuous_time/covid_sde.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=continuous_time/covid_sde>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   43.1. Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#continuous-time-stochastic-processes">
+     43.1.1. Continuous-Time Stochastic Processes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#setup">
+     43.1.2. Setup
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-basic-sir-sird-model">
+   43.2. The Basic SIR/SIRD Model
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#transition-rates">
+     43.2.1. Transition Rates
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#introduction-to-sdes">
+   43.3. Introduction to SDEs
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#shocks-to-transmission-rates">
+     43.3.1. Shocks to Transmission Rates
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#mortality-rates">
+     43.3.2. Mortality Rates
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#system-of-sdes">
+     43.3.3. System of SDEs
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#implementation">
+     43.3.4. Implementation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ensembles">
+     43.3.5. Ensembles
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#changing-mitigation">
+     43.3.6. Changing Mitigation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ending-lockdown">
+   43.4. Ending Lockdown
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reinfection">
+   43.5. Reinfection
+  </a>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Modeling Shocks in COVID 19 with Stochastic Differential Equations</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="modeling-shocks-in-covid-19-with-stochastic-differential-equations">
+<h1><a class="toc-backref" href="#id2"><span class="section-number">43. </span><span class="target" id="index-0"></span>Modeling Shocks in COVID 19 with Stochastic Differential Equations</a><a class="headerlink" href="#modeling-shocks-in-covid-19-with-stochastic-differential-equations" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#modeling-shocks-in-covid-19-with-stochastic-differential-equations" id="id2">Modeling Shocks in COVID 19 with Stochastic Differential Equations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id3">Overview</a></p></li>
+<li><p><a class="reference internal" href="#the-basic-sir-sird-model" id="id4">The Basic SIR/SIRD Model</a></p></li>
+<li><p><a class="reference internal" href="#introduction-to-sdes" id="id5">Introduction to SDEs</a></p></li>
+<li><p><a class="reference internal" href="#ending-lockdown" id="id6">Ending Lockdown</a></p></li>
+<li><p><a class="reference internal" href="#reinfection" id="id7">Reinfection</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id3"><span class="section-number">43.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Coauthored with Chris Rackauckas</p>
+<p>This lecture continues the analyzing of the COVID-19 pandemic established in <a class="reference internal" href="seir_model.html"><span class="doc">this lecture</span></a>.</p>
+<p>As before, the model is inspired by</p>
+<ul class="simple">
+<li><p>Notes from <a class="reference external" href="https://sites.google.com/site/andyatkeson/">Andrew Atkeson</a> and <a class="reference external" href="https://www.nber.org/papers/w26867">NBER Working Paper No. 26867</a></p></li>
+<li><p><a class="reference external" href="https://www.nber.org/papers/w27335">Estimating and Forecasting Disease Scenarios for COVID-19 with an SIR Model</a> by Andrew Atkeson, Karen Kopecky and Tao Zha</p></li>
+<li><p><a class="reference external" href="https://www.nber.org/papers/w27128">Estimating and Simulating a SIRD Model of COVID-19 for Many Countries, States, and Cities</a> by Jesús Fernández-Villaverde and Charles I. Jones</p></li>
+<li><p>Further variations on the classic SIR model in Julia  <a class="reference external" href="https://github.com/epirecipes/sir-julia">here</a>.</p></li>
+</ul>
+<p>Here we extend the model to include policy-relevant aggregate shocks.</p>
+<div class="section" id="continuous-time-stochastic-processes">
+<h3><span class="section-number">43.1.1. </span>Continuous-Time Stochastic Processes<a class="headerlink" href="#continuous-time-stochastic-processes" title="Permalink to this headline">¶</a></h3>
+<p>In continuous-time, there is an important distinction between randomness that leads to continuous paths vs. those which have (<a class="reference external" href="https://en.wikipedia.org/wiki/C%C3%A0dl%C3%A0g">almost surely right-continuous</a>) jumps in their paths.  The most tractable of these includes the theory of <a class="reference external" href="https://en.wikipedia.org/wiki/L%C3%A9vy_process">Levy Processes</a>.</p>
+<p>Among the appealing features of Levy Processes is that they fit well into the sorts of Markov modeling techniques that economists tend to use in discrete time, and usually fulfill the measurability required for calculating expected present discounted values.</p>
+<p>Unlike in discrete-time, where a modeller has license to be creative, the rules of continuous-time stochastic processes are much stricter.  One can show that a Levy process’s noise can be decomposed into two portions:</p>
+<ol class="simple">
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Wiener_process">Weiner Processes</a> (as known as Brownian Motion) which leads to a diffusion equations, and is the only continuous-time Levy process with continuous paths</p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_point_process">Poisson Processes</a> with an arrival rate of jumps in the variable.</p></li>
+</ol>
+<p>Every other Levy Process can be represented by these building blocks (e.g. a <a class="reference external" href="https://en.wikipedia.org/wiki/Diffusion_process">Diffusion Process</a> such as Geometric Brownian Motion is a transformation of a Weiner process, a <a class="reference external" href="https://en.wikipedia.org/wiki/Jump_diffusion#In_economics_and_finance">jump diffusion</a> is a diffusion process with a Poisson arrival of jumps, and a continuous-time markov chain (CMTC) is a Poisson process jumping between a finite number of states).</p>
+<p>In this lecture, we will examine shocks driven by transformations of Brownian motion, as the prototypical Stochastic Differential Equation (SDE).</p>
+</div>
+<div class="section" id="setup">
+<h3><span class="section-number">43.1.2. </span>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span><span class="p">,</span> <span class="n">Random</span><span class="p">,</span> <span class="n">SparseArrays</span>
+</pre></div>
+</div>
+<p>In addition, we will be exploring packages within the <a class="reference external" href="https://github.com/SciML/">SciML ecosystem</a> and
+others covered in previous lectures</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">OrdinaryDiffEq</span><span class="p">,</span> <span class="n">StochasticDiffEq</span>
+<span class="k">using</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=:</span><span class="n">png</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="the-basic-sir-sird-model">
+<h2><a class="toc-backref" href="#id4"><span class="section-number">43.2. </span>The Basic SIR/SIRD Model</a><a class="headerlink" href="#the-basic-sir-sird-model" title="Permalink to this headline">¶</a></h2>
+<p>To demonstrate another common <a class="reference external" href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#Elaborations_on_the_basic_SIR_model">compartmentalized model</a> we will change the <a class="reference internal" href="seir_model.html"><span class="doc">previous SEIR</span></a> model to remove the exposed state, and more carefully manage the death state, D.</p>
+<p>The states are are now: susceptible (S), infected (I), resistant (R), or dead (D).</p>
+<p>Comments:</p>
+<ul class="simple">
+<li><p>Unlike the previous SEIR model, the R state is only for those recovered, alive, and currently resistant.</p></li>
+<li><p>As before, we start by assuming those have recovered have acquired immunity.</p></li>
+<li><p>Later, we could consider transitions from R to S if resistance is not permanent due to virus mutation, etc.</p></li>
+</ul>
+<div class="section" id="transition-rates">
+<h3><span class="section-number">43.2.1. </span>Transition Rates<a class="headerlink" href="#transition-rates" title="Permalink to this headline">¶</a></h3>
+<p>See the <a class="reference internal" href="seir_model.html"><span class="doc">previous lecture</span></a>, for a more detailed development of the model.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\beta(t)\)</span> is called the <em>transmission rate</em> or <em>effective contact rate</em> (the rate at which individuals bump into others and expose them to the virus)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\gamma\)</span> is called the <em>resolution rate</em> (the rate at which infected people recover or die)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\delta(t) \in [0, 1]\)</span> is the <em>death probability</em></p></li>
+<li><p>As before, we re-parameterize as <span class="math notranslate nohighlight">\(R_0(t) := \beta(t) / \gamma\)</span>, where <span class="math notranslate nohighlight">\(R_0\)</span> has previous interpretation</p></li>
+</ul>
+<p>Jumping directly to the equations in <span class="math notranslate nohighlight">\(s, i, r, d\)</span> already normalized by <span class="math notranslate nohighlight">\(N\)</span>,</p>
+<div class="math notranslate nohighlight" id="equation-sird">
+<span class="eqno">(43.1)<a class="headerlink" href="#equation-sird" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+     d s  &amp; = - \gamma \, R_0 \, s \,  i \, dt
+     \\
+      d i  &amp; = \left(\gamma \, R_0 \, s \,  i  - \gamma  \, i \right) dt
+     \\
+     d r  &amp; = (1-\delta) \gamma  \, i \, dt
+     \\
+     d d  &amp; = \delta  \, \gamma  \, i \, dt
+     \\
+\end{aligned}\end{split}\]</div>
+<p>Note that the notation has changed to heuristically put the <span class="math notranslate nohighlight">\(dt\)</span> on the right hand side, which will be used when adding the stochastic shocks.</p>
+</div>
+</div>
+<div class="section" id="introduction-to-sdes">
+<h2><a class="toc-backref" href="#id5"><span class="section-number">43.3. </span>Introduction to SDEs</a><a class="headerlink" href="#introduction-to-sdes" title="Permalink to this headline">¶</a></h2>
+<p>We start by extending our model to include randomness in <span class="math notranslate nohighlight">\(R_0(t)\)</span> and then the mortality rate <span class="math notranslate nohighlight">\(\delta(t)\)</span>.</p>
+<p>The result is a system of Stochastic Differential Equations (SDEs).</p>
+<div class="section" id="shocks-to-transmission-rates">
+<h3><span class="section-number">43.3.1. </span>Shocks to Transmission Rates<a class="headerlink" href="#shocks-to-transmission-rates" title="Permalink to this headline">¶</a></h3>
+<p>As before, we assume that the basic reproduction number, <span class="math notranslate nohighlight">\(R_0(t)\)</span>, follows a process with a reversion to a value <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> which could conceivably be influenced by policy.  The intuition is that even if the targeted <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> was changed through social distancing/etc., lags in behavior and implementation would smooth out the transition, where <span class="math notranslate nohighlight">\(\eta\)</span> governs the speed of <span class="math notranslate nohighlight">\(R_0(t)\)</span> moves towards <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span>.</p>
+<p>Beyond changes in policy, randomness in <span class="math notranslate nohighlight">\(R_0(t)\)</span> may come from shocks to the <span class="math notranslate nohighlight">\(\beta(t)\)</span> process.  For example,</p>
+<ul class="simple">
+<li><p>Misinformation on Facebook spreading non-uniformly.</p></li>
+<li><p>Large political rallies, elections, or protests.</p></li>
+<li><p>Deviations in the implementation and timing of lockdown policy between demographics, locations, or businesses within the system.</p></li>
+<li><p>Aggregate shocks in opening/closing industries.</p></li>
+</ul>
+<p>To implement these sorts of randomness, we will add on a diffusion term with an instantaneous volatility of <span class="math notranslate nohighlight">\(\sigma \sqrt{R_0}\)</span>.</p>
+<ul class="simple">
+<li><p>This equation is used in the <a class="reference external" href="https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model">Cox-Ingersoll-Ross</a> and <a class="reference external" href="https://en.wikipedia.org/wiki/Heston_model">Heston</a> models of interest rates and stochastic volatility.</p></li>
+<li><p>The scaling by the <span class="math notranslate nohighlight">\(\sqrt{R_0}\)</span> ensure that the process stays weakly positive.  The heuristic explanation is that the variance of the shocks converges to zero as R₀ goes to zero, enabling the upwards drift to dominate.</p></li>
+<li><p>See <a class="reference external" href="https://en.wikipedia.org/wiki/Cox%E2%80%93Ingersoll%E2%80%93Ross_model#Distribution">here</a> for a heuristic description of when the process is weakly and strictly positive.</p></li>
+</ul>
+<p>The notation for this <a class="reference external" href="https://en.wikipedia.org/wiki/Stochastic_differential_equation#Use_in_probability_and_mathematical_finance">SDE</a> is then</p>
+<div class="math notranslate nohighlight" id="equation-rsde">
+<span class="eqno">(43.2)<a class="headerlink" href="#equation-rsde" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+d R_{0t} &amp;= \eta (\bar{R}_{0t} - R_{0t}) dt + \sigma \sqrt{R_{0t}} dW_t\\
+\end{aligned}\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(W\)</span> is standard Brownian motion (i.e a <a class="reference external" href="https://en.wikipedia.org/wiki/Wiener_process">Weiner Process</a>.</p>
+<p>Heuristically, if <span class="math notranslate nohighlight">\(\sigma = 0\)</span>, divide this equation by <span class="math notranslate nohighlight">\(dt\)</span> and it nests the original ODE used in the previous lecture.</p>
+<p>While we do not consider any calibration for the <span class="math notranslate nohighlight">\(\sigma\)</span> parameter, empirical studies such as <a class="reference external" href="https://www.nber.org/papers/w27128">Estimating and Simulating a SIRD Model of COVID-19 for Many Countries, States, and Cities</a> (Figure 6) show highly volatile <span class="math notranslate nohighlight">\(R_0(t)\)</span> estimates over time.</p>
+<p>Even after lockdowns are first implemented, we see variation between 0.5 and 1.5.  Since countries are made of interconnecting cities with such variable contact rates, a high <span class="math notranslate nohighlight">\(\sigma\)</span> seems reasonable both intuitively and empirically.</p>
+</div>
+<div class="section" id="mortality-rates">
+<h3><span class="section-number">43.3.2. </span>Mortality Rates<a class="headerlink" href="#mortality-rates" title="Permalink to this headline">¶</a></h3>
+<p>Unlike the previous lecture, we will build up towards mortality rates which change over time.</p>
+<p>Imperfect mixing of different demographic groups could lead to aggregate shocks in mortality (e.g. if a retirement home is afflicted vs. an elementary school).  These sorts of relatively small changes might be best modeled as a continuous path process.</p>
+<p>Let <span class="math notranslate nohighlight">\(\delta(t)\)</span> be the mortality rate and in addition,</p>
+<ul class="simple">
+<li><p>Assume that the base mortality rate is <span class="math notranslate nohighlight">\(\bar{\delta}\)</span>, which acts as the mean of the process, reverting at rate <span class="math notranslate nohighlight">\(\theta\)</span>. In more elaborate models, this could be time-varying.</p></li>
+<li><p>The diffusion term has a volatility <span class="math notranslate nohighlight">\(\xi\sqrt{\delta (1 - \delta)}\)</span>.</p></li>
+<li><p>As the process gets closer to either <span class="math notranslate nohighlight">\(\delta = 1\)</span> or <span class="math notranslate nohighlight">\(\delta = 0\)</span>, the volatility goes to 0, which acts as a force to allow the mean reversion to keep the process within the bounds</p></li>
+<li><p>Unlike the well-studied Cox-Ingersoll-Ross model, we make no claims on the long-run behavior of this process, but will be examining the behavior on a small timescale so this is not an issue.</p></li>
+</ul>
+<p>Given this, the stochastic process for the mortality rate is,</p>
+<div class="math notranslate nohighlight" id="equation-dmt">
+<span class="eqno">(43.3)<a class="headerlink" href="#equation-dmt" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+d \delta_t &amp; = \theta (\bar{\delta} - \delta_t) dt + \xi \sqrt{(\delta_t (1-\delta_t)} d W_t\\
+\end{aligned}\end{split}\]</div>
+<p>Where the <span class="math notranslate nohighlight">\(W_t\)</span> Brownian motion is independent from the previous process.</p>
+</div>
+<div class="section" id="system-of-sdes">
+<h3><span class="section-number">43.3.3. </span>System of SDEs<a class="headerlink" href="#system-of-sdes" title="Permalink to this headline">¶</a></h3>
+<p>The system <a class="reference internal" href="#equation-sird">(43.1)</a> can be written in vector form <span class="math notranslate nohighlight">\(x := [s, i, r, d, R₀, \delta]\)</span> with parameter tuple parameter tuple <span class="math notranslate nohighlight">\(p := (\gamma, \eta, \sigma, \theta, \xi, \bar{R}_0(\cdot), \bar{ \delta})\)</span></p>
+<p>The general form of the SDE is.</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+d x_t &amp;= F(x_t,t;p)dt + G(x_t,t;p) dW
+\end{aligned}
+\]</div>
+<p>With the drift,</p>
+<div class="math notranslate nohighlight" id="equation-dfcvsde">
+<span class="eqno">(43.4)<a class="headerlink" href="#equation-dfcvsde" title="Permalink to this equation">¶</a></span>\[\begin{split}F(x,t;p) := \begin{bmatrix}
+    -\gamma \, R_0 \, s \,  i
+    \\
+    \gamma \, R_0 \,  s \,  i  - \gamma i
+    \\
+    (1-\delta) \gamma i
+    \\
+    \delta \gamma i
+    \\
+    \eta (\bar{R}_0(t) - R_0)
+    \\
+    \theta (\bar{\delta} - \delta)
+    \\
+\end{bmatrix}\end{split}\]</div>
+<p>Here, it is convenient but not necessary for <span class="math notranslate nohighlight">\(d W\)</span> to have the same dimension as <span class="math notranslate nohighlight">\(x\)</span>.  If so, then we can use a square matrix <span class="math notranslate nohighlight">\(G(x,t;p)\)</span> to associate the shocks with the appropriate <span class="math notranslate nohighlight">\(x\)</span> (e.g. diagonal noise, or using a covariance matrix).</p>
+<p>As the two independent sources of Brownian motion only affect the <span class="math notranslate nohighlight">\(d R_0\)</span> and <span class="math notranslate nohighlight">\(d \delta\)</span> terms (i.e. the 5th and 6th equations), define the covariance matrix as</p>
+<div class="math notranslate nohighlight" id="equation-dg">
+<span class="eqno">(43.5)<a class="headerlink" href="#equation-dg" title="Permalink to this equation">¶</a></span>\[\begin{aligned}
+G(x, t) &amp;:= diag\left(\begin{bmatrix} 0 &amp; 0 &amp; 0 &amp; 0 &amp; \sigma \sqrt{R_0} &amp; \xi \sqrt{\delta (1-\delta)} \end{bmatrix}\right)
+\end{aligned}\]</div>
+</div>
+<div class="section" id="implementation">
+<h3><span class="section-number">43.3.4. </span>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
+<p>First, construct our <span class="math notranslate nohighlight">\(F\)</span> from <a class="reference internal" href="#equation-dfcvsde">(43.4)</a> and <span class="math notranslate nohighlight">\(G\)</span> from <a class="reference internal" href="#equation-dg">(43.5)</a></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">F</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">R₀</span><span class="p">,</span> <span class="n">δ</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="nd">@unpack</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">R̄₀</span><span class="p">,</span> <span class="n">η</span><span class="p">,</span> <span class="n">σ</span><span class="p">,</span> <span class="n">ξ</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ_bar</span> <span class="o">=</span> <span class="n">p</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="o">-</span><span class="nb">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span><span class="p">;</span>        <span class="c"># ds/dt</span>
+            <span class="nb">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span> <span class="o">-</span> <span class="nb">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span>   <span class="c"># di/dt</span>
+            <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span><span class="o">*</span><span class="nb">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span>        <span class="c"># dr/dt</span>
+            <span class="n">δ</span><span class="o">*</span><span class="nb">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span>            <span class="c"># dd/dt</span>
+            <span class="n">η</span><span class="o">*</span><span class="p">(</span><span class="n">R̄₀</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">R₀</span><span class="p">);</span><span class="c"># dR₀/dt</span>
+            <span class="n">θ</span><span class="o">*</span><span class="p">(</span><span class="n">δ_bar</span> <span class="o">-</span> <span class="n">δ</span><span class="p">);</span>    <span class="c"># dδ/dt</span>
+            <span class="p">]</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">R₀</span><span class="p">,</span> <span class="n">δ</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="nd">@unpack</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">R̄₀</span><span class="p">,</span> <span class="n">η</span><span class="p">,</span> <span class="n">σ</span><span class="p">,</span> <span class="n">ξ</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ_bar</span> <span class="o">=</span> <span class="n">p</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span><span class="p">;</span> <span class="n">σ</span><span class="o">*</span><span class="n">sqrt</span><span class="p">(</span><span class="n">R₀</span><span class="p">);</span> <span class="n">ξ</span><span class="o">*</span><span class="n">sqrt</span><span class="p">(</span><span class="n">δ</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">δ</span><span class="p">))]</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>Next create a settings generator, and then define a <a class="reference external" href="https://docs.sciml.ai/stable/tutorials/sde_example/#Example-2:-Systems-of-SDEs-with-Diagonal-Noise-1">SDEProblem</a>  with Diagonal Noise.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p_gen</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">T</span> <span class="o">=</span> <span class="mf">550.0</span><span class="p">,</span> <span class="nb">γ</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mi">18</span><span class="p">,</span> <span class="n">η</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mi">20</span><span class="p">,</span>
+                  <span class="n">R₀_n</span> <span class="o">=</span> <span class="mf">1.6</span><span class="p">,</span> <span class="n">R̄₀</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">R₀_n</span><span class="p">,</span> <span class="n">δ_bar</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+                  <span class="n">σ</span> <span class="o">=</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">ξ</span> <span class="o">=</span> <span class="mf">0.004</span><span class="p">,</span> <span class="n">θ</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="mf">3.3E8</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span>  <span class="n">p_gen</span><span class="p">()</span>  <span class="c"># use all defaults</span>
+<span class="n">i_0</span> <span class="o">=</span> <span class="mi">25000</span> <span class="o">/</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span>
+<span class="n">r_0</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">d_0</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">s_0</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">i_0</span> <span class="o">-</span> <span class="n">r_0</span> <span class="o">-</span> <span class="n">d_0</span>
+<span class="n">R̄₀_0</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c"># starting in lockdown</span>
+<span class="n">δ_0</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">δ_bar</span>
+<span class="n">x_0</span> <span class="o">=</span> <span class="p">[</span><span class="n">s_0</span><span class="p">,</span> <span class="n">i_0</span><span class="p">,</span> <span class="n">r_0</span><span class="p">,</span> <span class="n">d_0</span><span class="p">,</span> <span class="n">R̄₀_0</span><span class="p">,</span> <span class="n">δ_0</span><span class="p">]</span>
+
+<span class="n">prob</span> <span class="o">=</span> <span class="n">SDEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">p</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We solve the problem with the <a class="reference external" href="https://docs.sciml.ai/stable/solvers/sde_solve/#Full-List-of-Methods-1">SOSRI</a> algorithm (Adaptive strong order 1.5 methods for diagonal noise Ito and Stratonovich SDEs).</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sol_1</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">SOSRI</span><span class="p">());</span>
+<span class="nd">@show</span> <span class="n">length</span><span class="p">(</span><span class="n">sol_1</span><span class="o">.</span><span class="n">t</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>As in the deterministic case of the previous lecture, we are using an adaptive time-stepping method.  However, since this is an SDE, (1) you will tend to see more timesteps required due to the greater curvature; and (2) the number of timesteps will change with different shock realizations.</p>
+<p>With stochastic differential equations, a “solution” is akin to a simulation for a particular realization of the noise process.</p>
+<p>If we take two solutions and plot the number of infections, we will see differences over time:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sol_2</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">SOSRI</span><span class="p">())</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">sol_1</span><span class="p">,</span> <span class="n">vars</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Number of Infections&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Trajectory 1&quot;</span><span class="p">,</span>
+     <span class="n">lm</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;i(t)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">sol_2</span><span class="p">,</span> <span class="n">vars</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Trajectory 2&quot;</span><span class="p">,</span> <span class="n">lm</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;i(t)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The same holds for other variables such as the cumulative deaths, mortality, and <span class="math notranslate nohighlight">\(R_0\)</span>:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot_1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">sol_1</span><span class="p">,</span> <span class="n">vars</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Cumulative Death Proportion&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Trajectory 1&quot;</span><span class="p">,</span>
+              <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;d(t)&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plot_1</span><span class="p">,</span> <span class="n">sol_2</span><span class="p">,</span> <span class="n">vars</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Trajectory 2&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot_2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">sol_1</span><span class="p">,</span> <span class="n">vars</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Cumulative Recovered Proportion&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Trajectory 1&quot;</span><span class="p">,</span>
+              <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;d(t)&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plot_2</span><span class="p">,</span> <span class="n">sol_2</span><span class="p">,</span> <span class="n">vars</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Trajectory 2&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot_3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">sol_1</span><span class="p">,</span> <span class="n">vars</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;R_0 transition from lockdown&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Trajectory 1&quot;</span><span class="p">,</span>
+              <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;R_0(t)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plot_3</span><span class="p">,</span> <span class="n">sol_2</span><span class="p">,</span> <span class="n">vars</span><span class="o">=</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Trajectory 2&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot_4</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">sol_1</span><span class="p">,</span> <span class="n">vars</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Mortality Rate&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Trajectory 1&quot;</span><span class="p">,</span>
+              <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;delta(t)&quot;</span><span class="p">,</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.006</span><span class="p">,</span> <span class="mf">0.014</span><span class="p">))</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plot_4</span><span class="p">,</span> <span class="n">sol_2</span><span class="p">,</span> <span class="n">vars</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Trajectory 2&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">plot_1</span><span class="p">,</span> <span class="n">plot_2</span><span class="p">,</span> <span class="n">plot_3</span><span class="p">,</span> <span class="n">plot_4</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">600</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>See <a class="reference external" href="https://diffeq.sciml.ai/stable/solvers/sde_solve/#Recommended-Methods-1">here</a> for comments on finding the appropriate SDE algorithm given the structure of <span class="math notranslate nohighlight">\(F(x, t)\)</span> and <span class="math notranslate nohighlight">\(G(x, t)\)</span></p>
+<ul class="simple">
+<li><p>If <span class="math notranslate nohighlight">\(G\)</span> has diagonal noise (i.e. <span class="math notranslate nohighlight">\(G(x, t)\)</span> is a diagonal, and possibly a function of the state), then <code class="docutils literal notranslate"><span class="pre">SOSRI</span></code> is the typical choice.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(G\)</span> has additive (i.e. <span class="math notranslate nohighlight">\(G(t)\)</span> is a independent from the state), then <code class="docutils literal notranslate"><span class="pre">SOSRA</span></code> is usually the best algorithm for even mildly stiff <span class="math notranslate nohighlight">\(F\)</span>.</p></li>
+<li><p>If the noise process is more general, <code class="docutils literal notranslate"><span class="pre">LambaEM</span></code> and <code class="docutils literal notranslate"><span class="pre">RKMilGeneral</span></code> are flexible to all noise processes.</p></li>
+<li><p>If high accuracy and adaptivity are not required, then <code class="docutils literal notranslate"><span class="pre">EM</span></code> (i.e. Euler-Maruyama method typically used by economists) is flexible in its ability to handle different noise processes.</p></li>
+</ul>
+</div>
+<div class="section" id="ensembles">
+<h3><span class="section-number">43.3.5. </span>Ensembles<a class="headerlink" href="#ensembles" title="Permalink to this headline">¶</a></h3>
+<p>While individual simulations are useful, you often want to look at an ensemble of trajectories of the SDE in order to get an accurate picture of how the system evolves.</p>
+<p>To do this, use the <code class="docutils literal notranslate"><span class="pre">EnsembleProblem</span></code> in order to have the solution compute multiple trajectories at once. The returned <code class="docutils literal notranslate"><span class="pre">EnsembleSolution</span></code> acts like an array of solutions but is imbued to plot recipes to showcase aggregate quantities.</p>
+<p>For example:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ensembleprob</span> <span class="o">=</span> <span class="n">EnsembleProblem</span><span class="p">(</span><span class="n">prob</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">ensembleprob</span><span class="p">,</span> <span class="n">SOSRI</span><span class="p">(),</span> <span class="n">EnsembleSerial</span><span class="p">(),</span> <span class="n">trajectories</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">vars</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Infection Simulations&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;i(t)&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">lm</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or, more frequently, you may want to run many trajectories and plot quantiles, which can be automatically run in <a class="reference external" href="https://docs.sciml.ai/stable/features/ensemble/">parallel</a> using multiple threads, processes, or GPUs. Here we showcase <code class="docutils literal notranslate"><span class="pre">EnsembleSummary</span></code> which calculates summary information from an ensemble and plots the mean of the solution along with calculated quantiles of the simulation:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">trajectories</span> <span class="o">=</span> <span class="mi">100</span>  <span class="c"># choose larger for smoother quantiles</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">ensembleprob</span><span class="p">,</span> <span class="n">SOSRI</span><span class="p">(),</span> <span class="n">EnsembleThreads</span><span class="p">(),</span> <span class="n">trajectories</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">)</span>
+<span class="n">summ</span> <span class="o">=</span> <span class="n">EnsembleSummary</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="c"># defaults to saving 0.05, 0.95 quantiles</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">summ</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,),</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Quantiles of Infections Ensemble&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;i(t)&quot;</span><span class="p">,</span>
+     <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="s">&quot;Middle 95% Quantile&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topright</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In addition, you can calculate more quantiles and stack graphs</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sol</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">ensembleprob</span><span class="p">,</span> <span class="n">SOSRI</span><span class="p">(),</span> <span class="n">EnsembleThreads</span><span class="p">(),</span> <span class="n">trajectories</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">)</span>
+<span class="n">summ</span> <span class="o">=</span> <span class="n">EnsembleSummary</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span> <span class="c"># defaults to saving 0.05, 0.95 quantiles</span>
+<span class="n">summ2</span> <span class="o">=</span> <span class="n">EnsembleSummary</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">quantiles</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">))</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">summ</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Proportion Infected&quot;</span> <span class="s">&quot;Proportion Dead&quot;</span> <span class="s">&quot;R_0&quot;</span> <span class="s">&quot;delta&quot;</span><span class="p">],</span>
+    <span class="n">ylabel</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;i(t)&quot;</span> <span class="s">&quot;d(t)&quot;</span> <span class="s">&quot;R_0(t)&quot;</span> <span class="s">&quot;delta(t)&quot;</span><span class="p">],</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="p">[</span><span class="o">:</span><span class="n">topleft</span> <span class="o">:</span><span class="n">topleft</span> <span class="o">:</span><span class="n">bottomright</span> <span class="o">:</span><span class="n">bottomright</span><span class="p">],</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="s">&quot;Middle 95% Quantile&quot;</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">600</span><span class="p">))</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">summ2</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">),</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="s">&quot;Middle 50% Quantile&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span>  <span class="p">[</span><span class="o">:</span><span class="n">topleft</span> <span class="o">:</span><span class="n">topleft</span> <span class="o">:</span><span class="n">bottomright</span> <span class="o">:</span><span class="n">bottomright</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Some additional features of the ensemble and SDE infrastructure are</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://diffeq.sciml.ai/stable/basics/plot/">Plotting</a></p></li>
+<li><p><a class="reference external" href="https://diffeq.sciml.ai/stable/features/noise_process/">Noise Processes</a>, <a class="reference external" href="https://diffeq.sciml.ai/stable/tutorials/sde_example/#Example-4:-Systems-of-SDEs-with-Non-Diagonal-Noise-1">Non-diagonal noise</a>, and <a class="reference external" href="https://diffeq.sciml.ai/stable/tutorials/sde_example/#Example:-Spatially-Colored-Noise-in-the-Heston-Model-1">Correlated Noise</a></p></li>
+<li><p><a class="reference external" href="https://diffeq.sciml.ai/stable/features/ensemble/">Parallel Ensemble features</a></p></li>
+<li><p>Transforming the ensemble calculations with an <a class="reference external" href="https://diffeq.sciml.ai/stable/features/ensemble/#Building-a-Problem-1">output_func or reduction</a></p></li>
+<li><p>Auto-GPU accelerated by using <code class="docutils literal notranslate"><span class="pre">EnsembleGPUArray()</span></code> from <a class="reference external" href="https://github.com/SciML/DiffEqGPU.jl/">DiffEqGPU</a></p></li>
+</ul>
+</div>
+<div class="section" id="changing-mitigation">
+<h3><span class="section-number">43.3.6. </span>Changing Mitigation<a class="headerlink" href="#changing-mitigation" title="Permalink to this headline">¶</a></h3>
+<p>Consider a policy maker who wants to consider the impact of relaxing lockdown at various speeds.</p>
+<p>We will shut down the shocks to the mortality rate (i.e. <span class="math notranslate nohighlight">\(\xi = 0\)</span>) to focus on the variation caused by the volatility in <span class="math notranslate nohighlight">\(R_0(t)\)</span>.</p>
+<p>Consider <span class="math notranslate nohighlight">\(\eta = 1/50\)</span> and <span class="math notranslate nohighlight">\(\eta = 1/20\)</span>, where we start at the same initial condition of <span class="math notranslate nohighlight">\(R_0(0) = 0.5\)</span>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">generate_η_experiment</span><span class="p">(</span><span class="n">η</span><span class="p">;</span> <span class="n">p_gen</span> <span class="o">=</span> <span class="n">p_gen</span><span class="p">,</span> <span class="n">trajectories</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+                              <span class="n">saveat</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">x_0</span> <span class="o">=</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mf">120.0</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">p_gen</span><span class="p">(</span><span class="n">η</span> <span class="o">=</span> <span class="n">η</span><span class="p">,</span> <span class="n">ξ</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">ensembleprob</span> <span class="o">=</span> <span class="n">EnsembleProblem</span><span class="p">(</span><span class="n">SDEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">),</span> <span class="n">p</span><span class="p">))</span>
+    <span class="n">sol</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">ensembleprob</span><span class="p">,</span> <span class="n">SOSRI</span><span class="p">(),</span> <span class="n">EnsembleThreads</span><span class="p">(),</span>
+                <span class="n">trajectories</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">,</span> <span class="n">saveat</span> <span class="o">=</span> <span class="n">saveat</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">EnsembleSummary</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="c"># Evaluate two different lockdown scenarios</span>
+<span class="n">η_1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">50</span>
+<span class="n">η_2</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">20</span>
+<span class="n">summ_1</span> <span class="o">=</span> <span class="n">generate_η_experiment</span><span class="p">(</span><span class="n">η_1</span><span class="p">)</span>
+<span class="n">summ_2</span> <span class="o">=</span> <span class="n">generate_η_experiment</span><span class="p">(</span><span class="n">η_2</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">summ_1</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Proportion Dead&quot;</span> <span class="s">&quot;R_0&quot;</span><span class="p">],</span>
+    <span class="n">ylabel</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;d(t)&quot;</span> <span class="s">&quot;R_0(t)&quot;</span><span class="p">],</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="p">[</span><span class="o">:</span><span class="n">topleft</span> <span class="o">:</span><span class="n">bottomright</span><span class="p">],</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="s">&quot;Middle 95% Quantile, eta = </span><span class="si">$η_1</span><span class="s">&quot;</span><span class="p">,</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">900</span><span class="p">),</span> <span class="n">fillalpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">summ_2</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="p">[</span><span class="o">:</span><span class="n">topleft</span> <span class="o">:</span><span class="n">bottomright</span><span class="p">],</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="s">&quot;Middle 95% Quantile, eta = </span><span class="si">$η_2</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">900</span><span class="p">),</span> <span class="n">fillalpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>While the the mean of the <span class="math notranslate nohighlight">\(d(t)\)</span> increases, unsurprisingly, we see that the 95% quantile for later time periods is also much larger - even after the <span class="math notranslate nohighlight">\(R_0\)</span> has converged.</p>
+<p>That is, volatile contact rates (and hence <span class="math notranslate nohighlight">\(R_0\)</span>) can interact to make catastrophic worst-case scenarios due to the nonlinear dynamics of the system.</p>
+</div>
+</div>
+<div class="section" id="ending-lockdown">
+<h2><a class="toc-backref" href="#id6"><span class="section-number">43.4. </span>Ending Lockdown</a><a class="headerlink" href="#ending-lockdown" title="Permalink to this headline">¶</a></h2>
+<p>As in the deterministic lecture, we can consider two mitigation scenarios</p>
+<ol class="simple">
+<li><p>choose <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> to target <span class="math notranslate nohighlight">\(R_0 = 0.5\)</span> for 30 days and then <span class="math notranslate nohighlight">\(R_0 = 2\)</span> for the remaining 17 months. This corresponds to lifting lockdown in 30 days.</p></li>
+<li><p>target <span class="math notranslate nohighlight">\(R_0 = 0.5\)</span> for 120 days and then <span class="math notranslate nohighlight">\(R_0 = 2\)</span> for the remaining 14 months. This corresponds to lifting lockdown in 4 months.</p></li>
+</ol>
+<p>Since empirical estimates of <span class="math notranslate nohighlight">\(R_0(t)\)</span> discussed in <span id="id1">[<a class="reference internal" href="../zreferences.html#id6"><span>FVJ20</span></a>]</span> and other papers show it to have wide variation, we will maintain a fairly larger <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
+<p>We start the model with 100,000 active infections.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">R₀_L</span> <span class="o">=</span> <span class="mf">0.5</span>  <span class="c"># lockdown</span>
+<span class="n">η_experiment</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="mi">10</span>
+<span class="n">σ_experiment</span> <span class="o">=</span> <span class="mf">0.04</span>
+<span class="n">R̄₀_lift_early</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">=</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mf">30.0</span> <span class="o">?</span> <span class="n">R₀_L</span> <span class="o">:</span> <span class="mf">2.0</span>
+<span class="n">R̄₀_lift_late</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">=</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="mf">120.0</span> <span class="o">?</span> <span class="n">R₀_L</span> <span class="o">:</span> <span class="mf">2.0</span>
+
+<span class="n">p_early</span> <span class="o">=</span> <span class="n">p_gen</span><span class="p">(</span><span class="n">R̄₀</span> <span class="o">=</span> <span class="n">R̄₀_lift_early</span><span class="p">,</span> <span class="n">η</span> <span class="o">=</span> <span class="n">η_experiment</span><span class="p">,</span> <span class="n">σ</span> <span class="o">=</span> <span class="n">σ_experiment</span><span class="p">)</span>
+<span class="n">p_late</span> <span class="o">=</span> <span class="n">p_gen</span><span class="p">(</span><span class="n">R̄₀</span> <span class="o">=</span> <span class="n">R̄₀_lift_late</span><span class="p">,</span> <span class="n">η</span> <span class="o">=</span> <span class="n">η_experiment</span><span class="p">,</span> <span class="n">σ</span> <span class="o">=</span> <span class="n">σ_experiment</span><span class="p">)</span>
+
+
+<span class="c"># initial conditions</span>
+<span class="n">i_0</span> <span class="o">=</span> <span class="mi">100000</span> <span class="o">/</span> <span class="n">p_early</span><span class="o">.</span><span class="n">N</span>
+<span class="n">r_0</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">d_0</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">s_0</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">i_0</span> <span class="o">-</span> <span class="n">r_0</span> <span class="o">-</span> <span class="n">d_0</span>
+<span class="n">δ_0</span> <span class="o">=</span> <span class="n">p_early</span><span class="o">.</span><span class="n">δ_bar</span>
+
+<span class="n">x_0</span> <span class="o">=</span> <span class="p">[</span><span class="n">s_0</span><span class="p">,</span> <span class="n">i_0</span><span class="p">,</span> <span class="n">r_0</span><span class="p">,</span> <span class="n">d_0</span><span class="p">,</span> <span class="n">R₀_L</span><span class="p">,</span> <span class="n">δ_0</span><span class="p">]</span>  <span class="c"># start in lockdown</span>
+<span class="n">prob_early</span> <span class="o">=</span> <span class="n">SDEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p_early</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">p_early</span><span class="p">)</span>
+<span class="n">prob_late</span> <span class="o">=</span> <span class="n">SDEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p_late</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">p_late</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Simulating for a single realization of the shocks, we see the results are qualitatively similar to what we had before</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sol_early</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">prob_early</span><span class="p">,</span> <span class="n">SOSRI</span><span class="p">())</span>
+<span class="n">sol_late</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">prob_late</span><span class="p">,</span> <span class="n">SOSRI</span><span class="p">())</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">sol_early</span><span class="p">,</span> <span class="n">vars</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;R_0&quot;</span> <span class="s">&quot;Susceptible&quot;</span> <span class="s">&quot;Infected&quot;</span> <span class="s">&quot;Dead&quot;</span><span class="p">],</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">600</span><span class="p">),</span>
+    <span class="n">ylabel</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;R_0(t)&quot;</span> <span class="s">&quot;s(t)&quot;</span> <span class="s">&quot;i(t)&quot;</span> <span class="s">&quot;d(t)&quot;</span><span class="p">],</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span>
+        <span class="n">legend</span> <span class="o">=</span> <span class="p">[</span><span class="o">:</span><span class="n">bottomright</span> <span class="o">:</span><span class="n">topright</span> <span class="o">:</span><span class="n">topright</span> <span class="o">:</span><span class="n">topleft</span><span class="p">],</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Early&quot;</span> <span class="s">&quot;Early&quot;</span> <span class="s">&quot;Early&quot;</span> <span class="s">&quot;Early&quot;</span><span class="p">])</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">sol_late</span><span class="p">,</span> <span class="n">vars</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+        <span class="n">legend</span> <span class="o">=</span> <span class="p">[</span><span class="o">:</span><span class="n">bottomright</span> <span class="o">:</span><span class="n">topright</span> <span class="o">:</span><span class="n">topright</span> <span class="o">:</span><span class="n">topleft</span><span class="p">],</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Late&quot;</span> <span class="s">&quot;Late&quot;</span> <span class="s">&quot;Late&quot;</span> <span class="s">&quot;Late&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>However, note that this masks highly volatile values induced by the in <span class="math notranslate nohighlight">\(R_0\)</span> variation, as seen in the ensemble</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">trajectories</span> <span class="o">=</span> <span class="mi">400</span>
+<span class="n">saveat</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">ensemble_sol_early</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">EnsembleProblem</span><span class="p">(</span><span class="n">prob_early</span><span class="p">),</span> <span class="n">SOSRI</span><span class="p">(),</span>
+                           <span class="n">EnsembleThreads</span><span class="p">(),</span> <span class="n">trajectories</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">,</span> <span class="n">saveat</span> <span class="o">=</span> <span class="n">saveat</span><span class="p">)</span>
+<span class="n">ensemble_sol_late</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">EnsembleProblem</span><span class="p">(</span><span class="n">prob_late</span><span class="p">),</span> <span class="n">SOSRI</span><span class="p">(),</span>
+                          <span class="n">EnsembleThreads</span><span class="p">(),</span> <span class="n">trajectories</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">,</span> <span class="n">saveat</span> <span class="o">=</span> <span class="n">saveat</span><span class="p">)</span>
+<span class="n">summ_early</span> <span class="o">=</span> <span class="n">EnsembleSummary</span><span class="p">(</span><span class="n">ensemble_sol_early</span><span class="p">)</span>
+<span class="n">summ_late</span> <span class="o">=</span> <span class="n">EnsembleSummary</span><span class="p">(</span><span class="n">ensemble_sol_late</span><span class="p">)</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">summ_early</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;R_0&quot;</span> <span class="s">&quot;Susceptible&quot;</span> <span class="s">&quot;Infected&quot;</span> <span class="s">&quot;Dead&quot;</span><span class="p">],</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">600</span><span class="p">),</span>
+    <span class="n">ylabel</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;R_0(t)&quot;</span> <span class="s">&quot;s(t)&quot;</span> <span class="s">&quot;i(t)&quot;</span> <span class="s">&quot;d(t)&quot;</span><span class="p">],</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="p">[</span><span class="o">:</span><span class="n">bottomright</span> <span class="o">:</span><span class="n">topright</span> <span class="o">:</span><span class="n">topright</span> <span class="o">:</span><span class="n">topleft</span><span class="p">],</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Early&quot;</span> <span class="s">&quot;Early&quot;</span> <span class="s">&quot;Early&quot;</span> <span class="s">&quot;Early&quot;</span><span class="p">])</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">summ_late</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="p">[</span><span class="o">:</span><span class="n">bottomright</span> <span class="o">:</span><span class="n">topright</span> <span class="o">:</span><span class="n">topright</span> <span class="o">:</span><span class="n">topleft</span><span class="p">],</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Late&quot;</span> <span class="s">&quot;Late&quot;</span> <span class="s">&quot;Late&quot;</span> <span class="s">&quot;Late&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Finally, rather than looking at the ensemble summary, we can use data directly from the ensemble to do our own analysis.</p>
+<p>For example, evaluating at an intermediate (<code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">350</span></code>) and final time step.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="n">p_early</span><span class="o">.</span><span class="n">N</span>
+<span class="n">t_1</span> <span class="o">=</span> <span class="mi">350</span>
+<span class="n">t_2</span> <span class="o">=</span> <span class="n">p_early</span><span class="o">.</span><span class="n">T</span>  <span class="c"># i.e. the last element</span>
+<span class="n">bins_1</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.000</span><span class="p">,</span> <span class="mf">0.009</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">bins_2</span> <span class="o">=</span> <span class="mi">30</span>  <span class="c"># number rather than grid.</span>
+
+<span class="n">hist_1</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">([</span><span class="n">ensemble_sol_early</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">t_1</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">trajectories</span><span class="p">],</span>
+                   <span class="n">fillalpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">normalize</span> <span class="o">=</span> <span class="o">:</span><span class="n">probability</span><span class="p">,</span>
+                   <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">bins_1</span><span class="p">,</span>
+                   <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Early&quot;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Death Proportion at t = </span><span class="si">$t_1</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">histogram!</span><span class="p">(</span><span class="n">hist_1</span><span class="p">,</span> <span class="p">[</span><span class="n">ensemble_sol_late</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">t_1</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">trajectories</span><span class="p">],</span>
+           <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Late&quot;</span><span class="p">,</span> <span class="n">fillalpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">normalize</span> <span class="o">=</span> <span class="o">:</span><span class="n">probability</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">bins_1</span><span class="p">)</span>
+<span class="n">hist_2</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">([</span><span class="n">ensemble_sol_early</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">4</span><span class="p">,</span> <span class="k">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">trajectories</span><span class="p">],</span>
+                   <span class="n">fillalpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">normalize</span> <span class="o">=</span> <span class="o">:</span><span class="n">probability</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">bins_2</span><span class="p">,</span>
+                   <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Early&quot;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Death Proportion at t = </span><span class="si">$t_2</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">histogram!</span><span class="p">(</span><span class="n">hist_2</span><span class="p">,</span> <span class="p">[</span><span class="n">ensemble_sol_late</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">4</span><span class="p">,</span> <span class="k">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">trajectories</span><span class="p">],</span>
+           <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Late&quot;</span><span class="p">,</span> <span class="n">fillalpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">normalize</span> <span class="o">=</span> <span class="o">:</span><span class="n">probability</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">bins_2</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">hist_1</span><span class="p">,</span> <span class="n">hist_2</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">600</span><span class="p">,</span><span class="mi">600</span><span class="p">),</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This shows that there are significant differences after a year, but by 550 days the graphs largely coincide.</p>
+<p>In the above code given the return from <code class="docutils literal notranslate"><span class="pre">solve</span></code> on an <code class="docutils literal notranslate"><span class="pre">EnsembleProblem</span></code> , e.g. <code class="docutils literal notranslate"><span class="pre">ensemble_sol</span> <span class="pre">=</span> <span class="pre">solve(...)</span></code></p>
+<ul class="simple">
+<li><p>You can access the i’th simulation as <code class="docutils literal notranslate"><span class="pre">ensemble_sol[i]</span></code>, which then has all of the standard <a class="reference external" href="https://diffeq.sciml.ai/stable/basics/solution/">solution handling</a> features</p></li>
+<li><p>You can evaluate at a real time period, <code class="docutils literal notranslate"><span class="pre">t</span></code>, with <code class="docutils literal notranslate"><span class="pre">ensemble_sol[i](t)</span></code>.  Or access the 4th element with <code class="docutils literal notranslate"><span class="pre">ensemble_sol[i](t)[4]</span></code></p></li>
+<li><p>If the <code class="docutils literal notranslate"><span class="pre">t</span></code> was not exactly one of the <code class="docutils literal notranslate"><span class="pre">saveat</span></code> values (if specified) or the adaptive timesteps (if it was not), then it will use interpolation</p></li>
+<li><p>Alternatively, to access the results of the ODE as a grid exactly at the timesteps, where <code class="docutils literal notranslate"><span class="pre">j</span></code> is timestep index, use <code class="docutils literal notranslate"><span class="pre">ensemble_sol[i][j]</span></code> or the 4th element with <code class="docutils literal notranslate"><span class="pre">ensemble_sol[i][4,</span> <span class="pre">j]</span></code></p></li>
+<li><p>Warning: unless you have chosen a <code class="docutils literal notranslate"><span class="pre">saveat</span></code> grid, the timesteps will not be aligned between simulations.   That is, <code class="docutils literal notranslate"><span class="pre">ensemble_sol[i_1].t</span></code> wouldn’t match <code class="docutils literal notranslate"><span class="pre">ensemble_sol[i_2].t</span></code>.  In that case, use interpolation with <code class="docutils literal notranslate"><span class="pre">ensemble_sol[i_1](t)</span></code> etc.</p></li>
+</ul>
+</div>
+<div class="section" id="reinfection">
+<h2><a class="toc-backref" href="#id7"><span class="section-number">43.5. </span>Reinfection</a><a class="headerlink" href="#reinfection" title="Permalink to this headline">¶</a></h2>
+<p>As a final experiment, consider a model where the immunity is only temporary, and individuals become susceptible again.</p>
+<p>In particular, assume that at rate <span class="math notranslate nohighlight">\(\nu\)</span> immunity is lost.  For illustration, we will examine the case if the average immunity lasts 12 months (i.e. <span class="math notranslate nohighlight">\(1/\nu = 360\)</span>)</p>
+<p>The transition modifies the differential equation <a class="reference internal" href="#equation-sird">(43.1)</a> to become</p>
+<div class="math notranslate nohighlight" id="equation-sirdre">
+<span class="eqno">(43.6)<a class="headerlink" href="#equation-sirdre" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+     d s  &amp; = \left(- \gamma \, R_0 \, s \,  i + \nu \, r \right) dt
+     \\
+      d i  &amp; = \left(\gamma \, R_0 \, s \,  i  - \gamma i \right) dt
+     \\
+     d r  &amp; = \left((1-\delta) \gamma  i - \nu \, r\right) dt
+     \\
+     d d  &amp; = \delta \gamma  i \, dt
+     \\
+\end{aligned}\end{split}\]</div>
+<p>This change modifies the underlying <code class="docutils literal notranslate"><span class="pre">F</span></code> function and adds a parameter, but otherwise the model remains the same.</p>
+<p>We will redo the “Ending Lockdown” simulation from above, where the only difference is the new transition.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">F_reinfect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+    <span class="n">s</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">R₀</span><span class="p">,</span> <span class="n">δ</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="nd">@unpack</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">R̄₀</span><span class="p">,</span> <span class="n">η</span><span class="p">,</span> <span class="n">σ</span><span class="p">,</span> <span class="n">ξ</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ_bar</span><span class="p">,</span> <span class="n">ν</span> <span class="o">=</span> <span class="n">p</span>
+
+    <span class="k">return</span> <span class="p">[</span><span class="o">-</span><span class="nb">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span> <span class="o">+</span> <span class="n">ν</span><span class="o">*</span><span class="n">r</span><span class="p">;</span>  <span class="c"># ds/dt</span>
+            <span class="nb">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span> <span class="o">-</span> <span class="nb">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span>   <span class="c"># di/dt</span>
+            <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span><span class="o">*</span><span class="nb">γ</span><span class="o">*</span><span class="n">i</span> <span class="o">-</span> <span class="n">ν</span><span class="o">*</span><span class="n">r</span>   <span class="c"># dr/dt</span>
+            <span class="n">δ</span><span class="o">*</span><span class="nb">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span>            <span class="c"># dd/dt</span>
+            <span class="n">η</span><span class="o">*</span><span class="p">(</span><span class="n">R̄₀</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">R₀</span><span class="p">);</span><span class="c"># dR₀/dt</span>
+            <span class="n">θ</span><span class="o">*</span><span class="p">(</span><span class="n">δ_bar</span> <span class="o">-</span> <span class="n">δ</span><span class="p">);</span>    <span class="c"># dδ/dt</span>
+            <span class="p">]</span>
+<span class="k">end</span>
+
+<span class="n">p_re_gen</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span> <span class="n">T</span> <span class="o">=</span> <span class="mf">550.0</span><span class="p">,</span> <span class="nb">γ</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mi">18</span><span class="p">,</span> <span class="n">η</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mi">20</span><span class="p">,</span>
+                <span class="n">R₀_n</span> <span class="o">=</span> <span class="mf">1.6</span><span class="p">,</span> <span class="n">R̄₀</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">p</span><span class="o">.</span><span class="n">R₀_n</span><span class="p">,</span>
+                <span class="n">δ_bar</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">σ</span> <span class="o">=</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">ξ</span> <span class="o">=</span> <span class="mf">0.004</span><span class="p">,</span> <span class="n">θ</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="mf">3.3E8</span><span class="p">,</span> <span class="n">ν</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mi">360</span><span class="p">)</span>
+
+<span class="n">p_re_early</span> <span class="o">=</span> <span class="n">p_re_gen</span><span class="p">(</span><span class="n">R̄₀</span> <span class="o">=</span> <span class="n">R̄₀_lift_early</span><span class="p">,</span> <span class="n">η</span> <span class="o">=</span> <span class="n">η_experiment</span><span class="p">,</span> <span class="n">σ</span> <span class="o">=</span> <span class="n">σ_experiment</span><span class="p">)</span>
+<span class="n">p_re_late</span> <span class="o">=</span> <span class="n">p_re_gen</span><span class="p">(</span><span class="n">R̄₀</span> <span class="o">=</span> <span class="n">R̄₀_lift_late</span><span class="p">,</span> <span class="n">η</span> <span class="o">=</span> <span class="n">η_experiment</span><span class="p">,</span> <span class="n">σ</span> <span class="o">=</span> <span class="n">σ_experiment</span><span class="p">)</span>
+
+<span class="n">trajectories</span> <span class="o">=</span> <span class="mi">400</span>
+<span class="n">saveat</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">prob_re_early</span> <span class="o">=</span> <span class="n">SDEProblem</span><span class="p">(</span><span class="n">F_reinfect</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p_re_early</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">p_re_early</span><span class="p">)</span>
+<span class="n">prob_re_late</span> <span class="o">=</span> <span class="n">SDEProblem</span><span class="p">(</span><span class="n">F_reinfect</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">p_re_late</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">p_re_late</span><span class="p">)</span>
+<span class="n">ensemble_sol_re_early</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">EnsembleProblem</span><span class="p">(</span><span class="n">prob_re_early</span><span class="p">),</span> <span class="n">SOSRI</span><span class="p">(),</span> <span class="n">EnsembleThreads</span><span class="p">(),</span>
+                              <span class="n">trajectories</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">,</span> <span class="n">saveat</span> <span class="o">=</span> <span class="n">saveat</span><span class="p">)</span>
+<span class="n">ensemble_sol_re_late</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">EnsembleProblem</span><span class="p">(</span><span class="n">prob_re_late</span><span class="p">),</span> <span class="n">SOSRI</span><span class="p">(),</span> <span class="n">EnsembleThreads</span><span class="p">(),</span>
+                              <span class="n">trajectories</span> <span class="o">=</span> <span class="n">trajectories</span><span class="p">,</span> <span class="n">saveat</span> <span class="o">=</span> <span class="n">saveat</span><span class="p">)</span>
+<span class="n">summ_re_early</span> <span class="o">=</span> <span class="n">EnsembleSummary</span><span class="p">(</span><span class="n">ensemble_sol_re_early</span><span class="p">)</span>
+<span class="n">summ_re_late</span> <span class="o">=</span> <span class="n">EnsembleSummary</span><span class="p">(</span><span class="n">ensemble_sol_re_late</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The ensemble simulations for the <span class="math notranslate nohighlight">\(\nu = 0\)</span> and <span class="math notranslate nohighlight">\(\nu &gt; 0\)</span> can be compared to see the impact in the absence of medical innovations.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">summ_late</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Susceptible&quot;</span> <span class="s">&quot;Infected&quot;</span> <span class="s">&quot;Recovered&quot;</span> <span class="s">&quot;Dead&quot;</span><span class="p">],</span>
+    <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">600</span><span class="p">),</span>
+    <span class="n">ylabel</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;s(t)&quot;</span> <span class="s">&quot;i(t)&quot;</span> <span class="s">&quot;r(t)&quot;</span> <span class="s">&quot;d(t)&quot;</span><span class="p">],</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">,</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;s(t)&quot;</span> <span class="s">&quot;i(t)&quot;</span> <span class="s">&quot;r(t)&quot;</span> <span class="s">&quot;d(t)&quot;</span><span class="p">])</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">summ_re_late</span><span class="p">,</span> <span class="n">idxs</span> <span class="o">=</span>  <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">,</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;s(t); nu &gt; 0&quot;</span> <span class="s">&quot;i(t); nu &gt; 0&quot;</span> <span class="s">&quot;r(t); nu &gt; 0&quot;</span> <span class="s">&quot;d(t); nu &gt; 0&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Finally, we can examine the same early vs. late lockdown histogram</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">bins_re_1</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.003</span><span class="p">,</span> <span class="mf">0.010</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">bins_re_2</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.0085</span><span class="p">,</span> <span class="mf">0.0102</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">hist_re_1</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">([</span><span class="n">ensemble_sol_re_early</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">t_1</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">trajectories</span><span class="p">],</span>
+                    <span class="n">fillalpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">normalize</span> <span class="o">=</span> <span class="o">:</span><span class="n">probability</span><span class="p">,</span>
+                    <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">bins_re_1</span><span class="p">,</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Early&quot;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Death Proportion at t = </span><span class="si">$t_1</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">histogram!</span><span class="p">(</span><span class="n">hist_re_1</span><span class="p">,</span> <span class="p">[</span><span class="n">ensemble_sol_re_late</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">t_1</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">trajectories</span><span class="p">],</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Late&quot;</span><span class="p">,</span> <span class="n">fillalpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">normalize</span> <span class="o">=</span> <span class="o">:</span><span class="n">probability</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">bins_re_1</span><span class="p">)</span>
+<span class="n">hist_re_2</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">([</span><span class="n">ensemble_sol_re_early</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">4</span><span class="p">,</span> <span class="k">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">trajectories</span><span class="p">],</span>
+                    <span class="n">fillalpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">normalize</span> <span class="o">=</span> <span class="o">:</span><span class="n">probability</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">bins_re_2</span><span class="p">,</span>
+                    <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Early&quot;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Death Proportion at t = </span><span class="si">$t_2</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">histogram!</span><span class="p">(</span><span class="n">hist_re_2</span><span class="p">,</span> <span class="p">[</span><span class="n">ensemble_sol_re_late</span><span class="o">.</span><span class="n">u</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">4</span><span class="p">,</span> <span class="k">end</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">trajectories</span><span class="p">],</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Late&quot;</span><span class="p">,</span> <span class="n">fillalpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">normalize</span> <span class="o">=</span> <span class="o">:</span><span class="n">probability</span><span class="p">,</span>
+        <span class="n">bins</span> <span class="o">=</span>  <span class="n">bins</span> <span class="o">=</span> <span class="n">bins_re_2</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">hist_re_1</span><span class="p">,</span> <span class="n">hist_re_2</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">600</span><span class="p">,</span><span class="mi">600</span><span class="p">),</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In this case, there are significant differences between the early and late deaths and high variance.</p>
+<p>This bleak simulation has assumed that no individuals has long-term immunity and that there will be no medical advancements on that time horizon - both of which are unlikely to be true.</p>
+<p>Nevertheless, it suggest that the timing of lifting lockdown has a more profound impact after 18 months if we allow stochastic shocks imperfect immunity.</p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./continuous_time"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Packages and Software Engineering in Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   22. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   23. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   24. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   25. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   26. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   27. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   28. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   29. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   30. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   31. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   33. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   34. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   35. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   36. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   37. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   39. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   40. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   41. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="seir_model.html">
+   42. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   44. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   45. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   46. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   47. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   48. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   49. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   50. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   51. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   52. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   53. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   54. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   55. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   56. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   57. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   58. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   59. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   60. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   61. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   62. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   63. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   64. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   65. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   66. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   67. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   68. Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/continuous_time/covid_sde.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/continuous_time/covid_sde.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/continuous_time/covid_sde.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/continuous_time/covid_sde.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

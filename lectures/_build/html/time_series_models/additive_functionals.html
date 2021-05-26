@@ -1,0 +1,1549 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>57. Additive Functionals &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/time_series_models/additive_functionals.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="58. Multiplicative Functionals" href="multiplicative_functionals.html" />
+    <link rel="prev" title="56. Estimation of Spectra" href="estspec.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Additive Functionals"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Additive Functionals" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/time_series_models/additive_functionals.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=time_series_models/additive_functionals>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   57.1. Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#a-particular-additive-functional">
+   57.2. A Particular Additive Functional
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#a-linear-state-space-representation">
+     57.2.1. A linear state space representation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#dynamics">
+   57.3. Dynamics
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#simulation">
+     57.3.1. Simulation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#setup">
+     57.3.2. Setup
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#decomposition">
+     57.3.3. Decomposition
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#code">
+   57.4. Code
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#an-associated-multiplicative-functional">
+     57.4.1. An associated multiplicative functional
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#a-peculiar-large-sample-property">
+     57.4.2. A peculiar large sample property
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Additive Functionals</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="id1">
+<h1><a class="toc-backref" href="#id9"><span class="section-number">57. </span>Additive Functionals</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<span id="index-0"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#id1" id="id9">Additive Functionals</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id10">Overview</a></p></li>
+<li><p><a class="reference internal" href="#a-particular-additive-functional" id="id11">A Particular Additive Functional</a></p></li>
+<li><p><a class="reference internal" href="#dynamics" id="id12">Dynamics</a></p></li>
+<li><p><a class="reference internal" href="#code" id="id13">Code</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Co-authored with Chase Coleman and Balint Szoke</p>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id10"><span class="section-number">57.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Some time series are nonstationary.</p>
+<p>For example, output, prices, and dividends are typically nonstationary, due to irregular but persistent growth.</p>
+<p>Which kinds of models are useful for studying such time series?</p>
+<p>Hansen and Scheinkman <span id="id2">[<a class="reference internal" href="../zreferences.html#id32"><span>HS09</span></a>]</span> analyze two classes of time series models that accommodate growth.</p>
+<p>They are:</p>
+<ol class="simple">
+<li><p><strong>additive functionals</strong> that display random “arithmetic growth”</p></li>
+<li><p><strong>multiplicative functionals</strong> that display random “geometric growth”</p></li>
+</ol>
+<p>These two classes of processes are closely connected.</p>
+<p>For example, if a process <span class="math notranslate nohighlight">\(\{y_t\}\)</span> is an additive functional and <span class="math notranslate nohighlight">\(\phi_t = \exp(y_t)\)</span>, then <span class="math notranslate nohighlight">\(\{\phi_t\}\)</span> is a multiplicative functional.</p>
+<p>Hansen and Sargent <span id="id3">[<a class="reference internal" href="../zreferences.html#id33"><span>HS17</span></a>]</span> (chs. 5 and 6) describe discrete time versions of additive and multiplicative functionals.</p>
+<p>In this lecture we discuss the former (i.e., additive functionals).</p>
+<p>In the <a class="reference internal" href="multiplicative_functionals.html"><span class="doc">next lecture</span></a> we discuss multiplicative functionals.</p>
+<p>We also consider fruitful decompositions of additive and multiplicative processes, a more in depth discussion of which can be found in Hansen and Sargent <span id="id4">[<a class="reference internal" href="../zreferences.html#id33"><span>HS17</span></a>]</span>.</p>
+</div>
+<div class="section" id="a-particular-additive-functional">
+<h2><a class="toc-backref" href="#id11"><span class="section-number">57.2. </span>A Particular Additive Functional</a><a class="headerlink" href="#a-particular-additive-functional" title="Permalink to this headline">¶</a></h2>
+<p>This lecture focuses on a particular type of additive functional: a scalar process <span class="math notranslate nohighlight">\(\{y_t\}_{t=0}^\infty\)</span> whose increments are driven by a Gaussian vector autoregression.</p>
+<p>It is simple to construct, simulate, and analyze.</p>
+<p>This additive functional consists of two components, the first of which is a <strong>first-order vector autoregression</strong> (VAR)</p>
+<div class="math notranslate nohighlight" id="equation-old1-additive-functionals">
+<span class="eqno">(57.1)<a class="headerlink" href="#equation-old1-additive-functionals" title="Permalink to this equation">¶</a></span>\[x_{t+1} = A x_t + B z_{t+1}\]</div>
+<p>Here</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x_t\)</span> is an <span class="math notranslate nohighlight">\(n \times 1\)</span> vector,</p></li>
+<li><p><span class="math notranslate nohighlight">\(A\)</span> is an <span class="math notranslate nohighlight">\(n \times n\)</span> stable matrix (all eigenvalues lie within the open unit circle),</p></li>
+<li><p><span class="math notranslate nohighlight">\(z_{t+1} \sim {\cal N}(0,I)\)</span> is an <span class="math notranslate nohighlight">\(m \times 1\)</span> i.i.d. shock,</p></li>
+<li><p><span class="math notranslate nohighlight">\(B\)</span> is an <span class="math notranslate nohighlight">\(n \times m\)</span> matrix, and</p></li>
+<li><p><span class="math notranslate nohighlight">\(x_0 \sim {\cal N}(\mu_0, \Sigma_0)\)</span> is a random initial condition for <span class="math notranslate nohighlight">\(x\)</span></p></li>
+</ul>
+<p>The second component is an equation that expresses increments
+of <span class="math notranslate nohighlight">\(\{y_t\}_{t=0}^\infty\)</span> as linear functions of</p>
+<ul class="simple">
+<li><p>a scalar constant <span class="math notranslate nohighlight">\(\nu\)</span>,</p></li>
+<li><p>the vector <span class="math notranslate nohighlight">\(x_t\)</span>, and</p></li>
+<li><p>the same Gaussian vector <span class="math notranslate nohighlight">\(z_{t+1}\)</span> that appears in the VAR <a class="reference internal" href="#equation-old1-additive-functionals">(57.1)</a></p></li>
+</ul>
+<p>In particular,</p>
+<div class="math notranslate nohighlight" id="equation-old2-additive-functionals">
+<span class="eqno">(57.2)<a class="headerlink" href="#equation-old2-additive-functionals" title="Permalink to this equation">¶</a></span>\[y_{t+1} - y_{t} = \nu + D x_{t} + F z_{t+1}\]</div>
+<p>Here <span class="math notranslate nohighlight">\(y_0 \sim {\cal N}(\mu_{y0}, \Sigma_{y0})\)</span> is a random
+initial condition.</p>
+<p>The nonstationary random process <span class="math notranslate nohighlight">\(\{y_t\}_{t=0}^\infty\)</span> displays
+systematic but random <em>arithmetic growth</em>.</p>
+<div class="section" id="a-linear-state-space-representation">
+<h3><span class="section-number">57.2.1. </span>A linear state space representation<a class="headerlink" href="#a-linear-state-space-representation" title="Permalink to this headline">¶</a></h3>
+<p>One way to represent the overall dynamics is to use a <a class="reference internal" href="../tools_and_techniques/linear_models.html"><span class="doc">linear state space system</span></a>.</p>
+<p>To do this, we set up state and observation vectors</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\hat{x}_t = \begin{bmatrix} 1 \\  x_t \\ y_t  \end{bmatrix}
+\quad \text{and} \quad
+\hat{y}_t = \begin{bmatrix} x_t \\ y_t  \end{bmatrix}
+\end{split}\]</div>
+<p>Now we construct the state space system</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{bmatrix}
+     1 \\
+     x_{t+1} \\
+     y_{t+1}
+ \end{bmatrix}
+ =
+ \begin{bmatrix}
+    1 &amp; 0 &amp; 0  \\
+    0  &amp; A &amp; 0 \\
+    \nu &amp; D' &amp;  1 \\
+\end{bmatrix}
+\begin{bmatrix}
+    1 \\
+    x_t \\
+    y_t
+\end{bmatrix} +
+\begin{bmatrix}
+    0 \\  B \\ F'
+\end{bmatrix}
+z_{t+1}
+\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{bmatrix}
+    x_t \\
+    y_t
+\end{bmatrix}
+= \begin{bmatrix}
+    0  &amp; I &amp; 0  \\
+    0 &amp; 0  &amp; 1
+\end{bmatrix}
+\begin{bmatrix}
+    1 \\  x_t \\ y_t
+\end{bmatrix}
+\end{split}\]</div>
+<p>This can be written as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+  \hat{x}_{t+1} &amp;= \hat{A} \hat{x}_t + \hat{B} z_{t+1} \\
+  \hat{y}_{t} &amp;= \hat{D} \hat{x}_t
+\end{aligned}
+\end{split}\]</div>
+<p>which is a standard linear state space system.</p>
+<p>To study it, we could map it into an instance of <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl">LSS</a> from <a class="reference external" href="http://quantecon.org/quantecon-jl">QuantEcon.jl</a>.</p>
+<p>We will in fact use a different set of code for simulation, for reasons described below.</p>
+</div>
+</div>
+<div class="section" id="dynamics">
+<h2><a class="toc-backref" href="#id12"><span class="section-number">57.3. </span>Dynamics</a><a class="headerlink" href="#dynamics" title="Permalink to this headline">¶</a></h2>
+<p>Let’s run some simulations to build intuition.</p>
+<p id="addfunc-eg1">In doing so we’ll assume that <span class="math notranslate nohighlight">\(z_{t+1}\)</span> is scalar and that <span class="math notranslate nohighlight">\(\tilde x_t\)</span> follows a 4th-order scalar autoregession</p>
+<div class="math notranslate nohighlight" id="equation-ftaf">
+<span class="eqno">(57.3)<a class="headerlink" href="#equation-ftaf" title="Permalink to this equation">¶</a></span>\[\tilde x_{t+1} = \phi_1 \tilde x_{t} + \phi_2 \tilde x_{t-1} +
+\phi_3 \tilde x_{t-2} +
+\phi_4 \tilde x_{t-3} + \sigma z_{t+1}\]</div>
+<p>Let the increment in <span class="math notranslate nohighlight">\(\{y_t\}\)</span> obey</p>
+<div class="math notranslate nohighlight">
+\[
+y_{t+1} - y_t =  \nu + \tilde x_t + \sigma z_{t+1}
+\]</div>
+<p>with an initial condition for <span class="math notranslate nohighlight">\(y_0\)</span>.</p>
+<p>While <a class="reference internal" href="#equation-ftaf">(57.3)</a> is not a first order system like <a class="reference internal" href="#equation-old1-additive-functionals">(57.1)</a>, we know that it can be mapped  into a first order system</p>
+<ul class="simple">
+<li><p>for an example of such a mapping, see <a class="reference internal" href="../tools_and_techniques/linear_models.html#lss-sode"><span class="std std-ref">this example</span></a></p></li>
+</ul>
+<p>In fact this whole model can be mapped into the additive functional system definition in <a class="reference internal" href="#equation-old1-additive-functionals">(57.1)</a> – <a class="reference internal" href="#equation-old2-additive-functionals">(57.2)</a>  by appropriate selection of the matrices <span class="math notranslate nohighlight">\(A, B, D, F\)</span>.</p>
+<p>You can try writing these matrices down now as an exercise — the correct expressions will appear in the code below.</p>
+<div class="section" id="simulation">
+<h3><span class="section-number">57.3.1. </span>Simulation<a class="headerlink" href="#simulation" title="Permalink to this headline">¶</a></h3>
+<p>When simulating we embed our variables into a bigger system.</p>
+<p>This system also constructs the components of the decompositions of <span class="math notranslate nohighlight">\(y_t\)</span> and of <span class="math notranslate nohighlight">\(\exp(y_t)\)</span> proposed by Hansen and Scheinkman <span id="id5">[<a class="reference internal" href="../zreferences.html#id32"><span>HS09</span></a>]</span>.</p>
+<p>All of these objects are computed using the code below.</p>
+</div>
+<div class="section" id="setup">
+<h3><span class="section-number">57.3.2. </span>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="o">:</span><span class="n">png</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">AMF_LSS_VAR</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">;</span> <span class="n">ν</span> <span class="o">=</span> <span class="nb">nothing</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">B</span> <span class="kp">isa</span> <span class="kt">AbstractVector</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">B</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="c"># unpack required elements</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">nk</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+
+    <span class="c"># checking the dimension of D (extended from the scalar case)</span>
+    <span class="k">if</span> <span class="n">ndims</span><span class="p">(</span><span class="n">D</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="n">nm</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">D</span> <span class="kp">isa</span> <span class="kt">Union</span><span class="p">{</span><span class="n">Adjoint</span><span class="p">,</span> <span class="n">Transpose</span><span class="p">}</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="n">convert</span><span class="p">(</span><span class="kt">Matrix</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+        <span class="k">end</span>
+    <span class="k">else</span>
+        <span class="n">nm</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">D</span><span class="p">))</span>
+    <span class="k">end</span>
+
+    <span class="c"># set F</span>
+    <span class="k">if</span> <span class="n">isnothing</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nk</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">elseif</span> <span class="n">ndims</span><span class="p">(</span><span class="n">F</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">F</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="c"># set ν</span>
+    <span class="k">if</span> <span class="n">isnothing</span><span class="p">(</span><span class="n">ν</span><span class="p">)</span>
+        <span class="n">ν</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">elseif</span> <span class="n">ndims</span><span class="p">(</span><span class="n">ν</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">ν</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">ν</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">ν</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span>
+        <span class="n">throw</span><span class="p">(</span><span class="kt">ArgumentError</span><span class="p">(</span><span class="s">&quot;ν must be column vector!&quot;</span><span class="p">))</span>
+    <span class="k">end</span>
+
+    <span class="k">if</span> <span class="n">size</span><span class="p">(</span><span class="n">ν</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">!=</span> <span class="n">size</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">error</span><span class="p">(</span><span class="s">&quot;The size of ν is inconsistent with D!&quot;</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="c"># construct BIG state space representation</span>
+    <span class="n">lss</span> <span class="o">=</span> <span class="n">construct_ss</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="n">nm</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span> <span class="o">=</span> <span class="n">ν</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">nx</span><span class="p">,</span> <span class="n">nk</span> <span class="o">=</span> <span class="n">nk</span><span class="p">,</span> <span class="n">nm</span> <span class="o">=</span> <span class="n">nm</span><span class="p">,</span> <span class="n">lss</span> <span class="o">=</span> <span class="n">lss</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">AMF_LSS_VAR</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span> <span class="o">=</span>
+    <span class="n">AMF_LSS_VAR</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="nb">nothing</span><span class="p">,</span> <span class="n">ν</span><span class="o">=</span><span class="nb">nothing</span><span class="p">)</span>
+<span class="n">AMF_LSS_VAR</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span><span class="p">)</span> <span class="o">=</span>
+    <span class="n">AMF_LSS_VAR</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="p">[</span><span class="n">F</span><span class="p">],</span> <span class="n">ν</span><span class="o">=</span><span class="p">[</span><span class="n">ν</span><span class="p">])</span>
+
+<span class="k">function</span> <span class="n">construct_ss</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span>
+                    <span class="n">ν</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="n">nm</span><span class="p">)</span>
+
+    <span class="n">H</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="n">additive_decomp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+
+    <span class="c"># auxiliary blocks with 0&#39;s and 1&#39;s to fill out the lss matrices</span>
+    <span class="n">nx0c</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">nx0r</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+    <span class="n">nx1</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+    <span class="n">nk0</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nk</span><span class="p">)</span>
+    <span class="n">ny0c</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ny0r</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nm</span><span class="p">)</span>
+    <span class="n">ny1m</span> <span class="o">=</span> <span class="nb">I</span> <span class="o">+</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">nm</span><span class="p">)</span>
+    <span class="n">ny0m</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">nm</span><span class="p">)</span>
+    <span class="n">nyx0m</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+    <span class="c"># build A matrix for LSS</span>
+    <span class="c"># order of states is: [1, t, xt, yt, mt]</span>
+    <span class="n">A1</span> <span class="o">=</span> <span class="n">hcat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nx0r</span><span class="p">,</span> <span class="n">ny0r</span><span class="p">,</span> <span class="n">ny0r</span><span class="p">)</span>          <span class="c"># transition for 1</span>
+    <span class="n">A2</span> <span class="o">=</span> <span class="n">hcat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">nx0r</span><span class="p">,</span> <span class="n">ny0r</span><span class="p">,</span> <span class="n">ny0r</span><span class="p">)</span>          <span class="c"># transition for t</span>
+    <span class="n">A3</span> <span class="o">=</span> <span class="n">hcat</span><span class="p">(</span><span class="n">nx0c</span><span class="p">,</span> <span class="n">nx0c</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">nyx0m</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">nyx0m</span><span class="o">&#39;</span><span class="p">)</span>   <span class="c"># transition for x_{t+1}</span>
+    <span class="n">A4</span> <span class="o">=</span> <span class="n">hcat</span><span class="p">(</span><span class="n">ν</span><span class="p">,</span> <span class="n">ny0c</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">ny1m</span><span class="p">,</span> <span class="n">ny0m</span><span class="p">)</span>          <span class="c"># transition for y_{t+1}</span>
+    <span class="n">A5</span> <span class="o">=</span> <span class="n">hcat</span><span class="p">(</span><span class="n">ny0c</span><span class="p">,</span> <span class="n">ny0c</span><span class="p">,</span> <span class="n">nyx0m</span><span class="p">,</span> <span class="n">ny0m</span><span class="p">,</span> <span class="n">ny1m</span><span class="p">)</span>   <span class="c"># transition for m_{t+1}</span>
+    <span class="n">Abar</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">A1</span><span class="p">,</span> <span class="n">A2</span><span class="p">,</span> <span class="n">A3</span><span class="p">,</span> <span class="n">A4</span><span class="p">,</span> <span class="n">A5</span><span class="p">)</span>
+
+    <span class="c"># build B matrix for LSS</span>
+    <span class="n">Bbar</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">nk0</span><span class="p">,</span> <span class="n">nk0</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+
+    <span class="c"># build G matrix for LSS</span>
+    <span class="c"># order of observation is: [xt, yt, mt, st, tt]</span>
+    <span class="n">G1</span> <span class="o">=</span> <span class="n">hcat</span><span class="p">(</span><span class="n">nx0c</span><span class="p">,</span> <span class="n">nx0c</span><span class="p">,</span> <span class="nb">I</span><span class="p">,</span> <span class="n">nyx0m</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">nyx0m</span><span class="o">&#39;</span><span class="p">)</span>          <span class="c"># selector for x_{t}</span>
+    <span class="n">G2</span> <span class="o">=</span> <span class="n">hcat</span><span class="p">(</span><span class="n">ny0c</span><span class="p">,</span> <span class="n">ny0c</span><span class="p">,</span> <span class="n">nyx0m</span><span class="p">,</span> <span class="n">ny1m</span><span class="p">,</span> <span class="n">ny0m</span><span class="p">)</span>          <span class="c"># selector for y_{t}</span>
+    <span class="n">G3</span> <span class="o">=</span> <span class="n">hcat</span><span class="p">(</span><span class="n">ny0c</span><span class="p">,</span> <span class="n">ny0c</span><span class="p">,</span> <span class="n">nyx0m</span><span class="p">,</span> <span class="n">ny0m</span><span class="p">,</span> <span class="n">ny1m</span><span class="p">)</span>          <span class="c"># selector for martingale</span>
+    <span class="n">G4</span> <span class="o">=</span> <span class="n">hcat</span><span class="p">(</span><span class="n">ny0c</span><span class="p">,</span> <span class="n">ny0c</span><span class="p">,</span> <span class="o">-</span><span class="n">g</span><span class="p">,</span> <span class="n">ny0m</span><span class="p">,</span> <span class="n">ny0m</span><span class="p">)</span>             <span class="c"># selector for stationary</span>
+    <span class="n">G5</span> <span class="o">=</span> <span class="n">hcat</span><span class="p">(</span><span class="n">ny0c</span><span class="p">,</span> <span class="n">ν</span><span class="p">,</span> <span class="n">nyx0m</span><span class="p">,</span> <span class="n">ny0m</span><span class="p">,</span> <span class="n">ny0m</span><span class="p">)</span>             <span class="c"># selector for trend</span>
+    <span class="n">Gbar</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">G1</span><span class="p">,</span> <span class="n">G2</span><span class="p">,</span> <span class="n">G3</span><span class="p">,</span> <span class="n">G4</span><span class="p">,</span> <span class="n">G5</span><span class="p">)</span>
+
+    <span class="c"># build LSS type</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">hcat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">nx0r</span><span class="p">,</span> <span class="n">ny0r</span><span class="p">,</span> <span class="n">ny0r</span><span class="p">)</span>
+    <span class="n">S0</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">x0</span><span class="p">),</span> <span class="n">length</span><span class="p">(</span><span class="n">x0</span><span class="p">))</span>
+    <span class="n">lss</span> <span class="o">=</span> <span class="n">LSS</span><span class="p">(</span><span class="n">Abar</span><span class="p">,</span> <span class="n">Bbar</span><span class="p">,</span> <span class="n">Gbar</span><span class="p">,</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nx</span><span class="o">+</span><span class="mi">4</span><span class="n">nm</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">x0</span><span class="p">,</span> <span class="n">S0</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">lss</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">additive_decomp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+    <span class="n">A_res</span> <span class="o">=</span> <span class="o">\</span><span class="p">(</span><span class="nb">I</span> <span class="o">-</span> <span class="n">A</span><span class="p">,</span> <span class="nb">I</span><span class="p">)</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="n">A_res</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">F</span> <span class="o">.+</span> <span class="n">D</span> <span class="o">*</span> <span class="n">A_res</span> <span class="o">*</span> <span class="n">B</span>
+
+    <span class="k">return</span> <span class="n">H</span><span class="p">,</span> <span class="n">g</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">multiplicative_decomp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+    <span class="n">H</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="n">additive_decomp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+    <span class="n">ν_tilde</span> <span class="o">=</span> <span class="n">ν</span> <span class="o">.+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">diag</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">H</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">ν_tilde</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">loglikelihood_path</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="nd">@unpack</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">amf</span>
+    <span class="n">k</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">FF</span> <span class="o">=</span> <span class="n">F</span> <span class="o">*</span> <span class="n">F</span><span class="o">&#39;</span>
+    <span class="n">FFinv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">FF</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">]</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">D</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">obs</span> <span class="o">=</span>  <span class="n">temp</span> <span class="o">.*</span> <span class="n">FFinv</span> <span class="o">.*</span> <span class="n">temp</span>
+    <span class="n">obssum</span> <span class="o">=</span> <span class="n">cumsum</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+    <span class="n">scalar</span> <span class="o">=</span> <span class="p">(</span><span class="n">logdet</span><span class="p">(</span><span class="n">FF</span><span class="p">)</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="nb">π</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">obssum</span> <span class="o">+</span> <span class="n">scalar</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">loglikelihood</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">llh</span> <span class="o">=</span> <span class="n">loglikelihood_path</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">llh</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_additive</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span><span class="p">;</span> <span class="n">npaths</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="n">show_trend</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+
+    <span class="c"># pull out right sizes so we know how to increment</span>
+    <span class="nd">@unpack</span> <span class="n">nx</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="n">nm</span> <span class="o">=</span> <span class="n">amf</span>
+
+    <span class="c"># allocate space (nm is the number of additive functionals - we want npaths for each)</span>
+    <span class="n">mpath</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span><span class="o">*</span><span class="n">npaths</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">mbounds</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="n">nm</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">spath</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span><span class="o">*</span><span class="n">npaths</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">sbounds</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="n">nm</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">tpath</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span><span class="o">*</span><span class="n">npaths</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">ypath</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span><span class="o">*</span><span class="n">npaths</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+    <span class="c"># simulate for as long as we wanted</span>
+    <span class="n">moment_generator</span> <span class="o">=</span> <span class="n">moment_sequence</span><span class="p">(</span><span class="n">amf</span><span class="o">.</span><span class="n">lss</span><span class="p">)</span>
+
+    <span class="c"># pull out population moments</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">moment_generator</span><span class="p">)</span>
+        <span class="n">ymeans</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">yvar</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+
+        <span class="c"># lower and upper bounds - for each additive functional</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">nm</span>
+            <span class="n">li</span><span class="p">,</span> <span class="n">ui</span> <span class="o">=</span> <span class="mi">2</span><span class="p">(</span><span class="n">ii</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="n">ii</span>
+            <span class="k">if</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">])</span> <span class="o">!=</span> <span class="mf">0.0</span>
+                <span class="n">madd_dist</span> <span class="o">=</span> <span class="n">Normal</span><span class="p">(</span><span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">],</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]))</span>
+                <span class="n">mbounds</span><span class="p">[</span><span class="n">li</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantile</span><span class="p">(</span><span class="n">madd_dist</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+                <span class="n">mbounds</span><span class="p">[</span><span class="n">ui</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantile</span><span class="p">(</span><span class="n">madd_dist</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">)</span>
+            <span class="k">elseif</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">])</span> <span class="o">==</span> <span class="mf">0.0</span>
+                <span class="n">mbounds</span><span class="p">[</span><span class="n">li</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span>
+                <span class="n">mbounds</span><span class="p">[</span><span class="n">ui</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span>
+            <span class="k">else</span>
+                <span class="n">error</span><span class="p">(</span><span class="s">&quot;standard error is negative&quot;</span><span class="p">)</span>
+            <span class="k">end</span>
+
+            <span class="k">if</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">])</span> <span class="o">!=</span> <span class="mf">0.0</span>
+                <span class="n">sadd_dist</span> <span class="o">=</span> <span class="n">Normal</span><span class="p">(</span><span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">],</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]))</span>
+                <span class="n">sbounds</span><span class="p">[</span><span class="n">li</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantile</span><span class="p">(</span><span class="n">sadd_dist</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+                <span class="n">sbounds</span><span class="p">[</span><span class="n">ui</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantile</span><span class="p">(</span><span class="n">sadd_dist</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">)</span>
+            <span class="k">elseif</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">])</span> <span class="o">==</span> <span class="mf">0.0</span>
+                <span class="n">sbounds</span><span class="p">[</span><span class="n">li</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span>
+                <span class="n">sbounds</span><span class="p">[</span><span class="n">ui</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span>
+            <span class="k">else</span>
+                <span class="n">error</span><span class="p">(</span><span class="s">&quot;standard error is negative&quot;</span><span class="p">)</span>
+            <span class="k">end</span>
+        <span class="k">end</span>
+        <span class="n">t</span> <span class="o">==</span> <span class="n">T</span> <span class="o">&amp;&amp;</span> <span class="k">break</span>
+    <span class="k">end</span>
+
+    <span class="c"># pull out paths</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">npaths</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">amf</span><span class="o">.</span><span class="n">lss</span><span class="p">,</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">nm</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">ypath</span><span class="p">[</span><span class="n">npaths</span> <span class="o">*</span> <span class="n">ii</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+            <span class="n">mpath</span><span class="p">[</span><span class="n">npaths</span> <span class="o">*</span> <span class="n">ii</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+            <span class="n">spath</span><span class="p">[</span><span class="n">npaths</span> <span class="o">*</span> <span class="n">ii</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+            <span class="n">tpath</span><span class="p">[</span><span class="n">npaths</span> <span class="o">*</span> <span class="n">ii</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">3</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="n">add_figs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">ii</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">nm</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">li</span><span class="p">,</span> <span class="n">ui</span> <span class="o">=</span> <span class="n">npaths</span><span class="o">*</span><span class="p">(</span><span class="n">ii</span><span class="p">),</span> <span class="n">npaths</span><span class="o">*</span><span class="p">(</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">LI</span><span class="p">,</span> <span class="n">UI</span> <span class="o">=</span> <span class="mi">2</span><span class="n">ii</span><span class="p">,</span> <span class="mi">2</span><span class="p">(</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">push!</span><span class="p">(</span><span class="n">add_figs</span><span class="p">,</span>
+            <span class="n">plot_given_paths</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">ypath</span><span class="p">[</span><span class="n">li</span> <span class="o">+</span> <span class="mi">1</span><span class="o">:</span><span class="n">ui</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">mpath</span><span class="p">[</span><span class="n">li</span> <span class="o">+</span> <span class="mi">1</span><span class="o">:</span><span class="n">ui</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">spath</span><span class="p">[</span><span class="n">li</span> <span class="o">+</span> <span class="mi">1</span><span class="o">:</span><span class="n">ui</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span>
+                            <span class="n">tpath</span><span class="p">[</span><span class="n">li</span> <span class="o">+</span> <span class="mi">1</span><span class="o">:</span><span class="n">ui</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">mbounds</span><span class="p">[</span><span class="n">LI</span> <span class="o">+</span> <span class="mi">1</span><span class="o">:</span><span class="n">UI</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">sbounds</span><span class="p">[</span><span class="n">LI</span> <span class="o">+</span> <span class="mi">1</span><span class="o">:</span><span class="n">UI</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span>
+                            <span class="n">show_trend</span> <span class="o">=</span> <span class="n">show_trend</span><span class="p">))</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">add_figs</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_multiplicative</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">npaths</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="n">show_trend</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+    <span class="c"># pull out right sizes so we know how to increment</span>
+    <span class="nd">@unpack</span> <span class="n">nx</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="n">nm</span> <span class="o">=</span> <span class="n">amf</span>
+    <span class="c"># matrices for the multiplicative decomposition</span>
+    <span class="n">H</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">ν_tilde</span> <span class="o">=</span> <span class="n">multiplicative_decomp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+
+    <span class="c"># allocate space (nm is the number of functionals - we want npaths for each)</span>
+    <span class="n">mpath_mult</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span> <span class="o">*</span> <span class="n">npaths</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">mbounds_mult</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="n">nm</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">spath_mult</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span> <span class="o">*</span> <span class="n">npaths</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">sbounds_mult</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="n">nm</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">tpath_mult</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span> <span class="o">*</span> <span class="n">npaths</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">ypath_mult</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span> <span class="o">*</span> <span class="n">npaths</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+    <span class="c"># simulate for as long as we wanted</span>
+    <span class="n">moment_generator</span> <span class="o">=</span> <span class="n">moment_sequence</span><span class="p">(</span><span class="n">amf</span><span class="o">.</span><span class="n">lss</span><span class="p">)</span>
+
+    <span class="c"># pull out population moments</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">moment_generator</span><span class="p">)</span>
+        <span class="n">ymeans</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">yvar</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+
+        <span class="c"># lower and upper bounds - for each multiplicative functional</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">nm</span>
+            <span class="n">li</span><span class="p">,</span> <span class="n">ui</span> <span class="o">=</span> <span class="mi">2</span><span class="p">(</span><span class="n">ii</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="n">ii</span>
+            <span class="k">if</span> <span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span> <span class="o">!=</span> <span class="mf">0.0</span>
+                <span class="n">Mdist</span> <span class="o">=</span> <span class="n">LogNormal</span><span class="p">(</span><span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span><span class="o">-</span> <span class="mf">0.5</span><span class="n">t</span> <span class="o">*</span> <span class="n">diag</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">)[</span><span class="n">ii</span><span class="p">],</span>
+                                <span class="n">sqrt</span><span class="p">(</span><span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]))</span>
+                <span class="n">mbounds_mult</span><span class="p">[</span><span class="n">li</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantile</span><span class="p">(</span><span class="n">Mdist</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+                <span class="n">mbounds_mult</span><span class="p">[</span><span class="n">ui</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantile</span><span class="p">(</span><span class="n">Mdist</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">)</span>
+            <span class="k">elseif</span> <span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span>
+                <span class="n">mbounds_mult</span><span class="p">[</span><span class="n">li</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="n">t</span> <span class="o">*</span> <span class="n">diag</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">)[</span><span class="n">ii</span><span class="p">])</span>
+                <span class="n">mbounds_mult</span><span class="p">[</span><span class="n">ui</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="n">t</span> <span class="o">*</span> <span class="n">diag</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">)[</span><span class="n">ii</span><span class="p">])</span>
+            <span class="k">else</span>
+                <span class="n">error</span><span class="p">(</span><span class="s">&quot;standard error is negative&quot;</span><span class="p">)</span>
+            <span class="k">end</span>
+            <span class="k">if</span> <span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span> <span class="o">!=</span> <span class="mf">0.0</span>
+                <span class="n">Sdist</span> <span class="o">=</span> <span class="n">LogNormal</span><span class="p">(</span><span class="o">-</span><span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">],</span>
+                                <span class="n">sqrt</span><span class="p">(</span><span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]))</span>
+                <span class="n">sbounds_mult</span><span class="p">[</span><span class="n">li</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantile</span><span class="p">(</span><span class="n">Sdist</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+                <span class="n">sbounds_mult</span><span class="p">[</span><span class="n">ui</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantile</span><span class="p">(</span><span class="n">Sdist</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">)</span>
+            <span class="k">elseif</span> <span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span>
+                <span class="n">sbounds_mult</span><span class="p">[</span><span class="n">li</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="o">-</span><span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">])</span>
+                <span class="n">sbounds_mult</span><span class="p">[</span><span class="n">ui</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="o">-</span><span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">2</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">])</span>
+            <span class="k">else</span>
+                <span class="n">error</span><span class="p">(</span><span class="s">&quot;standard error is negative&quot;</span><span class="p">)</span>
+            <span class="k">end</span>
+        <span class="k">end</span>
+        <span class="n">t</span> <span class="o">==</span> <span class="n">T</span> <span class="o">&amp;&amp;</span> <span class="k">break</span>
+    <span class="k">end</span>
+
+    <span class="c"># pull out paths</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">npaths</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">amf</span><span class="o">.</span><span class="n">lss</span><span class="p">,</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">nm</span><span class="o">-</span><span class="mi">1</span>
+            <span class="n">ypath_mult</span><span class="p">[</span><span class="n">npaths</span> <span class="o">*</span> <span class="n">ii</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">nx</span><span class="o">+</span><span class="n">ii</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">])</span>
+            <span class="n">mpath_mult</span><span class="p">[</span><span class="n">npaths</span> <span class="o">*</span> <span class="n">ii</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span>
+                <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">nx</span><span class="o">+</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">-</span> <span class="n">collect</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="mf">0.5</span><span class="o">*</span><span class="n">diag</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">)[</span><span class="n">ii</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">spath_mult</span><span class="p">[</span><span class="n">npaths</span> <span class="o">*</span> <span class="n">ii</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">./</span><span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="n">nx</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">])</span>
+            <span class="n">tpath_mult</span><span class="p">[</span><span class="n">npaths</span> <span class="o">*</span> <span class="n">ii</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span>
+                <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">3</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">diag</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">)[</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="n">mult_figs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">ii</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">nm</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">li</span><span class="p">,</span> <span class="n">ui</span> <span class="o">=</span> <span class="n">npaths</span> <span class="o">*</span> <span class="n">ii</span><span class="p">,</span> <span class="n">npaths</span> <span class="o">*</span> <span class="p">(</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">LI</span><span class="p">,</span> <span class="n">UI</span> <span class="o">=</span> <span class="mi">2</span><span class="n">ii</span><span class="p">,</span> <span class="mi">2</span><span class="p">(</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">push!</span><span class="p">(</span><span class="n">mult_figs</span><span class="p">,</span>
+            <span class="n">plot_given_paths</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">ypath_mult</span><span class="p">[</span><span class="n">li</span><span class="o">+</span><span class="mi">1</span><span class="o">:</span><span class="n">ui</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">mpath_mult</span><span class="p">[</span><span class="n">li</span><span class="o">+</span><span class="mi">1</span><span class="o">:</span><span class="n">ui</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span>
+                            <span class="n">spath_mult</span><span class="p">[</span><span class="n">li</span><span class="o">+</span><span class="mi">1</span><span class="o">:</span><span class="n">ui</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">tpath_mult</span><span class="p">[</span><span class="n">li</span><span class="o">+</span><span class="mi">1</span><span class="o">:</span><span class="n">ui</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span>
+                            <span class="n">mbounds_mult</span><span class="p">[</span><span class="n">LI</span><span class="o">+</span><span class="mi">1</span><span class="o">:</span><span class="n">UI</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">sbounds_mult</span><span class="p">[</span><span class="n">LI</span><span class="o">+</span><span class="mi">1</span><span class="o">:</span><span class="n">UI</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span>
+                            <span class="n">horline</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">show_trend</span><span class="o">=</span><span class="n">show_trend</span><span class="p">))</span>
+    <span class="k">end</span>
+
+    <span class="k">return</span> <span class="n">mult_figs</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_martingales</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">npaths</span> <span class="o">=</span> <span class="mi">25</span><span class="p">)</span>
+
+    <span class="c"># pull out right sizes so we know how to increment</span>
+    <span class="nd">@unpack</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="n">nm</span> <span class="o">=</span> <span class="n">amf</span>
+    <span class="c"># matrices for the multiplicative decomposition</span>
+    <span class="n">H</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">ν_tilde</span> <span class="o">=</span> <span class="n">multiplicative_decomp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span><span class="p">,</span> <span class="n">nx</span><span class="p">)</span>
+
+    <span class="c"># allocate space (nm is the number of functionals - we want npaths for each)</span>
+    <span class="n">mpath_mult</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nm</span> <span class="o">*</span> <span class="n">npaths</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">mbounds_mult</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="n">nm</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+    <span class="c"># simulate for as long as we wanted</span>
+    <span class="n">moment_generator</span> <span class="o">=</span> <span class="n">moment_sequence</span><span class="p">(</span><span class="n">amf</span><span class="o">.</span><span class="n">lss</span><span class="p">)</span>
+    <span class="c"># pull out population moments</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">moment_generator</span><span class="p">)</span>
+        <span class="n">ymeans</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">yvar</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+
+        <span class="c"># lower and upper bounds - for each functional</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">nm</span>
+            <span class="n">li</span><span class="p">,</span> <span class="n">ui</span> <span class="o">=</span> <span class="mi">2</span><span class="p">(</span><span class="n">ii</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="n">ii</span>
+            <span class="k">if</span> <span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span> <span class="o">!=</span> <span class="mf">0.0</span>
+                <span class="n">Mdist</span> <span class="o">=</span> <span class="n">LogNormal</span><span class="p">(</span><span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">^</span><span class="mi">2</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="n">diag</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">)[</span><span class="n">ii</span><span class="p">],</span>
+                            <span class="n">sqrt</span><span class="p">(</span><span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]))</span>
+                <span class="n">mbounds_mult</span><span class="p">[</span><span class="n">li</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantile</span><span class="p">(</span><span class="n">Mdist</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+                <span class="n">mbounds_mult</span><span class="p">[</span><span class="n">ui</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">quantile</span><span class="p">(</span><span class="n">Mdist</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">)</span>
+            <span class="k">elseif</span> <span class="n">yvar</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">,</span> <span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span>
+                <span class="n">mbounds_mult</span><span class="p">[</span><span class="n">li</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="o">^</span><span class="mi">2</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="n">diag</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">)[</span><span class="n">ii</span><span class="p">]</span>
+                <span class="n">mbounds_mult</span><span class="p">[</span><span class="n">ui</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ymeans</span><span class="p">[</span><span class="n">nx</span> <span class="o">+</span> <span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="p">]</span><span class="o">-</span> <span class="mf">0.5</span><span class="n">t</span> <span class="o">*</span> <span class="n">diag</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">)[</span><span class="n">ii</span><span class="p">]</span>
+            <span class="k">else</span>
+                <span class="n">error</span><span class="p">(</span><span class="s">&quot;standard error is negative&quot;</span><span class="p">)</span>
+            <span class="k">end</span>
+        <span class="k">end</span>
+        <span class="n">t</span> <span class="o">==</span> <span class="n">T</span> <span class="o">&amp;&amp;</span> <span class="k">break</span>
+    <span class="k">end</span>
+
+    <span class="c"># pull out paths</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">npaths</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">amf</span><span class="o">.</span><span class="n">lss</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">nm</span><span class="o">-</span><span class="mi">1</span>
+            <span class="n">mpath_mult</span><span class="p">[</span><span class="n">npaths</span> <span class="o">*</span> <span class="n">ii</span> <span class="o">+</span> <span class="n">n</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span>
+                <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">nx</span><span class="o">+</span><span class="n">nm</span> <span class="o">+</span> <span class="n">ii</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">diag</span><span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">)[</span><span class="n">ii</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="n">mart_figs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">ii</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">nm</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">li</span><span class="p">,</span> <span class="n">ui</span> <span class="o">=</span> <span class="n">npaths</span><span class="o">*</span><span class="p">(</span><span class="n">ii</span><span class="p">),</span> <span class="n">npaths</span><span class="o">*</span><span class="p">(</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">LI</span><span class="p">,</span> <span class="n">UI</span> <span class="o">=</span> <span class="mi">2</span><span class="n">ii</span><span class="p">,</span> <span class="mi">2</span><span class="p">(</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">push!</span><span class="p">(</span><span class="n">mart_figs</span><span class="p">,</span>
+            <span class="n">plot_martingale_paths</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">mpath_mult</span><span class="p">[</span><span class="n">li</span> <span class="o">+</span> <span class="mi">1</span><span class="o">:</span><span class="n">ui</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span>
+                                                    <span class="n">mbounds_mult</span><span class="p">[</span><span class="n">LI</span> <span class="o">+</span> <span class="mi">1</span><span class="o">:</span><span class="n">UI</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">horline</span> <span class="o">=</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">plot!</span><span class="p">(</span><span class="n">mart_figs</span><span class="p">[</span><span class="n">ii</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Martingale components for many paths of y_(ii + 1)&quot;</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">return</span> <span class="n">mart_figs</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_given_paths</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">ypath</span><span class="p">,</span> <span class="n">mpath</span><span class="p">,</span> <span class="n">spath</span><span class="p">,</span> <span class="n">tpath</span><span class="p">,</span> <span class="n">mbounds</span><span class="p">,</span> <span class="n">sbounds</span><span class="p">;</span>
+                          <span class="n">horline</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">show_trend</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+
+    <span class="c"># allocate space</span>
+    <span class="n">trange</span> <span class="o">=</span> <span class="mi">1</span><span class="o">:</span><span class="n">T</span>
+
+    <span class="c"># allocate transpose</span>
+    <span class="n">mpathᵀ</span> <span class="o">=</span> <span class="kt">Matrix</span><span class="p">(</span><span class="n">mpath</span><span class="o">&#39;</span><span class="p">)</span>
+
+    <span class="c"># create figure</span>
+    <span class="n">plots</span><span class="o">=</span><span class="n">plot</span><span class="p">(</span><span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">))</span>
+
+    <span class="c"># plot all paths together</span>
+
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">trange</span><span class="p">,</span> <span class="n">ypath</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;y_t&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">trange</span><span class="p">,</span> <span class="n">mpath</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;m_t&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">magenta</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">trange</span><span class="p">,</span> <span class="n">spath</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;s_t&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">green</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show_trend</span>
+        <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">trange</span><span class="p">,</span> <span class="n">tpath</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;t_t&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">red</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="n">horline</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;One Path of All Variables&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=:</span><span class="n">topleft</span><span class="p">)</span>
+
+    <span class="c"># plot martingale component</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">trange</span><span class="p">,</span> <span class="n">mpath</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">magenta</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">trange</span><span class="p">,</span> <span class="n">mpathᵀ</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.45</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">magenta</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">ub</span> <span class="o">=</span> <span class="n">mbounds</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+    <span class="n">lb</span> <span class="o">=</span> <span class="n">mbounds</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">ub</span><span class="p">,</span> <span class="n">fillrange</span> <span class="o">=</span> <span class="p">[</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">],</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">magenta</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="n">horline</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Martingale Components for Many Paths&quot;</span><span class="p">)</span>
+
+    <span class="c"># plot stationary component</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">spath</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">green</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="kt">Matrix</span><span class="p">(</span><span class="n">spath</span><span class="o">&#39;</span><span class="p">),</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">green</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">ub</span> <span class="o">=</span> <span class="n">sbounds</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+    <span class="n">lb</span> <span class="o">=</span> <span class="n">sbounds</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">ub</span><span class="p">,</span> <span class="n">fillrange</span> <span class="o">=</span> <span class="p">[</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">],</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">green</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="n">horline</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Stationary Components for Many Paths&quot;</span><span class="p">)</span>
+
+    <span class="c"># plot trend component</span>
+    <span class="k">if</span> <span class="n">show_trend</span> <span class="o">==</span> <span class="kc">true</span>
+        <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="kt">Matrix</span><span class="p">(</span><span class="n">tpath</span><span class="o">&#39;</span><span class="p">),</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">red</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="n">horline</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Trend Components for Many Paths&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">plots</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_martingale_paths</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">mpath</span><span class="p">,</span> <span class="n">mbounds</span><span class="p">;</span>
+                               <span class="n">horline</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">show_trend</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+    <span class="c"># allocate space</span>
+    <span class="n">trange</span> <span class="o">=</span> <span class="mi">1</span><span class="o">:</span><span class="n">T</span>
+
+    <span class="c"># create the plot</span>
+    <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
+
+    <span class="c"># plot martingale component</span>
+    <span class="n">ub</span> <span class="o">=</span> <span class="n">mbounds</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+    <span class="n">lb</span> <span class="o">=</span> <span class="n">mbounds</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">fillrange</span> <span class="o">=</span> <span class="p">[</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">],</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">magenta</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="n">horline</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">trange</span><span class="p">,</span> <span class="kt">Matrix</span><span class="p">(</span><span class="n">mpath</span><span class="o">&#39;</span><span class="p">),</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">plt</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>For now, we just plot <span class="math notranslate nohighlight">\(y_t\)</span> and <span class="math notranslate nohighlight">\(x_t\)</span>, postponing until later a description of exactly how we compute them.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ϕ_1</span><span class="p">,</span> <span class="n">ϕ_2</span><span class="p">,</span> <span class="n">ϕ_3</span><span class="p">,</span> <span class="n">ϕ_4</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span>
+<span class="n">σ</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">ν</span> <span class="o">=</span> <span class="mf">0.01</span> <span class="c"># growth rate</span>
+
+<span class="c"># A matrix should be n x n</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">ϕ_1</span> <span class="n">ϕ_2</span> <span class="n">ϕ_3</span> <span class="n">ϕ_4</span><span class="p">;</span>
+       <span class="mi">1</span>   <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">0</span><span class="p">;</span>
+       <span class="mi">0</span>   <span class="mi">1</span>   <span class="mi">0</span>   <span class="mi">0</span><span class="p">;</span>
+       <span class="mi">0</span>   <span class="mi">0</span>   <span class="mi">1</span>   <span class="mi">0</span><span class="p">]</span>
+
+<span class="c"># B matrix should be n x k</span>
+<span class="n">B</span> <span class="o">=</span> <span class="p">[</span><span class="n">σ</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="n">D</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">A</span>
+<span class="n">F</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">⋅</span> <span class="n">vec</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+
+<span class="n">amf</span> <span class="o">=</span> <span class="n">AMF_LSS_VAR</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span><span class="p">)</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="mi">150</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">amf</span><span class="o">.</span><span class="n">lss</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+<span class="n">plots</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+<span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="n">amf</span><span class="o">.</span><span class="n">nx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span>  <span class="s">&quot;A particular path of y_t&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="p">,</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">green</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=:</span><span class="n">dashdot</span><span class="p">,</span>
+      <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Associated path of x_t&quot;</span><span class="p">)</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Notice the irregular but persistent growth in <span class="math notranslate nohighlight">\(y_t\)</span>.</p>
+</div>
+<div class="section" id="decomposition">
+<h3><span class="section-number">57.3.3. </span>Decomposition<a class="headerlink" href="#decomposition" title="Permalink to this headline">¶</a></h3>
+<p>Hansen and Sargent <span id="id6">[<a class="reference internal" href="../zreferences.html#id33"><span>HS17</span></a>]</span> describe how to construct a decomposition of
+an additive functional into four parts:</p>
+<ul class="simple">
+<li><p>a constant inherited from initial values <span class="math notranslate nohighlight">\(x_0\)</span> and <span class="math notranslate nohighlight">\(y_0\)</span></p></li>
+<li><p>a linear trend</p></li>
+<li><p>a martingale</p></li>
+<li><p>an (asymptotically) stationary component</p></li>
+</ul>
+<p>To attain this decomposition for the particular class of additive
+functionals defined by <a class="reference internal" href="#equation-old1-additive-functionals">(57.1)</a> and <a class="reference internal" href="#equation-old2-additive-functionals">(57.2)</a>, we first construct the matrices</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+  H &amp; := F + B'(I - A')^{-1} D
+  \\
+  g &amp; := D' (I - A)^{-1}
+\end{aligned}
+\end{split}\]</div>
+<p>Then the Hansen-Scheinkman <span id="id7">[<a class="reference internal" href="../zreferences.html#id32"><span>HS09</span></a>]</span> decomposition is</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+  y_t
+  &amp;= \underbrace{t \nu}_{\text{trend component}} +
+     \overbrace{\sum_{j=1}^t H z_j}^{\text{Martingale component}} -
+     \underbrace{g x_t}_{\text{stationary component}} +
+     \overbrace{g x_0 + y_0}^{\text{initial conditions}}
+\end{aligned}
+\]</div>
+<p>At this stage you should pause and verify that <span class="math notranslate nohighlight">\(y_{t+1} - y_t\)</span> satisfies <a class="reference internal" href="#equation-old2-additive-functionals">(57.2)</a>.</p>
+<p>It is convenient for us to introduce the following notation:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\tau_t = \nu t\)</span> , a linear, deterministic trend</p></li>
+<li><p><span class="math notranslate nohighlight">\(m_t = \sum_{j=1}^t H z_j\)</span>, a martingale with time <span class="math notranslate nohighlight">\(t+1\)</span> increment <span class="math notranslate nohighlight">\(H z_{t+1}\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(s_t = g x_t\)</span>, an (asymptotically) stationary component</p></li>
+</ul>
+<p>We want to characterize and simulate components <span class="math notranslate nohighlight">\(\tau_t, m_t, s_t\)</span> of the decomposition.</p>
+<p>A convenient way to do this is to construct an appropriate instance of a <a class="reference internal" href="../tools_and_techniques/linear_models.html"><span class="doc">linear state space system</span></a> by using <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl">LSS</a> from <a class="reference external" href="http://quantecon.org/quantecon-jl">QuantEcon.jl</a>.</p>
+<p>This will allow us to use the routines in <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl">LSS</a> to study dynamics.</p>
+<p>To start, observe that, under the dynamics in <a class="reference internal" href="#equation-old1-additive-functionals">(57.1)</a> and <a class="reference internal" href="#equation-old2-additive-functionals">(57.2)</a> and with the
+definitions just given,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{bmatrix}
+    1 \\
+    t+1 \\
+    x_{t+1} \\
+    y_{t+1} \\
+    m_{t+1}
+\end{bmatrix}
+=
+\begin{bmatrix}
+    1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+    1 &amp; 1 &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; A &amp; 0 &amp; 0 \\
+    \nu &amp; 0 &amp; D' &amp; 1 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+\begin{bmatrix}
+    1 \\
+    t \\
+    x_t \\
+    y_t \\
+    m_t
+\end{bmatrix}
++
+\begin{bmatrix}
+    0 \\
+    0 \\
+    B \\
+    F' \\
+    H'
+\end{bmatrix}
+z_{t+1}
+\end{split}\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{bmatrix}
+    x_t \\
+    y_t \\
+    \tau_t \\
+    m_t \\
+    s_t
+\end{bmatrix}
+=
+\begin{bmatrix}
+    0 &amp; 0 &amp; I &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 \\
+    0 &amp; \nu &amp; 0 &amp; 0 &amp; 0 \\
+    0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 \\
+    0 &amp; 0 &amp; -g &amp; 0 &amp; 0
+\end{bmatrix}
+\begin{bmatrix}
+    1 \\
+    t \\
+    x_t \\
+    y_t \\
+    m_t
+\end{bmatrix}
+\end{split}\]</div>
+<p>With</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\tilde{x} := \begin{bmatrix} 1 \\ t \\ x_t \\ y_t \\ m_t \end{bmatrix}
+\quad \text{and} \quad
+\tilde{y} := \begin{bmatrix} x_t \\ y_t \\ \tau_t \\ m_t \\ s_t \end{bmatrix}
+\end{split}\]</div>
+<p>we can write this as the linear state space system</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+  \tilde{x}_{t+1} &amp;= \tilde{A} \tilde{x}_t + \tilde{B} z_{t+1} \\
+  \tilde{y}_{t} &amp;= \tilde{D} \tilde{x}_t
+\end{aligned}
+\end{split}\]</div>
+<p>By picking out components of <span class="math notranslate nohighlight">\(\tilde y_t\)</span>, we can track all variables of
+interest.</p>
+</div>
+</div>
+<div class="section" id="code">
+<h2><a class="toc-backref" href="#id13"><span class="section-number">57.4. </span>Code</a><a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h2>
+<p>The type <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl">AMF_LSS_VAR</a> mentioned above does all that we want to study our additive functional.</p>
+<p>In fact <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl">AMF_LSS_VAR</a> does more, as we shall explain below.</p>
+<p>(A hint that it does more is the name of the type – here AMF stands for
+“additive and multiplicative functional” – the code will do things for
+multiplicative functionals too)</p>
+<p>Let’s use this code (embedded above) to explore the <a class="reference internal" href="#addfunc-eg1"><span class="std std-ref">example process described above</span></a>.</p>
+<p>If you run <a class="reference internal" href="#addfunc-egcode"><span class="std std-ref">the code that first simulated that example</span></a> again and then the method call
+you will generate (modulo randomness) the plot</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span> <span class="o">=</span> <span class="n">plot_additive</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>When we plot multiple realizations of a component in the 2nd, 3rd, and 4th panels, we also plot population 95% probability coverage sets computed using the LSS type.</p>
+<p>We have chosen to simulate many paths, all starting from the <em>same</em> nonrandom initial conditions <span class="math notranslate nohighlight">\(x_0, y_0\)</span> (you can tell this from the shape of the 95% probability coverage shaded areas).</p>
+<p>Notice tell-tale signs of these probability coverage shaded areas</p>
+<ul class="simple">
+<li><p>the purple one for the martingale component <span class="math notranslate nohighlight">\(m_t\)</span> grows with
+<span class="math notranslate nohighlight">\(\sqrt{t}\)</span></p></li>
+<li><p>the green one for the stationary component <span class="math notranslate nohighlight">\(s_t\)</span> converges to a
+constant band</p></li>
+</ul>
+<div class="section" id="an-associated-multiplicative-functional">
+<h3><span class="section-number">57.4.1. </span>An associated multiplicative functional<a class="headerlink" href="#an-associated-multiplicative-functional" title="Permalink to this headline">¶</a></h3>
+<p>Where <span class="math notranslate nohighlight">\(\{y_t\}\)</span> is our additive functional, let <span class="math notranslate nohighlight">\(M_t = \exp(y_t)\)</span>.</p>
+<p>As mentioned above, the process <span class="math notranslate nohighlight">\(\{M_t\}\)</span> is called a <strong>multiplicative functional</strong>.</p>
+<p>Corresponding to the additive decomposition described above we have the multiplicative decomposition of the <span class="math notranslate nohighlight">\(M_t\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+\frac{M_t}{M_0}
+= \exp (t \nu) \exp \Bigl(\sum_{j=1}^t H \cdot Z_j \Bigr) \exp \biggl( D'(I-A)^{-1} x_0 - D'(I-A)^{-1} x_t \biggr)
+\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{M_t}{M_0} =  \exp\left( \tilde \nu t \right) \Biggl( \frac{\widetilde M_t}{\widetilde M_0}\Biggr) \left( \frac{\tilde e (X_0)} {\tilde e(x_t)} \right)
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde \nu =  \nu + \frac{H \cdot H}{2} ,
+\quad
+\widetilde M_t = \exp \biggl( \sum_{j=1}^t \biggl(H \cdot z_j -\frac{ H \cdot H }{2} \biggr) \biggr),  \quad \widetilde M_0 =1
+\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde e(x) = \exp[g(x)] = \exp \bigl[ D' (I - A)^{-1} x \bigr]
+\]</div>
+<p>An instance of type <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl">AMF_LSS_VAR</a> includes this associated multiplicative functional as an attribute.</p>
+<p>Let’s plot this multiplicative functional for our example.</p>
+<p>If you run <a class="reference internal" href="#addfunc-egcode"><span class="std std-ref">the code that first simulated that example</span></a> again and then the method call</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span> <span class="o">=</span> <span class="n">plot_multiplicative</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>As before, when we plotted multiple realizations of a component in the 2nd, 3rd, and 4th panels, we also plotted population 95% confidence bands computed using the LSS type.</p>
+<p>Comparing this figure and the last also helps show how geometric growth differs from
+arithmetic growth.</p>
+</div>
+<div class="section" id="a-peculiar-large-sample-property">
+<h3><span class="section-number">57.4.2. </span>A peculiar large sample property<a class="headerlink" href="#a-peculiar-large-sample-property" title="Permalink to this headline">¶</a></h3>
+<p>Hansen and Sargent <span id="id8">[<a class="reference internal" href="../zreferences.html#id33"><span>HS17</span></a>]</span> (ch. 6) note that the martingale component
+<span class="math notranslate nohighlight">\(\widetilde M_t\)</span> of the multiplicative decomposition has a peculiar property.</p>
+<ul class="simple">
+<li><p>While <span class="math notranslate nohighlight">\(E_0 \widetilde M_t = 1\)</span> for all <span class="math notranslate nohighlight">\(t \geq 0\)</span>,
+nevertheless <span class="math notranslate nohighlight">\(\ldots\)</span>.</p></li>
+<li><p>As <span class="math notranslate nohighlight">\(t \rightarrow +\infty\)</span>, <span class="math notranslate nohighlight">\(\widetilde M_t\)</span> converges to
+zero almost surely.</p></li>
+</ul>
+<p>The following simulation of many paths of <span class="math notranslate nohighlight">\(\widetilde M_t\)</span> illustrates this property</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span> <span class="o">=</span> <span class="n">plot_martingales</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="mi">12000</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./time_series_models"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Packages and Software Engineering in Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   22. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   23. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   24. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   25. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   26. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   27. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   28. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   29. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   30. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   31. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   33. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   34. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   35. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   36. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   37. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   39. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   40. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   41. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   42. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   44. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   45. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   46. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   47. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   48. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   49. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   50. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   51. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   52. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   53. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   54. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="arma.html">
+   55. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="estspec.html">
+   56. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   57. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="multiplicative_functionals.html">
+   58. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lu_tricks.html">
+   59. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="classical_filtering.html">
+   60. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   61. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   62. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   63. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   64. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   65. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   66. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   67. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   68. Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/time_series_models/additive_functionals.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/time_series_models/additive_functionals.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/time_series_models/additive_functionals.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/time_series_models/additive_functionals.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

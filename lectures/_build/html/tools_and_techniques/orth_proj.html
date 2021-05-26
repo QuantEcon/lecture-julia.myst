@@ -1,0 +1,1532 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>16. Orthogonal Projections and Their Applications &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/orth_proj.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="17. LLN and CLT" href="lln_clt.html" />
+    <link rel="prev" title="15. Linear Algebra" href="linear_algebra.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Orthogonal Projections and Their Applications"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Orthogonal Projections and Their Applications" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/tools_and_techniques/orth_proj.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=tools_and_techniques/orth_proj>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   16.1. Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#further-reading">
+     16.1.1. Further Reading
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#key-definitions">
+   16.2. Key Definitions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#linear-independence-vs-orthogonality">
+     16.2.1. Linear Independence vs Orthogonality
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-orthogonal-projection-theorem">
+   16.3. The Orthogonal Projection Theorem
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#proof-of-sufficiency">
+     16.3.1. Proof of sufficiency
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#orthogonal-projection-as-a-mapping">
+     16.3.2. Orthogonal Projection as a Mapping
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#orthogonal-complement">
+       16.3.2.1. Orthogonal Complement
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#orthonormal-basis">
+   16.4. Orthonormal Basis
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#projection-onto-an-orthonormal-basis">
+     16.4.1. Projection onto an Orthonormal Basis
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#projection-using-matrix-algebra">
+   16.5. Projection Using Matrix Algebra
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#starting-with-x">
+     16.5.1. Starting with
+     <span class="math notranslate nohighlight">
+      \(X\)
+     </span>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-orthonormal-case">
+     16.5.2. The Orthonormal Case
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#application-overdetermined-systems-of-equations">
+     16.5.3. Application: Overdetermined Systems of Equations
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#least-squares-regression">
+   16.6. Least Squares Regression
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#squared-risk-measures">
+     16.6.1. Squared risk measures
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#solution">
+     16.6.2. Solution
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#orthogonalization-and-decomposition">
+   16.7. Orthogonalization and Decomposition
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#gram-schmidt-orthogonalization">
+     16.7.1. Gram-Schmidt Orthogonalization
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#qr-decomposition">
+     16.7.2. QR Decomposition
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#linear-regression-via-qr-decomposition">
+     16.7.3. Linear Regression via QR Decomposition
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   16.8. Exercises
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1">
+     16.8.1. Exercise 1
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-2">
+     16.8.2. Exercise 2
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-3">
+     16.8.3. Exercise 3
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solutions">
+   16.9. Solutions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     16.9.1. Exercise 1
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     16.9.2. Exercise 2
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     16.9.3. Exercise 3
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#setup">
+     16.9.4. Setup
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Orthogonal Projections and Their Applications</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="orthogonal-projections-and-their-applications">
+<h1><a class="toc-backref" href="#id5"><span class="section-number">16. </span>Orthogonal Projections and Their Applications</a><a class="headerlink" href="#orthogonal-projections-and-their-applications" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<span id="index-0"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#orthogonal-projections-and-their-applications" id="id5">Orthogonal Projections and Their Applications</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id6">Overview</a></p></li>
+<li><p><a class="reference internal" href="#key-definitions" id="id7">Key Definitions</a></p></li>
+<li><p><a class="reference internal" href="#the-orthogonal-projection-theorem" id="id8">The Orthogonal Projection Theorem</a></p></li>
+<li><p><a class="reference internal" href="#orthonormal-basis" id="id9">Orthonormal Basis</a></p></li>
+<li><p><a class="reference internal" href="#projection-using-matrix-algebra" id="id10">Projection Using Matrix Algebra</a></p></li>
+<li><p><a class="reference internal" href="#least-squares-regression" id="id11">Least Squares Regression</a></p></li>
+<li><p><a class="reference internal" href="#orthogonalization-and-decomposition" id="id12">Orthogonalization and Decomposition</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id13">Exercises</a></p></li>
+<li><p><a class="reference internal" href="#solutions" id="id14">Solutions</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id6"><span class="section-number">16.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Orthogonal projection is a cornerstone of vector space methods, with many diverse applications.</p>
+<p>These include, but are not limited to,</p>
+<ul class="simple">
+<li><p>Least squares projection, also known as linear regression</p></li>
+<li><p>Conditional expectations for multivariate normal (Gaussian) distributions</p></li>
+<li><p>Gram–Schmidt orthogonalization</p></li>
+<li><p>QR decomposition</p></li>
+<li><p>Orthogonal polynomials</p></li>
+<li><p>etc</p></li>
+</ul>
+<p>In this lecture we focus on</p>
+<ul class="simple">
+<li><p>key ideas</p></li>
+<li><p>least squares regression</p></li>
+</ul>
+<div class="section" id="further-reading">
+<h3><span class="section-number">16.1.1. </span>Further Reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h3>
+<p>For background and foundational concepts, see our lecture <a class="reference internal" href="linear_algebra.html"><span class="doc">on linear algebra</span></a>.</p>
+<p>For more proofs and greater theoretical detail, see <a class="reference external" href="http://www.johnstachurski.net/emet.html">A Primer in Econometric Theory</a>.</p>
+<p>For a complete set of proofs in a general setting, see, for example, <span id="id1">[<a class="reference internal" href="../zreferences.html#id39"><span>Rom05</span></a>]</span>.</p>
+<p>For an advanced treatment of projection in the context of least squares prediction, see <a class="reference external" href="http://www.tomsargent.com/books/TOMchpt.2.pdf">this book chapter</a>.</p>
+</div>
+</div>
+<div class="section" id="key-definitions">
+<h2><a class="toc-backref" href="#id7"><span class="section-number">16.2. </span>Key Definitions</a><a class="headerlink" href="#key-definitions" title="Permalink to this headline">¶</a></h2>
+<p>Assume  <span class="math notranslate nohighlight">\(x, z \in \mathbb{R}^n\)</span>.</p>
+<p>Define <span class="math notranslate nohighlight">\(\langle x,  z\rangle = \sum_i x_i z_i\)</span>.</p>
+<p>Recall <span class="math notranslate nohighlight">\(\|x \|^2 = \langle x, x \rangle\)</span>.</p>
+<p>The <strong>law of cosines</strong> states that <span class="math notranslate nohighlight">\(\langle x, z \rangle = \| x \| \| z \| \cos(\theta)\)</span> where <span class="math notranslate nohighlight">\(\theta\)</span> is the angle between the vectors <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(z\)</span>.</p>
+<p>When <span class="math notranslate nohighlight">\(\langle x,  z\rangle = 0\)</span>, then <span class="math notranslate nohighlight">\(\cos(\theta) = 0\)</span> and  <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(z\)</span> are said to be <strong>orthogonal</strong> and we write <span class="math notranslate nohighlight">\(x \perp z\)</span></p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/orth_proj_def1.png"><img alt="../_images/orth_proj_def1.png" src="../_images/orth_proj_def1.png" style="width: 50%;" /></a>
+</div>
+<p>For a linear subspace  <span class="math notranslate nohighlight">\(S \subset \mathbb{R}^n\)</span>, we call <span class="math notranslate nohighlight">\(x \in \mathbb{R}^n\)</span> <strong>orthogonal to</strong> <span class="math notranslate nohighlight">\(S\)</span> if <span class="math notranslate nohighlight">\(x \perp z\)</span> for all <span class="math notranslate nohighlight">\(z \in S\)</span>, and write <span class="math notranslate nohighlight">\(x \perp S\)</span></p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/orth_proj_def2.png"><img alt="../_images/orth_proj_def2.png" src="../_images/orth_proj_def2.png" style="width: 50%;" /></a>
+</div>
+<p>The <strong>orthogonal complement</strong> of linear subspace <span class="math notranslate nohighlight">\(S \subset \mathbb{R}^n\)</span> is the set <span class="math notranslate nohighlight">\(S^{\perp} := \{x \in \mathbb{R}^n \,:\, x \perp S\}\)</span></p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/orth_proj_def3.png"><img alt="../_images/orth_proj_def3.png" src="../_images/orth_proj_def3.png" style="width: 50%;" /></a>
+</div>
+<p><span class="math notranslate nohighlight">\(S^\perp\)</span> is  a linear subspace of <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span></p>
+<ul class="simple">
+<li><p>To see this, fix <span class="math notranslate nohighlight">\(x, y \in S^{\perp}\)</span> and <span class="math notranslate nohighlight">\(\alpha, \beta \in \mathbb{R}\)</span>.</p></li>
+<li><p>Observe that if <span class="math notranslate nohighlight">\(z \in S\)</span>, then</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\langle \alpha x + \beta y, z \rangle
+= \alpha \langle x, z \rangle + \beta \langle y, z \rangle
+ = \alpha \times 0  + \beta \times 0 = 0
+\]</div>
+<ul class="simple">
+<li><p>Hence <span class="math notranslate nohighlight">\(\alpha x + \beta y \in S^{\perp}\)</span>, as was to be shown</p></li>
+</ul>
+<p>A set of vectors <span class="math notranslate nohighlight">\(\{x_1, \ldots, x_k\} \subset \mathbb{R}^n\)</span> is called an <strong>orthogonal set</strong> if <span class="math notranslate nohighlight">\(x_i \perp x_j\)</span> whenever <span class="math notranslate nohighlight">\(i \not= j\)</span>.</p>
+<p>If <span class="math notranslate nohighlight">\(\{x_1, \ldots, x_k\}\)</span> is an orthogonal set, then the <strong>Pythagorean Law</strong> states that</p>
+<div class="math notranslate nohighlight">
+\[
+\| x_1 + \cdots + x_k \|^2
+= \| x_1 \|^2 + \cdots + \| x_k \|^2
+\]</div>
+<p>For example, when  <span class="math notranslate nohighlight">\(k=2\)</span>, <span class="math notranslate nohighlight">\(x_1 \perp x_2\)</span> implies</p>
+<div class="math notranslate nohighlight">
+\[
+\| x_1 + x_2 \|^2
+ = \langle x_1 + x_2, x_1 + x_2 \rangle
+ = \langle x_1, x_1 \rangle + 2 \langle  x_2, x_1 \rangle + \langle x_2, x_2 \rangle
+ = \| x_1 \|^2 + \| x_2 \|^2
+\]</div>
+<div class="section" id="linear-independence-vs-orthogonality">
+<h3><span class="section-number">16.2.1. </span>Linear Independence vs Orthogonality<a class="headerlink" href="#linear-independence-vs-orthogonality" title="Permalink to this headline">¶</a></h3>
+<p>If <span class="math notranslate nohighlight">\(X \subset \mathbb{R}^n\)</span> is an orthogonal set and <span class="math notranslate nohighlight">\(0 \notin X\)</span>, then <span class="math notranslate nohighlight">\(X\)</span> is linearly independent.</p>
+<p>Proving this is a nice exercise.</p>
+<p>While the converse is not true, a kind of partial converse holds, as we’ll <a class="reference internal" href="#gram-schmidt"><span class="std std-ref">see below</span></a>.</p>
+</div>
+</div>
+<div class="section" id="the-orthogonal-projection-theorem">
+<h2><a class="toc-backref" href="#id8"><span class="section-number">16.3. </span>The Orthogonal Projection Theorem</a><a class="headerlink" href="#the-orthogonal-projection-theorem" title="Permalink to this headline">¶</a></h2>
+<p>What vector within a linear subspace of <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span>  best approximates a given vector in <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span>?</p>
+<p>The next theorem provides answers this question.</p>
+<p><strong>Theorem</strong> (OPT) Given <span class="math notranslate nohighlight">\(y \in \mathbb{R}^n\)</span> and linear subspace <span class="math notranslate nohighlight">\(S \subset \mathbb{R}^n\)</span>,
+there exists a unique solution to the minimization problem</p>
+<div class="math notranslate nohighlight">
+\[
+\hat y := \mathop{\mathrm{arg\,min}}_{z \in S} \|y - z\|
+\]</div>
+<p>The minimizer <span class="math notranslate nohighlight">\(\hat y\)</span> is the unique vector in <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span> that satisfies</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\hat y \in S\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(y - \hat y \perp S\)</span></p></li>
+</ul>
+<p>The vector <span class="math notranslate nohighlight">\(\hat y\)</span> is called the <strong>orthogonal projection</strong> of <span class="math notranslate nohighlight">\(y\)</span> onto <span class="math notranslate nohighlight">\(S\)</span>.</p>
+<p>The next figure provides some intuition</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/orth_proj_thm1.png"><img alt="../_images/orth_proj_thm1.png" src="../_images/orth_proj_thm1.png" style="width: 50%;" /></a>
+</div>
+<div class="section" id="proof-of-sufficiency">
+<h3><span class="section-number">16.3.1. </span>Proof of sufficiency<a class="headerlink" href="#proof-of-sufficiency" title="Permalink to this headline">¶</a></h3>
+<p>We’ll omit the full proof.</p>
+<p>But we will prove sufficiency of the asserted conditions.</p>
+<p>To this end, let <span class="math notranslate nohighlight">\(y \in \mathbb{R}^n\)</span> and let <span class="math notranslate nohighlight">\(S\)</span> be a linear subspace of <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span>.</p>
+<p>Let <span class="math notranslate nohighlight">\(\hat y\)</span> be a vector in <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span> such that <span class="math notranslate nohighlight">\(\hat y \in S\)</span> and <span class="math notranslate nohighlight">\(y - \hat y \perp S\)</span>.</p>
+<p>Let <span class="math notranslate nohighlight">\(z\)</span> be any other point in <span class="math notranslate nohighlight">\(S\)</span> and use the fact that <span class="math notranslate nohighlight">\(S\)</span> is a linear subspace to deduce</p>
+<div class="math notranslate nohighlight">
+\[
+\| y - z \|^2
+= \| (y - \hat y) + (\hat y - z) \|^2
+= \| y - \hat y \|^2  + \| \hat y - z  \|^2
+\]</div>
+<p>Hence <span class="math notranslate nohighlight">\(\| y - z \| \geq \| y - \hat y \|\)</span>, which completes the proof.</p>
+</div>
+<div class="section" id="orthogonal-projection-as-a-mapping">
+<h3><span class="section-number">16.3.2. </span>Orthogonal Projection as a Mapping<a class="headerlink" href="#orthogonal-projection-as-a-mapping" title="Permalink to this headline">¶</a></h3>
+<p>For a linear space <span class="math notranslate nohighlight">\(Y\)</span> and a fixed linear subspace <span class="math notranslate nohighlight">\(S\)</span>, we have a functional relationship</p>
+<div class="math notranslate nohighlight">
+\[
+y \in Y\; \mapsto \text{ its orthogonal projection } \hat y \in S
+\]</div>
+<p>By the OPT, this is a well-defined mapping  or <em>operator</em> from <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span> to <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span>.</p>
+<p>In what follows we denote this operator by a matrix <span class="math notranslate nohighlight">\(P\)</span></p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(P y\)</span> represents the projection <span class="math notranslate nohighlight">\(\hat y\)</span>.</p></li>
+<li><p>This is sometimes expressed as <span class="math notranslate nohighlight">\(\hat E_S y = P y\)</span>, where <span class="math notranslate nohighlight">\(\hat E\)</span> denotes a <strong>wide-sense expectations operator</strong> and the subscript <span class="math notranslate nohighlight">\(S\)</span> indicates that we are projecting <span class="math notranslate nohighlight">\(y\)</span> onto the linear subspace <span class="math notranslate nohighlight">\(S\)</span>.</p></li>
+</ul>
+<p>The operator <span class="math notranslate nohighlight">\(P\)</span> is called the <strong>orthogonal projection mapping onto</strong> <span class="math notranslate nohighlight">\(S\)</span></p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/orth_proj_thm2.png"><img alt="../_images/orth_proj_thm2.png" src="../_images/orth_proj_thm2.png" style="width: 50%;" /></a>
+</div>
+<p>It is immediate from the OPT that for any <span class="math notranslate nohighlight">\(y \in \mathbb{R}^n\)</span></p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(P y \in S\)</span> and</p></li>
+<li><p><span class="math notranslate nohighlight">\(y - P y \perp S\)</span></p></li>
+</ol>
+<p>From this we can deduce additional useful properties, such as</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(\| y \|^2 = \| P y \|^2 + \| y - P y \|^2\)</span> and</p></li>
+<li><p><span class="math notranslate nohighlight">\(\| P y \| \leq \| y \|\)</span></p></li>
+</ol>
+<p>For example, to prove 1, observe that <span class="math notranslate nohighlight">\(y  = P y  + y - P y\)</span> and apply the Pythagorean law.</p>
+<div class="section" id="orthogonal-complement">
+<h4><span class="section-number">16.3.2.1. </span>Orthogonal Complement<a class="headerlink" href="#orthogonal-complement" title="Permalink to this headline">¶</a></h4>
+<p>Let <span class="math notranslate nohighlight">\(S \subset \mathbb{R}^n\)</span>.</p>
+<p>The <strong>orthogonal complement</strong> of <span class="math notranslate nohighlight">\(S\)</span> is the linear subspace <span class="math notranslate nohighlight">\(S^{\perp}\)</span> that satisfies
+<span class="math notranslate nohighlight">\(x_1 \perp x_2\)</span> for every <span class="math notranslate nohighlight">\(x_1 \in S\)</span> and <span class="math notranslate nohighlight">\(x_2 \in S^{\perp}\)</span>.</p>
+<p>Let <span class="math notranslate nohighlight">\(Y\)</span> be a linear space with linear subspace <span class="math notranslate nohighlight">\(S\)</span> and its orthogonal complement <span class="math notranslate nohighlight">\(S^{\perp}\)</span>.</p>
+<p>We write</p>
+<div class="math notranslate nohighlight">
+\[
+Y = S \oplus S^{\perp}
+\]</div>
+<p>to indicate that for every <span class="math notranslate nohighlight">\(y \in Y\)</span> there is unique <span class="math notranslate nohighlight">\(x_1 \in S\)</span> and a unique <span class="math notranslate nohighlight">\(x_2 \in S^{\perp}\)</span>
+such that <span class="math notranslate nohighlight">\(y = x_1 + x_2\)</span>.</p>
+<p>Moreover, <span class="math notranslate nohighlight">\(x_1 = \hat E_S y\)</span> and <span class="math notranslate nohighlight">\(x_2 = y - \hat E_S y\)</span>.</p>
+<p>This amounts to another version of the OPT:</p>
+<p><strong>Theorem</strong>.  If <span class="math notranslate nohighlight">\(S\)</span> is a linear subspace of <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span>, <span class="math notranslate nohighlight">\(\hat E_S y = P y\)</span> and <span class="math notranslate nohighlight">\(\hat E_{S^{\perp}} y = M y\)</span>, then</p>
+<div class="math notranslate nohighlight">
+\[
+P y \perp M y
+ \quad \text{and} \quad
+y = P y + M y
+ \quad \text{for all } \, y \in \mathbb{R}^n
+\]</div>
+<p>The next figure illustrates</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/orth_proj_thm3.png"><img alt="../_images/orth_proj_thm3.png" src="../_images/orth_proj_thm3.png" style="width: 50%;" /></a>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="orthonormal-basis">
+<h2><a class="toc-backref" href="#id9"><span class="section-number">16.4. </span>Orthonormal Basis</a><a class="headerlink" href="#orthonormal-basis" title="Permalink to this headline">¶</a></h2>
+<p>An orthogonal set of vectors <span class="math notranslate nohighlight">\(O \subset \mathbb{R}^n\)</span> is called an <strong>orthonormal set</strong> if <span class="math notranslate nohighlight">\(\| u \| = 1\)</span> for all <span class="math notranslate nohighlight">\(u \in O\)</span>.</p>
+<p>Let <span class="math notranslate nohighlight">\(S\)</span> be a linear subspace of <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span> and let <span class="math notranslate nohighlight">\(O \subset S\)</span>.</p>
+<p>If <span class="math notranslate nohighlight">\(O\)</span> is orthonormal and <span class="math notranslate nohighlight">\(\mathop{\mathrm{span}} O = S\)</span>, then <span class="math notranslate nohighlight">\(O\)</span> is called an <strong>orthonormal basis</strong> of <span class="math notranslate nohighlight">\(S\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(O\)</span> is necessarily a basis of <span class="math notranslate nohighlight">\(S\)</span> (being independent by orthogonality and the fact that no element is the zero vector).</p>
+<p>One example of an orthonormal set is the canonical basis <span class="math notranslate nohighlight">\(\{e_1, \ldots, e_n\}\)</span>
+that forms an orthonormal basis of <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span>, where <span class="math notranslate nohighlight">\(e_i\)</span> is the <span class="math notranslate nohighlight">\(i\)</span> th unit vector.</p>
+<p>If <span class="math notranslate nohighlight">\(\{u_1, \ldots, u_k\}\)</span> is an orthonormal basis of linear subspace <span class="math notranslate nohighlight">\(S\)</span>, then</p>
+<div class="math notranslate nohighlight">
+\[
+x = \sum_{i=1}^k \langle x, u_i \rangle u_i
+\quad \text{for all} \quad
+x \in S
+\]</div>
+<p>To see this, observe that since <span class="math notranslate nohighlight">\(x \in \mathop{\mathrm{span}}\{u_1, \ldots, u_k\}\)</span>, we can find
+scalars <span class="math notranslate nohighlight">\(\alpha_1, \ldots, \alpha_k\)</span> that verify</p>
+<div class="math notranslate nohighlight" id="equation-pob">
+<span class="eqno">(16.1)<a class="headerlink" href="#equation-pob" title="Permalink to this equation">¶</a></span>\[x = \sum_{j=1}^k \alpha_j u_j\]</div>
+<p>Taking the inner product with respect to <span class="math notranslate nohighlight">\(u_i\)</span> gives</p>
+<div class="math notranslate nohighlight">
+\[
+\langle x, u_i \rangle
+= \sum_{j=1}^k \alpha_j \langle u_j, u_i \rangle
+= \alpha_i
+\]</div>
+<p>Combining this result with <a class="reference internal" href="#equation-pob">(16.1)</a> verifies the claim.</p>
+<div class="section" id="projection-onto-an-orthonormal-basis">
+<h3><span class="section-number">16.4.1. </span>Projection onto an Orthonormal Basis<a class="headerlink" href="#projection-onto-an-orthonormal-basis" title="Permalink to this headline">¶</a></h3>
+<p>When the subspace onto which are projecting is orthonormal, computing the projection simplifies:</p>
+<p><strong>Theorem</strong> If <span class="math notranslate nohighlight">\(\{u_1, \ldots, u_k\}\)</span> is an orthonormal basis for <span class="math notranslate nohighlight">\(S\)</span>, then</p>
+<div class="math notranslate nohighlight" id="equation-exp-for-op">
+<span class="eqno">(16.2)<a class="headerlink" href="#equation-exp-for-op" title="Permalink to this equation">¶</a></span>\[P y = \sum_{i=1}^k \langle y, u_i \rangle u_i,
+\quad
+\forall \; y \in \mathbb{R}^n\]</div>
+<p>Proof: Fix <span class="math notranslate nohighlight">\(y \in \mathbb{R}^n\)</span> and let <span class="math notranslate nohighlight">\(P y\)</span> be  defined as in <a class="reference internal" href="#equation-exp-for-op">(16.2)</a>.</p>
+<p>Clearly, <span class="math notranslate nohighlight">\(P y \in S\)</span>.</p>
+<p>We claim that <span class="math notranslate nohighlight">\(y - P y \perp S\)</span> also holds.</p>
+<p>It sufficies to show that <span class="math notranslate nohighlight">\(y - P y \perp\)</span> any basis vector <span class="math notranslate nohighlight">\(u_i\)</span> (why?).</p>
+<p>This is true because</p>
+<div class="math notranslate nohighlight">
+\[
+\left\langle y - \sum_{i=1}^k \langle y, u_i \rangle u_i, u_j \right\rangle
+= \langle y, u_j \rangle  - \sum_{i=1}^k \langle y, u_i \rangle
+\langle u_i, u_j  \rangle = 0
+\]</div>
+</div>
+</div>
+<div class="section" id="projection-using-matrix-algebra">
+<h2><a class="toc-backref" href="#id10"><span class="section-number">16.5. </span>Projection Using Matrix Algebra</a><a class="headerlink" href="#projection-using-matrix-algebra" title="Permalink to this headline">¶</a></h2>
+<p>Let <span class="math notranslate nohighlight">\(S\)</span> be a linear subspace of <span class="math notranslate nohighlight">\(\mathbb{R}^n\)</span> and  let <span class="math notranslate nohighlight">\(y \in \mathbb{R}^n\)</span>.</p>
+<p>We want to compute the matrix <span class="math notranslate nohighlight">\(P\)</span> that verifies</p>
+<div class="math notranslate nohighlight">
+\[
+\hat E_S y = P y
+\]</div>
+<p>Evidently  <span class="math notranslate nohighlight">\(Py\)</span> is a linear function from <span class="math notranslate nohighlight">\(y \in \mathbb{R}^n\)</span> to <span class="math notranslate nohighlight">\(P y \in \mathbb{R}^n\)</span>.</p>
+<p>This reference is useful <a class="reference external" href="https://en.wikipedia.org/wiki/Linear_map#Matrices">https://en.wikipedia.org/wiki/Linear_map#Matrices</a>.</p>
+<p><strong>Theorem.</strong> Let the columns of <span class="math notranslate nohighlight">\(n \times k\)</span> matrix <span class="math notranslate nohighlight">\(X\)</span> form a basis of <span class="math notranslate nohighlight">\(S\)</span>.  Then</p>
+<div class="math notranslate nohighlight">
+\[
+P = X (X'X)^{-1} X'
+\]</div>
+<p>Proof: Given arbitrary <span class="math notranslate nohighlight">\(y \in \mathbb{R}^n\)</span> and <span class="math notranslate nohighlight">\(P = X (X'X)^{-1} X'\)</span>, our claim is that</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(P y \in S\)</span>, and</p></li>
+<li><p><span class="math notranslate nohighlight">\(y - P y \perp S\)</span></p></li>
+</ol>
+<p>Claim 1 is true because</p>
+<div class="math notranslate nohighlight">
+\[
+P y = X (X' X)^{-1} X' y = X a
+\quad \text{when} \quad
+a := (X' X)^{-1} X' y
+\]</div>
+<p>An expression of the form <span class="math notranslate nohighlight">\(X a\)</span> is precisely a linear combination of the
+columns of <span class="math notranslate nohighlight">\(X\)</span>, and hence an element of <span class="math notranslate nohighlight">\(S\)</span>.</p>
+<p>Claim 2 is equivalent to the statement</p>
+<div class="math notranslate nohighlight">
+\[
+y - X (X' X)^{-1} X' y \, \perp\,  X b
+\quad \text{for all} \quad
+b \in \mathbb{R}^K
+\]</div>
+<p>This is true: If <span class="math notranslate nohighlight">\(b \in \mathbb{R}^K\)</span>, then</p>
+<div class="math notranslate nohighlight">
+\[
+(X b)' [y - X (X' X)^{-1} X'
+y]
+= b' [X' y - X' y]
+= 0
+\]</div>
+<p>The proof is now complete.</p>
+<div class="section" id="starting-with-x">
+<h3><span class="section-number">16.5.1. </span>Starting with <span class="math notranslate nohighlight">\(X\)</span><a class="headerlink" href="#starting-with-x" title="Permalink to this headline">¶</a></h3>
+<p>It is common in applications to start with <span class="math notranslate nohighlight">\(n \times k\)</span> matrix <span class="math notranslate nohighlight">\(X\)</span>  with linearly independent columns and let</p>
+<div class="math notranslate nohighlight">
+\[
+S := \mathop{\mathrm{span}} X := \mathop{\mathrm{span}} \{\mathop{\mathrm{col}}_1 X, \ldots, \mathop{\mathrm{col}}_k X \}
+\]</div>
+<p>Then the columns of <span class="math notranslate nohighlight">\(X\)</span> form a basis of <span class="math notranslate nohighlight">\(S\)</span>.</p>
+<p>From the preceding theorem, <span class="math notranslate nohighlight">\(P = X (X' X)^{-1} X' y\)</span> projects <span class="math notranslate nohighlight">\(y\)</span> onto <span class="math notranslate nohighlight">\(S\)</span>.</p>
+<p>In this context, <span class="math notranslate nohighlight">\(P\)</span> is often called the <strong>projection matrix</strong>.</p>
+<ul class="simple">
+<li><p>The matrix <span class="math notranslate nohighlight">\(M = I - P\)</span> satisfies <span class="math notranslate nohighlight">\(M y = \hat E_{S^{\perp}} y\)</span> and is sometimes called the <strong>annihilator matrix</strong>.</p></li>
+</ul>
+</div>
+<div class="section" id="the-orthonormal-case">
+<h3><span class="section-number">16.5.2. </span>The Orthonormal Case<a class="headerlink" href="#the-orthonormal-case" title="Permalink to this headline">¶</a></h3>
+<p>Suppose that <span class="math notranslate nohighlight">\(U\)</span> is <span class="math notranslate nohighlight">\(n \times k\)</span> with orthonormal columns.</p>
+<p>Let <span class="math notranslate nohighlight">\(u_i := \mathop{\mathrm{col}} U_i\)</span> for each <span class="math notranslate nohighlight">\(i\)</span>, let <span class="math notranslate nohighlight">\(S := \mathop{\mathrm{span}} U\)</span> and let <span class="math notranslate nohighlight">\(y \in \mathbb{R}^n\)</span>.</p>
+<p>We know that the projection of <span class="math notranslate nohighlight">\(y\)</span> onto <span class="math notranslate nohighlight">\(S\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+P y = U (U' U)^{-1} U' y
+\]</div>
+<p>Since <span class="math notranslate nohighlight">\(U\)</span> has orthonormal columns, we have <span class="math notranslate nohighlight">\(U' U = I\)</span>.</p>
+<p>Hence</p>
+<div class="math notranslate nohighlight">
+\[
+P y
+= U U' y
+= \sum_{i=1}^k \langle u_i, y \rangle u_i
+\]</div>
+<p>We have recovered our earlier result about projecting onto the span of an orthonormal
+basis.</p>
+</div>
+<div class="section" id="application-overdetermined-systems-of-equations">
+<h3><span class="section-number">16.5.3. </span>Application: Overdetermined Systems of Equations<a class="headerlink" href="#application-overdetermined-systems-of-equations" title="Permalink to this headline">¶</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(y \in \mathbb{R}^n\)</span> and let <span class="math notranslate nohighlight">\(X\)</span> is <span class="math notranslate nohighlight">\(n \times k\)</span> with linearly independent columns.</p>
+<p>Given <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(y\)</span>, we seek <span class="math notranslate nohighlight">\(b \in \mathbb{R}^k\)</span> satisfying the system of linear equations <span class="math notranslate nohighlight">\(X b = y\)</span>.</p>
+<p>If <span class="math notranslate nohighlight">\(n &gt; k\)</span> (more equations than unknowns), then <span class="math notranslate nohighlight">\(b\)</span> is said to be <strong>overdetermined</strong>.</p>
+<p>Intuitively, we may not be able find a <span class="math notranslate nohighlight">\(b\)</span> that satisfies all <span class="math notranslate nohighlight">\(n\)</span> equations.</p>
+<p>The best approach here is to</p>
+<ul class="simple">
+<li><p>Accept that an exact solution may not exist</p></li>
+<li><p>Look instead for an approximate solution</p></li>
+</ul>
+<p>By approximate solution, we mean a <span class="math notranslate nohighlight">\(b \in \mathbb{R}^k\)</span> such that <span class="math notranslate nohighlight">\(X b\)</span> is as close to <span class="math notranslate nohighlight">\(y\)</span> as possible.</p>
+<p>The next theorem shows that the solution is well defined and unique.</p>
+<p>The proof uses the OPT.</p>
+<p><strong>Theorem</strong> The unique minimizer of  <span class="math notranslate nohighlight">\(\| y - X b \|\)</span> over <span class="math notranslate nohighlight">\(b \in \mathbb{R}^K\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+\hat \beta := (X' X)^{-1} X' y
+\]</div>
+<p>Proof:  Note that</p>
+<div class="math notranslate nohighlight">
+\[
+X \hat \beta = X (X' X)^{-1} X' y =
+P y
+\]</div>
+<p>Since <span class="math notranslate nohighlight">\(P y\)</span> is the orthogonal projection onto <span class="math notranslate nohighlight">\(\mathop{\mathrm{span}}(X)\)</span> we have</p>
+<div class="math notranslate nohighlight">
+\[
+\| y - P y \|
+\leq \| y - z \| \text{ for any } z \in \mathop{\mathrm{span}}(X)
+\]</div>
+<p>Because <span class="math notranslate nohighlight">\(Xb \in \mathop{\mathrm{span}}(X)\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+\| y - X \hat \beta \|
+\leq \| y - X b \| \text{ for any } b \in \mathbb{R}^K
+\]</div>
+<p>This is what we aimed to show.</p>
+</div>
+</div>
+<div class="section" id="least-squares-regression">
+<h2><a class="toc-backref" href="#id11"><span class="section-number">16.6. </span>Least Squares Regression</a><a class="headerlink" href="#least-squares-regression" title="Permalink to this headline">¶</a></h2>
+<p>Let’s apply the theory of orthogonal projection to least squares regression.</p>
+<p>This approach provides insights about  many geometric  properties of linear regression.</p>
+<p>We treat only some examples.</p>
+<div class="section" id="squared-risk-measures">
+<h3><span class="section-number">16.6.1. </span>Squared risk measures<a class="headerlink" href="#squared-risk-measures" title="Permalink to this headline">¶</a></h3>
+<p>Given pairs <span class="math notranslate nohighlight">\((x, y) \in \mathbb{R}^K \times \mathbb{R}\)</span>, consider choosing <span class="math notranslate nohighlight">\(f \colon \mathbb{R}^K \to \mathbb{R}\)</span> to minimize
+the <strong>risk</strong></p>
+<div class="math notranslate nohighlight">
+\[
+R(f) := \mathbb{E}\, [(y - f(x))^2]
+\]</div>
+<p>If probabilities and hence <span class="math notranslate nohighlight">\(\mathbb{E}\,\)</span> are unknown, we cannot solve this problem directly.</p>
+<p>However, if a sample is available, we can estimate the risk with the <strong>empirical risk</strong>:</p>
+<div class="math notranslate nohighlight">
+\[
+\min_{f \in \mathcal{F}} \frac{1}{N} \sum_{n=1}^N (y_n - f(x_n))^2
+\]</div>
+<p>Minimizing this expression is called <strong>empirical risk minimization</strong>.</p>
+<p>The set <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> is sometimes called the hypothesis space.</p>
+<p>The theory of statistical learning tells us that to prevent overfitting we should take the set <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> to be relatively simple.</p>
+<p>If we let <span class="math notranslate nohighlight">\(\mathcal{F}\)</span> be the class of linear functions <span class="math notranslate nohighlight">\(1/N\)</span>, the problem is</p>
+<div class="math notranslate nohighlight">
+\[
+\min_{b \in \mathbb{R}^K} \;
+\sum_{n=1}^N (y_n - b' x_n)^2
+\]</div>
+<p>This is the sample <strong>linear least squares problem</strong>.</p>
+</div>
+<div class="section" id="solution">
+<h3><span class="section-number">16.6.2. </span>Solution<a class="headerlink" href="#solution" title="Permalink to this headline">¶</a></h3>
+<p>Define the matrices</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+y :=
+\left(
+\begin{array}{c}
+    y_1 \\
+    y_2 \\
+    \vdots \\
+    y_N
+\end{array}
+\right),
+\quad
+x_n :=
+\left(
+\begin{array}{c}
+    x_{n1} \\
+    x_{n2} \\
+    \vdots \\
+    x_{nK}
+\end{array}
+\right)
+= \text{n-th obs on all regressors}
+\end{split}\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+X :=
+\left(
+\begin{array}{c}
+    x_1'  \\
+    x_2'  \\
+    \vdots     \\
+    x_N'
+\end{array}
+\right)
+:=:
+\left(
+\begin{array}{cccc}
+    x_{11} &amp; x_{12} &amp; \cdots &amp; x_{1K} \\
+    x_{21} &amp; x_{22} &amp; \cdots &amp; x_{2K} \\
+    \vdots &amp; \vdots &amp;  &amp; \vdots \\
+    x_{N1} &amp; x_{N2} &amp; \cdots &amp; x_{NK}
+\end{array}
+\right)
+\end{split}\]</div>
+<p>We assume throughout that <span class="math notranslate nohighlight">\(N &gt; K\)</span> and <span class="math notranslate nohighlight">\(X\)</span> is full column rank.</p>
+<p>If you work through the algebra, you will be able to verify that <span class="math notranslate nohighlight">\(\| y - X b \|^2 = \sum_{n=1}^N (y_n - b' x_n)^2\)</span>.</p>
+<p>Since monotone transforms don’t affect minimizers, we have</p>
+<div class="math notranslate nohighlight">
+\[
+\mathop{\mathrm{arg\,min}}_{b \in \mathbb{R}^K} \sum_{n=1}^N (y_n - b' x_n)^2
+= \mathop{\mathrm{arg\,min}}_{b \in \mathbb{R}^K} \| y - X b \|
+\]</div>
+<p>By our results about overdetermined linear systems of equations, the solution is</p>
+<div class="math notranslate nohighlight">
+\[
+\hat \beta := (X' X)^{-1} X' y
+\]</div>
+<p>Let <span class="math notranslate nohighlight">\(P\)</span> and <span class="math notranslate nohighlight">\(M\)</span> be the projection and annihilator associated with <span class="math notranslate nohighlight">\(X\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+P := X (X' X)^{-1} X'
+\quad \text{and} \quad
+M := I - P
+\]</div>
+<p>The <strong>vector of fitted values</strong> is</p>
+<div class="math notranslate nohighlight">
+\[
+\hat y := X \hat \beta = P y
+\]</div>
+<p>The <strong>vector of residuals</strong> is</p>
+<div class="math notranslate nohighlight">
+\[
+\hat u :=  y - \hat y = y - P y = M y
+\]</div>
+<p>Here are some more standard definitions:</p>
+<ul class="simple">
+<li><p>The <strong>total sum of squares</strong> is <span class="math notranslate nohighlight">\(:=  \| y \|^2\)</span>.</p></li>
+<li><p>The <strong>sum of squared residuals</strong> is <span class="math notranslate nohighlight">\(:= \| \hat u \|^2\)</span>.</p></li>
+<li><p>The <strong>explained sum of squares</strong> is <span class="math notranslate nohighlight">\(:= \| \hat y \|^2\)</span>.</p></li>
+</ul>
+<blockquote>
+<div><p>TSS = ESS + SSR.</p>
+</div></blockquote>
+<p>We can prove this easily using the OPT.</p>
+<p>From the OPT we have <span class="math notranslate nohighlight">\(y =  \hat y + \hat u\)</span> and <span class="math notranslate nohighlight">\(\hat u \perp \hat y\)</span>.</p>
+<p>Applying the Pythagorean law completes the proof.</p>
+</div>
+</div>
+<div class="section" id="orthogonalization-and-decomposition">
+<h2><a class="toc-backref" href="#id12"><span class="section-number">16.7. </span>Orthogonalization and Decomposition</a><a class="headerlink" href="#orthogonalization-and-decomposition" title="Permalink to this headline">¶</a></h2>
+<p>Let’s return to the connection between linear independence and orthogonality touched on above.</p>
+<p>A result of much interest is a famous algorithm for constructing orthonormal sets from linearly independent sets.</p>
+<p>The next section gives details.</p>
+<div class="section" id="gram-schmidt-orthogonalization">
+<span id="gram-schmidt"></span><h3><span class="section-number">16.7.1. </span>Gram-Schmidt Orthogonalization<a class="headerlink" href="#gram-schmidt-orthogonalization" title="Permalink to this headline">¶</a></h3>
+<p><strong>Theorem</strong> For each linearly independent set <span class="math notranslate nohighlight">\(\{x_1, \ldots, x_k\} \subset \mathbb{R}^n\)</span>, there exists an
+orthonormal set <span class="math notranslate nohighlight">\(\{u_1, \ldots, u_k\}\)</span> with</p>
+<div class="math notranslate nohighlight">
+\[
+\mathop{\mathrm{span}} \{x_1, \ldots, x_i\}
+=
+\mathop{\mathrm{span}} \{u_1, \ldots, u_i\}
+\quad \text{for} \quad
+i = 1, \ldots, k
+\]</div>
+<p>The <strong>Gram-Schmidt orthogonalization</strong> procedure constructs an orthogonal set <span class="math notranslate nohighlight">\(\{ u_1, u_2, \ldots, u_n\}\)</span>.</p>
+<p>One description of this procedure is as follows:</p>
+<ul class="simple">
+<li><p>For <span class="math notranslate nohighlight">\(i = 1, \ldots, k\)</span>, form <span class="math notranslate nohighlight">\(S_i := \mathop{\mathrm{span}}\{x_1, \ldots, x_i\}\)</span> and <span class="math notranslate nohighlight">\(S_i^{\perp}\)</span></p></li>
+<li><p>Set <span class="math notranslate nohighlight">\(v_1 = x_1\)</span></p></li>
+<li><p>For <span class="math notranslate nohighlight">\(i \geq 2\)</span> set <span class="math notranslate nohighlight">\(v_i := \hat E_{S_{i-1}^{\perp}} x_i\)</span> and <span class="math notranslate nohighlight">\(u_i := v_i / \| v_i \|\)</span></p></li>
+</ul>
+<p>The sequence <span class="math notranslate nohighlight">\(u_1, \ldots, u_k\)</span> has the stated properties.</p>
+<p>A Gram-Schmidt orthogonalization construction is a key idea behind the Kalman filter described in <a class="reference internal" href="kalman.html"><span class="doc">A First Look at the Kalman filter</span></a>.</p>
+<p>In some exercises below you are asked to implement this algorithm and test it using projection.</p>
+</div>
+<div class="section" id="qr-decomposition">
+<h3><span class="section-number">16.7.2. </span>QR Decomposition<a class="headerlink" href="#qr-decomposition" title="Permalink to this headline">¶</a></h3>
+<p>The following result uses the preceding algorithm to produce a useful decomposition.</p>
+<p><strong>Theorem</strong> If <span class="math notranslate nohighlight">\(X\)</span> is <span class="math notranslate nohighlight">\(n \times k\)</span> with linearly independent columns, then there exists a factorization <span class="math notranslate nohighlight">\(X = Q R\)</span> where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(R\)</span> is <span class="math notranslate nohighlight">\(k \times k\)</span>, upper triangular, and nonsingular</p></li>
+<li><p><span class="math notranslate nohighlight">\(Q\)</span> is <span class="math notranslate nohighlight">\(n \times k\)</span> with orthonormal columns</p></li>
+</ul>
+<p>Proof sketch: Let</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x_j := \mathop{\mathrm{col}}_j (X)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\{u_1, \ldots, u_k\}\)</span> be orthonormal with same span as <span class="math notranslate nohighlight">\(\{x_1, \ldots, x_k\}\)</span> (to be constructed using Gram–Schmidt)</p></li>
+<li><p><span class="math notranslate nohighlight">\(Q\)</span> be formed from cols <span class="math notranslate nohighlight">\(u_i\)</span></p></li>
+</ul>
+<p>Since <span class="math notranslate nohighlight">\(x_j \in \mathop{\mathrm{span}}\{u_1, \ldots, u_j\}\)</span>, we have</p>
+<div class="math notranslate nohighlight">
+\[
+x_j = \sum_{i=1}^j \langle u_i, x_j  \rangle u_i
+\quad \text{for } j = 1, \ldots, k
+\]</div>
+<p>Some rearranging gives <span class="math notranslate nohighlight">\(X = Q R\)</span>.</p>
+</div>
+<div class="section" id="linear-regression-via-qr-decomposition">
+<h3><span class="section-number">16.7.3. </span>Linear Regression via QR Decomposition<a class="headerlink" href="#linear-regression-via-qr-decomposition" title="Permalink to this headline">¶</a></h3>
+<p>For matrices <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(y\)</span> that overdetermine <span class="math notranslate nohighlight">\(beta\)</span> in the linear
+equation system <span class="math notranslate nohighlight">\(y = X \beta\)</span>, we found  the least squares approximator <span class="math notranslate nohighlight">\(\hat \beta = (X' X)^{-1} X' y\)</span>.</p>
+<p>Using the QR decomposition <span class="math notranslate nohighlight">\(X = Q R\)</span> gives</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+    \hat \beta
+    &amp; = (R'Q' Q R)^{-1} R' Q' y \\
+    &amp; = (R' R)^{-1} R' Q' y \\
+    &amp; = R^{-1} (R')^{-1} R' Q' y
+        = R^{-1} Q' y
+\end{aligned}
+\end{split}\]</div>
+<p>Numerical routines would in this case use the alternative form <span class="math notranslate nohighlight">\(R \hat \beta = Q' y\)</span> and back substitution.</p>
+</div>
+</div>
+<div class="section" id="exercises">
+<h2><a class="toc-backref" href="#id13"><span class="section-number">16.8. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1">
+<h3><span class="section-number">16.8.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<p>Show that, for any linear subspace <span class="math notranslate nohighlight">\(S \subset \mathbb{R}^n\)</span>,  <span class="math notranslate nohighlight">\(S \cap S^{\perp} = \{0\}\)</span>.</p>
+</div>
+<div class="section" id="exercise-2">
+<h3><span class="section-number">16.8.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(P = X (X' X)^{-1} X'\)</span> and let <span class="math notranslate nohighlight">\(M = I - P\)</span>.  Show that
+<span class="math notranslate nohighlight">\(P\)</span> and <span class="math notranslate nohighlight">\(M\)</span> are both idempotent and symmetric.  Can you give any
+intuition as to why they should be idempotent?</p>
+</div>
+<div class="section" id="exercise-3">
+<h3><span class="section-number">16.8.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
+<p>Using Gram-Schmidt orthogonalization, produce a linear projection of <span class="math notranslate nohighlight">\(y\)</span> onto the column space of <span class="math notranslate nohighlight">\(X\)</span> and verify this using the projection matrix <span class="math notranslate nohighlight">\(P := X (X' X)^{-1} X'\)</span> and also using QR decomposition, where:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+y :=
+\left(
+\begin{array}{c}
+    1 \\
+    3 \\
+    -3
+\end{array}
+\right),
+\quad
+\end{split}\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+X :=
+\left(
+\begin{array}{cc}
+    1 &amp;  0  \\
+    0 &amp; -6 \\
+    2 &amp;  2
+\end{array}
+\right)
+\end{split}\]</div>
+</div>
+</div>
+<div class="section" id="solutions">
+<h2><a class="toc-backref" href="#id14"><span class="section-number">16.9. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3><span class="section-number">16.9.1. </span>Exercise 1<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>If <span class="math notranslate nohighlight">\(x \in S\)</span> and <span class="math notranslate nohighlight">\(x \in S^\perp\)</span>, then we have in particular
+that <span class="math notranslate nohighlight">\(\langle x, x \rangle = 0\)</span>. But then <span class="math notranslate nohighlight">\(x = 0\)</span>.</p>
+</div>
+<div class="section" id="id3">
+<h3><span class="section-number">16.9.2. </span>Exercise 2<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>Symmetry and idempotence of <span class="math notranslate nohighlight">\(M\)</span> and <span class="math notranslate nohighlight">\(P\)</span> can be established
+using standard rules for matrix algebra. The intuition behind
+idempotence of <span class="math notranslate nohighlight">\(M\)</span> and <span class="math notranslate nohighlight">\(P\)</span> is that both are orthogonal
+projections. After a point is projected into a given subspace, applying
+the projection again makes no difference. (A point inside the subspace
+is not shifted by orthogonal projection onto that space because it is
+already the closest point in the subspace to itself).</p>
+</div>
+<div class="section" id="id4">
+<h3><span class="section-number">16.9.3. </span>Exercise 3<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>Here’s a function that computes the orthonormal vectors using the GS
+algorithm given in the lecture.</p>
+</div>
+<div class="section" id="setup">
+<h3><span class="section-number">16.9.4. </span>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">gram_schmidt</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+    <span class="n">U</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="kt">Float64</span><span class="p">)</span> <span class="c"># for robustness</span>
+
+    <span class="k">function</span> <span class="n">normalized_orthogonal_projection</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+        <span class="c"># project onto the orthogonal complement of the col span of Z</span>
+        <span class="n">orthogonal</span> <span class="o">=</span> <span class="nb">I</span> <span class="o">-</span> <span class="n">Z</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="n">Z</span><span class="o">&#39;</span><span class="n">Z</span><span class="p">)</span> <span class="o">*</span> <span class="n">Z</span><span class="o">&#39;</span>
+        <span class="n">projection</span> <span class="o">=</span> <span class="n">orthogonal</span> <span class="o">*</span> <span class="n">b</span>
+        <span class="c"># normalize</span>
+        <span class="k">return</span> <span class="n">projection</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">projection</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">for</span> <span class="n">col</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c"># set up</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">col</span><span class="p">]</span>       <span class="c"># vector we&#39;re going to project</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="n">col</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="c"># first i-1 columns of X</span>
+        <span class="n">U</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalized_orthogonal_projection</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">return</span> <span class="n">U</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>Here are the arrays we’ll work with</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="o">-</span><span class="mi">6</span><span class="p">;</span> <span class="mi">2</span> <span class="mi">2</span><span class="p">];</span>
+</pre></div>
+</div>
+<p>First let’s do ordinary projection of <span class="math notranslate nohighlight">\(y\)</span> onto the basis spanned
+by the columns of <span class="math notranslate nohighlight">\(X\)</span>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Py1</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="n">X</span><span class="o">&#39;</span><span class="n">X</span><span class="p">)</span> <span class="o">*</span> <span class="n">X</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">y</span>
+</pre></div>
+</div>
+<p>Now let’s orthogonalize first, using Gram–Schmidt:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">U</span> <span class="o">=</span> <span class="n">gram_schmidt</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we can project using the orthonormal basis and see if we get the
+same thing:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Py2</span> <span class="o">=</span> <span class="n">U</span> <span class="o">*</span> <span class="n">U</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">y</span>
+</pre></div>
+</div>
+<p>The result is the same. To complete the exercise, we get an orthonormal
+basis by QR decomposition and project once more.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">qr</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="kt">Matrix</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Py3</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">Q</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">y</span>
+</pre></div>
+</div>
+<p>Again, the result is the same.</p>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./tools_and_techniques"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Packages and Software Engineering in Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="kalman.html">
+   22. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="numerical_linear_algebra.html">
+   23. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="iterative_methods_sparsity.html">
+   24. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   25. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   26. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   27. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   28. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   29. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   30. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   31. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   33. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   34. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   35. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   36. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   37. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   39. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   40. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   41. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   42. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   44. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   45. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   46. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   47. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   48. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   49. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   50. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   51. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   52. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   53. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   54. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   55. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   56. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   57. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   58. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   59. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   60. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   61. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   62. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   63. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   64. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   65. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   66. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   67. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   68. Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/tools_and_techniques/orth_proj.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/tools_and_techniques/orth_proj.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/tools_and_techniques/orth_proj.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/tools_and_techniques/orth_proj.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

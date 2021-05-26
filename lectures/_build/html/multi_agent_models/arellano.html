@@ -1,0 +1,1370 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>53. Default Risk and Income Fluctuations &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/multi_agent_models/arellano.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="54. Globalization and Cycles" href="matsuyama.html" />
+    <link rel="prev" title="52. The Aiyagari Model" href="aiyagari.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Default Risk and Income Fluctuations"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Default Risk and Income Fluctuations" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/multi_agent_models/arellano.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=multi_agent_models/arellano>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   53.1. Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#structure">
+   53.2. Structure
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#output-consumption-and-debt">
+     53.2.1. Output, Consumption and Debt
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#asset-markets">
+     53.2.2. Asset Markets
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#financial-markets">
+     53.2.3. Financial Markets
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#government-s-decisions">
+     53.2.4. Government’s decisions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#reentering-international-credit-market">
+     53.2.5. Reentering international credit market
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#equilibrium">
+   53.3. Equilibrium
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#definition-of-equilibrium">
+     53.3.1. Definition of equilibrium
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#computation">
+   53.4. Computation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#setup">
+     53.4.1. Setup
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#results">
+   53.5. Results
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   53.6. Exercises
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1">
+     53.6.1. Exercise 1
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solutions">
+   53.7. Solutions
+  </a>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Default Risk and Income Fluctuations</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="default-risk-and-income-fluctuations">
+<h1><a class="toc-backref" href="#id5"><span class="section-number">53. </span>Default Risk and Income Fluctuations</a><a class="headerlink" href="#default-risk-and-income-fluctuations" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#default-risk-and-income-fluctuations" id="id5">Default Risk and Income Fluctuations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id6">Overview</a></p></li>
+<li><p><a class="reference internal" href="#structure" id="id7">Structure</a></p></li>
+<li><p><a class="reference internal" href="#equilibrium" id="id8">Equilibrium</a></p></li>
+<li><p><a class="reference internal" href="#computation" id="id9">Computation</a></p></li>
+<li><p><a class="reference internal" href="#results" id="id10">Results</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id11">Exercises</a></p></li>
+<li><p><a class="reference internal" href="#solutions" id="id12">Solutions</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id6"><span class="section-number">53.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This lecture computes versions of  Arellano’s  <span id="id1">[<a class="reference internal" href="../zreferences.html#id54"><span>Are08</span></a>]</span> model of sovereign default.</p>
+<p>The model describes interactions among default risk, output,  and  an equilibrium interest rate  that includes a premium for endogenous default risk.</p>
+<p>The decision maker is a government of a small open economy that borrows from risk-neutral foreign creditors.</p>
+<p>The foreign lenders must be compensated for default risk.</p>
+<p>The government borrows and lends abroad in order to  smooth the consumption of its citizens.</p>
+<p>The government repays its debt only if it wants to, but declining to pay has adverse consequences.</p>
+<p>The interest rate on government debt adjusts in response to the state-dependent default probability chosen by government.</p>
+<p>The model yields outcomes that help interpret sovereign default experiences, including</p>
+<ul class="simple">
+<li><p>countercyclical interest rates on sovereign debt</p></li>
+<li><p>countercyclical trade balances</p></li>
+<li><p>high volatility of consumption relative to output</p></li>
+</ul>
+<p>Notably, long recessions caused by bad draws in the income process increase the government’s incentive to default.</p>
+<p>This can lead to</p>
+<ul class="simple">
+<li><p>spikes in interest rates</p></li>
+<li><p>temporary losses of access to international credit markets</p></li>
+<li><p>large drops in output, consumption, and welfare</p></li>
+<li><p>large capital outflows during recessions</p></li>
+</ul>
+<p>Such dynamics are consistent with experiences of many countries.</p>
+</div>
+<div class="section" id="structure">
+<h2><a class="toc-backref" href="#id7"><span class="section-number">53.2. </span>Structure</a><a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+<p>In this section we describe the main features of the model.</p>
+<div class="section" id="output-consumption-and-debt">
+<h3><span class="section-number">53.2.1. </span>Output, Consumption and Debt<a class="headerlink" href="#output-consumption-and-debt" title="Permalink to this headline">¶</a></h3>
+<p>A small open economy is endowed with an exogenous stochastically fluctuating potential output stream <span class="math notranslate nohighlight">\(\{y_t\}\)</span>.</p>
+<p>Potential output is realized only in periods in which the government honors its sovereign debt.</p>
+<p>The output good can be traded or consumed.</p>
+<p>The sequence <span class="math notranslate nohighlight">\(\{y_t\}\)</span> is described by a Markov process with stochastic density kernel <span class="math notranslate nohighlight">\(p(y, y')\)</span>.</p>
+<p>Households within the country are identical and rank stochastic consumption streams according to</p>
+<div class="math notranslate nohighlight" id="equation-utility">
+<span class="eqno">(53.1)<a class="headerlink" href="#equation-utility" title="Permalink to this equation">¶</a></span>\[\mathbb E \sum_{t=0}^{\infty} \beta^t u(c_t)\]</div>
+<p>Here</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(0 &lt; \beta &lt; 1\)</span> is a time discount factor.</p></li>
+<li><p><span class="math notranslate nohighlight">\(u\)</span> is an increasing and strictly concave utility function.</p></li>
+</ul>
+<p>Consumption sequences enjoyed by households are affected by the government’s decision to borrow or lend internationally.</p>
+<p>The government is benevolent in the sense that its aim is to maximize <a class="reference internal" href="#equation-utility">(53.1)</a>.</p>
+<p>The government is the only domestic actor with access to foreign credit.</p>
+<p>Because household are averse to consumption fluctuations, the government will try to smooth consumption by borrowing from (and lending to) foreign creditors.</p>
+</div>
+<div class="section" id="asset-markets">
+<h3><span class="section-number">53.2.2. </span>Asset Markets<a class="headerlink" href="#asset-markets" title="Permalink to this headline">¶</a></h3>
+<p>The only credit instrument available to the government is a one-period bond traded in international credit markets.</p>
+<p>The bond market has the following features</p>
+<ul class="simple">
+<li><p>The bond matures in one period and is not state contingent.</p></li>
+<li><p>A purchase of a bond with face value <span class="math notranslate nohighlight">\(B'\)</span> is a claim to <span class="math notranslate nohighlight">\(B'\)</span> units of the
+consumption good next period.</p></li>
+<li><p>To purchase <span class="math notranslate nohighlight">\(B'\)</span>  next period costs <span class="math notranslate nohighlight">\(q B'\)</span> now, or, what is equivalent.</p></li>
+<li><p>For selling <span class="math notranslate nohighlight">\(-B'\)</span> units of next period goods the seller earns <span class="math notranslate nohighlight">\(- q B'\)</span> of today’s goods</p>
+<ul>
+<li><p>if <span class="math notranslate nohighlight">\(B' &lt; 0\)</span>, then <span class="math notranslate nohighlight">\(-q B'\)</span> units of the good are received in the current period, for a promise to repay <span class="math notranslate nohighlight">\(-B'\)</span> units next period</p></li>
+<li><p>there is an equilibrium  price function <span class="math notranslate nohighlight">\(q(B', y)\)</span> that makes <span class="math notranslate nohighlight">\(q\)</span> depend on both <span class="math notranslate nohighlight">\(B'\)</span> and <span class="math notranslate nohighlight">\(y\)</span></p></li>
+</ul>
+</li>
+</ul>
+<p>Earnings on the government portfolio are distributed (or, if negative, taxed) lump sum to households.</p>
+<p>When the government is not excluded from financial markets, the one-period national budget constraint is</p>
+<div class="math notranslate nohighlight" id="equation-resource">
+<span class="eqno">(53.2)<a class="headerlink" href="#equation-resource" title="Permalink to this equation">¶</a></span>\[c = y + B - q(B', y) B'\]</div>
+<p>Here and below, a prime denotes a next period value or a claim maturing next period.</p>
+<p>To rule out Ponzi schemes, we also require that <span class="math notranslate nohighlight">\(B \geq -Z\)</span> in every period.</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(Z\)</span> is chosen to be sufficiently large that the constraint never binds in equilibrium.</p></li>
+</ul>
+</div>
+<div class="section" id="financial-markets">
+<h3><span class="section-number">53.2.3. </span>Financial Markets<a class="headerlink" href="#financial-markets" title="Permalink to this headline">¶</a></h3>
+<p>Foreign creditors</p>
+<ul class="simple">
+<li><p>are risk neutral</p></li>
+<li><p>know the domestic output stochastic process <span class="math notranslate nohighlight">\(\{y_t\}\)</span> and observe <span class="math notranslate nohighlight">\(y_t, y_{t-1}, \ldots,\)</span> at time <span class="math notranslate nohighlight">\(t\)</span></p></li>
+<li><p>can borrow or lend without limit in an international credit market at a constant international interest rate <span class="math notranslate nohighlight">\(r\)</span></p></li>
+<li><p>receive full payment if the government chooses to pay</p></li>
+<li><p>receive zero if the government defaults on its one-period debt due</p></li>
+</ul>
+<p>When a government is expected to default next period with  probability <span class="math notranslate nohighlight">\(\delta\)</span>,  the expected value of a promise to pay one unit of consumption next period is <span class="math notranslate nohighlight">\(1 - \delta\)</span>.</p>
+<p>Therefore, the discounted expected value of a promise to pay <span class="math notranslate nohighlight">\(B\)</span> next period is</p>
+<div class="math notranslate nohighlight" id="equation-epc">
+<span class="eqno">(53.3)<a class="headerlink" href="#equation-epc" title="Permalink to this equation">¶</a></span>\[q = \frac{1 - \delta}{1 + r}\]</div>
+<p>Next we turn to how the government in effect chooses the default probability <span class="math notranslate nohighlight">\(\delta\)</span>.</p>
+</div>
+<div class="section" id="government-s-decisions">
+<h3><span class="section-number">53.2.4. </span>Government’s decisions<a class="headerlink" href="#government-s-decisions" title="Permalink to this headline">¶</a></h3>
+<p>At each point in time <span class="math notranslate nohighlight">\(t\)</span>, the government chooses between</p>
+<ol class="simple">
+<li><p>defaulting</p></li>
+<li><p>meeting its current obligations and purchasing or selling an optimal quantity of  one-period sovereign debt</p></li>
+</ol>
+<p>Defaulting means declining to repay all of  its current obligations.</p>
+<p>If the government defaults in the current period, then consumption equals current output.</p>
+<p>But a sovereign default has two consequences:</p>
+<ol class="simple">
+<li><p>Output immediately falls from <span class="math notranslate nohighlight">\(y\)</span> to <span class="math notranslate nohighlight">\(h(y)\)</span>, where <span class="math notranslate nohighlight">\(0 \leq h(y) \leq y\)</span></p>
+<ul class="simple">
+<li><p>it returns to <span class="math notranslate nohighlight">\(y\)</span> only after the country regains access to  international credit markets.</p></li>
+</ul>
+</li>
+<li><p>The country loses access to foreign credit markets.</p></li>
+</ol>
+</div>
+<div class="section" id="reentering-international-credit-market">
+<h3><span class="section-number">53.2.5. </span>Reentering international credit market<a class="headerlink" href="#reentering-international-credit-market" title="Permalink to this headline">¶</a></h3>
+<p>While in a state of default, the economy regains access to
+foreign credit in each subsequent period with probability
+<span class="math notranslate nohighlight">\(\theta\)</span>.</p>
+</div>
+</div>
+<div class="section" id="equilibrium">
+<h2><a class="toc-backref" href="#id8"><span class="section-number">53.3. </span>Equilibrium</a><a class="headerlink" href="#equilibrium" title="Permalink to this headline">¶</a></h2>
+<p>Informally, an equilibrium is a sequence of interest rates on its sovereign debt, a stochastic sequence of government default decisions  and an implied flow of household consumption such that</p>
+<ol class="simple">
+<li><p>Consumption and assets satisfy the national budget constraint.</p></li>
+<li><p>The government maximizes household utility taking into account</p>
+<ul class="simple">
+<li><p>the resource constraint</p></li>
+<li><p>the effect of its choices on the price of bonds</p></li>
+<li><p>consequences of defaulting now for future net output and future borrowing and lending opportunities</p></li>
+</ul>
+</li>
+<li><p>The interest rate on the government’s debt includes a risk-premium sufficient to make foreign creditors expect on average to earn the constant risk-free international interest rate.</p></li>
+</ol>
+<p>To express these ideas more precisely, consider first the choices of the
+government, which</p>
+<ol class="simple">
+<li><p>enters a period with initial assets <span class="math notranslate nohighlight">\(B\)</span>, or  what is the same thing, initial debt to be repaid now of <span class="math notranslate nohighlight">\(-B\)</span></p></li>
+<li><p>observes current output <span class="math notranslate nohighlight">\(y\)</span>, and</p></li>
+<li><p>chooses either</p>
+<ol class="simple">
+<li><p>to default, or</p></li>
+<li><p>to pay  <span class="math notranslate nohighlight">\(-B\)</span> and set next period’s debt due to <span class="math notranslate nohighlight">\(-B'\)</span></p></li>
+</ol>
+</li>
+</ol>
+<p>In a  recursive formulation,</p>
+<ul class="simple">
+<li><p>state variables for the government comprise the pair <span class="math notranslate nohighlight">\((B, y)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(v(B, y)\)</span> is the optimum value of the government’s problem when at the beginning of a period  it faces the choice of whether to honor or default</p></li>
+<li><p><span class="math notranslate nohighlight">\(v_c(B, y)\)</span> is the value of choosing to pay obligations falling due</p></li>
+<li><p><span class="math notranslate nohighlight">\(v_d(y)\)</span> is the value of choosing to default</p></li>
+</ul>
+<p><span class="math notranslate nohighlight">\(v_d(y)\)</span> does not depend on <span class="math notranslate nohighlight">\(B\)</span> because, when access to credit is eventually regained, net foreign assets equal <span class="math notranslate nohighlight">\(0\)</span>.</p>
+<p>Expressed recursively, the value of defaulting is</p>
+<div class="math notranslate nohighlight">
+\[
+v_d(y) = u(h(y)) +
+    \beta \int \left\{
+            \theta v(0, y') + (1 - \theta) v_d(y')
+            \right\}
+            p(y, y') dy'
+\]</div>
+<p>The value of paying is</p>
+<div class="math notranslate nohighlight">
+\[
+v_c(B, y) = \max_{B' \geq -Z}
+       \left\{
+            u(y - q(B', y) B' + B) +
+            \beta \int v(B', y') p(y, y') dy'
+      \right\}
+\]</div>
+<p>The three value functions are linked by</p>
+<div class="math notranslate nohighlight">
+\[
+v(B, y) = \max\{ v_c(B, y), v_d(y) \}
+\]</div>
+<p>The government chooses to default when</p>
+<div class="math notranslate nohighlight">
+\[
+v_c(B, y) &lt; v_d(y)
+\]</div>
+<p>and hence given <span class="math notranslate nohighlight">\(B'\)</span> the probability of default next period  is</p>
+<div class="math notranslate nohighlight" id="equation-delta">
+<span class="eqno">(53.4)<a class="headerlink" href="#equation-delta" title="Permalink to this equation">¶</a></span>\[\delta(B', y) := \int \mathbb 1\{v_c(B', y') &lt; v_d(y') \} p(y, y') dy'\]</div>
+<p>Given zero profits for foreign creditors in equilibrium, we can combine <a class="reference internal" href="#equation-epc">(53.3)</a> and <a class="reference internal" href="#equation-delta">(53.4)</a> to pin down
+the bond price function:</p>
+<div class="math notranslate nohighlight" id="equation-bondprice">
+<span class="eqno">(53.5)<a class="headerlink" href="#equation-bondprice" title="Permalink to this equation">¶</a></span>\[q(B', y) = \frac{1 - \delta(B', y)}{1 + r}\]</div>
+<div class="section" id="definition-of-equilibrium">
+<h3><span class="section-number">53.3.1. </span>Definition of equilibrium<a class="headerlink" href="#definition-of-equilibrium" title="Permalink to this headline">¶</a></h3>
+<p>An <em>equilibrium</em> is</p>
+<ul class="simple">
+<li><p>a  pricing function <span class="math notranslate nohighlight">\(q(B',y)\)</span>,</p></li>
+<li><p>a triple of value functions <span class="math notranslate nohighlight">\((v_c(B, y), v_d(y), v(B,y))\)</span>,</p></li>
+<li><p>a decision rule telling the government when to default and when to pay as a function of the state  <span class="math notranslate nohighlight">\((B, y)\)</span>, and</p></li>
+<li><p>an asset accumulation rule that, conditional on choosing not to  default,  maps <span class="math notranslate nohighlight">\((B,y)\)</span> into <span class="math notranslate nohighlight">\(B'\)</span></p></li>
+</ul>
+<p>such that</p>
+<ul class="simple">
+<li><p>The three Bellman equations for <span class="math notranslate nohighlight">\((v_c(B, y), v_d(y), v(B,y))\)</span> are satisfied.</p></li>
+<li><p>Given the price function <span class="math notranslate nohighlight">\(q(B',y)\)</span>, the default decision rule and the asset accumulation decision rule attain the optimal value function  <span class="math notranslate nohighlight">\(v(B,y)\)</span>, and</p></li>
+<li><p>The price function <span class="math notranslate nohighlight">\(q(B',y)\)</span> satisfies equation <a class="reference internal" href="#equation-bondprice">(53.5)</a>.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="computation">
+<h2><a class="toc-backref" href="#id9"><span class="section-number">53.4. </span>Computation</a><a class="headerlink" href="#computation" title="Permalink to this headline">¶</a></h2>
+<p>Let’s now compute an equilibrium of Arellano’s model.</p>
+<p>The equilibrium objects are the value function <span class="math notranslate nohighlight">\(v(B, y)\)</span>, the associated default decision rule, and the pricing function <span class="math notranslate nohighlight">\(q(B', y)\)</span>.</p>
+<p>We’ll use our code to replicate Arellano’s results.</p>
+<p>After that we’ll perform some additional simulations.</p>
+<p>It uses a slightly modified version of the algorithm recommended by Arellano.</p>
+<ul class="simple">
+<li><p>The appendix to <span id="id2">[<a class="reference internal" href="../zreferences.html#id54"><span>Are08</span></a>]</span> recommends
+value function iteration until convergence, updating the price, and then repeating.</p></li>
+<li><p>Instead, we update the bond price at every value function iteration step.</p></li>
+</ul>
+<p>The second approach is faster and the two different procedures deliver very similar results.</p>
+<p>Here is a more detailed description of our algorithm:</p>
+<ol class="simple">
+<li><p>Guess a value function <span class="math notranslate nohighlight">\(v(B, y)\)</span> and price function <span class="math notranslate nohighlight">\(q(B', y)\)</span>.</p></li>
+<li><p>At each pair <span class="math notranslate nohighlight">\((B, y)\)</span>,</p>
+<ul class="simple">
+<li><p>update the value of defaulting <span class="math notranslate nohighlight">\(v_d(y)\)</span></p></li>
+<li><p>update the value of continuing <span class="math notranslate nohighlight">\(v_c(B, y)\)</span></p></li>
+</ul>
+</li>
+<li><p>Update the value function v(B, y), the default rule,  the implied ex ante default probability,  and the price function.</p></li>
+<li><p>Check for convergence. If converged, stop. If not, go to step 2.</p></li>
+</ol>
+<p>We use simple discretization on a grid of asset holdings and income levels.</p>
+<p>The output process is discretized using <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/markov_approx.jl">Tauchen’s quadrature method</a>.</p>
+<p>The code can be found below:</p>
+<p>(Results and discussion follow the code)</p>
+<div class="section" id="setup">
+<h3><span class="section-number">53.4.1. </span>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">ArellanoEconomy</span><span class="p">(;</span><span class="n">β</span> <span class="o">=</span> <span class="o">.</span><span class="mi">953</span><span class="p">,</span>
+                          <span class="nb">γ</span> <span class="o">=</span> <span class="mf">2.</span><span class="p">,</span>
+                          <span class="n">r</span> <span class="o">=</span> <span class="mf">0.017</span><span class="p">,</span>
+                          <span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.945</span><span class="p">,</span>
+                          <span class="n">η</span> <span class="o">=</span> <span class="mf">0.025</span><span class="p">,</span>
+                          <span class="n">θ</span> <span class="o">=</span> <span class="mf">0.282</span><span class="p">,</span>
+                          <span class="n">ny</span> <span class="o">=</span> <span class="mi">21</span><span class="p">,</span>
+                          <span class="n">nB</span> <span class="o">=</span> <span class="mi">251</span><span class="p">)</span>
+
+    <span class="c"># create grids</span>
+    <span class="n">Bgrid</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">range</span><span class="p">(</span><span class="o">-.</span><span class="mi">4</span><span class="p">,</span> <span class="o">.</span><span class="mi">4</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">nB</span><span class="p">))</span>
+    <span class="n">mc</span> <span class="o">=</span> <span class="n">tauchen</span><span class="p">(</span><span class="n">ny</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">η</span><span class="p">)</span>
+    <span class="n">Π</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">p</span>
+    <span class="n">ygrid</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="p">)</span>
+    <span class="n">ydefgrid</span> <span class="o">=</span> <span class="n">min</span><span class="o">.</span><span class="p">(</span><span class="o">.</span><span class="mi">969</span> <span class="o">*</span> <span class="n">mean</span><span class="p">(</span><span class="n">ygrid</span><span class="p">),</span> <span class="n">ygrid</span><span class="p">)</span>
+
+    <span class="c"># define value functions</span>
+    <span class="c"># notice ordered different than Python to take</span>
+    <span class="c"># advantage of column major layout of Julia)</span>
+    <span class="n">vf</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nB</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+    <span class="n">vd</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+    <span class="n">vc</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nB</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+    <span class="n">policy</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nB</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">nB</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span> <span class="o">.*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">r</span><span class="p">))</span>
+    <span class="n">defprob</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nB</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">β</span> <span class="o">=</span> <span class="n">β</span><span class="p">,</span> <span class="nb">γ</span> <span class="o">=</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">r</span><span class="p">,</span> <span class="n">ρ</span> <span class="o">=</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">η</span> <span class="o">=</span> <span class="n">η</span><span class="p">,</span> <span class="n">θ</span> <span class="o">=</span> <span class="n">θ</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">ny</span><span class="p">,</span>
+            <span class="n">nB</span> <span class="o">=</span> <span class="n">nB</span><span class="p">,</span> <span class="n">ygrid</span> <span class="o">=</span> <span class="n">ygrid</span><span class="p">,</span> <span class="n">ydefgrid</span> <span class="o">=</span> <span class="n">ydefgrid</span><span class="p">,</span>
+            <span class="n">Bgrid</span> <span class="o">=</span> <span class="n">Bgrid</span><span class="p">,</span> <span class="n">Π</span> <span class="o">=</span> <span class="n">Π</span><span class="p">,</span> <span class="n">vf</span> <span class="o">=</span> <span class="n">vf</span><span class="p">,</span> <span class="n">vd</span> <span class="o">=</span> <span class="n">vd</span><span class="p">,</span> <span class="n">vc</span> <span class="o">=</span> <span class="n">vc</span><span class="p">,</span>
+            <span class="n">policy</span> <span class="o">=</span> <span class="n">policy</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="p">,</span> <span class="n">defprob</span> <span class="o">=</span> <span class="n">defprob</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">u</span><span class="p">(</span><span class="n">ae</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="o">=</span> <span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ae</span><span class="o">.</span><span class="nb">γ</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ae</span><span class="o">.</span><span class="nb">γ</span><span class="p">)</span>
+
+<span class="k">function</span> <span class="n">one_step_update!</span><span class="p">(</span><span class="n">ae</span><span class="p">,</span>
+                          <span class="n">EV</span><span class="p">,</span>
+                          <span class="n">EVd</span><span class="p">,</span>
+                          <span class="n">EVc</span><span class="p">)</span>
+
+    <span class="c"># unpack stuff</span>
+    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">η</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nB</span> <span class="o">=</span> <span class="n">ae</span>
+    <span class="nd">@unpack</span> <span class="n">ygrid</span><span class="p">,</span> <span class="n">ydefgrid</span><span class="p">,</span> <span class="n">Bgrid</span><span class="p">,</span> <span class="n">Π</span><span class="p">,</span> <span class="n">vf</span><span class="p">,</span> <span class="n">vd</span><span class="p">,</span> <span class="n">vc</span><span class="p">,</span> <span class="n">policy</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">defprob</span> <span class="o">=</span> <span class="n">ae</span>
+    <span class="n">zero_ind</span> <span class="o">=</span> <span class="n">searchsortedfirst</span><span class="p">(</span><span class="n">Bgrid</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">iy</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">ny</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">ygrid</span><span class="p">[</span><span class="n">iy</span><span class="p">]</span>
+        <span class="n">ydef</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">ydefgrid</span><span class="p">[</span><span class="n">iy</span><span class="p">]</span>
+
+        <span class="c"># value of being in default with income y</span>
+        <span class="n">defval</span> <span class="o">=</span> <span class="n">u</span><span class="p">(</span><span class="n">ae</span><span class="p">,</span> <span class="n">ydef</span><span class="p">)</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="p">(</span><span class="n">θ</span> <span class="o">*</span> <span class="n">EVc</span><span class="p">[</span><span class="n">zero_ind</span><span class="p">,</span> <span class="n">iy</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">θ</span><span class="p">)</span> <span class="o">*</span> <span class="n">EVd</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">iy</span><span class="p">])</span>
+        <span class="n">ae</span><span class="o">.</span><span class="n">vd</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">iy</span><span class="p">]</span> <span class="o">=</span> <span class="n">defval</span>
+
+        <span class="k">for</span> <span class="n">ib</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">nB</span>
+            <span class="n">B</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">Bgrid</span><span class="p">[</span><span class="n">ib</span><span class="p">]</span>
+
+            <span class="n">current_max</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e14</span>
+            <span class="n">pol_ind</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">ib_next</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">nB</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">ae</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="n">ib_next</span><span class="p">,</span> <span class="n">iy</span><span class="p">]</span><span class="o">*</span><span class="n">Bgrid</span><span class="p">[</span><span class="n">ib_next</span><span class="p">]</span> <span class="o">+</span> <span class="n">B</span><span class="p">,</span> <span class="mf">1e-14</span><span class="p">)</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">u</span><span class="p">(</span><span class="n">ae</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">EV</span><span class="p">[</span><span class="n">ib_next</span><span class="p">,</span> <span class="n">iy</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">m</span> <span class="o">&gt;</span> <span class="n">current_max</span>
+                    <span class="n">current_max</span> <span class="o">=</span> <span class="n">m</span>
+                    <span class="n">pol_ind</span> <span class="o">=</span> <span class="n">ib_next</span>
+                <span class="k">end</span>
+
+            <span class="k">end</span>
+
+            <span class="c"># update value and policy functions</span>
+            <span class="n">ae</span><span class="o">.</span><span class="n">vc</span><span class="p">[</span><span class="n">ib</span><span class="p">,</span> <span class="n">iy</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_max</span>
+            <span class="n">ae</span><span class="o">.</span><span class="n">policy</span><span class="p">[</span><span class="n">ib</span><span class="p">,</span> <span class="n">iy</span><span class="p">]</span> <span class="o">=</span> <span class="n">pol_ind</span>
+            <span class="n">ae</span><span class="o">.</span><span class="n">vf</span><span class="p">[</span><span class="n">ib</span><span class="p">,</span> <span class="n">iy</span><span class="p">]</span> <span class="o">=</span> <span class="n">defval</span> <span class="o">&gt;</span> <span class="n">current_max</span> <span class="o">?</span> <span class="n">defval</span> <span class="o">:</span> <span class="n">current_max</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">compute_prices!</span><span class="p">(</span><span class="n">ae</span><span class="p">)</span>
+    <span class="c"># unpack parameters</span>
+    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">η</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nB</span> <span class="o">=</span> <span class="n">ae</span>
+
+    <span class="c"># create default values with a matching size</span>
+    <span class="n">vd_compat</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">vd</span><span class="p">,</span> <span class="n">nB</span><span class="p">)</span>
+    <span class="n">default_states</span> <span class="o">=</span> <span class="n">vd_compat</span> <span class="o">.&gt;</span> <span class="n">ae</span><span class="o">.</span><span class="n">vc</span>
+
+    <span class="c"># update default probabilities and prices</span>
+    <span class="n">copyto!</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">defprob</span><span class="p">,</span> <span class="n">default_states</span> <span class="o">*</span> <span class="n">ae</span><span class="o">.</span><span class="n">Π</span><span class="o">&#39;</span><span class="p">)</span>
+    <span class="n">copyto!</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">q</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">.-</span> <span class="n">ae</span><span class="o">.</span><span class="n">defprob</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">r</span><span class="p">))</span>
+    <span class="k">return</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">vfi!</span><span class="p">(</span><span class="n">ae</span><span class="p">;</span> <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span> <span class="n">maxit</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">)</span>
+
+    <span class="c"># unpack stuff</span>
+    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">η</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">nB</span> <span class="o">=</span> <span class="n">ae</span>
+    <span class="nd">@unpack</span> <span class="n">ygrid</span><span class="p">,</span> <span class="n">ydefgrid</span><span class="p">,</span> <span class="n">Bgrid</span><span class="p">,</span> <span class="n">Π</span><span class="p">,</span> <span class="n">vf</span><span class="p">,</span> <span class="n">vd</span><span class="p">,</span> <span class="n">vc</span><span class="p">,</span> <span class="n">policy</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">defprob</span> <span class="o">=</span> <span class="n">ae</span>
+    <span class="n">Πt</span> <span class="o">=</span> <span class="n">Π</span><span class="o">&#39;</span>
+
+    <span class="c"># Iteration stuff</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="mf">10.</span>
+
+    <span class="c"># allocate memory for update</span>
+    <span class="n">V_upd</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">vf</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">dist</span> <span class="o">&gt;</span> <span class="n">tol</span> <span class="o">&amp;&amp;</span> <span class="n">it</span> <span class="o">&lt;</span> <span class="n">maxit</span>
+        <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c"># compute expectations for this iterations</span>
+        <span class="c"># (we need Π&#39; because of order value function dimensions)</span>
+        <span class="n">copyto!</span><span class="p">(</span><span class="n">V_upd</span><span class="p">,</span> <span class="n">ae</span><span class="o">.</span><span class="n">vf</span><span class="p">)</span>
+        <span class="n">EV</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">vf</span> <span class="o">*</span> <span class="n">Πt</span>
+        <span class="n">EVd</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">vd</span> <span class="o">*</span> <span class="n">Πt</span>
+        <span class="n">EVc</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">vc</span> <span class="o">*</span> <span class="n">Πt</span>
+
+        <span class="c"># update value function</span>
+        <span class="n">one_step_update!</span><span class="p">(</span><span class="n">ae</span><span class="p">,</span> <span class="n">EV</span><span class="p">,</span> <span class="n">EVd</span><span class="p">,</span> <span class="n">EVc</span><span class="p">)</span>
+
+        <span class="c"># update prices</span>
+        <span class="n">compute_prices!</span><span class="p">(</span><span class="n">ae</span><span class="p">)</span>
+
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="kp">in</span> <span class="n">zip</span><span class="p">(</span><span class="n">V_upd</span><span class="p">,</span> <span class="n">ae</span><span class="o">.</span><span class="n">vf</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">it</span> <span class="o">%</span> <span class="mi">25</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">println</span><span class="p">(</span><span class="s">&quot;Finished iteration </span><span class="si">$</span><span class="p">(</span><span class="n">it</span><span class="p">)</span><span class="s"> with dist of </span><span class="si">$</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">QuantEcon</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">ae</span><span class="p">,</span>
+                            <span class="n">capT</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span>
+                            <span class="n">y_init</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">ygrid</span><span class="p">),</span>
+                            <span class="n">B_init</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">Bgrid</span><span class="p">),</span>
+                            <span class="p">)</span>
+
+    <span class="c"># get initial indices</span>
+    <span class="n">zero_index</span> <span class="o">=</span> <span class="n">searchsortedfirst</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">Bgrid</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+    <span class="n">y_init_ind</span> <span class="o">=</span> <span class="n">searchsortedfirst</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">ygrid</span><span class="p">,</span> <span class="n">y_init</span><span class="p">)</span>
+    <span class="n">B_init_ind</span> <span class="o">=</span> <span class="n">searchsortedfirst</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">Bgrid</span><span class="p">,</span> <span class="n">B_init</span><span class="p">)</span>
+
+    <span class="c"># create a QE MarkovChain</span>
+    <span class="n">mc</span> <span class="o">=</span> <span class="n">MarkovChain</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">Π</span><span class="p">)</span>
+    <span class="n">y_sim_indices</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="n">capT</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="n">init</span> <span class="o">=</span> <span class="n">y_init_ind</span><span class="p">)</span>
+
+    <span class="c"># allocate and fill output</span>
+    <span class="n">y_sim_val</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">capT</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">B_sim_val</span><span class="p">,</span> <span class="n">q_sim_val</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">y_sim_val</span><span class="p">),</span> <span class="n">similar</span><span class="p">(</span><span class="n">y_sim_val</span><span class="p">)</span>
+    <span class="n">B_sim_indices</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">capT</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">default_status</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="kc">false</span><span class="p">,</span> <span class="n">capT</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">B_sim_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">default_status</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">B_init_ind</span><span class="p">,</span> <span class="kc">false</span>
+    <span class="n">y_sim_val</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">B_sim_val</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">ygrid</span><span class="p">[</span><span class="n">y_init_ind</span><span class="p">],</span> <span class="n">ae</span><span class="o">.</span><span class="n">Bgrid</span><span class="p">[</span><span class="n">B_init_ind</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">capT</span>
+        <span class="c"># get today&#39;s indexes</span>
+        <span class="n">yi</span><span class="p">,</span> <span class="n">Bi</span> <span class="o">=</span> <span class="n">y_sim_indices</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">B_sim_indices</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="n">defstat</span> <span class="o">=</span> <span class="n">default_status</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+
+        <span class="c"># if you are not in default</span>
+        <span class="k">if</span> <span class="o">!</span><span class="n">defstat</span>
+            <span class="n">default_today</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">vc</span><span class="p">[</span><span class="n">Bi</span><span class="p">,</span> <span class="n">yi</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">ae</span><span class="o">.</span><span class="n">vd</span><span class="p">[</span><span class="n">yi</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">default_today</span>
+                <span class="c"># default values</span>
+                <span class="n">default_status</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+                <span class="n">default_status</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
+                <span class="n">y_sim_val</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">ydefgrid</span><span class="p">[</span><span class="n">y_sim_indices</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span>
+                <span class="n">B_sim_indices</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">zero_index</span>
+                <span class="n">B_sim_val</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+                <span class="n">q_sim_val</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="n">zero_index</span><span class="p">,</span> <span class="n">y_sim_indices</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span>
+            <span class="k">else</span>
+                <span class="n">default_status</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="kc">false</span>
+                <span class="n">y_sim_val</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">ygrid</span><span class="p">[</span><span class="n">y_sim_indices</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span>
+                <span class="n">B_sim_indices</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">policy</span><span class="p">[</span><span class="n">Bi</span><span class="p">,</span> <span class="n">yi</span><span class="p">]</span>
+                <span class="n">B_sim_val</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">Bgrid</span><span class="p">[</span><span class="n">B_sim_indices</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+                <span class="n">q_sim_val</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="n">B_sim_indices</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">y_sim_indices</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span>
+            <span class="k">end</span>
+
+        <span class="c"># if you are in default</span>
+        <span class="k">else</span>
+            <span class="n">B_sim_indices</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">zero_index</span>
+            <span class="n">B_sim_val</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="n">y_sim_val</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">ydefgrid</span><span class="p">[</span><span class="n">y_sim_indices</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span>
+            <span class="n">q_sim_val</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="n">zero_index</span><span class="p">,</span> <span class="n">y_sim_indices</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span>
+
+            <span class="c"># with probability θ exit default status</span>
+            <span class="n">default_status</span><span class="p">[</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span> <span class="o">≥</span> <span class="n">ae</span><span class="o">.</span><span class="n">θ</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">y_sim_val</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="n">capT</span><span class="p">],</span> <span class="n">B_sim_val</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="n">capT</span><span class="p">],</span> <span class="n">q_sim_val</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="n">capT</span><span class="p">],</span>
+            <span class="n">default_status</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="n">capT</span><span class="p">])</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="results">
+<h2><a class="toc-backref" href="#id10"><span class="section-number">53.5. </span>Results</a><a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<p>Let’s start by trying to replicate the results obtained in <span id="id3">[<a class="reference internal" href="../zreferences.html#id54"><span>Are08</span></a>]</span>.</p>
+<p>In what follows, all results are computed using Arellano’s parameter values.</p>
+<p>The values can be seen in the function ArellanoEconomy shown above.</p>
+<ul class="simple">
+<li><p>For example, r=0.017 matches the average quarterly rate on a 5 year US treasury
+over the period 1983–2001.</p></li>
+</ul>
+<p>Details on how to compute the figures are reported as solutions to the exercises.</p>
+<p>The first figure shows the bond price schedule and replicates Figure 3 of Arellano, where <span class="math notranslate nohighlight">\(y_L\)</span> and <span class="math notranslate nohighlight">\(Y_H\)</span> are particular below average and above average values of output <span class="math notranslate nohighlight">\(y\)</span></p>
+<div class="figure align-default">
+<img alt="../_images/arellano_bond_prices.png" src="../_images/arellano_bond_prices.png" />
+</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(y_L\)</span> is 5% below the mean of the <span class="math notranslate nohighlight">\(y\)</span> grid values</p></li>
+<li><p><span class="math notranslate nohighlight">\(y_H\)</span> is 5% above  the mean of the <span class="math notranslate nohighlight">\(y\)</span> grid values</p></li>
+</ul>
+<p>The grid used to compute this figure was relatively coarse (ny, nB = 21, 251) in order to match Arrelano’s findings.</p>
+<p>Here’s the same relationships computed on a finer grid (ny, nB = 51, 551)</p>
+<div class="figure align-default">
+<img alt="../_images/arellano_bond_prices_2.png" src="../_images/arellano_bond_prices_2.png" />
+</div>
+<p>In either case, the figure shows that</p>
+<ul class="simple">
+<li><p>Higher levels of debt (larger <span class="math notranslate nohighlight">\(-B'\)</span>) induce larger discounts on the face value, which correspond to  higher interest rates.</p></li>
+<li><p>Lower income also causes more discounting, as foreign creditors anticipate greater likelihood of default.</p></li>
+</ul>
+<p>The next figure plots value functions and replicates the right hand panel of Figure 4 of <span id="id4">[<a class="reference internal" href="../zreferences.html#id54"><span>Are08</span></a>]</span></p>
+<div class="figure align-default">
+<img alt="../_images/arellano_value_funcs.png" src="../_images/arellano_value_funcs.png" />
+</div>
+<p>We can use the results of the computation to study the default probability
+<span class="math notranslate nohighlight">\(\delta(B', y)\)</span> defined in <a class="reference internal" href="#equation-delta">(53.4)</a>.</p>
+<p>The next plot shows these default probabilities over <span class="math notranslate nohighlight">\((B', y)\)</span> as a heat
+map</p>
+<div class="figure align-default">
+<img alt="../_images/arellano_default_probs.png" src="../_images/arellano_default_probs.png" />
+</div>
+<p>As anticipated, the probability that the government chooses to default in the
+following period increases with indebtedness and falls with income.</p>
+<p>Next let’s run a time series simulation of <span class="math notranslate nohighlight">\(\{y_t\}\)</span>, <span class="math notranslate nohighlight">\(\{B_t\}\)</span> and <span class="math notranslate nohighlight">\(q(B_{t+1}, y_t)\)</span>.</p>
+<p>The grey vertical bars correspond to periods when the economy is excluded from financial markets because of a past default</p>
+<div class="figure align-default">
+<img alt="../_images/arellano_time_series.png" src="../_images/arellano_time_series.png" />
+</div>
+<p>One notable feature of the simulated data is the nonlinear response of interest rates.</p>
+<p>Periods of relative stability are followed by sharp spikes in the discount rate on government debt.</p>
+</div>
+<div class="section" id="exercises">
+<h2><a class="toc-backref" href="#id11"><span class="section-number">53.6. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1">
+<span id="arellano-ex1"></span><h3><span class="section-number">53.6.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<p>To the extent that you can, replicate the figures shown above</p>
+<ul class="simple">
+<li><p>Use the parameter values listed as defaults in the function ArellanoEconomy.</p></li>
+<li><p>The time series will of course vary depending on the shock draws.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="solutions">
+<h2><a class="toc-backref" href="#id12"><span class="section-number">53.7. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">DataFrames</span><span class="p">,</span> <span class="n">Plots</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=:</span><span class="n">png</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Compute the value function, policy and equilibrium prices</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ae</span> <span class="o">=</span> <span class="n">ArellanoEconomy</span><span class="p">(</span><span class="n">β</span> <span class="o">=</span> <span class="o">.</span><span class="mi">953</span><span class="p">,</span>     <span class="c"># time discount rate</span>
+                     <span class="nb">γ</span> <span class="o">=</span> <span class="mf">2.</span><span class="p">,</span>       <span class="c"># risk aversion</span>
+                     <span class="n">r</span> <span class="o">=</span> <span class="mf">0.017</span><span class="p">,</span>    <span class="c"># international interest rate</span>
+                     <span class="n">ρ</span> <span class="o">=</span> <span class="o">.</span><span class="mi">945</span><span class="p">,</span>     <span class="c"># persistence in output</span>
+                     <span class="n">η</span> <span class="o">=</span> <span class="mf">0.025</span><span class="p">,</span>    <span class="c"># st dev of output shock</span>
+                     <span class="n">θ</span> <span class="o">=</span> <span class="mf">0.282</span><span class="p">,</span>    <span class="c"># prob of regaining access</span>
+                     <span class="n">ny</span> <span class="o">=</span> <span class="mi">21</span><span class="p">,</span>      <span class="c"># number of points in y grid</span>
+                     <span class="n">nB</span> <span class="o">=</span> <span class="mi">251</span><span class="p">)</span>     <span class="c"># number of points in B grid</span>
+
+<span class="c"># now solve the model on the grid.</span>
+<span class="n">vfi!</span><span class="p">(</span><span class="n">ae</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Compute the bond price schedule as seen in figure 3 of Arellano (2008)</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># create &quot;Y High&quot; and &quot;Y Low&quot; values as 5% devs from mean</span>
+<span class="n">high</span><span class="p">,</span> <span class="n">low</span> <span class="o">=</span> <span class="mf">1.05</span> <span class="o">*</span> <span class="n">mean</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">ygrid</span><span class="p">),</span> <span class="mf">0.95</span> <span class="o">*</span> <span class="n">mean</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">ygrid</span><span class="p">)</span>
+<span class="n">iy_high</span><span class="p">,</span> <span class="n">iy_low</span> <span class="o">=</span> <span class="n">map</span><span class="p">(</span><span class="n">x</span> <span class="o">-&gt;</span> <span class="n">searchsortedfirst</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">ygrid</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">low</span><span class="p">))</span>
+
+<span class="c"># extract a suitable plot grid</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">q_low</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">q_high</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">ae</span><span class="o">.</span><span class="n">nB</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">ae</span><span class="o">.</span><span class="n">Bgrid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">if</span> <span class="o">-</span><span class="mf">0.35</span> <span class="o">≤</span> <span class="n">b</span> <span class="o">≤</span> <span class="mi">0</span>  <span class="c"># to match fig 3 of Arellano</span>
+        <span class="n">push!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">push!</span><span class="p">(</span><span class="n">q_low</span><span class="p">,</span> <span class="n">ae</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">iy_low</span><span class="p">])</span>
+        <span class="n">push!</span><span class="p">(</span><span class="n">q_high</span><span class="p">,</span> <span class="n">ae</span><span class="o">.</span><span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">iy_high</span><span class="p">])</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c"># generate plot</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">q_low</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Low&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">q_high</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;High&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Bond price schedule q(y, B&#39;)&quot;</span><span class="p">,</span>
+      <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;B&#39;&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;q&quot;</span><span class="p">,</span> <span class="n">legend_title</span> <span class="o">=</span> <span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Draw a plot of the value functions</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">Bgrid</span><span class="p">,</span> <span class="n">ae</span><span class="o">.</span><span class="n">vf</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">iy_low</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Low&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">Bgrid</span><span class="p">,</span> <span class="n">ae</span><span class="o">.</span><span class="n">vf</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">iy_high</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;High&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;B&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;V(y,B)&quot;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Value functions&quot;</span><span class="p">,</span>
+      <span class="n">legend_title</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Draw a heat map for default probability</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">heatmap</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">Bgrid</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">ae</span><span class="o">.</span><span class="n">ygrid</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">],</span>
+    <span class="n">reshape</span><span class="p">(</span><span class="n">clamp</span><span class="o">.</span><span class="p">(</span><span class="n">vec</span><span class="p">(</span><span class="n">ae</span><span class="o">.</span><span class="n">defprob</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="k">end</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">250</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span><span class="o">&#39;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;B&#39;&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Probability of default&quot;</span><span class="p">,</span>
+    <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot a time series of major variables simulated from the model</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Random</span>
+<span class="c"># set random seed for consistent result</span>
+<span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">348938</span><span class="p">)</span>
+
+<span class="c"># simulate</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mi">250</span>
+<span class="n">y_vec</span><span class="p">,</span> <span class="n">B_vec</span><span class="p">,</span> <span class="n">q_vec</span><span class="p">,</span> <span class="n">default_vec</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">ae</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+<span class="c"># find starting and ending periods of recessions</span>
+<span class="n">defs</span> <span class="o">=</span> <span class="n">findall</span><span class="p">(</span><span class="n">default_vec</span><span class="p">)</span>
+<span class="n">def_breaks</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">defs</span><span class="p">)</span> <span class="o">.&gt;</span> <span class="mi">1</span>
+<span class="n">def_start</span> <span class="o">=</span> <span class="n">defs</span><span class="p">[[</span><span class="kc">true</span><span class="p">;</span> <span class="n">def_breaks</span><span class="p">]]</span>
+<span class="n">def_end</span> <span class="o">=</span> <span class="n">defs</span><span class="p">[[</span><span class="n">def_breaks</span><span class="p">;</span> <span class="kc">true</span><span class="p">]]</span>
+
+<span class="n">y_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">y_vec</span><span class="p">,</span> <span class="n">B_vec</span><span class="p">,</span> <span class="n">q_vec</span><span class="p">]</span>
+<span class="n">titles</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Output&quot;</span><span class="p">,</span> <span class="s">&quot;Foreign assets&quot;</span><span class="p">,</span> <span class="s">&quot;Bond price&quot;</span><span class="p">]</span>
+
+<span class="n">plots</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">800</span><span class="p">))</span>
+
+<span class="c"># Plot the three variables, and for each each variable shading the period(s) of default</span>
+<span class="c"># in grey</span>
+<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">3</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="p">,</span> <span class="n">y_vals</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="n">titles</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;time&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="p">(</span><span class="n">def_start</span><span class="p">)</span>
+        <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">[</span><span class="n">def_start</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">def_end</span><span class="p">[</span><span class="n">j</span><span class="p">]],</span> <span class="n">fill</span><span class="p">(</span><span class="n">maximum</span><span class="p">(</span><span class="n">y_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="mi">2</span><span class="p">),</span>
+              <span class="n">fillrange</span> <span class="o">=</span> <span class="p">[</span><span class="n">extrema</span><span class="p">(</span><span class="n">y_vals</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">...</span><span class="p">],</span> <span class="n">fcolor</span> <span class="o">=</span> <span class="o">:</span><span class="n">grey</span><span class="p">,</span> <span class="n">falpha</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./multi_agent_models"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Packages and Software Engineering in Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   22. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   23. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   24. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   25. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   26. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   27. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   28. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   29. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   30. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   31. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   33. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   34. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   35. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   36. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   37. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   39. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   40. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   41. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   42. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="schelling.html">
+   44. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lake_model.html">
+   45. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="rational_expectations.html">
+   46. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="markov_perf.html">
+   47. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="markov_asset.html">
+   48. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lucas_model.html">
+   49. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="harrison_kreps.html">
+   50. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="uncertainty_traps.html">
+   51. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="aiyagari.html">
+   52. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   53. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="matsuyama.html">
+   54. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   55. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   56. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   57. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   58. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   59. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   60. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   61. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   62. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   63. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   64. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   65. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   66. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   67. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   68. Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/multi_agent_models/arellano.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/multi_agent_models/arellano.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/multi_agent_models/arellano.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/multi_agent_models/arellano.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

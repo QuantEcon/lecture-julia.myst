@@ -1,0 +1,1669 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>23. Numerical Linear Algebra and Factorizations &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/numerical_linear_algebra.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="24. Krylov Methods and Matrix Conditioning" href="iterative_methods_sparsity.html" />
+    <link rel="prev" title="22. A First Look at the Kalman Filter" href="kalman.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Numerical Linear Algebra and Factorizations"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Numerical Linear Algebra and Factorizations" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/tools_and_techniques/numerical_linear_algebra.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=tools_and_techniques/numerical_linear_algebra>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   23.1. Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#setup">
+     23.1.1. Setup
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#computational-complexity">
+     23.1.2. Computational Complexity
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#notation">
+       23.1.2.1. Notation
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#rules-of-computational-complexity">
+     23.1.3. Rules of Computational Complexity
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#losing-structure">
+     23.1.4. Losing Structure
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#matrix-multiplication">
+     23.1.5. Matrix Multiplication
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#factorizations">
+   23.2. Factorizations
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#inverting-matrices">
+     23.2.1. Inverting Matrices
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#triangular-matrices-and-back-forward-substitution">
+     23.2.2. Triangular Matrices and Back/Forward Substitution
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#lu-decomposition">
+     23.2.3. LU Decomposition
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#cholesky-decomposition">
+     23.2.4. Cholesky Decomposition
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#qr-decomposition">
+     23.2.5. QR Decomposition
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spectral-decomposition">
+     23.2.6. Spectral Decomposition
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#continuous-time-markov-chains-ctmcs">
+   23.3. Continuous-Time Markov Chains (CTMCs)
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multiple-dimensions">
+     23.3.1. Multiple Dimensions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#irreducibility">
+     23.3.2. Irreducibility
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#banded-matrices">
+   23.4. Banded Matrices
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#implementation-details-and-performance">
+   23.5. Implementation Details and Performance
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#implementation-difficulty">
+     23.5.1. Implementation Difficulty
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#row-and-column-major-ordering">
+     23.5.2. Row- and Column-Major Ordering
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#digression-on-allocations-and-in-place-operations">
+     23.5.3. Digression on Allocations and In-place Operations
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   23.6. Exercises
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1">
+     23.6.1. Exercise 1
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-2a">
+     23.6.2. Exercise 2a
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-2b">
+     23.6.3. Exercise 2b
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Numerical Linear Algebra and Factorizations</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="numerical-linear-algebra-and-factorizations">
+<h1><a class="toc-backref" href="#id1"><span class="section-number">23. </span>Numerical Linear Algebra and Factorizations</a><a class="headerlink" href="#numerical-linear-algebra-and-factorizations" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#numerical-linear-algebra-and-factorizations" id="id1">Numerical Linear Algebra and Factorizations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id2">Overview</a></p></li>
+<li><p><a class="reference internal" href="#factorizations" id="id3">Factorizations</a></p></li>
+<li><p><a class="reference internal" href="#continuous-time-markov-chains-ctmcs" id="id4">Continuous-Time Markov Chains (CTMCs)</a></p></li>
+<li><p><a class="reference internal" href="#banded-matrices" id="id5">Banded Matrices</a></p></li>
+<li><p><a class="reference internal" href="#implementation-details-and-performance" id="id6">Implementation Details and Performance</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id7">Exercises</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<blockquote class="epigraph">
+<div><p>You cannot learn too much linear algebra. – Benedict Gross</p>
+</div></blockquote>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id2"><span class="section-number">23.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>In this lecture, we examine the structure of matrices and linear operators (e.g., dense, sparse, symmetric, tridiagonal, banded) and
+discuss how the structure can be exploited to radically increase the performance of solving large problems.</p>
+<p>We build on applications discussed in previous lectures: <a class="reference internal" href="linear_algebra.html"><span class="doc">linear algebra</span></a>, <a class="reference internal" href="orth_proj.html"><span class="doc">orthogonal projections</span></a>, and <a class="reference internal" href="finite_markov.html"><span class="doc">Markov chains</span></a>.</p>
+<p>The methods in this section are called direct methods, and they are qualitatively similar to performing Gaussian elimination to factor matrices and solve systems of equations.  In <a class="reference internal" href="iterative_methods_sparsity.html"><span class="doc">iterative methods and sparsity</span></a> we examine a different approach, using iterative algorithms, where we can think of more general linear operators.</p>
+<p>The list of specialized packages for these tasks is enormous and growing, but some of the important organizations to
+look at are <a class="reference external" href="https://github.com/JuliaMatrices">JuliaMatrices</a> , <a class="reference external" href="https://github.com/JuliaSparse">JuliaSparse</a>, and <a class="reference external" href="https://github.com/JuliaMath">JuliaMath</a></p>
+<p><em>NOTE</em>: As this section uses advanced Julia techniques, you may wish to review multiple-dispatch and generic programming in  <span class="xref std std-doc">introduction to types</span>, and consider further study on <a class="reference internal" href="../more_julia/generic_programming.html"><span class="doc">generic programming</span></a>.</p>
+<p>The theme of this lecture, and numerical linear algebra in general, comes down to three principles:</p>
+<ol class="simple">
+<li><p><strong>Identify structure</strong> (e.g., <a class="reference external" href="https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/index.html#Special-matrices-1">symmetric, sparse, diagonal</a>) matrices in order to use <strong>specialized algorithms.</strong></p></li>
+<li><p><strong>Do not lose structure</strong> by applying the wrong numerical linear algebra operations at the wrong times (e.g., sparse matrix becoming dense)</p></li>
+<li><p>Understand the <strong>computational complexity</strong> of each algorithm, given the structure of the inputs.</p></li>
+</ol>
+<div class="section" id="setup">
+<h3><span class="section-number">23.1.1. </span>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="computational-complexity">
+<h3><span class="section-number">23.1.2. </span>Computational Complexity<a class="headerlink" href="#computational-complexity" title="Permalink to this headline">¶</a></h3>
+<p>Ask yourself whether the following is a <strong>computationally expensive</strong> operation as the matrix <strong>size increases</strong></p>
+<ul class="simple">
+<li><p>Multiplying two matrices?</p>
+<ul>
+<li><p><em>Answer</em>: It depends.  Multiplying two diagonal matrices is trivial.</p></li>
+</ul>
+</li>
+<li><p>Solving a linear system of equations?</p>
+<ul>
+<li><p><em>Answer</em>: It depends.  If the matrix is the identity, the solution is the vector itself.</p></li>
+</ul>
+</li>
+<li><p>Finding the eigenvalues of a matrix?</p>
+<ul>
+<li><p><em>Answer</em>: It depends.  The eigenvalues of a triangular matrix are the diagonal elements.</p></li>
+</ul>
+</li>
+</ul>
+<p>As the goal of this section is to move toward numerical methods with large systems, we need to understand how well algorithms scale with the size of matrices, vectors, etc.  This is known as <a class="reference external" href="https://en.wikipedia.org/wiki/Computational_complexity">computational complexity</a>.  As we saw in the answer to the questions above, the algorithm - and hence the computational complexity - changes based on matrix structure.</p>
+<p>While this notion of complexity can work at various levels, such as the number of <a class="reference external" href="https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations#Arithmetic_functions">significant digits</a> for basic mathematical operations, the amount of memory and storage required, or the amount of time, we will typically focus on the time complexity.</p>
+<p>For time complexity, the size <span class="math notranslate nohighlight">\(N\)</span> is usually the dimensionality of the problem, although occasionally the key will be the number of non-zeros in the matrix or the width of bands.  For our applications, time complexity is best thought of as the number of floating point operations (e.g., addition, multiplication) required.</p>
+<div class="section" id="notation">
+<h4><span class="section-number">23.1.2.1. </span>Notation<a class="headerlink" href="#notation" title="Permalink to this headline">¶</a></h4>
+<p>Complexity of algorithms is typically written in <a class="reference external" href="https://en.wikipedia.org/wiki/Big_O_notation">Big O</a> notation, which provides bounds on the scaling of the computational complexity with respect to the size of the inputs.</p>
+<p>Formally, if the number of operations required for a problem size <span class="math notranslate nohighlight">\(N\)</span> is <span class="math notranslate nohighlight">\(f(N)\)</span>, we  can write this as <span class="math notranslate nohighlight">\(f(N) = O(g(N))\)</span> for some <span class="math notranslate nohighlight">\(g(N)\)</span> - typically a polynomial.</p>
+<p>The interpretation is that there exist some constants <span class="math notranslate nohighlight">\(M\)</span> and <span class="math notranslate nohighlight">\(N_0\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[
+f(N) \leq M g(N), \text{ for } N &gt; N_0
+\]</div>
+<p>For example, the complexity of finding an LU Decomposition of a dense matrix is <span class="math notranslate nohighlight">\(O(N^3)\)</span>, which should be read as there being a constant where
+eventually the number of floating point operations required to decompose a matrix of size <span class="math notranslate nohighlight">\(N\times N\)</span> grows cubically.</p>
+<p>Keep in mind that these are asymptotic results intended for understanding the scaling of the problem, and the constant can matter for a given
+fixed size.</p>
+<p>For example, the number of operations required for an <a class="reference external" href="https://en.wikipedia.org/wiki/LU_decomposition#Algorithms">LU decomposition</a> of a dense <span class="math notranslate nohighlight">\(N \times N\)</span> matrix is <span class="math notranslate nohighlight">\(f(N) = \frac{2}{3} N^3\)</span>, ignoring the <span class="math notranslate nohighlight">\(N^2\)</span> and lower terms.  Other methods of solving a linear system may have different constants of proportionality, even if they have the same scaling, <span class="math notranslate nohighlight">\(O(N^3)\)</span>.</p>
+</div>
+</div>
+<div class="section" id="rules-of-computational-complexity">
+<h3><span class="section-number">23.1.3. </span>Rules of Computational Complexity<a class="headerlink" href="#rules-of-computational-complexity" title="Permalink to this headline">¶</a></h3>
+<p>You will sometimes need to think through how <a class="reference external" href="https://en.wikipedia.org/wiki/Big_O_notation#Properties">combining algorithms</a> changes complexity.  For example, if you use</p>
+<ol class="simple">
+<li><p>an <span class="math notranslate nohighlight">\(O(N^3)\)</span> operation <span class="math notranslate nohighlight">\(P\)</span> times, then it simply changes the constant. The complexity remains <span class="math notranslate nohighlight">\(O(N^3)\)</span>.</p></li>
+<li><p>one <span class="math notranslate nohighlight">\(O(N^3)\)</span> operation and one <span class="math notranslate nohighlight">\(O(N^2)\)</span> operation, then you take the max.  The complexity remains <span class="math notranslate nohighlight">\(O(N^3)\)</span>.</p></li>
+<li><p>a repetition of an <span class="math notranslate nohighlight">\(O(N)\)</span> operation that itself uses an <span class="math notranslate nohighlight">\(O(N)\)</span> operation, you take the product.  The complexity becomes <span class="math notranslate nohighlight">\(O(N^2)\)</span>.</p></li>
+</ol>
+<p>With this, we have an important word of caution: Dense-matrix multiplication is an <a class="reference external" href="https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations#Matrix_algebra">expensive operation</a> for unstructured matrices.  The naive version is <span class="math notranslate nohighlight">\(O(N^3)\)</span> while the fastest-known algorithms (e.g., Coppersmith-Winograd) are roughly <span class="math notranslate nohighlight">\(O(N^{2.37})\)</span>.  In practice, it is reasonable to crudely approximate with <span class="math notranslate nohighlight">\(O(N^3)\)</span> when doing an analysis, in part since the higher constant factors of the better scaling algorithms dominate the better complexity until matrices become very large.</p>
+<p>Of course, modern libraries use highly tuned and numerically stable <a class="reference external" href="https://en.wikipedia.org/wiki/Matrix_multiplication_algorithm">algorithms</a> to multiply matrices and exploit the computer architecture, memory cache, etc., but this simply lowers the constant of proportionality and they remain roughly approximated by  <span class="math notranslate nohighlight">\(O(N^3)\)</span>.</p>
+<p>A consequence is that, since many algorithms require matrix-matrix multiplication, it is often not possible to go below that order without further matrix structure.</p>
+<p>That is, changing the constant of proportionality for a given size can help, but in order to achieve better scaling you need to identify matrix structure (e.g., tridiagonal, sparse) and ensure that your operations do not lose it.</p>
+</div>
+<div class="section" id="losing-structure">
+<h3><span class="section-number">23.1.4. </span>Losing Structure<a class="headerlink" href="#losing-structure" title="Permalink to this headline">¶</a></h3>
+<p>As a first example of a structured matrix, consider a <a class="reference external" href="https://docs.julialang.org/en/v1/stdlib/SparseArrays/index.html">sparse array</a>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">sprand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">)</span>  <span class="c"># random sparse 10x10, 45 percent filled with non-zeros</span>
+
+<span class="nd">@show</span> <span class="n">nnz</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>  <span class="c"># counts the number of non-zeros</span>
+<span class="n">invA</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">(</span><span class="n">inv</span><span class="p">(</span><span class="kt">Array</span><span class="p">(</span><span class="n">A</span><span class="p">)))</span>  <span class="c"># Julia won&#39;t invert sparse, so convert to dense with Array.</span>
+<span class="nd">@show</span> <span class="n">nnz</span><span class="p">(</span><span class="n">invA</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This increase from less than 50 to 100 percent dense demonstrates that significant sparsity can be lost when computing an inverse.</p>
+<p>The results can be even more extreme.  Consider a tridiagonal matrix of size <span class="math notranslate nohighlight">\(N \times N\)</span>
+that might come out of a Markov chain or a discretization of a diffusion process,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">A</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">([</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);])</span>
+</pre></div>
+</div>
+<p>The number of non-zeros here is approximately <span class="math notranslate nohighlight">\(3 N\)</span>, linear, which scales well for huge matrices into the millions or billions</p>
+<p>But consider the inverse</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, the matrix is fully dense and has <span class="math notranslate nohighlight">\(N^2\)</span> non-zeros.</p>
+<p>This also applies to the <span class="math notranslate nohighlight">\(A' A\)</span> operation when forming the normal equations of linear least squares.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">sprand</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">nnz</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">/</span><span class="mi">20</span><span class="o">^</span><span class="mi">2</span>
+<span class="nd">@show</span> <span class="n">nnz</span><span class="p">(</span><span class="n">A</span><span class="o">&#39;*</span><span class="n">A</span><span class="p">)</span><span class="o">/</span><span class="mi">21</span><span class="o">^</span><span class="mi">2</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>We see that a 30 percent dense matrix becomes almost full dense after the product is taken.</p>
+<p><em>Sparsity/Structure is not just for storage</em>:  Matrix size can sometimes become important (e.g., a 1 million by 1 million tridiagonal matrix needs to store 3 million numbers (i.e., about 6MB of memory), where a dense one requires 1 trillion (i.e., about 1TB of memory)).</p>
+<p>But, as we will see, the main purpose of considering sparsity and matrix structure is that it enables specialized algorithms, which typically
+have a lower computational order than unstructured dense, or even unstructured sparse, operations.</p>
+<p>First, create a convenient function for benchmarking linear solvers</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">BenchmarkTools</span>
+<span class="k">function</span> <span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">&quot;A</span><span class="se">\\</span><span class="s">b for typeof(A) = </span><span class="si">$</span><span class="p">(</span><span class="n">string</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">A</span><span class="p">)))</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="nd">@btime</span> <span class="o">$</span><span class="n">A</span> <span class="o">\</span> <span class="o">$</span><span class="n">b</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>Then, take away structure to see the impact on performance,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">([</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);])</span>
+<span class="n">A_sparse</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>  <span class="c"># sparse but losing tridiagonal structure</span>
+<span class="n">A_dense</span> <span class="o">=</span> <span class="kt">Array</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>    <span class="c"># dropping the sparsity structure, dense 1000x1000</span>
+
+<span class="c"># benchmark solution to system A x = b</span>
+<span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A_sparse</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A_dense</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This example shows what is at stake:  using a structured tridiagonal matrix may be 10-20 times faster than using a sparse matrix, which is 100 times faster than
+using a dense matrix.</p>
+<p>In fact, the difference becomes more extreme as the matrices grow.  Solving a tridiagonal system is <span class="math notranslate nohighlight">\(O(N)\)</span>, while that of a dense matrix without any structure is <span class="math notranslate nohighlight">\(O(N^3)\)</span>.  The complexity of a sparse solution is more complicated, and scales in part by the <code class="docutils literal notranslate"><span class="pre">nnz(N)</span></code>, i.e., the number of nonzeros.</p>
+</div>
+<div class="section" id="matrix-multiplication">
+<h3><span class="section-number">23.1.5. </span>Matrix Multiplication<a class="headerlink" href="#matrix-multiplication" title="Permalink to this headline">¶</a></h3>
+<p>While we write matrix multiplications in our algebra with abundance, in practice the computational operation scales very poorly without any matrix structure.</p>
+<p>Matrix multiplication is so important to modern computers that the constant of scaling is small using proper packages, but the order is still roughly <span class="math notranslate nohighlight">\(O(N^3)\)</span> in practice (although smaller in theory, as discussed above).</p>
+<p>Sparse matrix multiplication, on the other hand, is <span class="math notranslate nohighlight">\(O(N M_A M_B)\)</span> where <span class="math notranslate nohighlight">\(M_A\)</span> is the number of nonzeros per row of <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(M_B\)</span> is the number of non-zeros per column of <span class="math notranslate nohighlight">\(B\)</span>.</p>
+<p>By the rules of computational order, that means any algorithm requiring a matrix multiplication of dense matrices requires at least <span class="math notranslate nohighlight">\(O(N^3)\)</span> operation.</p>
+<p>The other important question is what is the structure of the resulting matrix.  For example, multiplying an upper triangular matrix by a lower triangular matrix</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">U</span> <span class="o">=</span> <span class="kt">UpperTriangular</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">))</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">U</span><span class="o">&#39;</span>
+</pre></div>
+</div>
+<p>But the product is fully dense (e.g., think of a Cholesky multiplied by itself to produce a covariance matrix)</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">*</span> <span class="n">U</span>
+</pre></div>
+</div>
+<p>On the other hand, a tridiagonal matrix times a diagonal matrix is still tridiagonal - and can use specialized <span class="math notranslate nohighlight">\(O(N)\)</span> algorithms.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">([</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);])</span>
+<span class="n">D</span> <span class="o">=</span> <span class="kt">Diagonal</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+<span class="n">D</span> <span class="o">*</span> <span class="n">A</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="factorizations">
+<h2><a class="toc-backref" href="#id3"><span class="section-number">23.2. </span>Factorizations</a><a class="headerlink" href="#factorizations" title="Permalink to this headline">¶</a></h2>
+<p>When you tell a numerical analyst you are solving a linear system using direct methods, their first question is “which factorization?”.</p>
+<p>Just as you can factor a number (e.g., <span class="math notranslate nohighlight">\(6 = 3 \times 2\)</span>) you can factor a matrix as the product of other, more
+convenient matrices (e.g., <span class="math notranslate nohighlight">\(A = L U\)</span> or <span class="math notranslate nohighlight">\(A = Q R\)</span>, where <span class="math notranslate nohighlight">\(L, U, Q,\)</span> and <span class="math notranslate nohighlight">\(R\)</span> have properties such as being triangular, <a class="reference external" href="https://en.wikipedia.org/wiki/Orthogonal_matrix">orthogonal</a>, etc.).</p>
+<div class="section" id="inverting-matrices">
+<h3><span class="section-number">23.2.1. </span>Inverting Matrices<a class="headerlink" href="#inverting-matrices" title="Permalink to this headline">¶</a></h3>
+<p>On paper, since the <a class="reference external" href="https://en.wikipedia.org/wiki/Invertible_matrix#The_invertible_matrix_theorem">Invertible Matrix Theorem</a> tells us that a unique solution is
+equivalent to <span class="math notranslate nohighlight">\(A\)</span> being invertible, we often write the solution to <span class="math notranslate nohighlight">\(A x = b\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[
+x = A^{-1} b
+\]</div>
+<p>What if we do not (directly) use a factorization?</p>
+<p>Take a simple linear system of a dense matrix,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>On paper, we try to solve the system <span class="math notranslate nohighlight">\(A x = b\)</span> by inverting the matrix,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">*</span> <span class="n">b</span>
+</pre></div>
+</div>
+<p>As we will see throughout, inverting matrices should be used for theory, not for code.  The classic advice that you should <a class="reference external" href="https://www.johndcook.com/blog/2010/01/19/dont-invert-that-matrix">never invert a matrix</a> may be <a class="reference external" href="https://arxiv.org/abs/1201.6035">slightly exaggerated</a>, but is generally good advice.</p>
+<p>Solving a system by inverting a matrix is always a little slower, is potentially less accurate, and will sometimes lose crucial sparsity compared to using factorizations.  Moreover, the methods used by libraries to invert matrices are frequently the same factorizations used for computing a system of equations.</p>
+<p>Even if you need to solve a system with the same matrix multiple times, you are better off factoring the matrix and using the solver rather than calculating an inverse.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+<span class="n">M</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">M</span><span class="p">)</span>
+<span class="k">function</span> <span class="n">solve_inverting</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="n">A_inv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">A_inv</span> <span class="o">*</span> <span class="n">B</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">X</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">solve_factoring</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">factorize</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span> <span class="o">\</span> <span class="n">B</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">X</span>
+<span class="k">end</span>
+
+
+
+<span class="nd">@btime</span> <span class="n">solve_inverting</span><span class="p">(</span><span class="o">$</span><span class="n">A</span><span class="p">,</span> <span class="o">$</span><span class="n">B</span><span class="p">)</span>
+<span class="nd">@btime</span> <span class="n">solve_factoring</span><span class="p">(</span><span class="o">$</span><span class="n">A</span><span class="p">,</span> <span class="o">$</span><span class="n">B</span><span class="p">)</span>
+
+<span class="c"># even better, use the built-in feature for multiple RHS</span>
+<span class="nd">@btime</span> <span class="o">$</span><span class="n">A</span> <span class="o">\</span> <span class="o">$</span><span class="n">B</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="triangular-matrices-and-back-forward-substitution">
+<h3><span class="section-number">23.2.2. </span>Triangular Matrices and Back/Forward Substitution<a class="headerlink" href="#triangular-matrices-and-back-forward-substitution" title="Permalink to this headline">¶</a></h3>
+<p>Some matrices are already in a convenient form and require no further factoring.</p>
+<p>For example, consider solving a system with an <code class="docutils literal notranslate"><span class="pre">UpperTriangular</span></code> matrix,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">]</span>
+<span class="n">U</span> <span class="o">=</span> <span class="kt">UpperTriangular</span><span class="p">([</span><span class="mf">1.0</span> <span class="mf">2.0</span> <span class="mf">3.0</span><span class="p">;</span> <span class="mf">0.0</span> <span class="mf">5.0</span> <span class="mf">6.0</span><span class="p">;</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">9.0</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>This system is especially easy to solve using <a class="reference external" href="https://en.wikipedia.org/wiki/Triangular_matrix#Forward_and_back_substitution">back substitution</a>.  In particular, <span class="math notranslate nohighlight">\(x_3 = b_3 / U_{33}, x_2 = (b_2 - x_3 U_{23})/U_{22}\)</span>, etc.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">U</span> <span class="o">\</span> <span class="n">b</span>
+</pre></div>
+</div>
+<p>A <code class="docutils literal notranslate"><span class="pre">LowerTriangular</span></code> matrix has similar properties and can be solved with forward substitution.</p>
+<p>The computational order of back substitution and forward substitution is <span class="math notranslate nohighlight">\(O(N^2)\)</span> for dense matrices.  Those fast algorithms are a key reason that factorizations target triangular structures.</p>
+</div>
+<div class="section" id="lu-decomposition">
+<span id="jl-decomposition"></span><h3><span class="section-number">23.2.3. </span>LU Decomposition<a class="headerlink" href="#lu-decomposition" title="Permalink to this headline">¶</a></h3>
+<p>The <span class="math notranslate nohighlight">\(LU\)</span> decomposition finds a lower triangular matrix <span class="math notranslate nohighlight">\(L\)</span> and an upper triangular matrix <span class="math notranslate nohighlight">\(U\)</span> such that <span class="math notranslate nohighlight">\(L U = A\)</span>.</p>
+<p>For a general dense matrix without any other structure (i.e., not known to be symmetric, tridiagonal, etc.) this is the standard approach to solve a system and exploit the speed of back and forward substitution using the factorization.</p>
+<p>The computational order of LU decomposition itself for a dense matrix is <span class="math notranslate nohighlight">\(O(N^3)\)</span> - the same as Gaussian elimination - but it tends
+to have a better constant term than others (e.g., half the number of operations of the QR decomposition).  For structured
+or sparse matrices, that order drops.</p>
+<p>We can see which algorithm Julia will use for the <code class="docutils literal notranslate"><span class="pre">\</span></code> operator by looking at the <code class="docutils literal notranslate"><span class="pre">factorize</span></code> function for a given
+matrix.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+
+<span class="n">Af</span> <span class="o">=</span> <span class="n">factorize</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>  <span class="c"># chooses the right factorization, LU here</span>
+</pre></div>
+</div>
+<p>In this case, it provides an <span class="math notranslate nohighlight">\(L\)</span> and <span class="math notranslate nohighlight">\(U\)</span> factorization (with <a class="reference external" href="https://en.wikipedia.org/wiki/LU_decomposition#LU_factorization_with_full_pivoting">pivoting</a> ).</p>
+<p>With the factorization complete, we can solve different <code class="docutils literal notranslate"><span class="pre">b</span></code> right hand sides.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Af</span> <span class="o">\</span> <span class="n">b</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">b2</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">Af</span> <span class="o">\</span> <span class="n">b2</span>
+</pre></div>
+</div>
+<p>In practice, the decomposition also includes a <span class="math notranslate nohighlight">\(P\)</span> which is a <a class="reference external" href="https://en.wikipedia.org/wiki/Permutation_matrix">permutation matrix</a> such
+that <span class="math notranslate nohighlight">\(P A = L U\)</span>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Af</span><span class="o">.</span><span class="n">P</span> <span class="o">*</span> <span class="n">A</span> <span class="n">≈</span> <span class="n">Af</span><span class="o">.</span><span class="n">L</span> <span class="o">*</span> <span class="n">Af</span><span class="o">.</span><span class="n">U</span>
+</pre></div>
+</div>
+<p>We can also directly calculate an LU decomposition with <code class="docutils literal notranslate"><span class="pre">lu</span></code> but without the pivoting,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">L</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">lu</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="kt">Val</span><span class="p">(</span><span class="kc">false</span><span class="p">))</span>  <span class="c"># the Val(false) provides a solution without permutation matrices</span>
+</pre></div>
+</div>
+<p>And we can verify the decomposition</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="n">≈</span> <span class="n">L</span> <span class="o">*</span> <span class="n">U</span>
+</pre></div>
+</div>
+<p>To see roughly how the solver works, note that we can write the problem <span class="math notranslate nohighlight">\(A x = b\)</span> as <span class="math notranslate nohighlight">\(L U x = b\)</span>.  Let <span class="math notranslate nohighlight">\(U x = y\)</span>, which breaks the
+problem into two sub-problems.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+L y &amp;= b\\
+U x &amp;= y
+\end{aligned}
+\end{split}\]</div>
+<p>As we saw above, this is the solution to two triangular systems, which can be efficiently done with back or forward substitution in <span class="math notranslate nohighlight">\(O(N^2)\)</span> operations.</p>
+<p>To demonstrate this, first using</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">L</span> <span class="o">\</span> <span class="n">b</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">U</span> <span class="o">\</span> <span class="n">y</span>
+<span class="n">x</span> <span class="n">≈</span> <span class="n">A</span> <span class="o">\</span> <span class="n">b</span>  <span class="c"># Check identical</span>
+</pre></div>
+</div>
+<p>The LU decomposition also has specialized algorithms for structured matrices, such as a <code class="docutils literal notranslate"><span class="pre">Tridiagonal</span></code></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">([</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);])</span>
+<span class="n">factorize</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">typeof</span>
+</pre></div>
+</div>
+<p>This factorization is the key to the performance of the <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">\</span> <span class="pre">b</span></code> in this case.  For Tridiagonal matrices, the
+LU decomposition is <span class="math notranslate nohighlight">\(O(N^2)\)</span>.</p>
+<p>Finally, just as a dense matrix without any structure uses an LU decomposition to solve a system,
+so will the sparse solvers</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A_sparse</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">factorize</span><span class="p">(</span><span class="n">A_sparse</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">typeof</span>  <span class="c"># dropping the tridiagonal structure to just become sparse</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A_sparse</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>With sparsity, the computational order is related to the number of non-zeros rather than the size of the matrix itself.</p>
+</div>
+<div class="section" id="cholesky-decomposition">
+<h3><span class="section-number">23.2.4. </span>Cholesky Decomposition<a class="headerlink" href="#cholesky-decomposition" title="Permalink to this headline">¶</a></h3>
+<p>For real, symmetric, <a class="reference external" href="https://en.wikipedia.org/wiki/Definiteness_of_a_matrix">positive semi-definite</a> matrices, a Cholesky decomposition is a specialized example of an LU decomposition where <span class="math notranslate nohighlight">\(L = U'\)</span>.</p>
+<p>The Cholesky is directly useful on its own (e.g., <a class="reference internal" href="../time_series_models/classical_filtering.html"><span class="doc">Classical Control with Linear Algebra</span></a>), but it is also an efficient factorization to use in solving symmetric positive semi-definite systems.</p>
+<p>As always, symmetry allows specialized algorithms.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+<span class="n">A_dense</span> <span class="o">=</span> <span class="n">B</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">B</span>  <span class="c"># an easy way to generate a symmetric positive semi-definite matrix</span>
+<span class="n">A</span> <span class="o">=</span> <span class="kt">Symmetric</span><span class="p">(</span><span class="n">A_dense</span><span class="p">)</span>  <span class="c"># flags the matrix as symmetric</span>
+
+<span class="n">factorize</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">typeof</span>
+</pre></div>
+</div>
+<p>Here, the <span class="math notranslate nohighlight">\(A\)</span> decomposition is <a class="reference external" href="https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/index.html#LinearAlgebra.bunchkaufman">Bunch-Kaufman</a> rather than
+Cholesky, because Julia doesn’t know that the matrix is positive semi-definite.  We can manually factorize with a Cholesky,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cholesky</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">typeof</span>
+</pre></div>
+</div>
+<p>Benchmarking,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">cholesky</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">\</span> <span class="n">b</span>  <span class="c"># use the factorization to solve</span>
+
+<span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A_dense</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="nd">@btime</span> <span class="n">cholesky</span><span class="p">(</span><span class="o">$</span><span class="n">A</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">false</span><span class="p">)</span> <span class="o">\</span> <span class="o">$</span><span class="n">b</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="qr-decomposition">
+<h3><span class="section-number">23.2.5. </span>QR Decomposition<a class="headerlink" href="#qr-decomposition" title="Permalink to this headline">¶</a></h3>
+<p><span class="xref std std-ref">Previously</span>, we learned about applications of the QR decomposition to solving the linear least squares.</p>
+<p>While in principle the solution to the least-squares problem</p>
+<div class="math notranslate nohighlight">
+\[
+\min_x \| Ax -b \|^2
+\]</div>
+<p>is <span class="math notranslate nohighlight">\(x = (A'A)^{-1}A'b\)</span>, in practice note that <span class="math notranslate nohighlight">\(A'A\)</span> becomes dense and calculating the inverse is rarely a good idea.</p>
+<p>The QR decomposition is a decomposition <span class="math notranslate nohighlight">\(A = Q R\)</span> where <span class="math notranslate nohighlight">\(Q\)</span> is an orthogonal matrix (i.e., <span class="math notranslate nohighlight">\(Q'Q = Q Q' = I\)</span>) and <span class="math notranslate nohighlight">\(R\)</span> is
+an upper triangular matrix.</p>
+<p>Given the  <span class="xref std std-ref">previous derivation</span>, we showed that we can write the least-squares problem as
+the solution to</p>
+<div class="math notranslate nohighlight">
+\[
+R x = Q' b
+\]</div>
+<p>where, as discussed above, the upper-triangular structure of <span class="math notranslate nohighlight">\(R\)</span> can be solved easily with back substitution.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">\</span></code> operator solves the linear least-squares problem whenever the given <code class="docutils literal notranslate"><span class="pre">A</span></code> is rectangular</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">M</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">x_true</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">M</span><span class="p">)</span> <span class="o">.+</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">A</span> <span class="o">\</span> <span class="n">b</span>
+</pre></div>
+</div>
+<p>To manually use the QR decomposition in solving linear least squares:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Af</span> <span class="o">=</span> <span class="n">qr</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">Af</span><span class="o">.</span><span class="n">Q</span>
+<span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="n">Af</span><span class="o">.</span><span class="n">R</span><span class="p">;</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="p">)]</span> <span class="c"># Stack with zeros</span>
+<span class="nd">@show</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">R</span> <span class="n">≈</span> <span class="n">A</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">\</span> <span class="n">Q</span><span class="o">&#39;*</span><span class="n">b</span>  <span class="c"># simplified QR solution for least squares</span>
+</pre></div>
+</div>
+<p>This stacks the <code class="docutils literal notranslate"><span class="pre">R</span></code> with zeros, but the more specialized algorithm would not multiply directly
+in that way.</p>
+<p>In some cases, if an LU is not available for a particular matrix structure, the QR factorization
+can also be used to solve systems of equations (i.e., not just LLS).  This tends to be about 2 times slower than the LU
+but is of the same computational order.</p>
+<p>Deriving the approach, where we can now use the inverse since the system is square and we assumed <span class="math notranslate nohighlight">\(A\)</span> was non-singular,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+A x &amp;= b\\
+Q R x &amp;= b\\
+Q^{-1} Q R x &amp;= Q^{-1} b\\
+R x &amp;= Q' b
+\end{aligned}
+\end{split}\]</div>
+<p>where the last step uses the fact that <span class="math notranslate nohighlight">\(Q^{-1} = Q'\)</span> for an orthogonal matrix.</p>
+<p>Given the decomposition, the solution for dense matrices is of computational
+order <span class="math notranslate nohighlight">\(O(N^2)\)</span>.  To see this, look at the order of each operation.</p>
+<ul class="simple">
+<li><p>Since <span class="math notranslate nohighlight">\(R\)</span> is an upper-triangular matrix, it can be solved quickly through back substitution with computational order <span class="math notranslate nohighlight">\(O(N^2)\)</span></p></li>
+<li><p>A transpose operation is of order <span class="math notranslate nohighlight">\(O(N^2)\)</span></p></li>
+<li><p>A matrix-vector product is also <span class="math notranslate nohighlight">\(O(N^2)\)</span></p></li>
+</ul>
+<p>In all cases, the order would drop depending on the sparsity pattern of the
+matrix (and corresponding decomposition).  A key benefit of a QR decomposition is that it tends to
+maintain sparsity.</p>
+<p>Without implementing the full process, you can form a QR
+factorization with <code class="docutils literal notranslate"><span class="pre">qr</span></code> and then use it to solve a system</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">A</span> <span class="o">\</span> <span class="n">b</span>
+<span class="nd">@show</span> <span class="n">qr</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">\</span> <span class="n">b</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="spectral-decomposition">
+<h3><span class="section-number">23.2.6. </span>Spectral Decomposition<a class="headerlink" href="#spectral-decomposition" title="Permalink to this headline">¶</a></h3>
+<p>A spectral decomposition, also known as an <a class="reference external" href="https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix">eigendecomposition</a>, finds all of the eigenvectors and eigenvalues to decompose a square matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> such that</p>
+<div class="math notranslate nohighlight">
+\[
+A = Q \Lambda Q^{-1}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(Q\)</span> is a matrix made of the eigenvectors of <span class="math notranslate nohighlight">\(A\)</span> as columns, and <span class="math notranslate nohighlight">\(\Lambda\)</span> is a diagonal matrix of the eigenvalues.  Only square, <a class="reference external" href="https://en.wikipedia.org/wiki/Diagonalizable_matrix">diagonalizable</a> matrices have an eigendecomposition (where a matrix is not diagonalizable if it does not have a full set of linearly independent eigenvectors).</p>
+<p>In Julia, whenever you ask for a full set of eigenvectors and eigenvalues, it  decomposes using an algorithm appropriate for the matrix type.  For example, symmetric, Hermitian, and tridiagonal matrices have specialized algorithms.</p>
+<p>To see this,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="kt">Symmetric</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>  <span class="c"># symmetric matrices have real eigenvectors/eigenvalues</span>
+<span class="n">A_eig</span> <span class="o">=</span> <span class="n">eigen</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">Λ</span> <span class="o">=</span> <span class="kt">Diagonal</span><span class="p">(</span><span class="n">A_eig</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">A_eig</span><span class="o">.</span><span class="n">vectors</span>
+<span class="n">norm</span><span class="p">(</span><span class="n">Q</span> <span class="o">*</span> <span class="n">Λ</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span> <span class="o">-</span> <span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Keep in mind that a real matrix may have complex eigenvalues and eigenvectors, so if you attempt  to check <code class="docutils literal notranslate"><span class="pre">Q</span> <span class="pre">*</span> <span class="pre">Λ</span> <span class="pre">*</span> <span class="pre">inv(Q)</span> <span class="pre">-</span> <span class="pre">A</span></code> - even for a positive-definite matrix - it may not be a real number due to numerical inaccuracy.</p>
+</div>
+</div>
+<div class="section" id="continuous-time-markov-chains-ctmcs">
+<h2><a class="toc-backref" href="#id4"><span class="section-number">23.3. </span>Continuous-Time Markov Chains (CTMCs)</a><a class="headerlink" href="#continuous-time-markov-chains-ctmcs" title="Permalink to this headline">¶</a></h2>
+<p>In the previous lecture on <span class="xref std std-doc">discrete-time Markov chains</span>, we saw that the transition probability
+between state <span class="math notranslate nohighlight">\(x\)</span> and state <span class="math notranslate nohighlight">\(y\)</span> was summarized by the matrix <span class="math notranslate nohighlight">\(P(x, y) := \mathbb P \{ X_{t+1} = y \,|\, X_t = x \}\)</span>.</p>
+<p>As a brief introduction to continuous time processes, consider the same state space as in the discrete
+case: <span class="math notranslate nohighlight">\(S\)</span> is a finite set with <span class="math notranslate nohighlight">\(n\)</span> elements <span class="math notranslate nohighlight">\(\{x_1, \ldots, x_n\}\)</span>.</p>
+<p>A <strong>Markov chain</strong> <span class="math notranslate nohighlight">\(\{X_t\}\)</span> on <span class="math notranslate nohighlight">\(S\)</span> is a sequence of random variables on <span class="math notranslate nohighlight">\(S\)</span> that have the <strong>Markov property</strong>.</p>
+<p>In continuous time, the <a class="reference external" href="https://en.wikipedia.org/wiki/Markov_property">Markov Property</a> is more complicated, but intuitively is
+the same as the discrete-time case.</p>
+<p>That is, knowing the current state is enough to know probabilities for future states.  Or, for realizations <span class="math notranslate nohighlight">\(x(\tau)\in S, \tau \leq t\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\mathbb P \{ X(t+s) = y  \,|\, X(t) = x, X(\tau) = x(\tau) \text{ for } 0 \leq \tau \leq t  \} = \mathbb P \{ X(t+s) = y  \,|\, X(t) = x\}
+\]</div>
+<p>Heuristically, consider a time period <span class="math notranslate nohighlight">\(t\)</span> and a small step forward, <span class="math notranslate nohighlight">\(\Delta\)</span>.  Then the probability to transition from state <span class="math notranslate nohighlight">\(i\)</span> to
+state <span class="math notranslate nohighlight">\(j\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\mathbb P \{ X(t + \Delta) = j  \,|\, X(t) \} = \begin{cases} q_{ij} \Delta + o(\Delta) &amp; i \neq j\\
+                                                              1 + q_{ii} \Delta + o(\Delta) &amp; i = j \end{cases}
+\end{split}\]</div>
+<p>where the <span class="math notranslate nohighlight">\(q_{ij}\)</span> are “intensity” parameters governing the transition rate, and <span class="math notranslate nohighlight">\(o(\Delta)\)</span> is <a class="reference external" href="https://en.wikipedia.org/wiki/Big_O_notation#Little-o_notation">little-o notation</a>.  That is, <span class="math notranslate nohighlight">\(\lim_{\Delta\to 0} o(\Delta)/\Delta = 0\)</span>.</p>
+<p>Just as in the discrete case, we can summarize these parameters by an <span class="math notranslate nohighlight">\(N \times N\)</span> matrix, <span class="math notranslate nohighlight">\(Q \in R^{N\times N}\)</span>.</p>
+<p>Recall that in the discrete case every element is weakly positive and every row must sum to one.   With continuous time, however, the rows of <span class="math notranslate nohighlight">\(Q\)</span> sum to zero, where the diagonal contains the negative value of jumping out of the current state.  That is,</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(q_{ij} \geq 0\)</span> for <span class="math notranslate nohighlight">\(i \neq j\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(q_{ii} \leq 0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\sum_{j} q_{ij} = 0\)</span></p></li>
+</ul>
+<p>The <span class="math notranslate nohighlight">\(Q\)</span> matrix is called the intensity matrix, or the infinitesimal generator of the Markov chain.  For example,</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+Q = \begin{bmatrix} -0.1 &amp; 0.1  &amp; 0 &amp; 0 &amp; 0 &amp; 0\\
+                    0.1  &amp;-0.2  &amp; 0.1 &amp;  0 &amp; 0 &amp; 0\\
+                    0 &amp; 0.1 &amp; -0.2 &amp; 0.1 &amp; 0 &amp; 0\\
+                    0 &amp; 0 &amp; 0.1 &amp; -0.2 &amp; 0.1 &amp; 0\\
+                    0 &amp; 0 &amp; 0 &amp; 0.1 &amp; -0.2 &amp; 0.1\\
+                    0 &amp; 0 &amp; 0 &amp; 0 &amp; 0.1 &amp; -0.1\\
+    \end{bmatrix}
+\end{split}\]</div>
+<p>In the above example, transitions occur only between adjacent states with the same intensity (except for a ``bouncing back’’ of the bottom and top states).</p>
+<p>Implementing the <span class="math notranslate nohighlight">\(Q\)</span> using its tridiagonal structure</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span>
+<span class="n">α</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="o">-</span><span class="n">α</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="o">-</span><span class="n">α</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Here we can use <code class="docutils literal notranslate"><span class="pre">Tridiagonal</span></code> to exploit the structure of the problem.</p>
+<p>Consider a simple payoff vector <span class="math notranslate nohighlight">\(r\)</span> associated with each state, and a discount rate <span class="math notranslate nohighlight">\(ρ\)</span>.  Then we can solve for
+the expected present discounted value in a way similar to the discrete-time case.</p>
+<div class="math notranslate nohighlight">
+\[
+\rho v = r + Q v
+\]</div>
+<p>or rearranging slightly, solving the linear system</p>
+<div class="math notranslate nohighlight">
+\[
+(\rho I - Q) v = r
+\]</div>
+<p>For our example, exploiting the tridiagonal structure,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
+<span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.05</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">ρ</span> <span class="o">*</span> <span class="nb">I</span> <span class="o">-</span> <span class="n">Q</span>
+</pre></div>
+</div>
+<p>Note that this <span class="math notranslate nohighlight">\(A\)</span> matrix is maintaining the tridiagonal structure of the problem, which leads to an efficient solution to the
+linear problem.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">v</span> <span class="o">=</span> <span class="n">A</span> <span class="o">\</span> <span class="n">r</span>
+</pre></div>
+</div>
+<p>The <span class="math notranslate nohighlight">\(Q\)</span> is also used to calculate the evolution of the Markov chain, in direct analogy to the <span class="math notranslate nohighlight">\(ψ_{t+k} = ψ_t P^k\)</span> evolution with the transition matrix <span class="math notranslate nohighlight">\(P\)</span> of the discrete case.</p>
+<p>In the continuous case, this becomes the system of linear differential equations</p>
+<div class="math notranslate nohighlight">
+\[
+\dot{ψ}(t) = Q(t)^T ψ(t)
+\]</div>
+<p>given the initial condition <span class="math notranslate nohighlight">\(\psi(0)\)</span> and where the <span class="math notranslate nohighlight">\(Q(t)\)</span> intensity matrix is allowed to vary with time.  In the simplest case of a constant <span class="math notranslate nohighlight">\(Q\)</span> matrix, this is a simple constant-coefficient system of linear ODEs with coefficients <span class="math notranslate nohighlight">\(Q^T\)</span>.</p>
+<p>If a stationary equilibrium exists, note that <span class="math notranslate nohighlight">\(\dot{ψ}(t) = 0\)</span>, and the stationary solution <span class="math notranslate nohighlight">\(ψ^{*}\)</span> needs to satisfy</p>
+<div class="math notranslate nohighlight">
+\[
+0 = Q^T ψ^{*}
+\]</div>
+<p>Notice that this is of the form <span class="math notranslate nohighlight">\(0 ψ^{*} = Q^T ψ^{*}\)</span> and hence is equivalent to finding the eigenvector associated with the <span class="math notranslate nohighlight">\(\lambda = 0\)</span> eigenvalue of <span class="math notranslate nohighlight">\(Q^T\)</span>.</p>
+<p>With our example, we can calculate all of the eigenvalues and eigenvectors</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">λ</span><span class="p">,</span> <span class="n">vecs</span> <span class="o">=</span> <span class="n">eigen</span><span class="p">(</span><span class="kt">Array</span><span class="p">(</span><span class="n">Q</span><span class="o">&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Indeed, there is a <span class="math notranslate nohighlight">\(\lambda = 0\)</span> eigenvalue, which is associated with the last column in the eigenvector.  To turn that into a probability,
+we need to normalize it.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">vecs</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">N</span><span class="p">]</span> <span class="o">./</span> <span class="n">sum</span><span class="p">(</span><span class="n">vecs</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">N</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="section" id="multiple-dimensions">
+<h3><span class="section-number">23.3.1. </span>Multiple Dimensions<a class="headerlink" href="#multiple-dimensions" title="Permalink to this headline">¶</a></h3>
+<p>A frequent case in discretized models is dealing with Markov chains with multiple “spatial” dimensions (e.g., wealth and income).</p>
+<p>After discretizing a process to create a Markov chain, you can always take the Cartesian product of the set of states in order to
+enumerate it as a single state variable.</p>
+<p>To see this, consider states <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> governed by infinitesimal generators <span class="math notranslate nohighlight">\(Q\)</span> and <span class="math notranslate nohighlight">\(A\)</span>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">markov_chain_product</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+    <span class="n">Qs</span> <span class="o">=</span> <span class="n">blockdiag</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span><span class="o">...</span><span class="p">)</span>  <span class="c"># create diagonal blocks of every operator</span>
+    <span class="n">As</span> <span class="o">=</span> <span class="n">kron</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">sparse</span><span class="p">(</span><span class="nb">I</span><span class="p">(</span><span class="n">M</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">As</span> <span class="o">+</span> <span class="n">Qs</span>
+<span class="k">end</span>
+
+<span class="n">α</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="o">-</span><span class="n">α</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="o">-</span><span class="n">α</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">([</span><span class="o">-</span><span class="mf">0.1</span> <span class="mf">0.1</span>
+    <span class="mf">0.2</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">])</span>
+<span class="n">M</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">markov_chain_product</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>
+<span class="n">L</span> <span class="o">|&gt;</span> <span class="kt">Matrix</span>  <span class="c"># display as a dense matrix</span>
+</pre></div>
+</div>
+<p>This provides the combined Markov chain for the <span class="math notranslate nohighlight">\((i,j)\)</span> process.  To see the sparsity pattern,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Plots</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="o">:</span><span class="n">png</span><span class="p">);</span>
+<span class="n">spy</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To calculate a simple dynamic valuation, consider whether the payoff of being in state <span class="math notranslate nohighlight">\((i,j)\)</span> is <span class="math notranslate nohighlight">\(r_{ij} = i + 2j\)</span></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mf">2.0</span><span class="n">j</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">N</span><span class="p">,</span> <span class="n">j</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span><span class="p">]</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">vec</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>  <span class="c"># vectorize it since stacked in same order</span>
+</pre></div>
+</div>
+<p>Solving the equation <span class="math notranslate nohighlight">\(\rho v = r + L v\)</span></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">ρ</span> <span class="o">*</span> <span class="nb">I</span> <span class="o">-</span> <span class="n">L</span><span class="p">)</span> <span class="o">\</span> <span class="n">r</span>
+<span class="n">reshape</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">reshape</span></code> helps to rearrange it back to being two-dimensional.</p>
+<p>To find the stationary distribution, we calculate the eigenvalue and choose the eigenvector associated with <span class="math notranslate nohighlight">\(\lambda=0\)</span> .  In this
+case, we can verify that it is the last one.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">L_eig</span> <span class="o">=</span> <span class="n">eigen</span><span class="p">(</span><span class="kt">Matrix</span><span class="p">(</span><span class="n">L</span><span class="o">&#39;</span><span class="p">))</span>
+<span class="nd">@assert</span> <span class="n">norm</span><span class="p">(</span><span class="n">L_eig</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="k">end</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">1E-10</span>
+
+<span class="n">ψ</span> <span class="o">=</span> <span class="n">L_eig</span><span class="o">.</span><span class="n">vectors</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="k">end</span><span class="p">]</span>
+<span class="n">ψ</span> <span class="o">=</span> <span class="n">ψ</span> <span class="o">/</span> <span class="n">sum</span><span class="p">(</span><span class="n">ψ</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Reshape this to be two-dimensional if it is helpful for visualization.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">reshape</span><span class="p">(</span><span class="n">ψ</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="irreducibility">
+<h3><span class="section-number">23.3.2. </span>Irreducibility<a class="headerlink" href="#irreducibility" title="Permalink to this headline">¶</a></h3>
+<p>As with the discrete-time Markov chains, a key question is whether CTMCs are reducible, i.e., whether states communicate.  The problem
+is isomorphic to determining whether the directed graph of the Markov chain is <a class="reference external" href="https://en.wikipedia.org/wiki/Strongly_connected_component">strongly connected</a>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LightGraphs</span>
+<span class="n">α</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="o">-</span><span class="n">α</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="o">-</span><span class="n">α</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>We can verify that it is possible to move between every pair of states in a finite number of steps with</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Q_graph</span> <span class="o">=</span> <span class="n">DiGraph</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">is_strongly_connected</span><span class="p">(</span><span class="n">Q_graph</span><span class="p">);</span>  <span class="c"># i.e., can follow directional edges to get to every state</span>
+</pre></div>
+</div>
+<p>Alternatively, as an example of a reducible Markov chain where states <span class="math notranslate nohighlight">\(1\)</span> and <span class="math notranslate nohighlight">\(2\)</span> cannot jump to state <span class="math notranslate nohighlight">\(3\)</span>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.2</span> <span class="mf">0.2</span> <span class="mi">0</span>
+    <span class="mf">0.2</span> <span class="o">-</span><span class="mf">0.2</span> <span class="mi">0</span>
+    <span class="mf">0.2</span> <span class="mf">0.6</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">]</span>
+<span class="n">Q_graph</span> <span class="o">=</span> <span class="n">DiGraph</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">is_strongly_connected</span><span class="p">(</span><span class="n">Q_graph</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="banded-matrices">
+<h2><a class="toc-backref" href="#id5"><span class="section-number">23.4. </span>Banded Matrices</a><a class="headerlink" href="#banded-matrices" title="Permalink to this headline">¶</a></h2>
+<p>A tridiagonal matrix has 3 non-zero diagonals:  the main diagonal, the first sub-diagonal (i.e., below the main diagonal), and also the first super-diagonal (i.e., above the main diagonal).</p>
+<p>This is a special case of a more general type called a banded matrix, where the number of sub- and super-diagonals can be greater than 1.  The
+total width of main-, sub-, and super-diagonals is called the bandwidth.  For example, a tridiagonal matrix has a bandwidth of 3.</p>
+<p>An <span class="math notranslate nohighlight">\(N \times N\)</span> banded matrix with bandwidth <span class="math notranslate nohighlight">\(P\)</span> has about <span class="math notranslate nohighlight">\(N P\)</span> nonzeros in its sparsity pattern.</p>
+<p>These can be created directly as a dense matrix with <code class="docutils literal notranslate"><span class="pre">diagm</span></code>.  For example, with a bandwidth of three and a zero diagonal,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">diagm</span><span class="p">(</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Or as a sparse matrix,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">spdiagm</span><span class="p">(</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Or directly using <a class="reference external" href="https://github.com/JuliaMatrices/BandedMatrices.jl">BandedMatrices.jl</a></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">BandedMatrices</span>
+<span class="n">BandedMatrix</span><span class="p">(</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>There is also a convenience function for generating random banded matrices</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">brand</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c"># 7x7 matrix, 3 subdiagonals, 1 superdiagonal</span>
+</pre></div>
+</div>
+<p>And, of course, specialized algorithms will be used to exploit the structure when solving linear systems.  In particular, the complexity is related to the <span class="math notranslate nohighlight">\(O(N P_L P_U)\)</span> for upper and lower bandwidths <span class="math notranslate nohighlight">\(P\)</span></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">factorize</span><span class="p">(</span><span class="kt">Symmetric</span><span class="p">(</span><span class="n">A</span><span class="p">))</span> <span class="o">|&gt;</span> <span class="n">typeof</span>
+<span class="n">A</span> <span class="o">\</span> <span class="n">rand</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The factorization algorithm uses a specialized LU decomposition for banded matrices.</p>
+</div>
+<div class="section" id="implementation-details-and-performance">
+<span id="implementation-numerics"></span><h2><a class="toc-backref" href="#id6"><span class="section-number">23.5. </span>Implementation Details and Performance</a><a class="headerlink" href="#implementation-details-and-performance" title="Permalink to this headline">¶</a></h2>
+<p>Recall the famous quote from Knuth: “97% of the time, premature optimization is the root of all evil. Yet we should not pass up our opportunities in that critical 3%.”  The most common example of premature optimization is trying to use your own mental model of a compiler while writing your code, worried about the efficiency of code, and (usually incorrectly) second-guessing the compiler.</p>
+<p>Concretely, the lessons in this section are:</p>
+<ol class="simple">
+<li><p>Don’t worry about optimizing your code unless you need to.  Code clarity is your first-order concern.</p></li>
+<li><p>If you use other people’s packages, they can worry about performance and you don’t need to.</p></li>
+<li><p>If you absolutely need that “critical 3%,” your intuition about performance is usually wrong on modern CPUs and GPUs, so let the compiler do its job.</p></li>
+<li><p>Benchmarking (e.g., <code class="docutils literal notranslate"><span class="pre">&#64;btime</span></code>) and <a class="reference external" href="https://docs.julialang.org/en/v1/manual/profile/">profiling</a> are the tools to figure out performance bottlenecks.  If 99% of computing time is spent in one small function, then there is no point in optimizing anything else.</p></li>
+<li><p>If you benchmark to show that a particular part of the code is an issue, and you can’t find another library that does a better job, then you can worry about performance.</p></li>
+</ol>
+<p>You will rarely get to step 3, let alone step 5.</p>
+<p>However, there is also a corollary:  “don’t pessimize prematurely.” That is, don’t make choices that lead to poor performance without any tradeoff in improved code clarity.  For example, writing your own algorithms when a high-performance algorithm exists in a package or Julia itself, or lazily making a matrix dense and carelessly dropping its structure.</p>
+<div class="section" id="implementation-difficulty">
+<h3><span class="section-number">23.5.1. </span>Implementation Difficulty<a class="headerlink" href="#implementation-difficulty" title="Permalink to this headline">¶</a></h3>
+<p>Numerical analysts sometimes refer to the lowest level of code for basic operations (e.g., a dot product, matrix-matrix product, convolutions) as <code class="docutils literal notranslate"><span class="pre">kernels</span></code>.</p>
+<p>That sort of code is difficult to write, and performance depends on the characteristics of the underlying hardware, such as the <a class="reference external" href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set</a> available on the particular CPU, the size of the <a class="reference external" href="https://en.wikipedia.org/wiki/CPU_cache">CPU cache</a>, and the layout of arrays in memory.</p>
+<p>Typically, these operations are written in a <a class="reference external" href="https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms">BLAS</a> library, organized into different levels.  The levels roughly correspond to the computational order of the operations:  BLAS Level 1 are <span class="math notranslate nohighlight">\(O(N)\)</span> operations such as linear products, Level 2 are <span class="math notranslate nohighlight">\(O(N^2)\)</span> operations such as matrix-vector products, and Level 3 are roughly <span class="math notranslate nohighlight">\(O(N^3)\)</span>, such as general matrix-matrix products.</p>
+<p>An example of a BLAS library is <a class="reference external" href="https://github.com/xianyi/OpenBLAS">OpenBLAS</a>, which is used by default in Julia, or  the <a class="reference external" href="https://en.wikipedia.org/wiki/Math_Kernel_Library">Intel MKL</a>, which is used in Matlab (and in Julia if the <code class="docutils literal notranslate"><span class="pre">MKL.jl</span></code> package is installed).</p>
+<p>On top of BLAS are <a class="reference external" href="https://en.wikipedia.org/wiki/LAPACK">LAPACK</a> operations, which are higher-level kernels, such as matrix factorizations and eigenvalue algorithms, and are often in the same libraries (e.g., MKL has both BLAS and LAPACK functionality).</p>
+<p>The details of these packages are not especially relevant, but if you are talking about performance, people will inevitably start discussing these different packages and kernels.  There are a few important things to keep in mind:</p>
+<ol class="simple">
+<li><p>Leave writing kernels to the experts.  Even simple-sounding algorithms can be very complicated to implement with high performance.</p></li>
+<li><p>Your intuition about performance of code is probably going to be wrong.  If you use high quality libraries rather than writing your own kernels, you don’t need to use your intuition.</p></li>
+<li><p>Don’t get distracted by the jargon or acronyms above if you are reading about performance.</p></li>
+</ol>
+</div>
+<div class="section" id="row-and-column-major-ordering">
+<h3><span class="section-number">23.5.2. </span>Row- and Column-Major Ordering<a class="headerlink" href="#row-and-column-major-ordering" title="Permalink to this headline">¶</a></h3>
+<p>There is a practical performance issue which may influence your code.  Since memory in a CPU is linear, dense matrices need to be stored by either stacking columns (called <a class="reference external" href="https://en.wikipedia.org/wiki/Row-_and_column-major_order">column-major order</a>) or rows.</p>
+<p>The reason this matters is that compilers can generate better performance if they work in contiguous chunks of memory, and this becomes especially important with large matrices due to the interaction with the CPU cache.  Choosing the wrong order when there is no benefit in code clarity is an example of premature pessimization.  The performance difference can be orders of magnitude in some cases, and nothing in others.</p>
+<p>One option is to use the functions that let the compiler choose the most efficient way to traverse memory. If you need to choose the looping order yourself, then you might want to experiment with going through columns first and going through rows first.  Other times, let Julia decide, i.e., <code class="docutils literal notranslate"><span class="pre">enumerate</span></code> and <code class="docutils literal notranslate"><span class="pre">eachindex</span></code> will choose the right approach.</p>
+<p>Julia, Fortran, and Matlab all use column-major order, while C/C++ and Python use row-major order.  This means that if you find an algorithm written for C/C++/Python, you will sometimes need to make small changes if performance is an issue.</p>
+</div>
+<div class="section" id="digression-on-allocations-and-in-place-operations">
+<h3><span class="section-number">23.5.3. </span>Digression on Allocations and In-place Operations<a class="headerlink" href="#digression-on-allocations-and-in-place-operations" title="Permalink to this headline">¶</a></h3>
+<p>While we have usually not considered optimizing code for performance (and have focused on the choice of
+algorithms instead), when matrices and vectors become large we need to be more careful.</p>
+<p>The most important thing to avoid are excess allocations, which usually occur due to the use of
+temporary vectors and matrices when they are not necessary.  Sometimes those extra temporary values
+can cause enormous degradations in performance.</p>
+<p>However, caution is suggested since
+excess allocations are never relevant for scalar values, and allocations frequently create faster code for
+smaller matrices/vectors since it can lead to better <a class="reference external" href="https://en.wikipedia.org/wiki/Locality_of_reference">cache locality</a>.</p>
+<p>To see this, a convenient tool is the benchmarking</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">BenchmarkTools</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="k">function</span> <span class="n">f!</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">A</span><span class="o">*</span><span class="n">B</span>
+    <span class="n">C</span> <span class="o">.=</span> <span class="n">D</span> <span class="o">.+</span> <span class="mi">1</span>
+<span class="k">end</span>
+<span class="nd">@btime</span> <span class="n">f!</span><span class="p">(</span><span class="o">$</span><span class="n">C</span><span class="p">,</span> <span class="o">$</span><span class="n">A</span><span class="p">,</span> <span class="o">$</span><span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">!</span></code> on the <code class="docutils literal notranslate"><span class="pre">f!</span></code> is an informal way to say that the function is mutating, and the first argument (<code class="docutils literal notranslate"><span class="pre">C</span></code> here)
+is by convention the modified variable.</p>
+<p>In the <code class="docutils literal notranslate"><span class="pre">f!</span></code> function, notice that the <code class="docutils literal notranslate"><span class="pre">D</span></code> is a temporary variable which is created, and then modified afterwards.  But notice that since
+<code class="docutils literal notranslate"><span class="pre">C</span></code> is modified directly, there is no need to create the temporary <code class="docutils literal notranslate"><span class="pre">D</span></code> matrix.</p>
+<p>This is an example of where an in-place version of the matrix multiplication can help avoid the allocation.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">f2!</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>
+    <span class="n">mul!</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span>  <span class="c"># in-place multiplication</span>
+    <span class="n">C</span> <span class="o">.+=</span> <span class="mi">1</span>
+<span class="k">end</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="nd">@btime</span> <span class="n">f!</span><span class="p">(</span><span class="o">$</span><span class="n">C</span><span class="p">,</span> <span class="o">$</span><span class="n">A</span><span class="p">,</span> <span class="o">$</span><span class="n">B</span><span class="p">)</span>
+<span class="nd">@btime</span> <span class="n">f2!</span><span class="p">(</span><span class="o">$</span><span class="n">C</span><span class="p">,</span> <span class="o">$</span><span class="n">A</span><span class="p">,</span> <span class="o">$</span><span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that in the output of the benchmarking, the <code class="docutils literal notranslate"><span class="pre">f2!</span></code> is non-allocating and is using the pre-allocated <code class="docutils literal notranslate"><span class="pre">C</span></code> variable directly.</p>
+<p>Another example of this is solutions to linear equations, where for large solutions you may pre-allocate and reuse the
+solution vector.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">A</span> <span class="o">\</span> <span class="n">y</span>  <span class="c"># creates temporary</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">factorize</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>  <span class="c"># in-place requires factorization</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>  <span class="c"># pre-allocate</span>
+<span class="n">ldiv!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>  <span class="c"># in-place left divide, using factorization</span>
+</pre></div>
+</div>
+<p>However, if you benchmark carefully, you will see that this is sometimes slower.  Avoiding allocations is not always a good
+idea - and worrying about it prior to benchmarking is premature optimization.</p>
+<p>There are a variety of other non-allocating versions of functions.  For example,</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+<span class="n">transpose!</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">A</span><span class="p">)</span>  <span class="c"># non-allocating version of B = transpose(A)</span>
+</pre></div>
+</div>
+<p>Finally, a common source of unnecessary allocations is when taking slices or portions of
+matrices.  For example, the following allocates a new matrix <code class="docutils literal notranslate"><span class="pre">B</span></code> and copies the values.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="o">:</span><span class="p">]</span>  <span class="c"># extract a vector</span>
+</pre></div>
+</div>
+<p>To see that these are different matrices, note that</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">100.0</span>
+<span class="nd">@show</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="nd">@show</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</pre></div>
+</div>
+<p>Instead of allocating a new matrix, you can take a <code class="docutils literal notranslate"><span class="pre">view</span></code> of a matrix, which provides an
+appropriate <code class="docutils literal notranslate"><span class="pre">AbstractArray</span></code> type that doesn’t allocate new memory with the <code class="docutils literal notranslate"><span class="pre">&#64;view</span></code> matrix.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">B</span> <span class="o">=</span> <span class="nd">@view</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="o">:</span><span class="p">]</span>  <span class="c">#  does not copy the data</span>
+
+<span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">100.0</span>
+<span class="nd">@show</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+<span class="nd">@show</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</pre></div>
+</div>
+<p>But again, you will often find that doing <code class="docutils literal notranslate"><span class="pre">&#64;view</span></code> leads to slower code.  Benchmark
+instead, and generally rely on it for large matrices and for contiguous chunks of memory (e.g., columns rather than rows).</p>
+</div>
+</div>
+<div class="section" id="exercises">
+<h2><a class="toc-backref" href="#id7"><span class="section-number">23.6. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1">
+<h3><span class="section-number">23.6.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<p>This exercise is for practice on writing low-level routines (i.e., “kernels”), and to hopefully convince you to leave low-level code to the experts.</p>
+<p>The formula for matrix multiplication is deceptively simple.  For example, with the product of square matrices <span class="math notranslate nohighlight">\(C = A B\)</span> of size <span class="math notranslate nohighlight">\(N \times N\)</span>, the <span class="math notranslate nohighlight">\(i,j\)</span> element of <span class="math notranslate nohighlight">\(C\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+C_{ij} = \sum_{k=1}^N A_{ik} B_{kj}
+\]</div>
+<p>Alternatively, you can take a row <span class="math notranslate nohighlight">\(A_{i,:}\)</span> and column <span class="math notranslate nohighlight">\(B_{:, j}\)</span> and use an inner product</p>
+<div class="math notranslate nohighlight">
+\[
+C_{ij} = A_{i,:} \cdot B_{:,j}
+\]</div>
+<p>Note that the inner product in a discrete space is simply a sum, and has the same complexity as the sum (i.e., <span class="math notranslate nohighlight">\(O(N)\)</span> operations).</p>
+<p>For a dense matrix without any structure and using a naive multiplication algorithm, this also makes it clear why the complexity is <span class="math notranslate nohighlight">\(O(N^3)\)</span>: You need to evaluate it for <span class="math notranslate nohighlight">\(N^2\)</span> elements in the matrix and do an <span class="math notranslate nohighlight">\(O(N)\)</span> operation each time.</p>
+<p>For this exercise, implement matrix multiplication yourself and compare performance in a few permutations.</p>
+<ol class="simple">
+<li><p>Use the built-in function in Julia (i.e., <code class="docutils literal notranslate"><span class="pre">C</span> <span class="pre">=</span> <span class="pre">A</span> <span class="pre">*</span> <span class="pre">B</span></code>, or, for a better comparison, the in-place version <code class="docutils literal notranslate"><span class="pre">mul!(C,</span> <span class="pre">A,</span> <span class="pre">B)</span></code>, which works with pre-allocated data).</p></li>
+<li><p>Loop over each <span class="math notranslate nohighlight">\(C_{ij}\)</span> by the row first (i.e., the <code class="docutils literal notranslate"><span class="pre">i</span></code> index) and use a <code class="docutils literal notranslate"><span class="pre">for</span></code> loop for the inner product.</p></li>
+<li><p>Loop over each <span class="math notranslate nohighlight">\(C_{ij}\)</span> by the column first (i.e., the <code class="docutils literal notranslate"><span class="pre">j</span></code> index) and use a <code class="docutils literal notranslate"><span class="pre">for</span></code> loop for the inner product.</p></li>
+<li><p>Do the same but use the <code class="docutils literal notranslate"><span class="pre">dot</span></code> product instead of the sum.</p></li>
+<li><p>Choose your best implementation of these, and then for matrices of a few different sizes (<code class="docutils literal notranslate"><span class="pre">N=10</span></code>, <code class="docutils literal notranslate"><span class="pre">N=1000</span></code>, etc.), and compare the ratio of performance of your best implementation to the built-in BLAS library.</p></li>
+</ol>
+<p>A few more hints:</p>
+<ul class="simple">
+<li><p>You can just use random matrices (e.g., <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">=</span> <span class="pre">rand(N,</span> <span class="pre">N)</span></code>).</p></li>
+<li><p>For all of them, pre-allocate the <span class="math notranslate nohighlight">\(C\)</span> matrix beforehand with <code class="docutils literal notranslate"><span class="pre">C</span> <span class="pre">=</span> <span class="pre">similar(A)</span></code> or something equivalent.</p></li>
+<li><p>To compare performance, put your code in a function and use the <code class="docutils literal notranslate"><span class="pre">&#64;btime</span></code> macro to time it.</p></li>
+</ul>
+</div>
+<div class="section" id="exercise-2a">
+<h3><span class="section-number">23.6.2. </span>Exercise 2a<a class="headerlink" href="#exercise-2a" title="Permalink to this headline">¶</a></h3>
+<p>Here we will calculate the evolution of the pdf of a discrete-time Markov chain, <span class="math notranslate nohighlight">\(\psi_t\)</span>, given the initial condition <span class="math notranslate nohighlight">\(\psi_0\)</span>.</p>
+<p>Start with a simple symmetric tridiagonal matrix</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">A</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">([</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">)])</span>
+<span class="n">A_adjoint</span> <span class="o">=</span> <span class="n">A</span><span class="o">&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>Pick some large <code class="docutils literal notranslate"><span class="pre">T</span></code> and use the initial condition <span class="math notranslate nohighlight">\(\psi_0 = \begin{bmatrix} 1 &amp; 0 &amp; \ldots &amp; 0\end{bmatrix}\)</span></p></li>
+<li><p>Write code to calculate <span class="math notranslate nohighlight">\(\psi_t\)</span> to some <span class="math notranslate nohighlight">\(T\)</span> by iterating the map for each <span class="math notranslate nohighlight">\(t\)</span>, i.e.,</p></li>
+</ol>
+<div class="math notranslate nohighlight">
+\[
+\psi_{t+1} = A' \psi_t
+\]</div>
+<ol class="simple">
+<li><p>What is the computational order of calculating  <span class="math notranslate nohighlight">\(\psi_T\)</span> using this iteration approach <span class="math notranslate nohighlight">\(T &lt; N\)</span>?</p></li>
+<li><p>What is the computational order of <span class="math notranslate nohighlight">\((A')^T = (A' \ldots A')\)</span> and then <span class="math notranslate nohighlight">\(\psi_T = (A')^T \psi_0\)</span> for <span class="math notranslate nohighlight">\(T &lt; N\)</span>?</p></li>
+<li><p>Benchmark calculating <span class="math notranslate nohighlight">\(\psi_T\)</span> with the iterative calculation above as well as the direct <span class="math notranslate nohighlight">\(\psi_T = (A')^T \psi_0\)</span> to see which is faster.  You can take the matrix power with just <code class="docutils literal notranslate"><span class="pre">A_adjoint^T</span></code>, which uses specialized algorithms faster and more accurately than repeated matrix multiplication (but with the same computational order).</p></li>
+<li><p>Check the same if <span class="math notranslate nohighlight">\(T = 2 N\)</span></p></li>
+</ol>
+<p><em>Note:</em> The algorithm used in Julia to take matrix powers  depends on the matrix structure, as always.  In the symmetric case, it can use an eigendecomposition, whereas with a general dense matrix it uses <a class="reference external" href="https://doi.org/10.1137/090768539">squaring and scaling</a>.</p>
+</div>
+<div class="section" id="exercise-2b">
+<h3><span class="section-number">23.6.3. </span>Exercise 2b<a class="headerlink" href="#exercise-2b" title="Permalink to this headline">¶</a></h3>
+<p>With the same setup as in Exercise 2a, do an <a class="reference external" href="https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix">eigendecomposition</a> of <code class="docutils literal notranslate"><span class="pre">A_transpose</span></code>.  That is, use <code class="docutils literal notranslate"><span class="pre">eigen</span></code> to factor the adjoint <span class="math notranslate nohighlight">\(A' = Q \Lambda Q^{-1}\)</span>, where <span class="math notranslate nohighlight">\(Q\)</span> is the matrix of eigenvectors and <span class="math notranslate nohighlight">\(\Lambda\)</span> is the diagonal matrix of eigenvalues.  Calculate <span class="math notranslate nohighlight">\(Q^{-1}\)</span> from the results.</p>
+<p>Use the factored matrix to calculate the sequence of <span class="math notranslate nohighlight">\(\psi_t = (A')^t \psi_0\)</span> using the relationship</p>
+<div class="math notranslate nohighlight">
+\[
+\psi_t = Q \Lambda^t Q^{-1} \psi_0
+\]</div>
+<p>where matrix powers of diagonal matrices are simply the element-wise power of each element.</p>
+<p>Benchmark the speed of calculating the sequence of <span class="math notranslate nohighlight">\(\psi_t\)</span> up to <code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">2N</span></code> using this method.  In principle, the factorization and easy calculation of the power should give you benefits, compared to simply iterating the map as we did in Exercise 2a.  Explain why it does or does not, using computational order of each approach.</p>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./tools_and_techniques"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Packages and Software Engineering in Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="kalman.html">
+   22. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   23. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="iterative_methods_sparsity.html">
+   24. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   25. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   26. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   27. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   28. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   29. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   30. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   31. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   33. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   34. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   35. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   36. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   37. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   39. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   40. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   41. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   42. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   44. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   45. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   46. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   47. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   48. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   49. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   50. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   51. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   52. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   53. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   54. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   55. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   56. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   57. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   58. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   59. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   60. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   61. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   62. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   63. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   64. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   65. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   66. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   67. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   68. Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/tools_and_techniques/numerical_linear_algebra.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/tools_and_techniques/numerical_linear_algebra.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/tools_and_techniques/numerical_linear_algebra.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/tools_and_techniques/numerical_linear_algebra.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

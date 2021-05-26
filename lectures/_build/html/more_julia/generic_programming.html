@@ -1,0 +1,1387 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>7. Generic Programming &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/more_julia/generic_programming.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="8. General Purpose Packages" href="general_packages.html" />
+    <link rel="prev" title="6. Introduction to Types and Generic Programming" href="../getting_started_julia/introduction_to_types.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Generic Programming"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Generic Programming" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/more_julia/generic_programming.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=more_julia/generic_programming>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   7.1. Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#generic-programming-is-an-attitude">
+     7.1.1. Generic Programming is an Attitude
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#setup">
+     7.1.2. Setup
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exploring-type-trees">
+   7.2. Exploring Type Trees
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#any">
+     7.2.1. Any
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#unlearning-object-oriented-oo-programming-advanced">
+     7.2.2. Unlearning Object Oriented (OO) Programming (Advanced)
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#iterative-design-of-abstractions">
+       7.2.2.1. Iterative Design of Abstractions
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#distributions">
+   7.3. Distributions
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#numbers-and-algebraic-structures">
+   7.4. Numbers and Algebraic Structures
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#complex-numbers-and-composition-of-generic-functions">
+     7.4.1. Complex Numbers and Composition of Generic Functions
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reals-and-algebraic-structures">
+   7.5. Reals and Algebraic Structures
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#functions-and-function-like-types">
+   7.6. Functions, and Function-Like Types
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#limitations-of-dispatching-on-abstract-types">
+   7.7. Limitations of Dispatching on Abstract Types
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   7.8. Exercises
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1a">
+     7.8.1. Exercise 1a
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1b-advanced">
+     7.8.2. Exercise 1b (Advanced)
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-2-advanced">
+     7.8.3. Exercise 2 (Advanced)
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Generic Programming</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="id1">
+<h1><a class="toc-backref" href="#id3"><span class="section-number">7. </span>Generic Programming</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#id1" id="id3">Generic Programming</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id4">Overview</a></p></li>
+<li><p><a class="reference internal" href="#exploring-type-trees" id="id5">Exploring Type Trees</a></p></li>
+<li><p><a class="reference internal" href="#distributions" id="id6">Distributions</a></p></li>
+<li><p><a class="reference internal" href="#numbers-and-algebraic-structures" id="id7">Numbers and Algebraic Structures</a></p></li>
+<li><p><a class="reference internal" href="#reals-and-algebraic-structures" id="id8">Reals and Algebraic Structures</a></p></li>
+<li><p><a class="reference internal" href="#functions-and-function-like-types" id="id9">Functions, and Function-Like Types</a></p></li>
+<li><p><a class="reference internal" href="#limitations-of-dispatching-on-abstract-types" id="id10">Limitations of Dispatching on Abstract Types</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id11">Exercises</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<blockquote class="epigraph">
+<div><p>I find OOP methodologically wrong. It starts with classes. It is as if mathematicians would start with axioms. You do not start with axioms - you start with proofs. Only when you have found a bunch of related proofs, can you come up with axioms. You end with axioms. The same thing is true in programming: you have to start with interesting algorithms. Only when you understand them well, can you come up with an interface that will let them work. – Alexander Stepanov</p>
+</div></blockquote>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id4"><span class="section-number">7.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>In this lecture we delve more deeply into the structure of Julia, and in particular into</p>
+<ul class="simple">
+<li><p>abstract and concrete types</p></li>
+<li><p>the type tree</p></li>
+<li><p>designing and using generic interfaces</p></li>
+<li><p>the role of generic interfaces in Julia performance</p></li>
+</ul>
+<p>Understanding them will help you</p>
+<ul class="simple">
+<li><p>form a “mental model” of the Julia language</p></li>
+<li><p>design code that matches the “white-board” mathematics</p></li>
+<li><p>create code that can use (and be used by) a variety of other packages</p></li>
+<li><p>write “well organized” Julia code that’s easy to read, modify, maintain and debug</p></li>
+<li><p>improve the speed at which your code runs</p></li>
+</ul>
+<p>(Special thank you to Jeffrey Sarnoff)</p>
+<div class="section" id="generic-programming-is-an-attitude">
+<h3><span class="section-number">7.1.1. </span>Generic Programming is an Attitude<a class="headerlink" href="#generic-programming-is-an-attitude" title="Permalink to this headline">¶</a></h3>
+<p>From <em>Mathematics to Generic Programming</em> <span id="id2">[<a class="reference internal" href="../zreferences.html#id3"><span>SR14</span></a>]</span></p>
+<blockquote>
+<div><p>Generic programming is an approach to programming that focuses on designing algorithms and data structures so that they work in the most general setting without loss of efficiency… Generic programming is more of an <em>attitude</em> toward programming than a particular set of tools.</p>
+</div></blockquote>
+<p>In that sense, it is important to think of generic programming as an interactive approach to uncover generality without compromising performance rather than as a set of rules.</p>
+<p>As we will see, the core approach is to treat data structures and algorithms as loosely coupled, and is in direct contrast to the <a class="reference external" href="https://en.wikipedia.org/wiki/Is-a">is-a</a>  approach of object-oriented programming.</p>
+<p>This lecture has the dual role of giving an introduction into the design of generic algorithms and describing how Julia helps make that possible.</p>
+</div>
+<div class="section" id="setup">
+<h3><span class="section-number">7.1.2. </span>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="exploring-type-trees">
+<h2><a class="toc-backref" href="#id5"><span class="section-number">7.2. </span>Exploring Type Trees</a><a class="headerlink" href="#exploring-type-trees" title="Permalink to this headline">¶</a></h2>
+<p>The connection between data structures and the algorithms which operate on them is handled by the type system.</p>
+<p>Concrete types (i.e., <code class="docutils literal notranslate"><span class="pre">Float64</span></code> or <code class="docutils literal notranslate"><span class="pre">Array{Float64,</span> <span class="pre">2}</span></code>) are the data structures we apply an algorithm to, and the abstract types (e.g. the corresponding <code class="docutils literal notranslate"><span class="pre">Number</span></code> and <code class="docutils literal notranslate"><span class="pre">AbstractArray</span></code>) provide the mapping between a set of related data structures and algorithms.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">Normal</span><span class="p">()</span>
+<span class="n">z</span> <span class="o">=</span> <span class="s">&quot;foo&quot;</span>
+<span class="nd">@show</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">typeof</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">typeof</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">supertype</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="c"># pipe operator, |&gt;, is is equivalent</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">supertype</span>
+<span class="nd">@show</span> <span class="n">supertype</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">supertype</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;:</span> <span class="kt">Any</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Beyond the <code class="docutils literal notranslate"><span class="pre">typeof</span></code> and <code class="docutils literal notranslate"><span class="pre">supertype</span></code> functions, a few other useful tools for analyzing the tree of types are discussed in the <a class="reference internal" href="../getting_started_julia/introduction_to_types.html"><span class="doc">introduction to types lecture</span></a></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Base</span><span class="o">:</span> <span class="n">show_supertypes</span> <span class="c"># import the function from the `Base` package</span>
+
+<span class="n">show_supertypes</span><span class="p">(</span><span class="kt">Int64</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">subtypes</span><span class="p">(</span><span class="kt">Integer</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">subtypes</span></code> function, we can write an algorithm to traverse the type tree below any time <code class="docutils literal notranslate"><span class="pre">t</span></code> – with the confidence that all types support <code class="docutils literal notranslate"><span class="pre">subtypes</span></code></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c">#  from https://github.com/JuliaLang/julia/issues/24741</span>
+<span class="k">function</span> <span class="n">subtypetree</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="n">println</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">end</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="kp">in</span> <span class="n">subtypes</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+            <span class="n">println</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">,</span> <span class="n">level</span> <span class="o">*</span> <span class="n">indent</span><span class="p">))</span> <span class="o">*</span> <span class="n">string</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>  <span class="c"># print type</span>
+            <span class="n">subtypetree</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">level</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">indent</span><span class="p">)</span>  <span class="c"># recursively print the next type, indenting</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+</pre></div>
+</div>
+<p>Applying this to <code class="docutils literal notranslate"><span class="pre">Number</span></code>, we see the tree of types currently loaded</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">subtypetree</span><span class="p">(</span><span class="kt">Number</span><span class="p">)</span> <span class="c"># warning: do not use this function on ``Any``!</span>
+</pre></div>
+</div>
+<p>For the most part, all of the “leaves” will be concrete types.</p>
+<div class="section" id="any">
+<h3><span class="section-number">7.2.1. </span>Any<a class="headerlink" href="#any" title="Permalink to this headline">¶</a></h3>
+<p>At the root of all types is <code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+<p>There are a few functions that work in the “most generalized” context: usable with anything that you can construct or access from other packages.</p>
+<p>We have already called <code class="docutils literal notranslate"><span class="pre">typeof</span></code>, <code class="docutils literal notranslate"><span class="pre">show</span></code> and <code class="docutils literal notranslate"><span class="pre">supertype</span></code> – which will apply to a custom <code class="docutils literal notranslate"><span class="pre">struct</span></code> type since <code class="docutils literal notranslate"><span class="pre">MyType</span> <span class="pre">&lt;:</span> <span class="pre">Any</span></code></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># custom type</span>
+<span class="k">struct</span> <span class="n">MyType</span>
+    <span class="n">a</span><span class="o">::</span><span class="kt">Float64</span>
+<span class="k">end</span>
+
+<span class="n">myval</span> <span class="o">=</span> <span class="n">MyType</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">myval</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">myval</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">supertype</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">myval</span><span class="p">))</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">myval</span><span class="p">)</span> <span class="o">&lt;:</span> <span class="kt">Any</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Here we see another example of generic programming: every type <code class="docutils literal notranslate"><span class="pre">&lt;:</span> <span class="pre">Any</span></code> supports the <code class="docutils literal notranslate"><span class="pre">&#64;show</span></code> macro, which in turn, relies on the <code class="docutils literal notranslate"><span class="pre">show</span></code> function.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;show</span></code> macro (1) prints the expression as a string; (2) evaluates the expression; and (3) calls the <code class="docutils literal notranslate"><span class="pre">show</span></code> function on the returned values.</p>
+<p>To see this with built-in types</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">show</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Any</span></code> type is useful, because it provides a fall-back implementation for a variety of functions.</p>
+<p>Hence, calling <code class="docutils literal notranslate"><span class="pre">show</span></code> on our custom type dispatches to the fallback function</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">myval</span> <span class="o">=</span> <span class="n">MyType</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">myval</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The default fallback implementation used by Julia would be roughly equivalent to</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">show</span><span class="p">(</span><span class="n">io</span><span class="o">::</span><span class="kt">IO</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">str</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">print</span><span class="p">(</span><span class="n">io</span><span class="p">,</span> <span class="n">str</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>To implement a specialized implementation of the <code class="docutils literal notranslate"><span class="pre">show</span></code> function for our type, rather than using this fallback</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="n">Base</span><span class="o">.</span><span class="n">show</span>  <span class="c"># to extend an existing function</span>
+
+<span class="k">function</span> <span class="n">show</span><span class="p">(</span><span class="n">io</span><span class="o">::</span><span class="kt">IO</span><span class="p">,</span> <span class="n">x</span><span class="o">::</span><span class="n">MyType</span><span class="p">)</span>
+    <span class="n">str</span> <span class="o">=</span> <span class="s">&quot;(MyType.a = </span><span class="si">$</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="p">)</span><span class="s">)&quot;</span>  <span class="c"># custom display</span>
+    <span class="n">print</span><span class="p">(</span><span class="n">io</span><span class="p">,</span> <span class="n">str</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">show</span><span class="p">(</span><span class="n">myval</span><span class="p">)</span>  <span class="c"># it creates an IO value first and then calls the above show</span>
+</pre></div>
+</div>
+<p>At that point, we can use the <code class="docutils literal notranslate"><span class="pre">&#64;show</span></code> macro, which in turn calls <code class="docutils literal notranslate"><span class="pre">show</span></code></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">myval</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Here we see another example of generic programming: any type with a <code class="docutils literal notranslate"><span class="pre">show</span></code> function works with <code class="docutils literal notranslate"><span class="pre">&#64;show</span></code>.</p>
+<p>Layering of functions (e.g. <code class="docutils literal notranslate"><span class="pre">&#64;show</span></code> calling <code class="docutils literal notranslate"><span class="pre">show</span></code>) with a “fallback” implementation makes it possible for new types to be designed and only specialized where necessary.</p>
+</div>
+<div class="section" id="unlearning-object-oriented-oo-programming-advanced">
+<h3><span class="section-number">7.2.2. </span>Unlearning Object Oriented (OO) Programming (Advanced)<a class="headerlink" href="#unlearning-object-oriented-oo-programming-advanced" title="Permalink to this headline">¶</a></h3>
+<p>See <a class="reference external" href="https://docs.julialang.org/en/v1/manual/types/#man-types-1">Types</a> for more on OO vs. generic types.</p>
+<p>If you have never used programming languages such as C++, Java, and Python, then the type hierarchies above may seem unfamiliar and abstract.</p>
+<p>In that case, keep an open mind that this discussion of abstract concepts will have practical consequences, but there is no need to read this section.</p>
+<p>Otherwise, if you have used object-oriented programming (OOP) in those languages, then some of the concepts in these lecture notes will appear familiar.</p>
+<p><strong>Don’t be fooled!</strong></p>
+<p>The superficial similarity can lead to misuse: types are <em>not</em> classes with poor encapsulation, and methods are <em>not</em> the equivalent to member functions with the order of arguments swapped.</p>
+<p>In particular, previous OO knowledge often leads people to write Julia code such as</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># BAD! Replicating an OO design in Julia</span>
+<span class="k">mutable</span> <span class="k">struct</span> <span class="n">MyModel</span>
+    <span class="n">a</span><span class="o">::</span><span class="kt">Float64</span>
+    <span class="n">b</span><span class="o">::</span><span class="kt">Float64</span>
+    <span class="n">algorithmcalculation</span><span class="o">::</span><span class="kt">Float64</span>
+
+    <span class="n">MyModel</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">=</span> <span class="n">new</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="c"># an inner constructor</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">myalgorithm!</span><span class="p">(</span><span class="n">m</span><span class="o">::</span><span class="n">MyModel</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">algorithmcalculation</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">a</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">b</span> <span class="o">+</span> <span class="n">x</span> <span class="c"># some algorithm</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">set_a!</span><span class="p">(</span><span class="n">m</span><span class="o">::</span><span class="n">MyModel</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">a</span> <span class="o">=</span> <span class="n">a</span>
+<span class="k">end</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">set_a!</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mf">4.1</span><span class="p">)</span>
+<span class="n">myalgorithm!</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">m</span><span class="o">.</span><span class="n">algorithmcalculation</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>You may think to yourself that the above code is similar to OO, except that you</p>
+<ul class="simple">
+<li><p>reverse the first argument, i.e., <code class="docutils literal notranslate"><span class="pre">myalgorithm!(m,</span> <span class="pre">x)</span></code> instead of the object-oriented <code class="docutils literal notranslate"><span class="pre">m.myalgorithm!(x)</span></code></p></li>
+<li><p>cannot control encapsulation of the fields <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code>, but you can add getter/setters like <code class="docutils literal notranslate"><span class="pre">set_a</span></code></p></li>
+<li><p>do not have concrete inheritance</p></li>
+</ul>
+<p>While this sort of programming is possible, it is (verbosely) missing the point of Julia and the power of generic programming.</p>
+<p>When programming in Julia</p>
+<ul class="simple">
+<li><p>there is no <a class="reference external" href="https://en.wikipedia.org/wiki/Encapsulation_%28computer_programming%29">encapsulation</a> and most custom types you create will be immutable.</p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Polymorphism_%28computer_science%29">Polymorphism</a> is achieved without anything resembling OOP <a class="reference external" href="https://en.wikipedia.org/wiki/Inheritance_%28object-oriented_programming%29">inheritance</a>.</p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Abstraction_%28computer_science%29#Abstraction_in_object_oriented_programming">Abstraction</a> is implemented by keeping the data and algorithms that operate on them as orthogonal as possible – in direct contrast to OOP’s association of algorithms and methods directly with a type in a tree.</p></li>
+<li><p>The supertypes in Julia are simply used for selecting which specialized algorithm to use (i.e., part of generic polymorphism) and have nothing to do with OO inheritance.</p></li>
+<li><p>The looseness that accompanies keeping algorithms and data structures as orthogonal as possible makes it easier to discover commonality in the design.</p></li>
+</ul>
+<div class="section" id="iterative-design-of-abstractions">
+<h4><span class="section-number">7.2.2.1. </span>Iterative Design of Abstractions<a class="headerlink" href="#iterative-design-of-abstractions" title="Permalink to this headline">¶</a></h4>
+<p>As its essence, the design of generic software is that you will start with creating algorithms which are largely orthogonal to concrete types.</p>
+<p>In the process, you will discover commonality which leads to abstract types with informally defined functions operating on them.</p>
+<p>Given the abstract types and commonality, you then refine the algorithms as they are more limited or more general than you initially thought.</p>
+<p>This approach is in direct contrast to object-oriented design and analysis (<a class="reference external" href="https://en.wikipedia.org/wiki/Object-oriented_analysis_and_design">OOAD</a>).</p>
+<p>With that, where you specify a taxonomies of types, add operations to those types, and then move down to various levels of specialization (where algorithms are embedded at points within the taxonomy, and potentially specialized with inheritance).</p>
+<p>In the examples that follow, we will show for exposition the hierarchy of types and the algorithms operating on them, but the reality is that the algorithms are often designed first, and the abstact types came later.</p>
+</div>
+</div>
+</div>
+<div class="section" id="distributions">
+<h2><a class="toc-backref" href="#id6"><span class="section-number">7.3. </span>Distributions</a><a class="headerlink" href="#distributions" title="Permalink to this headline">¶</a></h2>
+<p>First, consider working with “distributions”.</p>
+<p>Algorithms using distributions might (1) draw random numbers for Monte-Carlo methods; and (2) calculate the pdf or cdf – if it is defined.</p>
+<p>The process of using concrete distributions in these sorts of applications led
+to the creation of the <a class="reference external" href="https://github.com/JuliaStats/Distributions.jl">Distributions.jl</a> package.</p>
+<p>Let’s examine the tree of types for a Normal distribution</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span>
+<span class="n">d1</span> <span class="o">=</span> <span class="n">Normal</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span> <span class="c"># an example type to explore</span>
+<span class="nd">@show</span> <span class="n">d1</span>
+<span class="n">show_supertypes</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">d1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Sampleable{Univariate,Continuous}</span></code> type has a limited number of functions, chiefly the ability to draw a random number</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">rand</span><span class="p">(</span><span class="n">d1</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The purpose of that abstract type is to provide an interface for drawing from a
+variety of distributions, some of which may not have a well-defined predefined pdf.</p>
+<p>If you were writing a function to simulate a stochastic process with arbitrary
+iid shocks, where you did not need to assume an existing pdf etc., this is a natural candidate.</p>
+<p>For example, to simulate <span class="math notranslate nohighlight">\(x_{t+1} = a x_t + b \epsilon_{t+1}\)</span> where
+<span class="math notranslate nohighlight">\(\epsilon \sim D\)</span> for some <span class="math notranslate nohighlight">\(D\)</span>, which allows drawing random values.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">simulateprocess</span><span class="p">(</span><span class="n">x₀</span><span class="p">;</span> <span class="n">a</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">d</span><span class="o">::</span><span class="n">Sampleable</span><span class="p">{</span><span class="n">Univariate</span><span class="p">,</span><span class="n">Continuous</span><span class="p">})</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">x₀</span><span class="p">),</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="c"># preallocate vector, careful on the type</span>
+    <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x₀</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">rand</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="c"># draw</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">x</span>
+<span class="k">end</span>
+<span class="nd">@show</span> <span class="n">simulateprocess</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">Normal</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Sampleable{Univariate,Continuous}</span></code> and, especially, the <code class="docutils literal notranslate"><span class="pre">Sampleable{Multivariate,Continuous}</span></code> abstract types are useful generic interfaces for Monte-Carlo and Bayesian methods.</p>
+<p>Moving down the tree, the <code class="docutils literal notranslate"><span class="pre">Distributions{Univariate,</span> <span class="pre">Continuous}</span></code> abstract type has other functions we can use for generic algorithms operating on distributions.</p>
+<p>These match the mathematics, such as <code class="docutils literal notranslate"><span class="pre">pdf</span></code>, <code class="docutils literal notranslate"><span class="pre">cdf</span></code>, <code class="docutils literal notranslate"><span class="pre">quantile</span></code>, <code class="docutils literal notranslate"><span class="pre">support</span></code>, <code class="docutils literal notranslate"><span class="pre">minimum</span></code>, <code class="docutils literal notranslate"><span class="pre">maximum</span></code>, etc.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">d1</span> <span class="o">=</span> <span class="n">Normal</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="n">d2</span> <span class="o">=</span> <span class="n">Exponential</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">d1</span>
+<span class="nd">@show</span> <span class="n">d2</span>
+<span class="nd">@show</span> <span class="n">supertype</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">d1</span><span class="p">))</span>
+<span class="nd">@show</span> <span class="n">supertype</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">d2</span><span class="p">))</span>
+
+<span class="nd">@show</span> <span class="n">pdf</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">pdf</span><span class="p">(</span><span class="n">d2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">cdf</span><span class="p">(</span><span class="n">d1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">cdf</span><span class="p">(</span><span class="n">d2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">support</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">support</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">minimum</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">minimum</span><span class="p">(</span><span class="n">d2</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">maximum</span><span class="p">(</span><span class="n">d1</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">maximum</span><span class="p">(</span><span class="n">d2</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>You could create your own <code class="docutils literal notranslate"><span class="pre">Distributions{Univariate,</span> <span class="pre">Continuous}</span></code> type by implementing those functions – as is described in <a class="reference external" href="https://juliastats.github.io/Distributions.jl/latest/extends/">the documentation</a>.</p>
+<p>If you fulfill all of the conditions of a particular interface, you can use algorithms from the present, past, and future  that are written for the abstract <code class="docutils literal notranslate"><span class="pre">Distributions{Univariate,</span> <span class="pre">Continuous}</span></code> type.</p>
+<p>As an example, consider the <a class="reference external" href="https://github.com/JuliaPlots/StatsPlots.jl">StatsPlots</a> package</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">StatsPlots</span>
+<span class="n">d</span> <span class="o">=</span> <span class="n">Normal</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="c"># note no other arguments!</span>
+</pre></div>
+</div>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">plot</span></code> on any subtype of <code class="docutils literal notranslate"><span class="pre">Distributions{Univariate,</span> <span class="pre">Continuous}</span></code>
+displays the <code class="docutils literal notranslate"><span class="pre">pdf</span></code> and uses <code class="docutils literal notranslate"><span class="pre">minimum</span></code> and <code class="docutils literal notranslate"><span class="pre">maximum</span></code> to determine the range.</p>
+<p>Let’s create our own distribution type</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">OurTruncatedExponential</span> <span class="o">&lt;:</span> <span class="n">Distribution</span><span class="p">{</span><span class="n">Univariate</span><span class="p">,</span><span class="n">Continuous</span><span class="p">}</span>
+    <span class="n">α</span><span class="o">::</span><span class="kt">Float64</span>
+    <span class="n">xmax</span><span class="o">::</span><span class="kt">Float64</span>
+<span class="k">end</span>
+<span class="n">Distributions</span><span class="o">.</span><span class="n">pdf</span><span class="p">(</span><span class="n">d</span><span class="o">::</span><span class="n">OurTruncatedExponential</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">α</span> <span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">d</span><span class="o">.</span><span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">d</span><span class="o">.</span><span class="n">α</span> <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">xmax</span><span class="p">)</span>
+<span class="n">Distributions</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">d</span><span class="o">::</span><span class="n">OurTruncatedExponential</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">Distributions</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">d</span><span class="o">::</span><span class="n">OurTruncatedExponential</span><span class="p">)</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">xmax</span>
+<span class="c"># ... more to have a complete type</span>
+</pre></div>
+</div>
+<p>To demonstrate this</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">OurTruncatedExponential</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">2.0</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">minimum</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">maximum</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">support</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="c"># why does this work?</span>
+</pre></div>
+</div>
+<p>Curiously, you will note that the <code class="docutils literal notranslate"><span class="pre">support</span></code> function works, even though we did not provide one.</p>
+<p>This is another example of the power of multiple dispatch and generic programming.</p>
+<p>In the background, the <code class="docutils literal notranslate"><span class="pre">Distributions.jl</span></code> package  has something like the following implemented</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span>    <span class="n">Distributions</span><span class="o">.</span><span class="n">support</span><span class="p">(</span><span class="n">d</span><span class="o">::</span><span class="n">Distribution</span><span class="p">)</span> <span class="o">=</span> <span class="n">RealInterval</span><span class="p">(</span><span class="n">minimum</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="n">maximum</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Since <code class="docutils literal notranslate"><span class="pre">OurTruncatedExponential</span> <span class="pre">&lt;:</span> <span class="pre">Distribution</span></code>, and we
+implemented <code class="docutils literal notranslate"><span class="pre">minimum</span></code> and <code class="docutils literal notranslate"><span class="pre">maximum</span></code>, calls to <code class="docutils literal notranslate"><span class="pre">support</span></code> get this
+implementation as a fallback.</p>
+<p>These functions are enough to use the  <code class="docutils literal notranslate"><span class="pre">StatsPlots.jl</span></code> package</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="c"># uses the generic code!</span>
+</pre></div>
+</div>
+<p>A few things to point out</p>
+<ul class="simple">
+<li><p>Even if it worked for <code class="docutils literal notranslate"><span class="pre">StatsPlots</span></code>, our implementation is incomplete, as we haven’t fulfilled all of the requirements of a <code class="docutils literal notranslate"><span class="pre">Distribution</span></code>.</p></li>
+<li><p>We also did not implement the <code class="docutils literal notranslate"><span class="pre">rand</span></code> function, which means we are breaking the implicit contract of the <code class="docutils literal notranslate"><span class="pre">Sampleable</span></code> abstract type.</p></li>
+<li><p>It turns out that there is a better way to do this precise thing already built into <code class="docutils literal notranslate"><span class="pre">Distributions</span></code>.</p></li>
+</ul>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="n">Truncated</span><span class="p">(</span><span class="n">Exponential</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This is the power of generic programming in general, and Julia in particular: you can combine and compose completely separate packages and code, as long as there is an agreement on abstract types and functions.</p>
+</div>
+<div class="section" id="numbers-and-algebraic-structures">
+<h2><a class="toc-backref" href="#id7"><span class="section-number">7.4. </span>Numbers and Algebraic Structures</a><a class="headerlink" href="#numbers-and-algebraic-structures" title="Permalink to this headline">¶</a></h2>
+<p>Define two binary functions,  <span class="math notranslate nohighlight">\(+\)</span> and <span class="math notranslate nohighlight">\(\cdot\)</span>, called addition and multiplication – although the operators can be applied to data structures much more abstract than a <code class="docutils literal notranslate"><span class="pre">Real</span></code>.</p>
+<p>In mathematics, a <a class="reference external" href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">ring</a> is a set with associated additive and multiplicative operators where</p>
+<ul class="simple">
+<li><p>the additive operator is associative and commutative</p></li>
+<li><p>the multiplicative operator is associative and distributive with respect to the additive operator</p></li>
+<li><p>there is an additive identity element,  denoted <span class="math notranslate nohighlight">\(0\)</span>, such that <span class="math notranslate nohighlight">\(a + 0 = a\)</span> for any <span class="math notranslate nohighlight">\(a\)</span> in the set</p></li>
+<li><p>there is an additive inverse of each element, denoted <span class="math notranslate nohighlight">\(-a\)</span>, such that <span class="math notranslate nohighlight">\(a + (-a) = 0\)</span></p></li>
+<li><p>there is a multiplicative identity element, denoted <span class="math notranslate nohighlight">\(1\)</span>, such that <span class="math notranslate nohighlight">\(a \cdot 1 = a = 1 \cdot a\)</span></p></li>
+<li><p>a total or partial ordering is <strong>not</strong> required (i.e., there does not need to be any meaningful <span class="math notranslate nohighlight">\(&lt;\)</span> operator defined)</p></li>
+<li><p>a multiplicative inverse is <strong>not</strong> required</p></li>
+</ul>
+<p>While this skips over some parts of the mathematical definition, this algebraic structure provides motivation for the abstract <code class="docutils literal notranslate"><span class="pre">Number</span></code> type in Julia</p>
+<ul class="simple">
+<li><p><strong>Remark:</strong> We use the term “motivation” because they are not formally connected and the mapping is imperfect.</p></li>
+<li><p>The main difficulty when dealing with numbers that can be concretely created on a computer is that the requirement that the operators are closed in the set are difficult to ensure (e.g. floating points have finite numbers of bits of information).</p></li>
+</ul>
+<p>Let <code class="docutils literal notranslate"><span class="pre">typeof(a)</span> <span class="pre">=</span> <span class="pre">typeof(b)</span> <span class="pre">=</span> <span class="pre">T</span> <span class="pre">&lt;:</span> <span class="pre">Number</span></code>, then under an informal definition of the <strong>generic interface</strong> for
+<code class="docutils literal notranslate"><span class="pre">Number</span></code>, the following must be defined</p>
+<ul class="simple">
+<li><p>the additive operator: <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">+</span> <span class="pre">b</span></code></p></li>
+<li><p>the multiplicative operator: <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">*</span> <span class="pre">b</span></code></p></li>
+<li><p>an additive inverse operator: <code class="docutils literal notranslate"><span class="pre">-a</span></code></p></li>
+<li><p>an inverse operation for addition <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-</span> <span class="pre">b</span> <span class="pre">=</span> <span class="pre">a</span> <span class="pre">+</span> <span class="pre">(-b)</span></code></p></li>
+<li><p>an additive identity: <code class="docutils literal notranslate"><span class="pre">zero(T)</span></code> or <code class="docutils literal notranslate"><span class="pre">zero(a)</span></code> for convenience</p></li>
+<li><p>a multiplicative identity: <code class="docutils literal notranslate"><span class="pre">one(T)</span></code> or <code class="docutils literal notranslate"><span class="pre">one(a)</span></code> for convenience</p></li>
+</ul>
+<p>The core of generic programming is that, given the knowledge that a value is of type <code class="docutils literal notranslate"><span class="pre">Number</span></code>, we can design algorithms using any of these functions and not concern ourselves with the particular concrete type.</p>
+<p>Furthermore, that generality in designing algorithms comes with no compromises on performance compared to carefully designed algorithms written for that particular type.</p>
+<p>To demonstrate this for a complex number, where <code class="docutils literal notranslate"><span class="pre">Complex{Float64}</span> <span class="pre">&lt;:</span> <span class="pre">Number</span></code></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">1.0</span><span class="nb">im</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="o">+</span> <span class="mf">2.0</span><span class="nb">im</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;:</span> <span class="kt">Number</span>
+<span class="nd">@show</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+<span class="nd">@show</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+<span class="nd">@show</span> <span class="o">-</span><span class="n">a</span>
+<span class="nd">@show</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
+<span class="nd">@show</span> <span class="n">zero</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">one</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>And for an arbitrary precision integer where <code class="docutils literal notranslate"><span class="pre">BigInt</span> <span class="pre">&lt;:</span> <span class="pre">Number</span></code>
+(i.e., a different type than the <code class="docutils literal notranslate"><span class="pre">Int64</span></code> you have worked with, but nevertheless a <code class="docutils literal notranslate"><span class="pre">Number</span></code>)</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="kt">BigInt</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="kt">BigInt</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;:</span> <span class="kt">Number</span>
+<span class="nd">@show</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+<span class="nd">@show</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+<span class="nd">@show</span> <span class="o">-</span><span class="n">a</span>
+<span class="nd">@show</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
+<span class="nd">@show</span> <span class="n">zero</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">one</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="section" id="complex-numbers-and-composition-of-generic-functions">
+<h3><span class="section-number">7.4.1. </span>Complex Numbers and Composition of Generic Functions<a class="headerlink" href="#complex-numbers-and-composition-of-generic-functions" title="Permalink to this headline">¶</a></h3>
+<p>This allows us to showcase further how different generic packages compose – even if they are only loosely coupled through agreement on common generic interfaces.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Complex</span></code> numbers require some sort of storage for their underlying real and imaginary parts, which is itself left generic.</p>
+<p>This data structure is defined to work with any type <code class="docutils literal notranslate"><span class="pre">&lt;:</span> <span class="pre">Number</span></code>, and is parameterized (e.g. <code class="docutils literal notranslate"><span class="pre">Complex{Float64}</span></code> is a complex number storing the imaginary and real parts in <code class="docutils literal notranslate"><span class="pre">Float64</span></code>)</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="mf">4.0</span> <span class="o">+</span> <span class="mf">1.0</span><span class="nb">im</span>
+<span class="nd">@show</span> <span class="n">x</span><span class="p">,</span> <span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="n">xbig</span> <span class="o">=</span> <span class="kt">BigFloat</span><span class="p">(</span><span class="mf">4.0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span><span class="nb">im</span>
+<span class="nd">@show</span> <span class="n">xbig</span><span class="p">,</span> <span class="n">typeof</span><span class="p">(</span><span class="n">xbig</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The implementation of the <code class="docutils literal notranslate"><span class="pre">Complex</span></code> numbers use the underlying operations of
+storage type, so as long as <code class="docutils literal notranslate"><span class="pre">+</span></code>, <code class="docutils literal notranslate"><span class="pre">*</span></code> etc. are defined – as they should be
+for any <code class="docutils literal notranslate"><span class="pre">Number</span></code> – the complex operation can be defined</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@which</span> <span class="o">+</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Following that link, the implementation of <code class="docutils literal notranslate"><span class="pre">+</span></code> for complex numbers is</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">+</span><span class="p">(</span><span class="n">z</span><span class="o">::</span><span class="kt">Complex</span><span class="p">,</span> <span class="n">w</span><span class="o">::</span><span class="kt">Complex</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Complex</span><span class="p">(</span><span class="n">real</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="n">real</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">imag</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="n">imag</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">real(z)</span></code> and <code class="docutils literal notranslate"><span class="pre">imag(z)</span></code> returns the associated components of the complex number in the underlying storage type (e.g. <code class="docutils literal notranslate"><span class="pre">Float64</span></code> or <code class="docutils literal notranslate"><span class="pre">BigFloat</span></code>).</p>
+<p>The rest of the function has been carefully written to use functions defined for any <code class="docutils literal notranslate"><span class="pre">Number</span></code> (e.g. <code class="docutils literal notranslate"><span class="pre">+</span></code> but not <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, since it is not part of the generic number interface).</p>
+<p>To follow another example , look at the implementation of <code class="docutils literal notranslate"><span class="pre">abs</span></code> specialized for complex numbers</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@which</span> <span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The source is</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="o">::</span><span class="kt">Complex</span><span class="p">)</span>  <span class="o">=</span> <span class="n">hypot</span><span class="p">(</span><span class="n">real</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">imag</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In this case, if you look at the generic function to get the hypotenuse, <code class="docutils literal notranslate"><span class="pre">hypot</span></code>, you will see that it has the function signature <code class="docutils literal notranslate"><span class="pre">hypot(x::T,</span> <span class="pre">y::T)</span> <span class="pre">where</span> <span class="pre">T&lt;:Number</span></code>, and hence works for any <code class="docutils literal notranslate"><span class="pre">Number</span></code>.</p>
+<p>That function, in turn, relies on the underlying <code class="docutils literal notranslate"><span class="pre">abs</span></code> for the type of <code class="docutils literal notranslate"><span class="pre">real(z)</span></code>.</p>
+<p>This would dispatch to the appropriate <code class="docutils literal notranslate"><span class="pre">abs</span></code> for the type</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@which</span> <span class="n">abs</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@which</span> <span class="n">abs</span><span class="p">(</span><span class="kt">BigFloat</span><span class="p">(</span><span class="mf">1.0</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>With implementations</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Real</span><span class="p">)</span> <span class="o">=</span> <span class="n">ifelse</span><span class="p">(</span><span class="n">signbit</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Float64</span><span class="p">)</span> <span class="o">=</span> <span class="n">abs_float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For a <code class="docutils literal notranslate"><span class="pre">Real</span></code> number (which we will discuss in the next section) the fallback implementation calls a function <code class="docutils literal notranslate"><span class="pre">signbit</span></code> to determine if it should flip the sign of the number.</p>
+<p>The specialized version for <code class="docutils literal notranslate"><span class="pre">Float64</span> <span class="pre">&lt;:</span> <span class="pre">Real</span></code> calls a function called <code class="docutils literal notranslate"><span class="pre">abs_float</span></code> – which turns out to be a specialized implementation at the compiler level.</p>
+<p>While we have not completely dissected the tree of function calls, at the bottom of the tree you will end at the most optimized version of the function for the underlying datatype.</p>
+<p>Hopefully this showcases the power of generic programming:  with a well-designed set of abstract types and functions, the code can both be highly general and composable and still use the most efficient implementation possible.</p>
+</div>
+</div>
+<div class="section" id="reals-and-algebraic-structures">
+<h2><a class="toc-backref" href="#id8"><span class="section-number">7.5. </span>Reals and Algebraic Structures</a><a class="headerlink" href="#reals-and-algebraic-structures" title="Permalink to this headline">¶</a></h2>
+<p>Thinking back to the mathematical motivation, a <a class="reference external" href="https://en.wikipedia.org/wiki/Field_%28mathematics%29">field</a> is a <code class="docutils literal notranslate"><span class="pre">ring</span></code> with a few additional properties, among them</p>
+<ul class="simple">
+<li><p>a multiplicative inverse: <span class="math notranslate nohighlight">\(a^{-1}\)</span></p></li>
+<li><p>an inverse operation for multiplication: <span class="math notranslate nohighlight">\(a / b = a \cdot b^{-1}\)</span></p></li>
+</ul>
+<p>Furthermore, we will make it a <a class="reference external" href="https://en.wikipedia.org/wiki/Total_order#Strict_total_order">total ordered</a> field with</p>
+<ul class="simple">
+<li><p>a total ordering binary operator: <span class="math notranslate nohighlight">\(a &lt; b\)</span></p></li>
+</ul>
+<p>This type gives some motivation for the operations and properties of the <code class="docutils literal notranslate"><span class="pre">Real</span></code> type.</p>
+<p>Of course, <code class="docutils literal notranslate"><span class="pre">Complex{Float64}</span> <span class="pre">&lt;:</span> <span class="pre">Number</span></code> but not <code class="docutils literal notranslate"><span class="pre">Real</span></code> – since the ordering is not defined for complex numbers in mathematics.</p>
+<p>These operations are implemented in any subtype of <code class="docutils literal notranslate"><span class="pre">Real</span></code> through</p>
+<ul class="simple">
+<li><p>the multiplicative inverse: <code class="docutils literal notranslate"><span class="pre">inv(a)</span></code></p></li>
+<li><p>the multiplicative inverse operation: <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">/</span> <span class="pre">b</span> <span class="pre">=</span> <span class="pre">a</span> <span class="pre">*</span> <span class="pre">inv(b)</span></code></p></li>
+<li><p>an ordering <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">&lt;</span> <span class="pre">b</span></code></p></li>
+</ul>
+<p>We have already shown these with the <code class="docutils literal notranslate"><span class="pre">Float64</span></code> and <code class="docutils literal notranslate"><span class="pre">BigFloat</span></code>.</p>
+<p>To show this for the <code class="docutils literal notranslate"><span class="pre">Rational</span></code> number type, where <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">//</span> <span class="pre">b</span></code> constructs a rational number <span class="math notranslate nohighlight">\(\frac{a}{b}\)</span></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">//</span> <span class="mi">10</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">//</span> <span class="mi">6</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;:</span> <span class="kt">Number</span>
+<span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;:</span> <span class="kt">Real</span>
+<span class="nd">@show</span> <span class="n">inv</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">a</span> <span class="o">/</span> <span class="n">b</span>
+<span class="nd">@show</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Remark:</strong> Here we see where and how the precise connection to the mathematics for number types breaks down for practical reasons, in particular</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Integer</span></code> types (i.e., <code class="docutils literal notranslate"><span class="pre">Int64</span> <span class="pre">&lt;:</span> <span class="pre">Integer</span></code>) do not have a a multiplicative inverse with closure in the set.</p></li>
+<li><p>However, it is necessary in practice for integer division to be defined, and return back a member of the <code class="docutils literal notranslate"><span class="pre">Real</span></code>’s.</p></li>
+<li><p>This is called <a class="reference external" href="https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1">type promotion</a>, where a type can be converted to another to ensure an operation is possible by direct conversion between types (i.e., it can be independent of the type hierarchy).</p></li>
+</ul>
+<p>Do not think of the break in the connection between the underlying algebraic structures and the code as a failure of the language or design.</p>
+<p>Rather, the underlying algorithms for use on a computer do not perfectly fit the algebraic structures in this instance.</p>
+<p>Moving further down the tree of types provides more operations more directly tied to the computational implementation than abstract algebra.</p>
+<p>For example, floating point numbers have a machine precision, below which numbers become indistinguishable due to lack of sufficient “bits” of information</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="kt">Float64</span> <span class="o">&lt;:</span> <span class="kt">AbstractFloat</span>
+<span class="nd">@show</span> <span class="kt">BigFloat</span> <span class="o">&lt;:</span> <span class="kt">AbstractFloat</span>
+<span class="nd">@show</span> <span class="n">eps</span><span class="p">(</span><span class="kt">Float64</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">eps</span><span class="p">(</span><span class="kt">BigFloat</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">isless</span></code> function also has multiple methods.</p>
+<p>First let’s try with integers</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@which</span> <span class="n">isless</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As we saw previously, the <code class="docutils literal notranslate"><span class="pre">Real</span></code> data type is an <em>abstract</em> type, and encompasses both floats and integers.</p>
+<p>If we go to the provided link in the source, we see the entirety of the function is</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">isless</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Real</span><span class="p">,</span> <span class="n">y</span><span class="o">::</span><span class="kt">Real</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">&lt;</span><span class="n">y</span>
+</pre></div>
+</div>
+<p>That is, for any values where <code class="docutils literal notranslate"><span class="pre">typeof(x)</span> <span class="pre">&lt;:</span> <span class="pre">Real</span></code> and <code class="docutils literal notranslate"><span class="pre">typeof(y)</span> <span class="pre">&lt;:</span> <span class="pre">Real</span></code>, the definition relies on <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>.</p>
+<p>We know that <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> is defined for the types because it is part of the informal interface for the <code class="docutils literal notranslate"><span class="pre">Real</span></code> abstract type.</p>
+<p>Note that this is not defined for <code class="docutils literal notranslate"><span class="pre">Number</span></code> because not all <code class="docutils literal notranslate"><span class="pre">Number</span></code> types have the <code class="docutils literal notranslate"><span class="pre">&lt;</span></code> ordering operator defined (e.g. <code class="docutils literal notranslate"><span class="pre">Complex</span></code>).</p>
+<p>In order to generate fast code, the implementation details may define specialized versions of these operations.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">isless</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>  <span class="c"># applied to two floats</span>
+<span class="nd">@which</span> <span class="n">isless</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the reason  <code class="docutils literal notranslate"><span class="pre">Float64</span> <span class="pre">&lt;:</span> <span class="pre">Real</span></code> calls this implementation rather than the one given above, is that <code class="docutils literal notranslate"><span class="pre">Float64</span> <span class="pre">&lt;:</span> <span class="pre">Real</span></code>, and Julia chooses the most specialized implementation for each function.</p>
+<p>The specialized implementations are often more subtle than you may realize due to <a class="reference external" href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">floating point arithmetic</a>, <a class="reference external" href="https://en.wikipedia.org/wiki/Arithmetic_underflow">underflow</a>, etc.</p>
+</div>
+<div class="section" id="functions-and-function-like-types">
+<h2><a class="toc-backref" href="#id9"><span class="section-number">7.6. </span>Functions, and Function-Like Types</a><a class="headerlink" href="#functions-and-function-like-types" title="Permalink to this headline">¶</a></h2>
+<p>Another common example of the separation between data structures and algorithms is the use of functions.</p>
+<p>Syntactically, a univariate “function” is any <code class="docutils literal notranslate"><span class="pre">f</span></code> that can call an argument <code class="docutils literal notranslate"><span class="pre">x</span></code> as <code class="docutils literal notranslate"><span class="pre">f(x)</span></code>.</p>
+<p>For example, we can use a standard function</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">QuadGK</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span>
+<span class="nd">@show</span> <span class="n">quadgk</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>  <span class="c"># integral</span>
+
+<span class="k">function</span> <span class="n">plotfunctions</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">intf</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">quadgk</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>  <span class="c"># int_0^x f(x) dx</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="o">:</span><span class="mf">0.1</span><span class="o">:</span><span class="mf">1.0</span>
+    <span class="n">f_x</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;f&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">intf</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;int_f&quot;</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">plotfunctions</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>  <span class="c"># call with our f</span>
+</pre></div>
+</div>
+<p>Of course, univariate polynomials are another type of univariate function</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Polynomials</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">Polynomial</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">:</span><span class="n">x</span><span class="p">)</span>  <span class="c"># :x just gives a symbol for display</span>
+<span class="nd">@show</span> <span class="n">p</span>
+<span class="nd">@show</span> <span class="n">p</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span> <span class="c"># call like a function</span>
+
+<span class="n">plotfunctions</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>  <span class="c"># same generic function</span>
+</pre></div>
+</div>
+<p>Similarly, the result of interpolating data is also a function</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Interpolations</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">:</span><span class="mf">0.2</span><span class="o">:</span><span class="mf">1.0</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span>
+<span class="n">f_int</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>  <span class="c"># interpolates the coarse grid</span>
+<span class="nd">@show</span> <span class="n">f_int</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c"># call like a function</span>
+
+<span class="n">plotfunctions</span><span class="p">(</span><span class="n">f_int</span><span class="p">)</span>  <span class="c"># same generic function</span>
+</pre></div>
+</div>
+<p>Note that the same generic <code class="docutils literal notranslate"><span class="pre">plotfunctions</span></code> could use any variable passed to it that “looks” like a function, i.e., can call <code class="docutils literal notranslate"><span class="pre">f(x)</span></code>.</p>
+<p>This approach to design with types – generic, but without any specific type declarations – is called <a class="reference external" href="https://en.wikipedia.org/wiki/Duck_typing">duck typing</a>.</p>
+<p>If you need to make an existing type callable, see <a class="reference external" href="https://docs.julialang.org/en/v1/manual/methods/#Function-like-objects-1">Function Like Objects</a>.</p>
+</div>
+<div class="section" id="limitations-of-dispatching-on-abstract-types">
+<h2><a class="toc-backref" href="#id10"><span class="section-number">7.7. </span>Limitations of Dispatching on Abstract Types</a><a class="headerlink" href="#limitations-of-dispatching-on-abstract-types" title="Permalink to this headline">¶</a></h2>
+<p>You will notice that types in Julia represent a tree with <code class="docutils literal notranslate"><span class="pre">Any</span></code> at the root.</p>
+<p>The tree structure has worked well for the above examples, but it doesn’t allow us to associate multiple categorizations of types.</p>
+<p>For example, a semi-group type would be useful for a writing generic code (e.g.
+continuous-time solutions for ODEs and matrix-free methods), but cannot be
+implemented rigorously since the <code class="docutils literal notranslate"><span class="pre">Matrix</span></code> type is a semi-group as well
+as an <code class="docutils literal notranslate"><span class="pre">AbstractArray</span></code>, but not all semi-groups are <code class="docutils literal notranslate"><span class="pre">AbstractArray</span></code> s.</p>
+<p>The main way to implement this in a generic language is with a design approach called “traits”.</p>
+<ul class="simple">
+<li><p>See the <a class="reference external" href="https://github.com/JuliaLang/julia/issues/2345#issuecomment-54537633">original discussion</a> and an <a class="reference external" href="https://github.com/mauro3/SimpleTraits.jl">example of a package to facilitate the pattern</a>.</p></li>
+<li><p>A complete description of the traits pattern as the natural evolution of Multiple Dispatch is given in this <a class="reference external" href="https://white.ucc.asn.au/2018/10/03/Dispatch,-Traits-and-Metaprogramming-Over-Reflection.html">blog post</a>.</p></li>
+</ul>
+</div>
+<div class="section" id="exercises">
+<h2><a class="toc-backref" href="#id11"><span class="section-number">7.8. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1a">
+<h3><span class="section-number">7.8.1. </span>Exercise 1a<a class="headerlink" href="#exercise-1a" title="Permalink to this headline">¶</a></h3>
+<p>In a previous exercise, we discussed the <a class="reference internal" href="../getting_started_julia/introduction_to_types.html#intro-types-ex-5"><span class="std std-ref">trapezoidal rule</span></a> for numerical integration.</p>
+<p>To summarize, the vector</p>
+<div class="math notranslate nohighlight">
+\[
+\int_{\underline{x}}^{\bar{x}} f(x) \, dx \approx \omega \cdot \vec{f}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\vec{f} \equiv \begin{bmatrix} f(x_1) &amp; \ldots &amp; f(x_N) \end{bmatrix}\in R^N\)</span> and, for a uniform grid spacing
+of <span class="math notranslate nohighlight">\(\Delta\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\omega \equiv \Delta \begin{bmatrix} \frac{1}{2} &amp; 1 &amp; \ldots &amp; 1 &amp; \frac{1}{2}\end{bmatrix} \in R^N
+\]</div>
+<p>The quadrature rule can be implemented easily as</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span>
+<span class="k">function</span> <span class="n">trap_weights</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">step</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">;</span> <span class="n">ones</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">);</span> <span class="mf">0.5</span><span class="p">]</span>
+<span class="k">end</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">ω</span> <span class="o">=</span> <span class="n">trap_weights</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span>
+<span class="n">dot</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">ω</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However, in this case the creation of the <code class="docutils literal notranslate"><span class="pre">ω</span></code> temporary is inefficient as there are no reasons to allocate an entire vector just
+to iterate through it with the <code class="docutils literal notranslate"><span class="pre">dot</span></code>.  Instead, create an iterable by following the <a class="reference external" href="https://docs.julialang.org/en/v1/manual/interfaces/#man-interface-iteration-1">interface definition for Iteration</a>, and
+implement the modified <code class="docutils literal notranslate"><span class="pre">trap_weights</span></code> and integration.</p>
+<p>Hint:  create a type such as</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="n">UniformTrapezoidal</span>
+    <span class="n">count</span><span class="o">::</span><span class="kt">Int</span>
+    <span class="n">Δ</span><span class="o">::</span><span class="kt">Float64</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>and then implement the function <code class="docutils literal notranslate"><span class="pre">Base.iterate(S::UniformTrapezoidal,</span> <span class="pre">state=1)</span></code>.</p>
+</div>
+<div class="section" id="exercise-1b-advanced">
+<h3><span class="section-number">7.8.2. </span>Exercise 1b (Advanced)<a class="headerlink" href="#exercise-1b-advanced" title="Permalink to this headline">¶</a></h3>
+<p>Make the <code class="docutils literal notranslate"><span class="pre">UniformTrapezoidal</span></code> type operate as an array with <a class="reference external" href="https://docs.julialang.org/en/v1/manual/interfaces/#man-interface-array-1">interface definition for AbstractArray</a>.  With this, you should be able it go <code class="docutils literal notranslate"><span class="pre">ω[2]</span></code> or <code class="docutils literal notranslate"><span class="pre">length(ω)</span></code> to access the quadrature weights.</p>
+</div>
+<div class="section" id="exercise-2-advanced">
+<h3><span class="section-number">7.8.3. </span>Exercise 2 (Advanced)<a class="headerlink" href="#exercise-2-advanced" title="Permalink to this headline">¶</a></h3>
+<p>Implement the same features as Exercise 1a and 1b, but for the  <a class="reference external" href="https://en.wikipedia.org/wiki/Trapezoidal_rule#Non-uniform_grid">non-uniform trapezoidal rule</a>.</p>
+<span class="target" id="spec-field-types"></span></div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./more_julia"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Packages and Software Engineering in Julia
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="general_packages.html">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tools_editors.html">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="version_control.html">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   22. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   23. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   24. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   25. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   26. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   27. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   28. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   29. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   30. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   31. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   33. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   34. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   35. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   36. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   37. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   39. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   40. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   41. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   42. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   44. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   45. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   46. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   47. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   48. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   49. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   50. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   51. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   52. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   53. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   54. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   55. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   56. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   57. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   58. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   59. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   60. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   61. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   62. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   63. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   64. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   65. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   66. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   67. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   68. Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/more_julia/generic_programming.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/more_julia/generic_programming.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/more_julia/generic_programming.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/more_julia/generic_programming.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

@@ -1,0 +1,1809 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3. Introductory Examples &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/getting_started_julia/julia_by_example.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4. Julia Essentials" href="julia_essentials.html" />
+    <link rel="prev" title="2. Interacting with Julia" href="julia_environment.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Introductory Examples"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Introductory Examples" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/getting_started_julia/julia_by_example.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=getting_started_julia/julia_by_example>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   3.1. Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#level">
+     3.1.1. Level
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#approach">
+     3.1.2. Approach
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#set-up">
+     3.1.3. Set Up
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#other-references">
+     3.1.4. Other References
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-plotting-a-white-noise-process">
+   3.2. Example: Plotting a White Noise Process
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#introduction-to-packages">
+     3.2.1. Introduction to Packages
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-functions-from-a-package">
+     3.2.2. Using Functions from a Package
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#arrays">
+     3.2.3. Arrays
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#for-loops">
+     3.2.4. For Loops
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#user-defined-functions">
+     3.2.5. User-Defined Functions
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#a-slightly-more-useful-function">
+       3.2.5.1. A Slightly More Useful Function
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#a-mystery">
+       3.2.5.2. A Mystery
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-variations-on-fixed-points">
+   3.3. Example: Variations on Fixed Points
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#fixed-point-maps">
+     3.3.1. Fixed Point Maps
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#while-loops">
+     3.3.2. While Loops
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-a-function">
+     3.3.3. Using a Function
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#passing-a-function">
+     3.3.4. Passing a Function
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#named-arguments-and-return-values">
+     3.3.5. Named Arguments and Return Values
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#using-a-package">
+     3.3.6. Using a Package
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#composing-packages">
+     3.3.7. Composing Packages
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#multivariate-fixed-point-maps">
+     3.3.8. Multivariate Fixed Point Maps
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   3.4. Exercises
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1">
+     3.4.1. Exercise 1
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-2">
+     3.4.2. Exercise 2
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-3">
+     3.4.3. Exercise 3
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-4">
+     3.4.4. Exercise 4
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-5">
+     3.4.5. Exercise 5
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-6">
+     3.4.6. Exercise 6
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-7">
+     3.4.7. Exercise 7
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-8-a">
+     3.4.8. Exercise 8(a)
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-8-b">
+     3.4.9. Exercise 8(b)
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solutions">
+   3.5. Solutions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     3.5.1. Exercise 1
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     3.5.2. Exercise 2
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     3.5.3. Exercise 3
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id5">
+     3.5.4. Exercise 4
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id6">
+     3.5.5. Exercise 5
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id7">
+     3.5.6. Exercise 6
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-7-hint">
+     3.5.7. Exercise 7: Hint
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Introductory Examples</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="introductory-examples">
+<h1><a class="toc-backref" href="#id8"><span class="section-number">3. </span>Introductory Examples</a><a class="headerlink" href="#introductory-examples" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#introductory-examples" id="id8">Introductory Examples</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id9">Overview</a></p></li>
+<li><p><a class="reference internal" href="#example-plotting-a-white-noise-process" id="id10">Example: Plotting a White Noise Process</a></p></li>
+<li><p><a class="reference internal" href="#example-variations-on-fixed-points" id="id11">Example: Variations on Fixed Points</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id12">Exercises</a></p></li>
+<li><p><a class="reference internal" href="#solutions" id="id13">Solutions</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id9"><span class="section-number">3.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>We’re now ready to start learning the Julia language itself.</p>
+<div class="section" id="level">
+<h3><span class="section-number">3.1.1. </span>Level<a class="headerlink" href="#level" title="Permalink to this headline">¶</a></h3>
+<p>Our approach is aimed at those who already have at least some knowledge of programming — perhaps experience with Python, MATLAB, Fortran, C or similar.</p>
+<p>In particular, we assume you have some familiarity with fundamental programming concepts such as</p>
+<ul class="simple">
+<li><p>variables</p></li>
+<li><p>arrays or vectors</p></li>
+<li><p>loops</p></li>
+<li><p>conditionals (if/else)</p></li>
+</ul>
+</div>
+<div class="section" id="approach">
+<h3><span class="section-number">3.1.2. </span>Approach<a class="headerlink" href="#approach" title="Permalink to this headline">¶</a></h3>
+<p>In this lecture we will write and then pick apart small Julia programs.</p>
+<p>At this stage the objective is to introduce you to basic syntax and data structures.</p>
+<p>Deeper concepts—how things work—will be covered in later lectures.</p>
+<p>Since we are looking for simplicity the examples are a little contrived</p>
+<p>In this lecture, we will often start with a direct MATLAB/FORTRAN approach which often is <strong>poor coding style</strong> in Julia, but then move towards more <strong>elegant code</strong> which is tightly connected to the mathematics.</p>
+</div>
+<div class="section" id="set-up">
+<h3><span class="section-number">3.1.3. </span>Set Up<a class="headerlink" href="#set-up" title="Permalink to this headline">¶</a></h3>
+<p>We assume that you’ve worked your way through <a class="reference internal" href="getting_started.html"><span class="doc">our getting started lecture</span></a> already.</p>
+<p>In particular, the easiest way to install and precompile all the Julia packages used in QuantEcon
+notes is to type <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">add</span> <span class="pre">InstantiateFromURL</span></code> and then work in a Jupyter notebook, as described <a class="reference internal" href="getting_started.html"><span class="doc">here</span></a>.</p>
+</div>
+<div class="section" id="other-references">
+<h3><span class="section-number">3.1.4. </span>Other References<a class="headerlink" href="#other-references" title="Permalink to this headline">¶</a></h3>
+<p>The definitive reference is <a class="reference external" href="https://docs.julialang.org/en/v1/">Julia’s own documentation</a>.</p>
+<p>The manual is thoughtfully written but is also quite dense (and somewhat evangelical).</p>
+<p>The presentation in this and our remaining lectures is more of a tutorial style based around examples.</p>
+</div>
+</div>
+<div class="section" id="example-plotting-a-white-noise-process">
+<h2><a class="toc-backref" href="#id10"><span class="section-number">3.2. </span>Example: Plotting a White Noise Process</a><a class="headerlink" href="#example-plotting-a-white-noise-process" title="Permalink to this headline">¶</a></h2>
+<p>To begin, let’s suppose that we want to simulate and plot the white noise
+process <span class="math notranslate nohighlight">\(\epsilon_0, \epsilon_1, \ldots, \epsilon_T\)</span>, where each draw <span class="math notranslate nohighlight">\(\epsilon_t\)</span> is independent standard normal.</p>
+<div class="section" id="introduction-to-packages">
+<h3><span class="section-number">3.2.1. </span>Introduction to Packages<a class="headerlink" href="#introduction-to-packages" title="Permalink to this headline">¶</a></h3>
+<p>The first step is to activate a project environment, which is encapsulated by <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> files.</p>
+<p>There are three ways to install packages and versions (where the first two methods are discouraged, since they may lead to package versions out-of-sync with the notes)</p>
+<ol class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">add</span></code> the packages directly into your global installation (e.g. <code class="docutils literal notranslate"><span class="pre">Pkg.add(&quot;MyPackage&quot;)</span></code> or <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">add</span> <span class="pre">MyPackage</span></code>)</p></li>
+<li><p>download an <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> file in the same directory as the notebook (i.e. from the <code class="docutils literal notranslate"><span class="pre">&#64;__DIR__</span></code> argument), and then call <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">Pkg;</span> <span class="pre">Pkg.activate(&#64;__DIR__);</span></code></p></li>
+<li><p>use the <code class="docutils literal notranslate"><span class="pre">InstantiateFromURL</span></code> package</p></li>
+</ol>
+<p>If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages.</p>
+<p>This code will download and install project files from the <a class="reference external" href="https://github.com/QuantEcon/quantecon-notebooks-julia/">lecture repo</a>.</p>
+<p>We will discuss it more in <a class="reference internal" href="../more_julia/tools_editors.html#tools-editors"><span class="std std-ref">Tools and Editors</span></a>, but these files provide a listing of packages and versions used by the code.</p>
+<p>This ensures that an environment for running code is <strong>reproducible</strong>, so that anyone can replicate the precise set of package and versions used in construction.</p>
+<p>The careful selection of package versions is crucial for reproducibility, as otherwise your code can be broken by changes to packages out of your control.</p>
+<p>After the installation and activation, <code class="docutils literal notranslate"><span class="pre">using</span></code> provides a way to say that a particular code or notebook will use the package.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-functions-from-a-package">
+<span id="import"></span><h3><span class="section-number">3.2.2. </span>Using Functions from a Package<a class="headerlink" href="#using-functions-from-a-package" title="Permalink to this headline">¶</a></h3>
+<p>Some functions are built into the base Julia, such as <code class="docutils literal notranslate"><span class="pre">randn</span></code>, which returns a single draw from a normal distibution with mean 0 and variance 1 if given no parameters.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">randn</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Other functions require importing all of the names from an external library</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Plots</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=:</span><span class="n">png</span><span class="p">);</span> <span class="c"># setting for easier display in jupyter notebooks</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">ϵ</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span> <span class="n">ϵ</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s break this down and see how it works.</p>
+<p>The effect of the statement <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">Plots</span></code> is to make all the names exported by the <code class="docutils literal notranslate"><span class="pre">Plots</span></code> module available.</p>
+<p>Because we used <code class="docutils literal notranslate"><span class="pre">Pkg.activate</span></code> previously, it will use whatever version of <code class="docutils literal notranslate"><span class="pre">Plots.jl</span></code> that was specified in the <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> files.</p>
+<p>The other packages <code class="docutils literal notranslate"><span class="pre">LinearAlgebra</span></code> and <code class="docutils literal notranslate"><span class="pre">Statistics</span></code> are base Julia libraries, but require an explicit using.</p>
+<p>The arguments to <code class="docutils literal notranslate"><span class="pre">plot</span></code> are the numbers <code class="docutils literal notranslate"><span class="pre">1,2,</span> <span class="pre">...,</span> <span class="pre">n</span></code> for the x-axis, a vector <code class="docutils literal notranslate"><span class="pre">ϵ</span></code> for the y-axis, and (optional) settings.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">randn(n)</span></code> returns a column vector <code class="docutils literal notranslate"><span class="pre">n</span></code> random draws from a normal distribution with mean 0 and variance 1.</p>
+</div>
+<div class="section" id="arrays">
+<h3><span class="section-number">3.2.3. </span>Arrays<a class="headerlink" href="#arrays" title="Permalink to this headline">¶</a></h3>
+<p>As a language intended for mathematical and scientific computing, Julia has
+strong support for using unicode characters.</p>
+<p>In the above case, the <code class="docutils literal notranslate"><span class="pre">ϵ</span></code> and many other symbols can be typed in most Julia editor by providing the LaTeX and <code class="docutils literal notranslate"><span class="pre">&lt;TAB&gt;</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">\epsilon&lt;TAB&gt;</span></code>.</p>
+<p>The return type is one of the most fundamental Julia data types: an array</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">typeof</span><span class="p">(</span><span class="n">ϵ</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ϵ</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The information from <code class="docutils literal notranslate"><span class="pre">typeof()</span></code> tells us that <code class="docutils literal notranslate"><span class="pre">ϵ</span></code> is an array of 64 bit floating point values, of dimension 1.</p>
+<p>In Julia, one-dimensional arrays are interpreted as column vectors for purposes of linear algebra.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ϵ[1:5]</span></code> returns an array of the first 5 elements of <code class="docutils literal notranslate"><span class="pre">ϵ</span></code>.</p>
+<p>Notice from the above that</p>
+<ul class="simple">
+<li><p>array indices start at 1 (like MATLAB and Fortran, but unlike Python and C)</p></li>
+<li><p>array elements are referenced using square brackets (unlike MATLAB and Fortran)</p></li>
+</ul>
+<p>To get <strong>help and examples</strong> in Jupyter or other julia editor, use the <code class="docutils literal notranslate"><span class="pre">?</span></code> before a function name or syntax.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="n">typeof</span>
+
+<span class="n">search</span><span class="o">:</span> <span class="n">typeof</span> <span class="n">typejoin</span> <span class="kt">TypeError</span>
+
+<span class="n">Get</span> <span class="n">the</span> <span class="n">concrete</span> <span class="k">type</span> <span class="n">of</span> <span class="n">x</span><span class="o">.</span>
+
+<span class="n">Examples</span>
+
+<span class="n">julia</span><span class="o">&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="o">//</span><span class="mi">2</span><span class="p">;</span>
+
+<span class="n">julia</span><span class="o">&gt;</span> <span class="n">typeof</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="kt">Rational</span><span class="p">{</span><span class="kt">Int64</span><span class="p">}</span>
+
+<span class="n">julia</span><span class="o">&gt;</span> <span class="n">M</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">2</span><span class="p">;</span> <span class="mf">3.5</span> <span class="mi">4</span><span class="p">];</span>
+
+<span class="n">julia</span><span class="o">&gt;</span> <span class="n">typeof</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+<span class="kt">Array</span><span class="p">{</span><span class="kt">Float64</span><span class="p">,</span><span class="mi">2</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="for-loops">
+<h3><span class="section-number">3.2.4. </span>For Loops<a class="headerlink" href="#for-loops" title="Permalink to this headline">¶</a></h3>
+<p>Although there’s no need in terms of what we wanted to achieve with our
+program, for the sake of learning syntax let’s rewrite our program to use a
+<code class="docutils literal notranslate"><span class="pre">for</span></code> loop for generating the data.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In Julia v0.7 and up, the rules for variables accessed in <code class="docutils literal notranslate"><span class="pre">for</span></code> and <code class="docutils literal notranslate"><span class="pre">while</span></code> loops can be sensitive to how they are used (and variables can sometimes require a <code class="docutils literal notranslate"><span class="pre">global</span></code> as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) <code class="docutils literal notranslate"><span class="pre">for</span></code> and <code class="docutils literal notranslate"><span class="pre">while</span></code> loops outside of Jupyter notebooks.  This issue does not apply when used within functions.</p>
+</div>
+<p>Starting with the most direct version, and pretending we are in a world where <code class="docutils literal notranslate"><span class="pre">randn</span></code> can only return a single value</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># poor style</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">ϵ</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+    <span class="n">ϵ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">randn</span><span class="p">()</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>Here we first declared <code class="docutils literal notranslate"><span class="pre">ϵ</span></code> to be a vector of <code class="docutils literal notranslate"><span class="pre">n</span></code> numbers, initialized by the floating point <code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">for</span></code> loop then populates this array by successive calls to <code class="docutils literal notranslate"><span class="pre">randn()</span></code>.</p>
+<p>Like all code blocks in Julia, the end of the <code class="docutils literal notranslate"><span class="pre">for</span></code> loop code block (which is just one line here) is indicated by the keyword <code class="docutils literal notranslate"><span class="pre">end</span></code>.</p>
+<p>The word <code class="docutils literal notranslate"><span class="pre">in</span></code> from the <code class="docutils literal notranslate"><span class="pre">for</span></code> loop can be replaced by either <code class="docutils literal notranslate"><span class="pre">∈</span></code> or <code class="docutils literal notranslate"><span class="pre">=</span></code>.</p>
+<p>The index variable is looped over for all integers from <code class="docutils literal notranslate"><span class="pre">1:n</span></code> – but this does not actually create a vector of those indices.</p>
+<p>Instead, it creates an <strong>iterator</strong> that is looped over – in this case the <strong>range</strong> of integers from <code class="docutils literal notranslate"><span class="pre">1</span></code> to <code class="docutils literal notranslate"><span class="pre">n</span></code>.</p>
+<p>While this example successfully fills in <code class="docutils literal notranslate"><span class="pre">ϵ</span></code> with the correct values, it is very indirect as the connection between the index <code class="docutils literal notranslate"><span class="pre">i</span></code> and the <code class="docutils literal notranslate"><span class="pre">ϵ</span></code> vector is unclear.</p>
+<p>To fix this, use <code class="docutils literal notranslate"><span class="pre">eachindex</span></code></p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># better style</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">ϵ</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="n">eachindex</span><span class="p">(</span><span class="n">ϵ</span><span class="p">)</span>
+    <span class="n">ϵ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">randn</span><span class="p">()</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>Here, <code class="docutils literal notranslate"><span class="pre">eachindex(ϵ)</span></code> returns an iterator of indices which can be used to access <code class="docutils literal notranslate"><span class="pre">ϵ</span></code>.</p>
+<p>While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is clearer and less prone to typos; and (2) it allows the compiler flexibility to creatively generate fast code.</p>
+<p>In Julia you can also loop directly over arrays themselves, like so</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ϵ_sum</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c"># careful to use 0.0 here, instead of 0</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="k">for</span> <span class="n">ϵ_val</span> <span class="kp">in</span> <span class="n">ϵ</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="n">m</span><span class="p">]</span>
+    <span class="n">ϵ_sum</span> <span class="o">=</span> <span class="n">ϵ_sum</span> <span class="o">+</span> <span class="n">ϵ_val</span>
+<span class="k">end</span>
+<span class="n">ϵ_mean</span> <span class="o">=</span> <span class="n">ϵ_sum</span> <span class="o">/</span> <span class="n">m</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">ϵ[1:m]</span></code> returns the elements of the vector at indices <code class="docutils literal notranslate"><span class="pre">1</span></code> to <code class="docutils literal notranslate"><span class="pre">m</span></code>.</p>
+<p>Of course, in Julia there are built in functions to perform this calculation which we can compare against</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ϵ_mean</span> <span class="n">≈</span> <span class="n">mean</span><span class="p">(</span><span class="n">ϵ</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="n">m</span><span class="p">])</span>
+<span class="n">ϵ_mean</span> <span class="n">≈</span> <span class="n">sum</span><span class="p">(</span><span class="n">ϵ</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="n">m</span><span class="p">])</span> <span class="o">/</span> <span class="n">m</span>
+</pre></div>
+</div>
+<p>In these examples, note the use of <code class="docutils literal notranslate"><span class="pre">≈</span></code> to test equality, rather than <code class="docutils literal notranslate"><span class="pre">==</span></code>, which is appropriate for integers and other types.</p>
+<p>Approximately equal, typed with <code class="docutils literal notranslate"><span class="pre">\approx&lt;TAB&gt;</span></code>, is the appropriate way to compare any floating point numbers due to the standard issues of <a class="reference external" href="https://floating-point-gui.de/">floating point math</a>.</p>
+</div>
+<div class="section" id="user-defined-functions">
+<span id="id1"></span><h3><span class="section-number">3.2.5. </span>User-Defined Functions<a class="headerlink" href="#user-defined-functions" title="Permalink to this headline">¶</a></h3>
+<p>For the sake of the exercise, let’s go back to the <code class="docutils literal notranslate"><span class="pre">for</span></code> loop but restructure our program so that generation of random variables takes place within a user-defined function.</p>
+<p>To make things more interesting, instead of directly plotting the draws from the distribution, let’s plot the squares of these draws</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># poor style</span>
+<span class="k">function</span> <span class="n">generatedata</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">ϵ</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="n">eachindex</span><span class="p">(</span><span class="n">ϵ</span><span class="p">)</span>
+        <span class="n">ϵ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">randn</span><span class="p">())</span><span class="o">^</span><span class="mi">2</span> <span class="c"># squaring the result</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">ϵ</span>
+<span class="k">end</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">generatedata</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">function</span></code> is a Julia keyword that indicates the start of a function definition</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generatedata</span></code> is an arbitrary name for the function</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">return</span></code> is a keyword indicating the return value, as is often unnecessary</p></li>
+</ul>
+<p>Let us make this example slightly better by “remembering” that <code class="docutils literal notranslate"><span class="pre">randn</span></code> can return a vectors.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># still poor style</span>
+<span class="k">function</span> <span class="n">generatedata</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">ϵ</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="c"># use built in function</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="n">eachindex</span><span class="p">(</span><span class="n">ϵ</span><span class="p">)</span>
+        <span class="n">ϵ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ϵ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span> <span class="c"># squaring the result</span>
+    <span class="k">end</span>
+
+    <span class="k">return</span> <span class="n">ϵ</span>
+<span class="k">end</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">generatedata</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>While better, the looping over the <code class="docutils literal notranslate"><span class="pre">i</span></code> index to square the results is difficult to read.</p>
+<p>Instead of looping, we can <strong>broadcast</strong> the <code class="docutils literal notranslate"><span class="pre">^2</span></code> square function over a vector using a <code class="docutils literal notranslate"><span class="pre">.</span></code>.</p>
+<p>To be clear, unlike Python, R, and MATLAB (to a lesser extent), the reason to drop the <code class="docutils literal notranslate"><span class="pre">for</span></code> is <strong>not</strong> for performance reasons, but rather because of code clarity.</p>
+<p>Loops of this sort are at least as efficient as vectorized approach in compiled languages like Julia, so use a for loop if you think it makes the code more clear.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># better style</span>
+<span class="k">function</span> <span class="n">generatedata</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">ϵ</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="c"># use built in function</span>
+    <span class="k">return</span> <span class="n">ϵ</span><span class="o">.^</span><span class="mi">2</span>
+ <span class="k">end</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">generatedata</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can even drop the <code class="docutils literal notranslate"><span class="pre">function</span></code> if we define it on a single line.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># good style</span>
+<span class="n">generatedata</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">generatedata</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, we can broadcast any function, where squaring is only a special case.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># good style</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span> <span class="c"># simple square function</span>
+<span class="n">generatedata</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="c"># uses broadcast for some function `f`</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">generatedata</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As a final – abstract – approach, we can make the <code class="docutils literal notranslate"><span class="pre">generatedata</span></code> function able to generically apply to a function.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">generatedata</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">gen</span><span class="p">)</span> <span class="o">=</span> <span class="n">gen</span><span class="o">.</span><span class="p">(</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="c"># uses broadcast for some function `gen`</span>
+
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span> <span class="c"># simple square function</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">generatedata</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="c"># applies f</span>
+</pre></div>
+</div>
+<p>Whether this example is better or worse than the previous version depends on how it is used.</p>
+<p>High degrees of abstraction and generality, e.g. passing in a function <code class="docutils literal notranslate"><span class="pre">f</span></code> in this case, can make code either clearer or more confusing, but Julia enables you to use these techniques <strong>with no performance overhead</strong>.</p>
+<p>For this particular case, the clearest and most general solution is probably the simplest.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># direct solution with broadcasting, and small user-defined function</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;x^2&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;x&quot;</span><span class="p">)</span> <span class="c"># layer on the same plot</span>
+</pre></div>
+</div>
+<p>While broadcasting above superficially looks like vectorizing functions in MATLAB, or Python ufuncs, it is much richer and built on core foundations of the language.</p>
+<p>The other additional function <code class="docutils literal notranslate"><span class="pre">plot!</span></code> adds a graph to the existing plot.</p>
+<p>This follows a general convention in Julia, where a function that modifies the arguments or a global state has a <code class="docutils literal notranslate"><span class="pre">!</span></code> at the end of its name.</p>
+<div class="section" id="a-slightly-more-useful-function">
+<h4><span class="section-number">3.2.5.1. </span>A Slightly More Useful Function<a class="headerlink" href="#a-slightly-more-useful-function" title="Permalink to this headline">¶</a></h4>
+<p>Let’s make a slightly more useful function.</p>
+<p>This function will be passed in a choice of probability distribution and respond by plotting a histogram of observations.</p>
+<p>In doing so we’ll make use of the <code class="docutils literal notranslate"><span class="pre">Distributions</span></code> package, which we assume was instantiated above with the project.</p>
+<p>Here’s the code</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span>
+
+<span class="k">function</span> <span class="n">plothistogram</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">ϵ</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>  <span class="c"># n draws from distribution</span>
+    <span class="n">histogram</span><span class="p">(</span><span class="n">ϵ</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">lp</span> <span class="o">=</span> <span class="n">Laplace</span><span class="p">()</span>
+<span class="n">plothistogram</span><span class="p">(</span><span class="n">lp</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s have a casual discussion of how all this works while leaving technical details for later in the lectures.</p>
+<p>First, <code class="docutils literal notranslate"><span class="pre">lp</span> <span class="pre">=</span> <span class="pre">Laplace()</span></code> creates an instance of a data type defined
+in the <code class="docutils literal notranslate"><span class="pre">Distributions</span></code> module that represents the Laplace distribution.</p>
+<p>The name <code class="docutils literal notranslate"><span class="pre">lp</span></code> is bound to this value.</p>
+<p>When we make the function call <code class="docutils literal notranslate"><span class="pre">plothistogram(lp,</span> <span class="pre">500)</span></code> the code in the body
+of the function <code class="docutils literal notranslate"><span class="pre">plothistogram</span></code> is run with</p>
+<ul class="simple">
+<li><p>the name <code class="docutils literal notranslate"><span class="pre">distribution</span></code> bound to the same value as <code class="docutils literal notranslate"><span class="pre">lp</span></code></p></li>
+<li><p>the name <code class="docutils literal notranslate"><span class="pre">n</span></code> bound to the integer <code class="docutils literal notranslate"><span class="pre">500</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="a-mystery">
+<h4><span class="section-number">3.2.5.2. </span>A Mystery<a class="headerlink" href="#a-mystery" title="Permalink to this headline">¶</a></h4>
+<p>Now consider the function call <code class="docutils literal notranslate"><span class="pre">rand(distribution,</span> <span class="pre">n)</span></code>.</p>
+<p>This looks like something of a mystery.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">rand()</span></code> is defined in the base library such that <code class="docutils literal notranslate"><span class="pre">rand(n)</span></code> returns <code class="docutils literal notranslate"><span class="pre">n</span></code> uniform random variables on <span class="math notranslate nohighlight">\([0, 1)\)</span>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>On the other hand, <code class="docutils literal notranslate"><span class="pre">distribution</span></code> points to a data type representing the Laplace distribution that has been defined in a third party package.</p>
+<p>So how can it be that <code class="docutils literal notranslate"><span class="pre">rand()</span></code> is able to take this kind of value as an
+argument and return the output that we want?</p>
+<p>The answer in a nutshell is <strong>multiple dispatch</strong>, which Julia uses to implement <strong>generic programming</strong>.</p>
+<p>This refers to the idea that functions in Julia can have different behavior
+depending on the particular arguments that they’re passed.</p>
+<p>Hence in Julia we can take an existing function and give it a new behavior by defining how it acts on a new type of value.</p>
+<p>The compiler knows which function definition to apply to in a given setting by looking at the types of the values the function is called on.</p>
+<p>In Julia these alternative versions of a function are called <strong>methods</strong>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="example-variations-on-fixed-points">
+<h2><a class="toc-backref" href="#id11"><span class="section-number">3.3. </span>Example: Variations on Fixed Points</a><a class="headerlink" href="#example-variations-on-fixed-points" title="Permalink to this headline">¶</a></h2>
+<p>Take a mapping <span class="math notranslate nohighlight">\(f : X \to X\)</span> for some set <span class="math notranslate nohighlight">\(X\)</span>.</p>
+<p>If there exists an <span class="math notranslate nohighlight">\(x^* \in X\)</span> such that <span class="math notranslate nohighlight">\(f(x^*) = x^*\)</span>, then <span class="math notranslate nohighlight">\(x^*\)</span>: is called a “fixed point” of <span class="math notranslate nohighlight">\(f\)</span>.</p>
+<p>For our second example, we will start with a simple example of determining fixed points of a function.</p>
+<p>The goal is to start with code in a MATLAB style, and move towards a more <strong>Julian</strong> style with high mathematical clarity.</p>
+<div class="section" id="fixed-point-maps">
+<h3><span class="section-number">3.3.1. </span>Fixed Point Maps<a class="headerlink" href="#fixed-point-maps" title="Permalink to this headline">¶</a></h3>
+<p>Consider the simple equation, where the scalars <span class="math notranslate nohighlight">\(p,\beta\)</span> are given, and  <span class="math notranslate nohighlight">\(v\)</span> is the scalar we wish to solve for</p>
+<div class="math notranslate nohighlight">
+\[
+v = p + \beta v
+\]</div>
+<p>Of course, in this simple example, with parameter restrictions this can be solved as <span class="math notranslate nohighlight">\(v = p/(1 - \beta)\)</span>.</p>
+<p>Rearrange the equation in terms of a map <span class="math notranslate nohighlight">\(f(x) : \mathbb R \to \mathbb R\)</span></p>
+<div class="math notranslate nohighlight" id="equation-fixed-point-map">
+<span class="eqno">(3.1)<a class="headerlink" href="#equation-fixed-point-map" title="Permalink to this equation">¶</a></span>\[v = f(v)\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+f(v) := p + \beta v
+\]</div>
+<p>Therefore, a fixed point <span class="math notranslate nohighlight">\(v^*\)</span> of <span class="math notranslate nohighlight">\(f(\cdot)\)</span> is a solution to the above problem.</p>
+</div>
+<div class="section" id="while-loops">
+<h3><span class="section-number">3.3.2. </span>While Loops<a class="headerlink" href="#while-loops" title="Permalink to this headline">¶</a></h3>
+<p>One approach to finding a fixed point of <a class="reference internal" href="#equation-fixed-point-map">(3.1)</a> is to start with an initial value, and iterate the map</p>
+<div class="math notranslate nohighlight" id="equation-fixed-point-naive">
+<span class="eqno">(3.2)<a class="headerlink" href="#equation-fixed-point-naive" title="Permalink to this equation">¶</a></span>\[v^{n+1} = f(v^n)\]</div>
+<p>For this exact <code class="docutils literal notranslate"><span class="pre">f</span></code> function,  we can see the convergence to <span class="math notranslate nohighlight">\(v = p/(1-\beta)\)</span> when <span class="math notranslate nohighlight">\(|\beta| &lt; 1\)</span> by iterating backwards and taking <span class="math notranslate nohighlight">\(n\to\infty\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+v^{n+1} = p + \beta v^n = p + \beta p + \beta^2 v^{n-1} = p \sum_{i=0}^{n-1} \beta^i + \beta^n v_0
+\]</div>
+<p>To implement the iteration in <a class="reference internal" href="#equation-fixed-point-naive">(3.2)</a>, we start by solving this problem with a <code class="docutils literal notranslate"><span class="pre">while</span></code> loop.</p>
+<p>The syntax for the while loop contains no surprises, and looks nearly identical to a MATLAB implementation.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># poor style</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c"># note 1.0 rather than 1</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1.0E-7</span>
+<span class="n">v_iv</span> <span class="o">=</span> <span class="mf">0.8</span> <span class="c"># initial condition</span>
+
+<span class="c"># setup the algorithm</span>
+<span class="n">v_old</span> <span class="o">=</span> <span class="n">v_iv</span>
+<span class="n">normdiff</span> <span class="o">=</span> <span class="nb">Inf</span>
+<span class="n">iter</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">while</span> <span class="n">normdiff</span> <span class="o">&gt;</span> <span class="n">tolerance</span> <span class="o">&amp;&amp;</span> <span class="n">iter</span> <span class="o">&lt;=</span> <span class="n">maxiter</span>
+    <span class="n">v_new</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v_old</span> <span class="c"># the f(v) map</span>
+    <span class="n">normdiff</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">v_new</span> <span class="o">-</span> <span class="n">v_old</span><span class="p">)</span>
+
+    <span class="c"># replace and continue</span>
+    <span class="n">v_old</span> <span class="o">=</span> <span class="n">v_new</span>
+    <span class="n">iter</span> <span class="o">=</span> <span class="n">iter</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="k">end</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$v_old</span><span class="s">, and |f(x) - x| = </span><span class="si">$normdiff</span><span class="s"> in </span><span class="si">$iter</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">while</span></code> loop, like the <code class="docutils literal notranslate"><span class="pre">for</span></code> loop should only be used directly in Jupyter or the inside of a function.</p>
+<p>Here, we have used the <code class="docutils literal notranslate"><span class="pre">norm</span></code> function (from the <code class="docutils literal notranslate"><span class="pre">LinearAlgebra</span></code> base library) to compare the values.</p>
+<p>The other new function is the <code class="docutils literal notranslate"><span class="pre">println</span></code> with the string interpolation, which splices the value of an expression or variable prefixed by $ into a string.</p>
+<p>An alternative approach is to use a <code class="docutils literal notranslate"><span class="pre">for</span></code> loop, and check for convergence in each iteration.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># setup the algorithm</span>
+<span class="n">v_old</span> <span class="o">=</span> <span class="n">v_iv</span>
+<span class="n">normdiff</span> <span class="o">=</span> <span class="nb">Inf</span>
+<span class="n">iter</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">maxiter</span>
+    <span class="n">v_new</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v_old</span> <span class="c"># the f(v) map</span>
+    <span class="n">normdiff</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">v_new</span> <span class="o">-</span> <span class="n">v_old</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">normdiff</span> <span class="o">&lt;</span> <span class="n">tolerance</span> <span class="c"># check convergence</span>
+        <span class="n">iter</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">break</span> <span class="c"># converged, exit loop</span>
+    <span class="k">end</span>
+    <span class="c"># replace and continue</span>
+    <span class="n">v_old</span> <span class="o">=</span> <span class="n">v_new</span>
+<span class="k">end</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$v_old</span><span class="s">, and |f(x) - x| = </span><span class="si">$normdiff</span><span class="s"> in </span><span class="si">$iter</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The new feature there is <code class="docutils literal notranslate"><span class="pre">break</span></code> , which leaves a <code class="docutils literal notranslate"><span class="pre">for</span></code> or <code class="docutils literal notranslate"><span class="pre">while</span></code> loop.</p>
+</div>
+<div class="section" id="using-a-function">
+<h3><span class="section-number">3.3.3. </span>Using a Function<a class="headerlink" href="#using-a-function" title="Permalink to this headline">¶</a></h3>
+<p>The first problem with this setup is that it depends on being sequentially run – which can be easily remedied with a function.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># better, but still poor style</span>
+<span class="k">function</span> <span class="n">v_fp</span><span class="p">(</span><span class="n">β</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">v_iv</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">)</span>
+    <span class="c"># setup the algorithm</span>
+    <span class="n">v_old</span> <span class="o">=</span> <span class="n">v_iv</span>
+    <span class="n">normdiff</span> <span class="o">=</span> <span class="nb">Inf</span>
+    <span class="n">iter</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">normdiff</span> <span class="o">&gt;</span> <span class="n">tolerance</span> <span class="o">&amp;&amp;</span> <span class="n">iter</span> <span class="o">&lt;=</span> <span class="n">maxiter</span>
+        <span class="n">v_new</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v_old</span> <span class="c"># the f(v) map</span>
+        <span class="n">normdiff</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">v_new</span> <span class="o">-</span> <span class="n">v_old</span><span class="p">)</span>
+
+        <span class="c"># replace and continue</span>
+        <span class="n">v_old</span> <span class="o">=</span> <span class="n">v_new</span>
+        <span class="n">iter</span> <span class="o">=</span> <span class="n">iter</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">v_old</span><span class="p">,</span> <span class="n">normdiff</span><span class="p">,</span> <span class="n">iter</span><span class="p">)</span> <span class="c"># returns a tuple</span>
+<span class="k">end</span>
+
+<span class="c"># some values</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c"># note 1.0 rather than 1</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1.0E-7</span>
+<span class="n">v_initial</span> <span class="o">=</span> <span class="mf">0.8</span> <span class="c"># initial condition</span>
+
+<span class="n">v_star</span><span class="p">,</span> <span class="n">normdiff</span><span class="p">,</span> <span class="n">iter</span> <span class="o">=</span> <span class="n">v_fp</span><span class="p">(</span><span class="n">β</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">v_initial</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$v_star</span><span class="s">, and |f(x) - x| = </span><span class="si">$normdiff</span><span class="s"> in </span><span class="si">$iter</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>While better, there could still be improvements.</p>
+</div>
+<div class="section" id="passing-a-function">
+<h3><span class="section-number">3.3.4. </span>Passing a Function<a class="headerlink" href="#passing-a-function" title="Permalink to this headline">¶</a></h3>
+<p>The chief issue is that the algorithm (finding a fixed point) is reusable and generic, while the function we calculate <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">+</span> <span class="pre">β</span> <span class="pre">*</span> <span class="pre">v</span></code> is specific to our problem.</p>
+<p>A key feature of languages like Julia, is the ability to efficiently handle functions passed to other functions.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># better style</span>
+<span class="k">function</span> <span class="n">fixedpointmap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">)</span>
+    <span class="c"># setup the algorithm</span>
+    <span class="n">x_old</span> <span class="o">=</span> <span class="n">iv</span>
+    <span class="n">normdiff</span> <span class="o">=</span> <span class="nb">Inf</span>
+    <span class="n">iter</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">normdiff</span> <span class="o">&gt;</span> <span class="n">tolerance</span> <span class="o">&amp;&amp;</span> <span class="n">iter</span> <span class="o">&lt;=</span> <span class="n">maxiter</span>
+        <span class="n">x_new</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x_old</span><span class="p">)</span> <span class="c"># use the passed in map</span>
+        <span class="n">normdiff</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">x_new</span> <span class="o">-</span> <span class="n">x_old</span><span class="p">)</span>
+        <span class="n">x_old</span> <span class="o">=</span> <span class="n">x_new</span>
+        <span class="n">iter</span> <span class="o">=</span> <span class="n">iter</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x_old</span><span class="p">,</span> <span class="n">normdiff</span><span class="p">,</span> <span class="n">iter</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="c"># define a map and parameters</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v</span> <span class="c"># note that p and β are used in the function!</span>
+
+<span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1.0E-7</span>
+<span class="n">v_initial</span> <span class="o">=</span> <span class="mf">0.8</span> <span class="c"># initial condition</span>
+
+<span class="n">v_star</span><span class="p">,</span> <span class="n">normdiff</span><span class="p">,</span> <span class="n">iter</span> <span class="o">=</span> <span class="n">fixedpointmap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v_initial</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$v_star</span><span class="s">, and |f(x) - x| = </span><span class="si">$normdiff</span><span class="s"> in </span><span class="si">$iter</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Much closer, but there are still hidden bugs if the user orders the settings or returns types wrong.</p>
+</div>
+<div class="section" id="named-arguments-and-return-values">
+<h3><span class="section-number">3.3.5. </span>Named Arguments and Return Values<a class="headerlink" href="#named-arguments-and-return-values" title="Permalink to this headline">¶</a></h3>
+<p>To enable this, Julia has two features:  named function parameters, and named tuples</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># good style</span>
+<span class="k">function</span> <span class="n">fixedpointmap</span><span class="p">(</span><span class="n">f</span><span class="p">;</span> <span class="n">iv</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1E-7</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+    <span class="c"># setup the algorithm</span>
+    <span class="n">x_old</span> <span class="o">=</span> <span class="n">iv</span>
+    <span class="n">normdiff</span> <span class="o">=</span> <span class="nb">Inf</span>
+    <span class="n">iter</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">normdiff</span> <span class="o">&gt;</span> <span class="n">tolerance</span> <span class="o">&amp;&amp;</span> <span class="n">iter</span> <span class="o">&lt;=</span> <span class="n">maxiter</span>
+        <span class="n">x_new</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">x_old</span><span class="p">)</span> <span class="c"># use the passed in map</span>
+        <span class="n">normdiff</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">x_new</span> <span class="o">-</span> <span class="n">x_old</span><span class="p">)</span>
+        <span class="n">x_old</span> <span class="o">=</span> <span class="n">x_new</span>
+        <span class="n">iter</span> <span class="o">=</span> <span class="n">iter</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="n">x_old</span><span class="p">,</span> <span class="n">normdiff</span><span class="o">=</span><span class="n">normdiff</span><span class="p">,</span> <span class="n">iter</span><span class="o">=</span><span class="n">iter</span><span class="p">)</span> <span class="c"># A named tuple</span>
+<span class="k">end</span>
+
+<span class="c"># define a map and parameters</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v</span> <span class="c"># note that p and β are used in the function!</span>
+
+<span class="n">sol</span> <span class="o">=</span> <span class="n">fixedpointmap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">tolerance</span><span class="o">=</span><span class="mf">1.0E-8</span><span class="p">)</span> <span class="c"># don&#39;t need to pass</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="s">, and |f(x) - x| = </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">normdiff</span><span class="p">)</span><span class="s"> in </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">iter</span><span class="p">)</span><span class="s">&quot;</span><span class="o">*</span>
+        <span class="s">&quot; iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In this example, all function parameters after the <code class="docutils literal notranslate"><span class="pre">;</span></code> in the list, must be called by name.</p>
+<p>Furthermore, a default value may be enabled – so the named parameter <code class="docutils literal notranslate"><span class="pre">iv</span></code> is required while <code class="docutils literal notranslate"><span class="pre">tolerance</span></code> and <code class="docutils literal notranslate"><span class="pre">maxiter</span></code> have default values.</p>
+<p>The return type of the function also has named fields, <code class="docutils literal notranslate"><span class="pre">value,</span> <span class="pre">normdiff,</span></code> and <code class="docutils literal notranslate"><span class="pre">iter</span></code> – all accessed intuitively using <code class="docutils literal notranslate"><span class="pre">.</span></code>.</p>
+<p>To show the flexibilty of this code, we can use it to find a fixed point of the non-linear logistic equation, <span class="math notranslate nohighlight">\(x = f(x)\)</span> where <span class="math notranslate nohighlight">\(f(x) := r x (1-x)\)</span>.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="n">sol</span> <span class="o">=</span> <span class="n">fixedpointmap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">iv</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="s">, and |f(x) - x| = </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">normdiff</span><span class="p">)</span><span class="s"> in </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">iter</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-a-package">
+<h3><span class="section-number">3.3.6. </span>Using a Package<a class="headerlink" href="#using-a-package" title="Permalink to this headline">¶</a></h3>
+<p>But best of all is to avoid writing code altogether.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># best style</span>
+<span class="k">using</span> <span class="n">NLsolve</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">=</span> <span class="n">p</span> <span class="o">.+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v</span> <span class="c"># broadcast the +</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">fixedpoint</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">])</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span><span class="s">, and |f(x) - x| = </span><span class="si">$</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span> <span class="o">-</span> <span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">))</span><span class="s"> in &quot;</span> <span class="o">*</span>
+        <span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">fixedpoint</span></code> function from the <code class="docutils literal notranslate"><span class="pre">NLsolve.jl</span></code> library implements the simple fixed point iteration scheme above.</p>
+<p>Since the <code class="docutils literal notranslate"><span class="pre">NLsolve</span></code> library only accepts vector based inputs, we needed to make the <code class="docutils literal notranslate"><span class="pre">f(v)</span></code> function broadcast on the <code class="docutils literal notranslate"><span class="pre">+</span></code> sign, and pass in the initial condition as a vector of length 1 with <code class="docutils literal notranslate"><span class="pre">[0.8]</span></code>.</p>
+<p>While a key benefit of using a package is that the code is clearer, and the implementation is tested, by using an orthogonal library we also enable performance improvements.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># best style</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">iv</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">]</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">fixedpoint</span><span class="p">(</span><span class="n">v</span> <span class="o">-&gt;</span> <span class="n">p</span> <span class="o">.+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v</span><span class="p">,</span> <span class="n">iv</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span><span class="s">, and |f(x) - x| = </span><span class="si">$</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span> <span class="o">-</span> <span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">))</span><span class="s"> in &quot;</span> <span class="o">*</span>
+        <span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that this completes in <code class="docutils literal notranslate"><span class="pre">3</span></code> iterations vs <code class="docutils literal notranslate"><span class="pre">177</span></code> for the naive fixed point iteration algorithm.</p>
+<p>Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the <code class="docutils literal notranslate"><span class="pre">f</span></code> function.</p>
+<p>But this demonstrates the value of keeping the math separate from the algorithm, since by decoupling the mathematical definition of the fixed point from the implementation in <a class="reference internal" href="#equation-fixed-point-naive">(3.2)</a>, we were able to exploit new algorithms for finding a fixed point.</p>
+<p>The only other change in this function is the move from directly defining <code class="docutils literal notranslate"><span class="pre">f(v)</span></code> and using an <strong>anonymous</strong> function.</p>
+<p>Similar to anonymous functions in MATLAB, and lambda functions in Python, Julia enables the creation of small functions without any names.</p>
+<p>The code <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">-&gt;</span> <span class="pre">p</span> <span class="pre">.+</span> <span class="pre">β</span> <span class="pre">*</span> <span class="pre">v</span></code> defines a function of a dummy argument, <code class="docutils literal notranslate"><span class="pre">v</span></code> with the same body as our <code class="docutils literal notranslate"><span class="pre">f(x)</span></code>.</p>
+</div>
+<div class="section" id="composing-packages">
+<h3><span class="section-number">3.3.7. </span>Composing Packages<a class="headerlink" href="#composing-packages" title="Permalink to this headline">¶</a></h3>
+<p>A key benefit of using Julia is that you can compose various packages, types, and techniques, without making changes to your underlying source.</p>
+<p>As an example, consider if we want to solve the model with a higher-precision, as floating points cannot be distinguished beyond the machine epsilon for that type (recall that computers approximate real numbers to the nearest binary  of a given precision; the <em>machine epsilon</em> is the smallest nonzero magnitude).</p>
+<p>In Julia, this number can be calculated as</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">eps</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>For many cases, this is sufficient precision – but consider that in iterative algorithms applied millions of times, those small differences can add up.</p>
+<p>The only change we will need to our model in order to use a different floating point type is to call the function with an arbitrary precision floating point, <code class="docutils literal notranslate"><span class="pre">BigFloat</span></code>, for the initial value.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># use arbitrary precision floating points</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">iv</span> <span class="o">=</span> <span class="p">[</span><span class="kt">BigFloat</span><span class="p">(</span><span class="mf">0.8</span><span class="p">)]</span> <span class="c"># higher precision</span>
+
+<span class="c"># otherwise identical</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">fixedpoint</span><span class="p">(</span><span class="n">v</span> <span class="o">-&gt;</span> <span class="n">p</span> <span class="o">.+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v</span><span class="p">,</span> <span class="n">iv</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span><span class="s">, and |f(x) - x| = </span><span class="si">$</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span> <span class="o">-</span> <span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">))</span><span class="s"> in &quot;</span> <span class="o">*</span>
+        <span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here, the literal <code class="docutils literal notranslate"><span class="pre">BigFloat(0.8)</span></code> takes the number <code class="docutils literal notranslate"><span class="pre">0.8</span></code> and changes it to an arbitrary precision number.</p>
+<p>The result is that the residual is now <strong>exactly</strong> <code class="docutils literal notranslate"><span class="pre">0.0</span></code> since it is able to use arbitrary precision in the calculations, and the solution has a finite-precision solution with those parameters.</p>
+</div>
+<div class="section" id="multivariate-fixed-point-maps">
+<h3><span class="section-number">3.3.8. </span>Multivariate Fixed Point Maps<a class="headerlink" href="#multivariate-fixed-point-maps" title="Permalink to this headline">¶</a></h3>
+<p>The above example can be extended to multivariate maps without any modifications to the fixed point iteration code.</p>
+<p>Using our own, homegrown iteration and simply passing in a bivariate map:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">iv</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+<span class="n">f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">=</span> <span class="n">p</span> <span class="o">.+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v</span> <span class="c"># note that p and β are used in the function!</span>
+
+<span class="n">sol</span> <span class="o">=</span> <span class="n">fixedpointmap</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">iv</span> <span class="o">=</span> <span class="n">iv</span><span class="p">,</span> <span class="n">tolerance</span> <span class="o">=</span> <span class="mf">1.0E-8</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="s">, and |f(x) - x| = </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">normdiff</span><span class="p">)</span><span class="s"> in </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">iter</span><span class="p">)</span><span class="s">&quot;</span><span class="o">*</span>
+<span class="s">&quot;iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This also works without any modifications with the <code class="docutils literal notranslate"><span class="pre">fixedpoint</span></code> library function.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">NLsolve</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">iv</span> <span class="o">=</span><span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">51.0</span><span class="p">]</span>
+<span class="n">f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">=</span> <span class="n">p</span> <span class="o">.+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v</span>
+
+<span class="n">sol</span> <span class="o">=</span> <span class="n">fixedpoint</span><span class="p">(</span><span class="n">v</span> <span class="o">-&gt;</span> <span class="n">p</span> <span class="o">.+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v</span><span class="p">,</span> <span class="n">iv</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span><span class="s">, and |f(x) - x| = </span><span class="si">$</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span> <span class="o">-</span> <span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">))</span><span class="s"> in &quot;</span> <span class="o">*</span>
+        <span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, to demonstrate the importance of composing different libraries, use a <code class="docutils literal notranslate"><span class="pre">StaticArrays.jl</span></code> type, which provides an efficient implementation for small arrays and matrices.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">NLsolve</span><span class="p">,</span> <span class="n">StaticArrays</span>
+<span class="n">p</span> <span class="o">=</span> <span class="nd">@SVector</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">iv</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">51.0</span><span class="p">]</span>
+<span class="n">f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">=</span> <span class="n">p</span> <span class="o">.+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v</span>
+
+<span class="n">sol</span> <span class="o">=</span> <span class="n">fixedpoint</span><span class="p">(</span><span class="n">v</span> <span class="o">-&gt;</span> <span class="n">p</span> <span class="o">.+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">v</span><span class="p">,</span> <span class="n">iv</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Fixed point = </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span><span class="s">, and |f(x) - x| = </span><span class="si">$</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span> <span class="o">-</span> <span class="n">sol</span><span class="o">.</span><span class="n">zero</span><span class="p">))</span><span class="s"> in &quot;</span> <span class="o">*</span>
+        <span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;SVector</span></code> in front of the <code class="docutils literal notranslate"><span class="pre">[1.0,</span> <span class="pre">2.0,</span> <span class="pre">0.1]</span></code> is a macro for turning a vector literal into a static vector.</p>
+<p>All macros in Julia are prefixed by <code class="docutils literal notranslate"><span class="pre">&#64;</span></code> in the name, and manipulate the code prior to compilation.</p>
+<p>We will see a variety of macros, and discuss the “metaprogramming” behind them in a later lecture.</p>
+</div>
+</div>
+<div class="section" id="exercises">
+<h2><a class="toc-backref" href="#id12"><span class="section-number">3.4. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1">
+<span id="jbe-ex1"></span><h3><span class="section-number">3.4.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<p>Recall that <span class="math notranslate nohighlight">\(n!\)</span> is read as “<span class="math notranslate nohighlight">\(n\)</span> factorial” and defined as
+<span class="math notranslate nohighlight">\(n! = n \times (n - 1) \times \cdots \times 2 \times 1\)</span>.</p>
+<p>In Julia you can compute this value with <code class="docutils literal notranslate"><span class="pre">factorial(n)</span></code>.</p>
+<p>Write your own version of this function, called <code class="docutils literal notranslate"><span class="pre">factorial2</span></code>, using a <code class="docutils literal notranslate"><span class="pre">for</span></code> loop.</p>
+</div>
+<div class="section" id="exercise-2">
+<span id="jbe-ex2"></span><h3><span class="section-number">3.4.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="https://en.wikipedia.org/wiki/Binomial_distribution">binomial random variable</a> <span class="math notranslate nohighlight">\(Y \sim Bin(n, p)\)</span> represents</p>
+<ul class="simple">
+<li><p>number of successes in <span class="math notranslate nohighlight">\(n\)</span> binary trials</p></li>
+<li><p>each trial succeeds with probability <span class="math notranslate nohighlight">\(p\)</span></p></li>
+</ul>
+<p>Using only <code class="docutils literal notranslate"><span class="pre">rand()</span></code> from the set of Julia’s built-in random number
+generators (not the <code class="docutils literal notranslate"><span class="pre">Distributions</span></code> package), write a function <code class="docutils literal notranslate"><span class="pre">binomial_rv</span></code> such that <code class="docutils literal notranslate"><span class="pre">binomial_rv(n,</span> <span class="pre">p)</span></code> generates one draw of <span class="math notranslate nohighlight">\(Y\)</span>.</p>
+<p>Hint: If <span class="math notranslate nohighlight">\(U\)</span> is uniform on <span class="math notranslate nohighlight">\((0, 1)\)</span> and <span class="math notranslate nohighlight">\(p \in (0,1)\)</span>, then the expression <code class="docutils literal notranslate"><span class="pre">U</span> <span class="pre">&lt;</span> <span class="pre">p</span></code> evaluates to <code class="docutils literal notranslate"><span class="pre">true</span></code> with probability <span class="math notranslate nohighlight">\(p\)</span>.</p>
+</div>
+<div class="section" id="exercise-3">
+<span id="jbe-ex3"></span><h3><span class="section-number">3.4.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
+<p>Compute an approximation to <span class="math notranslate nohighlight">\(\pi\)</span> using Monte Carlo.</p>
+<p>For random number generation use only <code class="docutils literal notranslate"><span class="pre">rand()</span></code>.</p>
+<p>Your hints are as follows:</p>
+<ul class="simple">
+<li><p>If <span class="math notranslate nohighlight">\(U\)</span> is a bivariate uniform random variable on the unit square <span class="math notranslate nohighlight">\((0, 1)^2\)</span>, then the probability that <span class="math notranslate nohighlight">\(U\)</span> lies in a subset <span class="math notranslate nohighlight">\(B\)</span> of <span class="math notranslate nohighlight">\((0,1)^2\)</span> is equal to the area of <span class="math notranslate nohighlight">\(B\)</span>.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(U_1,\ldots,U_n\)</span> are iid copies of <span class="math notranslate nohighlight">\(U\)</span>, then, as <span class="math notranslate nohighlight">\(n\)</span> gets larger, the fraction that falls in <span class="math notranslate nohighlight">\(B\)</span> converges to the probability of landing in <span class="math notranslate nohighlight">\(B\)</span>.</p></li>
+<li><p>For a circle, area = π * <span class="math notranslate nohighlight">\(radius^2\)</span>.</p></li>
+</ul>
+</div>
+<div class="section" id="exercise-4">
+<span id="jbe-ex4"></span><h3><span class="section-number">3.4.4. </span>Exercise 4<a class="headerlink" href="#exercise-4" title="Permalink to this headline">¶</a></h3>
+<p>Write a program that prints one realization of the following random device:</p>
+<ul class="simple">
+<li><p>Flip an unbiased coin 10 times.</p></li>
+<li><p>If 3 consecutive heads occur one or more times within this sequence, pay one dollar.</p></li>
+<li><p>If not, pay nothing.</p></li>
+</ul>
+<p>Once again use only <code class="docutils literal notranslate"><span class="pre">rand()</span></code> as your random number generator.</p>
+</div>
+<div class="section" id="exercise-5">
+<span id="jbe-ex5"></span><h3><span class="section-number">3.4.5. </span>Exercise 5<a class="headerlink" href="#exercise-5" title="Permalink to this headline">¶</a></h3>
+<p>Simulate and plot the correlated time series</p>
+<div class="math notranslate nohighlight">
+\[
+x_{t+1} = \alpha \, x_t + \epsilon_{t+1}
+\quad \text{where} \quad
+x_0 = 0
+\quad \text{and} \quad t = 0,\ldots,n
+\]</div>
+<p>The sequence of shocks <span class="math notranslate nohighlight">\(\{\epsilon_t\}\)</span> is assumed to be iid and standard normal.</p>
+<p>Set <span class="math notranslate nohighlight">\(n = 200\)</span> and <span class="math notranslate nohighlight">\(\alpha = 0.9\)</span>.</p>
+</div>
+<div class="section" id="exercise-6">
+<span id="jbe-ex6"></span><h3><span class="section-number">3.4.6. </span>Exercise 6<a class="headerlink" href="#exercise-6" title="Permalink to this headline">¶</a></h3>
+<p>Plot three simulated time series, one for each of the cases <span class="math notranslate nohighlight">\(\alpha = 0\)</span>, <span class="math notranslate nohighlight">\(\alpha = 0.8\)</span> and <span class="math notranslate nohighlight">\(\alpha = 0.98\)</span>.</p>
+<p>(The figure will illustrate how time series with the same one-step-ahead conditional volatilities, as these three processes have, can have very different unconditional volatilities)</p>
+</div>
+<div class="section" id="exercise-7">
+<span id="jbe-ex7"></span><h3><span class="section-number">3.4.7. </span>Exercise 7<a class="headerlink" href="#exercise-7" title="Permalink to this headline">¶</a></h3>
+<p>This exercise is more challenging.</p>
+<p>Take a random walk, starting from <span class="math notranslate nohighlight">\(x_0 = 1\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+x_{t+1} = \, \alpha \, x_t + \sigma\, \epsilon_{t+1}
+\quad \text{where} \quad
+x_0 = 1
+\quad \text{and} \quad t = 0,\ldots,t_{\max}
+\]</div>
+<ul class="simple">
+<li><p>Furthermore, assume that the <span class="math notranslate nohighlight">\(x_{t_{\max}} = 0\)</span>  (i.e. at <span class="math notranslate nohighlight">\(t_{\max}\)</span>, the value drops to zero, regardless of its current state).</p></li>
+<li><p>The sequence of shocks <span class="math notranslate nohighlight">\(\{\epsilon_t\}\)</span> is assumed to be iid and standard normal.</p></li>
+<li><p>For a given path <span class="math notranslate nohighlight">\(\{x_t\}\)</span> define a <strong>first-passage time</strong> as <span class="math notranslate nohighlight">\(T_a = \min\{t\, |\, x_t \leq a\}\)</span>, where by the assumption of the process <span class="math notranslate nohighlight">\(T_a \leq t_{\max}\)</span>.</p></li>
+</ul>
+<p>Start with <span class="math notranslate nohighlight">\(\sigma = 0.2, \alpha = 1.0\)</span></p>
+<ol class="simple">
+<li><p>calculate the first-passage time, <span class="math notranslate nohighlight">\(T_0\)</span>, for 100 simulated random walks – to a <span class="math notranslate nohighlight">\(t_{\max} = 200\)</span> and plot a histogram</p></li>
+<li><p>plot the sample mean of <span class="math notranslate nohighlight">\(T_0\)</span> from the simulation for <span class="math notranslate nohighlight">\(\alpha \in \{0.8, 1.0, 1.2\}\)</span></p></li>
+</ol>
+</div>
+<div class="section" id="exercise-8-a">
+<span id="jbe-ex8a"></span><h3><span class="section-number">3.4.8. </span>Exercise 8(a)<a class="headerlink" href="#exercise-8-a" title="Permalink to this headline">¶</a></h3>
+<p>This exercise is more challenging.</p>
+<p>The root of a univariate function <span class="math notranslate nohighlight">\(f(\cdot)\)</span> is an <span class="math notranslate nohighlight">\(x\)</span> such that <span class="math notranslate nohighlight">\(f(x) = 0\)</span>.</p>
+<p>One solution method to find local roots of smooth functions is called Newton’s method.</p>
+<p>Starting with an <span class="math notranslate nohighlight">\(x_0\)</span> guess, a function <span class="math notranslate nohighlight">\(f(\cdot)\)</span> and the first-derivative <span class="math notranslate nohighlight">\(f'(\cdot)\)</span>, the algorithm is to repeat</p>
+<div class="math notranslate nohighlight">
+\[
+x^{n+1} = x^n - \frac{f(x^n)}{f'(x^n)}
+\]</div>
+<p>until <span class="math notranslate nohighlight">\(| x^{n+1} - x^n|\)</span> is below a tolerance</p>
+<ol class="simple">
+<li><p>Use a variation of the <code class="docutils literal notranslate"><span class="pre">fixedpointmap</span></code> code to implement Newton’s method, where the function would accept arguments <code class="docutils literal notranslate"><span class="pre">f,</span> <span class="pre">f_prime,</span> <span class="pre">x_0,</span> <span class="pre">tolerance,</span> <span class="pre">maxiter</span></code>.</p></li>
+<li><p>Test it with <span class="math notranslate nohighlight">\(f(x) = (x-1)^3\)</span> and another function of your choice where you can analytically find the derivative.</p></li>
+</ol>
+</div>
+<div class="section" id="exercise-8-b">
+<h3><span class="section-number">3.4.9. </span>Exercise 8(b)<a class="headerlink" href="#exercise-8-b" title="Permalink to this headline">¶</a></h3>
+<p>For those impatient to use more advanced features of Julia, implement a version of Exercise 8(a) where <code class="docutils literal notranslate"><span class="pre">f_prime</span></code> is calculated with auto-differentiation.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">ForwardDiff</span>
+
+<span class="c"># operator to get the derivative of this function using AD</span>
+<span class="n">D</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c"># example usage: create a function and get the derivative</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span>
+<span class="n">f_prime</span> <span class="o">=</span> <span class="n">D</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="n">f</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">f_prime</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="simple">
+<li><p>Using the <code class="docutils literal notranslate"><span class="pre">D(f)</span></code> operator definition above, implement a version of Newton’s method that does not require the user to provide an analytical derivative.</p></li>
+<li><p>Test the sorts of <code class="docutils literal notranslate"><span class="pre">f</span></code> functions which can be automatically integrated by <code class="docutils literal notranslate"><span class="pre">ForwardDff.jl</span></code>.</p></li>
+</ol>
+</div>
+</div>
+<div class="section" id="solutions">
+<h2><a class="toc-backref" href="#id13"><span class="section-number">3.5. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3><span class="section-number">3.5.1. </span>Exercise 1<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">factorial2</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+        <span class="n">k</span> <span class="o">*=</span> <span class="n">i</span>  <span class="c"># or k = k * i</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">k</span>
+<span class="k">end</span>
+
+<span class="n">factorial2</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">factorial2</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="n">factorial</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="c"># built-in function</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h3><span class="section-number">3.5.2. </span>Exercise 2<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">binomial_rv</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+        <span class="k">if</span> <span class="n">U</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">p</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span> <span class="c"># or count = count + 1</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">count</span>
+<span class="k">end</span>
+
+<span class="k">for</span> <span class="n">j</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">25</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">binomial_rv</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">$b</span><span class="s">, &quot;</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3><span class="section-number">3.5.3. </span>Exercise 3<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>Consider a circle with diameter 1 embedded in a unit square.</p>
+<p>Let <span class="math notranslate nohighlight">\(A\)</span> be its area and let <span class="math notranslate nohighlight">\(r = 1/2\)</span> be its radius.</p>
+<p>If we know <span class="math notranslate nohighlight">\(\pi\)</span> then we can compute <span class="math notranslate nohighlight">\(A\)</span> via
+<span class="math notranslate nohighlight">\(A = \pi r^2\)</span>.</p>
+<p>But the point here is to compute <span class="math notranslate nohighlight">\(\pi\)</span>, which we can do by
+<span class="math notranslate nohighlight">\(\pi = A / r^2\)</span>.</p>
+<p>Summary: If we can estimate the area of the unit circle, then dividing
+by <span class="math notranslate nohighlight">\(r^2 = (1/2)^2 = 1/4\)</span> gives an estimate of <span class="math notranslate nohighlight">\(\pi\)</span>.</p>
+<p>We estimate the area by sampling bivariate uniforms and looking at the
+fraction that fall into the unit circle.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">1000000</span>
+<span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+    <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">((</span><span class="n">u</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>  <span class="c"># distance from middle of square</span>
+    <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="mf">0.5</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">area_estimate</span> <span class="o">=</span> <span class="n">count</span> <span class="o">/</span> <span class="n">n</span>
+
+<span class="n">print</span><span class="p">(</span><span class="n">area_estimate</span> <span class="o">*</span> <span class="mi">4</span><span class="p">)</span>  <span class="c"># dividing by radius**2</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id5">
+<h3><span class="section-number">3.5.4. </span>Exercise 4<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">payoff</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;Count = &quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">10</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">U</span> <span class="o">&lt;</span> <span class="mf">0.5</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">end</span>
+    <span class="n">print</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">3</span>
+        <span class="n">payoff</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">payoff = </span><span class="si">$payoff</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can simplify this somewhat using the <strong>ternary operator</strong>. Here are
+some examples</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>  <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">?</span> <span class="s">&quot;foo&quot;</span> <span class="o">:</span> <span class="s">&quot;bar&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="o">?</span> <span class="s">&quot;foo&quot;</span> <span class="o">:</span> <span class="s">&quot;bar&quot;</span>
+</pre></div>
+</div>
+<p>Using this construction:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">payoff</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">count</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;Count = &quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">10</span>
+    <span class="n">U</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">U</span> <span class="o">&lt;</span> <span class="mf">0.5</span> <span class="o">?</span> <span class="n">count</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">0</span>
+    <span class="n">print</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">3</span>
+        <span class="n">payoff</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">payoff = </span><span class="si">$payoff</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h3><span class="section-number">3.5.5. </span>Exercise 5<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>Here’s one solution</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Plots</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=:</span><span class="n">png</span><span class="p">);</span> <span class="c"># setting for easier display in jupyter notebooks</span>
+<span class="n">α</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+    <span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">randn</span><span class="p">()</span>
+<span class="k">end</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id7">
+<h3><span class="section-number">3.5.6. </span>Exercise 6<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">αs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">]</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span> <span class="c"># naming a plot to add to</span>
+
+<span class="k">for</span> <span class="n">α</span> <span class="kp">in</span> <span class="n">αs</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">randn</span><span class="p">()</span>
+    <span class="k">end</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;alpha = </span><span class="si">$α</span><span class="s">&quot;</span><span class="p">)</span> <span class="c"># add to plot p</span>
+<span class="k">end</span>
+<span class="n">p</span> <span class="c"># display plot</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="exercise-7-hint">
+<h3><span class="section-number">3.5.7. </span>Exercise 7: Hint<a class="headerlink" href="#exercise-7-hint" title="Permalink to this headline">¶</a></h3>
+<p>As a hint, notice the following pattern for finding the number of draws of a uniform random number until it is below a given threshold</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">drawsuntilthreshold</span><span class="p">(</span><span class="n">threshold</span><span class="p">;</span> <span class="n">maxdraws</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">maxdraws</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="n">threshold</span> <span class="c"># checks threshold</span>
+            <span class="k">return</span> <span class="n">i</span> <span class="c"># leaves function, returning draw number</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="nb">Inf</span> <span class="c"># if here, reached maxdraws</span>
+<span class="k">end</span>
+
+<span class="n">draws</span> <span class="o">=</span> <span class="n">drawsuntilthreshold</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">maxdraws</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Additionally, it is sometimes convenient to add to just push numbers onto an array without indexing it directly</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">vals</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c"># empty vector</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">100</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">val</span> <span class="o">&lt;</span> <span class="mf">0.5</span>
+        <span class="n">push!</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;There were </span><span class="si">$</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">vals</span><span class="p">))</span><span class="s"> below 0.5&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./getting_started_julia"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Packages and Software Engineering in Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   22. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   23. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   24. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   25. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   26. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   27. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   28. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   29. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   30. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   31. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   33. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   34. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   35. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   36. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   37. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   39. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   40. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   41. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   42. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   44. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   45. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   46. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   47. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   48. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   49. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   50. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   51. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   52. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   53. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   54. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   55. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   56. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   57. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   58. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   59. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   60. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   61. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   62. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   63. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   64. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   65. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   66. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   67. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   68. Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/getting_started_julia/julia_by_example.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/getting_started_julia/julia_by_example.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/getting_started_julia/julia_by_example.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/getting_started_julia/julia_by_example.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>
