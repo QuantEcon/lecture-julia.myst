@@ -158,13 +158,7 @@ The next figure shows two discretized beta distributions in the top panel.
 
 The bottom panel presents mixtures of these distributions, with various mixing probabilities $p_k$.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

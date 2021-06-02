@@ -53,14 +53,6 @@ Every other Levy Process can be represented by these building blocks (e.g. a [Di
 
 In this lecture, we will examine shocks driven by transformations of Brownian motion, as the prototypical Stochastic Differential Equation (SDE).
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
-
 ```{code-cell} julia
 using LinearAlgebra, Statistics, Random, SparseArrays
 ```

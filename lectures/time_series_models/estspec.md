@@ -45,13 +45,7 @@ Once the basic technique has been explained, we will apply it to the analysis of
 
 For supplementary reading, see {cite}`Sargent1987` or {cite}`CryerChan2008`.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

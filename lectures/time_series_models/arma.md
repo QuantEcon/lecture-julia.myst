@@ -80,13 +80,7 @@ For supplementary reading, see.
 * {cite}`CryerChan2008`, all
 ```
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

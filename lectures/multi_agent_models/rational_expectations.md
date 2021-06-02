@@ -146,13 +146,7 @@ References for this lecture include
 * {cite}`Sargent1987`, chapter XIV
 * {cite}`Ljungqvist2012`, chapter 7
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

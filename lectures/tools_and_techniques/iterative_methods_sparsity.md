@@ -30,13 +30,7 @@ This lecture takes the structure of {doc}`numerical methods for linear algebra <
 toward working with large, sparse matrices.  In the process, we will examine foundational numerical analysis such as
 ill-conditioned matrices.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

@@ -912,11 +912,6 @@ It follows that the follower's plan is time consistent.
 Here is our code to compute a Stackelberg plan via a linear-quadratic
 dynamic program as outlined above
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using QuantEcon, Plots, LinearAlgebra, Statistics, Parameters, Random

@@ -220,13 +220,7 @@ The updating methods follow the laws of motion for $\theta$, $\mu$ and $\gamma$ 
 The method to evaluate the number of active firms generates $F_1,
 \ldots, F_{\bar M}$ and tests condition {eq}`firm_test` for each firm.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

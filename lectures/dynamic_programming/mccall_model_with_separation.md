@@ -40,13 +40,7 @@ Once separation enters the picture, the agent comes to view
 * the loss of a job as a capital loss, and
 * a spell of unemployment as an *investment* in searching for an acceptable job
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

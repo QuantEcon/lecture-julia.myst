@@ -140,13 +140,6 @@ Let's implement this version of the Coleman operator and see how it performs.
 
 Here's an implementation of $K$ using EGM as described above.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

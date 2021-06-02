@@ -38,13 +38,6 @@ In this lecture we introduce a few of the Julia libraries that we've found parti
 
 Also see {doc}`data and statistical packages <../more_julia/data_statistical_packages>` and {doc}`optimization, solver, and related packages <../more_julia/optimization_solver_packages>` for more domain specific packages.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

@@ -48,13 +48,7 @@ The theme of this lecture, and numerical linear algebra in general, comes down t
 1. **Do not lose structure** by applying the wrong numerical linear algebra operations at the wrong times (e.g., sparse matrix becoming dense)
 1. Understand the **computational complexity** of each algorithm, given the structure of the inputs.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

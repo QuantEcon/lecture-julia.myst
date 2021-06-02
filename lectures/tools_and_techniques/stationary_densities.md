@@ -64,14 +64,6 @@ mathematical literature (e.g., {cite}`MeynTweedie2009`) in using the term to ref
 Markov process.
 ```
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
-
 ```{code-cell} julia
 ---
 tags: [hide-output]

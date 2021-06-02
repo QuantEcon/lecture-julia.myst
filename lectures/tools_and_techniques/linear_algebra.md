@@ -90,13 +90,6 @@ the point.
 
 The following figure represents three vectors in this manner.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

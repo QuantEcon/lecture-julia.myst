@@ -365,13 +365,7 @@ Here's the code for a named-tuple constructor called `ConsumerProblem` that stor
 * a `K` function, which implements the Coleman operator $K$ specified above
 * an `initialize`, which generates suitable initial conditions for iteration
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

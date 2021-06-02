@@ -284,13 +284,7 @@ generates a sequence that converges to the fixed point.
 
 ### Implementation
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

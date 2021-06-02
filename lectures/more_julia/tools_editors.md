@@ -360,11 +360,6 @@ without any arguments.
 
 With this knowledge, we can explain the operation of the setup block
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 What this `github_project` function does is activate (and if necessary, download, instantiate and precompile) a particular Julia environment.
 

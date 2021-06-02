@@ -62,13 +62,6 @@ These classes of problems are connected in the sense that to solve each, essenti
 
 Useful references include {cite}`Whittle1963`, {cite}`HanSar1980`, {cite}`Orfanidisoptimum1988`, {cite}`Athanasios1991`, and {cite}`Muth1960`.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using Polynomials, Plots, Random, Parameters

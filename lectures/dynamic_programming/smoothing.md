@@ -346,13 +346,6 @@ Here's some code that, among other things, contains a function called consumptio
 
 This function computes $b(\bar s_1), b(\bar s_2), \bar c$ as outcomes given a set of parameters, under the assumption of complete markets.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

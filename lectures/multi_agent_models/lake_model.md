@@ -191,13 +191,6 @@ Let's code up these equations.
 
 Here's the code:
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

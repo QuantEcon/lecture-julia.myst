@@ -102,13 +102,7 @@ Let's write a program to simulate sample paths of $\{ x_t, y_{t} \}_{t=0}^{\inft
 
 We'll do this by formulating the additive functional as a linear state space model and putting the [LSS](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl) struct to work.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

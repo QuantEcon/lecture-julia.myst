@@ -43,13 +43,7 @@ In this lecture, we
 
 We begin with an introduction to the model.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

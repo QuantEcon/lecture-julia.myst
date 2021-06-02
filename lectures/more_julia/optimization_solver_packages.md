@@ -28,13 +28,7 @@ kernelspec:
 
 In this lecture we introduce a few of the Julia libraries that we've found particularly useful for quantitative work in economics.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

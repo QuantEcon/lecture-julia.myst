@@ -59,13 +59,6 @@ As we will see, the core approach is to treat data structures and algorithms as 
 
 This lecture has the dual role of giving an introduction into the design of generic algorithms and describing how Julia helps make that possible.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

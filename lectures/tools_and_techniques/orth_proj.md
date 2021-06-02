@@ -737,13 +737,6 @@ already the closest point in the subspace to itself).
 Here's a function that computes the orthonormal vectors using the GS
 algorithm given in the lecture.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

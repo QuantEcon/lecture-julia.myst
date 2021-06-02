@@ -204,13 +204,7 @@ This system also constructs the components of the decompositions of $y_t$ and of
 
 All of these objects are computed using the code below.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

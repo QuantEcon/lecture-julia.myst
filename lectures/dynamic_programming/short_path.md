@@ -154,13 +154,6 @@ In general, this sequence converges to $J$---the proof is omitted.
 Use the algorithm given above to find the optimal path (and its cost) for the
 following graph.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

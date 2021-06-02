@@ -210,13 +210,7 @@ The dots represent the underlying observations $X_i$ for $i = 1, \ldots, 100$.
 
 In each of the three cases, convergence of $\bar X_n$ to $\mu$ occurs as predicted.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

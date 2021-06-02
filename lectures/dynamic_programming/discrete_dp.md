@@ -410,13 +410,6 @@ Note:
 
 The following code sets up these objects for us.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

@@ -46,14 +46,6 @@ We will focus on settings with
 
 Other references include chapter 7 of {cite}`Ljungqvist2012`.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
-
 ```{code-cell} julia
 using LinearAlgebra, Statistics, QuantEcon
 ```

@@ -73,13 +73,6 @@ We cover only the key features of the problem in this lecture, leaving you to re
 * Stochastic dynamic programming over an infinite horizon
 * Distortionary taxation
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

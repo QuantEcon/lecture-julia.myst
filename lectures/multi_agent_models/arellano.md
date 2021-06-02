@@ -295,13 +295,6 @@ The code can be found below:
 
 (Results and discussion follow the code)
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

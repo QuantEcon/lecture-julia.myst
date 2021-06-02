@@ -36,13 +36,7 @@ In this lecture we give more details on
 * multiple dispatch
 * building user-defined types
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

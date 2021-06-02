@@ -37,13 +37,7 @@ kernelspec:
 * job-specific human capital accumulation combined with on-the-job search
 * infinite horizon dynamic programming with one state variable and two controls
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

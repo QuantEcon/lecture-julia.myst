@@ -371,13 +371,6 @@ Our intuition for this result is that
 
 Here's some code that implements the Coleman operator.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

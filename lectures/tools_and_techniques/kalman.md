@@ -43,13 +43,6 @@ The second reference presents a  comprehensive treatment of the Kalman filter.
 
 Required knowledge: Familiarity with matrix manipulations, multivariate normal distributions, covariance matrices, etc.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

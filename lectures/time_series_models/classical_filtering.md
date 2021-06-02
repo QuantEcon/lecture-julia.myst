@@ -60,13 +60,7 @@ In this lecture we investigate these ideas using mostly elementary linear algebr
 
 Useful references include {cite}`Whittle1963`, {cite}`HanSar1980`, {cite}`Orfanidisoptimum1988`, {cite}`Athanasios1991`, and {cite}`Muth1960`.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

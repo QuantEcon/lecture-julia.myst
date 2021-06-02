@@ -40,13 +40,7 @@ We will also introduce some of the high quality routines for working with Markov
 
 Prerequisite knowledge is basic probability and linear algebra.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

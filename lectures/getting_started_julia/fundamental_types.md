@@ -45,13 +45,6 @@ In this lecture we give more details on
 * ranges
 * nothing, missing, and unions
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

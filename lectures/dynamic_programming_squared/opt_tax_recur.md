@@ -55,13 +55,6 @@ responses of private agents to a Ramsey plan.
 
 See {doc}`Optimal taxation <../dynamic_programming_squared/lqramsey>` for an analysis within a linear-quadratic setting.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

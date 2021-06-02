@@ -52,13 +52,7 @@ Its many applications include:
     * Rational expectations version of Cagan's model of hyperinflation
     * Sargent and Wallace's "unpleasant monetarist arithmetic," etc.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

@@ -36,14 +36,6 @@ Topics:
 * More on user-defined functions
 * Comparisons and logic
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
-
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
