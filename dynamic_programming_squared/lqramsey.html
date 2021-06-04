@@ -1,0 +1,1569 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimal Taxation in an LQ Economy &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming_squared/lqramsey.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Optimal Taxation with State-Contingent Debt" href="opt_tax_recur.html" />
+    <link rel="prev" title="Dynamic Stackelberg Problems" href="dyn_stack.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Optimal Taxation in an LQ Economy"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Optimal Taxation in an LQ Economy" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/dynamic_programming_squared/lqramsey.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=dynamic_programming_squared/lqramsey>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#model-features">
+     Model Features
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-ramsey-problem">
+   The Ramsey Problem
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#technology">
+     Technology
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#households">
+     Households
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#government">
+     Government
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exogenous-variables">
+     Exogenous Variables
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#feasibility">
+     Feasibility
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#government-budget-constraint">
+     Government budget constraint
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#equilibrium">
+     Equilibrium
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#solution">
+     Solution
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#computing-the-quadratic-term">
+     Computing the Quadratic Term
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#finite-state-markov-case">
+     Finite state Markov case
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#other-variables">
+     Other Variables
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#a-martingale">
+     A Martingale
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#implementation">
+   Implementation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#comments-on-the-code">
+     Comments on the Code
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#examples">
+   Examples
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-continuous-case">
+     The Continuous Case
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-discrete-case">
+     The Discrete Case
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1">
+     Exercise 1
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solutions">
+   Solutions
+  </a>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Optimal Taxation in an LQ Economy</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="optimal-taxation-in-an-lq-economy">
+<h1><a class="toc-backref" href="#id5"><span class="target" id="index-0"></span>Optimal Taxation in an LQ Economy</a><a class="headerlink" href="#optimal-taxation-in-an-lq-economy" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<span id="index-1"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#optimal-taxation-in-an-lq-economy" id="id5">Optimal Taxation in an LQ Economy</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id6">Overview</a></p></li>
+<li><p><a class="reference internal" href="#the-ramsey-problem" id="id7">The Ramsey Problem</a></p></li>
+<li><p><a class="reference internal" href="#implementation" id="id8">Implementation</a></p></li>
+<li><p><a class="reference internal" href="#examples" id="id9">Examples</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id10">Exercises</a></p></li>
+<li><p><a class="reference internal" href="#solutions" id="id11">Solutions</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id6">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>In this lecture we study optimal fiscal policy in a linear quadratic setting.</p>
+<p>We slightly modify a well-known model of Robert Lucas and Nancy Stokey <span id="id1">[<a class="reference internal" href="../zreferences.html#id102"><span>LS83</span></a>]</span> so that convenient formulas for
+solving linear-quadratic models can be applied to simplify the calculations.</p>
+<p>The economy consists of a representative household and a benevolent government.</p>
+<p>The government finances an exogenous stream of government purchases with state-contingent loans and a linear tax on labor income.</p>
+<p>A linear tax is sometimes called a flat-rate tax.</p>
+<p>The household maximizes utility by choosing paths for consumption and labor, taking prices and the government’s tax rate and borrowing plans as given.</p>
+<p>Maximum attainable utility for the household depends on the government’s tax and borrowing plans.</p>
+<p>The <em>Ramsey problem</em> <span id="id2">[<a class="reference internal" href="../zreferences.html#id120"><span>Ram27</span></a>]</span> is  to choose tax and borrowing plans that maximize the household’s welfare, taking the household’s optimizing behavior as given.</p>
+<p>There is a large number of competitive equilibria indexed by different government fiscal policies.</p>
+<p>The Ramsey planner chooses the best competitive equilibrium.</p>
+<p>We want to study  the dynamics of tax rates,  tax revenues, government debt under a Ramsey plan.</p>
+<p>Because the Lucas and Stokey model features state-contingent government debt, the government debt dynamics differ substantially from those in a model of Robert Barro <span id="id3">[<a class="reference internal" href="../zreferences.html#id63"><span>Bar79</span></a>]</span>.</p>
+<p>The treatment given here closely follows <a href=/_static/pdfs/firenze.pdf download>this manuscript</a>, prepared
+by Thomas J. Sargent and Francois R. Velde.</p>
+<p>We cover only the key features of the problem in this lecture, leaving you to refer to that source for additional results and intuition.</p>
+<div class="section" id="model-features">
+<h3>Model Features<a class="headerlink" href="#model-features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Linear quadratic (LQ) model</p></li>
+<li><p>Representative household</p></li>
+<li><p>Stochastic dynamic programming over an infinite horizon</p></li>
+<li><p>Distortionary taxation</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="the-ramsey-problem">
+<h2><a class="toc-backref" href="#id7">The Ramsey Problem</a><a class="headerlink" href="#the-ramsey-problem" title="Permalink to this headline">¶</a></h2>
+<p>We begin by outlining the key assumptions regarding technology, households and the government sector.</p>
+<div class="section" id="technology">
+<h3>Technology<a class="headerlink" href="#technology" title="Permalink to this headline">¶</a></h3>
+<p>Labor can be converted one-for-one into a single, non-storable consumption good.</p>
+<p>In the usual spirit of the LQ model, the amount of labor supplied in each period is unrestricted.</p>
+<p>This is unrealistic, but helpful when it comes to solving the model.</p>
+<p>Realistic labor supply can be induced by suitable parameter values.</p>
+</div>
+<div class="section" id="households">
+<h3>Households<a class="headerlink" href="#households" title="Permalink to this headline">¶</a></h3>
+<p>Consider a representative household who chooses a path <span class="math notranslate nohighlight">\(\{\ell_t, c_t\}\)</span>
+for labor and consumption to maximize</p>
+<div class="math notranslate nohighlight" id="equation-lq-hu">
+<span class="eqno">(461)<a class="headerlink" href="#equation-lq-hu" title="Permalink to this equation">¶</a></span>\[-\mathbb E \frac{1}{2} \sum_{t=0}^{\infty} \beta^t
+\left[
+   (c_t - b_t)^2 + \ell_t^2
+\right]\]</div>
+<p>subject to the budget constraint</p>
+<div class="math notranslate nohighlight" id="equation-lq-hc">
+<span class="eqno">(462)<a class="headerlink" href="#equation-lq-hc" title="Permalink to this equation">¶</a></span>\[\mathbb E \sum_{t=0}^{\infty} \beta^t p^0_t
+\left[
+    d_t + (1 - \tau_t) \ell_t + s_t - c_t
+\right] = 0\]</div>
+<p>Here</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\beta\)</span> is a discount factor in <span class="math notranslate nohighlight">\((0, 1)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(p_t^0\)</span> is a scaled Arrow-Debreu price at time <span class="math notranslate nohighlight">\(0\)</span> of history contingent goods at time <span class="math notranslate nohighlight">\(t+j\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(b_t\)</span> is a stochastic preference parameter</p></li>
+<li><p><span class="math notranslate nohighlight">\(d_t\)</span> is an endowment process</p></li>
+<li><p><span class="math notranslate nohighlight">\(\tau_t\)</span> is a flat tax rate on labor income</p></li>
+<li><p><span class="math notranslate nohighlight">\(s_t\)</span> is a promised time-<span class="math notranslate nohighlight">\(t\)</span> coupon payment on debt issued by the government</p></li>
+</ul>
+<p>The scaled Arrow-Debreu price <span class="math notranslate nohighlight">\(p^0_t\)</span> is related to the unscaled Arrow-Debreu price as follows.</p>
+<p>If we let <span class="math notranslate nohighlight">\(\pi^0_t(x^t)\)</span>
+denote the probability (density) of a history <span class="math notranslate nohighlight">\(x^t = [x_t, x_{t-1}, \ldots, x_0]\)</span> of the state <span class="math notranslate nohighlight">\(x^t\)</span>, then
+the Arrow-Debreu time <span class="math notranslate nohighlight">\(0\)</span> price of a claim on one unit of consumption at date <span class="math notranslate nohighlight">\(t\)</span>, history <span class="math notranslate nohighlight">\(x^t\)</span> would be</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{\beta^t p^0_t} {\pi_t^0(x^t)}
+\]</div>
+<p>Thus, our scaled Arrow-Debreu price is the ordinary Arrow-Debreu price multiplied by the discount factor <span class="math notranslate nohighlight">\(\beta^t\)</span> and divided
+by an appropriate probability.</p>
+<p>The budget constraint <a class="reference internal" href="#equation-lq-hc">(462)</a> requires that the present value of consumption be restricted to equal the present value of endowments, labor income and coupon payments on bond holdings.</p>
+</div>
+<div class="section" id="government">
+<h3>Government<a class="headerlink" href="#government" title="Permalink to this headline">¶</a></h3>
+<p>The government imposes a linear tax on labor income, fully committing to a stochastic path of tax rates at time zero.</p>
+<p>The government also issues state-contingent debt.</p>
+<p>Given government tax and borrowing plans, we can construct a competitive equilibrium with distorting government taxes.</p>
+<p>Among all such competitive equilibria, the Ramsey plan is the one that maximizes the welfare of the representative consumer.</p>
+</div>
+<div class="section" id="exogenous-variables">
+<h3>Exogenous Variables<a class="headerlink" href="#exogenous-variables" title="Permalink to this headline">¶</a></h3>
+<p>Endowments, government expenditure, the preference shock process <span class="math notranslate nohighlight">\(b_t\)</span>, and
+promised coupon payments on initial government debt <span class="math notranslate nohighlight">\(s_t\)</span> are all exogenous, and given by</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(d_t = S_d x_t\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(g_t = S_g x_t\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(b_t = S_b x_t\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(s_t = S_s x_t\)</span></p></li>
+</ul>
+<p>The matrices <span class="math notranslate nohighlight">\(S_d, S_g, S_b, S_s\)</span> are primitives and <span class="math notranslate nohighlight">\(\{x_t\}\)</span> is
+an exogenous stochastic process taking values in <span class="math notranslate nohighlight">\(\mathbb R^k\)</span>.</p>
+<p>We consider two specifications for <span class="math notranslate nohighlight">\(\{x_t\}\)</span>.</p>
+<ol class="simple" id="lq-twospec">
+<li><p>Discrete case: <span class="math notranslate nohighlight">\(\{x_t\}\)</span> is a discrete state Markov chain with transition matrix <span class="math notranslate nohighlight">\(P\)</span>.</p></li>
+<li><p>VAR case: <span class="math notranslate nohighlight">\(\{x_t\}\)</span> obeys <span class="math notranslate nohighlight">\(x_{t+1} = A x_t + C w_{t+1}\)</span> where <span class="math notranslate nohighlight">\(\{w_t\}\)</span> is independent zero mean Gaussian with identify covariance matrix.</p></li>
+</ol>
+</div>
+<div class="section" id="feasibility">
+<h3>Feasibility<a class="headerlink" href="#feasibility" title="Permalink to this headline">¶</a></h3>
+<p>The period-by-period feasibility restriction for this economy is</p>
+<div class="math notranslate nohighlight" id="equation-lq-feasible">
+<span class="eqno">(463)<a class="headerlink" href="#equation-lq-feasible" title="Permalink to this equation">¶</a></span>\[c_t + g_t = d_t + \ell_t\]</div>
+<p>A labor-consumption process <span class="math notranslate nohighlight">\(\{\ell_t, c_t\}\)</span> is called <em>feasible</em> if <a class="reference internal" href="#equation-lq-feasible">(463)</a> holds for all <span class="math notranslate nohighlight">\(t\)</span>.</p>
+</div>
+<div class="section" id="government-budget-constraint">
+<h3>Government budget constraint<a class="headerlink" href="#government-budget-constraint" title="Permalink to this headline">¶</a></h3>
+<p>Where <span class="math notranslate nohighlight">\(p_t^0\)</span> is again a scaled Arrow-Debreu price, the time zero government budget constraint is</p>
+<div class="math notranslate nohighlight" id="equation-lq-gc">
+<span class="eqno">(464)<a class="headerlink" href="#equation-lq-gc" title="Permalink to this equation">¶</a></span>\[\mathbb E \sum_{t=0}^{\infty} \beta^t p^0_t
+(s_t + g_t - \tau_t \ell_t ) = 0\]</div>
+</div>
+<div class="section" id="equilibrium">
+<h3>Equilibrium<a class="headerlink" href="#equilibrium" title="Permalink to this headline">¶</a></h3>
+<p>An <em>equilibrium</em> is a feasible allocation <span class="math notranslate nohighlight">\(\{\ell_t, c_t\}\)</span>, a sequence
+of prices <span class="math notranslate nohighlight">\(\{p_t^0\}\)</span>, and a tax system <span class="math notranslate nohighlight">\(\{\tau_t\}\)</span> such that</p>
+<ol class="simple">
+<li><p>The allocation <span class="math notranslate nohighlight">\(\{\ell_t, c_t\}\)</span> is optimal for the household given <span class="math notranslate nohighlight">\(\{p_t^0\}\)</span> and <span class="math notranslate nohighlight">\(\{\tau_t\}\)</span>.</p></li>
+<li><p>The government’s budget constraint <a class="reference internal" href="#equation-lq-gc">(464)</a> is satisfied.</p></li>
+</ol>
+<p>The <em>Ramsey problem</em> is to choose the equilibrium <span class="math notranslate nohighlight">\(\{\ell_t, c_t, \tau_t, p_t^0\}\)</span> that maximizes the
+household’s welfare.</p>
+<p>If <span class="math notranslate nohighlight">\(\{\ell_t, c_t, \tau_t, p_t^0\}\)</span> solves the Ramsey problem,
+then <span class="math notranslate nohighlight">\(\{\tau_t\}\)</span> is called the <em>Ramsey plan</em>.</p>
+<p>The solution procedure we adopt is</p>
+<ol class="simple">
+<li><p>Use the first-order conditions from the household problem to pin down
+prices and allocations given <span class="math notranslate nohighlight">\(\{\tau_t\}\)</span>.</p></li>
+<li><p>Use these expressions to rewrite the government budget constraint
+<a class="reference internal" href="#equation-lq-gc">(464)</a> in terms of exogenous variables and allocations.</p></li>
+<li><p>Maximize the household’s objective function <a class="reference internal" href="#equation-lq-hu">(461)</a> subject to the
+constraint constructed in step 2 and the feasibility constraint
+<a class="reference internal" href="#equation-lq-feasible">(463)</a>.</p></li>
+</ol>
+<p>The solution to this maximization problem pins down all quantities of interest.</p>
+</div>
+<div class="section" id="solution">
+<h3>Solution<a class="headerlink" href="#solution" title="Permalink to this headline">¶</a></h3>
+<p>Step one is to obtain the first-conditions for the household’s problem,
+taking taxes and prices as given.</p>
+<p>Letting <span class="math notranslate nohighlight">\(\mu\)</span> be the Lagrange multiplier on <a class="reference internal" href="#equation-lq-hc">(462)</a>, the first-order
+conditions are <span class="math notranslate nohighlight">\(p_t^0 = (c_t - b_t) / \mu\)</span> and <span class="math notranslate nohighlight">\(\ell_t = (c_t - b_t)
+(1 - \tau_t)\)</span>.</p>
+<p>Rearranging and normalizing at <span class="math notranslate nohighlight">\(\mu = b_0 - c_0\)</span>, we can write these
+conditions as</p>
+<div class="math notranslate nohighlight" id="equation-lq-hfoc">
+<span class="eqno">(465)<a class="headerlink" href="#equation-lq-hfoc" title="Permalink to this equation">¶</a></span>\[p_t^0 = \frac{b_t - c_t}{b_0 - c_0}
+\quad \text{and} \quad
+\tau_t = 1 - \frac{\ell_t}{b_t - c_t}\]</div>
+<p>Substituting <a class="reference internal" href="#equation-lq-hfoc">(465)</a> into the government’s budget constraint <a class="reference internal" href="#equation-lq-gc">(464)</a>
+yields</p>
+<div class="math notranslate nohighlight" id="equation-lq-gc2">
+<span class="eqno">(466)<a class="headerlink" href="#equation-lq-gc2" title="Permalink to this equation">¶</a></span>\[\mathbb E \sum_{t=0}^{\infty} \beta^t
+\left[ (b_t - c_t)(s_t + g_t - \ell_t) + \ell_t^2 \right] = 0\]</div>
+<p>The Ramsey problem now amounts to maximizing <a class="reference internal" href="#equation-lq-hu">(461)</a> subject to
+<a class="reference internal" href="#equation-lq-gc2">(466)</a> and <a class="reference internal" href="#equation-lq-feasible">(463)</a>.</p>
+<p>The associated Lagrangian is</p>
+<div class="math notranslate nohighlight" id="equation-lq-rp">
+<span class="eqno">(467)<a class="headerlink" href="#equation-lq-rp" title="Permalink to this equation">¶</a></span>\[\mathscr L =
+\mathbb E  \sum_{t=0}^{\infty} \beta^t
+\left\{
+-\frac{1}{2} \left[ (c_t - b_t)^2 + \ell_t^2 \right] +
+\lambda
+\left[ (b_t - c_t)(\ell_t - s_t - g_t) - \ell_t^2 \right] +
+\mu_t
+[d_t + \ell_t - c_t - g_t]
+\right\}\]</div>
+<p>The first order conditions associated with <span class="math notranslate nohighlight">\(c_t\)</span> and <span class="math notranslate nohighlight">\(\ell_t\)</span> are</p>
+<div class="math notranslate nohighlight">
+\[
+-(c_t - b_t ) + \lambda [- \ell_t + (g_t + s_t )] = \mu_t
+\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[
+\ell_t - \lambda [(b_t - c_t) - 2 \ell_t ] = \mu_t
+\]</div>
+<p>Combining these last two equalities with <a class="reference internal" href="#equation-lq-feasible">(463)</a> and working
+through the algebra, one can show that</p>
+<div class="math notranslate nohighlight" id="equation-lq-lcex">
+<span class="eqno">(468)<a class="headerlink" href="#equation-lq-lcex" title="Permalink to this equation">¶</a></span>\[\ell_t = \bar \ell_t - \nu m_t
+\quad \text{and} \quad
+c_t = \bar c_t - \nu m_t\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\nu := \lambda / (1 + 2 \lambda)\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\bar \ell_t := (b_t - d_t + g_t) / 2\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\bar c_t := (b_t + d_t - g_t) / 2\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(m_t := (b_t - d_t - s_t ) / 2\)</span></p></li>
+</ul>
+<p>Apart from <span class="math notranslate nohighlight">\(\nu\)</span>, all of these quantities are expressed in terms of exogenous variables.</p>
+<p>To solve for <span class="math notranslate nohighlight">\(\nu\)</span>, we can use the government’s budget constraint again.</p>
+<p>The term inside the brackets in <a class="reference internal" href="#equation-lq-gc2">(466)</a> is <span class="math notranslate nohighlight">\((b_t - c_t)(s_t + g_t) - (b_t - c_t) \ell_t + \ell_t^2\)</span>.</p>
+<p>Using <a class="reference internal" href="#equation-lq-lcex">(468)</a>, the definitions above and the fact that <span class="math notranslate nohighlight">\(\bar \ell
+= b - \bar c\)</span>, this term can be rewritten as</p>
+<div class="math notranslate nohighlight">
+\[
+(b_t - \bar c_t) (g_t + s_t ) + 2 m_t^2 ( \nu^2 - \nu)
+\]</div>
+<p>Reinserting into <a class="reference internal" href="#equation-lq-gc2">(466)</a>, we get</p>
+<div class="math notranslate nohighlight" id="equation-lq-gc22">
+<span class="eqno">(469)<a class="headerlink" href="#equation-lq-gc22" title="Permalink to this equation">¶</a></span>\[\mathbb E
+\left\{
+\sum_{t=0}^{\infty} \beta^t
+(b_t - \bar c_t) (g_t + s_t )
+\right\}
++
+( \nu^2 - \nu) \mathbb E
+\left\{
+\sum_{t=0}^{\infty} \beta^t 2 m_t^2
+\right\}
+= 0\]</div>
+<p>Although it might not be clear yet, we are nearly there because:</p>
+<ul class="simple">
+<li><p>The two expectations terms in <a class="reference internal" href="#equation-lq-gc22">(469)</a> can be solved for in terms of model primitives.</p></li>
+<li><p>This in turn allows us to solve for the Lagrange multiplier <span class="math notranslate nohighlight">\(\nu\)</span>.</p></li>
+<li><p>With <span class="math notranslate nohighlight">\(\nu\)</span> in hand, we can go back and solve for the allocations via <a class="reference internal" href="#equation-lq-lcex">(468)</a>.</p></li>
+<li><p>Once we have the allocations, prices and the tax system can be derived from
+<a class="reference internal" href="#equation-lq-hfoc">(465)</a>.</p></li>
+</ul>
+</div>
+<div class="section" id="computing-the-quadratic-term">
+<h3>Computing the Quadratic Term<a class="headerlink" href="#computing-the-quadratic-term" title="Permalink to this headline">¶</a></h3>
+<p>Let’s consider how to obtain the term <span class="math notranslate nohighlight">\(\nu\)</span> in <a class="reference internal" href="#equation-lq-gc22">(469)</a>.</p>
+<p>If we can compute the two expected geometric sums</p>
+<div class="math notranslate nohighlight" id="equation-lq-gc3">
+<span class="eqno">(470)<a class="headerlink" href="#equation-lq-gc3" title="Permalink to this equation">¶</a></span>\[b_0 := \mathbb E
+\left\{
+\sum_{t=0}^{\infty} \beta^t
+(b_t - \bar c_t) (g_t + s_t )
+\right\}
+\quad \text{and} \quad
+a_0 := \mathbb E
+\left\{
+\sum_{t=0}^{\infty} \beta^t 2 m_t^2
+\right\}\]</div>
+<p>then the problem reduces to solving</p>
+<div class="math notranslate nohighlight">
+\[
+b_0 + a_0 (\nu^2 - \nu) = 0
+\]</div>
+<p>for <span class="math notranslate nohighlight">\(\nu\)</span>.</p>
+<p>Provided that <span class="math notranslate nohighlight">\(4 b_0 &lt; a_0\)</span>, there is a unique solution <span class="math notranslate nohighlight">\(\nu \in
+(0, 1/2)\)</span>, and a unique corresponding <span class="math notranslate nohighlight">\(\lambda &gt; 0\)</span>.</p>
+<p>Let’s work out how to compute mathematical expectations  in <a class="reference internal" href="#equation-lq-gc3">(470)</a>.</p>
+<p>For the first one, the random variable <span class="math notranslate nohighlight">\((b_t - \bar c_t) (g_t + s_t )\)</span> inside the summation can be expressed as</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{2} x_t' (S_b - S_d + S_g)' (S_g + S_s) x_t
+\]</div>
+<p>For the second expectation in <a class="reference internal" href="#equation-lq-gc3">(470)</a>, the random variable <span class="math notranslate nohighlight">\(2 m_t^2\)</span> can be written as</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{2} x_t' (S_b - S_d - S_s)' (S_b - S_d - S_s) x_t
+\]</div>
+<p>It follows that both objects of interest are special cases of the expression</p>
+<div class="math notranslate nohighlight" id="equation-lq-eqs">
+<span class="eqno">(471)<a class="headerlink" href="#equation-lq-eqs" title="Permalink to this equation">¶</a></span>\[q(x_0) = \mathbb E \sum_{t=0}^{\infty} \beta^t x_t' H x_t\]</div>
+<p>where <span class="math notranslate nohighlight">\(H\)</span> is a matrix conformable to <span class="math notranslate nohighlight">\(x_t\)</span> and <span class="math notranslate nohighlight">\(x_t'\)</span> is the transpose of column vector <span class="math notranslate nohighlight">\(x_t\)</span>.</p>
+<p>Suppose first that <span class="math notranslate nohighlight">\(\{x_t\}\)</span> is the Gaussian VAR described <a class="reference internal" href="#lq-twospec"><span class="std std-ref">above</span></a>.</p>
+<p>In this case, the formula for computing <span class="math notranslate nohighlight">\(q(x_0)\)</span> is known to be <span class="math notranslate nohighlight">\(q(x_0) = x_0' Q x_0 + v\)</span>, where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(Q\)</span> is the solution to <span class="math notranslate nohighlight">\(Q = H + \beta A' Q A\)</span>, and</p></li>
+<li><p><span class="math notranslate nohighlight">\(v = \text{trace} \, (C' Q C) \beta / (1 - \beta)\)</span></p></li>
+</ul>
+<p>The first equation is known as a discrete Lyapunov equation, and can be solved
+using <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/matrix_eqn.jl#L6">this function</a>.</p>
+</div>
+<div class="section" id="finite-state-markov-case">
+<h3>Finite state Markov case<a class="headerlink" href="#finite-state-markov-case" title="Permalink to this headline">¶</a></h3>
+<p>Next suppose that <span class="math notranslate nohighlight">\(\{x_t\}\)</span> is the discrete Markov process described <a class="reference internal" href="#lq-twospec"><span class="std std-ref">above</span></a>.</p>
+<p>Suppose further that each <span class="math notranslate nohighlight">\(x_t\)</span> takes values in the state space <span class="math notranslate nohighlight">\(\{x^1, \ldots, x^N\} \subset \mathbb R^k\)</span>.</p>
+<p>Let <span class="math notranslate nohighlight">\(h \colon \mathbb R^k \to \mathbb R\)</span> be a given function, and suppose that we
+wish to evaluate</p>
+<div class="math notranslate nohighlight">
+\[
+q(x_0) = \mathbb E \sum_{t=0}^{\infty} \beta^t h(x_t)
+\quad \text{given} \quad x_0 = x^j
+\]</div>
+<p>For example, in the discussion above, <span class="math notranslate nohighlight">\(h(x_t) = x_t' H x_t\)</span>.</p>
+<p>It is legitimate to pass the expectation through the sum, leading to</p>
+<div class="math notranslate nohighlight" id="equation-lq-ise">
+<span class="eqno">(472)<a class="headerlink" href="#equation-lq-ise" title="Permalink to this equation">¶</a></span>\[q(x_0) = \sum_{t=0}^{\infty} \beta^t (P^t h)[j]\]</div>
+<p>Here</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(P^t\)</span> is the <span class="math notranslate nohighlight">\(t\)</span>-th power of the transition matrix <span class="math notranslate nohighlight">\(P\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(h\)</span> is, with some abuse of notation, the vector <span class="math notranslate nohighlight">\((h(x^1), \ldots, h(x^N))\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\((P^t h)[j]\)</span> indicates the <span class="math notranslate nohighlight">\(j\)</span>-th element of <span class="math notranslate nohighlight">\(P^t h\)</span></p></li>
+</ul>
+<p>It can be show that <a class="reference internal" href="#equation-lq-ise">(472)</a> is in fact equal to the <span class="math notranslate nohighlight">\(j\)</span>-th element of
+the vector <span class="math notranslate nohighlight">\((I - \beta P)^{-1} h\)</span>.</p>
+<p>This last fact is applied in the calculations below.</p>
+</div>
+<div class="section" id="other-variables">
+<h3>Other Variables<a class="headerlink" href="#other-variables" title="Permalink to this headline">¶</a></h3>
+<p>We are interested in tracking several other variables besides the ones
+described above.</p>
+<p>To prepare the way for this, we define</p>
+<div class="math notranslate nohighlight">
+\[
+p^t_{t+j} = \frac{b_{t+j}- c_{t+j}}{b_t - c_t}
+\]</div>
+<p>as the scaled Arrow-Debreu time <span class="math notranslate nohighlight">\(t\)</span> price of a history contingent claim on one unit of consumption at time <span class="math notranslate nohighlight">\(t+j\)</span>.</p>
+<p>These are prices that would prevail at time <span class="math notranslate nohighlight">\(t\)</span> if market were reopened at time <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>These prices are constituents of the present value of government obligations outstanding at time <span class="math notranslate nohighlight">\(t\)</span>, which can be expressed as</p>
+<div class="math notranslate nohighlight" id="equation-lq-cb">
+<span class="eqno">(473)<a class="headerlink" href="#equation-lq-cb" title="Permalink to this equation">¶</a></span>\[B_t :=
+\mathbb E_t \sum_{j=0}^{\infty} \beta^j p^t_{t+j}
+(\tau_{t+j} \ell_{t+j} - g_{t+j})\]</div>
+<p>Using our expression for prices and the Ramsey plan, we can also write
+<span class="math notranslate nohighlight">\(B_t\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[
+B_t =
+\mathbb E_t \sum_{j=0}^{\infty} \beta^j
+\frac{ (b_{t+j} - c_{t+j})(\ell_{t+j} - g_{t+j}) - \ell^2_{t+j} }
+{ b_t - c_t }
+\]</div>
+<p>This version is more convenient for computation.</p>
+<p>Using the equation</p>
+<div class="math notranslate nohighlight">
+\[
+p^t_{t+j} = p^t_{t+1} p^{t+1}_{t+j}
+\]</div>
+<p>it is possible to verity that <a class="reference internal" href="#equation-lq-cb">(473)</a> implies that</p>
+<div class="math notranslate nohighlight">
+\[
+B_t = (\tau_t \ell_t - g_t) + E_t \sum_{j=1}^\infty p^t_{t+j} (\tau_{t+j} \ell_{t+j} - g_{t+j})
+\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight" id="equation-lq-cb22">
+<span class="eqno">(474)<a class="headerlink" href="#equation-lq-cb22" title="Permalink to this equation">¶</a></span>\[B_t =   (\tau_t \ell_t - g_t) + \beta E_t p^t_{t+1} B_{t+1}\]</div>
+<p>Define</p>
+<div class="math notranslate nohighlight" id="equation-lq-rfr">
+<span class="eqno">(475)<a class="headerlink" href="#equation-lq-rfr" title="Permalink to this equation">¶</a></span>\[R^{-1}_{t} := \mathbb E_t \beta^j p^t_{t+1}\]</div>
+<p><span class="math notranslate nohighlight">\(R_{t}\)</span> is the gross <span class="math notranslate nohighlight">\(1\)</span>-period risk-free rate for loans
+between <span class="math notranslate nohighlight">\(t\)</span> and <span class="math notranslate nohighlight">\(t+1\)</span>.</p>
+</div>
+<div class="section" id="a-martingale">
+<h3>A Martingale<a class="headerlink" href="#a-martingale" title="Permalink to this headline">¶</a></h3>
+<p>We now want to study the following two objects, namely,</p>
+<div class="math notranslate nohighlight">
+\[
+\pi_{t+1} := B_{t+1} - R_t [B_t - (\tau_t \ell_t - g_t)]
+\]</div>
+<p>and the cumulation of <span class="math notranslate nohighlight">\(\pi_t\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+\Pi_t := \sum_{s=0}^t \pi_t
+\]</div>
+<p>The term <span class="math notranslate nohighlight">\(\pi_{t+1}\)</span> is the difference between two quantities:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(B_{t+1}\)</span>, the value of government debt at the start of period <span class="math notranslate nohighlight">\(t+1\)</span>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(R_t [B_t + g_t - \tau_t ]\)</span>, which is what the government would have owed at the beginning of
+period <span class="math notranslate nohighlight">\(t+1\)</span> if it had simply borrowed at the one-period risk-free rate rather than selling state-contingent securities.</p></li>
+</ul>
+<p>Thus, <span class="math notranslate nohighlight">\(\pi_{t+1}\)</span> is the excess payout on the actual portfolio of state contingent government debt  relative to an alternative
+portfolio sufficient to finance <span class="math notranslate nohighlight">\(B_t + g_t - \tau_t \ell_t\)</span> and consisting entirely of risk-free one-period bonds.</p>
+<p>Use expressions <a class="reference internal" href="#equation-lq-cb22">(474)</a> and <a class="reference internal" href="#equation-lq-rfr">(475)</a> to obtain</p>
+<div class="math notranslate nohighlight">
+\[
+\pi_{t+1} = B_{t+1} - \frac{1}{\beta E_t p^t_{t+1}} \left[\beta E_t p^t_{t+1} B_{t+1} \right]
+\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight" id="equation-lq-pidist">
+<span class="eqno">(476)<a class="headerlink" href="#equation-lq-pidist" title="Permalink to this equation">¶</a></span>\[\pi_{t+1} = B_{t+1} - \tilde E_t B_{t+1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\tilde E_t\)</span> is the conditional mathematical expectation taken with respect to a one-step transition density
+that has been formed by multiplying the original transition density with the likelihood ratio</p>
+<div class="math notranslate nohighlight">
+\[
+m^t_{t+1} = \frac{p^t_{t+1}}{E_t p^t_{t+1}}
+\]</div>
+<p>It follows from equation <a class="reference internal" href="#equation-lq-pidist">(476)</a> that</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde E_t \pi_{t+1} = \tilde E_t B_{t+1} - \tilde E_t B_{t+1} = 0
+\]</div>
+<p>which asserts that <span class="math notranslate nohighlight">\(\{\pi_{t+1}\}\)</span> is a martingale difference sequence under the distorted probability measure, and
+that  <span class="math notranslate nohighlight">\(\{\Pi_t\}\)</span> is a martingale under the distorted probability measure.</p>
+<p>In the tax-smoothing model of Robert Barro <span id="id4">[<a class="reference internal" href="../zreferences.html#id63"><span>Bar79</span></a>]</span>, government debt is a random walk.</p>
+<p>In the current model, government debt <span class="math notranslate nohighlight">\(\{B_t\}\)</span> is not a random walk, but the <code class="docutils literal notranslate"><span class="pre">excess</span> <span class="pre">payoff</span></code> <span class="math notranslate nohighlight">\(\{\Pi_t\}\)</span> on it  is.</p>
+</div>
+</div>
+<div class="section" id="implementation">
+<h2><a class="toc-backref" href="#id8">Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p>The following code provides functions for</p>
+<ol class="simple">
+<li><p>Solving for the Ramsey plan given a specification of the economy.</p></li>
+<li><p>Simulating the dynamics of the major variables.</p></li>
+</ol>
+<p>Description and clarifications are given below</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Parameters</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="o">:</span><span class="n">png</span><span class="p">);</span>
+
+<span class="k">abstract</span> <span class="k">type</span> <span class="n">AbstractStochProcess</span> <span class="k">end</span>
+
+<span class="k">struct</span> <span class="n">ContStochProcess</span><span class="p">{</span><span class="n">TF</span> <span class="o">&lt;:</span> <span class="kt">AbstractFloat</span><span class="p">}</span> <span class="o">&lt;:</span> <span class="n">AbstractStochProcess</span>
+    <span class="n">A</span><span class="o">::</span><span class="kt">Matrix</span><span class="p">{</span><span class="n">TF</span><span class="p">}</span>
+    <span class="n">C</span><span class="o">::</span><span class="kt">Matrix</span><span class="p">{</span><span class="n">TF</span><span class="p">}</span>
+<span class="k">end</span>
+
+
+<span class="k">struct</span> <span class="n">DiscreteStochProcess</span><span class="p">{</span><span class="n">TF</span> <span class="o">&lt;:</span> <span class="kt">AbstractFloat</span><span class="p">}</span> <span class="o">&lt;:</span> <span class="n">AbstractStochProcess</span>
+    <span class="n">P</span><span class="o">::</span><span class="kt">Matrix</span><span class="p">{</span><span class="n">TF</span><span class="p">}</span>
+    <span class="n">x_vals</span><span class="o">::</span><span class="kt">Matrix</span><span class="p">{</span><span class="n">TF</span><span class="p">}</span>
+<span class="k">end</span>
+
+<span class="k">struct</span> <span class="n">Economy</span><span class="p">{</span><span class="n">TF</span> <span class="o">&lt;:</span> <span class="kt">AbstractFloat</span><span class="p">,</span> <span class="n">SP</span> <span class="o">&lt;:</span> <span class="n">AbstractStochProcess</span><span class="p">}</span>
+    <span class="n">β</span><span class="o">::</span><span class="n">TF</span>
+    <span class="n">Sg</span><span class="o">::</span><span class="kt">Matrix</span><span class="p">{</span><span class="n">TF</span><span class="p">}</span>
+    <span class="n">Sd</span><span class="o">::</span><span class="kt">Matrix</span><span class="p">{</span><span class="n">TF</span><span class="p">}</span>
+    <span class="n">Sb</span><span class="o">::</span><span class="kt">Matrix</span><span class="p">{</span><span class="n">TF</span><span class="p">}</span>
+    <span class="n">Ss</span><span class="o">::</span><span class="kt">Matrix</span><span class="p">{</span><span class="n">TF</span><span class="p">}</span>
+    <span class="n">proc</span><span class="o">::</span><span class="n">SP</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">compute_exog_sequences</span><span class="p">(</span><span class="n">econ</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="c"># compute exogenous variable sequences</span>
+    <span class="n">Sg</span><span class="p">,</span> <span class="n">Sd</span><span class="p">,</span> <span class="n">Sb</span><span class="p">,</span> <span class="n">Ss</span> <span class="o">=</span> <span class="n">econ</span><span class="o">.</span><span class="n">Sg</span><span class="p">,</span> <span class="n">econ</span><span class="o">.</span><span class="n">Sd</span><span class="p">,</span> <span class="n">econ</span><span class="o">.</span><span class="n">Sb</span><span class="p">,</span> <span class="n">econ</span><span class="o">.</span><span class="n">Ss</span>
+    <span class="n">g</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="n">dropdims</span><span class="p">(</span><span class="n">S</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">S</span> <span class="kp">in</span> <span class="p">(</span><span class="n">Sg</span><span class="p">,</span> <span class="n">Sd</span><span class="p">,</span> <span class="n">Sb</span><span class="p">,</span> <span class="n">Ss</span><span class="p">)]</span>
+
+    <span class="cm">#= solve for Lagrange multiplier in the govt budget constraint</span>
+<span class="cm">    In fact we solve for ν = λ / (1 + 2*λ).  Here ν is the</span>
+<span class="cm">    solution to a quadratic equation a(ν^2 - ν) + b = 0 where</span>
+<span class="cm">    a and b are expected discounted sums of quadratic forms of the state. =#</span>
+    <span class="n">Sm</span> <span class="o">=</span> <span class="n">Sb</span> <span class="o">-</span> <span class="n">Sd</span> <span class="o">-</span> <span class="n">Ss</span>
+
+    <span class="k">return</span> <span class="n">g</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">Sm</span>
+<span class="k">end</span>
+
+
+<span class="k">function</span> <span class="n">compute_allocation</span><span class="p">(</span><span class="n">econ</span><span class="p">,</span> <span class="n">Sm</span><span class="p">,</span> <span class="n">ν</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="n">Sg</span><span class="p">,</span> <span class="n">Sd</span><span class="p">,</span> <span class="n">Sb</span><span class="p">,</span> <span class="n">Ss</span> <span class="o">=</span> <span class="n">econ</span><span class="o">.</span><span class="n">Sg</span><span class="p">,</span> <span class="n">econ</span><span class="o">.</span><span class="n">Sd</span><span class="p">,</span> <span class="n">econ</span><span class="o">.</span><span class="n">Sb</span><span class="p">,</span> <span class="n">econ</span><span class="o">.</span><span class="n">Ss</span>
+
+    <span class="c"># solve for the allocation given ν and x</span>
+    <span class="n">Sc</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">.*</span> <span class="p">(</span><span class="n">Sb</span> <span class="o">+</span> <span class="n">Sd</span> <span class="o">-</span> <span class="n">Sg</span> <span class="o">-</span> <span class="n">ν</span> <span class="o">.*</span> <span class="n">Sm</span><span class="p">)</span>
+    <span class="n">Sl</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">.*</span> <span class="p">(</span><span class="n">Sb</span> <span class="o">-</span> <span class="n">Sd</span> <span class="o">+</span> <span class="n">Sg</span> <span class="o">-</span> <span class="n">ν</span> <span class="o">.*</span> <span class="n">Sm</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">dropdims</span><span class="p">(</span><span class="n">Sc</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="n">dropdims</span><span class="p">(</span><span class="n">Sl</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">dropdims</span><span class="p">((</span><span class="n">Sb</span> <span class="o">-</span> <span class="n">Sc</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>  <span class="c"># Price without normalization</span>
+    <span class="n">τ</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">.-</span> <span class="n">l</span> <span class="o">./</span> <span class="p">(</span><span class="n">b</span> <span class="o">.-</span> <span class="n">c</span><span class="p">)</span>
+    <span class="n">rvn</span> <span class="o">=</span> <span class="n">l</span> <span class="o">.*</span> <span class="n">τ</span>
+
+    <span class="k">return</span> <span class="n">Sc</span><span class="p">,</span> <span class="n">Sl</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">τ</span><span class="p">,</span> <span class="n">rvn</span>
+<span class="k">end</span>
+
+
+<span class="k">function</span> <span class="n">compute_ν</span><span class="p">(</span><span class="n">a0</span><span class="p">,</span> <span class="n">b0</span><span class="p">)</span>
+    <span class="n">disc</span> <span class="o">=</span> <span class="n">a0</span><span class="o">^</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">4</span><span class="n">a0</span> <span class="o">*</span> <span class="n">b0</span>
+
+    <span class="k">if</span> <span class="n">disc</span> <span class="o">≥</span> <span class="mi">0</span>
+        <span class="n">ν</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span><span class="p">(</span><span class="n">a0</span> <span class="o">-</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">disc</span><span class="p">))</span> <span class="o">/</span> <span class="n">a0</span>
+    <span class="k">else</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">&quot;There is no Ramsey equilibrium for these parameters.&quot;</span><span class="p">)</span>
+        <span class="n">error</span><span class="p">(</span><span class="s">&quot;Government spending (economy.g) too low&quot;</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="c"># Test that the Lagrange multiplier has the right sign</span>
+    <span class="k">if</span> <span class="n">ν</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">-</span> <span class="n">ν</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span>
+        <span class="n">print</span><span class="p">(</span><span class="s">&quot;Negative multiplier on the government budget constraint.&quot;</span><span class="p">)</span>
+        <span class="n">error</span><span class="p">(</span><span class="s">&quot;Government spending (economy.g) too low&quot;</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">return</span> <span class="n">ν</span>
+<span class="k">end</span>
+
+
+<span class="k">function</span> <span class="n">compute_Π</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">rvn</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">ξ</span><span class="p">)</span>
+    <span class="nb">π</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">]</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">.*</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">rvn</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">g</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">Π</span> <span class="o">=</span> <span class="n">cumsum</span><span class="p">(</span><span class="nb">π</span> <span class="o">.*</span> <span class="n">ξ</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">π</span><span class="p">,</span> <span class="n">Π</span>
+<span class="k">end</span>
+
+
+<span class="k">function</span> <span class="n">compute_paths</span><span class="p">(</span><span class="n">econ</span><span class="o">::</span><span class="n">Economy</span><span class="p">{</span><span class="o">&lt;:</span><span class="kt">AbstractFloat</span><span class="p">,</span> <span class="o">&lt;:</span><span class="n">DiscreteStochProcess</span><span class="p">},</span> <span class="n">T</span><span class="p">)</span>
+    <span class="c"># simplify notation</span>
+    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">Sg</span><span class="p">,</span> <span class="n">Sd</span><span class="p">,</span> <span class="n">Sb</span><span class="p">,</span> <span class="n">Ss</span> <span class="o">=</span> <span class="n">econ</span>
+    <span class="nd">@unpack</span> <span class="n">P</span><span class="p">,</span> <span class="n">x_vals</span> <span class="o">=</span> <span class="n">econ</span><span class="o">.</span><span class="n">proc</span>
+
+    <span class="n">mc</span> <span class="o">=</span> <span class="n">MarkovChain</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x_vals</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">state</span><span class="p">]</span>
+
+    <span class="c"># Compute exogenous sequence</span>
+    <span class="n">g</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">Sm</span> <span class="o">=</span> <span class="n">compute_exog_sequences</span><span class="p">(</span><span class="n">econ</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="c"># compute a0, b0</span>
+    <span class="n">ns</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">F</span> <span class="o">=</span> <span class="nb">I</span> <span class="o">-</span> <span class="n">β</span><span class="o">.*</span><span class="n">P</span>
+    <span class="n">a0</span> <span class="o">=</span> <span class="p">(</span><span class="n">F</span> <span class="o">\</span> <span class="p">((</span><span class="n">Sm</span> <span class="o">*</span> <span class="n">x_vals</span><span class="p">)</span><span class="o">&#39;.^</span><span class="mi">2</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span> <span class="o">./</span> <span class="mi">2</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="p">((</span><span class="n">Sb</span> <span class="o">-</span> <span class="n">Sd</span> <span class="o">+</span> <span class="n">Sg</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_vals</span><span class="p">)</span> <span class="o">.*</span> <span class="p">((</span><span class="n">Sg</span> <span class="o">-</span> <span class="n">Ss</span><span class="p">)</span><span class="o">*</span><span class="n">x_vals</span><span class="p">)</span>
+    <span class="n">b0</span> <span class="o">=</span> <span class="p">(</span><span class="n">F</span> <span class="o">\</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">./</span> <span class="mi">2</span>
+
+    <span class="c"># compute lagrange multiplier</span>
+    <span class="n">ν</span> <span class="o">=</span> <span class="n">compute_ν</span><span class="p">(</span><span class="n">a0</span><span class="p">,</span> <span class="n">b0</span><span class="p">)</span>
+
+    <span class="c"># Solve for the allocation given ν and x</span>
+    <span class="n">Sc</span><span class="p">,</span> <span class="n">Sl</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">τ</span><span class="p">,</span> <span class="n">rvn</span> <span class="o">=</span> <span class="n">compute_allocation</span><span class="p">(</span><span class="n">econ</span><span class="p">,</span> <span class="n">Sm</span><span class="p">,</span> <span class="n">ν</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+    <span class="c"># compute remaining variables</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="p">((</span><span class="n">Sb</span> <span class="o">-</span> <span class="n">Sc</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_vals</span><span class="p">)</span> <span class="o">.*</span> <span class="p">((</span><span class="n">Sl</span> <span class="o">-</span> <span class="n">Sg</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_vals</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">Sl</span> <span class="o">*</span> <span class="n">x_vals</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">dropdims</span><span class="p">(</span><span class="n">F</span> <span class="o">*</span> <span class="n">H</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">temp</span><span class="p">[</span><span class="n">state</span><span class="p">]</span> <span class="o">./</span> <span class="n">p</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">dropdims</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">state</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">*</span> <span class="p">((</span><span class="n">Sb</span> <span class="o">-</span> <span class="n">Sc</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_vals</span><span class="p">)</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">p</span> <span class="o">./</span> <span class="p">(</span><span class="n">β</span> <span class="o">.*</span> <span class="n">H</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">dropdims</span><span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">state</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">*</span><span class="p">((</span><span class="n">Sb</span> <span class="o">-</span> <span class="n">Sc</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_vals</span><span class="p">)</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">ξ</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">]</span> <span class="o">./</span> <span class="n">temp</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c"># compute π</span>
+    <span class="nb">π</span><span class="p">,</span> <span class="n">Π</span> <span class="o">=</span> <span class="n">compute_Π</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">rvn</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">ξ</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">,</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">l</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span> <span class="n">τ</span> <span class="o">=</span> <span class="n">τ</span><span class="p">,</span> <span class="n">rvn</span> <span class="o">=</span> <span class="n">rvn</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="p">,</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="p">,</span> <span class="nb">π</span> <span class="o">=</span> <span class="nb">π</span><span class="p">,</span> <span class="n">Π</span> <span class="o">=</span> <span class="n">Π</span><span class="p">,</span> <span class="n">ξ</span> <span class="o">=</span> <span class="n">ξ</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">compute_paths</span><span class="p">(</span><span class="n">econ</span><span class="o">::</span><span class="n">Economy</span><span class="p">{</span><span class="o">&lt;:</span><span class="kt">AbstractFloat</span><span class="p">,</span> <span class="o">&lt;:</span><span class="n">ContStochProcess</span><span class="p">},</span> <span class="n">T</span><span class="p">)</span>
+    <span class="c"># simplify notation</span>
+    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">Sg</span><span class="p">,</span> <span class="n">Sd</span><span class="p">,</span> <span class="n">Sb</span><span class="p">,</span> <span class="n">Ss</span> <span class="o">=</span> <span class="n">econ</span>
+    <span class="nd">@unpack</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">econ</span><span class="o">.</span><span class="n">proc</span>
+
+    <span class="c"># generate an initial condition x0 satisfying x0 = A x0</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">nx</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">nullspace</span><span class="p">(</span><span class="nb">I</span> <span class="o">-</span> <span class="n">A</span><span class="p">)</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">x0</span><span class="p">[</span><span class="k">end</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">?</span> <span class="o">-</span><span class="n">x0</span> <span class="o">:</span> <span class="n">x0</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">./</span> <span class="n">x0</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
+    <span class="n">x0</span> <span class="o">=</span> <span class="n">dropdims</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="c"># generate a time series x of length T starting from x0</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">nw</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">nw</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">x0</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">T</span>
+        <span class="n">x</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">C</span> <span class="o">*</span> <span class="n">w</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
+    <span class="k">end</span>
+
+    <span class="c"># compute exogenous sequence</span>
+    <span class="n">g</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">Sm</span> <span class="o">=</span> <span class="n">compute_exog_sequences</span><span class="p">(</span><span class="n">econ</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="c"># compute a0 and b0</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">Sm</span><span class="o">&#39;</span><span class="n">Sm</span>
+    <span class="n">a0</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">var_quadratic_sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">x0</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="p">(</span><span class="n">Sb</span> <span class="o">-</span> <span class="n">Sd</span> <span class="o">+</span> <span class="n">Sg</span><span class="p">)</span><span class="o">&#39;*</span><span class="p">(</span><span class="n">Sg</span> <span class="o">+</span> <span class="n">Ss</span><span class="p">)</span>
+    <span class="n">b0</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">var_quadratic_sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">x0</span><span class="p">)</span>
+
+    <span class="c"># compute lagrange multiplier</span>
+    <span class="n">ν</span> <span class="o">=</span> <span class="n">compute_ν</span><span class="p">(</span><span class="n">a0</span><span class="p">,</span> <span class="n">b0</span><span class="p">)</span>
+
+    <span class="c"># solve for the allocation given ν and x</span>
+    <span class="n">Sc</span><span class="p">,</span> <span class="n">Sl</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">τ</span><span class="p">,</span> <span class="n">rvn</span> <span class="o">=</span> <span class="n">compute_allocation</span><span class="p">(</span><span class="n">econ</span><span class="p">,</span> <span class="n">Sm</span><span class="p">,</span> <span class="n">ν</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+    <span class="c"># compute remaining variables</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">Sl</span><span class="o">&#39;</span><span class="n">Sl</span> <span class="o">-</span> <span class="p">(</span><span class="n">Sb</span> <span class="o">-</span> <span class="n">Sc</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">*</span><span class="p">(</span><span class="n">Sl</span> <span class="o">-</span> <span class="n">Sg</span><span class="p">)</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="n">eachindex</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+        <span class="n">L</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">var_quadratic_sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">])</span>
+    <span class="k">end</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">L</span> <span class="o">./</span> <span class="n">p</span>
+    <span class="n">Rinv</span> <span class="o">=</span> <span class="n">dropdims</span><span class="p">(</span><span class="n">β</span> <span class="o">.*</span> <span class="p">(</span><span class="n">Sb</span><span class="o">-</span> <span class="n">Sc</span><span class="p">)</span><span class="o">*</span><span class="n">A</span><span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">./</span> <span class="n">p</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">./</span> <span class="n">Rinv</span>
+    <span class="n">AF1</span> <span class="o">=</span> <span class="p">(</span><span class="n">Sb</span> <span class="o">-</span> <span class="n">Sc</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">]</span>
+    <span class="n">AF2</span> <span class="o">=</span> <span class="p">(</span><span class="n">Sb</span> <span class="o">-</span> <span class="n">Sc</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ξ</span> <span class="o">=</span>  <span class="n">AF1</span> <span class="o">./</span> <span class="n">AF2</span>
+    <span class="n">ξ</span> <span class="o">=</span> <span class="n">dropdims</span><span class="p">(</span><span class="n">ξ</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c"># compute π</span>
+    <span class="nb">π</span><span class="p">,</span> <span class="n">Π</span> <span class="o">=</span> <span class="n">compute_Π</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">rvn</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">ξ</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">d</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">,</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">l</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">,</span> <span class="n">τ</span> <span class="o">=</span> <span class="n">τ</span><span class="p">,</span>
+            <span class="n">rvn</span> <span class="o">=</span> <span class="n">rvn</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="p">,</span>
+            <span class="nb">π</span> <span class="o">=</span> <span class="nb">π</span><span class="p">,</span> <span class="n">Π</span> <span class="o">=</span> <span class="n">Π</span><span class="p">,</span> <span class="n">ξ</span> <span class="o">=</span> <span class="n">ξ</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">gen_fig_1</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+
+    <span class="n">plt_1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">rvn</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;tau_t l_t&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span> <span class="s">&quot;g_t&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span> <span class="s">&quot;c_t&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;Time&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">true</span><span class="p">)</span>
+
+    <span class="n">plt_2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">rvn</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;tau_t l_t&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;g_t&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;B_(t+1)&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;Time&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">true</span><span class="p">)</span>
+
+    <span class="n">plt_3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;R_(t-1)&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_3</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;Time&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">true</span><span class="p">)</span>
+
+    <span class="n">plt_4</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">rvn</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;tau_t l_t&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_4</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;g_t&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_4</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="nb">π</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;pi_t&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_4</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;Time&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">true</span><span class="p">)</span>
+
+    <span class="n">plot</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">,</span> <span class="n">plt_3</span><span class="p">,</span> <span class="n">plt_4</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">600</span><span class="p">))</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">gen_fig_2</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="n">T</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">c</span><span class="p">)</span>
+
+    <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">ξ</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">Π</span><span class="p">]</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;xi_t&quot;</span><span class="p">,</span> <span class="s">&quot;Pi_t&quot;</span><span class="p">]</span>
+    <span class="n">plt_1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
+    <span class="n">plt_2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
+    <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="kp">in</span> <span class="n">zip</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span> <span class="n">paths</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="n">plot!</span><span class="p">(</span><span class="n">plot</span><span class="p">,</span> <span class="mi">2</span><span class="o">:</span><span class="n">T</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;Time&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">true</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">600</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>gen_fig_2 (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="comments-on-the-code">
+<h3>Comments on the Code<a class="headerlink" href="#comments-on-the-code" title="Permalink to this headline">¶</a></h3>
+<p>The function <code class="docutils literal notranslate"><span class="pre">var_quadratic_sum</span></code> From <code class="docutils literal notranslate"><span class="pre">QuantEcon.jl</span></code> is for computing the value of <a class="reference internal" href="#equation-lq-eqs">(471)</a>
+when the exogenous process <span class="math notranslate nohighlight">\(\{ x_t \}\)</span> is of the VAR type described <a class="reference internal" href="#lq-twospec"><span class="std std-ref">above</span></a>.</p>
+<p>This code defines two Types: <code class="docutils literal notranslate"><span class="pre">Economy</span></code> and <code class="docutils literal notranslate"><span class="pre">Path</span></code>.</p>
+<p>The first is used to collect all the parameters and primitives of a given LQ
+economy, while the second collects output of the computations.</p>
+</div>
+</div>
+<div class="section" id="examples">
+<h2><a class="toc-backref" href="#id9">Examples</a><a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>Let’s look at two examples of usage.</p>
+<div class="section" id="the-continuous-case">
+<span id="lq-cc"></span><h3>The Continuous Case<a class="headerlink" href="#the-continuous-case" title="Permalink to this headline">¶</a></h3>
+<p>Our first example adopts the VAR specification described <a class="reference internal" href="#lq-twospec"><span class="std std-ref">above</span></a>.</p>
+<p>Regarding the primitives, we set</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\beta = 1 / 1.05\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(b_t = 2.135\)</span> and <span class="math notranslate nohighlight">\(s_t = d_t = 0\)</span> for all <span class="math notranslate nohighlight">\(t\)</span></p></li>
+</ul>
+<p>Government spending evolves according to</p>
+<div class="math notranslate nohighlight">
+\[
+g_{t+1} - \mu_g = \rho (g_t - \mu_g) + C_g w_{g, t+1}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\rho = 0.7\)</span>, <span class="math notranslate nohighlight">\(\mu_g = 0.35\)</span> and <span class="math notranslate nohighlight">\(C_g = \mu_g \sqrt{1 - \rho^2} / 10\)</span>.</p>
+<p>Here’s the code</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># for reproducible results</span>
+<span class="k">using</span> <span class="n">Random</span>
+<span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="c"># parameters</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">1.05</span>
+<span class="n">ρ</span><span class="p">,</span> <span class="n">mg</span> <span class="o">=</span> <span class="o">.</span><span class="mi">7</span><span class="p">,</span> <span class="o">.</span><span class="mi">35</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">ρ</span> <span class="n">mg</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ</span><span class="p">);</span> <span class="mf">0.0</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="n">C</span> <span class="o">=</span> <span class="p">[</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">mg</span> <span class="o">/</span> <span class="mi">10</span> <span class="mf">0.0</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">Sg</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">Sd</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">Sb</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mf">2.135</span><span class="p">]</span>
+<span class="n">Ss</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">proc</span> <span class="o">=</span> <span class="n">ContStochProcess</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+
+<span class="n">econ</span> <span class="o">=</span> <span class="n">Economy</span><span class="p">(</span><span class="n">β</span><span class="p">,</span> <span class="n">Sg</span><span class="p">,</span> <span class="n">Sd</span><span class="p">,</span> <span class="n">Sb</span><span class="p">,</span> <span class="n">Ss</span><span class="p">,</span> <span class="n">proc</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">compute_paths</span><span class="p">(</span><span class="n">econ</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+<span class="n">gen_fig_1</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/lqramsey_6_0.png" src="../_images/lqramsey_6_0.png" />
+</div>
+</div>
+<p>The legends on the figures indicate the variables being tracked.</p>
+<p>Most obvious from the figure is tax smoothing in the sense that tax revenue is
+much less variable than government expenditure</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">gen_fig_2</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>See the original <a href=/_static/pdfs/firenze.pdf download>manuscript</a> for comments and interpretation</p>
+</div>
+<div class="section" id="the-discrete-case">
+<h3>The Discrete Case<a class="headerlink" href="#the-discrete-case" title="Permalink to this headline">¶</a></h3>
+<p>Our second example adopts a discrete Markov specification for the exogenous process</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Parameters</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">1.05</span>
+<span class="n">P</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span> <span class="mf">0.2</span> <span class="mf">0.0</span>
+    <span class="mf">0.0</span> <span class="mf">0.5</span> <span class="mf">0.5</span>
+    <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">1.0</span><span class="p">]</span>
+
+<span class="c"># Possible states of the world</span>
+<span class="c"># Each column is a state of the world. The rows are [g d b s 1]</span>
+<span class="n">x_vals</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="mf">0.5</span> <span class="mf">0.25</span><span class="p">;</span>
+        <span class="mf">0.0</span> <span class="mf">0.0</span>  <span class="mf">0.0</span><span class="p">;</span>
+        <span class="mf">2.2</span> <span class="mf">2.2</span>  <span class="mf">2.2</span><span class="p">;</span>
+        <span class="mf">0.0</span> <span class="mf">0.0</span>  <span class="mf">0.0</span><span class="p">;</span>
+        <span class="mf">1.0</span> <span class="mf">1.0</span>  <span class="mf">1.0</span><span class="p">]</span>
+<span class="n">Sg</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">Sd</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="mf">1.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">Sb</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">1.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">Ss</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">1.0</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">proc</span> <span class="o">=</span> <span class="n">DiscreteStochProcess</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">x_vals</span><span class="p">)</span>
+
+<span class="n">econ</span> <span class="o">=</span> <span class="n">Economy</span><span class="p">(</span><span class="n">β</span><span class="p">,</span> <span class="n">Sg</span><span class="p">,</span> <span class="n">Sd</span><span class="p">,</span> <span class="n">Sb</span><span class="p">,</span> <span class="n">Ss</span><span class="p">,</span> <span class="n">proc</span><span class="p">)</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">compute_paths</span><span class="p">(</span><span class="n">econ</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+<span class="n">gen_fig_1</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The call <code class="docutils literal notranslate"><span class="pre">gen_fig_2(path)</span></code> generates</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">gen_fig_2</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>See the original <a href=/_static/pdfs/firenze.pdf download>manuscript</a> for comments and interpretation</p>
+</div>
+</div>
+<div class="section" id="exercises">
+<h2><a class="toc-backref" href="#id10">Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1">
+<span id="lqramsey-ex1"></span><h3>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<p>Modify the VAR example <a class="reference internal" href="#lq-cc"><span class="std std-ref">given above</span></a>, setting</p>
+<div class="math notranslate nohighlight">
+\[
+g_{t+1} - \mu_g = \rho (g_{t-3} - \mu_g) + C_g w_{g, t+1}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\rho = 0.95\)</span> and <span class="math notranslate nohighlight">\(C_g = 0.7 \sqrt{1 - \rho^2}\)</span>.</p>
+<p>Produce the corresponding figures.</p>
+</div>
+</div>
+<div class="section" id="solutions">
+<h2><a class="toc-backref" href="#id11">Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># parameters</span>
+<span class="n">β</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">1.05</span>
+<span class="n">ρ</span><span class="p">,</span> <span class="n">mg</span> <span class="o">=</span> <span class="o">.</span><span class="mi">95</span><span class="p">,</span> <span class="o">.</span><span class="mi">35</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="n">ρ</span>  <span class="n">mg</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ρ</span><span class="p">);</span>
+     <span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span>       <span class="mf">0.</span><span class="p">;</span>
+     <span class="mf">0.</span> <span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span>       <span class="mf">0.</span><span class="p">;</span>
+     <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">1.</span> <span class="mf">0.</span>       <span class="mf">0.</span><span class="p">;</span>
+     <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span>       <span class="mf">1.</span><span class="p">]</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">mg</span> <span class="o">/</span> <span class="mi">8</span>
+<span class="n">Sg</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+<span class="n">Sd</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+<span class="n">Sb</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">2.135</span><span class="p">]</span>
+<span class="n">Ss</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span> <span class="mf">0.</span><span class="p">]</span>
+<span class="n">proc</span> <span class="o">=</span> <span class="n">ContStochProcess</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+<span class="n">econ</span> <span class="o">=</span> <span class="n">Economy</span><span class="p">(</span><span class="n">β</span><span class="p">,</span> <span class="n">Sg</span><span class="p">,</span> <span class="n">Sd</span><span class="p">,</span> <span class="n">Sb</span><span class="p">,</span> <span class="n">Ss</span><span class="p">,</span> <span class="n">proc</span><span class="p">)</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">compute_paths</span><span class="p">(</span><span class="n">econ</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">gen_fig_1</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">gen_fig_2</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.5"
+        },
+        kernelOptions: {
+            kernelName: "julia-1.5",
+            path: "./dynamic_programming_squared"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.5'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   Introduction to Types and Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   The Need for Speed
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   Discrete State Dynamic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   Globalization and Cycles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   Classical Filtering With Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="dyn_stack.html">
+   Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="opt_tax_recur.html">
+   Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="amss.html">
+   Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/dynamic_programming_squared/lqramsey.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming_squared/lqramsey.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming_squared/lqramsey.ipynb" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming_squared/lqramsey.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

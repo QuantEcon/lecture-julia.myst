@@ -1,0 +1,1426 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covariance Stationary Processes &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/time_series_models/arma.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Estimation of Spectra" href="estspec.html" />
+    <link rel="prev" title="Globalization and Cycles" href="../multi_agent_models/matsuyama.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Covariance Stationary Processes"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Covariance Stationary Processes" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/time_series_models/arma.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=time_series_models/arma>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#arma-processes">
+     ARMA Processes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spectral-analysis">
+     Spectral Analysis
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#other-reading">
+     Other Reading
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#introduction">
+   Introduction
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#definitions">
+     Definitions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-1-white-noise">
+     Example 1: White Noise
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-2-general-linear-processes">
+     Example 2: General Linear Processes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#wold-s-decomposition">
+     Wold’s Decomposition
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#ar-and-ma">
+     AR and MA
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id10">
+     ARMA Processes
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#id12">
+   Spectral Analysis
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#complex-numbers">
+     Complex Numbers
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#spectral-densities">
+     Spectral Densities
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#arma-wnsd">
+     Example 1: White Noise
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-2-ar-and-ma-and-arma">
+     Example 2: AR and MA and ARMA
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#interpreting-the-spectral-density">
+     Interpreting the Spectral Density
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#inverting-the-transformation">
+     Inverting the Transformation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#mathematical-theory">
+     Mathematical Theory
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#implementation">
+   Implementation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#application">
+     Application
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#explanation">
+     Explanation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#computing-the-autocovariance-function">
+     Computing the Autocovariance Function
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Covariance Stationary Processes</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="covariance-stationary-processes">
+<h1><a class="toc-backref" href="#id18"><span class="target" id="index-0"></span>Covariance Stationary Processes</a><a class="headerlink" href="#covariance-stationary-processes" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#covariance-stationary-processes" id="id18">Covariance Stationary Processes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id19">Overview</a></p></li>
+<li><p><a class="reference internal" href="#introduction" id="id20">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#id12" id="id21">Spectral Analysis</a></p></li>
+<li><p><a class="reference internal" href="#implementation" id="id22">Implementation</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id19">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>In this lecture we study covariance stationary linear stochastic processes, a
+class of models routinely used to study economic and financial time series.</p>
+<p>This class has the advantage of being</p>
+<ol class="simple">
+<li><p>simple enough to be described by an elegant and comprehensive theory</p></li>
+<li><p>relatively broad in terms of the kinds of dynamics it can represent</p></li>
+</ol>
+<p>We consider these models in both the time and frequency domain.</p>
+<div class="section" id="arma-processes">
+<h3><span class="target" id="index-1"></span>ARMA Processes<a class="headerlink" href="#arma-processes" title="Permalink to this headline">¶</a></h3>
+<p>We will focus much of our attention on linear covariance stationary models with a finite number of parameters.</p>
+<p>In particular, we will study stationary ARMA processes, which form a cornerstone of the standard theory of time series analysis.</p>
+<p>Every ARMA processes can be represented in <a class="reference internal" href="../tools_and_techniques/linear_models.html"><span class="doc">linear state space</span></a> form.</p>
+<p>However, ARMA have some important structure that makes it valuable to study them separately.</p>
+</div>
+<div class="section" id="spectral-analysis">
+<h3><span class="target" id="index-2"></span>Spectral Analysis<a class="headerlink" href="#spectral-analysis" title="Permalink to this headline">¶</a></h3>
+<p>Analysis in the frequency domain is also called spectral analysis.</p>
+<p>In essence, spectral analysis provides an alternative representation of the
+autocovariance function of a covariance stationary process.</p>
+<p>Having a second representation of this important object</p>
+<ul class="simple">
+<li><p>shines light on the dynamics of the process in question</p></li>
+<li><p>allows for a simpler, more tractable representation in some important cases</p></li>
+</ul>
+<p>The famous <em>Fourier transform</em> and its inverse are used to map between the two representations.</p>
+</div>
+<div class="section" id="other-reading">
+<h3>Other Reading<a class="headerlink" href="#other-reading" title="Permalink to this headline">¶</a></h3>
+<p>For supplementary reading, see.</p>
+<p><a href=/_static/pdfs/time_series_book.pdf download></a>* <span id="id1">[<a class="reference internal" href="../zreferences.html#id99"><span>LS18</span></a>]</span>, chapter 2</p>
+<ul class="simple">
+<li><p><span id="id2">[<a class="reference internal" href="../zreferences.html#id123"><span>Sar87</span></a>]</span>, chapter 11</p></li>
+<li><p>John Cochrane’s notes on time series analysis, chapter 8</p></li>
+<li><p><span id="id3">[<a class="reference internal" href="../zreferences.html#id155"><span>Shi95</span></a>]</span>, chapter 6</p></li>
+<li><p><span id="id4">[<a class="reference internal" href="../zreferences.html#id70"><span>CC08</span></a>]</span>, all</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="introduction">
+<h2><a class="toc-backref" href="#id20">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Consider a sequence of random variables <span class="math notranslate nohighlight">\(\{ X_t \}\)</span> indexed by <span class="math notranslate nohighlight">\(t \in \mathbb Z\)</span> and taking values in <span class="math notranslate nohighlight">\(\mathbb R\)</span>.</p>
+<p>Thus, <span class="math notranslate nohighlight">\(\{ X_t \}\)</span> begins in the infinite past and extends to the infinite future — a convenient and standard assumption.</p>
+<p>As in other fields, successful economic modeling typically assumes the existence of features that are constant over time.</p>
+<p>If these assumptions are correct, then each new observation <span class="math notranslate nohighlight">\(X_t, X_{t+1},\ldots\)</span> can provide additional information about the time-invariant features, allowing us to  learn from as data arrive.</p>
+<p>For this reason, we will focus in what follows on processes that are <em>stationary</em> — or become so after a transformation
+(see for example <a class="reference internal" href="additive_functionals.html"><span class="doc">this lecture</span></a> and <a class="reference internal" href="multiplicative_functionals.html"><span class="doc">this lecture</span></a>).</p>
+<div class="section" id="definitions">
+<span id="arma-defs"></span><h3>Definitions<a class="headerlink" href="#definitions" title="Permalink to this headline">¶</a></h3>
+<p id="index-3">A real-valued stochastic process <span class="math notranslate nohighlight">\(\{ X_t \}\)</span> is called <em>covariance stationary</em> if</p>
+<ol class="simple">
+<li><p>Its mean <span class="math notranslate nohighlight">\(\mu := \mathbb E X_t\)</span> does not depend on <span class="math notranslate nohighlight">\(t\)</span>.</p></li>
+<li><p>For all <span class="math notranslate nohighlight">\(k\)</span> in <span class="math notranslate nohighlight">\(\mathbb Z\)</span>, the <span class="math notranslate nohighlight">\(k\)</span>-th autocovariance <span class="math notranslate nohighlight">\(\gamma(k) := \mathbb E (X_t - \mu)(X_{t + k} - \mu)\)</span> is finite and depends only on <span class="math notranslate nohighlight">\(k\)</span>.</p></li>
+</ol>
+<p>The function <span class="math notranslate nohighlight">\(\gamma \colon \mathbb Z \to \mathbb R\)</span> is called the <em>autocovariance function</em> of the process.</p>
+<p>Throughout this lecture, we will work exclusively with zero-mean (i.e., <span class="math notranslate nohighlight">\(\mu = 0\)</span>) covariance stationary processes.</p>
+<p>The zero-mean assumption costs nothing in terms of generality, since working with non-zero-mean processes involves no more than adding a constant.</p>
+</div>
+<div class="section" id="example-1-white-noise">
+<h3>Example 1: <span class="target" id="index-4"></span>White Noise<a class="headerlink" href="#example-1-white-noise" title="Permalink to this headline">¶</a></h3>
+<p>Perhaps the simplest class of covariance stationary processes is the white noise processes.</p>
+<p>A process <span class="math notranslate nohighlight">\(\{ \epsilon_t \}\)</span> is called a <em>white noise process</em> if</p>
+<ol class="simple">
+<li><p><span class="math notranslate nohighlight">\(\mathbb E \epsilon_t = 0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\gamma(k) = \sigma^2 \mathbf 1\{k = 0\}\)</span> for some <span class="math notranslate nohighlight">\(\sigma &gt; 0\)</span></p></li>
+</ol>
+<p>(Here <span class="math notranslate nohighlight">\(\mathbf 1\{k = 0\}\)</span> is defined to be 1 if <span class="math notranslate nohighlight">\(k = 0\)</span> and zero otherwise)</p>
+<p>White noise processes play the role of <strong>building blocks</strong> for processes with more complicated dynamics.</p>
+</div>
+<div class="section" id="example-2-general-linear-processes">
+<span id="generalized-lps"></span><h3>Example 2: <span class="target" id="index-5"></span>General Linear Processes<a class="headerlink" href="#example-2-general-linear-processes" title="Permalink to this headline">¶</a></h3>
+<p>From the simple building block provided by white noise, we can construct a very flexible family of covariance stationary processes — the <em>general linear processes</em></p>
+<div class="math notranslate nohighlight" id="equation-ma-inf">
+<span class="eqno">(372)<a class="headerlink" href="#equation-ma-inf" title="Permalink to this equation">¶</a></span>\[X_t = \sum_{j=0}^{\infty} \psi_j \epsilon_{t-j},
+\qquad t \in \mathbb Z\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\{\epsilon_t\}\)</span> is white noise</p></li>
+<li><p><span class="math notranslate nohighlight">\(\{\psi_t\}\)</span> is a square summable sequence in <span class="math notranslate nohighlight">\(\mathbb R\)</span> (that is, <span class="math notranslate nohighlight">\(\sum_{t=0}^{\infty} \psi_t^2 &lt; \infty\)</span>)</p></li>
+</ul>
+<p>The sequence <span class="math notranslate nohighlight">\(\{\psi_t\}\)</span> is often called a <em>linear filter</em>.</p>
+<p>Equation <a class="reference internal" href="#equation-ma-inf">(372)</a> is said to present  a <strong>moving average</strong> process or a moving average representation.</p>
+<p>With some manipulations it is possible to confirm that the autocovariance function for <a class="reference internal" href="#equation-ma-inf">(372)</a> is</p>
+<div class="math notranslate nohighlight" id="equation-ma-inf-ac">
+<span class="eqno">(373)<a class="headerlink" href="#equation-ma-inf-ac" title="Permalink to this equation">¶</a></span>\[\gamma(k) = \sigma^2 \sum_{j=0}^{\infty} \psi_j \psi_{j+k}\]</div>
+<p>By the <a class="reference external" href="https://en.wikipedia.org/wiki/Cauchy%E2%80%93Schwarz_inequality">Cauchy-Schwartz inequality</a> one can show that <span class="math notranslate nohighlight">\(\gamma(k)\)</span> satisfies equation <a class="reference internal" href="#equation-ma-inf-ac">(373)</a>.</p>
+<p>Evidently, <span class="math notranslate nohighlight">\(\gamma(k)\)</span> does not depend on <span class="math notranslate nohighlight">\(t\)</span>.</p>
+</div>
+<div class="section" id="wold-s-decomposition">
+<h3><span class="target" id="index-6"></span>Wold’s Decomposition<a class="headerlink" href="#wold-s-decomposition" title="Permalink to this headline">¶</a></h3>
+<p>Remarkably, the class of general linear processes goes a long way towards
+describing the entire class of zero-mean covariance stationary processes.</p>
+<p>In particular, <a class="reference external" href="https://en.wikipedia.org/wiki/Wold%27s_theorem">Wold’s decomposition theorem</a> states that every
+zero-mean covariance stationary process <span class="math notranslate nohighlight">\(\{X_t\}\)</span> can be written as</p>
+<div class="math notranslate nohighlight">
+\[
+X_t = \sum_{j=0}^{\infty} \psi_j \epsilon_{t-j} + \eta_t
+\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\{\epsilon_t\}\)</span> is white noise</p></li>
+<li><p><span class="math notranslate nohighlight">\(\{\psi_t\}\)</span> is square summable</p></li>
+<li><p><span class="math notranslate nohighlight">\(\eta_t\)</span> can be expressed as a linear function of <span class="math notranslate nohighlight">\(X_{t-1}, X_{t-2},\ldots\)</span> and is perfectly predictable over arbitrarily long horizons</p></li>
+</ul>
+<p>For intuition and further discussion, see <span id="id9">[<a class="reference internal" href="../zreferences.html#id123"><span>Sar87</span></a>]</span>, p. 286.</p>
+</div>
+<div class="section" id="ar-and-ma">
+<h3>AR and MA<a class="headerlink" href="#ar-and-ma" title="Permalink to this headline">¶</a></h3>
+<span class="target" id="index-7"></span><p id="index-8">General linear processes are a very broad class of processes.</p>
+<p>It often pays to specialize to those for which there exists a representation having only finitely many parameters.</p>
+<p>(Experience and theory combine to indicate that models with a relatively small number of parameters typically perform better than larger models, especially for forecasting)</p>
+<p>One very simple example of such a model is the first-order autoregressive or AR(1) process</p>
+<div class="math notranslate nohighlight" id="equation-ar1-rep">
+<span class="eqno">(374)<a class="headerlink" href="#equation-ar1-rep" title="Permalink to this equation">¶</a></span>\[X_t = \phi X_{t-1} + \epsilon_t
+\quad \text{where} \quad
+| \phi | &lt; 1
+\quad \text{and } \{ \epsilon_t \} \text{ is white noise}\]</div>
+<p>By direct substitution, it is easy to verify that <span class="math notranslate nohighlight">\(X_t = \sum_{j=0}^{\infty} \phi^j \epsilon_{t-j}\)</span>.</p>
+<p>Hence <span class="math notranslate nohighlight">\(\{X_t\}\)</span> is a general linear process.</p>
+<p>Applying <a class="reference internal" href="#equation-ma-inf-ac">(373)</a> to the previous expression for <span class="math notranslate nohighlight">\(X_t\)</span>, we get the AR(1) autocovariance function</p>
+<div class="math notranslate nohighlight" id="equation-ar-acov">
+<span class="eqno">(375)<a class="headerlink" href="#equation-ar-acov" title="Permalink to this equation">¶</a></span>\[\gamma(k) = \phi^k \frac{\sigma^2}{1 - \phi^2},
+\qquad k = 0, 1, \ldots\]</div>
+<p>The next figure plots an example of this function for <span class="math notranslate nohighlight">\(\phi = 0.8\)</span> and <span class="math notranslate nohighlight">\(\phi = -0.8\)</span> with <span class="math notranslate nohighlight">\(\sigma = 1\)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Plots</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=:</span><span class="n">png</span><span class="p">);</span>
+
+<span class="n">plt_1</span><span class="o">=</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt_2</span><span class="o">=</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ϕ</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">((</span><span class="mf">0.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">))</span>
+    <span class="n">times</span> <span class="o">=</span> <span class="mi">0</span><span class="o">:</span><span class="mi">16</span>
+    <span class="n">acov</span> <span class="o">=</span> <span class="p">[</span><span class="n">ϕ</span><span class="o">.^</span><span class="n">k</span> <span class="o">./</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ϕ</span><span class="o">.^</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="kp">in</span> <span class="n">times</span><span class="p">]</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;autocovariance, phi = </span><span class="si">$ϕ</span><span class="s">&quot;</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">times</span><span class="p">,</span> <span class="n">acov</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">blue</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">marker</span><span class="o">=:</span><span class="n">circle</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+          <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">legend</span><span class="o">=:</span><span class="n">topright</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;time&quot;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">))</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/arma_4_0.png" src="../_images/arma_4_0.png" />
+</div>
+</div>
+<p>Another very simple process is the MA(1) process (here MA means “moving average”)</p>
+<div class="math notranslate nohighlight">
+\[
+X_t = \epsilon_t + \theta \epsilon_{t-1}
+\]</div>
+<p>You will be able to verify that</p>
+<div class="math notranslate nohighlight">
+\[
+\gamma(0) = \sigma^2 (1 + \theta^2),
+\quad
+\gamma(1) = \sigma^2 \theta,
+\quad \text{and} \quad
+\gamma(k) = 0 \quad \forall \, k &gt; 1
+\]</div>
+<p>The AR(1) can be generalized to an AR(<span class="math notranslate nohighlight">\(p\)</span>) and likewise for the MA(1).</p>
+<p>Putting all of this together, we get the</p>
+</div>
+<div class="section" id="id10">
+<h3><span class="target" id="index-9"></span>ARMA Processes<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<p>A stochastic process <span class="math notranslate nohighlight">\(\{X_t\}\)</span> is called an <em>autoregressive moving
+average process</em>, or ARMA(<span class="math notranslate nohighlight">\(p,q\)</span>), if it can be written as</p>
+<div class="math notranslate nohighlight" id="equation-arma">
+<span class="eqno">(376)<a class="headerlink" href="#equation-arma" title="Permalink to this equation">¶</a></span>\[X_t = \phi_1 X_{t-1} + \cdots + \phi_p X_{t-p} +
+    \epsilon_t + \theta_1 \epsilon_{t-1} + \cdots + \theta_q \epsilon_{t-q}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\{ \epsilon_t \}\)</span> is white noise.</p>
+<p>An alternative notation for ARMA processes uses the <em>lag operator</em> <span class="math notranslate nohighlight">\(L\)</span>.</p>
+<p><strong>Def.</strong> Given arbitrary variable <span class="math notranslate nohighlight">\(Y_t\)</span>, let <span class="math notranslate nohighlight">\(L^k Y_t := Y_{t-k}\)</span>.</p>
+<p>It turns out that</p>
+<ul class="simple">
+<li><p>lag operators facilitate  succinct representations for linear stochastic processes</p></li>
+<li><p>algebraic manipulations that treat the lag operator as an ordinary scalar  are legitimate</p></li>
+</ul>
+<p>Using <span class="math notranslate nohighlight">\(L\)</span>, we can rewrite <a class="reference internal" href="#equation-arma">(376)</a> as</p>
+<div class="math notranslate nohighlight" id="equation-arma-lag">
+<span class="eqno">(377)<a class="headerlink" href="#equation-arma-lag" title="Permalink to this equation">¶</a></span>\[L^0 X_t - \phi_1 L^1 X_t - \cdots - \phi_p L^p X_t = L^0 \epsilon_t + \theta_1 L^1 \epsilon_t + \cdots + \theta_q L^q \epsilon_t\]</div>
+<p>If we let <span class="math notranslate nohighlight">\(\phi(z)\)</span> and <span class="math notranslate nohighlight">\(\theta(z)\)</span> be the polynomials</p>
+<div class="math notranslate nohighlight" id="equation-arma-poly">
+<span class="eqno">(378)<a class="headerlink" href="#equation-arma-poly" title="Permalink to this equation">¶</a></span>\[\phi(z) := 1 - \phi_1 z - \cdots - \phi_p z^p
+\quad \text{and} \quad
+\theta(z) := 1 + \theta_1 z + \cdots + \theta_q z^q\]</div>
+<p>then <a class="reference internal" href="#equation-arma-lag">(377)</a>  becomes</p>
+<div class="math notranslate nohighlight" id="equation-arma-lag1">
+<span class="eqno">(379)<a class="headerlink" href="#equation-arma-lag1" title="Permalink to this equation">¶</a></span>\[\phi(L) X_t = \theta(L) \epsilon_t\]</div>
+<p>In what follows we <strong>always assume</strong> that the roots of the polynomial <span class="math notranslate nohighlight">\(\phi(z)\)</span> lie outside the unit circle in the complex plane.</p>
+<p>This condition is sufficient to guarantee that the ARMA(<span class="math notranslate nohighlight">\(p,q\)</span>) process is convariance stationary.</p>
+<p>In fact it implies that the process falls within the class of general linear processes <a class="reference internal" href="#generalized-lps"><span class="std std-ref">described above</span></a>.</p>
+<p>That is, given an ARMA(<span class="math notranslate nohighlight">\(p,q\)</span>) process <span class="math notranslate nohighlight">\(\{ X_t \}\)</span> satisfying the unit circle condition, there exists a square summable sequence <span class="math notranslate nohighlight">\(\{\psi_t\}\)</span> with <span class="math notranslate nohighlight">\(X_t = \sum_{j=0}^{\infty} \psi_j \epsilon_{t-j}\)</span> for all <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>The sequence <span class="math notranslate nohighlight">\(\{\psi_t\}\)</span> can be obtained by a recursive procedure outlined on page 79 of <span id="id11">[<a class="reference internal" href="../zreferences.html#id70"><span>CC08</span></a>]</span>.</p>
+<p>The function <span class="math notranslate nohighlight">\(t \mapsto \psi_t\)</span> is often called the <em>impulse response function</em>.</p>
+</div>
+</div>
+<div class="section" id="id12">
+<h2><a class="toc-backref" href="#id21"><span class="target" id="index-10"></span>Spectral Analysis</a><a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h2>
+<p>Autocovariance functions provide a great deal of information about covariance stationary processes.</p>
+<p>In fact, for zero-mean Gaussian processes, the autocovariance function characterizes the entire joint distribution.</p>
+<p>Even for non-Gaussian processes, it provides a significant amount of information.</p>
+<p>It turns out that there is an alternative representation of the autocovariance function of a covariance stationary process, called the <em>spectral density</em>.</p>
+<p>At times, the spectral density is easier to derive, easier to manipulate, and provides additional intuition.</p>
+<div class="section" id="complex-numbers">
+<h3><span class="target" id="index-11"></span>Complex Numbers<a class="headerlink" href="#complex-numbers" title="Permalink to this headline">¶</a></h3>
+<p>Before discussing the spectral density, we invite you to recall the main properties of complex numbers (or <a class="reference internal" href="#arma-specd"><span class="std std-ref">skip to the next section</span></a>).</p>
+<p>It can be helpful to remember that, in a formal sense, complex numbers are just points <span class="math notranslate nohighlight">\((x, y) \in \mathbb R^2\)</span> endowed with a specific notion of multiplication.</p>
+<p>When <span class="math notranslate nohighlight">\((x, y)\)</span> is regarded as a complex number, <span class="math notranslate nohighlight">\(x\)</span> is called the <em>real part</em> and <span class="math notranslate nohighlight">\(y\)</span> is called the <em>imaginary part</em>.</p>
+<p>The <em>modulus</em> or <em>absolute value</em> of a complex number <span class="math notranslate nohighlight">\(z = (x, y)\)</span> is just its Euclidean norm in <span class="math notranslate nohighlight">\(\mathbb R^2\)</span>, but is usually written as <span class="math notranslate nohighlight">\(|z|\)</span> instead of <span class="math notranslate nohighlight">\(\|z\|\)</span>.</p>
+<p>The product of two complex numbers <span class="math notranslate nohighlight">\((x, y)\)</span> and <span class="math notranslate nohighlight">\((u, v)\)</span> is defined to be <span class="math notranslate nohighlight">\((xu - vy, xv + yu)\)</span>, while addition is standard pointwise vector addition.</p>
+<p>When endowed with these notions of multiplication and addition, the set of complex numbers forms a <a class="reference external" href="https://en.wikipedia.org/wiki/Field_%28mathematics%29">field</a> — addition and multiplication play well together, just as they do in <span class="math notranslate nohighlight">\(\mathbb R\)</span>.</p>
+<p>The complex number <span class="math notranslate nohighlight">\((x, y)\)</span> is often written as <span class="math notranslate nohighlight">\(x + i y\)</span>, where <span class="math notranslate nohighlight">\(i\)</span> is called the <em>imaginary unit</em>, and is understood to obey <span class="math notranslate nohighlight">\(i^2 = -1\)</span>.</p>
+<p>The <span class="math notranslate nohighlight">\(x + i y\)</span> notation provides an easy way to remember the definition of multiplication given above, because, proceeding naively,</p>
+<div class="math notranslate nohighlight">
+\[
+(x + i y) (u + i v) = xu - yv + i (xv + yu)
+\]</div>
+<p>Converted back to our first notation, this becomes <span class="math notranslate nohighlight">\((xu - vy, xv + yu)\)</span> as promised.</p>
+<p>Complex numbers can be represented in  the polar form <span class="math notranslate nohighlight">\(r e^{i \omega}\)</span> where</p>
+<div class="math notranslate nohighlight">
+\[
+r e^{i \omega} := r (\cos(\omega) + i \sin(\omega)) = x + i y
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(x = r \cos(\omega), y = r \sin(\omega)\)</span>, and <span class="math notranslate nohighlight">\(\omega = \arctan(y/z)\)</span> or <span class="math notranslate nohighlight">\(\tan(\omega) = y/x\)</span>.</p>
+</div>
+<div class="section" id="spectral-densities">
+<span id="arma-specd"></span><h3><span class="target" id="index-12"></span>Spectral Densities<a class="headerlink" href="#spectral-densities" title="Permalink to this headline">¶</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(\{ X_t \}\)</span> be a covariance stationary process with autocovariance function <span class="math notranslate nohighlight">\(\gamma\)</span>  satisfying <span class="math notranslate nohighlight">\(\sum_{k} \gamma(k)^2 &lt; \infty\)</span>.</p>
+<p>The <em>spectral density</em> <span class="math notranslate nohighlight">\(f\)</span> of <span class="math notranslate nohighlight">\(\{ X_t \}\)</span> is defined as the <a class="reference external" href="https://en.wikipedia.org/wiki/Discrete-time_Fourier_transform">discrete time Fourier transform</a> of its autocovariance function <span class="math notranslate nohighlight">\(\gamma\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+f(\omega) := \sum_{k \in \mathbb Z} \gamma(k) e^{-i \omega k},
+\qquad \omega \in \mathbb R
+\]</div>
+<p>(Some authors normalize the expression on the right by constants such as <span class="math notranslate nohighlight">\(1/\pi\)</span> — the convention chosen  makes little difference provided you are consistent)</p>
+<p>Using the fact that <span class="math notranslate nohighlight">\(\gamma\)</span> is <em>even</em>, in the sense that <span class="math notranslate nohighlight">\(\gamma(t) = \gamma(-t)\)</span> for all <span class="math notranslate nohighlight">\(t\)</span>, we can show that</p>
+<div class="math notranslate nohighlight" id="equation-arma-sd-cos">
+<span class="eqno">(380)<a class="headerlink" href="#equation-arma-sd-cos" title="Permalink to this equation">¶</a></span>\[f(\omega) = \gamma(0) + 2 \sum_{k \geq 1} \gamma(k) \cos(\omega k)\]</div>
+<p>It is not difficult to confirm that <span class="math notranslate nohighlight">\(f\)</span> is</p>
+<ul class="simple">
+<li><p>real-valued</p></li>
+<li><p>even (<span class="math notranslate nohighlight">\(f(\omega) = f(-\omega)\)</span>   ),  and</p></li>
+<li><p><span class="math notranslate nohighlight">\(2\pi\)</span>-periodic, in the sense that <span class="math notranslate nohighlight">\(f(2\pi + \omega) = f(\omega)\)</span> for all <span class="math notranslate nohighlight">\(\omega\)</span></p></li>
+</ul>
+<p>It follows that the values of <span class="math notranslate nohighlight">\(f\)</span> on <span class="math notranslate nohighlight">\([0, \pi]\)</span> determine the values of <span class="math notranslate nohighlight">\(f\)</span> on
+all of <span class="math notranslate nohighlight">\(\mathbb R\)</span> — the proof is an exercise.</p>
+<p>For this reason it is standard to plot the spectral density only on the interval <span class="math notranslate nohighlight">\([0, \pi]\)</span>.</p>
+</div>
+<div class="section" id="arma-wnsd">
+<span id="id13"></span><h3>Example 1: <span class="target" id="index-13"></span>White Noise<a class="headerlink" href="#arma-wnsd" title="Permalink to this headline">¶</a></h3>
+<p>Consider a white noise process <span class="math notranslate nohighlight">\(\{\epsilon_t\}\)</span> with standard deviation <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
+<p>It is easy to check that in  this case <span class="math notranslate nohighlight">\(f(\omega) = \sigma^2\)</span>.  So <span class="math notranslate nohighlight">\(f\)</span> is a constant function.</p>
+<p>As we will see, this can be interpreted as meaning that “all frequencies are equally present”.</p>
+<p>(White light has this property when frequency refers to the visible spectrum, a connection that provides the origins of the term “white noise”)</p>
+</div>
+<div class="section" id="example-2-ar-and-ma-and-arma">
+<h3>Example 2: <span class="target" id="index-14"></span>AR and <span class="target" id="index-15"></span>MA and <span class="target" id="index-16"></span>ARMA<a class="headerlink" href="#example-2-ar-and-ma-and-arma" title="Permalink to this headline">¶</a></h3>
+<p id="ar1-acov">It is an exercise to show that the MA(1) process <span class="math notranslate nohighlight">\(X_t = \theta \epsilon_{t-1} + \epsilon_t\)</span> has spectral density</p>
+<div class="math notranslate nohighlight" id="equation-ma1-sd-ed">
+<span class="eqno">(381)<a class="headerlink" href="#equation-ma1-sd-ed" title="Permalink to this equation">¶</a></span>\[f(\omega)
+= \sigma^2 ( 1 + 2 \theta \cos(\omega) + \theta^2 )\]</div>
+<p>With a bit more effort, it is possible to show (see, e.g., p. 261 of <span id="id14">[<a class="reference internal" href="../zreferences.html#id123"><span>Sar87</span></a>]</span>) that the spectral density of the AR(1) process <span class="math notranslate nohighlight">\(X_t = \phi X_{t-1} + \epsilon_t\)</span> is</p>
+<div class="math notranslate nohighlight" id="equation-ar1-sd-ed">
+<span class="eqno">(382)<a class="headerlink" href="#equation-ar1-sd-ed" title="Permalink to this equation">¶</a></span>\[f(\omega)
+= \frac{\sigma^2}{ 1 - 2 \phi \cos(\omega) + \phi^2 }\]</div>
+<p>More generally, it can be shown that the spectral density of the ARMA process <a class="reference internal" href="#equation-arma">(376)</a> is</p>
+<div class="math notranslate nohighlight" id="equation-arma-sd">
+<span id="arma-spec-den"></span><span class="eqno">(383)<a class="headerlink" href="#equation-arma-sd" title="Permalink to this equation">¶</a></span>\[f(\omega) = \left| \frac{\theta(e^{i\omega})}{\phi(e^{i\omega})} \right|^2 \sigma^2\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\sigma\)</span> is the standard deviation of the white noise process <span class="math notranslate nohighlight">\(\{\epsilon_t\}\)</span></p></li>
+<li><p>the polynomials <span class="math notranslate nohighlight">\(\phi(\cdot)\)</span> and <span class="math notranslate nohighlight">\(\theta(\cdot)\)</span> are as defined in <a class="reference internal" href="#equation-arma-poly">(378)</a></p></li>
+</ul>
+<p>The derivation of <a class="reference internal" href="#equation-arma-sd">(383)</a> uses the fact that convolutions become products under Fourier transformations.</p>
+<p>The proof is elegant and can be found in many places — see, for example, <span id="id15">[<a class="reference internal" href="../zreferences.html#id123"><span>Sar87</span></a>]</span>, chapter 11, section 4.</p>
+<p>It is a nice exercise to verify that <a class="reference internal" href="#equation-ma1-sd-ed">(381)</a> and <a class="reference internal" href="#equation-ar1-sd-ed">(382)</a> are indeed special cases of <a class="reference internal" href="#equation-arma-sd">(383)</a>.</p>
+</div>
+<div class="section" id="interpreting-the-spectral-density">
+<h3>Interpreting the <span class="target" id="index-17"></span>Spectral Density<a class="headerlink" href="#interpreting-the-spectral-density" title="Permalink to this headline">¶</a></h3>
+<p id="index-18">Plotting <a class="reference internal" href="#equation-ar1-sd-ed">(382)</a> reveals the shape of the spectral density for the AR(1) model when <span class="math notranslate nohighlight">\(\phi\)</span> takes the values 0.8 and -0.8 respectively</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ar1_sd</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span> <span class="n">ω</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">./</span> <span class="p">(</span><span class="mi">1</span> <span class="o">.-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ϕ</span> <span class="o">*</span> <span class="n">cos</span><span class="o">.</span><span class="p">(</span><span class="n">ω</span><span class="p">)</span> <span class="o">.+</span> <span class="n">ϕ</span><span class="o">.^</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">ω_s</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">π</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">180</span><span class="p">)</span>
+
+<span class="n">plt_1</span><span class="o">=</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt_2</span><span class="o">=</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plots</span><span class="o">=</span><span class="p">[</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">ϕ</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">((</span><span class="mf">0.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">))</span>
+    <span class="n">sd</span> <span class="o">=</span> <span class="n">ar1_sd</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span> <span class="n">ω_s</span><span class="p">)</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;spectral density, phi = </span><span class="si">$ϕ</span><span class="s">&quot;</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ω_s</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">blue</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">legend</span><span class="o">=:</span><span class="n">top</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;frequency&quot;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">π</span><span class="p">))</span>
+<span class="k">end</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">700</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/arma_7_0.png" src="../_images/arma_7_0.png" />
+</div>
+</div>
+<p>These spectral densities correspond to the autocovariance functions for the
+AR(1) process <a class="reference internal" href="#ar1-acov"><span class="std std-ref">shown above</span></a>.</p>
+<p>Informally, we think of the spectral density as being large at those <span class="math notranslate nohighlight">\(\omega \in [0, \pi]\)</span> at which
+the autocovariance function seems approximately to exhibit big damped cycles.</p>
+<p>To see the idea, let’s consider why, in the lower panel of the preceding figure, the spectral density for the case <span class="math notranslate nohighlight">\(\phi = -0.8\)</span> is large at <span class="math notranslate nohighlight">\(\omega = \pi\)</span>.</p>
+<p>Recall that the spectral density can be expressed as</p>
+<div class="math notranslate nohighlight" id="equation-sumpr">
+<span class="eqno">(384)<a class="headerlink" href="#equation-sumpr" title="Permalink to this equation">¶</a></span>\[f(\omega)
+= \gamma(0) + 2 \sum_{k \geq 1} \gamma(k) \cos(\omega k)
+= \gamma(0) + 2 \sum_{k \geq 1} (-0.8)^k \cos(\omega k)\]</div>
+<p>When we evaluate this at <span class="math notranslate nohighlight">\(\omega = \pi\)</span>, we get a large number because
+<span class="math notranslate nohighlight">\(\cos(\pi k)\)</span> is large and positive when <span class="math notranslate nohighlight">\((-0.8)^k\)</span> is
+positive, and large in absolute value and negative when <span class="math notranslate nohighlight">\((-0.8)^k\)</span> is negative.</p>
+<p>Hence the product is always large and positive, and hence the sum of the
+products on the right-hand side of <a class="reference internal" href="#equation-sumpr">(384)</a> is large.</p>
+<p>These ideas are illustrated in the next figure, which has <span class="math notranslate nohighlight">\(k\)</span> on the horizontal axis</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ϕ</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.8</span>
+<span class="n">times</span> <span class="o">=</span> <span class="mi">0</span><span class="o">:</span><span class="mi">16</span>
+<span class="n">y1</span> <span class="o">=</span> <span class="p">[</span><span class="n">ϕ</span><span class="o">.^</span><span class="n">k</span> <span class="o">./</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ϕ</span><span class="o">.^</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="kp">in</span> <span class="n">times</span><span class="p">]</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="p">[</span><span class="n">cos</span><span class="o">.</span><span class="p">(</span><span class="nb">π</span> <span class="o">*</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="kp">in</span> <span class="n">times</span><span class="p">]</span>
+<span class="n">y3</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="kp">in</span> <span class="n">zip</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">)]</span>
+
+<span class="c"># Autocovariance when ϕ = -0.8</span>
+<span class="n">plt_1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">blue</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">marker</span><span class="o">=:</span><span class="n">circle</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+             <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;gamma(k)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+      <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">legend</span><span class="o">=:</span><span class="n">topright</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+<span class="c"># Cycles at frequence π</span>
+<span class="n">plt_2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">blue</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">marker</span><span class="o">=:</span><span class="n">circle</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+             <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;cos(pi k)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+      <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">legend</span><span class="o">=:</span><span class="n">topright</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="c"># Product</span>
+<span class="n">plt_3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">sticks</span><span class="p">,</span> <span class="n">marker</span><span class="o">=:</span><span class="n">circle</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+             <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;gamma(k) cos(pi k)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_3</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+      <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_3</span><span class="p">,</span> <span class="n">legend</span><span class="o">=:</span><span class="n">topright</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">,</span> <span class="n">plt_3</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">600</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/arma_10_0.png" src="../_images/arma_10_0.png" />
+</div>
+</div>
+<p>On the other hand, if we evaluate <span class="math notranslate nohighlight">\(f(\omega)\)</span> at <span class="math notranslate nohighlight">\(\omega = \pi / 3\)</span>, then the cycles are
+not matched, the sequence <span class="math notranslate nohighlight">\(\gamma(k) \cos(\omega k)\)</span> contains
+both positive and negative terms, and hence the sum of these terms is much smaller</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ϕ</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.8</span>
+<span class="n">times</span> <span class="o">=</span> <span class="mi">0</span><span class="o">:</span><span class="mi">16</span>
+<span class="n">y1</span> <span class="o">=</span> <span class="p">[</span><span class="n">ϕ</span><span class="o">.^</span><span class="n">k</span> <span class="o">./</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ϕ</span><span class="o">.^</span><span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="kp">in</span> <span class="n">times</span><span class="p">]</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="p">[</span><span class="n">cos</span><span class="o">.</span><span class="p">(</span><span class="nb">π</span> <span class="o">*</span> <span class="n">k</span><span class="o">/</span><span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="kp">in</span> <span class="n">times</span><span class="p">]</span>
+<span class="n">y3</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="kp">in</span> <span class="n">zip</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">)]</span>
+
+<span class="c"># Autocovariance when ϕ = -0.8</span>
+<span class="n">plt_1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">blue</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">marker</span><span class="o">=:</span><span class="n">circle</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+             <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;gamma(k)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+      <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">legend</span><span class="o">=:</span><span class="n">topright</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+<span class="c"># Cycles at frequence π</span>
+<span class="n">plt_2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">blue</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">marker</span><span class="o">=:</span><span class="n">circle</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+             <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;cos(pi k/3)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+      <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">legend</span><span class="o">=:</span><span class="n">topright</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="c"># Product</span>
+<span class="n">plt_3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">times</span><span class="p">,</span> <span class="n">y3</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">sticks</span><span class="p">,</span> <span class="n">marker</span><span class="o">=:</span><span class="n">circle</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+             <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;gamma(k) cos(pi k/3)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_3</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+      <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_3</span><span class="p">,</span> <span class="n">legend</span><span class="o">=:</span><span class="n">topright</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">15</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">yticks</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">,</span> <span class="n">plt_3</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">600</span><span class="p">,</span><span class="mi">600</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/arma_13_0.png" src="../_images/arma_13_0.png" />
+</div>
+</div>
+<p>In summary, the spectral density is large at frequencies <span class="math notranslate nohighlight">\(\omega\)</span> where the autocovariance function exhibits damped cycles.</p>
+</div>
+<div class="section" id="inverting-the-transformation">
+<h3>Inverting the Transformation<a class="headerlink" href="#inverting-the-transformation" title="Permalink to this headline">¶</a></h3>
+<p id="index-19">We have just seen that the spectral density is useful in the sense that it provides a frequency-based perspective on the autocovariance structure of a covariance stationary process.</p>
+<p>Another reason that the spectral density is useful is that it can be “inverted” to recover the autocovariance function via the <em>inverse Fourier transform</em>.</p>
+<p>In particular, for all <span class="math notranslate nohighlight">\(k \in \mathbb Z\)</span>, we have</p>
+<div class="math notranslate nohighlight" id="equation-ift">
+<span class="eqno">(385)<a class="headerlink" href="#equation-ift" title="Permalink to this equation">¶</a></span>\[\gamma(k) = \frac{1}{2 \pi} \int_{-\pi}^{\pi} f(\omega) e^{i \omega k} d\omega\]</div>
+<p>This is convenient in situations where the spectral density is easier to calculate and manipulate than the autocovariance function.</p>
+<p>(For example, the expression <a class="reference internal" href="#equation-arma-sd">(383)</a> for the ARMA spectral density is much easier to work with than the expression for the ARMA autocovariance)</p>
+</div>
+<div class="section" id="mathematical-theory">
+<h3>Mathematical Theory<a class="headerlink" href="#mathematical-theory" title="Permalink to this headline">¶</a></h3>
+<p id="index-20">This section is loosely based on <span id="id16">[<a class="reference internal" href="../zreferences.html#id123"><span>Sar87</span></a>]</span>, p. 249-253, and included for those who</p>
+<ul class="simple">
+<li><p>would like a bit more insight into spectral densities</p></li>
+<li><p>and have at least some background in <a class="reference external" href="https://en.wikipedia.org/wiki/Hilbert_space">Hilbert space</a> theory</p></li>
+</ul>
+<p>Others should feel free to skip to the <a class="reference internal" href="#arma-imp"><span class="std std-ref">next section</span></a> — none of this material is necessary to progress to computation.</p>
+<p>Recall that every <a class="reference external" href="https://en.wikipedia.org/wiki/Separable_space">separable</a> Hilbert space <span class="math notranslate nohighlight">\(H\)</span> has a countable orthonormal basis <span class="math notranslate nohighlight">\(\{ h_k \}\)</span>.</p>
+<p>The nice thing about such a basis is that every <span class="math notranslate nohighlight">\(f \in H\)</span> satisfies</p>
+<div class="math notranslate nohighlight" id="equation-arma-fc">
+<span class="eqno">(386)<a class="headerlink" href="#equation-arma-fc" title="Permalink to this equation">¶</a></span>\[f = \sum_k \alpha_k h_k
+\quad \text{where} \quad
+\alpha_k := \langle f, h_k \rangle\]</div>
+<p>where <span class="math notranslate nohighlight">\(\langle \cdot, \cdot \rangle\)</span> denotes the inner product in <span class="math notranslate nohighlight">\(H\)</span>.</p>
+<p>Thus, <span class="math notranslate nohighlight">\(f\)</span> can be represented to any degree of precision by linearly combining basis vectors.</p>
+<p>The scalar sequence <span class="math notranslate nohighlight">\(\alpha = \{\alpha_k\}\)</span> is called the <em>Fourier coefficients</em> of <span class="math notranslate nohighlight">\(f\)</span>, and satisfies <span class="math notranslate nohighlight">\(\sum_k |\alpha_k|^2 &lt; \infty\)</span>.</p>
+<p>In other words, <span class="math notranslate nohighlight">\(\alpha\)</span> is in <span class="math notranslate nohighlight">\(\ell_2\)</span>, the set of square summable sequences.</p>
+<p>Consider an operator <span class="math notranslate nohighlight">\(T\)</span> that maps <span class="math notranslate nohighlight">\(\alpha \in \ell_2\)</span> into its expansion <span class="math notranslate nohighlight">\(\sum_k \alpha_k h_k \in H\)</span>.</p>
+<p>The Fourier coefficients of <span class="math notranslate nohighlight">\(T\alpha\)</span> are just <span class="math notranslate nohighlight">\(\alpha = \{ \alpha_k \}\)</span>, as you can verify by confirming that <span class="math notranslate nohighlight">\(\langle T \alpha, h_k \rangle = \alpha_k\)</span>.</p>
+<p>Using elementary results from Hilbert space theory, it can be shown that</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(T\)</span> is one-to-one — if <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> are distinct in <span class="math notranslate nohighlight">\(\ell_2\)</span>, then so are their expansions in <span class="math notranslate nohighlight">\(H\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(T\)</span> is onto — if <span class="math notranslate nohighlight">\(f \in H\)</span> then its preimage in <span class="math notranslate nohighlight">\(\ell_2\)</span> is the sequence <span class="math notranslate nohighlight">\(\alpha\)</span> given by <span class="math notranslate nohighlight">\(\alpha_k = \langle f, h_k \rangle\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(T\)</span> is a linear isometry — in particular <span class="math notranslate nohighlight">\(\langle \alpha, \beta \rangle = \langle T\alpha, T\beta \rangle\)</span></p></li>
+</ul>
+<p>Summarizing these results, we say that any separable Hilbert space is isometrically isomorphic to <span class="math notranslate nohighlight">\(\ell_2\)</span>.</p>
+<p>In essence, this says that each separable Hilbert space we consider is just a different way of looking at the fundamental space <span class="math notranslate nohighlight">\(\ell_2\)</span>.</p>
+<p>With this in mind, let’s specialize to a setting where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\gamma \in \ell_2\)</span> is the autocovariance function of a covariance stationary process, and <span class="math notranslate nohighlight">\(f\)</span> is the spectral density</p></li>
+<li><p><span class="math notranslate nohighlight">\(H = L_2\)</span>, where <span class="math notranslate nohighlight">\(L_2\)</span> is the set of square summable functions on the interval <span class="math notranslate nohighlight">\([-\pi, \pi]\)</span>, with inner product <span class="math notranslate nohighlight">\(\langle g, h \rangle = \int_{-\pi}^{\pi} g(\omega) h(\omega) d \omega\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\{h_k\} =\)</span> the orthonormal basis for <span class="math notranslate nohighlight">\(L_2\)</span> given by the set of trigonometric functions</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+h_k(\omega) = \frac{e^{i \omega k}}{\sqrt{2 \pi}},
+\quad k \in \mathbb Z,
+\quad \omega \in [-\pi, \pi]
+\]</div>
+<p>Using the definition of <span class="math notranslate nohighlight">\(T\)</span> from above and the fact that <span class="math notranslate nohighlight">\(f\)</span> is even, we now have</p>
+<div class="math notranslate nohighlight" id="equation-arma-it">
+<span class="eqno">(387)<a class="headerlink" href="#equation-arma-it" title="Permalink to this equation">¶</a></span>\[T \gamma
+= \sum_{k \in \mathbb Z}
+\gamma(k) \frac{e^{i \omega k}}{\sqrt{2 \pi}} = \frac{1}{\sqrt{2 \pi}} f(\omega)\]</div>
+<p>In other words, apart from a scalar multiple, the spectral density is just an transformation of <span class="math notranslate nohighlight">\(\gamma \in \ell_2\)</span> under a certain linear isometry — a different way to view <span class="math notranslate nohighlight">\(\gamma\)</span>.</p>
+<p>In particular, it is an expansion of the autocovariance function with respect to the trigonometric basis functions in <span class="math notranslate nohighlight">\(L_2\)</span>.</p>
+<p>As discussed above, the Fourier coefficients of <span class="math notranslate nohighlight">\(T \gamma\)</span> are given by the sequence <span class="math notranslate nohighlight">\(\gamma\)</span>, and,
+in particular, <span class="math notranslate nohighlight">\(\gamma(k) = \langle T \gamma, h_k \rangle\)</span>.</p>
+<p>Transforming this inner product into its integral expression and using <a class="reference internal" href="#equation-arma-it">(387)</a> gives
+<a class="reference internal" href="#equation-ift">(385)</a>, justifying our earlier expression for the inverse transform.</p>
+</div>
+</div>
+<div class="section" id="implementation">
+<span id="arma-imp"></span><h2><a class="toc-backref" href="#id22">Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p>Most code for working with covariance stationary models deals with ARMA models.</p>
+<p>Julia code for studying ARMA models can be found in the <code class="docutils literal notranslate"><span class="pre">DSP.jl</span></code> package.</p>
+<p>Since this code doesn’t quite cover our needs — particularly vis-a-vis spectral analysis — we’ve put together the module <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/arma.jl">arma.jl</a>, which is part of <a class="reference external" href="http://quantecon.org/quantecon-jl">QuantEcon.jl</a> package.</p>
+<p>The module provides functions for mapping ARMA(<span class="math notranslate nohighlight">\(p,q\)</span>) models into their</p>
+<ol class="simple">
+<li><p>impulse response function</p></li>
+<li><p>simulated time series</p></li>
+<li><p>autocovariance function</p></li>
+<li><p>spectral density</p></li>
+</ol>
+<div class="section" id="application">
+<h3>Application<a class="headerlink" href="#application" title="Permalink to this headline">¶</a></h3>
+<p>Let’s use this code to replicate the plots on pages 68–69 of <span id="id17">[<a class="reference internal" href="../zreferences.html#id99"><span>LS18</span></a>]</span>.</p>
+<p>Here are some functions to generate the plots</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Random</span>
+
+<span class="c"># plot functions</span>
+<span class="k">function</span> <span class="n">plot_spectral_density</span><span class="p">(</span><span class="n">arma</span><span class="p">,</span> <span class="n">plt</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">spect</span><span class="p">)</span> <span class="o">=</span> <span class="n">spectral_density</span><span class="p">(</span><span class="n">arma</span><span class="p">,</span> <span class="n">two_pi</span><span class="o">=</span><span class="kc">false</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">spect</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&quot;Spectral density&quot;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">π</span><span class="p">),</span>
+          <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;frequency&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;spectrum&quot;</span><span class="p">,</span> <span class="n">yscale</span><span class="o">=:</span><span class="n">log</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">plt</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_spectral_density</span><span class="p">(</span><span class="n">arma</span><span class="p">)</span>
+    <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
+    <span class="n">plot_spectral_density</span><span class="p">(</span><span class="n">arma</span><span class="p">,</span> <span class="n">plt</span><span class="o">=</span><span class="n">plt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">plt</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_autocovariance</span><span class="p">(</span><span class="n">arma</span><span class="p">,</span> <span class="n">plt</span><span class="p">)</span>
+    <span class="n">acov</span> <span class="o">=</span> <span class="n">autocovariance</span><span class="p">(</span><span class="n">arma</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">acov</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="mi">0</span><span class="o">:</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">acov</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">sticks</span><span class="p">,</span> <span class="n">marker</span><span class="o">=:</span><span class="n">circle</span><span class="p">,</span>
+          <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=:</span><span class="n">red</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&quot;Autocovariance&quot;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
+          <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;time&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;autocovariance&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">plt</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_autocovariance</span><span class="p">(</span><span class="n">arma</span><span class="p">)</span>
+    <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
+    <span class="n">plot_spectral_density</span><span class="p">(</span><span class="n">arma</span><span class="p">,</span> <span class="n">plt</span><span class="o">=</span><span class="n">plt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">plt</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_impulse_response</span><span class="p">(</span><span class="n">arma</span><span class="p">,</span> <span class="n">plt</span><span class="p">)</span>
+    <span class="n">psi</span> <span class="o">=</span> <span class="n">impulse_response</span><span class="p">(</span><span class="n">arma</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="mi">0</span><span class="o">:</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">psi</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">sticks</span><span class="p">,</span> <span class="n">marker</span><span class="o">=:</span><span class="n">circle</span><span class="p">,</span>
+          <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=:</span><span class="n">hline</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=:</span><span class="n">red</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&quot;Impluse response&quot;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="n">n</span><span class="o">-</span><span class="mf">0.5</span><span class="p">),</span>
+          <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;time&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;response&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">plt</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_impulse_response</span><span class="p">(</span><span class="n">arma</span><span class="p">)</span>
+    <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
+    <span class="n">plot_spectral_density</span><span class="p">(</span><span class="n">arma</span><span class="p">,</span> <span class="n">plt</span><span class="o">=</span><span class="n">plt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">plt</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_simulation</span><span class="p">(</span><span class="n">arma</span><span class="p">,</span> <span class="n">plt</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">simulation</span><span class="p">(</span><span class="n">arma</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="mi">0</span><span class="o">:</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">X</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&quot;Sample path&quot;</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;time&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;state space&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">plt</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">plot_simulation</span><span class="p">(</span><span class="n">arma</span><span class="p">)</span>
+    <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
+    <span class="n">plot_spectral_density</span><span class="p">(</span><span class="n">arma</span><span class="p">,</span> <span class="n">plt</span><span class="o">=</span><span class="n">plt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">plt</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">quad_plot</span><span class="p">(</span><span class="n">arma</span><span class="p">)</span>
+    <span class="n">plt_1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
+    <span class="n">plt_2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
+    <span class="n">plt_3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
+    <span class="n">plt_4</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
+    <span class="n">plots</span> <span class="o">=</span> <span class="p">[</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">,</span> <span class="n">plt_3</span><span class="p">,</span> <span class="n">plt_4</span><span class="p">]</span>
+
+    <span class="n">plot_functions</span> <span class="o">=</span> <span class="p">[</span><span class="n">plot_spectral_density</span><span class="p">,</span>
+                      <span class="n">plot_impulse_response</span><span class="p">,</span>
+                      <span class="n">plot_autocovariance</span><span class="p">,</span>
+                      <span class="n">plot_simulation</span><span class="p">]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">plt</span><span class="p">,</span> <span class="n">plot_func</span><span class="p">)</span> <span class="kp">in</span> <span class="n">zip</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="o">:</span><span class="mi">4</span><span class="p">,</span> <span class="n">plots</span><span class="p">,</span> <span class="n">plot_functions</span><span class="p">)</span>
+        <span class="n">plots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">plot_func</span><span class="p">(</span><span class="n">arma</span><span class="p">,</span> <span class="n">plt</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">plot</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">plots</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">plots</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">plots</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">800</span><span class="p">))</span>
+
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>quad_plot (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s call these functions to generate the plots.</p>
+<p>We’ll use the model <span class="math notranslate nohighlight">\(X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}\)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span> <span class="c"># For reproducible results.</span>
+<span class="n">ϕ</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">;</span>
+<span class="n">θ</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">];</span>
+<span class="n">arma</span> <span class="o">=</span> <span class="n">ARMA</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">quad_plot</span><span class="p">(</span><span class="n">arma</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/arma_18_0.png" src="../_images/arma_18_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="explanation">
+<h3>Explanation<a class="headerlink" href="#explanation" title="Permalink to this headline">¶</a></h3>
+<p>The call</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">arma</span> <span class="o">=</span> <span class="n">ARMA</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">σ</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>creates an instance <code class="docutils literal notranslate"><span class="pre">arma</span></code> that represents the ARMA(<span class="math notranslate nohighlight">\(p, q\)</span>) model</p>
+<div class="math notranslate nohighlight">
+\[
+X_t = \phi_1 X_{t-1} + ... + \phi_p X_{t-p} +
+    \epsilon_t + \theta_1 \epsilon_{t-1} + ... + \theta_q \epsilon_{t-q}
+\]</div>
+<p>If <code class="docutils literal notranslate"><span class="pre">ϕ</span></code> and <code class="docutils literal notranslate"><span class="pre">θ</span></code> are arrays or sequences, then the interpretation will
+be</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ϕ</span></code> holds the vector of parameters <span class="math notranslate nohighlight">\((\phi_1, \phi_2,..., \phi_p)\)</span></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">θ</span></code> holds the vector of parameters <span class="math notranslate nohighlight">\((\theta_1, \theta_2,..., \theta_q)\)</span></p></li>
+</ul>
+<p>The parameter <code class="docutils literal notranslate"><span class="pre">σ</span></code> is always a scalar, the standard deviation of the white noise.</p>
+<p>We also permit <code class="docutils literal notranslate"><span class="pre">ϕ</span></code> and <code class="docutils literal notranslate"><span class="pre">θ</span></code> to be scalars, in which case the model will be interpreted as</p>
+<div class="math notranslate nohighlight">
+\[
+X_t = \phi X_{t-1} + \epsilon_t + \theta \epsilon_{t-1}
+\]</div>
+<p>The two numerical packages most useful for working with ARMA models are <code class="docutils literal notranslate"><span class="pre">DSP.jl</span></code> and the <code class="docutils literal notranslate"><span class="pre">fft</span></code> routine in Julia.</p>
+</div>
+<div class="section" id="computing-the-autocovariance-function">
+<h3>Computing the Autocovariance Function<a class="headerlink" href="#computing-the-autocovariance-function" title="Permalink to this headline">¶</a></h3>
+<p>As discussed above, for ARMA processes the spectral density has a <a class="reference internal" href="#arma-spec-den"><span class="std std-ref">simple representation</span></a> that is relatively easy to calculate.</p>
+<p>Given this fact, the easiest way to obtain the autocovariance function is to recover it from the spectral
+density via the inverse Fourier transform.</p>
+<p>Here we use Julia’s Fourier transform routine fft, which wraps a standard C-based package called FFTW.</p>
+<p>A look at <a class="reference external" href="https://docs.julialang.org/en/stable/stdlib/math/#Base.DFT.fft">the fft documentation</a> shows that the inverse transform ifft takes a given sequence <span class="math notranslate nohighlight">\(A_0, A_1, \ldots, A_{n-1}\)</span> and
+returns the sequence <span class="math notranslate nohighlight">\(a_0, a_1, \ldots, a_{n-1}\)</span> defined by</p>
+<div class="math notranslate nohighlight">
+\[
+a_k = \frac{1}{n} \sum_{t=0}^{n-1} A_t e^{ik 2\pi t / n}
+\]</div>
+<p>Thus, if we set <span class="math notranslate nohighlight">\(A_t = f(\omega_t)\)</span>, where <span class="math notranslate nohighlight">\(f\)</span> is the spectral density and
+<span class="math notranslate nohighlight">\(\omega_t := 2 \pi t / n\)</span>, then</p>
+<div class="math notranslate nohighlight">
+\[
+a_k
+= \frac{1}{n} \sum_{t=0}^{n-1} f(\omega_t) e^{i \omega_t k}
+= \frac{1}{2\pi} \frac{2 \pi}{n} \sum_{t=0}^{n-1} f(\omega_t) e^{i \omega_t k},
+\qquad
+\omega_t := 2 \pi t / n
+\]</div>
+<p>For <span class="math notranslate nohighlight">\(n\)</span> sufficiently large, we then have</p>
+<div class="math notranslate nohighlight">
+\[
+a_k
+\approx \frac{1}{2\pi} \int_0^{2 \pi} f(\omega) e^{i \omega k} d \omega
+= \frac{1}{2\pi} \int_{-\pi}^{\pi} f(\omega) e^{i \omega k} d \omega
+\]</div>
+<p>(You can check the last equality)</p>
+<p>In view of <a class="reference internal" href="#equation-ift">(385)</a> we have now shown that, for <span class="math notranslate nohighlight">\(n\)</span> sufficiently large, <span class="math notranslate nohighlight">\(a_k \approx \gamma(k)\)</span> — which is exactly what we want to compute.</p>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.5"
+        },
+        kernelOptions: {
+            kernelName: "julia-1.5",
+            path: "./time_series_models"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.5'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   Introduction to Types and Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   The Need for Speed
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   Discrete State Dynamic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   Globalization and Cycles
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="estspec.html">
+   Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="additive_functionals.html">
+   Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="multiplicative_functionals.html">
+   Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lu_tricks.html">
+   Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="classical_filtering.html">
+   Classical Filtering With Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/time_series_models/arma.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/time_series_models/arma.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/time_series_models/arma.ipynb" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/time_series_models/arma.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

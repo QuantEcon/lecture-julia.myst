@@ -1,0 +1,1203 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Search V: On-the-Job Search &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/jv.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Optimal Growth I: The Stochastic Optimal Growth Model" href="optgrowth.html" />
+    <link rel="prev" title="Job Search IV: Modeling Career Choice" href="career.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Job Search V: On-the-Job Search"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Job Search V: On-the-Job Search" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/dynamic_programming/jv.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=dynamic_programming/jv>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#model-features">
+     Model features
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#model">
+   Model
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parameterization">
+     Parameterization
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#back-of-the-envelope-calculations">
+     Back-of-the-Envelope Calculations
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#implementation">
+   Implementation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solving-for-policies">
+   Solving for Policies
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1">
+     Exercise 1
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-2">
+     Exercise 2
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solutions">
+   Solutions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     Exercise 1
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     Exercise 2
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Job Search V: On-the-Job Search</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="job-search-v-on-the-job-search">
+<h1><a class="toc-backref" href="#id3"><span class="target" id="index-0"></span>Job Search V: On-the-Job Search</a><a class="headerlink" href="#job-search-v-on-the-job-search" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<span id="index-1"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#job-search-v-on-the-job-search" id="id3">Job Search V: On-the-Job Search</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id4">Overview</a></p></li>
+<li><p><a class="reference internal" href="#model" id="id5">Model</a></p></li>
+<li><p><a class="reference internal" href="#implementation" id="id6">Implementation</a></p></li>
+<li><p><a class="reference internal" href="#solving-for-policies" id="id7">Solving for Policies</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id8">Exercises</a></p></li>
+<li><p><a class="reference internal" href="#solutions" id="id9">Solutions</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id4">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="model-features">
+<h3>Model features<a class="headerlink" href="#model-features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple" id="index-2">
+<li><p>job-specific human capital accumulation combined with on-the-job search</p></li>
+<li><p>infinite horizon dynamic programming with one state variable and two controls</p></li>
+</ul>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
+<span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">Expectations</span><span class="p">,</span> <span class="n">Parameters</span>
+<span class="k">using</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">NLsolve</span><span class="p">,</span> <span class="n">Random</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="o">:</span><span class="n">png</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>┌ Info: Precompiling Expectations [2fe49d83-0758-5602-8f54-1f90ad0d522b]
+└ @ Base loading.jl:1278
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="model">
+<h2><a class="toc-backref" href="#id5">Model</a><a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<p id="index-3">Let</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(x_t\)</span> denote the time-<span class="math notranslate nohighlight">\(t\)</span> job-specific human capital of a worker employed at a given firm</p></li>
+<li><p><span class="math notranslate nohighlight">\(w_t\)</span> denote current wages</p></li>
+</ul>
+<p>Let <span class="math notranslate nohighlight">\(w_t = x_t(1 - s_t - \phi_t)\)</span>, where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\phi_t\)</span> is investment in job-specific human capital for the current role</p></li>
+<li><p><span class="math notranslate nohighlight">\(s_t\)</span> is search effort, devoted to obtaining new offers from other firms</p></li>
+</ul>
+<p>For as long as the worker remains in the current job, evolution of
+<span class="math notranslate nohighlight">\(\{x_t\}\)</span> is given by <span class="math notranslate nohighlight">\(x_{t+1} = G(x_t, \phi_t)\)</span>.</p>
+<p>When search effort at <span class="math notranslate nohighlight">\(t\)</span> is <span class="math notranslate nohighlight">\(s_t\)</span>, the worker receives a new job
+offer with probability <span class="math notranslate nohighlight">\(\pi(s_t) \in [0, 1]\)</span>.</p>
+<p>Value of offer is <span class="math notranslate nohighlight">\(U_{t+1}\)</span>, where <span class="math notranslate nohighlight">\(\{U_t\}\)</span> is iid with common distribution <span class="math notranslate nohighlight">\(F\)</span>.</p>
+<p>Worker has the right to reject the current offer and continue with existing job.</p>
+<p>In particular, <span class="math notranslate nohighlight">\(x_{t+1} = U_{t+1}\)</span> if accepts and <span class="math notranslate nohighlight">\(x_{t+1} = G(x_t, \phi_t)\)</span> if rejects.</p>
+<p>Letting <span class="math notranslate nohighlight">\(b_{t+1} \in \{0,1\}\)</span> be binary with <span class="math notranslate nohighlight">\(b_{t+1} = 1\)</span> indicating an offer, we can write</p>
+<div class="math notranslate nohighlight" id="equation-jd">
+<span class="eqno">(129)<a class="headerlink" href="#equation-jd" title="Permalink to this equation">¶</a></span>\[x_{t+1}
+= (1 - b_{t+1}) G(x_t, \phi_t) + b_{t+1}
+    \max \{ G(x_t, \phi_t), U_{t+1}\}\]</div>
+<p>Agent’s objective: maximize expected discounted sum of wages via controls <span class="math notranslate nohighlight">\(\{s_t\}\)</span> and <span class="math notranslate nohighlight">\(\{\phi_t\}\)</span>.</p>
+<p>Taking the expectation of <span class="math notranslate nohighlight">\(V(x_{t+1})\)</span> and using <a class="reference internal" href="#equation-jd">(129)</a>,
+the Bellman equation for this problem can be written as</p>
+<div class="math notranslate nohighlight" id="equation-jvbell">
+<span class="eqno">(130)<a class="headerlink" href="#equation-jvbell" title="Permalink to this equation">¶</a></span>\[V(x)
+= \max_{s + \phi \leq 1}
+    \left\{
+        x (1 - s - \phi) + \beta (1 - \pi(s)) V[G(x, \phi)] +
+        \beta \pi(s) \int V[G(x, \phi) \vee u] F(du)
+     \right\}.\]</div>
+<p>Here nonnegativity of <span class="math notranslate nohighlight">\(s\)</span> and <span class="math notranslate nohighlight">\(\phi\)</span> is understood, while
+<span class="math notranslate nohighlight">\(a \vee b := \max\{a, b\}\)</span>.</p>
+<div class="section" id="parameterization">
+<h3>Parameterization<a class="headerlink" href="#parameterization" title="Permalink to this headline">¶</a></h3>
+<p id="index-4">In the implementation below, we will focus on the parameterization.</p>
+<div class="math notranslate nohighlight">
+\[
+G(x, \phi) = A (x \phi)^{\alpha},
+\quad
+\pi(s) = \sqrt s
+\quad \text{and} \quad
+F = \text{Beta}(2, 2)
+\]</div>
+<p>with default parameter values</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(A = 1.4\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\alpha = 0.6\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\beta = 0.96\)</span></p></li>
+</ul>
+<p>The Beta(2,2) distribution is supported on <span class="math notranslate nohighlight">\((0,1)\)</span>.  It has a unimodal, symmetric density peaked at 0.5.</p>
+</div>
+<div class="section" id="back-of-the-envelope-calculations">
+<span id="jvboecalc"></span><h3>Back-of-the-Envelope Calculations<a class="headerlink" href="#back-of-the-envelope-calculations" title="Permalink to this headline">¶</a></h3>
+<p>Before we solve the model, let’s make some quick calculations that
+provide intuition on what the solution should look like.</p>
+<p>To begin, observe that the worker has two instruments to build
+capital and hence wages:</p>
+<ol class="simple">
+<li><p>invest in capital specific to the current job via <span class="math notranslate nohighlight">\(\phi\)</span></p></li>
+<li><p>search for a new job with better job-specific capital match via <span class="math notranslate nohighlight">\(s\)</span></p></li>
+</ol>
+<p>Since wages are <span class="math notranslate nohighlight">\(x (1 - s - \phi)\)</span>, marginal cost of investment via either <span class="math notranslate nohighlight">\(\phi\)</span> or <span class="math notranslate nohighlight">\(s\)</span> is identical.</p>
+<p>Our risk neutral worker should focus on whatever instrument has the highest expected return.</p>
+<p>The relative expected return will depend on <span class="math notranslate nohighlight">\(x\)</span>.</p>
+<p>For example, suppose first that <span class="math notranslate nohighlight">\(x = 0.05\)</span></p>
+<ul class="simple">
+<li><p>If <span class="math notranslate nohighlight">\(s=1\)</span> and <span class="math notranslate nohighlight">\(\phi = 0\)</span>, then since <span class="math notranslate nohighlight">\(G(x,\phi) = 0\)</span>,
+taking expectations of <a class="reference internal" href="#equation-jd">(129)</a> gives expected next period capital equal to <span class="math notranslate nohighlight">\(\pi(s) \mathbb{E} U
+= \mathbb{E} U = 0.5\)</span>.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(s=0\)</span> and <span class="math notranslate nohighlight">\(\phi=1\)</span>, then next period capital is <span class="math notranslate nohighlight">\(G(x, \phi) = G(0.05, 1) \approx 0.23\)</span>.</p></li>
+</ul>
+<p>Both rates of return are good, but the return from search is better.</p>
+<p>Next suppose that <span class="math notranslate nohighlight">\(x = 0.4\)</span></p>
+<ul class="simple">
+<li><p>If <span class="math notranslate nohighlight">\(s=1\)</span> and <span class="math notranslate nohighlight">\(\phi = 0\)</span>, then expected next period capital is again <span class="math notranslate nohighlight">\(0.5\)</span></p></li>
+<li><p>If <span class="math notranslate nohighlight">\(s=0\)</span> and <span class="math notranslate nohighlight">\(\phi = 1\)</span>, then <span class="math notranslate nohighlight">\(G(x, \phi) = G(0.4, 1) \approx 0.8\)</span></p></li>
+</ul>
+<p>Return from investment via <span class="math notranslate nohighlight">\(\phi\)</span> dominates expected return from search.</p>
+<p>Combining these observations gives us two informal predictions:</p>
+<ol class="simple">
+<li><p>At any given state <span class="math notranslate nohighlight">\(x\)</span>, the two controls <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(s\)</span> will function primarily as substitutes — worker will focus on whichever instrument has the higher expected return.</p></li>
+<li><p>For sufficiently small <span class="math notranslate nohighlight">\(x\)</span>, search will be preferable to investment in job-specific human capital.  For larger <span class="math notranslate nohighlight">\(x\)</span>, the reverse will be true.</p></li>
+</ol>
+<p>Now let’s turn to implementation, and see if we can match our predictions.</p>
+</div>
+</div>
+<div class="section" id="implementation">
+<h2><a class="toc-backref" href="#id6">Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p id="index-5">The following code solves the DP problem described above</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">Expectations</span><span class="p">,</span> <span class="n">Parameters</span>
+
+  <span class="c"># model object</span>
+  <span class="k">function</span> <span class="n">JvWorker</span><span class="p">(;</span><span class="n">A</span> <span class="o">=</span> <span class="mf">1.4</span><span class="p">,</span>
+              <span class="n">α</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+              <span class="n">β</span> <span class="o">=</span> <span class="mf">0.96</span><span class="p">,</span>
+              <span class="n">grid_size</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+              <span class="n">ϵ</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">)</span>
+
+      <span class="n">G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ϕ</span><span class="p">)</span> <span class="o">=</span> <span class="n">A</span> <span class="o">.*</span> <span class="p">(</span><span class="n">x</span> <span class="o">.*</span> <span class="n">ϕ</span><span class="p">)</span><span class="o">.^</span><span class="n">α</span>
+      <span class="n">π_func</span> <span class="o">=</span> <span class="n">sqrt</span>
+      <span class="n">F</span> <span class="o">=</span> <span class="n">Beta</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+      <span class="c"># expectation operator</span>
+      <span class="n">E</span> <span class="o">=</span> <span class="n">expectation</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+
+      <span class="c"># Set up grid over the state space for DP</span>
+      <span class="c"># Max of grid is the max of a large quantile value for F and the</span>
+      <span class="c"># fixed point y = G(y, 1).</span>
+      <span class="n">grid_max</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="n">A</span><span class="o">^</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">α</span><span class="p">)),</span> <span class="n">quantile</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">ϵ</span><span class="p">))</span>
+
+      <span class="c"># range for range(ϵ, grid_max, grid_size). Needed for</span>
+      <span class="c"># CoordInterpGrid below</span>
+      <span class="n">x_grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="n">ϵ</span><span class="p">,</span> <span class="n">grid_max</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">grid_size</span><span class="p">)</span>
+
+      <span class="k">return</span> <span class="p">(</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">α</span> <span class="o">=</span> <span class="n">α</span><span class="p">,</span> <span class="n">β</span> <span class="o">=</span> <span class="n">β</span><span class="p">,</span> <span class="n">x_grid</span> <span class="o">=</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">G</span> <span class="o">=</span> <span class="n">G</span><span class="p">,</span>
+              <span class="n">π_func</span> <span class="o">=</span> <span class="n">π_func</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="n">E</span><span class="p">,</span> <span class="n">ϵ</span> <span class="o">=</span> <span class="n">ϵ</span><span class="p">)</span>
+  <span class="k">end</span>
+
+<span class="k">function</span> <span class="n">T!</span><span class="p">(</span><span class="n">jv</span><span class="p">,</span>
+                           <span class="n">V</span><span class="p">,</span>
+                           <span class="n">new_V</span><span class="o">::</span><span class="kt">AbstractVector</span><span class="p">)</span>
+
+    <span class="c"># simplify notation</span>
+    <span class="nd">@unpack</span> <span class="n">G</span><span class="p">,</span> <span class="n">π_func</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">ϵ</span> <span class="o">=</span> <span class="n">jv</span>
+
+    <span class="c"># prepare interpoland of value function</span>
+    <span class="n">Vf</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">jv</span><span class="o">.</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">extrapolation_bc</span><span class="o">=</span><span class="n">Line</span><span class="p">())</span>
+
+    <span class="c"># instantiate the linesearch variables</span>
+    <span class="n">max_val</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="n">cur_val</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">max_s</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">max_ϕ</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">search_grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="n">ϵ</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">jv</span><span class="o">.</span><span class="n">x_grid</span><span class="p">)</span>
+
+        <span class="k">function</span> <span class="n">w</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">s</span><span class="p">,</span> <span class="n">ϕ</span> <span class="o">=</span> <span class="n">z</span>
+            <span class="n">h</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">=</span> <span class="n">Vf</span><span class="p">(</span><span class="n">max</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ϕ</span><span class="p">),</span> <span class="n">u</span><span class="p">))</span>
+            <span class="n">integral</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">π_func</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="n">integral</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">π_func</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> <span class="o">*</span> <span class="n">Vf</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ϕ</span><span class="p">))</span>
+
+            <span class="k">return</span> <span class="o">-</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">ϕ</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">q</span>
+        <span class="k">end</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="kp">in</span> <span class="n">search_grid</span>
+            <span class="k">for</span> <span class="n">ϕ</span> <span class="kp">in</span> <span class="n">search_grid</span>
+                <span class="n">cur_val</span> <span class="o">=</span> <span class="n">ifelse</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">ϕ</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="n">w</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">ϕ</span><span class="p">)),</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cur_val</span> <span class="o">&gt;</span> <span class="n">max_val</span>
+                    <span class="n">max_val</span><span class="p">,</span> <span class="n">max_s</span><span class="p">,</span> <span class="n">max_ϕ</span> <span class="o">=</span> <span class="n">cur_val</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">ϕ</span>
+                <span class="k">end</span>
+            <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="n">new_V</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_val</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">T!</span><span class="p">(</span><span class="n">jv</span><span class="p">,</span>
+                           <span class="n">V</span><span class="p">,</span>
+                           <span class="n">out</span><span class="o">::</span><span class="kt">Tuple</span><span class="p">{</span><span class="kt">AbstractVector</span><span class="p">,</span> <span class="kt">AbstractVector</span><span class="p">})</span>
+
+    <span class="c"># simplify notation</span>
+    <span class="nd">@unpack</span> <span class="n">G</span><span class="p">,</span> <span class="n">π_func</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">ϵ</span> <span class="o">=</span> <span class="n">jv</span>
+
+    <span class="c"># prepare interpoland of value function</span>
+    <span class="n">Vf</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">jv</span><span class="o">.</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">extrapolation_bc</span><span class="o">=</span><span class="n">Line</span><span class="p">())</span>
+
+    <span class="c"># instantiate variables</span>
+    <span class="n">s_policy</span><span class="p">,</span> <span class="n">ϕ_policy</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+    <span class="c"># instantiate the linesearch variables</span>
+    <span class="n">max_val</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span>
+    <span class="n">cur_val</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">max_s</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">max_ϕ</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">search_grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="n">ϵ</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">jv</span><span class="o">.</span><span class="n">x_grid</span><span class="p">)</span>
+
+        <span class="k">function</span> <span class="n">w</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+            <span class="n">s</span><span class="p">,</span> <span class="n">ϕ</span> <span class="o">=</span> <span class="n">z</span>
+            <span class="n">h</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="o">=</span> <span class="n">Vf</span><span class="p">(</span><span class="n">max</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ϕ</span><span class="p">),</span> <span class="n">u</span><span class="p">))</span>
+            <span class="n">integral</span> <span class="o">=</span> <span class="n">E</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">π_func</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">*</span> <span class="n">integral</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">π_func</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> <span class="o">*</span> <span class="n">Vf</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ϕ</span><span class="p">))</span>
+
+            <span class="k">return</span> <span class="o">-</span> <span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">ϕ</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">q</span>
+        <span class="k">end</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="kp">in</span> <span class="n">search_grid</span>
+            <span class="k">for</span> <span class="n">ϕ</span> <span class="kp">in</span> <span class="n">search_grid</span>
+                <span class="n">cur_val</span> <span class="o">=</span> <span class="n">ifelse</span><span class="p">(</span><span class="n">s</span> <span class="o">+</span> <span class="n">ϕ</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="n">w</span><span class="p">((</span><span class="n">s</span><span class="p">,</span> <span class="n">ϕ</span><span class="p">)),</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cur_val</span> <span class="o">&gt;</span> <span class="n">max_val</span>
+                    <span class="n">max_val</span><span class="p">,</span> <span class="n">max_s</span><span class="p">,</span> <span class="n">max_ϕ</span> <span class="o">=</span> <span class="n">cur_val</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">ϕ</span>
+                <span class="k">end</span>
+            <span class="k">end</span>
+        <span class="k">end</span>
+
+    <span class="n">s_policy</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ϕ_policy</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_s</span><span class="p">,</span> <span class="n">max_ϕ</span>
+<span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">T</span><span class="p">(</span><span class="n">jv</span><span class="p">,</span> <span class="n">V</span><span class="p">;</span> <span class="n">ret_policies</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">ifelse</span><span class="p">(</span><span class="n">ret_policies</span><span class="p">,</span> <span class="p">(</span><span class="n">similar</span><span class="p">(</span><span class="n">V</span><span class="p">),</span> <span class="n">similar</span><span class="p">(</span><span class="n">V</span><span class="p">)),</span> <span class="n">similar</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+    <span class="n">T!</span><span class="p">(</span><span class="n">jv</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>T (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The code is written to be relatively generic—and hence reusable.</p>
+<ul class="simple">
+<li><p>For example, we use generic <span class="math notranslate nohighlight">\(G(x,\phi)\)</span> instead of specific <span class="math notranslate nohighlight">\(A (x \phi)^{\alpha}\)</span>.</p></li>
+</ul>
+<p>Regarding the imports</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fixed_quad</span></code> is a simple non-adaptive integration routine</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fmin_slsqp</span></code> is a minimization routine that permits inequality constraints</p></li>
+</ul>
+<p>Next we write a constructor called <code class="docutils literal notranslate"><span class="pre">JvWorker</span></code> that</p>
+<ul class="simple">
+<li><p>packages all the parameters and other basic attributes of a given model</p></li>
+<li><p>implements the method <code class="docutils literal notranslate"><span class="pre">T</span></code> for value function iteration</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">T</span></code> method
+takes a candidate value function <span class="math notranslate nohighlight">\(V\)</span> and updates it to <span class="math notranslate nohighlight">\(TV\)</span> via</p>
+<div class="math notranslate nohighlight">
+\[
+TV(x)
+= - \min_{s + \phi \leq 1} w(s, \phi)
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight" id="equation-defw">
+<span class="eqno">(131)<a class="headerlink" href="#equation-defw" title="Permalink to this equation">¶</a></span>\[w(s, \phi)
+ := - \left\{
+         x (1 - s - \phi) + \beta (1 - \pi(s)) V[G(x, \phi)] +
+         \beta \pi(s) \int V[G(x, \phi) \vee u] F(du)
+\right\}\]</div>
+<p>Here we are minimizing instead of maximizing to fit with optimization routines.</p>
+<p>When we represent <span class="math notranslate nohighlight">\(V\)</span>, it will be with a Julia array <code class="docutils literal notranslate"><span class="pre">V</span></code> giving values on grid <code class="docutils literal notranslate"><span class="pre">x_grid</span></code>.</p>
+<p>But to evaluate the right-hand side of <a class="reference internal" href="#equation-defw">(131)</a>, we need a function, so
+we replace the arrays <code class="docutils literal notranslate"><span class="pre">V</span></code> and <code class="docutils literal notranslate"><span class="pre">x_grid</span></code> with a function <code class="docutils literal notranslate"><span class="pre">Vf</span></code> that gives linear
+interpolation of <code class="docutils literal notranslate"><span class="pre">V</span></code> on <code class="docutils literal notranslate"><span class="pre">x_grid</span></code>.</p>
+<p>Hence in the preliminaries of <code class="docutils literal notranslate"><span class="pre">T</span></code></p>
+<ul>
+<li><p>from the array <code class="docutils literal notranslate"><span class="pre">V</span></code> we define a linear interpolation <code class="docutils literal notranslate"><span class="pre">Vf</span></code> of its values</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">c1</span></code> is used to implement the constraint <span class="math notranslate nohighlight">\(s + \phi \leq 1\)</span></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">c2</span></code> is used to implement <span class="math notranslate nohighlight">\(s \geq \epsilon\)</span>, a numerically stable</p>
+<p>alternative to the true constraint <span class="math notranslate nohighlight">\(s \geq 0\)</span></p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">c3</span></code> does the same for <span class="math notranslate nohighlight">\(\phi\)</span></p></li>
+</ul>
+</li>
+</ul>
+<p>Inside the <code class="docutils literal notranslate"><span class="pre">for</span></code> loop, for each <code class="docutils literal notranslate"><span class="pre">x</span></code> in the grid over the state space, we
+set up the function <span class="math notranslate nohighlight">\(w(z) = w(s, \phi)\)</span> defined in <a class="reference internal" href="#equation-defw">(131)</a>.</p>
+<p>The function is minimized over all feasible <span class="math notranslate nohighlight">\((s, \phi)\)</span> pairs, either by brute-force search over a grid, or specialized solver routines.</p>
+<p>The latter is much faster, but convergence to the global optimum is not
+guaranteed.  Grid search is a simple way to check results.</p>
+</div>
+<div class="section" id="solving-for-policies">
+<h2><a class="toc-backref" href="#id7">Solving for Policies</a><a class="headerlink" href="#solving-for-policies" title="Permalink to this headline">¶</a></h2>
+<p id="index-6">Let’s plot the optimal policies and see what they look like.</p>
+<p>The code is as follows</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">wp</span> <span class="o">=</span> <span class="n">JvWorker</span><span class="p">(</span><span class="n">grid_size</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="n">v_init</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">x_grid</span><span class="p">)</span> <span class="o">.*</span> <span class="mf">0.5</span>
+
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">wp</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">V</span> <span class="o">=</span> <span class="n">fixedpoint</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">v_init</span><span class="p">)</span>
+<span class="n">sol_V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">zero</span>
+
+<span class="n">s_policy</span><span class="p">,</span> <span class="n">ϕ_policy</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">wp</span><span class="p">,</span> <span class="n">sol_V</span><span class="p">,</span> <span class="n">ret_policies</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+
+<span class="c"># plot solution</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">x_grid</span><span class="p">,</span> <span class="p">[</span><span class="n">ϕ_policy</span> <span class="n">s_policy</span> <span class="n">sol_V</span><span class="p">],</span>
+         <span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;phi policy&quot;</span> <span class="s">&quot;s policy&quot;</span> <span class="s">&quot;value function&quot;</span><span class="p">],</span>
+         <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="o">:</span><span class="n">orange</span> <span class="o">:</span><span class="n">blue</span> <span class="o">:</span><span class="n">green</span><span class="p">],</span>
+         <span class="n">xaxis</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">maximum</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">x_grid</span><span class="p">))),</span>
+         <span class="n">yaxis</span> <span class="o">=</span> <span class="p">((</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">)),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">),</span>
+         <span class="n">legend</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+         <span class="n">bottom_margin</span> <span class="o">=</span> <span class="n">Plots</span><span class="o">.</span><span class="n">PlotMeasures</span><span class="o">.</span><span class="n">Length</span><span class="p">(</span><span class="o">:</span><span class="n">mm</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/jv_6_0.png" src="../_images/jv_6_0.png" />
+</div>
+</div>
+<p>The horizontal axis is the state <span class="math notranslate nohighlight">\(x\)</span>, while the vertical axis gives <span class="math notranslate nohighlight">\(s(x)\)</span> and <span class="math notranslate nohighlight">\(\phi(x)\)</span>.</p>
+<p>Overall, the policies match well with our predictions from <a class="reference internal" href="#jvboecalc"><span class="std std-ref">section</span></a>.</p>
+<ul class="simple">
+<li><p>Worker switches from one investment strategy to the other depending on relative return.</p></li>
+<li><p>For low values of <span class="math notranslate nohighlight">\(x\)</span>, the best option is to search for a new job.</p></li>
+<li><p>Once <span class="math notranslate nohighlight">\(x\)</span> is larger, worker does better by investing in human capital specific to the current position.</p></li>
+</ul>
+</div>
+<div class="section" id="exercises">
+<h2><a class="toc-backref" href="#id8">Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1">
+<span id="jv-ex1"></span><h3>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<p>Let’s look at the dynamics for the state process <span class="math notranslate nohighlight">\(\{x_t\}\)</span> associated with these policies.</p>
+<p>The dynamics are given by <a class="reference internal" href="#equation-jd">(129)</a> when <span class="math notranslate nohighlight">\(\phi_t\)</span> and <span class="math notranslate nohighlight">\(s_t\)</span> are
+chosen according to the optimal policies, and <span class="math notranslate nohighlight">\(\mathbb{P}\{b_{t+1} = 1\}
+= \pi(s_t)\)</span>.</p>
+<p>Since the dynamics are random, analysis is a bit subtle.</p>
+<p>One way to do it is to plot, for each <span class="math notranslate nohighlight">\(x\)</span> in a relatively fine grid
+called <code class="docutils literal notranslate"><span class="pre">plot_grid</span></code>, a
+large number <span class="math notranslate nohighlight">\(K\)</span> of realizations of <span class="math notranslate nohighlight">\(x_{t+1}\)</span> given <span class="math notranslate nohighlight">\(x_t =
+x\)</span>.  Plot this with one dot for each realization, in the form of a 45 degree
+diagram.  Set</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">K</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="n">plot_grid_max</span><span class="p">,</span> <span class="n">plot_grid_size</span> <span class="o">=</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mi">100</span>
+<span class="n">plot_grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">plot_grid_max</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">plot_grid_size</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">plot_grid</span><span class="p">,</span> <span class="n">plot_grid</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">,</span>
+     <span class="n">lims</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">plot_grid_max</span><span class="p">),</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">none</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By examining the plot, argue that under the optimal policies, the state
+<span class="math notranslate nohighlight">\(x_t\)</span> will converge to a constant value <span class="math notranslate nohighlight">\(\bar x\)</span> close to unity.</p>
+<p>Argue that at the steady state, <span class="math notranslate nohighlight">\(s_t \approx 0\)</span> and <span class="math notranslate nohighlight">\(\phi_t \approx 0.6\)</span>.</p>
+</div>
+<div class="section" id="exercise-2">
+<span id="jv-ex2"></span><h3>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+<p>In the preceding exercise we found that <span class="math notranslate nohighlight">\(s_t\)</span> converges to zero
+and <span class="math notranslate nohighlight">\(\phi_t\)</span> converges to about 0.6.</p>
+<p>Since these results were calculated at a value of <span class="math notranslate nohighlight">\(\beta\)</span> close to
+one, let’s compare them to the best choice for an <em>infinitely</em> patient worker.</p>
+<p>Intuitively, an infinitely patient worker would like to maximize steady state
+wages, which are a function of steady state capital.</p>
+<p>You can take it as given—it’s certainly true—that the infinitely patient worker does not
+search in the long run (i.e., <span class="math notranslate nohighlight">\(s_t = 0\)</span> for large <span class="math notranslate nohighlight">\(t\)</span>).</p>
+<p>Thus, given <span class="math notranslate nohighlight">\(\phi\)</span>, steady state capital is the positive fixed point
+<span class="math notranslate nohighlight">\(x^*(\phi)\)</span> of the map <span class="math notranslate nohighlight">\(x \mapsto G(x, \phi)\)</span>.</p>
+<p>Steady state wages can be written as <span class="math notranslate nohighlight">\(w^*(\phi) = x^*(\phi) (1 - \phi)\)</span>.</p>
+<p>Graph <span class="math notranslate nohighlight">\(w^*(\phi)\)</span> with respect to <span class="math notranslate nohighlight">\(\phi\)</span>, and examine the best
+choice of <span class="math notranslate nohighlight">\(\phi\)</span>.</p>
+<p>Can you give a rough interpretation for the value that you see?</p>
+</div>
+</div>
+<div class="section" id="solutions">
+<h2><a class="toc-backref" href="#id9">Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Exercise 1<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Here’s code to produce the 45 degree diagram</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">wp</span> <span class="o">=</span> <span class="n">JvWorker</span><span class="p">(</span><span class="n">grid_size</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+<span class="c"># simplify notation</span>
+<span class="nd">@unpack</span> <span class="n">G</span><span class="p">,</span> <span class="n">π_func</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">wp</span>
+
+<span class="n">v_init</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">x_grid</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+<span class="n">f2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">wp</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">V2</span> <span class="o">=</span> <span class="n">fixedpoint</span><span class="p">(</span><span class="n">f2</span><span class="p">,</span> <span class="n">v_init</span><span class="p">)</span>
+<span class="n">sol_V2</span> <span class="o">=</span> <span class="n">V2</span><span class="o">.</span><span class="n">zero</span>
+<span class="n">s_policy</span><span class="p">,</span> <span class="n">ϕ_policy</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">wp</span><span class="p">,</span> <span class="n">sol_V2</span><span class="p">,</span> <span class="n">ret_policies</span><span class="o">=</span><span class="kc">true</span><span class="p">)</span>
+
+<span class="c"># Turn the policy function arrays into CoordInterpGrid objects for interpolation</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">s_policy</span><span class="p">,</span> <span class="n">extrapolation_bc</span><span class="o">=</span><span class="n">Line</span><span class="p">())</span>
+<span class="n">ϕ</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">ϕ_policy</span><span class="p">,</span> <span class="n">extrapolation_bc</span><span class="o">=</span><span class="n">Line</span><span class="p">())</span>
+
+<span class="n">h_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">U</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ϕ</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">max</span><span class="p">(</span><span class="n">G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ϕ</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">U</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>h_func (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Random</span>
+<span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">K</span> <span class="o">=</span> <span class="mi">50</span>
+
+<span class="n">plot_grid_max</span><span class="p">,</span> <span class="n">plot_grid_size</span> <span class="o">=</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mi">100</span>
+<span class="n">plot_grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">plot_grid_max</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">plot_grid_size</span><span class="p">)</span>
+<span class="n">ticks</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+
+<span class="n">xs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">ys</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">x</span> <span class="kp">in</span> <span class="n">plot_grid</span>
+    <span class="k">for</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">K</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">rand</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">π_func</span><span class="p">(</span><span class="n">s</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">0</span>
+        <span class="n">U</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">F</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">h_func</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">U</span><span class="p">)</span>
+        <span class="n">push!</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">push!</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">plot_grid</span><span class="p">,</span> <span class="n">plot_grid</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">black</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=:</span><span class="n">dash</span><span class="p">,</span> <span class="n">legend</span><span class="o">=:</span><span class="n">none</span><span class="p">)</span>
+<span class="n">scatter!</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">green</span><span class="p">,</span> <span class="n">lims</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">plot_grid_max</span><span class="p">),</span> <span class="n">ticks</span><span class="o">=</span><span class="n">ticks</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;x_t&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;x_{t+1}&quot;</span><span class="p">,</span> <span class="n">guidefont</span><span class="o">=</span><span class="n">font</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/jv_12_0.png" src="../_images/jv_12_0.png" />
+</div>
+</div>
+<p>Looking at the dynamics, we can see that</p>
+<ul class="simple">
+<li><p>If <span class="math notranslate nohighlight">\(x_t\)</span> is below about 0.2 the dynamics are random, but
+<span class="math notranslate nohighlight">\(x_{t+1} &gt; x_t\)</span> is very likely</p></li>
+<li><p>As <span class="math notranslate nohighlight">\(x_t\)</span> increases the dynamics become deterministic, and
+<span class="math notranslate nohighlight">\(x_t\)</span> converges to a steady state value close to 1</p></li>
+</ul>
+<p>Referring back to the figure here.</p>
+<p><a class="reference external" href="https://julia.quantecon.org/dynamic_programming/jv.html#Solving-for-Policies">https://julia.quantecon.org/dynamic_programming/jv.html#Solving-for-Policies</a></p>
+<p>we see that <span class="math notranslate nohighlight">\(x_t \approx 1\)</span> means that
+<span class="math notranslate nohighlight">\(s_t = s(x_t) \approx 0\)</span> and
+<span class="math notranslate nohighlight">\(\phi_t = \phi(x_t) \approx 0.6\)</span>.</p>
+</div>
+<div class="section" id="id2">
+<h3>Exercise 2<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">wp</span> <span class="o">=</span> <span class="n">JvWorker</span><span class="p">(</span><span class="n">grid_size</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+
+<span class="n">xbar</span><span class="p">(</span><span class="n">ϕ</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">A</span> <span class="o">*</span> <span class="n">ϕ</span><span class="o">^</span><span class="n">wp</span><span class="o">.</span><span class="n">α</span><span class="p">)</span><span class="o">^</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">wp</span><span class="o">.</span><span class="n">α</span><span class="p">))</span>
+
+<span class="n">ϕ_grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">ϕ_grid</span><span class="p">,</span> <span class="p">[</span><span class="n">xbar</span><span class="p">(</span><span class="n">ϕ</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ϕ</span><span class="p">)</span> <span class="k">for</span> <span class="n">ϕ</span> <span class="kp">in</span> <span class="n">ϕ_grid</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">blue</span><span class="p">,</span>
+     <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;w^phi&quot;</span><span class="p">,</span> <span class="n">legendfont</span> <span class="o">=</span> <span class="n">font</span><span class="p">(</span><span class="mi">12</span><span class="p">),</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;phi&quot;</span><span class="p">,</span>
+     <span class="n">guidefont</span> <span class="o">=</span> <span class="n">font</span><span class="p">(</span><span class="mi">16</span><span class="p">),</span> <span class="n">grid</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/jv_15_0.png" src="../_images/jv_15_0.png" />
+</div>
+</div>
+<p>Observe that the maximizer is around 0.6.</p>
+<p>This this is similar to the long run value for <span class="math notranslate nohighlight">\(\phi\)</span> obtained in
+exercise 1.</p>
+<p>Hence the behaviour of the infinitely patent worker is similar to that
+of the worker with <span class="math notranslate nohighlight">\(\beta = 0.96\)</span>.</p>
+<p>This seems reasonable, and helps us confirm that our dynamic programming
+solutions are probably correct.</p>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.5"
+        },
+        kernelOptions: {
+            kernelName: "julia-1.5",
+            path: "./dynamic_programming"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.5'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   Introduction to Types and Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   The Need for Speed
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="short_path.html">
+   Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="mccall_model.html">
+   Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="mccall_model_with_separation.html">
+   Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="wald_friedman.html">
+   A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="odu.html">
+   Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="career.html">
+   Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="optgrowth.html">
+   Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="coleman_policy_iter.html">
+   Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="egm_policy_iter.html">
+   Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lqcontrol.html">
+   LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="perm_income.html">
+   Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="perm_income_cons.html">
+   Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="smoothing.html">
+   Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ifp.html">
+   Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="robustness.html">
+   Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="discrete_dp.html">
+   Discrete State Dynamic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   Globalization and Cycles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   Classical Filtering With Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/dynamic_programming/jv.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/jv.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/jv.ipynb" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/jv.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

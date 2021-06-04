@@ -1,0 +1,2155 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Stackelberg Problems &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming_squared/dyn_stack.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Optimal Taxation in an LQ Economy" href="lqramsey.html" />
+    <link rel="prev" title="Classical Filtering With Linear Algebra" href="../time_series_models/classical_filtering.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Dynamic Stackelberg Problems"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Dynamic Stackelberg Problems" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/dynamic_programming_squared/dyn_stack.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=dynamic_programming_squared/dyn_stack>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#duopoly">
+   Duopoly
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stackelberg-leader-and-follower">
+     Stackelberg Leader and Follower
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#abstract-statement-of-the-leader-s-and-follower-s-problems">
+     Abstract Statement of the Leader’s and Follower’s Problems
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#firms-problems">
+     Firms’ Problems
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-stackelberg-problem">
+   The Stackelberg Problem
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#interpretation-of-the-second-block-of-equations">
+     Interpretation of the Second Block of Equations
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#more-mechanical-details">
+     More Mechanical Details
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#two-subproblems">
+     Two Subproblems
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#subproblem-1">
+       Subproblem 1
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#subproblem-2">
+       Subproblem 2
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#two-bellman-equations">
+     Two Bellman Equations
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id1">
+       Subproblem 1
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#id2">
+       Subproblem 2
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#stackelberg-plan">
+   Stackelberg Plan
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#calculations-to-prepare-duopoly-model">
+     Calculations to Prepare Duopoly Model
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#firm-1-s-problem">
+     Firm 1’s Problem
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#recursive-representation-of-stackelberg-plan">
+   Recursive Representation of Stackelberg Plan
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#comments-and-interpretations">
+     Comments and Interpretations
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#dynamic-programming-and-time-consistency-of-follower-s-problem">
+     Dynamic Programming and Time Consistency of
+     <strong>
+      follower’s
+     </strong>
+     Problem
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#recursive-formulation-of-a-followers-problem">
+     Recursive Formulation of a Follower’s Problem
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#time-consistency-of-follower-s-plan">
+     Time Consistency of Follower’s Plan
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#computing-the-stackelberg-plan">
+   Computing the Stackelberg Plan
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#implied-time-series-for-price-and-quantities">
+     Implied Time Series for Price and Quantities
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#value-of-stackelberg-leader">
+     Value of Stackelberg Leader
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exhibiting-time-inconsistency-of-stackelberg-plan">
+   Exhibiting Time Inconsistency of Stackelberg Plan
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#recursive-formulation-of-the-follower-s-problem">
+   Recursive Formulation of the Follower’s Problem
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#explanation-of-alignment">
+     Explanation of Alignment
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#markov-perfect-equilibrium">
+   Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#mpe-vs-stackelberg">
+   MPE vs. Stackelberg
+  </a>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Dynamic Stackelberg Problems</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="dynamic-stackelberg-problems">
+<h1><a class="toc-backref" href="#id3">Dynamic Stackelberg Problems</a><a class="headerlink" href="#dynamic-stackelberg-problems" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#dynamic-stackelberg-problems" id="id3">Dynamic Stackelberg Problems</a></p>
+<ul>
+<li><p><a class="reference internal" href="#duopoly" id="id4">Duopoly</a></p></li>
+<li><p><a class="reference internal" href="#the-stackelberg-problem" id="id5">The Stackelberg Problem</a></p></li>
+<li><p><a class="reference internal" href="#stackelberg-plan" id="id6">Stackelberg Plan</a></p></li>
+<li><p><a class="reference internal" href="#recursive-representation-of-stackelberg-plan" id="id7">Recursive Representation of Stackelberg Plan</a></p></li>
+<li><p><a class="reference internal" href="#computing-the-stackelberg-plan" id="id8">Computing the Stackelberg Plan</a></p></li>
+<li><p><a class="reference internal" href="#exhibiting-time-inconsistency-of-stackelberg-plan" id="id9">Exhibiting Time Inconsistency of Stackelberg Plan</a></p></li>
+<li><p><a class="reference internal" href="#recursive-formulation-of-the-follower-s-problem" id="id10">Recursive Formulation of the Follower’s Problem</a></p></li>
+<li><p><a class="reference internal" href="#markov-perfect-equilibrium" id="id11">Markov Perfect Equilibrium</a></p></li>
+<li><p><a class="reference internal" href="#mpe-vs-stackelberg" id="id12">MPE vs. Stackelberg</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>This notebook formulates and computes a plan that a <strong>Stackelberg
+leader</strong> uses to manipulate forward-looking decisions of a <strong>Stackelberg
+follower</strong> that depend on continuation sequences of decisions made once
+and for all by the Stackelberg leader at time <span class="math notranslate nohighlight">\(0\)</span>.</p>
+<p>To facilitate computation and interpretation, we formulate things in a
+context that allows us to apply linear optimal dynamic programming.</p>
+<p>From the beginning we carry along a linear-quadratic model of duopoly in
+which firms face adjustment costs that make them want to forecast
+actions of other firms that influence future prices.</p>
+<div class="section" id="duopoly">
+<h2><a class="toc-backref" href="#id4">Duopoly</a><a class="headerlink" href="#duopoly" title="Permalink to this headline">¶</a></h2>
+<p>Time is discrete and is indexed by <span class="math notranslate nohighlight">\(t = 0, 1, \ldots\)</span>.</p>
+<p>Two firms produce a single good whose demand is governed by the linear
+inverse demand curve</p>
+<div class="math notranslate nohighlight">
+\[
+p_t = a_0 - a_1 (q_{1t}+ q_{2t} )
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(q_{it}\)</span> is output of firm <span class="math notranslate nohighlight">\(i\)</span> at time <span class="math notranslate nohighlight">\(t\)</span> and
+<span class="math notranslate nohighlight">\(a_0\)</span> and <span class="math notranslate nohighlight">\(a_1\)</span> are both positive.</p>
+<p><span class="math notranslate nohighlight">\(q_{10}, q_{20}\)</span> are given numbers that serve as initial
+conditions at time <span class="math notranslate nohighlight">\(0\)</span>.</p>
+<p>By incurring a cost of change</p>
+<div class="math notranslate nohighlight">
+\[
+\gamma v_{it}^2
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\gamma &gt; 0\)</span>, firm <span class="math notranslate nohighlight">\(i\)</span> can change its output according
+to</p>
+<div class="math notranslate nohighlight">
+\[
+q_{it+1} = q_{it} + v_{it}
+\]</div>
+<p>Firm <span class="math notranslate nohighlight">\(i\)</span>’s profits at time <span class="math notranslate nohighlight">\(t\)</span> equal</p>
+<div class="math notranslate nohighlight">
+\[
+\pi_{it} = p_t q_{it} - \gamma v_{it}^2
+\]</div>
+<p>Firm <span class="math notranslate nohighlight">\(i\)</span> wants to maximize the present value of its profits</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_{t=0}^\infty \beta^t \pi_{it}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\beta \in (0,1)\)</span> is a time discount factor.</p>
+<div class="section" id="stackelberg-leader-and-follower">
+<h3>Stackelberg Leader and Follower<a class="headerlink" href="#stackelberg-leader-and-follower" title="Permalink to this headline">¶</a></h3>
+<p>Each firm <span class="math notranslate nohighlight">\(i=1,2\)</span> chooses a sequence
+<span class="math notranslate nohighlight">\(\vec q_i \equiv \{q_{it+1}\}_{t=0}^\infty\)</span> once and for all at
+time <span class="math notranslate nohighlight">\(0\)</span>.</p>
+<p>We let firm 2 be a <strong>Stackelberg leader</strong> and firm 1 be a <strong>Stackelberg
+follower</strong>.</p>
+<p>The leader firm 2 goes first and chooses
+<span class="math notranslate nohighlight">\(\{q_{2t+1}\}_{t=0}^\infty\)</span> once and for all at time <span class="math notranslate nohighlight">\(0\)</span>.</p>
+<p>Knowing that firm 2 has chosen <span class="math notranslate nohighlight">\(\{q_{2t+1}\}_{t=0}^\infty\)</span>, the
+follower firm 1 goes second and chooses
+<span class="math notranslate nohighlight">\(\{q_{1t+1}\}_{t=0}^\infty\)</span> once and for all at time <span class="math notranslate nohighlight">\(0\)</span>.</p>
+<p>In choosing <span class="math notranslate nohighlight">\(\vec q_2\)</span>, firm 2 takes into account that firm 1 will
+base its choice of <span class="math notranslate nohighlight">\(\vec q_1\)</span> on firm 2’s choice of
+<span class="math notranslate nohighlight">\(\vec q_2\)</span>.</p>
+</div>
+<div class="section" id="abstract-statement-of-the-leader-s-and-follower-s-problems">
+<h3>Abstract Statement of the Leader’s and Follower’s Problems<a class="headerlink" href="#abstract-statement-of-the-leader-s-and-follower-s-problems" title="Permalink to this headline">¶</a></h3>
+<p>We can express firm 1’s problem as</p>
+<div class="math notranslate nohighlight">
+\[
+\max_{\vec q_1} \Pi_1(\vec q_1; \vec q_2)
+\]</div>
+<p>where the appearance behind the semi-colon indicates that
+<span class="math notranslate nohighlight">\(\vec q_2\)</span> is given.</p>
+<p>Firm 1’s problem induces a best response mapping</p>
+<div class="math notranslate nohighlight">
+\[
+\vec q_1 = B(\vec q_2)
+\]</div>
+<p>(Here <span class="math notranslate nohighlight">\(B\)</span> maps a sequence into a sequence)</p>
+<p>The Stackelberg leader’s problem is</p>
+<div class="math notranslate nohighlight">
+\[
+\max_{\vec q_2} \Pi_2 (B(\vec q_2), \vec q_2)
+\]</div>
+<p>whose maximizer is a sequence <span class="math notranslate nohighlight">\(\vec q_2\)</span> that depends on the
+initial conditions <span class="math notranslate nohighlight">\(q_{10}, q_{20}\)</span> and the parameters of the
+model <span class="math notranslate nohighlight">\(a_0, a_1, \gamma\)</span>.</p>
+<p>This formulation captures key features of the model</p>
+<ul class="simple">
+<li><p>Both firms make once-and-for-all choices at time <span class="math notranslate nohighlight">\(0\)</span>.</p></li>
+<li><p>This is true even though both firms are choosing sequences of
+quantities that are indexed by <strong>time</strong>.</p></li>
+<li><p>The Stackelberg leader chooses first <strong>within time</strong> <span class="math notranslate nohighlight">\(0\)</span>,
+knowing that the Stackelberg follower will choose second <strong>within
+time</strong> <span class="math notranslate nohighlight">\(0\)</span>.</p></li>
+</ul>
+<p>While our abstract formulation reveals the timing protocol and
+equilibrium concept well, it obscures details that must be addressed
+when we want to compute and interpret a Stackelberg plan and the
+follower’s best response to it.</p>
+<p>To gain insights about these things, we study them in more detail.</p>
+</div>
+<div class="section" id="firms-problems">
+<h3>Firms’ Problems<a class="headerlink" href="#firms-problems" title="Permalink to this headline">¶</a></h3>
+<p>Firm 1 acts as if firm 2’s sequence <span class="math notranslate nohighlight">\(\{q_{2t+1}\}_{t=0}^\infty\)</span> is
+given and beyond its control.</p>
+<p>Firm 2 knows that firm 1 chooses second and takes this into account in
+choosing <span class="math notranslate nohighlight">\(\{q_{2t+1}\}_{t=0}^\infty\)</span>.</p>
+<p>In the spirit of <em>working backwards</em>, we study firm 1’s problem first,
+taking <span class="math notranslate nohighlight">\(\{q_{2t+1}\}_{t=0}^\infty\)</span> as given.</p>
+<p>We can formulate firm 1’s optimum problem in terms of the Lagrangian</p>
+<div class="math notranslate nohighlight">
+\[
+L=\sum_{t=0}^{\infty}\beta^{t}\{a_{0}q_{1t}-a_{1}q_{1t}^{2}-a_{1}q_{1t}q_{2t}-\gamma v_{1t}^{2}+\lambda_{t}[q_{1t}+v_{1t}-q_{1t+1}]\}
+\]</div>
+<p>Firm 1 seeks a maximum with respect to
+<span class="math notranslate nohighlight">\(\{q_{1t+1}, v_{1t} \}_{t=0}^\infty\)</span> and a minimum with respect to
+<span class="math notranslate nohighlight">\(\{ \lambda_t\}_{t=0}^\infty\)</span>.</p>
+<p>We approach this problem using methods described in Ljungqvist and
+Sargent RMT5 chapter 2, appendix A and Macroeconomic Theory, 2nd
+edition, chapter IX.</p>
+<p>First-order conditions for this problem are</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+\frac{\partial L}{\partial q_{1t}} &amp; = a_0 - 2 a_1 q_{1t} - a_1 q_{2t} + \lambda_t - \beta^{-1}
+             \lambda_{t-1} = 0 , \quad t \geq 1 \cr
+             \frac{\partial L}{\partial v_{1t}} &amp; = -2 \gamma v_{1t} +  \lambda_t = 0 , \quad t \geq 0
+ \end{aligned}
+\]</div>
+<p>These first-order conditions and the constraint <span class="math notranslate nohighlight">\(q_{1t+1} = q_{1t} + v_{1t}\)</span> can be rearranged to take the form</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+v_{1t} &amp; = \beta v_{1t+1} + \frac{\beta a_0}{2 \gamma} - \frac{\beta a_1}{\gamma} q_{1t+1} -
+                      \frac{\beta a_1}{2 \gamma} q_{2t+1} \cr
+            q_{t+1} &amp; = q_{1t} + v_{1t}
+\end{aligned}
+\]</div>
+<p>We can substitute the second equation into the first equation to obtain</p>
+<div class="math notranslate nohighlight">
+\[
+(q_{1t+1} - q_{1t} ) = \beta (q_{1t+2} - q_{1t+1}) + c_0 - c_1 q_{1t+1} - c_2 q_{2t+1}
+\]</div>
+<p>where
+<span class="math notranslate nohighlight">\(c_0 = \frac{\beta a_0}{2 \gamma}, c_1 = \frac{\beta a_1}{\gamma}, c_2 = \frac{\beta a_1}{2 \gamma}\)</span>.</p>
+<p>This equation can in turn be rearranged to become the second-order
+difference equation</p>
+<div class="math notranslate nohighlight" id="equation-sstack1">
+<span class="eqno">(450)<a class="headerlink" href="#equation-sstack1" title="Permalink to this equation">¶</a></span>\[q_{1t} + (1+\beta + c_1) q_{1t+1} - \beta q_{1t+2} = c_0 - c_2 q_{2t+1}\]</div>
+<p>Equation <a class="reference internal" href="#equation-sstack1">(450)</a> is a second-order difference equation in the sequence
+<span class="math notranslate nohighlight">\(\vec q_1\)</span> whose solution we want.</p>
+<p>It satisfies <strong>two boundary conditions:</strong></p>
+<ul class="simple">
+<li><p>an initial condition that <span class="math notranslate nohighlight">\(q_{1,0}\)</span>, which is given</p></li>
+<li><p>a terminal condition requiring that
+<span class="math notranslate nohighlight">\(\lim_{T \rightarrow + \infty} \beta^T q_{1t}^2 &lt; + \infty\)</span></p></li>
+</ul>
+<p>Using the lag operators described in chapter IX of <em>Macroeconomic
+Theory, Second edition (1987)</em>, difference equation
+<a class="reference internal" href="#equation-sstack1">(450)</a> can be written as</p>
+<div class="math notranslate nohighlight">
+\[
+\beta(1 - \frac{1+\beta + c_1}{\beta} L + \beta^{-1} L^2 ) q_{1t+2} = - c_0 + c_2 q_{2t+1}
+\]</div>
+<p>The polynomial in the lag operator on the left side can be <strong>factored</strong>
+as</p>
+<div class="math notranslate nohighlight" id="equation-sstack2">
+<span class="eqno">(451)<a class="headerlink" href="#equation-sstack2" title="Permalink to this equation">¶</a></span>\[(1 - \frac{1+\beta + c_1}{\beta} L + \beta^{-1} L^2 )  = ( 1 - \delta_1 L ) (1 - \delta_2 L)\]</div>
+<p>where <span class="math notranslate nohighlight">\(0 &lt; \delta_1 &lt; 1 &lt; \frac{1}{\sqrt{\beta}} &lt; \delta_2\)</span>.</p>
+<p>Because <span class="math notranslate nohighlight">\(\delta_2 &gt; \frac{1}{\sqrt{\beta}}\)</span> the operator
+<span class="math notranslate nohighlight">\((1 - \delta_2 L)\)</span> contributes an <strong>unstable</strong> component if solved
+<strong>backwards</strong> but a <strong>stable</strong> component if solved <strong>forwards</strong>.</p>
+<p>Mechanically, write</p>
+<div class="math notranslate nohighlight">
+\[
+(1- \delta_2 L) = -\delta_{2} L (1 - \delta_2^{-1} L^{-1} )
+\]</div>
+<p>and compute the following inverse operator</p>
+<div class="math notranslate nohighlight">
+\[
+\left[-\delta_{2} L (1 - \delta_2^{-1} L^{-1} )\right]^{-1} = - \delta_2 (1 - {\delta_2}^{-1} )^{-1} L^{-1}
+\]</div>
+<p>Operating on both sides of equation <a class="reference internal" href="#equation-sstack2">(451)</a> with
+<span class="math notranslate nohighlight">\(\beta^{-1}\)</span> times this inverse operator gives the follower’s
+decision rule for setting <span class="math notranslate nohighlight">\(q_{1t+1}\)</span> in the
+<strong>feedback-feedforward</strong> form</p>
+<div class="math notranslate nohighlight" id="equation-sstack3">
+<span class="eqno">(452)<a class="headerlink" href="#equation-sstack3" title="Permalink to this equation">¶</a></span>\[q_{1t+1} = \delta_1 q_{1t} - c_0 \delta_2^{-1} \beta^{-1}  \frac{1}{1 -\delta_2^{-1}}  + c_2 \delta_2^{-1} \beta^{-1} \sum_{j=0}^\infty \delta_2^j q_{2t+j+1} ,  \quad t \geq 0\]</div>
+<p>The problem of the Stackelberg leader firm 2 is to choose the sequence
+<span class="math notranslate nohighlight">\(\{q_{2t+1}\}_{t=0}^\infty\)</span> to maximize its discounted profits</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_{t=0}^\infty \beta^t \{ (a_0 -  a_1 (q_{1t} + q_{2t}) ) q_{2t} - \gamma (q_{2t+1} - q_{2t})^2 \}
+\]</div>
+<p>subject to the sequence of constraints <a class="reference internal" href="#equation-sstack3">(452)</a> for <span class="math notranslate nohighlight">\(t \geq 0\)</span>.</p>
+<p>We can put a sequence <span class="math notranslate nohighlight">\(\{\theta_t\}_{t=0}^\infty\)</span> of Lagrange
+multipliers on the sequence of equations <a class="reference internal" href="#equation-sstack3">(452)</a>
+and formulate the following Lagrangian for the Stackelberg leader firm
+2’s problem</p>
+<div class="math notranslate nohighlight" id="equation-sstack4">
+<span class="eqno">(453)<a class="headerlink" href="#equation-sstack4" title="Permalink to this equation">¶</a></span>\[\begin{aligned}
+\tilde L &amp; = \sum_{t=0}^\infty  \beta^t\{ (a_0 -  a_1 (q_{1t} + q_{2t}) ) q_{2t} - \gamma (q_{2t+1} - q_{2t})^2 \} \cr
+ &amp;  + \sum_{t=0}^\infty \beta^t \theta_t \{ \delta_1 q_{1t} -  c_0 \delta_2^{-1} \beta^{-1}  \frac{1}{1 -\delta_2^{-1}} +  c_2 \delta_2^{-1} \beta^{-1}
+   \sum_{j=0}^\infty \delta_2^{-j} q_{2t+j+1} - q_{1t+1}
+\end{aligned}\]</div>
+<p>subject to initial conditions for <span class="math notranslate nohighlight">\(q_{1t}, q_{2t}\)</span> at <span class="math notranslate nohighlight">\(t=0\)</span>.</p>
+<p><strong>Comments:</strong> We have formulated the Stackelberg problem in a space of
+sequences.</p>
+<p>The max-min problem associated with Lagrangian
+<a class="reference internal" href="#equation-sstack4">(453)</a> is unpleasant because the time <span class="math notranslate nohighlight">\(t\)</span>
+component of firm <span class="math notranslate nohighlight">\(1\)</span>’s payoff function depends on the entire
+future of its choices of <span class="math notranslate nohighlight">\(\{q_{1t+j}\}_{j=0}^\infty\)</span>.</p>
+<p>This renders a direct attack on the problem cumbersome.</p>
+<p>Therefore, below, we will formulate the Stackelberg leader’s problem
+recursively.</p>
+<p>We’ll put our little duopoly model into a broader class of models with
+the same conceptual structure.</p>
+</div>
+</div>
+<div class="section" id="the-stackelberg-problem">
+<h2><a class="toc-backref" href="#id5">The Stackelberg Problem</a><a class="headerlink" href="#the-stackelberg-problem" title="Permalink to this headline">¶</a></h2>
+<p>We formulate a class of linear-quadratic Stackelberg leader-follower
+problems of which our duopoly model is an instance.</p>
+<p>We use the optimal linear regulator (a.k.a. the linear-quadratic dynamic
+programming problem described in <a class="reference external" href="https://python-intro.quantecon.org/lqcontrol.html">LQ Dynamic Programming
+problems</a>) to
+represent a Stackelberg leader’s problem recursively.</p>
+<p>Let <span class="math notranslate nohighlight">\(z_t\)</span> be an <span class="math notranslate nohighlight">\(n_z \times 1\)</span> vector of <strong>natural
+state variables</strong>.</p>
+<p>Let <span class="math notranslate nohighlight">\(x_t\)</span> be an <span class="math notranslate nohighlight">\(n_x \times 1\)</span> vector of endogenous
+forward-looking variables that are physically free to jump at <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>In our duopoly example <span class="math notranslate nohighlight">\(x_t = v_{1t}\)</span>, the time <span class="math notranslate nohighlight">\(t\)</span> decision
+of the Stackelberg <strong>follower</strong>.</p>
+<p>Let <span class="math notranslate nohighlight">\(u_t\)</span> be a vector of decisions chosen by the Stackelberg leader
+at <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>The <span class="math notranslate nohighlight">\(z_t\)</span> vector is inherited physically from the past.</p>
+<p>But <span class="math notranslate nohighlight">\(x_t\)</span> is a decision made by the Stackelberg follower at time
+<span class="math notranslate nohighlight">\(t\)</span> that is the follower’s best response to the choice of an
+entire sequence of decisions made by the Stackelberg leader at time
+<span class="math notranslate nohighlight">\(t=0\)</span>.</p>
+<p>Let</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+y_t = \begin{bmatrix} z_t \\ x_t \end{bmatrix}
+\end{split}\]</div>
+<p>Represent the Stackelberg leader’s one-period loss function as</p>
+<div class="math notranslate nohighlight">
+\[
+r(y, u)  =  y' R y  + u' Q u
+\]</div>
+<p>Subject to an initial condition for <span class="math notranslate nohighlight">\(z_0\)</span>, but not for <span class="math notranslate nohighlight">\(x_0\)</span>, the
+Stackelberg leader wants to maximize</p>
+<div class="math notranslate nohighlight" id="equation-maxeq">
+<span class="eqno">(454)<a class="headerlink" href="#equation-maxeq" title="Permalink to this equation">¶</a></span>\[-\sum_{t=0}^\infty \beta^t r(y_t, u_t)\]</div>
+<p>The Stackelberg leader faces the model</p>
+<div class="math notranslate nohighlight" id="equation-new2">
+<span class="eqno">(455)<a class="headerlink" href="#equation-new2" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{bmatrix} I &amp; 0 \\ G_{21} &amp; G_{22} \end{bmatrix}
+\begin{bmatrix}    z_{t+1} \\  x_{t+1} \end{bmatrix}
+= \begin{bmatrix}  \hat A_{11}  &amp;  \hat A_{12} \\ \hat A_{21} &amp; \hat A_{22}  \end{bmatrix} \begin{bmatrix}  z_t \\ x_t \end{bmatrix} + \hat B u_t\end{split}\]</div>
+<p>We assume that the matrix
+<span class="math notranslate nohighlight">\(\begin{bmatrix} I &amp; 0 \\ G_{21} &amp; G_{22} \end{bmatrix}\)</span> on the
+left side of equation <a class="reference internal" href="#equation-new2">(455)</a> is invertible, so that we
+can multiply both sides by its inverse to obtain</p>
+<div class="math notranslate nohighlight" id="equation-new3">
+<span class="eqno">(456)<a class="headerlink" href="#equation-new3" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{bmatrix}    z_{t+1} \\  x_{t+1} \end{bmatrix}
+= \begin{bmatrix}  A_{11}  &amp;   A_{12} \\ A_{21} &amp;  A_{22}  \end{bmatrix}
+\begin{bmatrix}  z_t \\ x_t \end{bmatrix} +  B u_t\end{split}\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight" id="equation-constrainteq">
+<span class="eqno">(457)<a class="headerlink" href="#equation-constrainteq" title="Permalink to this equation">¶</a></span>\[y_{t+1} = A y_t + B u_t\]</div>
+<div class="section" id="interpretation-of-the-second-block-of-equations">
+<h3>Interpretation of the Second Block of Equations<a class="headerlink" href="#interpretation-of-the-second-block-of-equations" title="Permalink to this headline">¶</a></h3>
+<p>The Stackelberg follower’s best response mapping is summarized by the
+second block of equations of <a class="reference internal" href="#equation-new3">(456)</a>.</p>
+<p>In particular, these equations are the first-order conditions of the
+Stackelberg follower’s optimization problem (i.e., its Euler equations).</p>
+<p>These Euler equations summarize the forward-looking aspect of the
+follower’s behavior and express how its time <span class="math notranslate nohighlight">\(t\)</span> decision depends on
+the leader’s actions at times <span class="math notranslate nohighlight">\(s \geq t\)</span>.</p>
+<p>When combined with a stability condition to be imposed below, the Euler
+equations summarize the follower’s best response to the sequence of
+actions by the leader.</p>
+<p>The Stackelberg leader maximizes <a class="reference internal" href="#equation-maxeq">(454)</a> by
+choosing sequences <span class="math notranslate nohighlight">\(\{u_t, x_t, z_{t+1}\}_{t=0}^{\infty}\)</span>
+subject to <a class="reference internal" href="#equation-constrainteq">(457)</a> and an initial condition for <span class="math notranslate nohighlight">\(z_0\)</span>.</p>
+<p>Note that we have an initial condition for <span class="math notranslate nohighlight">\(z_0\)</span> but not for <span class="math notranslate nohighlight">\(x_0\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(x_0\)</span> is among the variables to be chosen at time <span class="math notranslate nohighlight">\(0\)</span> by the
+Stackelberg leader.</p>
+<p>The Stackelberg leader uses its understanding of the responses
+restricted by <a class="reference internal" href="#equation-constrainteq">(457)</a> to manipulate the follower’s
+decisions.</p>
+</div>
+<div class="section" id="more-mechanical-details">
+<h3>More Mechanical Details<a class="headerlink" href="#more-mechanical-details" title="Permalink to this headline">¶</a></h3>
+<p>For any vector <span class="math notranslate nohighlight">\(a_t\)</span>, define <span class="math notranslate nohighlight">\(\vec a_t = [a_t,
+a_{t+1} \ldots ]\)</span>.</p>
+<p>Define a feasible set of <span class="math notranslate nohighlight">\((\vec y_1, \vec u_0)\)</span> sequences</p>
+<div class="math notranslate nohighlight">
+\[
+\Omega(y_0) = \left\{ (\vec y_1, \vec u_0) :  y_{t+1} = A y_t + B u_t, \forall t \geq 0 \right\}
+\]</div>
+<p>Please remember that the follower’s Euler equation is embedded in the
+system of dynamic equations <span class="math notranslate nohighlight">\(y_{t+1} = A y_t + B u_t\)</span>.</p>
+<p>Note that in the definition of <span class="math notranslate nohighlight">\(\Omega(y_0)\)</span>, <span class="math notranslate nohighlight">\(y_0\)</span>
+is taken as given.</p>
+<p>Although it is taken as given in <span class="math notranslate nohighlight">\(\Omega(y_0)\)</span>,
+eventually, the <span class="math notranslate nohighlight">\(x_0\)</span> component of <span class="math notranslate nohighlight">\(y_0\)</span> will be chosen by the
+Stackelberg leader.</p>
+</div>
+<div class="section" id="two-subproblems">
+<h3>Two Subproblems<a class="headerlink" href="#two-subproblems" title="Permalink to this headline">¶</a></h3>
+<p>Once again we use backward induction.</p>
+<p>We express the Stackelberg problem in terms of <strong>two subproblems</strong>.</p>
+<p>Subproblem 1 is solved by a <strong>continuation Stackelberg leader</strong> at each
+date <span class="math notranslate nohighlight">\(t \geq 0\)</span>.</p>
+<p>Subproblem 2 is solved the <strong>Stackelberg leader</strong> at <span class="math notranslate nohighlight">\(t=0\)</span>.</p>
+<p>The two subproblems are designed</p>
+<ul class="simple">
+<li><p>to respect the protocol in which the follower chooses
+<span class="math notranslate nohighlight">\(\vec q_1\)</span> after seeing <span class="math notranslate nohighlight">\(\vec q_2\)</span> chosen by the leader</p></li>
+<li><p>to make the leader choose <span class="math notranslate nohighlight">\(\vec q_2\)</span> while respecting that
+<span class="math notranslate nohighlight">\(\vec q_1\)</span> will be the follower’s best response to
+<span class="math notranslate nohighlight">\(\vec q_2\)</span></p></li>
+<li><p>to represent the leader’s problem recursively by artfully choosing
+the state variables confronting and the control variables available
+to the leader</p></li>
+</ul>
+<div class="section" id="subproblem-1">
+<h4>Subproblem 1<a class="headerlink" href="#subproblem-1" title="Permalink to this headline">¶</a></h4>
+<div class="math notranslate nohighlight">
+\[
+v(y_0) = \max_{(\vec y_1, \vec u_0) \in \Omega(y_0)} - \sum_{t=0}^\infty \beta^t r(y_t, u_t)
+\]</div>
+</div>
+<div class="section" id="subproblem-2">
+<h4>Subproblem 2<a class="headerlink" href="#subproblem-2" title="Permalink to this headline">¶</a></h4>
+<div class="math notranslate nohighlight">
+\[
+w(z_0) = \max_{x_0} v(y_0)
+\]</div>
+<p>Subproblem 1 takes the vector of forward-looking variables <span class="math notranslate nohighlight">\(x_0\)</span> as
+given.</p>
+<p>Subproblem 2 optimizes over <span class="math notranslate nohighlight">\(x_0\)</span>.</p>
+<p>The value function <span class="math notranslate nohighlight">\(w(z_0)\)</span> tells the value of the Stackelberg plan
+as a function of the vector of natural state variables at time <span class="math notranslate nohighlight">\(0\)</span>,
+<span class="math notranslate nohighlight">\(z_0\)</span>.</p>
+</div>
+</div>
+<div class="section" id="two-bellman-equations">
+<h3>Two Bellman Equations<a class="headerlink" href="#two-bellman-equations" title="Permalink to this headline">¶</a></h3>
+<p>We now describe Bellman equations for <span class="math notranslate nohighlight">\(v(y)\)</span> and <span class="math notranslate nohighlight">\(w(z_0)\)</span>.</p>
+<div class="section" id="id1">
+<h4>Subproblem 1<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>The value function <span class="math notranslate nohighlight">\(v(y)\)</span> in subproblem 1 satisfies the Bellman
+equation</p>
+<div class="math notranslate nohighlight" id="equation-bellman-stack">
+<span class="eqno">(458)<a class="headerlink" href="#equation-bellman-stack" title="Permalink to this equation">¶</a></span>\[v(y) = \max_{u, y^*}  \left\{ - r(y,u) + \beta v(y^*) \right\}\]</div>
+<p>where the maximization is subject to</p>
+<div class="math notranslate nohighlight">
+\[
+y^* = A y + B u
+\]</div>
+<p>and <span class="math notranslate nohighlight">\(y^*\)</span> denotes next period’s value.</p>
+<p>Substituting <span class="math notranslate nohighlight">\(v(y) = - y'P y\)</span> into Bellman equation <a class="reference internal" href="#equation-bellman-stack">(458)</a> gives</p>
+<div class="math notranslate nohighlight">
+\[
+-y' P y = {\rm max}_{  u, y^*} \left\{ -  y' R y -   u'Q     u - \beta y^{* \prime} P y^* \right\}
+\]</div>
+<p>which as in lecture <a class="reference external" href="https://python-intro.quantecon.org/lqcontrol.html">linear regulator</a> gives
+rise to the algebraic matrix Riccati equation</p>
+<div class="math notranslate nohighlight">
+\[
+P = R + \beta A' P A - \beta^2 A' P   B (  Q  + \beta   B' P   B)^{-1}   B' P A
+\]</div>
+<p>and the optimal decision rule coefficient vector</p>
+<div class="math notranslate nohighlight">
+\[
+F = \beta(   Q + \beta   B' P   B)^{-1}  B' P A
+\]</div>
+<p>where the optimal decision rule is</p>
+<div class="math notranslate nohighlight">
+\[
+u_t = - F y_t
+\]</div>
+</div>
+<div class="section" id="id2">
+<h4>Subproblem 2<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<p>We find an optimal <span class="math notranslate nohighlight">\(x_0\)</span> by equating to zero the gradient of <span class="math notranslate nohighlight">\(v(y_0)\)</span>
+with respect to <span class="math notranslate nohighlight">\(x_0\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+-2 P_{21} z_0 - 2 P_{22} x_0 =0,
+\]</div>
+<p>which implies that</p>
+<div class="math notranslate nohighlight">
+\[
+x_0 = - P_{22}^{-1} P_{21} z_0
+\]</div>
+</div>
+</div>
+</div>
+<div class="section" id="stackelberg-plan">
+<h2><a class="toc-backref" href="#id6">Stackelberg Plan</a><a class="headerlink" href="#stackelberg-plan" title="Permalink to this headline">¶</a></h2>
+<p>Now let’s map our duopoly model into the above setup.</p>
+<p>We we’ll formulate a state space system</p>
+<div class="math notranslate nohighlight">
+\[
+y_t = \begin{bmatrix} z_t \cr x_t \end{bmatrix}
+\]</div>
+<p>where in this instance <span class="math notranslate nohighlight">\(x_t = v_{1t}\)</span>, the time <span class="math notranslate nohighlight">\(t\)</span> decision
+of the follower firm 1.</p>
+<div class="section" id="calculations-to-prepare-duopoly-model">
+<h3>Calculations to Prepare Duopoly Model<a class="headerlink" href="#calculations-to-prepare-duopoly-model" title="Permalink to this headline">¶</a></h3>
+<p>Now we’ll proceed to cast our duopoly model within the framework of the
+more general linear-quadratic structure described above.</p>
+<p>That will allow us to compute a Stackelberg plan simply by enlisting a
+Riccati equation to solve a linear-quadratic dynamic program.</p>
+<p>As emphasized above, firm 1 acts as if firm 2’s decisions
+<span class="math notranslate nohighlight">\(\{q_{2t+1}, v_{2t}\}_{t=0}^\infty\)</span> are given and beyond its
+control.</p>
+</div>
+<div class="section" id="firm-1-s-problem">
+<h3>Firm 1’s Problem<a class="headerlink" href="#firm-1-s-problem" title="Permalink to this headline">¶</a></h3>
+<p>We again formulate firm 1’s optimum problem in terms of the Lagrangian</p>
+<div class="math notranslate nohighlight">
+\[
+L=\sum_{t=0}^{\infty}\beta^{t}\{a_{0}q_{1t}-a_{1}q_{1t}^{2}-a_{1}q_{1t}q_{2t}-\gamma v_{1t}^{2}+\lambda_{t}[q_{1t}+v_{1t}-q_{1t+1}]\}
+\]</div>
+<p>Firm 1 seeks a maximum with respect to
+<span class="math notranslate nohighlight">\(\{q_{1t+1}, v_{1t} \}_{t=0}^\infty\)</span> and a minimum with respect to
+<span class="math notranslate nohighlight">\(\{ \lambda_t\}_{t=0}^\infty\)</span>.</p>
+<p>First-order conditions for this problem are</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+\frac{\partial L}{\partial q_{1t}} &amp; = a_0 - 2 a_1 q_{1t} - a_1 q_{2t} + \lambda_t - \beta^{-1}
+             \lambda_{t-1} = 0 , \quad t \geq 1 \cr
+             \frac{\partial L}{\partial v_{1t}} &amp; = -2 \gamma v_{1t} +  \lambda_t = 0 , \quad t \geq 0
+ \end{aligned}
+\]</div>
+<p>These first-order order conditions and the constraint <span class="math notranslate nohighlight">\(q_{1t+1} =
+q_{1t} + v_{1t}\)</span> can be rearranged to take the form</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+v_{1t} &amp; = \beta v_{1t+1} + \frac{\beta a_0}{2 \gamma} - \frac{\beta a_1}{\gamma} q_{1t+1} -
+                      \frac{\beta a_1}{2 \gamma} q_{2t+1} \cr
+            q_{t+1} &amp; = q_{1t} + v_{1t}
+\end{aligned}
+\]</div>
+<p>We use these two equations as components of the following linear system
+that confronts a Stackelberg continuation leader at time <span class="math notranslate nohighlight">\(t\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+\begin{bmatrix}       1 &amp; 0 &amp; 0 &amp; 0 \cr
+                       0 &amp; 1 &amp; 0 &amp; 0 \cr
+                       0 &amp; 0 &amp; 1 &amp; 0 \cr
+       \frac{\beta a_0}{2 \gamma} &amp; - \frac{\beta a_1}{2 \gamma} &amp; -\frac{\beta a_1}{\gamma} &amp; \beta \end{bmatrix}
+       \begin{bmatrix} 1 \cr q_{2t+1} \cr q_{1t+1} \cr v_{1t+1} \end{bmatrix}
+       = \begin{bmatrix} 1 &amp; 0 &amp; 0 &amp; 0 \cr
+                         0 &amp; 1 &amp; 0 &amp; 0 \cr
+                          0 &amp; 0 &amp; 1 &amp; 1 \cr
+                          0 &amp; 0 &amp; 0 &amp; 1 \end{bmatrix} \begin{bmatrix} 1 \cr q_{2t} \cr q_{1t} \cr v_{1t} \end{bmatrix}
+       + \begin{bmatrix} 0 \cr 1 \cr 0 \cr 0 \end{bmatrix} v_{2t}
+\]</div>
+<p>Time <span class="math notranslate nohighlight">\(t\)</span> revenues of firm 2 are
+<span class="math notranslate nohighlight">\(\pi_{2t} = a_0 q_{2t} - a_1 q_{2t}^2 - a_1 q_{1t} q_{2t}\)</span> which
+evidently equal</p>
+<div class="math notranslate nohighlight">
+\[
+z_t' R_1 z_t \equiv \begin{bmatrix} 1 \cr q_{2t} \cr q_{1t}  \end{bmatrix}'
+   \begin{bmatrix} 0 &amp; \frac{a_0}{2}&amp; 0 \cr
+                   \frac{a_0}{2} &amp; -a_1 &amp; -\frac{a_1}{2}\cr
+                   0 &amp; -\frac{a_1}{2} &amp; 0 \end{bmatrix}
+\begin{bmatrix} 1 \cr q_{2t} \cr q_{1t}  \end{bmatrix}
+\]</div>
+<p>If we set <span class="math notranslate nohighlight">\(Q = \gamma\)</span>, then firm 2’s period <span class="math notranslate nohighlight">\(t\)</span> profits can
+then be written</p>
+<div class="math notranslate nohighlight">
+\[
+y_t' R y_t - Q v_{2t}^2
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+y_t = \begin{bmatrix} z_t \cr x_t \end{bmatrix}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(x_t = v_{1t}\)</span> and</p>
+<div class="math notranslate nohighlight">
+\[
+R =
+\begin{bmatrix} R_1 &amp; 0 \cr 0 &amp; 0 \end{bmatrix}
+\]</div>
+<p>We’ll report results of implementing this code soon.</p>
+<p>But first we want to represent the Stackelberg leader’s optimal choices
+recursively.</p>
+<p>It is important to do this for several reasons:</p>
+<ul class="simple">
+<li><p>properly to interpret a representation of the Stackelberg leaders’s
+choice as a sequence of history-dependent functions</p></li>
+<li><p>to formulate a recursive version of the follower’s choice problem</p></li>
+</ul>
+<p>First let’s get a recursive representation of the Stackelberg leader’s
+choice of <span class="math notranslate nohighlight">\(\vec q_2\)</span> for our duopoly model.</p>
+</div>
+</div>
+<div class="section" id="recursive-representation-of-stackelberg-plan">
+<h2><a class="toc-backref" href="#id7">Recursive Representation of Stackelberg Plan</a><a class="headerlink" href="#recursive-representation-of-stackelberg-plan" title="Permalink to this headline">¶</a></h2>
+<p>In order to attain an appropriate representation of the Stackelberg
+leader’s history-dependent plan, we will employ what amounts to a
+version of the <strong>Big K, little k</strong> device often used in
+macroeconomics by distinguishing <span class="math notranslate nohighlight">\(z_t\)</span>, which depends partly on
+decisions <span class="math notranslate nohighlight">\(x_t\)</span> of the followers, from another vector
+<span class="math notranslate nohighlight">\(\check z_t\)</span>, which does not.</p>
+<p>We will use <span class="math notranslate nohighlight">\(\check z_t\)</span> and its history <span class="math notranslate nohighlight">\(\check z^t
+= [\check z_t, \check z_{t-1}, \ldots, \check z_0]\)</span> to describe the
+sequence of the Stackelberg leader’s decisions that the Stackelberg
+follower takes as given.</p>
+<p>Thus, we let
+<span class="math notranslate nohighlight">\(\check y_t' = \begin{bmatrix}\check z_t' &amp; \check x_t'\end{bmatrix}\)</span>
+with initial condition <span class="math notranslate nohighlight">\(\check z_0 = z_0\)</span> given.</p>
+<p>That we distinguish <span class="math notranslate nohighlight">\(\check z_t\)</span> from <span class="math notranslate nohighlight">\(z_t\)</span> is part and
+parcel of the <strong>Big K, little k</strong> device in this
+instance.</p>
+<p>We have demonstrated that a Stackelberg plan for
+<span class="math notranslate nohighlight">\(\{u_t\}_{t=0}^\infty\)</span> has a recursive representation</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+\check x_0 &amp; = - P_{22}^{-1} P_{21} z_0 \cr
+            u_t &amp; = - F \check y_t, \quad t \geq 0 \cr
+            \check y_{t+1} &amp; = (A - BF) \check y_t, \quad t \geq 0
+\end{aligned}
+\]</div>
+<p>From this representation we can deduce the sequence of functions
+<span class="math notranslate nohighlight">\(\sigma = \{\sigma_t(\check z^t)\}_{t=0}^\infty\)</span> that comprise a
+Stackelberg plan.</p>
+<p>For convenience, let <span class="math notranslate nohighlight">\(\check A \equiv A - BF\)</span> and partition
+<span class="math notranslate nohighlight">\(\check A\)</span> conformably to the partition
+<span class="math notranslate nohighlight">\(y_t = \begin{bmatrix}\check z_t \cr \check x_t \end{bmatrix}\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{bmatrix}\check A_{11} &amp; \check A_{12} \cr \check A_{21} &amp; \check A_{22} \end{bmatrix}
+\]</div>
+<p>Let <span class="math notranslate nohighlight">\(H^0_0 \equiv - P_{22}^{-1} P_{21}\)</span> so that
+<span class="math notranslate nohighlight">\(\check x_0 = H^0_0 \check z_0\)</span>.</p>
+<p>Then iterations on <span class="math notranslate nohighlight">\(\check y_{t+1} = \check A \check y_t\)</span> starting from initial
+condition <span class="math notranslate nohighlight">\(\check y_0 = \begin{bmatrix}\check z_0 \cr H^0_0 \check z_0\end{bmatrix}\)</span>
+imply that for <span class="math notranslate nohighlight">\(t \geq 1\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+x_t = \sum_{j=1}^t H_j^t \check z_{t-j}
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+H^t_1 &amp; = \check A_{21} \cr
+            H^t_2 &amp; = \check A_{22} \check A_{21} \cr
+           \ \   \vdots \  \  &amp;  \  \ \quad \vdots \cr
+           H^t_{t-1} &amp; = \check A_{22}^{t-2} \check A_{21} \cr
+            H^t_t &amp; = \check A_{22}^{t-1}(\check A_{21} + \check A_{22} H^0_0 )
+ \end{aligned}
+\]</div>
+<p>An optimal decision rule for the Stackelberg’s choice of <span class="math notranslate nohighlight">\(u_t\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+u_t  = - F \check y_t \equiv - \begin{bmatrix} F_z &amp; F_x \cr \end{bmatrix}
+\begin{bmatrix}\check z_t \cr x_t \cr \end{bmatrix}
+\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight" id="equation-finalrule">
+<span class="eqno">(459)<a class="headerlink" href="#equation-finalrule" title="Permalink to this equation">¶</a></span>\[u_t  = - F_z \check z_t - F_x \sum_{j=1}^t H^t_j z_{t-j} = \sigma_t(\check z^t)\]</div>
+<p>Representation <a class="reference internal" href="#equation-finalrule">(459)</a> confirms that whenever
+<span class="math notranslate nohighlight">\(F_x \neq 0\)</span>, the typical situation, the time <span class="math notranslate nohighlight">\(t\)</span> component
+<span class="math notranslate nohighlight">\(\sigma_t\)</span> of a Stackelberg plan is <strong>history dependent</strong>, meaning
+that the Stackelberg leader’s choice <span class="math notranslate nohighlight">\(u_t\)</span> depends not just on
+<span class="math notranslate nohighlight">\(\check z_t\)</span> but on components of <span class="math notranslate nohighlight">\(\check z^{t-1}\)</span>.</p>
+<div class="section" id="comments-and-interpretations">
+<h3>Comments and Interpretations<a class="headerlink" href="#comments-and-interpretations" title="Permalink to this headline">¶</a></h3>
+<p>After all, at the end of the day, it will turn out that because we set
+<span class="math notranslate nohighlight">\(\check z_0 = z_0\)</span>, it will be true that <span class="math notranslate nohighlight">\(z_t = \check z_t\)</span>
+for all <span class="math notranslate nohighlight">\(t \geq 0\)</span>.</p>
+<p>Then why did we distinguish <span class="math notranslate nohighlight">\(\check z_t\)</span> from <span class="math notranslate nohighlight">\(z_t\)</span>?</p>
+<p>The answer is that if we want to present to the Stackelberg <strong>follower</strong>
+a history-dependent representation of the Stackelberg <strong>leader’s</strong>
+sequence <span class="math notranslate nohighlight">\(\vec q_2\)</span>, we must use representation
+<a class="reference internal" href="#equation-finalrule">(459)</a> cast in terms of the history
+<span class="math notranslate nohighlight">\(\check z^t\)</span> and <strong>not</strong> a corresponding representation cast in
+terms of <span class="math notranslate nohighlight">\(z^t\)</span>.</p>
+</div>
+<div class="section" id="dynamic-programming-and-time-consistency-of-follower-s-problem">
+<h3>Dynamic Programming and Time Consistency of <strong>follower’s</strong> Problem<a class="headerlink" href="#dynamic-programming-and-time-consistency-of-follower-s-problem" title="Permalink to this headline">¶</a></h3>
+<p>Given the sequence <span class="math notranslate nohighlight">\(\vec q_2\)</span> chosen by the Stackelberg leader in
+our duopoly model, it turns out that the Stackelberg <strong>follower’s</strong>
+problem is recursive in the <em>natural</em> state variables that confront a
+follower at any time <span class="math notranslate nohighlight">\(t \geq 0\)</span>.</p>
+<p>This means that the follower’s plan is time consistent.</p>
+<p>To verify these claims, we’ll formulate a recursive version of a
+follower’s problem that builds on our recursive representation of the
+Stackelberg leader’s plan and our use of the <strong>Big K, little k</strong> idea.</p>
+</div>
+<div class="section" id="recursive-formulation-of-a-followers-problem">
+<h3>Recursive Formulation of a Follower’s Problem<a class="headerlink" href="#recursive-formulation-of-a-followers-problem" title="Permalink to this headline">¶</a></h3>
+<p>We now use what amounts to another “Big <span class="math notranslate nohighlight">\(K\)</span>, little <span class="math notranslate nohighlight">\(k\)</span>” trick (see
+<a class="reference external" href="https://lectures.quantecon.org/py/rational_expectations.html">rational expectations equilibrium</a>)
+to formulate a recursive version of a follower’s problem cast in terms
+of an ordinary Bellman equation.</p>
+<p>Firm 1, the follower, faces <span class="math notranslate nohighlight">\(\{q_{2t}\}_{t=0}^\infty\)</span> as
+a given quantity sequence chosen by the leader and believes that its
+output price at <span class="math notranslate nohighlight">\(t\)</span> satisfies</p>
+<div class="math notranslate nohighlight">
+\[
+p_t  = a_0 - a_1 ( q_{1t} + q_{2t})  , \quad t \geq 0
+\]</div>
+<p>Our challenge is to represent <span class="math notranslate nohighlight">\(\{q_{2t}\}_{t=0}^\infty\)</span> as
+a given sequence.</p>
+<p>To do so, recall that under the Stackelberg plan, firm 2 sets output
+according to the <span class="math notranslate nohighlight">\(q_{2t}\)</span> component of</p>
+<div class="math notranslate nohighlight">
+\[
+y_{t+1} = \begin{bmatrix}  1 \cr q_{2t} \cr q_{1t} \cr x_t \end{bmatrix}
+\]</div>
+<p>which is governed by</p>
+<div class="math notranslate nohighlight">
+\[
+y_{t+1} = (A - BF) y_t
+\]</div>
+<p>To obtain a recursive representation of a <span class="math notranslate nohighlight">\(\{q_{2t}\}\)</span> sequence
+that is exogenous to firm 1, we define a state <span class="math notranslate nohighlight">\(\tilde y_t\)</span></p>
+<div class="math notranslate nohighlight">
+\[
+\tilde y_t = \begin{bmatrix}  1 \cr q_{2t} \cr \tilde q_{1t} \cr \tilde x_t \end{bmatrix}
+\]</div>
+<p>that evolves according to</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde y_{t+1} = (A - BF) \tilde y_t
+\]</div>
+<p>subject to the initial condition <span class="math notranslate nohighlight">\(\tilde q_{10} = q_{10}\)</span> and
+<span class="math notranslate nohighlight">\(\tilde x_0 = x_0\)</span> where <span class="math notranslate nohighlight">\(x_0 = - P_{22}^{-1} P_{21}\)</span> as
+stated above.</p>
+<p>Firm 1’s state vector is</p>
+<div class="math notranslate nohighlight">
+\[
+X_t = \begin{bmatrix} \tilde y_t \cr q_{1t}  \end{bmatrix}
+\]</div>
+<p>It follows that the follower firm 1 faces law of motion</p>
+<div class="math notranslate nohighlight" id="equation-law-motion">
+<span class="eqno">(460)<a class="headerlink" href="#equation-law-motion" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{bmatrix} \tilde y_{t+1} \\
+q_{1t+1} \end{bmatrix} = \begin{bmatrix} A - BF &amp; 0 \\
+0  &amp; 1 \end{bmatrix}  \begin{bmatrix} \tilde y_{t} \\
+q_{1t} \end{bmatrix} + \begin{bmatrix} 0 \cr 1 \end{bmatrix} x_t\end{split}\]</div>
+<p>This specfification assures that from the point of the view of a firm 1,
+<span class="math notranslate nohighlight">\(q_{2t}\)</span> is an exogenous process.</p>
+<p>Here</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\tilde q_{1t}, \tilde x_t\)</span> play the role of <strong>Big K</strong>.</p></li>
+<li><p><span class="math notranslate nohighlight">\(q_{1t}, x_t\)</span> play the role of <strong>little k</strong>.</p></li>
+</ul>
+<p>The time <span class="math notranslate nohighlight">\(t\)</span> component of firm 1’s objective is</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde X_t' \tilde R x_t - x_t^2 \tilde Q = \begin{bmatrix} 1 \cr q_{2t} \cr \tilde q_{1t} \cr \tilde x_t \cr q_{1t} \end{bmatrix}'
+ \begin{bmatrix} 0 &amp; 0 &amp; 0 &amp; 0 &amp; \frac{a_0}{2} \cr
+                 0 &amp; 0 &amp; 0 &amp; 0 &amp; - \frac{a_1}{2} \cr
+                 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \cr
+                 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \cr
+                 \frac{a_0}{2} &amp;  -\frac{a_1}{2} &amp; 0 &amp; 0 &amp; - a_1 \end{bmatrix}
+ \begin{bmatrix} 1 \cr q_{2t} \cr \tilde q_{1t} \cr \tilde x_t \cr q_{1t} \end{bmatrix} - \gamma
+    x_t^2
+\]</div>
+<p>Firm 1’s optimal decision rule is</p>
+<div class="math notranslate nohighlight">
+\[
+x_t = - \tilde F X_t
+\]</div>
+<p>and it’s state evolves according to</p>
+<div class="math notranslate nohighlight">
+\[
+\tilde X_{t+1} = (\tilde A - \tilde B \tilde F) X_t
+\]</div>
+<p>under its optimal decision rule.</p>
+<p>Later we shall compute <span class="math notranslate nohighlight">\(\tilde F\)</span> and verify that when we set</p>
+<div class="math notranslate nohighlight">
+\[
+X_0 = \begin{bmatrix} 1 \cr q_{20} \cr  q_{10} \cr  x_0 \cr q_{10} \end{bmatrix}
+\]</div>
+<p>we recover</p>
+<div class="math notranslate nohighlight">
+\[
+x_0 = - \tilde F \tilde X_0
+\]</div>
+<p>which will verify that we have properly set up a recursive
+representation of the follower’s problem facing the Stackelberg leader’s
+<span class="math notranslate nohighlight">\(\vec q_2\)</span>.</p>
+</div>
+<div class="section" id="time-consistency-of-follower-s-plan">
+<h3>Time Consistency of Follower’s Plan<a class="headerlink" href="#time-consistency-of-follower-s-plan" title="Permalink to this headline">¶</a></h3>
+<p>Since the follower can solve its problem using dynamic programming its
+problem is recursive in what for it are the <strong>natural state variables</strong>,
+namely</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{bmatrix} 1 \cr q_{2t} \cr \tilde q_{10} \cr \tilde x_0   \end{bmatrix}
+\]</div>
+<p>It follows that the follower’s plan is time consistent.</p>
+</div>
+</div>
+<div class="section" id="computing-the-stackelberg-plan">
+<h2><a class="toc-backref" href="#id8">Computing the Stackelberg Plan</a><a class="headerlink" href="#computing-the-stackelberg-plan" title="Permalink to this headline">¶</a></h2>
+<p>Here is our code to compute a Stackelberg plan via a linear-quadratic
+dynamic program as outlined above</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Random</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="o">:</span><span class="n">png</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>We define named tuples and default values for the model and solver settings, and
+instantiate one copy of each</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">a0</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+                  <span class="n">a1</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+                  <span class="n">β</span> <span class="o">=</span> <span class="mf">0.96</span><span class="p">,</span>
+                  <span class="nb">γ</span> <span class="o">=</span> <span class="mf">120.</span><span class="p">,</span>
+                  <span class="n">n</span> <span class="o">=</span> <span class="mi">300</span><span class="p">)</span>
+
+<span class="c"># things like tolerances, etc.</span>
+<span class="n">settings</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">tol0</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
+                     <span class="n">tol1</span> <span class="o">=</span> <span class="mf">1e-16</span><span class="p">,</span>
+                     <span class="n">tol2</span> <span class="o">=</span> <span class="mf">1e-2</span><span class="p">)</span>
+
+<span class="n">defaultModel</span> <span class="o">=</span> <span class="n">model</span><span class="p">();</span>
+<span class="n">defaultSettings</span> <span class="o">=</span> <span class="n">settings</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we can compute the actual policy using the LQ routine from QuantEcon.jl</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@unpack</span> <span class="n">a0</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">defaultModel</span>
+<span class="nd">@unpack</span> <span class="n">tol0</span><span class="p">,</span> <span class="n">tol1</span><span class="p">,</span> <span class="n">tol2</span> <span class="o">=</span> <span class="n">defaultSettings</span>
+
+<span class="n">βs</span> <span class="o">=</span> <span class="p">[</span><span class="n">β</span><span class="o">^</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="o">:</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">Alhs</span> <span class="o">=</span> <span class="nb">I</span> <span class="o">+</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="n">Alhs</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">β</span> <span class="o">*</span> <span class="n">a0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">γ</span><span class="p">),</span> <span class="o">-</span><span class="n">β</span> <span class="o">*</span> <span class="n">a1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">γ</span><span class="p">),</span> <span class="o">-</span><span class="n">β</span> <span class="o">*</span> <span class="n">a1</span> <span class="o">/</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">β</span><span class="p">]</span> <span class="c"># Euler equation coefficients</span>
+<span class="n">Arhs</span> <span class="o">=</span> <span class="nb">I</span> <span class="o">+</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="n">Arhs</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span><span class="p">;</span>
+<span class="n">Alhsinv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">Alhs</span><span class="p">);</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">Alhsinv</span> <span class="o">*</span> <span class="n">Arhs</span><span class="p">;</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">Alhsinv</span> <span class="o">*</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,];</span>
+<span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="o">-</span><span class="n">a0</span><span class="o">/</span><span class="mi">2</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="n">a0</span><span class="o">/</span><span class="mi">2</span> <span class="n">a1</span> <span class="n">a1</span><span class="o">/</span><span class="mi">2</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="n">a1</span><span class="o">/</span><span class="mi">2</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="nb">γ</span><span class="p">;</span>
+<span class="n">lq</span> <span class="o">=</span> <span class="n">QuantEcon</span><span class="o">.</span><span class="n">LQ</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">bet</span><span class="o">=</span><span class="n">β</span><span class="p">);</span>
+<span class="n">P</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">stationary_values</span><span class="p">(</span><span class="n">lq</span><span class="p">)</span>
+
+<span class="n">P22</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="mi">4</span><span class="o">:</span><span class="k">end</span><span class="p">,</span> <span class="mi">4</span><span class="o">:</span><span class="k">end</span><span class="p">];</span>
+<span class="n">P21</span> <span class="o">=</span> <span class="n">P</span><span class="p">[</span><span class="mi">4</span><span class="o">:</span><span class="k">end</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="mi">3</span><span class="p">];</span>
+<span class="n">P22inv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">P22</span><span class="p">);</span>
+<span class="n">H_0_0</span> <span class="o">=</span> <span class="o">-</span><span class="n">P22inv</span> <span class="o">*</span> <span class="n">P21</span><span class="p">;</span>
+
+<span class="c"># simulate forward</span>
+<span class="n">π_leader</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<span class="n">z0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="n">H_0_0</span> <span class="o">*</span> <span class="n">z0</span><span class="p">;</span>
+<span class="n">y0</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">z0</span><span class="p">,</span> <span class="n">x0</span><span class="p">);</span>
+
+<span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c"># for reproducibility</span>
+<span class="n">yt</span><span class="p">,</span> <span class="n">ut</span> <span class="o">=</span> <span class="n">compute_sequence</span><span class="p">(</span><span class="n">lq</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+<span class="n">π_matrix</span> <span class="o">=</span> <span class="n">R</span> <span class="o">+</span> <span class="n">F</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">F</span><span class="p">;</span>
+
+<span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+    <span class="n">π_leader</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">yt</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">π_matrix</span> <span class="o">*</span> <span class="n">yt</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">]);</span>
+<span class="k">end</span>
+
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Computed policy for Stackelberg leader: </span><span class="si">$F</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Computed policy for Stackelberg leader: [-1.580044538772656 0.294613127470314 0.6748093760774967 6.539705936147509]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="implied-time-series-for-price-and-quantities">
+<h3>Implied Time Series for Price and Quantities<a class="headerlink" href="#implied-time-series-for-price-and-quantities" title="Permalink to this headline">¶</a></h3>
+<p>The following code plots the price and quantities</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">q_leader</span> <span class="o">=</span> <span class="n">yt</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="p">];</span>
+<span class="n">q_follower</span> <span class="o">=</span> <span class="n">yt</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="p">];</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">q_leader</span> <span class="o">+</span> <span class="n">q_follower</span><span class="p">;</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">a0</span> <span class="o">.-</span> <span class="n">a1</span><span class="o">*</span><span class="n">q</span><span class="p">;</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="n">q_leader</span><span class="p">,</span> <span class="n">q_follower</span><span class="p">,</span> <span class="n">p</span><span class="p">],</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Output and Prices, Stackelberg Duopoly&quot;</span><span class="p">,</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;leader output&quot;</span><span class="p">,</span> <span class="s">&quot;follower output&quot;</span><span class="p">,</span> <span class="s">&quot;price&quot;</span><span class="p">],</span>
+    <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_9_0.png" src="../_images/dyn_stack_9_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="value-of-stackelberg-leader">
+<h3>Value of Stackelberg Leader<a class="headerlink" href="#value-of-stackelberg-leader" title="Permalink to this headline">¶</a></h3>
+<p>We’ll compute the present value earned by the Stackelberg leader.</p>
+<p>We’ll compute it two ways (they give identical answers – just a check
+on coding and thinking)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">v_leader_forward</span> <span class="o">=</span> <span class="n">sum</span><span class="p">(</span><span class="n">βs</span> <span class="o">.*</span> <span class="n">π_leader</span><span class="p">);</span>
+<span class="n">v_leader_direct</span> <span class="o">=</span> <span class="o">-</span><span class="n">yt</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P</span> <span class="o">*</span> <span class="n">yt</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span>
+
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;v_leader_forward (forward sim) is </span><span class="si">$v_leader_forward</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;v_leader_direct is </span><span class="si">$v_leader_direct</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v_leader_forward (forward sim) is 150.03162125325494
+v_leader_direct is 150.03237147549044
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># manually check whether P is an approximate fixed point</span>
+<span class="n">P_next</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span> <span class="o">+</span> <span class="n">F</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">F</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">));</span>
+<span class="n">all</span><span class="p">(</span><span class="n">P</span> <span class="o">-</span> <span class="n">P_next</span> <span class="o">.&lt;</span> <span class="n">tol0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># manually checks whether two different ways of computing the</span>
+<span class="c"># value function give approximately the same answer</span>
+<span class="n">v_expanded</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="n">y0</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">ut</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">ut</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
+           <span class="n">β</span> <span class="o">*</span> <span class="p">(</span><span class="n">y0</span><span class="o">&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">)</span> <span class="o">*</span> <span class="n">y0</span><span class="p">)));</span>
+<span class="p">(</span><span class="n">v_leader_direct</span> <span class="o">-</span> <span class="n">v_expanded</span> <span class="o">&lt;</span> <span class="n">tol0</span><span class="p">)[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="exhibiting-time-inconsistency-of-stackelberg-plan">
+<h2><a class="toc-backref" href="#id9">Exhibiting Time Inconsistency of Stackelberg Plan</a><a class="headerlink" href="#exhibiting-time-inconsistency-of-stackelberg-plan" title="Permalink to this headline">¶</a></h2>
+<p>In the code below we compare two values</p>
+<ul class="simple">
+<li><p>the continuation value <span class="math notranslate nohighlight">\(- y_t P y_t\)</span> earned by a continuation
+Stackelberg leader who inherits state <span class="math notranslate nohighlight">\(y_t\)</span> at <span class="math notranslate nohighlight">\(t\)</span></p></li>
+<li><p>the value of a <strong>reborn Stackelberg leader</strong> who inherits state
+<span class="math notranslate nohighlight">\(z_t\)</span> at <span class="math notranslate nohighlight">\(t\)</span> and sets <span class="math notranslate nohighlight">\(x_t = - P_{22}^{-1} P_{21}\)</span></p></li>
+</ul>
+<p>The difference between these two values is a tell-tale time of the time
+inconsistency of the Stackelberg plan</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Compute value function over time with reset at time t</span>
+<span class="n">vt_leader</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<span class="n">vt_reset_leader</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">vt_leader</span><span class="p">);</span>
+
+<span class="n">yt_reset</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">yt</span><span class="p">)</span>
+<span class="n">yt_reset</span><span class="p">[</span><span class="k">end</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">H_0_0</span> <span class="o">*</span> <span class="n">yt</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="mi">3</span><span class="p">,</span> <span class="o">:</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+    <span class="n">vt_leader</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">yt</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P</span> <span class="o">*</span> <span class="n">yt</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
+    <span class="n">vt_reset_leader</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">yt_reset</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P</span> <span class="o">*</span> <span class="n">yt_reset</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
+<span class="k">end</span>
+
+<span class="n">p1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">[(</span><span class="o">-</span><span class="n">F</span> <span class="o">*</span> <span class="n">yt</span><span class="p">)</span><span class="o">&#39;</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">F</span> <span class="o">*</span> <span class="n">yt_reset</span><span class="p">)</span><span class="o">&#39;</span><span class="p">],</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Stackelberg Leader&quot;</span><span class="p">,</span> <span class="s">&quot;Continuation Leader at t&quot;</span><span class="p">],</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Leader Control Variable&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">);</span>
+<span class="n">p2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="n">yt</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">yt_reset</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="o">:</span><span class="p">]],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Follower Control Variable&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">false</span><span class="p">);</span>
+<span class="n">p3</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span> <span class="p">[</span><span class="n">vt_leader</span><span class="p">,</span> <span class="n">vt_reset_leader</span><span class="p">],</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Leader Value Function&quot;</span><span class="p">);</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">p3</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">600</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_18_0.png" src="../_images/dyn_stack_18_0.png" />
+</div>
+</div>
+</div>
+<div class="section" id="recursive-formulation-of-the-follower-s-problem">
+<h2><a class="toc-backref" href="#id10">Recursive Formulation of the Follower’s Problem</a><a class="headerlink" href="#recursive-formulation-of-the-follower-s-problem" title="Permalink to this headline">¶</a></h2>
+<p>We now formulate and compute the recursive version of the follower’s
+problem.</p>
+<p>We check that the recursive <strong>Big</strong> <span class="math notranslate nohighlight">\(K\)</span> <strong>, little</strong> <span class="math notranslate nohighlight">\(k\)</span> formulation of the follower’s problem produces the same output path
+<span class="math notranslate nohighlight">\(\vec q_1\)</span> that we computed when we solved the Stackelberg problem</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Ã</span> <span class="o">=</span> <span class="nb">I</span> <span class="o">+</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+<span class="n">Ã</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">.=</span> <span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">;</span>
+<span class="n">R̃</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="o">-</span><span class="n">a0</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="n">a1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="n">a0</span><span class="o">/</span><span class="mi">2</span> <span class="n">a1</span><span class="o">/</span><span class="mi">2</span> <span class="mi">0</span> <span class="mi">0</span> <span class="n">a1</span><span class="p">];</span>
+<span class="n">Q̃</span> <span class="o">=</span> <span class="n">Q</span><span class="p">;</span>
+<span class="n">B̃</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span>
+
+<span class="n">lq_tilde</span> <span class="o">=</span> <span class="n">QuantEcon</span><span class="o">.</span><span class="n">LQ</span><span class="p">(</span><span class="n">Q̃</span><span class="p">,</span> <span class="n">R̃</span><span class="p">,</span> <span class="n">Ã</span><span class="p">,</span> <span class="n">B̃</span><span class="p">,</span> <span class="n">bet</span><span class="o">=</span><span class="n">β</span><span class="p">);</span>
+<span class="n">P̃</span><span class="p">,</span> <span class="n">F̃</span><span class="p">,</span> <span class="n">d̃</span> <span class="o">=</span> <span class="n">stationary_values</span><span class="p">(</span><span class="n">lq_tilde</span><span class="p">);</span>
+<span class="n">y0_tilde</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">y0</span><span class="p">,</span> <span class="n">y0</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span>
+<span class="n">yt_tilde</span> <span class="o">=</span> <span class="n">compute_sequence</span><span class="p">(</span><span class="n">lq_tilde</span><span class="p">,</span> <span class="n">y0_tilde</span><span class="p">,</span> <span class="n">n</span><span class="p">)[</span><span class="mi">1</span><span class="p">];</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># checks that the recursive formulation of the follower&#39;s problem gives</span>
+<span class="c"># the same solution as the original Stackelberg problem</span>
+<span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="n">yt_tilde</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">yt_tilde</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="o">:</span><span class="p">]],</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;q_tilde&quot;</span><span class="p">,</span> <span class="s">&quot;q&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_21_0.png" src="../_images/dyn_stack_21_0.png" />
+</div>
+</div>
+<p>Note: Variables with <code class="docutils literal notranslate"><span class="pre">_tilde</span></code> are obtained from solving the follower’s
+problem – those without are from the Stackelberg problem.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># maximum absolute difference in quantities over time between the first and second solution methods</span>
+<span class="n">max</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">yt_tilde</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">-</span> <span class="n">yt_tilde</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># x0 == x0_tilde</span>
+<span class="n">yt</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">][</span><span class="k">end</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">yt_tilde</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">yt_tilde</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">])[</span><span class="k">end</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">tol0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="explanation-of-alignment">
+<h3>Explanation of Alignment<a class="headerlink" href="#explanation-of-alignment" title="Permalink to this headline">¶</a></h3>
+<p>If we inspect the coefficients in the decision rule <span class="math notranslate nohighlight">\(- \tilde F\)</span>,
+we can spot the reason that the follower chooses to set <span class="math notranslate nohighlight">\(x_t =
+\tilde x_t\)</span> when it sets <span class="math notranslate nohighlight">\(x_t = - \tilde F X_t\)</span> in
+the recursive formulation of the follower problem.</p>
+<p>Can you spot what features of <span class="math notranslate nohighlight">\(\tilde F\)</span> imply this?</p>
+<p>Hint: remember the components of <span class="math notranslate nohighlight">\(X_t\)</span></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">F̃</span> <span class="c"># policy function in the follower&#39;s problem</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1×5 Array{Float64,2}:
+ -5.73502e-17  -2.38959e-18  -0.103187  -1.0  0.103187
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">P</span> <span class="c"># value function in the Stackelberg problem</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Array{Float64,2}:
+   963.541  -194.605   -511.622   -5258.23
+  -194.605    37.3536    81.9771    784.765
+  -511.622    81.9771   247.343    2517.05
+ -5258.23    784.765   2517.05    25556.2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">P̃</span> <span class="c"># value function in the follower&#39;s problem</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 Array{Float64,2}:
+ -18.1991     2.58003     15.6049     151.23      -5.0
+   2.58003   -0.969466    -5.26008    -50.9764     1.0
+  15.6049    -5.26008    -32.2759    -312.792    -12.3824
+ 151.23     -50.9764    -312.792    -3031.33    -120.0
+  -5.0        1.0        -12.3824    -120.0       14.3824
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># manually check that P is an approximate fixed point</span>
+<span class="n">all</span><span class="p">((</span><span class="n">P</span>  <span class="o">-</span> <span class="p">((</span><span class="n">R</span> <span class="o">+</span> <span class="n">F</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">F</span><span class="p">)</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">))</span> <span class="o">.&lt;</span> <span class="n">tol0</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># compute `P_guess` using `F_tilde_star`</span>
+<span class="n">F̃_star</span> <span class="o">=</span> <span class="o">-</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">&#39;</span><span class="p">;</span>
+<span class="n">P_guess</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">1000</span>
+    <span class="n">P_guess</span> <span class="o">=</span> <span class="p">((</span><span class="n">R̃</span> <span class="o">+</span> <span class="n">F̃_star</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">Q̃</span> <span class="o">*</span> <span class="n">F̃_star</span><span class="p">)</span> <span class="o">+</span>
+               <span class="n">β</span> <span class="o">*</span> <span class="p">(</span><span class="n">Ã</span> <span class="o">-</span> <span class="n">B̃</span> <span class="o">*</span> <span class="n">F̃_star</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P_guess</span>
+               <span class="o">*</span> <span class="p">(</span><span class="n">Ã</span> <span class="o">-</span> <span class="n">B̃</span> <span class="o">*</span> <span class="n">F̃_star</span><span class="p">));</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># value function in the follower&#39;s problem</span>
+<span class="o">-</span><span class="p">(</span><span class="n">y0_tilde</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P̃</span> <span class="o">*</span> <span class="n">y0_tilde</span><span class="p">)[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>112.655907405782
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># value function using P_guess</span>
+<span class="o">-</span><span class="p">(</span><span class="n">y0_tilde</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P_guess</span> <span class="o">*</span> <span class="n">y0_tilde</span><span class="p">)[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>112.65590740578187
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span># c policy using policy iteration algorithm
+F_iter = (β * inv(Q + β * B̃&#39; * P_guess * B̃)
+      * B̃&#39; * P_guess * Ã);
+P_iter = zeros(5, 5);
+dist_vec = zeros(5, 5);
+
+for i in 1:100
+    # compute P_iter
+    dist_vec = similar(P_iter)
+    for j in 1:1000
+        P_iter = (R̃ + F_iter&#39; * Q * F_iter) + β *
+                  (Ã - B̃ * F_iter)&#39; * P_iter *
+                  (Ã - B̃ * F_iter);
+
+        # update F_iter
+        F_iter = β * inv(Q + β * B̃&#39; * P_iter * B̃) *
+                    B̃&#39; * P_iter * Ã;
+
+        dist_vec = P_iter - ((R̃ + F_iter&#39; * Q * F_iter) +
+                β * (Ã - B̃ * F_iter)&#39; * P_iter *
+                (Ã - B̃ * F_iter));
+    end
+end
+
+if maximum(abs.(dist_vec)) &lt; 1e-8
+    dist_vec2 = F_iter - (β * inv(Q + β * B̃&#39; * P_iter * B̃) * B̃&#39; * P_iter * Ã)
+        if maximum(abs.(dist_vec2)) &lt; 1e-8
+            @show F_iter
+        else
+            println(&quot;The policy didn&#39;t converge: try increasing the number of outer loop iterations&quot;)
+        end
+else
+    println(&quot;The policy didn&#39;t converge: try increasing the number of inner loop iterations&quot;)
+end
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>F_iter = [-1.3877787807814457e-17 -1.474514954580286e-17 -0.1031865014522383 -1.0000000000000007 0.10318650145223823]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1×5 Adjoint{Float64,Array{Float64,1}}:
+ -1.38778e-17  -1.47451e-17  -0.103187  -1.0  0.103187
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">yt_tilde_star</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+<span class="n">yt_tilde_star</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0_tilde</span><span class="p">;</span>
+
+<span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">yt_tilde_star</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ã</span> <span class="o">-</span> <span class="n">B̃</span> <span class="o">*</span> <span class="n">F̃_star</span><span class="p">)</span> <span class="o">*</span> <span class="n">yt_tilde_star</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="o">:</span><span class="p">];</span>
+<span class="k">end</span>
+
+<span class="n">plot</span><span class="p">([</span><span class="n">yt_tilde_star</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">yt_tilde</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="o">:</span><span class="p">]],</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;q_tilde&quot;</span><span class="p">,</span> <span class="s">&quot;q&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_39_0.png" src="../_images/dyn_stack_39_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">yt_tilde_star</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">-</span> <span class="n">yt_tilde</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="markov-perfect-equilibrium">
+<h2><a class="toc-backref" href="#id11">Markov Perfect Equilibrium</a><a class="headerlink" href="#markov-perfect-equilibrium" title="Permalink to this headline">¶</a></h2>
+<p>The <strong>state</strong> vector is</p>
+<div class="math notranslate nohighlight">
+\[
+z_t = \begin{bmatrix} 1 \cr q_{2t} \cr q_{1t} \end{bmatrix}
+\]</div>
+<p>and the state transition dynamics are</p>
+<div class="math notranslate nohighlight">
+\[
+z_{t+1} = A z_t + B_1 v_{1t}  +  B_2 v_{2t}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(A\)</span> is a <span class="math notranslate nohighlight">\(3 \times 3\)</span> identity matrix and</p>
+<div class="math notranslate nohighlight">
+\[
+B_1 = \begin{bmatrix} 0 \cr 0 \cr 1 \end{bmatrix} ,
+\quad B_2 = \begin{bmatrix} 0 \cr 1 \cr 0 \end{bmatrix}
+\]</div>
+<p>The Markov perfect decision rules are</p>
+<div class="math notranslate nohighlight">
+\[
+v_{1t} = - F_1 z_t , \quad v_{2t} = - F_2 z_t
+\]</div>
+<p>and in the Markov perfect equilibrium the state evolves according to</p>
+<div class="math notranslate nohighlight">
+\[
+z_{t+1} = (A - B_1 F_1 - B_2 F_2) z_t
+\]</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># in LQ form</span>
+<span class="n">A</span> <span class="o">=</span> <span class="nb">I</span> <span class="o">+</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="n">B1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span>
+<span class="n">B2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">R1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="o">-</span><span class="n">a0</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span> <span class="n">a1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="o">-</span><span class="n">a0</span><span class="o">/</span><span class="mi">2</span> <span class="n">a1</span><span class="o">/</span><span class="mi">2</span> <span class="n">a1</span><span class="p">];</span>
+<span class="n">R2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="o">-</span><span class="n">a0</span><span class="o">/</span><span class="mi">2</span> <span class="mi">0</span><span class="p">;</span> <span class="o">-</span><span class="n">a0</span><span class="o">/</span><span class="mi">2</span> <span class="n">a1</span> <span class="n">a1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span> <span class="mi">0</span> <span class="n">a1</span><span class="o">/</span><span class="mi">2</span> <span class="mi">0</span><span class="p">];</span>
+<span class="n">Q1</span> <span class="o">=</span> <span class="n">Q2</span> <span class="o">=</span> <span class="nb">γ</span><span class="p">;</span>
+<span class="n">S1</span> <span class="o">=</span> <span class="n">S2</span> <span class="o">=</span> <span class="n">W1</span> <span class="o">=</span> <span class="n">W2</span> <span class="o">=</span> <span class="n">M1</span> <span class="o">=</span> <span class="n">M2</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">;</span>
+
+<span class="c"># solve using nnash from QE</span>
+<span class="n">F1</span><span class="p">,</span> <span class="n">F2</span><span class="p">,</span> <span class="n">P1</span><span class="p">,</span> <span class="n">P2</span> <span class="o">=</span> <span class="n">nnash</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B1</span><span class="p">,</span> <span class="n">B2</span><span class="p">,</span> <span class="n">R1</span><span class="p">,</span> <span class="n">R2</span><span class="p">,</span> <span class="n">Q1</span><span class="p">,</span> <span class="n">Q2</span><span class="p">,</span>
+                        <span class="n">S1</span><span class="p">,</span> <span class="n">S2</span><span class="p">,</span> <span class="n">W1</span><span class="p">,</span> <span class="n">W2</span><span class="p">,</span> <span class="n">M1</span><span class="p">,</span> <span class="n">M2</span><span class="p">,</span>
+                        <span class="n">beta</span> <span class="o">=</span> <span class="n">β</span><span class="p">,</span>
+                        <span class="n">tol</span> <span class="o">=</span> <span class="n">tol1</span><span class="p">);</span>
+
+<span class="c"># simulate forward</span>
+<span class="n">AF</span> <span class="o">=</span> <span class="n">A</span> <span class="o">-</span> <span class="n">B1</span> <span class="o">*</span> <span class="n">F1</span> <span class="o">-</span> <span class="n">B2</span> <span class="o">*</span> <span class="n">F2</span><span class="p">;</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+<span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">.=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">AF</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span>
+<span class="k">end</span>
+
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Policy for F1 is </span><span class="si">$F1</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Policy for F2 is </span><span class="si">$F2</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Policy for F1 is [-0.22701362843207126 0.03129874118441059 0.09447112842804818]
+Policy for F2 is [-0.22701362843207126 0.09447112842804818 0.03129874118441059]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">q1</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">:</span><span class="p">];</span>
+<span class="n">q2</span> <span class="o">=</span> <span class="n">z</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="o">:</span><span class="p">];</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">q1</span> <span class="o">+</span> <span class="n">q2</span><span class="p">;</span> <span class="c"># total output, MPE</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">a0</span> <span class="o">.-</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">q</span><span class="p">;</span> <span class="c"># total price, MPE</span>
+<span class="n">plot</span><span class="p">([</span><span class="n">q</span><span class="p">,</span> <span class="n">p</span><span class="p">],</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;total ouput&quot;</span><span class="p">,</span> <span class="s">&quot;total price&quot;</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Output and prices, duopoly MPE&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_45_0.png" src="../_images/dyn_stack_45_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># computes the maximum difference in quantities across firms</span>
+<span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">q1</span> <span class="o">-</span> <span class="n">q2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.9984014443252818e-15
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># compute values</span>
+<span class="n">u1</span> <span class="o">=</span> <span class="o">-</span><span class="n">F1</span> <span class="o">*</span> <span class="n">z</span><span class="p">;</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="o">-</span><span class="n">F2</span> <span class="o">*</span> <span class="n">z</span><span class="p">;</span>
+<span class="n">π_1</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">.*</span> <span class="n">q1</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">-</span> <span class="nb">γ</span> <span class="o">*</span> <span class="n">u1</span><span class="o">.^</span><span class="mi">2</span><span class="p">;</span>
+<span class="n">π_2</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">.*</span> <span class="n">q2</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">-</span> <span class="nb">γ</span> <span class="o">*</span> <span class="n">u2</span><span class="o">.^</span><span class="mi">2</span><span class="p">;</span>
+
+<span class="n">v1_forward</span> <span class="o">=</span> <span class="n">π_1</span> <span class="o">*</span> <span class="n">βs</span><span class="p">;</span>
+<span class="n">v2_forward</span> <span class="o">=</span> <span class="n">π_2</span> <span class="o">*</span> <span class="n">βs</span><span class="p">;</span>
+
+<span class="n">v1_direct</span> <span class="o">=</span> <span class="o">-</span><span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P1</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span>
+<span class="n">v2_direct</span> <span class="o">=</span> <span class="o">-</span><span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P2</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">];</span>
+
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Firm 1: Direct is </span><span class="si">$v1_direct</span><span class="s">, Forward is </span><span class="si">$</span><span class="p">(</span><span class="n">v1_forward</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Firm 2: Direct is </span><span class="si">$v2_direct</span><span class="s">, Forward is </span><span class="si">$</span><span class="p">(</span><span class="n">v2_forward</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="s">&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Firm 1: Direct is 133.3295555721595, Forward is 133.33033197956638
+Firm 2: Direct is 133.32955557215945, Forward is 133.3303319795664
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># sanity check</span>
+<span class="n">Λ_1</span> <span class="o">=</span> <span class="n">A</span> <span class="o">-</span> <span class="n">B2</span> <span class="o">*</span> <span class="n">F2</span><span class="p">;</span>
+<span class="n">lq1</span> <span class="o">=</span> <span class="n">QuantEcon</span><span class="o">.</span><span class="n">LQ</span><span class="p">(</span><span class="n">Q1</span><span class="p">,</span> <span class="n">R1</span><span class="p">,</span> <span class="n">Λ_1</span><span class="p">,</span> <span class="n">B1</span><span class="p">,</span> <span class="n">bet</span> <span class="o">=</span> <span class="n">β</span><span class="p">);</span>
+<span class="n">P1_ih</span><span class="p">,</span> <span class="n">F1_ih</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">stationary_values</span><span class="p">(</span><span class="n">lq1</span><span class="p">);</span>
+
+<span class="n">v2_direct_alt</span> <span class="o">=</span> <span class="o">-</span><span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P1_ih</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">d</span><span class="p">;</span>
+<span class="n">all</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">v2_direct</span> <span class="o">-</span> <span class="n">v2_direct_alt</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="mpe-vs-stackelberg">
+<h2><a class="toc-backref" href="#id12">MPE vs. Stackelberg</a><a class="headerlink" href="#mpe-vs-stackelberg" title="Permalink to this headline">¶</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">vt_MPE</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<span class="n">vt_follower</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+
+<span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+    <span class="n">vt_MPE</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P1</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">];</span>
+    <span class="n">vt_follower</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">yt_tilde</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P̃</span> <span class="o">*</span> <span class="n">yt_tilde</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">t</span><span class="p">];</span>
+<span class="k">end</span>
+
+<span class="n">plot</span><span class="p">([</span><span class="n">vt_MPE</span><span class="p">,</span> <span class="n">vt_leader</span><span class="p">,</span> <span class="n">vt_follower</span><span class="p">],</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;MPE&quot;</span><span class="p">,</span> <span class="s">&quot;Stackelberg leader&quot;</span><span class="p">,</span>
+        <span class="s">&quot;Stackelberg follower&quot;</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;MPE vs Stackelberg Values&quot;</span><span class="p">,</span>
+        <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_52_0.png" src="../_images/dyn_stack_52_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># display values</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;vt_leader(y0) = </span><span class="si">$</span><span class="p">(</span><span class="n">vt_leader</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;vt_follower(y0) = </span><span class="si">$</span><span class="p">(</span><span class="n">vt_follower</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;vt_MPE(y0) = </span><span class="si">$</span><span class="p">(</span><span class="n">vt_MPE</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="s">&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>vt_leader(y0) = 150.03237147549044
+vt_follower(y0) = 112.655907405782
+vt_MPE(y0) = 133.3295555721595
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># total difference in value b/t Stackelberg and MPE</span>
+<span class="n">vt_leader</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">vt_follower</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">vt_MPE</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-3.9708322630465887
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.5"
+        },
+        kernelOptions: {
+            kernelName: "julia-1.5",
+            path: "./dynamic_programming_squared"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.5'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   Introduction to Types and Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   The Need for Speed
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   Discrete State Dynamic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   Globalization and Cycles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   Classical Filtering With Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lqramsey.html">
+   Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="opt_tax_recur.html">
+   Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="amss.html">
+   Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/dynamic_programming_squared/dyn_stack.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming_squared/dyn_stack.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming_squared/dyn_stack.ipynb" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming_squared/dyn_stack.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

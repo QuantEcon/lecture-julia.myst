@@ -1,0 +1,929 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shortest Paths &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/short_path.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Job Search I: The McCall Search Model" href="mccall_model.html" />
+    <link rel="prev" title="Krylov Methods and Matrix Conditioning" href="../tools_and_techniques/iterative_methods_sparsity.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Shortest Paths"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Shortest Paths" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/dynamic_programming/short_path.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=dynamic_programming/short_path>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#outline-of-the-problem">
+   Outline of the Problem
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#finding-least-cost-paths">
+   Finding Least-Cost Paths
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solving-for-j">
+   Solving for
+   <span class="math notranslate nohighlight">
+    \(J\)
+   </span>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1">
+     Exercise 1
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solutions">
+   Solutions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id1">
+     Exercise 1
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Shortest Paths</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="shortest-paths">
+<h1><a class="toc-backref" href="#id2">Shortest Paths</a><a class="headerlink" href="#shortest-paths" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<span id="index-0"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#shortest-paths" id="id2">Shortest Paths</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id3">Overview</a></p></li>
+<li><p><a class="reference internal" href="#outline-of-the-problem" id="id4">Outline of the Problem</a></p></li>
+<li><p><a class="reference internal" href="#finding-least-cost-paths" id="id5">Finding Least-Cost Paths</a></p></li>
+<li><p><a class="reference internal" href="#solving-for-j" id="id6">Solving for <span class="math notranslate nohighlight">\(J\)</span></a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id7">Exercises</a></p></li>
+<li><p><a class="reference internal" href="#solutions" id="id8">Solutions</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id3">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>The shortest path problem is a <a class="reference external" href="https://en.wikipedia.org/wiki/Shortest_path">classic problem</a> in mathematics and computer science with applications in</p>
+<ul class="simple">
+<li><p>Economics (sequential decision making, analysis of social networks, etc.)</p></li>
+<li><p>Operations research and transportation</p></li>
+<li><p>Robotics and artificial intelligence</p></li>
+<li><p>Telecommunication network design and routing</p></li>
+<li><p>etc., etc.</p></li>
+</ul>
+<p>Variations of the methods we discuss in this lecture are used millions of times every day, in applications such as</p>
+<ul class="simple">
+<li><p>Google Maps</p></li>
+<li><p>routing packets on the internet</p></li>
+</ul>
+<p>For us, the shortest path problem also provides a nice introduction to the logic of <strong>dynamic programming</strong>.</p>
+<p>Dynamic programming is an extremely powerful optimization technique that we apply in many lectures on this site.</p>
+</div>
+<div class="section" id="outline-of-the-problem">
+<h2><a class="toc-backref" href="#id4">Outline of the Problem</a><a class="headerlink" href="#outline-of-the-problem" title="Permalink to this headline">¶</a></h2>
+<p>The shortest path problem is one of finding how to traverse a <a class="reference external" href="https://en.wikipedia.org/wiki/Graph_%28mathematics%29">graph</a> from one specified node to another at minimum cost.</p>
+<p>Consider the following graph</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/graph.png"><img alt="../_images/graph.png" src="../_images/graph.png" style="width: 100%;" /></a>
+</div>
+<p>We wish to travel from node (vertex) A to node G at minimum cost.</p>
+<ul class="simple">
+<li><p>Arrows (edges) indicate the movements we can take.</p></li>
+<li><p>Numbers on edges indicate the cost of traveling that edge.</p></li>
+</ul>
+<p>Possible interpretations of the graph include</p>
+<ul class="simple">
+<li><p>Minimum cost for supplier to reach a destination.</p></li>
+<li><p>Routing of packets on the internet (minimize time).</p></li>
+<li><p>Etc., etc.</p></li>
+</ul>
+<p>For this simple graph, a quick scan of the edges shows that the optimal paths are</p>
+<ul class="simple">
+<li><p>A, C, F, G at cost 8</p></li>
+</ul>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/graph4.png"><img alt="../_images/graph4.png" src="../_images/graph4.png" style="width: 100%;" /></a>
+</div>
+<ul class="simple">
+<li><p>A, D, F, G at cost 8</p></li>
+</ul>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/graph3.png"><img alt="../_images/graph3.png" src="../_images/graph3.png" style="width: 100%;" /></a>
+</div>
+</div>
+<div class="section" id="finding-least-cost-paths">
+<h2><a class="toc-backref" href="#id5">Finding Least-Cost Paths</a><a class="headerlink" href="#finding-least-cost-paths" title="Permalink to this headline">¶</a></h2>
+<p>For large graphs we need a systematic solution.</p>
+<p>Let <span class="math notranslate nohighlight">\(J(v)\)</span> denote the minimum cost-to-go from node <span class="math notranslate nohighlight">\(v\)</span>, understood as the total cost from <span class="math notranslate nohighlight">\(v\)</span> if we take the best route.</p>
+<p>Suppose that we know <span class="math notranslate nohighlight">\(J(v)\)</span> for each node <span class="math notranslate nohighlight">\(v\)</span>, as shown below for the graph from the preceding example</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/graph2.png"><img alt="../_images/graph2.png" src="../_images/graph2.png" style="width: 100%;" /></a>
+</div>
+<p>Note that <span class="math notranslate nohighlight">\(J(G) = 0\)</span>.</p>
+<p>The best path can now be found as follows</p>
+<ul class="simple">
+<li><p>Start at A.</p></li>
+<li><p>From node v, move to any node that solves</p></li>
+</ul>
+<div class="math notranslate nohighlight" id="equation-spprebell">
+<span class="eqno">(88)<a class="headerlink" href="#equation-spprebell" title="Permalink to this equation">¶</a></span>\[\min_{w \in F_v} \{ c(v, w) + J(w) \}\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(F_v\)</span> is the set of nodes that can be reached from <span class="math notranslate nohighlight">\(v\)</span> in one step</p></li>
+<li><p><span class="math notranslate nohighlight">\(c(v, w)\)</span> is the cost of traveling from <span class="math notranslate nohighlight">\(v\)</span> to <span class="math notranslate nohighlight">\(w\)</span></p></li>
+</ul>
+<p>Hence, if we know the function <span class="math notranslate nohighlight">\(J\)</span>, then finding the best path is almost trivial.</p>
+<p>But how to find <span class="math notranslate nohighlight">\(J\)</span>?</p>
+<p>Some thought will convince you that, for every node <span class="math notranslate nohighlight">\(v\)</span>,
+the function <span class="math notranslate nohighlight">\(J\)</span> satisfies</p>
+<div class="math notranslate nohighlight" id="equation-spbell">
+<span class="eqno">(89)<a class="headerlink" href="#equation-spbell" title="Permalink to this equation">¶</a></span>\[J(v) = \min_{w \in F_v} \{ c(v, w) + J(w) \}\]</div>
+<p>This is known as the <em>Bellman equation</em>, after the mathematician Richard Bellman.</p>
+</div>
+<div class="section" id="solving-for-j">
+<h2><a class="toc-backref" href="#id6">Solving for <span class="math notranslate nohighlight">\(J\)</span></a><a class="headerlink" href="#solving-for-j" title="Permalink to this headline">¶</a></h2>
+<p>The standard algorithm for finding <span class="math notranslate nohighlight">\(J\)</span> is to start with</p>
+<div class="math notranslate nohighlight" id="equation-spguess">
+<span class="eqno">(90)<a class="headerlink" href="#equation-spguess" title="Permalink to this equation">¶</a></span>\[J_0(v) = M \text{ if } v \not= \text{ destination, else } J_0(v) = 0\]</div>
+<p>where <span class="math notranslate nohighlight">\(M\)</span> is some large number.</p>
+<p>Now we use the following algorithm</p>
+<ol class="simple">
+<li><p>Set <span class="math notranslate nohighlight">\(n = 0\)</span>.</p></li>
+<li><p>Set <span class="math notranslate nohighlight">\(J_{n+1} (v) = \min_{w \in F_v} \{ c(v, w) + J_n(w) \}\)</span> for all <span class="math notranslate nohighlight">\(v\)</span>.</p></li>
+<li><p>If <span class="math notranslate nohighlight">\(J_{n+1}\)</span> and <span class="math notranslate nohighlight">\(J_n\)</span> are not equal then increment <span class="math notranslate nohighlight">\(n\)</span>, go to 2.</p></li>
+</ol>
+<p>In general, this sequence converges to <span class="math notranslate nohighlight">\(J\)</span>—the proof is omitted.</p>
+</div>
+<div class="section" id="exercises">
+<h2><a class="toc-backref" href="#id7">Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1">
+<span id="short-path-ex1"></span><h3>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<p>Use the algorithm given above to find the optimal path (and its cost) for the
+following graph.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">graph</span> <span class="o">=</span> <span class="kt">Dict</span><span class="p">(</span><span class="n">zip</span><span class="p">(</span><span class="mi">0</span><span class="o">:</span><span class="mi">99</span><span class="p">,</span> <span class="p">[[(</span><span class="mi">14</span><span class="p">,</span> <span class="mf">72.21</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mf">11.11</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">)],[(</span><span class="mi">13</span><span class="p">,</span> <span class="mf">64.94</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">20.59</span><span class="p">),</span> <span class="p">(</span><span class="mi">46</span><span class="p">,</span> <span class="mf">1247.25</span><span class="p">)],[(</span><span class="mi">45</span><span class="p">,</span> <span class="mf">1561.45</span><span class="p">),</span> <span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mf">166.8</span><span class="p">),</span> <span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="mf">54.18</span><span class="p">)],[(</span><span class="mi">11</span><span class="p">,</span> <span class="mf">42.43</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mf">2.06</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mf">133.65</span><span class="p">)],[(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">),</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">0.73</span><span class="p">),</span> <span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mf">3706.67</span><span class="p">)],[(</span><span class="mi">11</span><span class="p">,</span> <span class="mf">34.54</span><span class="p">),(</span><span class="mi">7</span><span class="p">,</span> <span class="mf">3.33</span><span class="p">),(</span><span class="mi">45</span><span class="p">,</span> <span class="mf">1382.97</span><span class="p">)],[(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">13.1</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mf">0.72</span><span class="p">),</span> <span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mf">63.17</span><span class="p">)],[(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">5.85</span><span class="p">),</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mf">3.15</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mf">478.14</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">3.18</span><span class="p">),</span> <span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mf">7.45</span><span class="p">),</span> <span class="p">(</span><span class="mi">69</span><span class="p">,</span> <span class="mf">577.91</span><span class="p">)],[(</span><span class="mi">20</span><span class="p">,</span> <span class="mf">16.53</span><span class="p">),</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mf">4.42</span><span class="p">),</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mf">2454.28</span><span class="p">)],[(</span><span class="mi">16</span><span class="p">,</span> <span class="mf">25.16</span><span class="p">),</span> <span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mf">1.87</span><span class="p">),</span> <span class="p">(</span><span class="mi">89</span><span class="p">,</span> <span class="mf">5352.79</span><span class="p">)],[(</span><span class="mi">20</span><span class="p">,</span> <span class="mf">65.08</span><span class="p">),</span> <span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mf">37.55</span><span class="p">),</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mf">4961.32</span><span class="p">)],[(</span><span class="mi">28</span><span class="p">,</span> <span class="mf">170.04</span><span class="p">),</span> <span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mf">34.32</span><span class="p">),</span> <span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mf">3914.62</span><span class="p">)],[(</span><span class="mi">40</span><span class="p">,</span> <span class="mf">475.33</span><span class="p">),</span> <span class="p">(</span><span class="mi">38</span><span class="p">,</span> <span class="mf">236.33</span><span class="p">),</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mf">2135.95</span><span class="p">)],[(</span><span class="mi">24</span><span class="p">,</span> <span class="mf">38.65</span><span class="p">),</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mf">2.7</span><span class="p">),(</span><span class="mi">67</span><span class="p">,</span> <span class="mf">1878.96</span><span class="p">)],[(</span><span class="mi">18</span><span class="p">,</span> <span class="mf">2.57</span><span class="p">),(</span><span class="mi">17</span><span class="p">,</span> <span class="mf">1.01</span><span class="p">),(</span><span class="mi">91</span><span class="p">,</span> <span class="mf">3597.11</span><span class="p">)],[(</span><span class="mi">38</span><span class="p">,</span> <span class="mf">278.71</span><span class="p">),(</span><span class="mi">19</span><span class="p">,</span> <span class="mf">3.49</span><span class="p">),(</span><span class="mi">36</span><span class="p">,</span> <span class="mf">392.92</span><span class="p">)],[(</span><span class="mi">23</span><span class="p">,</span> <span class="mf">26.45</span><span class="p">),</span> <span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mf">24.78</span><span class="p">),</span> <span class="p">(</span><span class="mi">76</span><span class="p">,</span> <span class="mf">783.29</span><span class="p">)],[(</span><span class="mi">28</span><span class="p">,</span> <span class="mf">55.84</span><span class="p">),</span> <span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="mf">16.23</span><span class="p">),</span> <span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="mf">3363.17</span><span class="p">)],[(</span><span class="mi">28</span><span class="p">,</span> <span class="mf">70.54</span><span class="p">),</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mf">0.24</span><span class="p">),</span> <span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mf">20.09</span><span class="p">)],[(</span><span class="mi">33</span><span class="p">,</span> <span class="mf">145.8</span><span class="p">),</span> <span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="mf">9.81</span><span class="p">),(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">3523.33</span><span class="p">)],[(</span><span class="mi">31</span><span class="p">,</span> <span class="mf">27.06</span><span class="p">),(</span><span class="mi">28</span><span class="p">,</span> <span class="mf">36.65</span><span class="p">),(</span><span class="mi">56</span><span class="p">,</span> <span class="mf">626.04</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">40</span><span class="p">,</span> <span class="mf">124.22</span><span class="p">),</span> <span class="p">(</span><span class="mi">39</span><span class="p">,</span> <span class="mf">136.32</span><span class="p">),</span> <span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mf">1447.22</span><span class="p">)],[(</span><span class="mi">33</span><span class="p">,</span> <span class="mf">22.37</span><span class="p">),</span> <span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mf">2.66</span><span class="p">),</span> <span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mf">336.73</span><span class="p">)],[(</span><span class="mi">28</span><span class="p">,</span> <span class="mf">14.25</span><span class="p">),</span> <span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">),</span> <span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="mf">875.19</span><span class="p">)],[(</span><span class="mi">35</span><span class="p">,</span> <span class="mf">45.55</span><span class="p">),(</span><span class="mi">32</span><span class="p">,</span> <span class="mf">36.58</span><span class="p">),(</span><span class="mi">70</span><span class="p">,</span> <span class="mf">1343.63</span><span class="p">)],[(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">122.0</span><span class="p">),(</span><span class="mi">27</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">),</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mf">135.78</span><span class="p">)],[(</span><span class="mi">43</span><span class="p">,</span> <span class="mf">246.24</span><span class="p">),</span> <span class="p">(</span><span class="mi">35</span><span class="p">,</span> <span class="mf">48.1</span><span class="p">),(</span><span class="mi">65</span><span class="p">,</span> <span class="mf">480.55</span><span class="p">)],[(</span><span class="mi">36</span><span class="p">,</span> <span class="mf">15.52</span><span class="p">),</span> <span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mf">21.79</span><span class="p">),</span> <span class="p">(</span><span class="mi">82</span><span class="p">,</span> <span class="mf">2538.18</span><span class="p">)],[(</span><span class="mi">33</span><span class="p">,</span> <span class="mf">12.61</span><span class="p">),</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mf">4.22</span><span class="p">),(</span><span class="mi">64</span><span class="p">,</span> <span class="mf">635.52</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">35</span><span class="p">,</span> <span class="mf">13.95</span><span class="p">),</span> <span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mf">5.61</span><span class="p">),</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">2616.03</span><span class="p">)],[(</span><span class="mi">44</span><span class="p">,</span> <span class="mf">125.88</span><span class="p">),(</span><span class="mi">36</span><span class="p">,</span> <span class="mf">20.44</span><span class="p">),</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">3350.98</span><span class="p">)],[(</span><span class="mi">35</span><span class="p">,</span> <span class="mf">1.46</span><span class="p">),</span> <span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mf">3.33</span><span class="p">),</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="mf">2613.92</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">47</span><span class="p">,</span> <span class="mf">111.54</span><span class="p">),</span> <span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mf">3.23</span><span class="p">),</span> <span class="p">(</span><span class="mi">81</span><span class="p">,</span> <span class="mf">1854.73</span><span class="p">)],[(</span><span class="mi">48</span><span class="p">,</span> <span class="mf">129.45</span><span class="p">),</span> <span class="p">(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">51.52</span><span class="p">),</span> <span class="p">(</span><span class="mi">73</span><span class="p">,</span> <span class="mf">1075.38</span><span class="p">)],[(</span><span class="mi">50</span><span class="p">,</span> <span class="mf">78.81</span><span class="p">),</span> <span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mf">2.09</span><span class="p">),</span> <span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mf">17.57</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">57</span><span class="p">,</span> <span class="mf">260.46</span><span class="p">),</span> <span class="p">(</span><span class="mi">54</span><span class="p">,</span> <span class="mf">101.08</span><span class="p">),</span> <span class="p">(</span><span class="mi">71</span><span class="p">,</span> <span class="mf">1171.6</span><span class="p">)],[(</span><span class="mi">46</span><span class="p">,</span> <span class="mf">80.49</span><span class="p">),(</span><span class="mi">38</span><span class="p">,</span> <span class="mf">0.36</span><span class="p">),</span> <span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mf">269.97</span><span class="p">)],[(</span><span class="mi">42</span><span class="p">,</span> <span class="mf">8.78</span><span class="p">),</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mf">1.79</span><span class="p">),</span> <span class="p">(</span><span class="mi">93</span><span class="p">,</span> <span class="mf">2767.85</span><span class="p">)],[(</span><span class="mi">41</span><span class="p">,</span> <span class="mf">1.34</span><span class="p">),</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mf">39.88</span><span class="p">)],[(</span><span class="mi">54</span><span class="p">,</span> <span class="mf">53.46</span><span class="p">),</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mf">28.57</span><span class="p">),</span> <span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mf">548.68</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">54</span><span class="p">,</span> <span class="mf">162.24</span><span class="p">),</span> <span class="p">(</span><span class="mi">46</span><span class="p">,</span> <span class="mf">0.28</span><span class="p">),</span> <span class="p">(</span><span class="mi">53</span><span class="p">,</span> <span class="mf">18.23</span><span class="p">)],[(</span><span class="mi">72</span><span class="p">,</span> <span class="mf">437.49</span><span class="p">),</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mf">10.08</span><span class="p">),</span> <span class="p">(</span><span class="mi">59</span><span class="p">,</span> <span class="mf">141.86</span><span class="p">)],[(</span><span class="mi">60</span><span class="p">,</span> <span class="mf">116.23</span><span class="p">),</span> <span class="p">(</span><span class="mi">54</span><span class="p">,</span> <span class="mf">95.06</span><span class="p">),</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">2984.83</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">47</span><span class="p">,</span> <span class="mf">2.14</span><span class="p">),</span> <span class="p">(</span><span class="mi">46</span><span class="p">,</span> <span class="mf">1.56</span><span class="p">),</span> <span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="mf">807.39</span><span class="p">)],[(</span><span class="mi">49</span><span class="p">,</span> <span class="mf">15.51</span><span class="p">),</span> <span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mf">3.68</span><span class="p">),</span> <span class="p">(</span><span class="mi">58</span><span class="p">,</span> <span class="mf">79.93</span><span class="p">)],[(</span><span class="mi">67</span><span class="p">,</span> <span class="mf">65.48</span><span class="p">),</span> <span class="p">(</span><span class="mi">57</span><span class="p">,</span> <span class="mf">27.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mf">22.68</span><span class="p">)],[(</span><span class="mi">61</span><span class="p">,</span> <span class="mf">172.64</span><span class="p">),</span> <span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mf">49.31</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mf">2.82</span><span class="p">)],[(</span><span class="mi">60</span><span class="p">,</span> <span class="mf">66.44</span><span class="p">),</span> <span class="p">(</span><span class="mi">59</span><span class="p">,</span> <span class="mf">34.52</span><span class="p">),</span> <span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mf">2564.12</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">56</span><span class="p">,</span> <span class="mf">10.89</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mf">0.51</span><span class="p">),</span> <span class="p">(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">53.79</span><span class="p">)],[(</span><span class="mi">55</span><span class="p">,</span> <span class="mf">20.1</span><span class="p">),</span> <span class="p">(</span><span class="mi">53</span><span class="p">,</span> <span class="mf">1.38</span><span class="p">),</span> <span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mf">251.76</span><span class="p">)],[(</span><span class="mi">60</span><span class="p">,</span> <span class="mf">73.79</span><span class="p">),(</span><span class="mi">59</span><span class="p">,</span> <span class="mf">23.67</span><span class="p">),(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">2110.67</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">66</span><span class="p">,</span> <span class="mf">123.03</span><span class="p">),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mf">102.41</span><span class="p">),</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mf">1471.8</span><span class="p">)],[(</span><span class="mi">67</span><span class="p">,</span> <span class="mf">88.35</span><span class="p">),(</span><span class="mi">56</span><span class="p">,</span> <span class="mf">4.33</span><span class="p">),</span> <span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mf">22.85</span><span class="p">)],[(</span><span class="mi">73</span><span class="p">,</span> <span class="mf">238.61</span><span class="p">),</span> <span class="p">(</span><span class="mi">59</span><span class="p">,</span> <span class="mf">24.3</span><span class="p">),</span> <span class="p">(</span><span class="mi">88</span><span class="p">,</span> <span class="mf">967.59</span><span class="p">)],[(</span><span class="mi">64</span><span class="p">,</span> <span class="mf">60.8</span><span class="p">),</span> <span class="p">(</span><span class="mi">57</span><span class="p">,</span> <span class="mf">2.13</span><span class="p">),</span> <span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mf">86.09</span><span class="p">)],[(</span><span class="mi">61</span><span class="p">,</span> <span class="mf">11.06</span><span class="p">),</span> <span class="p">(</span><span class="mi">57</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">),</span> <span class="p">(</span><span class="mi">76</span><span class="p">,</span> <span class="mf">197.03</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">60</span><span class="p">,</span> <span class="mf">7.01</span><span class="p">),</span> <span class="p">(</span><span class="mi">58</span><span class="p">,</span> <span class="mf">0.46</span><span class="p">),</span> <span class="p">(</span><span class="mi">86</span><span class="p">,</span> <span class="mf">701.09</span><span class="p">)],[(</span><span class="mi">65</span><span class="p">,</span> <span class="mf">34.32</span><span class="p">),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mf">29.85</span><span class="p">),</span> <span class="p">(</span><span class="mi">83</span><span class="p">,</span> <span class="mf">556.7</span><span class="p">)],[(</span><span class="mi">71</span><span class="p">,</span> <span class="mf">0.67</span><span class="p">),</span> <span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mf">0.72</span><span class="p">),</span> <span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mf">820.66</span><span class="p">)],[(</span><span class="mi">67</span><span class="p">,</span> <span class="mf">1.63</span><span class="p">),</span> <span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="mf">4.76</span><span class="p">),</span> <span class="p">(</span><span class="mi">76</span><span class="p">,</span> <span class="mf">48.03</span><span class="p">)],[(</span><span class="mi">64</span><span class="p">,</span> <span class="mf">4.88</span><span class="p">),</span> <span class="p">(</span><span class="mi">63</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">),</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">1057.59</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">76</span><span class="p">,</span> <span class="mf">38.43</span><span class="p">),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mf">2.94</span><span class="p">),</span> <span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="mf">132.23</span><span class="p">)],[(</span><span class="mi">75</span><span class="p">,</span> <span class="mf">56.34</span><span class="p">),</span> <span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mf">70.08</span><span class="p">),</span> <span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="mf">4.43</span><span class="p">)],[(</span><span class="mi">76</span><span class="p">,</span> <span class="mf">11.98</span><span class="p">),</span> <span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mf">47.73</span><span class="p">)],[(</span><span class="mi">73</span><span class="p">,</span> <span class="mf">33.23</span><span class="p">),</span> <span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="mf">0.64</span><span class="p">),</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mf">594.93</span><span class="p">)],[(</span><span class="mi">73</span><span class="p">,</span> <span class="mf">37.53</span><span class="p">),</span> <span class="p">(</span><span class="mi">68</span><span class="p">,</span> <span class="mf">2.66</span><span class="p">),</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">395.63</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">70</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">),</span> <span class="p">(</span><span class="mi">68</span><span class="p">,</span> <span class="mf">0.09</span><span class="p">),</span> <span class="p">(</span><span class="mi">82</span><span class="p">,</span> <span class="mf">153.53</span><span class="p">)],[(</span><span class="mi">71</span><span class="p">,</span> <span class="mf">1.66</span><span class="p">),</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mf">3.35</span><span class="p">),</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mf">232.1</span><span class="p">)],[(</span><span class="mi">73</span><span class="p">,</span> <span class="mf">8.99</span><span class="p">),</span> <span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mf">0.06</span><span class="p">),</span> <span class="p">(</span><span class="mi">99</span><span class="p">,</span> <span class="mf">247.8</span><span class="p">)],[(</span><span class="mi">73</span><span class="p">,</span> <span class="mf">8.37</span><span class="p">),</span> <span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span> <span class="p">(</span><span class="mi">76</span><span class="p">,</span> <span class="mf">27.18</span><span class="p">)],[(</span><span class="mi">91</span><span class="p">,</span> <span class="mf">284.64</span><span class="p">),</span> <span class="p">(</span><span class="mi">74</span><span class="p">,</span> <span class="mf">8.86</span><span class="p">),</span> <span class="p">(</span><span class="mi">89</span><span class="p">,</span> <span class="mf">104.5</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">92</span><span class="p">,</span> <span class="mf">133.06</span><span class="p">),</span> <span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mf">102.77</span><span class="p">),</span> <span class="p">(</span><span class="mi">76</span><span class="p">,</span> <span class="mf">15.32</span><span class="p">)],[(</span><span class="mi">90</span><span class="p">,</span> <span class="mf">243.0</span><span class="p">),</span> <span class="p">(</span><span class="mi">76</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">),</span> <span class="p">(</span><span class="mi">83</span><span class="p">,</span> <span class="mf">52.22</span><span class="p">)],[(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">8.08</span><span class="p">),</span> <span class="p">(</span><span class="mi">76</span><span class="p">,</span> <span class="mf">0.52</span><span class="p">),</span> <span class="p">(</span><span class="mi">81</span><span class="p">,</span> <span class="mf">1.07</span><span class="p">)],[(</span><span class="mi">77</span><span class="p">,</span> <span class="mf">1.19</span><span class="p">),</span> <span class="p">(</span><span class="mi">76</span><span class="p">,</span> <span class="mf">0.81</span><span class="p">),</span> <span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mf">68.53</span><span class="p">)],[(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">2.36</span><span class="p">),</span> <span class="p">(</span><span class="mi">77</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">),</span> <span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mf">13.18</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">86</span><span class="p">,</span> <span class="mf">64.32</span><span class="p">),</span> <span class="p">(</span><span class="mi">78</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">),</span> <span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="mf">8.94</span><span class="p">)],[(</span><span class="mi">81</span><span class="p">,</span> <span class="mf">2.59</span><span class="p">),</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">355.9</span><span class="p">)],[(</span><span class="mi">91</span><span class="p">,</span> <span class="mf">22.35</span><span class="p">),</span> <span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mf">1.45</span><span class="p">),</span> <span class="p">(</span><span class="mi">81</span><span class="p">,</span> <span class="mf">0.09</span><span class="p">)],[(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">264.34</span><span class="p">),</span> <span class="p">(</span><span class="mi">88</span><span class="p">,</span> <span class="mf">28.78</span><span class="p">),</span> <span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mf">121.87</span><span class="p">)],[(</span><span class="mi">92</span><span class="p">,</span> <span class="mf">99.89</span><span class="p">),</span> <span class="p">(</span><span class="mi">89</span><span class="p">,</span> <span class="mf">39.52</span><span class="p">),</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mf">99.78</span><span class="p">)],[(</span><span class="mi">93</span><span class="p">,</span> <span class="mf">11.99</span><span class="p">),</span> <span class="p">(</span><span class="mi">88</span><span class="p">,</span> <span class="mf">28.05</span><span class="p">),</span> <span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="mf">47.44</span><span class="p">)],[(</span><span class="mi">88</span><span class="p">,</span> <span class="mf">5.78</span><span class="p">),</span> <span class="p">(</span><span class="mi">86</span><span class="p">,</span> <span class="mf">8.75</span><span class="p">),</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mf">114.95</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">121.05</span><span class="p">),</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mf">30.41</span><span class="p">),</span> <span class="p">(</span><span class="mi">89</span><span class="p">,</span> <span class="mf">19.14</span><span class="p">)],[(</span><span class="mi">89</span><span class="p">,</span> <span class="mf">4.9</span><span class="p">),</span> <span class="p">(</span><span class="mi">87</span><span class="p">,</span> <span class="mf">2.66</span><span class="p">),</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="mf">94.51</span><span class="p">)],[(</span><span class="mi">97</span><span class="p">,</span> <span class="mf">85.09</span><span class="p">)],[(</span><span class="mi">92</span><span class="p">,</span> <span class="mf">21.23</span><span class="p">),</span> <span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="mf">11.14</span><span class="p">),</span> <span class="p">(</span><span class="mi">88</span><span class="p">,</span> <span class="mf">0.21</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">6.12</span><span class="p">),</span> <span class="p">(</span><span class="mi">91</span><span class="p">,</span> <span class="mf">6.83</span><span class="p">),</span> <span class="p">(</span><span class="mi">93</span><span class="p">,</span> <span class="mf">1.31</span><span class="p">)],[(</span><span class="mi">99</span><span class="p">,</span> <span class="mf">82.12</span><span class="p">),</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="mf">36.97</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">99</span><span class="p">,</span> <span class="mf">50.99</span><span class="p">),</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mf">10.47</span><span class="p">),</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mf">23.53</span><span class="p">)],[(</span><span class="mi">97</span><span class="p">,</span> <span class="mf">22.17</span><span class="p">)],[(</span><span class="mi">99</span><span class="p">,</span> <span class="mf">34.68</span><span class="p">),</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="mf">11.24</span><span class="p">),</span> <span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mf">10.83</span><span class="p">)],[(</span><span class="mi">99</span><span class="p">,</span> <span class="mf">32.77</span><span class="p">),</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="mf">6.71</span><span class="p">),</span> <span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mf">0.19</span><span class="p">)],</span> <span class="p">[(</span><span class="mi">96</span><span class="p">,</span> <span class="mf">2.03</span><span class="p">),</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">5.91</span><span class="p">)],[(</span><span class="mi">99</span><span class="p">,</span> <span class="mf">0.27</span><span class="p">),</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">6.17</span><span class="p">)],[(</span><span class="mi">99</span><span class="p">,</span> <span class="mf">5.87</span><span class="p">),</span> <span class="p">(</span><span class="mi">97</span><span class="p">,</span> <span class="mf">0.43</span><span class="p">),</span> <span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">3.32</span><span class="p">)],[(</span><span class="mi">98</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)],[(</span><span class="mi">99</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">)],[(</span><span class="mi">99</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)]]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dict{Int64,Array{Tuple{Int64,Float64},1}} with 100 entries:
+  68 =&gt; [(71, 1.66), (70, 3.35), (94, 232.1)]
+  2  =&gt; [(45, 1561.45), (31, 166.8), (66, 54.18)]
+  89 =&gt; [(99, 82.12), (97, 36.97)]
+  11 =&gt; [(20, 65.08), (18, 37.55), (94, 4961.32)]
+  39 =&gt; [(41, 1.34), (40, 0.95), (50, 39.88)]
+  46 =&gt; [(67, 65.48), (57, 27.5), (52, 22.68)]
+  85 =&gt; [(89, 4.9), (87, 2.66), (97, 94.51)]
+  25 =&gt; [(35, 45.55), (32, 36.58), (70, 1343.63)]
+  55 =&gt; [(64, 60.8), (57, 2.13), (84, 86.09)]
+  42 =&gt; [(72, 437.49), (47, 10.08), (59, 141.86)]
+  29 =&gt; [(33, 12.61), (32, 4.22), (64, 635.52)]
+  58 =&gt; [(65, 34.32), (64, 29.85), (83, 556.7)]
+  66 =&gt; [(73, 37.53), (68, 2.66), (98, 395.63)]
+  59 =&gt; [(71, 0.67), (60, 0.72), (90, 820.66)]
+  8  =&gt; [(12, 3.18), (11, 7.45), (69, 577.91)]
+  74 =&gt; [(78, 8.08), (76, 0.52), (81, 1.07)]
+  95 =&gt; [(99, 0.27), (98, 6.17)]
+  57 =&gt; [(60, 7.01), (58, 0.46), (86, 701.09)]
+  20 =&gt; [(33, 145.8), (24, 9.81), (98, 3523.33)]
+  90 =&gt; [(99, 50.99), (94, 10.47), (96, 23.53)]
+  14 =&gt; [(24, 38.65), (16, 2.7), (67, 1878.96)]
+  31 =&gt; [(44, 125.88), (36, 20.44), (98, 3350.98)]
+  78 =&gt; [(81, 2.59), (98, 355.9)]
+  70 =&gt; [(73, 8.37), (72, 1.5), (76, 27.18)]
+  33 =&gt; [(47, 111.54), (41, 3.23), (81, 1854.73)]
+  ⋮  =&gt; ⋮
+</pre></div>
+</div>
+</div>
+</div>
+<p>The cost from node 68 to node 71 is 1.66 and so on.</p>
+</div>
+</div>
+<div class="section" id="solutions">
+<h2><a class="toc-backref" href="#id8">Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Exercise 1<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">update_J!</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+    <span class="n">next_J</span> <span class="o">=</span> <span class="kt">Dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">node</span> <span class="kp">in</span> <span class="n">keys</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">node</span> <span class="o">==</span> <span class="mi">99</span>
+            <span class="n">next_J</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span>
+            <span class="n">next_J</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">minimum</span><span class="p">(</span><span class="n">cost</span> <span class="o">+</span> <span class="n">J</span><span class="p">[</span><span class="n">dest</span><span class="p">]</span> <span class="k">for</span> <span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">cost</span><span class="p">)</span> <span class="kp">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">node</span><span class="p">])</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">next_J</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">print_best_path</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+    <span class="n">sum_costs</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">current_location</span><span class="p">,</span> <span class="n">destination</span> <span class="o">=</span> <span class="n">extrema</span><span class="p">(</span><span class="n">keys</span><span class="p">(</span><span class="n">graph</span><span class="p">))</span>
+    <span class="k">while</span> <span class="n">current_location</span> <span class="o">!=</span> <span class="n">destination</span>
+        <span class="n">println</span><span class="p">(</span><span class="s">&quot;node </span><span class="si">$current_location</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="n">running_min</span> <span class="o">=</span> <span class="mf">1e10</span>
+        <span class="n">minimizer_dest</span> <span class="o">=</span> <span class="nb">Inf</span>
+        <span class="n">minimizer_cost</span> <span class="o">=</span> <span class="mf">1e10</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">dest</span><span class="p">,</span> <span class="n">cost</span><span class="p">)</span> <span class="kp">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">current_location</span><span class="p">]</span>
+            <span class="n">cost_of_path</span> <span class="o">=</span> <span class="n">cost</span> <span class="o">+</span> <span class="n">J</span><span class="p">[</span><span class="n">dest</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">cost_of_path</span> <span class="o">&lt;</span> <span class="n">running_min</span>
+                <span class="n">running_min</span> <span class="o">=</span> <span class="n">cost_of_path</span>
+                <span class="n">minimizer_cost</span> <span class="o">=</span> <span class="n">cost</span>
+                <span class="n">minimizer_dest</span> <span class="o">=</span> <span class="n">dest</span>
+            <span class="k">end</span>
+        <span class="k">end</span>
+
+        <span class="n">current_location</span> <span class="o">=</span> <span class="n">minimizer_dest</span>
+        <span class="n">sum_costs</span> <span class="o">+=</span> <span class="n">minimizer_cost</span>
+    <span class="k">end</span>
+
+    <span class="n">sum_costs</span> <span class="o">=</span> <span class="n">round</span><span class="p">(</span><span class="n">sum_costs</span><span class="p">,</span> <span class="n">digits</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">println</span><span class="p">(</span><span class="s">&quot;node </span><span class="si">$destination</span><span class="se">\n</span><span class="s">Cost: </span><span class="si">$sum_costs</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">J</span> <span class="o">=</span> <span class="kt">Dict</span><span class="p">((</span><span class="n">node</span> <span class="o">=&gt;</span> <span class="nb">Inf</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="kp">in</span> <span class="n">keys</span><span class="p">(</span><span class="n">graph</span><span class="p">))</span>
+
+<span class="k">while</span> <span class="kc">true</span>
+    <span class="n">next_J</span> <span class="o">=</span> <span class="n">update_J!</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">next_J</span> <span class="o">==</span> <span class="n">J</span>
+        <span class="k">break</span>
+    <span class="k">else</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">next_J</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">print_best_path</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>node 0
+node 8
+node 11
+node 18
+node 23
+node 33
+node 41
+node 53
+node 56
+node 57
+node 60
+node 67
+node 70
+node 73
+node 76
+node 85
+node 87
+node 88
+node 93
+node 94
+node 96
+node 97
+node 98
+node 99
+Cost: 160.55
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.5"
+        },
+        kernelOptions: {
+            kernelName: "julia-1.5",
+            path: "./dynamic_programming"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.5'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   Introduction to Types and Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   The Need for Speed
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="mccall_model.html">
+   Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="mccall_model_with_separation.html">
+   Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="wald_friedman.html">
+   A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="odu.html">
+   Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="career.html">
+   Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="jv.html">
+   Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="optgrowth.html">
+   Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="coleman_policy_iter.html">
+   Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="egm_policy_iter.html">
+   Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lqcontrol.html">
+   LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="perm_income.html">
+   Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="perm_income_cons.html">
+   Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="smoothing.html">
+   Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ifp.html">
+   Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="robustness.html">
+   Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="discrete_dp.html">
+   Discrete State Dynamic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   Globalization and Cycles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   Classical Filtering With Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/dynamic_programming/short_path.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/short_path.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/short_path.ipynb" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/short_path.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

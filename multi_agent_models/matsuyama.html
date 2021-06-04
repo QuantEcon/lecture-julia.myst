@@ -1,0 +1,1255 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Globalization and Cycles &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/multi_agent_models/matsuyama.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Covariance Stationary Processes" href="../time_series_models/arma.html" />
+    <link rel="prev" title="Default Risk and Income Fluctuations" href="arellano.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Globalization and Cycles"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Globalization and Cycles" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/multi_agent_models/matsuyama.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=multi_agent_models/matsuyama>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#background">
+     Background
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#key-ideas">
+   Key Ideas
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#innovation-cycles">
+     Innovation Cycles
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#synchronization">
+     Synchronization
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#model">
+   Model
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#prices">
+     Prices
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#new-varieties">
+     New Varieties
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#law-of-motion">
+     Law of Motion
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#simulation">
+   Simulation
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#time-series-of-firm-measures">
+     Time Series of Firm Measures
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#basin-of-attraction">
+     Basin of Attraction
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   Exercises
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1">
+     Exercise 1
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solutions">
+   Solutions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     Exercise 1
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Globalization and Cycles</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="globalization-and-cycles">
+<h1><a class="toc-backref" href="#id5">Globalization and Cycles</a><a class="headerlink" href="#globalization-and-cycles" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#globalization-and-cycles" id="id5">Globalization and Cycles</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id6">Overview</a></p></li>
+<li><p><a class="reference internal" href="#key-ideas" id="id7">Key Ideas</a></p></li>
+<li><p><a class="reference internal" href="#model" id="id8">Model</a></p></li>
+<li><p><a class="reference internal" href="#simulation" id="id9">Simulation</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id10">Exercises</a></p></li>
+<li><p><a class="reference internal" href="#solutions" id="id11">Solutions</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Co-authored with Chase Coleman</p>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id6">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>In this lecture, we review the paper <a class="reference external" href="http://www.centreformacroeconomics.ac.uk/Discussion-Papers/2015/CFMDP2015-27-Paper.pdf">Globalization and Synchronization of Innovation Cycles</a> by <a class="reference external" href="http://faculty.wcas.northwestern.edu/~kmatsu/">Kiminori Matsuyama</a>, <a class="reference external" href="http://www.mdef.it/index.php?id=32">Laura Gardini</a> and <a class="reference external" href="http://irynasushko.altervista.org/">Iryna Sushko</a>.</p>
+<p>This model helps us understand several interesting stylized facts about the world economy.</p>
+<p>One of these is synchronized business cycles across different countries.</p>
+<p>Most existing models that generate synchronized business cycles do so by assumption, since they tie output in each country to a common shock.</p>
+<p>They also fail to explain certain features of the data, such as the fact that the degree of synchronization tends to increase with trade ties.</p>
+<p>By contrast, in the model we consider in this lecture, synchronization is both endogenous and increasing with the extent of trade integration.</p>
+<p>In particular, as trade costs fall and international competition increases, innovation incentives become aligned and countries synchronize their innovation cycles.</p>
+<div class="section" id="background">
+<h3>Background<a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h3>
+<p>The model builds on work by Judd <span id="id1">[<a class="reference internal" href="../zreferences.html#id19"><span>Jud85</span></a>]</span>, Deneckner and Judd <span id="id2">[<a class="reference internal" href="../zreferences.html#id18"><span>DJ92</span></a>]</span> and Helpman and Krugman <span id="id3">[<a class="reference internal" href="../zreferences.html#id20"><span>HK85</span></a>]</span> by developing a two country model with trade and innovation.</p>
+<p>On the technical side, the paper introduces the concept of <a class="reference external" href="https://en.wikipedia.org/wiki/Oscillation#Coupled_oscillations">coupled oscillators</a> to economic modeling.</p>
+<p>As we will see, coupled oscillators arise endogenously within the model.</p>
+<p>Below we review the model and replicate some of the results on synchronization of innovation across countries.</p>
+</div>
+</div>
+<div class="section" id="key-ideas">
+<h2><a class="toc-backref" href="#id7">Key Ideas</a><a class="headerlink" href="#key-ideas" title="Permalink to this headline">¶</a></h2>
+<p>It is helpful to begin with an overview of the mechanism.</p>
+<div class="section" id="innovation-cycles">
+<h3>Innovation Cycles<a class="headerlink" href="#innovation-cycles" title="Permalink to this headline">¶</a></h3>
+<p>As discussed above, two countries produce and trade with each other.</p>
+<p>In each country, firms innovate, producing new varieties of goods and, in doing so, receiving temporary monopoly power.</p>
+<p>Imitators follow and, after one period of monopoly, what had previously been new varieties now enter competitive production.</p>
+<p>Firms have incentives to innovate and produce new goods when the mass of varieties of goods currently in production is relatively low.</p>
+<p>In addition, there are strategic complementarities in the timing of innovation.</p>
+<p>Firms have incentives to innovate in the same period, so as to avoid competing with substitutes that are competitively produced.</p>
+<p>This leads to temporal clustering in innovations in each country.</p>
+<p>After a burst of innovation, the mass of goods currently in production increases.</p>
+<p>However, goods also become obsolete, so that not all survive from period to period.</p>
+<p>This mechanism generates a cycle, where the mass of varieties increases through simultaneous innovation and then falls through obsolescence.</p>
+</div>
+<div class="section" id="synchronization">
+<h3>Synchronization<a class="headerlink" href="#synchronization" title="Permalink to this headline">¶</a></h3>
+<p>In the absence of trade, the timing of innovation cycles in each country is decoupled.</p>
+<p>This will be the case when trade costs are prohibitively high.</p>
+<p>If trade costs fall, then goods produced in each country penetrate each other’s markets.</p>
+<p>As illustrated below, this leads to synchonization of business cycles across the two countries.</p>
+</div>
+</div>
+<div class="section" id="model">
+<h2><a class="toc-backref" href="#id8">Model</a><a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<p>Let’s write down the model more formally.</p>
+<p>(The treatment is relatively terse since full details can be found in <a class="reference external" href="http://www.centreformacroeconomics.ac.uk/Discussion-Papers/2015/CFMDP2015-27-Paper.pdf">the original paper</a>)</p>
+<p>Time is discrete with <span class="math notranslate nohighlight">\(t = 0, 1, \dots\)</span>.</p>
+<p>There are two countries indexed by <span class="math notranslate nohighlight">\(j\)</span> or <span class="math notranslate nohighlight">\(k\)</span>.</p>
+<p>In each country, a representative household inelastically supplies <span class="math notranslate nohighlight">\(L_j\)</span> units of labor at wage rate <span class="math notranslate nohighlight">\(w_{j, t}\)</span>.</p>
+<p>Without loss of generality, it is assumed that <span class="math notranslate nohighlight">\(L_{1} \geq L_{2}\)</span>.</p>
+<p>Households consume a single nontradeable final good which is produced competitively.</p>
+<p>Its production involves combining two types of tradeable intermediate inputs
+via</p>
+<div class="math notranslate nohighlight">
+\[
+Y_{k, t} = C_{k, t} = \left( \frac{X^o_{k, t}}{1 - \alpha} \right)^{1-\alpha} \left( \frac{X_{k, t}}{\alpha} \right)^{\alpha}
+\]</div>
+<p>Here <span class="math notranslate nohighlight">\(X^o_{k, t}\)</span> is a homogeneous input which can be produced from labor using a linear, one-for-one technology.</p>
+<p>It is freely tradeable, competitively supplied, and homogeneous across countries.</p>
+<p>By choosing the price of this good as numeraire and assuming both countries find it optimal to always produce the homogeneous good, we can set <span class="math notranslate nohighlight">\(w_{1, t} = w_{2, t} = 1\)</span>.</p>
+<p>The good <span class="math notranslate nohighlight">\(X_{k, t}\)</span> is a composite, built from many differentiated goods via</p>
+<div class="math notranslate nohighlight">
+\[
+X_{k, t}^{1 - \frac{1}{\sigma}} = \int_{\Omega_t} \left[ x_{k, t}(\nu) \right]^{1 - \frac{1}{\sigma}} d \nu
+\]</div>
+<p>Here <span class="math notranslate nohighlight">\(x_{k, t}(\nu)\)</span> is the total amount of a differentiated good <span class="math notranslate nohighlight">\(\nu \in \Omega_t\)</span> that is produced.</p>
+<p>The parameter <span class="math notranslate nohighlight">\(\sigma &gt; 1\)</span> is the direct partial elasticity of substitution between a pair of varieties and <span class="math notranslate nohighlight">\(\Omega_t\)</span> is the set of varieties available in period
+<span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>We can split the varieties into those which are supplied competitively and those supplied monopolistically; that is, <span class="math notranslate nohighlight">\(\Omega_t = \Omega_t^c + \Omega_t^m\)</span>.</p>
+<div class="section" id="prices">
+<h3>Prices<a class="headerlink" href="#prices" title="Permalink to this headline">¶</a></h3>
+<p>Demand for differentiated inputs is</p>
+<div class="math notranslate nohighlight">
+\[
+x_{k, t}(\nu) = \left( \frac{p_{k, t}(\nu)}{P_{k, t}} \right)^{-\sigma} \frac{\alpha  L_k}{P_{k, t}}
+\]</div>
+<p>Here</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(p_{k, t}(\nu)\)</span> is the price of the variety <span class="math notranslate nohighlight">\(\nu\)</span> and</p></li>
+<li><p><span class="math notranslate nohighlight">\(P_{k, t}\)</span> is the price index for differentiated inputs in <span class="math notranslate nohighlight">\(k\)</span>,
+defined by</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\left[ P_{k, t} \right]^{1 - \sigma} = \int_{\Omega_t} [p_{k, t}(\nu) ]^{1-\sigma} d\nu
+\]</div>
+<p>The price of a variety also depends on the origin, <span class="math notranslate nohighlight">\(j\)</span>, and destination, <span class="math notranslate nohighlight">\(k\)</span>, of the goods because shipping
+varieties between countries incurs an iceberg trade cost
+<span class="math notranslate nohighlight">\(\tau_{j,k}\)</span>.</p>
+<p>Thus the effective price in country <span class="math notranslate nohighlight">\(k\)</span> of a variety <span class="math notranslate nohighlight">\(\nu\)</span> produced in country <span class="math notranslate nohighlight">\(j\)</span> becomes <span class="math notranslate nohighlight">\(p_{k, t}(\nu) = \tau_{j,k} \, p_{j, t}(\nu)\)</span>.</p>
+<p>Using these expressions, we can derive the total demand for each variety,
+which is</p>
+<div class="math notranslate nohighlight">
+\[
+D_{j, t}(\nu) = \sum_k \tau_{j, k} x_{k, t}(\nu) = \alpha A_{j, t}(p_{j, t}(\nu))^{-\sigma}
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+A_{j, t} := \sum_k \frac{\rho_{j, k}  L_{k}}{(P_{k, t})^{1 - \sigma}}
+\quad \text{and} \quad
+\rho_{j, k} = (\tau_{j, k})^{1 - \sigma} \leq 1
+\]</div>
+<p>It is assumed that <span class="math notranslate nohighlight">\(\tau_{1,1} = \tau_{2,2} = 1\)</span> and <span class="math notranslate nohighlight">\(\tau_{1,2} = \tau_{2,1} = \tau\)</span> for some <span class="math notranslate nohighlight">\(\tau &gt; 1\)</span>, so that</p>
+<div class="math notranslate nohighlight">
+\[
+\rho_{1,2} = \rho_{2,1} = \rho := \tau^{1 - \sigma} &lt; 1
+\]</div>
+<p>The value <span class="math notranslate nohighlight">\(\rho \in [0, 1)\)</span> is a proxy for the degree of globalization.</p>
+<p>Producing one unit of each differentiated variety requires <span class="math notranslate nohighlight">\(\psi\)</span> units of labor, so the marginal cost is equal to <span class="math notranslate nohighlight">\(\psi\)</span> for <span class="math notranslate nohighlight">\(\nu \in \Omega_{j, t}\)</span>.</p>
+<p>Additionally, all competitive varieties will have the same price (because of equal marginal cost), which means that, for all <span class="math notranslate nohighlight">\(\nu \in \Omega^c\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+p_{j, t}(\nu) = p_{j, t}^c := \psi
+\quad \text{and} \quad
+D_{j, t} = y_{j, t}^c := \alpha A_{j, t} (p_{j, t}^c)^{-\sigma}
+\]</div>
+<p>Monopolists will have the same marked-up price, so, for all <span class="math notranslate nohighlight">\(\nu \in \Omega^m\)</span> ,</p>
+<div class="math notranslate nohighlight">
+\[
+p_{j, t}(\nu) = p_{j, t}^m := \frac{\psi }{1 - \frac{1}{\sigma}}
+\quad \text{and} \quad
+D_{j, t} = y_{j, t}^m  := \alpha A_{j, t} (p_{j, t}^m)^{-\sigma}
+\]</div>
+<p>Define</p>
+<div class="math notranslate nohighlight">
+\[
+\theta
+:= \frac{p_{j, t}^c}{p_{j, t}^m} \frac{y_{j, t}^c}{y_{j, t}^m}
+= \left(1 - \frac{1}{\sigma} \right)^{1-\sigma}
+\]</div>
+<p>Using the preceding definitions and some algebra, the price indices can now be rewritten as</p>
+<div class="math notranslate nohighlight">
+\[
+\left(\frac{P_{k,t}}{\psi}\right)^{1-\sigma} = M_{k,t}  + \rho M_{j,t}
+\quad \text{where} \quad
+M_{j,t} := N_{j,t}^c + \frac{N_{j,t}^m}{ \theta}
+\]</div>
+<p>The symbols <span class="math notranslate nohighlight">\(N_{j, t}^c\)</span> and <span class="math notranslate nohighlight">\(N_{j, t}^m\)</span> will denote the measures of <span class="math notranslate nohighlight">\(\Omega^c\)</span> and <span class="math notranslate nohighlight">\(\Omega^m\)</span> respectively.</p>
+</div>
+<div class="section" id="new-varieties">
+<h3>New Varieties<a class="headerlink" href="#new-varieties" title="Permalink to this headline">¶</a></h3>
+<p>To introduce a new variety, a firm must hire <span class="math notranslate nohighlight">\(f\)</span> units of labor per variety in each country.</p>
+<p>Monopolist profits must be less than or equal to zero in expectation, so</p>
+<div class="math notranslate nohighlight">
+\[
+N_{j,t}^m \geq 0, \quad
+\pi_{j, t}^m := (p_{j, t}^m - \psi) y_{j, t}^m - f \leq 0
+\quad \text{and} \quad
+\pi_{j, t}^m N_{j,t}^m = 0
+\]</div>
+<p>With further manipulations, this becomes</p>
+<div class="math notranslate nohighlight">
+\[
+N_{j,t}^m = \theta(M_{j,t} - N_{j,t}^c) \geq 0,
+\quad
+\frac{1}{\sigma}
+\left[
+    \frac{\alpha L_j}{\theta(M_{j,t} + \rho M_{k,t})}
+    +
+    \frac{\alpha L_k}{\theta(M_{j,t} + M_{k,t} / \rho)}
+\right]
+\leq f
+\]</div>
+</div>
+<div class="section" id="law-of-motion">
+<h3>Law of Motion<a class="headerlink" href="#law-of-motion" title="Permalink to this headline">¶</a></h3>
+<p>With <span class="math notranslate nohighlight">\(\delta\)</span> as the exogenous probability of a variety becoming obsolete,
+the dynamic equation for the measure of firms becomes</p>
+<div class="math notranslate nohighlight">
+\[
+N_{j, t+1}^c = \delta (N_{j, t}^c + N_{j, t}^m) = \delta (N_{j, t}^c + \theta(M_{j, t} - N_{j, t}^c))
+\]</div>
+<p>We will work with a normalized measure of varieties</p>
+<div class="math notranslate nohighlight">
+\[
+n_{j, t} := \frac{\theta \sigma f N_{j, t}^c}{\alpha (L_1 + L_2)},
+\quad
+i_{j, t} := \frac{\theta \sigma f N_{j, t}^m}{\alpha (L_1 + L_2)},
+\quad
+m_{j, t} := \frac{\theta \sigma f M_{j, t}}{\alpha (L_1 + L_2)} = n_{j, t} + \frac{i_{j, t}}{\theta}
+\]</div>
+<p>We also use <span class="math notranslate nohighlight">\(s_j := \frac{L_j}{L_1 + L_2}\)</span> to be the share of labor employed in country <span class="math notranslate nohighlight">\(j\)</span>.</p>
+<p>We can use these definitions and the preceding expressions to obtain a law of
+motion for <span class="math notranslate nohighlight">\(n_t := (n_{1, t}, n_{2, t})\)</span>.</p>
+<p>In particular, given an initial condition, <span class="math notranslate nohighlight">\(n_0 = (n_{1, 0}, n_{2, 0}) \in \mathbb{R}_{+}^{2}\)</span>, the equilibrium trajectory, <span class="math notranslate nohighlight">\(\{ n_t \}_{t=0}^{\infty} = \{ (n_{1, t}, n_{2, t}) \}_{t=0}^{\infty}\)</span>, is obtained by iterating on <span class="math notranslate nohighlight">\(n_{t+1} = F(n_t)\)</span> where <span class="math notranslate nohighlight">\(F : \mathbb{R}_{+}^{2} \rightarrow \mathbb{R}_{+}^{2}\)</span> is given by</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+  F(n_t)
+  &amp;=
+  \begin{cases}
+      \big( \delta (\theta s_1(\rho) + (1-\theta) n_{1, t}), \delta (\theta s_2(\rho) + (1-\theta) n_{2, t}) \big) \; &amp; \text{for } n_t \in D_{LL} \\
+      \big( \delta n_{1, t}, \delta n_{2, t} \big) \; &amp;\text{for } n_t \in D_{HH}  \\
+      \big( \delta n_{1, t}, \delta (\theta h_2(n_{1, t}) + (1-\theta) n_{2, t}) \big) &amp;\text{for } n_t \in D_{HL}  \\
+      \big( \delta (\theta h_1(n_{2, t}) + (1-\theta) n_{1, t}, \delta n_{2, t}) \big) &amp;\text{for } n_t \in D_{LH}
+  \end{cases}
+\end{aligned}
+\end{split}\]</div>
+<p>Here</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+      D_{LL} &amp; := \{ (n_1, n_2) \in \mathbb{R}_{+}^{2} | n_j \leq s_j(\rho) \} \\
+      D_{HH} &amp; := \{ (n_1, n_2) \in \mathbb{R}_{+}^{2} | n_j \geq h_j(\rho) \} \\
+      D_{HL} &amp; :=  \{ (n_1, n_2) \in \mathbb{R}_{+}^{2} | n_1 \geq s_1(\rho) \text{ and } n_2 \leq h_2(n_1) \} \\
+      D_{LH} &amp; :=  \{ (n_1, n_2) \in \mathbb{R}_{+}^{2} | n_1 \leq h_1(n_2) \text{ and } n_2 \geq s_2(\rho) \}
+\end{aligned}
+\end{split}\]</div>
+<p>while</p>
+<div class="math notranslate nohighlight">
+\[
+s_1(\rho) = 1 - s_2(\rho)
+= \min \left\{ \frac{s_1 - \rho s_2}{1 - \rho}, 1 \right\}
+\]</div>
+<p>and <span class="math notranslate nohighlight">\(h_j(n_k)\)</span> is defined implicitly by the equation</p>
+<div class="math notranslate nohighlight">
+\[
+1 = \frac{s_j}{h_j(n_k) + \rho n_k} + \frac{s_k}{h_j(n_k) + n_k / \rho}
+\]</div>
+<p>Rewriting the equation above gives us a quadratic equation in terms of <span class="math notranslate nohighlight">\(h_j(n_k)\)</span>.</p>
+<p>Since we know <span class="math notranslate nohighlight">\(h_j(n_k) &gt; 0\)</span> then we can just solve the quadratic equation and return the positive root.</p>
+<p>This gives us</p>
+<div class="math notranslate nohighlight">
+\[
+h_j(n_k)^2 + \left( (\rho + \frac{1}{\rho}) n_k - s_j - s_k \right) h_j(n_k) + (n_k^2 - \frac{s_j n_k}{\rho} - s_k n_k \rho) = 0
+\]</div>
+</div>
+</div>
+<div class="section" id="simulation">
+<h2><a class="toc-backref" href="#id9">Simulation</a><a class="headerlink" href="#simulation" title="Permalink to this headline">¶</a></h2>
+<p>Let’s try simulating some of these trajectories.</p>
+<p>We will focus in particular on whether or not innovation cycles synchronize
+across the two countries.</p>
+<p>As we will see, this depends on initial conditions.</p>
+<p>For some parameterizations, synchronization will occur for “most” initial conditions, while for others synchronization will be rare.</p>
+<p>Here’s the main body of code.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
+<span class="k">using</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">Parameters</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="o">:</span><span class="n">png</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">h_j</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span>
+    <span class="c"># Find out who&#39;s h we are evaluating</span>
+    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">sj</span> <span class="o">=</span> <span class="n">s1</span>
+        <span class="n">sk</span> <span class="o">=</span> <span class="n">s2</span>
+    <span class="k">else</span>
+        <span class="n">sj</span> <span class="o">=</span> <span class="n">s2</span>
+        <span class="n">sk</span> <span class="o">=</span> <span class="n">s1</span>
+    <span class="k">end</span>
+
+    <span class="c"># Coefficients on the quadratic a x^2 + b x + c = 0</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="p">((</span><span class="n">ρ</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">ρ</span><span class="p">)</span> <span class="o">*</span> <span class="n">nk</span> <span class="o">-</span> <span class="n">sj</span> <span class="o">-</span> <span class="n">sk</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="n">nk</span> <span class="o">*</span> <span class="n">nk</span> <span class="o">-</span> <span class="p">(</span><span class="n">sj</span> <span class="o">*</span> <span class="n">nk</span><span class="p">)</span> <span class="o">/</span> <span class="n">ρ</span> <span class="o">-</span> <span class="n">sk</span> <span class="o">*</span> <span class="n">ρ</span> <span class="o">*</span> <span class="n">nk</span><span class="p">)</span>
+
+    <span class="c"># Positive solution of quadratic form</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">b</span> <span class="o">+</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="n">b</span> <span class="o">-</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">c</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">root</span>
+<span class="k">end</span>
+
+<span class="n">DLL</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span> <span class="o">=</span>
+    <span class="p">(</span><span class="n">n1</span> <span class="o">≤</span> <span class="n">s1_ρ</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">n2</span> <span class="o">≤</span> <span class="n">s2_ρ</span><span class="p">)</span>
+
+<span class="n">DHH</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span> <span class="o">=</span>
+    <span class="p">(</span><span class="n">n1</span> <span class="o">≥</span> <span class="n">h_j</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">n2</span> <span class="o">≥</span> <span class="n">h_j</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">))</span>
+
+<span class="n">DHL</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span> <span class="o">=</span>
+    <span class="p">(</span><span class="n">n1</span> <span class="o">≥</span> <span class="n">s1_ρ</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">n2</span> <span class="o">≤</span> <span class="n">h_j</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">))</span>
+
+<span class="n">DLH</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span> <span class="o">=</span>
+    <span class="p">(</span><span class="n">n1</span> <span class="o">≤</span> <span class="n">h_j</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">))</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">n2</span> <span class="o">≥</span> <span class="n">s2_ρ</span><span class="p">)</span>
+
+<span class="k">function</span> <span class="n">one_step</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span>
+    <span class="c"># Depending on where we are, evaluate the right branch</span>
+    <span class="k">if</span> <span class="n">DLL</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span>
+        <span class="n">n1_tp1</span> <span class="o">=</span> <span class="n">δ</span> <span class="o">*</span> <span class="p">(</span><span class="n">θ</span> <span class="o">*</span> <span class="n">s1_ρ</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">θ</span><span class="p">)</span> <span class="o">*</span> <span class="n">n1</span><span class="p">)</span>
+        <span class="n">n2_tp1</span> <span class="o">=</span> <span class="n">δ</span> <span class="o">*</span> <span class="p">(</span><span class="n">θ</span> <span class="o">*</span> <span class="n">s2_ρ</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">θ</span><span class="p">)</span> <span class="o">*</span> <span class="n">n2</span><span class="p">)</span>
+    <span class="k">elseif</span> <span class="n">DHH</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span>
+        <span class="n">n1_tp1</span> <span class="o">=</span> <span class="n">δ</span> <span class="o">*</span> <span class="n">n1</span>
+        <span class="n">n2_tp1</span> <span class="o">=</span> <span class="n">δ</span> <span class="o">*</span> <span class="n">n2</span>
+    <span class="k">elseif</span> <span class="n">DHL</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span>
+        <span class="n">n1_tp1</span> <span class="o">=</span> <span class="n">δ</span> <span class="o">*</span> <span class="n">n1</span>
+        <span class="n">n2_tp1</span> <span class="o">=</span> <span class="n">δ</span> <span class="o">*</span> <span class="p">(</span><span class="n">θ</span> <span class="o">*</span> <span class="n">h_j</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">n1</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">θ</span><span class="p">)</span> <span class="o">*</span> <span class="n">n2</span><span class="p">)</span>
+    <span class="k">elseif</span> <span class="n">DLH</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span>
+        <span class="n">n1_tp1</span> <span class="o">=</span> <span class="n">δ</span> <span class="o">*</span> <span class="p">(</span><span class="n">θ</span> <span class="o">*</span> <span class="n">h_j</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n2</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">θ</span><span class="p">)</span> <span class="o">*</span> <span class="n">n1</span><span class="p">)</span>
+        <span class="n">n2_tp1</span> <span class="o">=</span> <span class="n">δ</span> <span class="o">*</span> <span class="n">n2</span>
+    <span class="k">end</span>
+
+    <span class="k">return</span> <span class="n">n1_tp1</span><span class="p">,</span> <span class="n">n2_tp1</span>
+<span class="k">end</span>
+
+<span class="n">new_n1n2</span><span class="p">(</span><span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span> <span class="o">=</span>
+    <span class="n">one_step</span><span class="p">(</span><span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span>
+
+<span class="k">function</span> <span class="n">pers_till_sync</span><span class="p">(</span><span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span>
+                        <span class="n">maxiter</span><span class="p">,</span> <span class="n">npers</span><span class="p">)</span>
+
+    <span class="c"># Initialize the status of synchronization</span>
+    <span class="n">synchronized</span> <span class="o">=</span> <span class="kc">false</span>
+    <span class="n">pers_2_sync</span> <span class="o">=</span> <span class="n">maxiter</span>
+    <span class="n">iters</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">nsync</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="o">~</span><span class="n">synchronized</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">iters</span> <span class="o">&lt;</span> <span class="n">maxiter</span><span class="p">)</span>
+        <span class="c"># Increment the number of iterations and get next values</span>
+        <span class="n">iters</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">n1_t</span><span class="p">,</span> <span class="n">n2_t</span> <span class="o">=</span> <span class="n">new_n1n2</span><span class="p">(</span><span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span>
+
+        <span class="c"># Check whether same in this period</span>
+        <span class="k">if</span> <span class="n">abs</span><span class="p">(</span><span class="n">n1_t</span> <span class="o">-</span> <span class="n">n2_t</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-8</span>
+            <span class="n">nsync</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c"># If not, then reset the nsync counter</span>
+        <span class="k">else</span>
+            <span class="n">nsync</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">end</span>
+
+        <span class="c"># If we have been in sync for npers then stop and countries</span>
+        <span class="c"># became synchronized nsync periods ago</span>
+        <span class="k">if</span> <span class="n">nsync</span> <span class="o">&gt;</span> <span class="n">npers</span>
+            <span class="n">synchronized</span> <span class="o">=</span> <span class="kc">true</span>
+            <span class="n">pers_2_sync</span> <span class="o">=</span> <span class="n">iters</span> <span class="o">-</span> <span class="n">nsync</span>
+        <span class="k">end</span>
+        <span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span> <span class="o">=</span> <span class="n">n1_t</span><span class="p">,</span> <span class="n">n2_t</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">synchronized</span><span class="p">,</span> <span class="n">pers_2_sync</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">create_attraction_basis</span><span class="p">(</span><span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span>
+                                 <span class="n">maxiter</span><span class="p">,</span> <span class="n">npers</span><span class="p">,</span> <span class="n">npts</span><span class="p">)</span>
+    <span class="c"># Create unit range with npts</span>
+    <span class="n">synchronized</span><span class="p">,</span> <span class="n">pers_2_sync</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="n">unit_range</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span>  <span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">npts</span><span class="p">)</span>
+
+    <span class="c"># Allocate space to store time to sync</span>
+    <span class="n">time_2_sync</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">npts</span><span class="p">,</span> <span class="n">npts</span><span class="p">)</span>
+    <span class="c"># Iterate over initial conditions</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n1_0</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">unit_range</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">unit_range</span><span class="p">)</span>
+            <span class="n">synchronized</span><span class="p">,</span> <span class="n">pers_2_sync</span> <span class="o">=</span> <span class="n">pers_till_sync</span><span class="p">(</span><span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span>
+                                                       <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span>
+                                                       <span class="n">maxiter</span><span class="p">,</span> <span class="n">npers</span><span class="p">)</span>
+            <span class="n">time_2_sync</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">pers_2_sync</span>
+        <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">time_2_sync</span>
+<span class="k">end</span>
+
+<span class="c"># model</span>
+<span class="k">function</span> <span class="n">MSGSync</span><span class="p">(</span><span class="n">s1</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">θ</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">δ</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span>
+    <span class="c"># Store other cutoffs and parameters we use</span>
+    <span class="n">s2</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">s1</span>
+    <span class="n">s1_ρ</span> <span class="o">=</span> <span class="n">min</span><span class="p">((</span><span class="n">s1</span> <span class="o">-</span> <span class="n">ρ</span> <span class="o">*</span> <span class="n">s2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">s2_ρ</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">s1_ρ</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">s1</span> <span class="o">=</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span> <span class="o">=</span> <span class="n">s2</span><span class="p">,</span> <span class="n">s1_ρ</span> <span class="o">=</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span> <span class="o">=</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">θ</span> <span class="o">=</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span> <span class="o">=</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span> <span class="o">=</span> <span class="n">ρ</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">simulate_n</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="c"># Unpack parameters</span>
+    <span class="nd">@unpack</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="c"># Allocate space</span>
+    <span class="n">n1</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">n2</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+
+    <span class="c"># Simulate for T periods</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">T</span>
+        <span class="c"># Get next values</span>
+        <span class="n">n1</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">n2</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span>
+        <span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span> <span class="o">=</span> <span class="n">new_n1n2</span><span class="p">(</span><span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">return</span> <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">pers_till_sync</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">,</span>
+                        <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">npers</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="c"># Unpack parameters</span>
+    <span class="nd">@unpack</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="k">return</span> <span class="n">pers_till_sync</span><span class="p">(</span><span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span>
+                        <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">,</span> <span class="n">npers</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">create_attraction_basis</span><span class="p">(</span><span class="n">model</span><span class="p">;</span>
+                                 <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">250</span><span class="p">,</span>
+                                 <span class="n">npers</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+                                 <span class="n">npts</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="c"># Unpack parameters</span>
+    <span class="nd">@unpack</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span> <span class="o">=</span> <span class="n">model</span>
+
+    <span class="n">ab</span> <span class="o">=</span> <span class="n">create_attraction_basis</span><span class="p">(</span><span class="n">s1_ρ</span><span class="p">,</span> <span class="n">s2_ρ</span><span class="p">,</span> <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span>
+                                 <span class="n">ρ</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">,</span> <span class="n">npers</span><span class="p">,</span> <span class="n">npts</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ab</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>create_attraction_basis (generic function with 2 methods)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="time-series-of-firm-measures">
+<h3>Time Series of Firm Measures<a class="headerlink" href="#time-series-of-firm-measures" title="Permalink to this headline">¶</a></h3>
+<p>We write a short function below that exploits the preceding code and plots two time series.</p>
+<p>Each time series gives the dynamics for the two countries.</p>
+<p>The time series share parameters but differ in their initial condition.</p>
+<p>Here’s the function</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">plot_timeseries</span><span class="p">(</span><span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">,</span> <span class="n">s1</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">θ</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">δ</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">MSGSync</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span>
+    <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">simulate_n</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">n1_0</span><span class="p">,</span> <span class="n">n2_0</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">n1</span> <span class="n">n2</span><span class="p">]</span>
+<span class="k">end</span>
+
+<span class="c"># Create figures</span>
+<span class="n">data_ns</span> <span class="o">=</span> <span class="n">plot_timeseries</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.35</span><span class="p">)</span>
+<span class="n">data_s</span> <span class="o">=</span> <span class="n">plot_timeseries</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">data_ns</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Not Synchronized&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/matsuyama_5_0.png" src="../_images/matsuyama_5_0.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">data_s</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Synchronized&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/matsuyama_6_0.png" src="../_images/matsuyama_6_0.png" />
+</div>
+</div>
+<p>In the first case, innovation in the two countries does not synchronize.</p>
+<p>In the second case different initial conditions are chosen, and the cycles
+become synchronized.</p>
+</div>
+<div class="section" id="basin-of-attraction">
+<h3>Basin of Attraction<a class="headerlink" href="#basin-of-attraction" title="Permalink to this headline">¶</a></h3>
+<p>Next let’s study the initial conditions that lead to synchronized cycles more
+systematically.</p>
+<p>We generate time series from a large collection of different initial
+conditions and mark those conditions with different colors according to
+whether synchronization occurs or not.</p>
+<p>The next display shows exactly this for four different parameterizations (one
+for each subfigure).</p>
+<p>Dark colors indicate synchronization, while light colors indicate failure to synchronize.</p>
+<div class="figure align-default" id="matsrep">
+<a class="reference internal image-reference" href="../_images/matsuyama_14.png"><img alt="../_images/matsuyama_14.png" src="../_images/matsuyama_14.png" style="width: 60%;" /></a>
+</div>
+<p>As you can see, larger values of <span class="math notranslate nohighlight">\(\rho\)</span> translate to more synchronization.</p>
+<p>You are asked to replicate this figure in the exercises.</p>
+</div>
+</div>
+<div class="section" id="exercises">
+<h2><a class="toc-backref" href="#id10">Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1">
+<h3>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<p>Replicate the figure <a class="reference internal" href="#matsrep"><span class="std std-ref">shown above</span></a> by coloring initial conditions according to whether or not synchronization occurs from those conditions.</p>
+</div>
+</div>
+<div class="section" id="solutions">
+<h2><a class="toc-backref" href="#id11">Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h3>Exercise 1<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">plot_attraction_basis</span><span class="p">(</span><span class="n">s1</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">θ</span> <span class="o">=</span> <span class="mf">2.5</span><span class="p">,</span> <span class="n">δ</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.2</span><span class="p">;</span> <span class="n">npts</span> <span class="o">=</span> <span class="mi">250</span><span class="p">)</span>
+    <span class="c"># Create attraction basis</span>
+    <span class="n">unitrange</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">npts</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">MSGSync</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">ρ</span><span class="p">)</span>
+    <span class="n">ab</span> <span class="o">=</span> <span class="n">create_attraction_basis</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">npts</span><span class="o">=</span><span class="n">npts</span><span class="p">)</span>
+    <span class="n">plt</span> <span class="o">=</span> <span class="n">Plots</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>plot_attraction_basis (generic function with 5 methods)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+          <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
+          <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">],</span>
+          <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]]</span>
+
+<span class="n">plots</span> <span class="o">=</span> <span class="p">(</span><span class="n">plot_attraction_basis</span><span class="p">(</span><span class="n">p</span><span class="o">...</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="kp">in</span> <span class="n">params</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">plots</span><span class="o">...</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/matsuyama_9_0.png" src="../_images/matsuyama_9_0.png" />
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.5"
+        },
+        kernelOptions: {
+            kernelName: "julia-1.5",
+            path: "./multi_agent_models"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.5'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   Introduction to Types and Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   The Need for Speed
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   Discrete State Dynamic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="schelling.html">
+   Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lake_model.html">
+   A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="rational_expectations.html">
+   Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="markov_perf.html">
+   Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="markov_asset.html">
+   Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lucas_model.html">
+   Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="harrison_kreps.html">
+   Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="uncertainty_traps.html">
+   Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="aiyagari.html">
+   The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="arellano.html">
+   Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   Globalization and Cycles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   Classical Filtering With Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/multi_agent_models/matsuyama.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/multi_agent_models/matsuyama.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/multi_agent_models/matsuyama.ipynb" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/multi_agent_models/matsuyama.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

@@ -1,0 +1,1594 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumption and Tax Smoothing with Complete and Incomplete Markets &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/smoothing.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Optimal Savings III: Occasionally Binding Constraints" href="ifp.html" />
+    <link rel="prev" title="Optimal Savings II: LQ Techniques" href="perm_income_cons.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Consumption and Tax Smoothing with Complete and Incomplete Markets"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Consumption and Tax Smoothing with Complete and Incomplete Markets" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/dynamic_programming/smoothing.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=dynamic_programming/smoothing>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#relationship-to-other-lectures">
+     Relationship to Other Lectures
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#background">
+   Background
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#finite-state-markov-income-process">
+     Finite State Markov Income Process
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#remark-about-isomorphism">
+       Remark About Isomorphism
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#market-structure">
+     Market Structure
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#model-1-complete-markets">
+   Model 1 (Complete Markets)
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#key-outcomes">
+     Key outcomes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#code">
+     Code
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#model-2-one-period-risk-free-debt-only">
+   Model 2 (One-Period Risk Free Debt Only)
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#summary-of-outcomes">
+     Summary of Outcomes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-incomplete-markets-model">
+     The Incomplete Markets Model
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#using-the-isomorphism">
+       Using the Isomorphism
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-tax-smoothing-with-complete-markets">
+   Example: Tax Smoothing with Complete Markets
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#explanation">
+     Explanation
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#linear-state-space-version-of-complete-markets-model">
+   Linear State Space Version of Complete Markets Model
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#interpretation-of-graph">
+     Interpretation of Graph
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#incomplete-markets-version">
+     Incomplete Markets Version
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#government-manipulation-of-arrow-securities-prices">
+     Government Manipulation of  Arrow Securities Prices
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Consumption and Tax Smoothing with Complete and Incomplete Markets</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="consumption-and-tax-smoothing-with-complete-and-incomplete-markets">
+<h1><a class="toc-backref" href="#id14">Consumption and Tax Smoothing with Complete and Incomplete Markets</a><a class="headerlink" href="#consumption-and-tax-smoothing-with-complete-and-incomplete-markets" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<span id="index-0"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#consumption-and-tax-smoothing-with-complete-and-incomplete-markets" id="id14">Consumption and Tax Smoothing with Complete and Incomplete Markets</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id15">Overview</a></p></li>
+<li><p><a class="reference internal" href="#background" id="id16">Background</a></p></li>
+<li><p><a class="reference internal" href="#model-1-complete-markets" id="id17">Model 1 (Complete Markets)</a></p></li>
+<li><p><a class="reference internal" href="#model-2-one-period-risk-free-debt-only" id="id18">Model 2 (One-Period Risk Free Debt Only)</a></p></li>
+<li><p><a class="reference internal" href="#example-tax-smoothing-with-complete-markets" id="id19">Example: Tax Smoothing with Complete Markets</a></p></li>
+<li><p><a class="reference internal" href="#linear-state-space-version-of-complete-markets-model" id="id20">Linear State Space Version of Complete Markets Model</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id15">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This lecture describes two types of consumption-smoothing  and tax-smoothing models</p>
+<ul class="simple">
+<li><p>One is in the <strong>complete markets</strong> tradition of Lucas and Stokey <span id="id1">[<a class="reference internal" href="../zreferences.html#id102"><span>LS83</span></a>]</span>.</p></li>
+<li><p>The other is in the <strong>incomplete markets</strong> tradition  of Hall <span id="id2">[<a class="reference internal" href="../zreferences.html#id79"><span>Hal78</span></a>]</span> and Barro <span id="id3">[<a class="reference internal" href="../zreferences.html#id63"><span>Bar79</span></a>]</span>.</p></li>
+<li><p>Complete markets* allow a consumer or government to buy or sell claims contingent on all possible states of the world.</p></li>
+<li><p>Incomplete markets* allow a consumer or government to buy or sell only a limited set of securities, often only a single risk-free security.</p></li>
+</ul>
+<p>Hall <span id="id4">[<a class="reference internal" href="../zreferences.html#id79"><span>Hal78</span></a>]</span> and Barro <span id="id5">[<a class="reference internal" href="../zreferences.html#id63"><span>Bar79</span></a>]</span> both assumed that the only asset that can be traded is a risk-free one period bond.</p>
+<p>Hall assumed an exogenous stochastic process of nonfinancial income and
+an exogenous gross interest rate on one period risk-free debt that equals
+<span class="math notranslate nohighlight">\(\beta^{-1}\)</span>, where <span class="math notranslate nohighlight">\(\beta \in (0,1)\)</span> is also a consumer’s
+intertemporal discount factor.</p>
+<p>Barro <span id="id6">[<a class="reference internal" href="../zreferences.html#id63"><span>Bar79</span></a>]</span> made an analogous assumption about the risk-free interest
+rate in a tax-smoothing model that we regard as isomorphic to Hall’s
+consumption-smoothing model.</p>
+<p>We maintain Hall and Barro’s assumption about the interest rate when we describe an
+incomplete markets version of our model.</p>
+<p>In addition, we extend their assumption about the interest rate to an appropriate counterpart that we use in a “complete markets” model in the style of
+Lucas and Stokey <span id="id7">[<a class="reference internal" href="../zreferences.html#id102"><span>LS83</span></a>]</span>.</p>
+<p>While we are equally interested in consumption-smoothing and tax-smoothing
+models, for the most part we focus explicitly on consumption-smoothing
+versions of these models.</p>
+<p>But for each version of the consumption-smoothing model there is a natural tax-smoothing counterpart obtained simply by</p>
+<ul class="simple">
+<li><p>relabeling consumption as tax collections and nonfinancial income as government expenditures</p></li>
+<li><p>relabeling the consumer’s debt as the government’s <em>assets</em></p></li>
+</ul>
+<p>For elaborations on this theme, please see <span class="xref std std-doc">Optimal Savings II: LQ Techniques</span> and later parts of this lecture.</p>
+<p>We’ll consider two closely related alternative assumptions about the consumer’s
+exogenous nonfinancial income process (or in the tax-smoothing
+interpretation, the government’s exogenous expenditure process):</p>
+<ul class="simple">
+<li><p>that it obeys a finite <span class="math notranslate nohighlight">\(N\)</span> state Markov chain (setting <span class="math notranslate nohighlight">\(N=2\)</span> most of the time)</p></li>
+<li><p>that it is described by a linear state space model with a continuous
+state vector in <span class="math notranslate nohighlight">\({\mathbb R}^n\)</span> driven by a Gaussian vector iid shock
+process</p></li>
+</ul>
+<p>We’ll spend most of this lecture studying the finite-state Markov specification, but will briefly treat the linear state space specification before concluding.</p>
+<div class="section" id="relationship-to-other-lectures">
+<h3>Relationship to Other Lectures<a class="headerlink" href="#relationship-to-other-lectures" title="Permalink to this headline">¶</a></h3>
+<p>This lecture can be viewed as a followup to <span class="xref std std-doc">Optimal Savings II: LQ Techniques</span> and  a warm up for a model of tax smoothing described in <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html"><span class="doc">opt_tax_recur</span></a>.</p>
+<p>Linear-quadratic versions of the Lucas-Stokey tax-smoothing model are described in <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html"><span class="doc">lqramsey</span></a>.</p>
+<p>The key differences between those lectures and this one are</p>
+<ul class="simple">
+<li><p>Here the decision maker takes all prices as exogenous, meaning that his decisions do not affect them.</p></li>
+<li><p>In <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html"><span class="doc">lqramsey</span></a> and <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html"><span class="doc">opt_tax_recur</span></a>, the decision maker – the government in the case of these lectures – recognizes that his decisions affect prices.</p></li>
+</ul>
+<p>So these later lectures are partly about how the government should  manipulate prices of government debt.</p>
+</div>
+</div>
+<div class="section" id="background">
+<h2><a class="toc-backref" href="#id16">Background</a><a class="headerlink" href="#background" title="Permalink to this headline">¶</a></h2>
+<p>Outcomes in consumption-smoothing (or tax-smoothing) models emerge from two
+sources:</p>
+<ul class="simple">
+<li><p>a decision maker – a consumer in the consumption-smoothing model or
+a government in the tax-smoothing model – who wants to maximize an
+intertemporal objective function that expresses its preference for
+paths of consumption (or tax collections) that are <em>smooth</em> in the
+sense of not varying across time and Markov states</p></li>
+<li><p>a set of trading opportunities that allow the optimizer to transform
+a possibly erratic nonfinancial income (or government expenditure)
+process into a smoother consumption (or tax collections) process by
+purchasing or selling financial securities</p></li>
+</ul>
+<p>In the complete markets version of the model, each period the consumer
+can buy or sell one-period ahead state-contingent securities whose
+payoffs depend on next period’s realization of the Markov state.</p>
+<p>In the two-state Markov chain case, there are two such securities each period.</p>
+<p>In an <span class="math notranslate nohighlight">\(N\)</span> state Markov state version of the model,  <span class="math notranslate nohighlight">\(N\)</span> such securities are traded each period.</p>
+<p>These state-contingent securities are commonly called Arrow securities, after <a class="reference external" href="https://en.wikipedia.org/wiki/Kenneth_Arrow">Kenneth Arrow</a> who first theorized about them.</p>
+<p>In the incomplete markets version of the model, the consumer can buy and sell only one security each period, a risk-free bond with gross return <span class="math notranslate nohighlight">\(\beta^{-1}\)</span>.</p>
+<div class="section" id="finite-state-markov-income-process">
+<h3>Finite State Markov Income Process<a class="headerlink" href="#finite-state-markov-income-process" title="Permalink to this headline">¶</a></h3>
+<p>In each version of the consumption-smoothing model, nonfinancial income is governed by a two-state Markov chain (it’s easy to generalize this to an <span class="math notranslate nohighlight">\(N\)</span> state Markov chain).</p>
+<p>In particular, the <em>state of the world</em> is given by <span class="math notranslate nohighlight">\(s_t\)</span> that follows
+a Markov chain with transition probability matrix</p>
+<div class="math notranslate nohighlight">
+\[
+P_{ij} = \mathbb P \{s_{t+1} = \bar s_j \,|\, s_t = \bar s_i \}
+\]</div>
+<p>Nonfinancial income <span class="math notranslate nohighlight">\(\{y_t\}\)</span> obeys</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+y_t =
+\begin{cases}
+    \bar y_1 &amp; \quad \text{if } s_t = \bar s_1 \\
+    \bar y_2 &amp; \quad \text{if } s_t = \bar s_2
+\end{cases}
+\end{split}\]</div>
+<p>A consumer wishes to maximize</p>
+<div class="math notranslate nohighlight" id="equation-cs-1">
+<span class="eqno">(223)<a class="headerlink" href="#equation-cs-1" title="Permalink to this equation">¶</a></span>\[\mathbb E
+\left[
+    \sum_{t=0}^\infty \beta^t u(c_t)
+\right]
+\quad
+\text{where} \quad
+u(c_t) = - (c_t -\gamma)^2
+\quad \text{and} \quad
+ 0 &lt; \beta &lt; 1\]</div>
+<div class="section" id="remark-about-isomorphism">
+<h4>Remark About Isomorphism<a class="headerlink" href="#remark-about-isomorphism" title="Permalink to this headline">¶</a></h4>
+<p>We can regard these as Barro <span id="id8">[<a class="reference internal" href="../zreferences.html#id63"><span>Bar79</span></a>]</span>  tax-smoothing models if we set
+<span class="math notranslate nohighlight">\(c_t = T_t\)</span> and <span class="math notranslate nohighlight">\(G_t = y_t\)</span>, where <span class="math notranslate nohighlight">\(T_t\)</span> is total tax
+collections and <span class="math notranslate nohighlight">\(\{G_t\}\)</span> is an exogenous government expenditures
+process.</p>
+</div>
+</div>
+<div class="section" id="market-structure">
+<h3>Market Structure<a class="headerlink" href="#market-structure" title="Permalink to this headline">¶</a></h3>
+<p>The two models differ in how effectively the market structure allows the
+consumer to transfer resources across time and Markov states, there
+being more transfer opportunities in the complete markets setting than
+in the incomplete markets setting.</p>
+<p>Watch how these differences in opportunities affect</p>
+<ul class="simple">
+<li><p>how smooth consumption is across time and Markov states</p></li>
+<li><p>how the consumer chooses to make his levels of indebtedness behave
+over time and across Markov states</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="model-1-complete-markets">
+<h2><a class="toc-backref" href="#id17">Model 1 (Complete Markets)</a><a class="headerlink" href="#model-1-complete-markets" title="Permalink to this headline">¶</a></h2>
+<p>At each date <span class="math notranslate nohighlight">\(t \geq 0\)</span>, the consumer trades <strong>one-period ahead
+Arrow securities</strong>.</p>
+<p>We assume that prices of these securities are exogenous to the consumer
+(or in the tax-smoothing version of the model, to the government).</p>
+<p><em>Exogenous</em> means that they are unaffected by the  decision maker.</p>
+<p>In Markov state <span class="math notranslate nohighlight">\(s_t\)</span> at time <span class="math notranslate nohighlight">\(t\)</span>, one unit of consumption
+in state <span class="math notranslate nohighlight">\(s_{t+1}\)</span> at time <span class="math notranslate nohighlight">\(t+1\)</span> costs <span class="math notranslate nohighlight">\(q(s_{t+1} \,|\, s_t)\)</span> units of the time <span class="math notranslate nohighlight">\(t\)</span> consumption good.</p>
+<p>At time <span class="math notranslate nohighlight">\(t=0\)</span>, the consumer starts with an inherited level of debt
+due at time <span class="math notranslate nohighlight">\(0\)</span> of <span class="math notranslate nohighlight">\(b_0\)</span> units of time <span class="math notranslate nohighlight">\(0\)</span> consumption
+goods.</p>
+<p>The consumer’s budget constraint at <span class="math notranslate nohighlight">\(t \geq 0\)</span> in Markov
+state <span class="math notranslate nohighlight">\(s_t\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+c_t + b_t
+\leq y(s_t) +
+\sum_j  q(\bar s_j \,|\, s_t ) \, b_{t+1}(\bar s_j \,|\, s_t)
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(b_t\)</span> is the consumer’s one-period debt that falls due at time <span class="math notranslate nohighlight">\(t\)</span> and  <span class="math notranslate nohighlight">\(b_{t+1}(\bar s_j\,|\, s_t)\)</span> are the consumer’s time
+<span class="math notranslate nohighlight">\(t\)</span> sales of the  time <span class="math notranslate nohighlight">\(t+1\)</span> consumption good in Markov state <span class="math notranslate nohighlight">\(\bar s_j\)</span>, a source of time <span class="math notranslate nohighlight">\(t\)</span> revenues.</p>
+<p>An analogue of Hall’s assumption that the one-period risk-free gross
+interest rate is <span class="math notranslate nohighlight">\(\beta^{-1}\)</span> is</p>
+<div class="math notranslate nohighlight" id="equation-cs-2">
+<span class="eqno">(224)<a class="headerlink" href="#equation-cs-2" title="Permalink to this equation">¶</a></span>\[q(\bar s_j \,|\, \bar s_i) = \beta P_{ij}\]</div>
+<p>To understand this, observe that in state <span class="math notranslate nohighlight">\(\bar s_i\)</span> it costs <span class="math notranslate nohighlight">\(\sum_j q(\bar s_j \,|\, \bar s_i)\)</span>  to purchase one unit of consumption next period <em>for sure</em>, i.e., meaning no matter what state of the world  occurs at <span class="math notranslate nohighlight">\(t+1\)</span>.</p>
+<p>Hence the implied price of a risk-free claim on one unit of consumption next
+period is</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_j q(\bar s_j \,|\, \bar s_i) =  \sum_j \beta P_{ij} =  \beta
+\]</div>
+<p>This confirms that <a class="reference internal" href="#equation-cs-2">(224)</a> is a natural analogue of Hall’s assumption about the
+risk-free one-period interest rate.</p>
+<p>First-order necessary conditions for maximizing the consumer’s expected utility are</p>
+<div class="math notranslate nohighlight">
+\[
+\beta \frac{u'(c_{t+1})}{u'(c_t) } \mathbb P\{s_{t+1}\,|\, s_t \}
+    = q(s_{t+1} \,|\, s_t)
+\]</div>
+<p>or, under our assumption <a class="reference internal" href="#equation-cs-2">(224)</a> on Arrow security prices,</p>
+<div class="math notranslate nohighlight" id="equation-cs-3">
+<span class="eqno">(225)<a class="headerlink" href="#equation-cs-3" title="Permalink to this equation">¶</a></span>\[c_{t+1} = c_t\]</div>
+<p>Thus, our consumer sets <span class="math notranslate nohighlight">\(c_t = \bar c\)</span> for all <span class="math notranslate nohighlight">\(t \geq 0\)</span> for some value <span class="math notranslate nohighlight">\(\bar c\)</span> that it is our job now to determine.</p>
+<p><strong>Guess:</strong> We’ll make the plausible guess that</p>
+<div class="math notranslate nohighlight" id="equation-eq-guess">
+<span class="eqno">(226)<a class="headerlink" href="#equation-eq-guess" title="Permalink to this equation">¶</a></span>\[b_{t+1}(\bar s_j \,|\, s_t = \bar s_i) = b(\bar s_j) ,
+        \quad i=1,2; \;\; j= 1,2\]</div>
+<p>so that the amount borrowed today turns out to depend only on <em>tomorrow’s</em> Markov state. (Why is this is a plausible guess?).</p>
+<p>To determine <span class="math notranslate nohighlight">\(\bar c\)</span>, we shall pursue the implications of the consumer’s budget constraints in each Markov state today and  our guess <a class="reference internal" href="#equation-eq-guess">(226)</a> about the consumer’s debt level choices.</p>
+<p>For <span class="math notranslate nohighlight">\(t \geq 1\)</span>, these imply</p>
+<div class="math notranslate nohighlight" id="equation-cs-4a">
+<span class="eqno">(227)<a class="headerlink" href="#equation-cs-4a" title="Permalink to this equation">¶</a></span>\[\begin{aligned}
+    \bar c + b(\bar s_1) &amp; = y(\bar s_1) + q(\bar s_1\,|\, \bar s_1) b(\bar s_1) + q(\bar s_2 \,|\, \bar s_1)  b(\bar s_2) \cr
+    \bar c + b(\bar s_2) &amp; = y(\bar s_2) + q(\bar s_1\,|\, \bar s_2) b(\bar s_1) + q(\bar s_2 \,|\, \bar s_2) b(\bar s_2),
+\end{aligned}\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{bmatrix}
+   b(\bar s_1) \cr b(\bar s_2)
+\end{bmatrix} +
+\begin{bmatrix}
+\bar c \cr \bar c
+\end{bmatrix}
+=
+\begin{bmatrix}
+    y(\bar s_1) \cr y(\bar s_2)
+\end{bmatrix}
++ \beta
+\begin{bmatrix}
+    P_{11} &amp; P_{12} \cr P_{21} &amp; P_{22}
+\end{bmatrix}
+\begin{bmatrix}
+    b(\bar s_1) \cr b(\bar s_2)
+\end{bmatrix}
+\]</div>
+<p>These are <span class="math notranslate nohighlight">\(2\)</span> equations in the <span class="math notranslate nohighlight">\(3\)</span> unknowns
+<span class="math notranslate nohighlight">\(\bar c, b(\bar s_1), b(\bar s_2)\)</span>.</p>
+<p>To get a third equation, we assume that at time <span class="math notranslate nohighlight">\(t=0\)</span>, <span class="math notranslate nohighlight">\(b_0\)</span>
+is the debt due; and we assume that at time <span class="math notranslate nohighlight">\(t=0\)</span>, the Markov
+state is <span class="math notranslate nohighlight">\(\bar s_1\)</span>.</p>
+<p>Then the budget constraint at time <span class="math notranslate nohighlight">\(t=0\)</span> is</p>
+<div class="math notranslate nohighlight" id="equation-cs-5">
+<span class="eqno">(228)<a class="headerlink" href="#equation-cs-5" title="Permalink to this equation">¶</a></span>\[\bar c + b_0 = y(\bar s_1) + q(\bar s_1 \,|\, \bar s_1) b(\bar s_1) + q(\bar s_2\,|\,\bar s_1) b(\bar s_2)\]</div>
+<p>If we substitute  <a class="reference internal" href="#equation-cs-5">(228)</a> into the first equation of <a class="reference internal" href="#equation-cs-4a">(227)</a> and rearrange, we
+discover that</p>
+<div class="math notranslate nohighlight" id="equation-cs-6">
+<span class="eqno">(229)<a class="headerlink" href="#equation-cs-6" title="Permalink to this equation">¶</a></span>\[b(\bar s_1) = b_0\]</div>
+<p>We can then use the second equation of <a class="reference internal" href="#equation-cs-4a">(227)</a>  to deduce the restriction</p>
+<div class="math notranslate nohighlight" id="equation-cs-7">
+<span class="eqno">(230)<a class="headerlink" href="#equation-cs-7" title="Permalink to this equation">¶</a></span>\[y(\bar s_1) - y(\bar s_2) + [q(\bar s_1\,|\, \bar s_1) - q(\bar s_1\,|\, \bar s_2) - 1 ] b_0 +
+[q(\bar s_2\,|\,\bar s_1) + 1 - q(\bar s_2 \,|\, \bar s_2) ] b(\bar s_2) = 0 ,\]</div>
+<p>an equation in the unknown <span class="math notranslate nohighlight">\(b(\bar s_2)\)</span>.</p>
+<p>Knowing <span class="math notranslate nohighlight">\(b(\bar s_1)\)</span> and <span class="math notranslate nohighlight">\(b(\bar s_2)\)</span>, we can solve equation <a class="reference internal" href="#equation-cs-5">(228)</a>  for the constant level of consumption <span class="math notranslate nohighlight">\(\bar c\)</span>.</p>
+<div class="section" id="key-outcomes">
+<h3>Key outcomes<a class="headerlink" href="#key-outcomes" title="Permalink to this headline">¶</a></h3>
+<p>The preceding calculations indicate that in the complete markets version
+of our model, we obtain the following striking results:</p>
+<ul class="simple">
+<li><p>The consumer chooses to make consumption perfectly constant across
+time and Markov states.</p></li>
+</ul>
+<p>We computed the constant level of consumption <span class="math notranslate nohighlight">\(\bar c\)</span> and indicated how that level depends on the underlying specifications of preferences, Arrow securities prices,  the stochastic process of exogenous nonfinancial income, and the initial debt level <span class="math notranslate nohighlight">\(b_0\)</span></p>
+<ul class="simple">
+<li><p>The consumer’s debt neither accumulates, nor decumulates, nor drifts.
+Instead the debt level each period is an exact function of the Markov
+state, so in the two-state Markov case, it switches between two
+values.</p></li>
+<li><p>We have verified guess <a class="reference internal" href="#equation-eq-guess">(226)</a>.</p></li>
+</ul>
+<p>We computed how one of those debt levels depends entirely on initial debt – it equals it – and how the other value depends on virtually all  remaining parameters of the model.</p>
+</div>
+<div class="section" id="code">
+<h3>Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h3>
+<p>Here’s some code that, among other things, contains a function called consumption_complete().</p>
+<p>This function computes <span class="math notranslate nohighlight">\(b(\bar s_1), b(\bar s_2), \bar c\)</span> as outcomes given a set of parameters, under the assumption of complete markets.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
+<span class="k">using</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Random</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="o">:</span><span class="n">png</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ConsumptionProblem</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">β</span> <span class="o">=</span> <span class="mf">0.96</span><span class="p">,</span>
+                               <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
+                               <span class="n">b0</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span>
+                               <span class="n">P</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span> <span class="mf">0.2</span>
+                                    <span class="mf">0.4</span> <span class="mf">0.6</span><span class="p">])</span>
+
+<span class="k">function</span> <span class="n">consumption_complete</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
+
+    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">b0</span> <span class="o">=</span> <span class="n">cp</span>   <span class="c"># Unpack</span>
+
+    <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">y</span>                              <span class="c"># extract income levels</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">b0</span>                                 <span class="c"># b1 is known to be equal to b0</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">β</span> <span class="o">*</span> <span class="n">P</span>                               <span class="c"># assumed price system</span>
+
+    <span class="c"># Using equation (7) calculate b2</span>
+    <span class="n">b2</span> <span class="o">=</span> <span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y1</span> <span class="o">-</span> <span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">Q</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">b1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">Q</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+
+    <span class="c"># Using equation (5) calculae c̄</span>
+    <span class="n">c̄</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">b0</span> <span class="o">+</span> <span class="p">([</span><span class="n">b1</span> <span class="n">b2</span><span class="p">]</span> <span class="o">*</span> <span class="n">Q</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">])[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">c̄</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span>
+<span class="k">end</span>
+
+<span class="k">function</span> <span class="n">consumption_incomplete</span><span class="p">(</span><span class="n">cp</span><span class="p">;</span> <span class="n">N_simul</span> <span class="o">=</span> <span class="mi">150</span><span class="p">)</span>
+
+    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">b0</span> <span class="o">=</span> <span class="n">cp</span>  <span class="c"># unpack</span>
+
+    <span class="c"># for the simulation use the MarkovChain type</span>
+    <span class="n">mc</span> <span class="o">=</span> <span class="n">MarkovChain</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+
+    <span class="c"># useful variables</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="nb">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">P</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span>
+
+    <span class="c"># simulate state path</span>
+    <span class="n">s_path</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="n">N_simul</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c"># store consumption and debt path</span>
+    <span class="n">b_path</span><span class="p">,</span> <span class="n">c_path</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">N_simul</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ones</span><span class="p">(</span><span class="n">N_simul</span><span class="p">)</span>
+    <span class="n">b_path</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">b0</span>
+
+    <span class="c"># optimal decisions from (12) and (13)</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="n">β</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">s_path</span><span class="p">)</span>
+        <span class="n">c_path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">b_path</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">b_path</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">b_path</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">db</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">end</span>
+
+    <span class="k">return</span> <span class="n">c_path</span><span class="p">,</span> <span class="n">b_path</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">s_path</span><span class="p">],</span> <span class="n">s_path</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>consumption_incomplete (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s test by checking that <span class="math notranslate nohighlight">\(\bar c\)</span> and <span class="math notranslate nohighlight">\(b_2\)</span> satisfy the budget constraint</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">=</span> <span class="n">ConsumptionProblem</span><span class="p">()</span>
+<span class="n">c̄</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">consumption_complete</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
+<span class="n">debt_complete</span> <span class="o">=</span> <span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">]</span>
+<span class="n">isapprox</span><span class="p">((</span><span class="n">c̄</span> <span class="o">+</span> <span class="n">b2</span> <span class="o">-</span> <span class="n">cp</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">debt_complete</span><span class="o">&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">β</span> <span class="o">*</span> <span class="n">cp</span><span class="o">.</span><span class="n">P</span><span class="p">)[</span><span class="mi">2</span><span class="p">,</span> <span class="o">:</span><span class="p">])[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
+</pre></div>
+</div>
+</div>
+</div>
+<p>Below, we’ll take the outcomes produced by this code – in particular the implied
+consumption and debt paths – and compare them with outcomes
+from an incomplete markets model in the spirit of Hall <span id="id9">[<a class="reference internal" href="../zreferences.html#id79"><span>Hal78</span></a>]</span> and Barro <span id="id10">[<a class="reference internal" href="../zreferences.html#id63"><span>Bar79</span></a>]</span> (and also, for those who love history, Gallatin (1807) <span id="id11">[<a class="reference internal" href="../zreferences.html#id61"><span>Gal37</span></a>]</span>).</p>
+</div>
+</div>
+<div class="section" id="model-2-one-period-risk-free-debt-only">
+<h2><a class="toc-backref" href="#id18">Model 2 (One-Period Risk Free Debt Only)</a><a class="headerlink" href="#model-2-one-period-risk-free-debt-only" title="Permalink to this headline">¶</a></h2>
+<p>This is a version of the original models of Hall (1978) and Barro (1979)
+in which the decision maker’s ability to substitute intertemporally is
+constrained by his ability to buy or sell only one security, a risk-free
+one-period bond bearing a constant gross interest rate that equals
+<span class="math notranslate nohighlight">\(\beta^{-1}\)</span>.</p>
+<p>Given an initial debt  <span class="math notranslate nohighlight">\(b_0\)</span> at time <span class="math notranslate nohighlight">\(0\)</span>, the
+consumer faces a sequence of budget constraints</p>
+<div class="math notranslate nohighlight">
+\[
+c_t + b_t = y_t + \beta b_{t+1}, \quad t \geq 0
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(\beta\)</span> is the price at time <span class="math notranslate nohighlight">\(t\)</span> of a risk-free claim
+on one unit of time consumption at time <span class="math notranslate nohighlight">\(t+1\)</span>.</p>
+<p>First-order conditions for the consumer’s  problem are</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_{j} u'(c_{t+1,j}) P_{ij} = u'(c_{t, i})
+\]</div>
+<p>For our assumed quadratic utility function this implies</p>
+<div class="math notranslate nohighlight" id="equation-cs-8">
+<span class="eqno">(231)<a class="headerlink" href="#equation-cs-8" title="Permalink to this equation">¶</a></span>\[\sum_j c_{t+1,j} P_{ij} = c_{t,i}    ,\]</div>
+<p>which is Hall’s (1978) conclusion that consumption follows a random walk.</p>
+<p>As we saw in our first lecture on the <a class="reference internal" href="perm_income.html"><span class="doc">permanent income model</span></a>, this leads to</p>
+<div class="math notranslate nohighlight" id="equation-cs-9">
+<span class="eqno">(232)<a class="headerlink" href="#equation-cs-9" title="Permalink to this equation">¶</a></span>\[b_t = \mathbb E_t \sum_{j=0}^\infty \beta^j y_{t+j} - (1 -\beta)^{-1} c_t\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight" id="equation-cs-10">
+<span class="eqno">(233)<a class="headerlink" href="#equation-cs-10" title="Permalink to this equation">¶</a></span>\[c_t = (1-\beta)
+    \left[
+        \mathbb E_t \sum_{j=0}^\infty \beta^j y_{t+j} - b_t
+    \right]   .\]</div>
+<p>Equation <a class="reference internal" href="#equation-cs-10">(233)</a> expresses <span class="math notranslate nohighlight">\(c_t\)</span> as a net interest rate factor <span class="math notranslate nohighlight">\(1 - \beta\)</span> times the sum
+of the expected present value of nonfinancial income <span class="math notranslate nohighlight">\(\mathbb E_t \sum_{j=0}^\infty \beta^j y_{t+j}\)</span> and financial wealth <span class="math notranslate nohighlight">\(-b_t\)</span>.</p>
+<p>Substituting <a class="reference internal" href="#equation-cs-10">(233)</a>  into the one-period budget constraint and rearranging leads to</p>
+<div class="math notranslate nohighlight" id="equation-cs-11">
+<span class="eqno">(234)<a class="headerlink" href="#equation-cs-11" title="Permalink to this equation">¶</a></span>\[b_{t+1} - b_t
+= \beta^{-1} \left[ (1-\beta)
+\mathbb E_t \sum_{j=0}^\infty\beta^j y_{t+j} - y_t    \right]\]</div>
+<p>Now let’s do a useful calculation that will yield a convenient expression for the key term <span class="math notranslate nohighlight">\(\mathbb E_t \sum_{j=0}^\infty\beta^j y_{t+j}\)</span> in our finite Markov chain setting.</p>
+<p>Define</p>
+<div class="math notranslate nohighlight">
+\[
+v_t := \mathbb E_t \sum_{j=0}^\infty \beta^j y_{t+j}
+\]</div>
+<p>In our finite Markov chain setting, <span class="math notranslate nohighlight">\(v_t = v(1)\)</span> when <span class="math notranslate nohighlight">\(s_t= \bar s_1\)</span> and <span class="math notranslate nohighlight">\(v_t = v(2)\)</span> when <span class="math notranslate nohighlight">\(s_t=\bar s_2\)</span>.</p>
+<p>Therefore, we can write</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+    v(1) &amp; = y(1) + \beta P_{11} v(1) + \beta P_{12} v(2)
+    \\
+    v(2) &amp; = y(2) + \beta P_{21} v(1) + \beta P_{22} v(2)
+\end{aligned}
+\end{split}\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[
+\vec v = \vec y + \beta P \vec v
+\]</div>
+<p>where  <span class="math notranslate nohighlight">\(\vec v =    \begin{bmatrix} v(1) \cr v(2) \end{bmatrix}\)</span> and  <span class="math notranslate nohighlight">\(\vec y =  \begin{bmatrix} y(1) \cr y(2) \end{bmatrix}\)</span>.</p>
+<p>We can also write the last expression as</p>
+<div class="math notranslate nohighlight">
+\[
+\vec v = (I - \beta P)^{-1} \vec y
+\]</div>
+<p>In our finite Markov chain setting, from expression  <a class="reference internal" href="#equation-cs-10">(233)</a>,  consumption at date <span class="math notranslate nohighlight">\(t\)</span> when debt is <span class="math notranslate nohighlight">\(b_t\)</span> and the Markov state today is <span class="math notranslate nohighlight">\(s_t = i\)</span> is evidently</p>
+<div class="math notranslate nohighlight" id="equation-cs-12">
+<span class="eqno">(235)<a class="headerlink" href="#equation-cs-12" title="Permalink to this equation">¶</a></span>\[c(b_t, i) =  (1 - \beta) \left( [(I - \beta P)^{-1} \vec y]_i - b_t \right)\]</div>
+<p>and the increment in debt is</p>
+<div class="math notranslate nohighlight" id="equation-cs-13">
+<span class="eqno">(236)<a class="headerlink" href="#equation-cs-13" title="Permalink to this equation">¶</a></span>\[b_{t+1} - b_t = \beta^{-1} [ (1- \beta) v(i) - y(i) ]\]</div>
+<div class="section" id="summary-of-outcomes">
+<h3>Summary of Outcomes<a class="headerlink" href="#summary-of-outcomes" title="Permalink to this headline">¶</a></h3>
+<p>In contrast to outcomes in the complete markets model, in the incomplete
+markets model</p>
+<ul class="simple">
+<li><p>consumption drifts over time as a random walk; the level of
+consumption at time <span class="math notranslate nohighlight">\(t\)</span> depends on the level of debt that the
+consumer brings into the period as well as the expected discounted
+present value of nonfinancial income at <span class="math notranslate nohighlight">\(t\)</span></p></li>
+<li><p>the consumer’s debt drifts upward over time in response to low
+realizations of nonfinancial income and drifts downward over time in
+response to high realizations of nonfinancial income</p></li>
+<li><p>the drift over time in the consumer’s debt and the dependence of
+current consumption on today’s debt level account for the drift over
+time in consumption</p></li>
+</ul>
+</div>
+<div class="section" id="the-incomplete-markets-model">
+<h3>The Incomplete Markets Model<a class="headerlink" href="#the-incomplete-markets-model" title="Permalink to this headline">¶</a></h3>
+<p>The code above also contains a function called consumption_incomplete() that uses <a class="reference internal" href="#equation-cs-12">(235)</a> and <a class="reference internal" href="#equation-cs-13">(236)</a> to</p>
+<ul class="simple">
+<li><p>simulate paths of <span class="math notranslate nohighlight">\(y_t, c_t, b_{t+1}\)</span></p></li>
+<li><p>plot these against values of of <span class="math notranslate nohighlight">\(\bar c, b(s_1), b(s_2)\)</span> found in a corresponding  complete markets economy</p></li>
+</ul>
+<p>Let’s try this, using the same parameters in both complete and incomplete markets economies</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">N_simul</span> <span class="o">=</span> <span class="mi">150</span>
+<span class="n">cp</span> <span class="o">=</span> <span class="n">ConsumptionProblem</span><span class="p">()</span>
+
+<span class="n">c̄</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">consumption_complete</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
+<span class="n">debt_complete</span> <span class="o">=</span> <span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">]</span>
+
+<span class="n">c_path</span><span class="p">,</span> <span class="n">debt_path</span><span class="p">,</span> <span class="n">y_path</span><span class="p">,</span> <span class="n">s_path</span> <span class="o">=</span> <span class="n">consumption_incomplete</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">N_simul</span><span class="o">=</span><span class="n">N_simul</span><span class="p">)</span>
+
+<span class="n">plt_cons</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Consumption paths&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;Periods&quot;</span><span class="p">,</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.4</span><span class="p">,</span><span class="mf">2.1</span><span class="p">])</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_cons</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">c_path</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;incomplete market&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_cons</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">fill</span><span class="p">(</span><span class="n">c̄</span><span class="p">,</span> <span class="n">N_simul</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;complete market&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_cons</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">y_path</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;income&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_cons</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">bottom</span><span class="p">)</span>
+
+<span class="n">plt_debt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Debt paths&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;Periods&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_debt</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">debt_path</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;incomplete market&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_debt</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">debt_complete</span><span class="p">[</span><span class="n">s_path</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;complete market&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_debt</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">y_path</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;income&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_debt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">bottomleft</span><span class="p">)</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">plt_cons</span><span class="p">,</span> <span class="n">plt_debt</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/smoothing_8_0.png" src="../_images/smoothing_8_0.png" />
+</div>
+</div>
+<p>In the graph on the left, for the same sample path of nonfinancial
+income <span class="math notranslate nohighlight">\(y_t\)</span>, notice that</p>
+<ul class="simple">
+<li><p>consumption is constant when there are complete markets, but it takes a random walk in the incomplete markets version of the model</p></li>
+<li><p>the consumer’s debt oscillates between two values that are functions
+of the Markov state in the complete markets model, while the
+consumer’s debt drifts in a “unit root” fashion in the incomplete
+markets economy</p></li>
+</ul>
+<div class="section" id="using-the-isomorphism">
+<h4>Using the Isomorphism<a class="headerlink" href="#using-the-isomorphism" title="Permalink to this headline">¶</a></h4>
+<p>We can simply relabel variables to acquire tax-smoothing interpretations of our two models</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plt_tax</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Tax collection paths&quot;</span><span class="p">,</span> <span class="n">x_label</span> <span class="o">=</span> <span class="s">&quot;Periods&quot;</span><span class="p">,</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.4</span><span class="p">,</span><span class="mf">2.1</span><span class="p">])</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_tax</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">c_path</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;incomplete market&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_tax</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">fill</span><span class="p">(</span><span class="n">c̄</span><span class="p">,</span> <span class="n">N_simul</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;complete market&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_tax</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">y_path</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;govt expenditures&quot;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="o">.</span><span class="mi">6</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">,</span>
+      <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">plt_gov</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Government assets paths&quot;</span><span class="p">,</span> <span class="n">x_label</span> <span class="o">=</span> <span class="s">&quot;Periods&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_gov</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">debt_path</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;incomplete market&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_gov</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">debt_complete</span><span class="p">[</span><span class="n">s_path</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;complete market&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_gov</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">y_path</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;govt expenditures&quot;</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="o">.</span><span class="mi">6</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">,</span>
+      <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">hline!</span><span class="p">(</span><span class="n">plt_gov</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">plt_tax</span><span class="p">,</span> <span class="n">plt_gov</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/smoothing_11_0.png" src="../_images/smoothing_11_0.png" />
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="example-tax-smoothing-with-complete-markets">
+<h2><a class="toc-backref" href="#id19">Example: Tax Smoothing with Complete Markets</a><a class="headerlink" href="#example-tax-smoothing-with-complete-markets" title="Permalink to this headline">¶</a></h2>
+<p>It is useful to focus on a simple tax-smoothing example with complete markets.</p>
+<p>This example will illustrate how, in a complete markets model like that of Lucas and Stokey <span id="id12">[<a class="reference internal" href="../zreferences.html#id102"><span>LS83</span></a>]</span>, the government purchases
+insurance from the private sector.</p>
+<ul class="simple">
+<li><p>Purchasing insurance  protects the government against the need to raise taxes too high or issue too much debt in the high government expenditure event.</p></li>
+</ul>
+<p>We assume that government expenditures move between two values <span class="math notranslate nohighlight">\(G_1 &lt; G_2\)</span>, where Markov state <span class="math notranslate nohighlight">\(1\)</span> means “peace” and Markov state <span class="math notranslate nohighlight">\(2\)</span> means “war”.</p>
+<p>The government budget constraint in Markov state <span class="math notranslate nohighlight">\(i\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+T_i + b_i = G_i + \sum_j Q_{ij} b_j
+\]</div>
+<p>where</p>
+<div class="math notranslate nohighlight">
+\[
+Q_{ij} = \beta P_{ij}
+\]</div>
+<p>is the price of one unit of output next period in state <span class="math notranslate nohighlight">\(j\)</span> when
+today’s Markov state is <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(b_i\)</span> is the government’s
+level of <em>assets</em> in Markov state <span class="math notranslate nohighlight">\(i\)</span>.</p>
+<p>That is, <span class="math notranslate nohighlight">\(b_i\)</span> is the amount  of the  one-period loans owned by the government that fall due at time <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>As above, we’ll assume that the initial Markov state is state <span class="math notranslate nohighlight">\(1\)</span>.</p>
+<p>In addition, to simplify our example, we’ll set the government’s initial
+asset level to <span class="math notranslate nohighlight">\(0\)</span>, so that <span class="math notranslate nohighlight">\(b_1 =0\)</span>.</p>
+<p>Here’s our code to compute a quantitative example with zero debt in peace time:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Parameters</span>
+
+<span class="n">β</span> <span class="o">=</span> <span class="o">.</span><span class="mi">96</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+<span class="n">b0</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">P</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.8</span> <span class="mf">0.2</span><span class="p">;</span>
+     <span class="mf">0.4</span> <span class="mf">0.6</span><span class="p">]</span>
+
+<span class="n">cp</span> <span class="o">=</span> <span class="n">ConsumptionProblem</span><span class="p">(</span><span class="n">β</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">β</span> <span class="o">*</span> <span class="n">P</span>
+<span class="n">N_simul</span> <span class="o">=</span> <span class="mi">150</span>
+
+<span class="n">c̄</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">consumption_complete</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
+<span class="n">debt_complete</span> <span class="o">=</span> <span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">]</span>
+
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;P = </span><span class="si">$P</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Q = </span><span class="si">$Q</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Govt expenditures in peace and war = </span><span class="si">$y</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Constant tax collections = </span><span class="si">$c̄</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Govt assets in two states = </span><span class="si">$debt_complete</span><span class="s">&quot;</span><span class="p">)</span>
+
+<span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">Now let&#39;s check the government&#39;s budget constraint in peace and war.</span>
+<span class="s">Our assumptions imply that the government always purchases 0 units of the</span>
+<span class="s">Arrow peace security.</span>
+<span class="s">&quot;&quot;&quot;</span>
+<span class="n">println</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+<span class="n">AS1</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">b2</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Spending on Arrow war security in peace = </span><span class="si">$AS1</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">AS2</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">b2</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Spending on Arrow war security in war = </span><span class="si">$AS2</span><span class="s">&quot;</span><span class="p">)</span>
+
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Government tax collections plus asset levels in peace and war&quot;</span><span class="p">)</span>
+<span class="n">TB1</span> <span class="o">=</span> <span class="n">c̄</span> <span class="o">+</span> <span class="n">b1</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;T+b in peace = </span><span class="si">$TB1</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">TB2</span> <span class="o">=</span> <span class="n">c̄</span> <span class="o">+</span> <span class="n">b2</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;T+b in war = </span><span class="si">$TB2</span><span class="s">&quot;</span><span class="p">)</span>
+
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Total government spending in peace and war&quot;</span><span class="p">)</span>
+<span class="n">G1</span><span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">AS1</span>
+<span class="n">G2</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">AS2</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;total govt spending in peace = </span><span class="si">$G1</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;total govt spending in war = </span><span class="si">$G2</span><span class="s">&quot;</span><span class="p">)</span>
+
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Let&#39;s see ex post and ex ante returns on Arrow securities&quot;</span><span class="p">)</span>
+
+<span class="n">Π</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">./</span> <span class="n">Q</span>    <span class="c"># reciprocal(Q)</span>
+<span class="n">exret</span> <span class="o">=</span> <span class="n">Π</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Ex post returns to purchase of Arrow securities = </span><span class="si">$exret</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="n">exant</span> <span class="o">=</span> <span class="n">Π</span> <span class="o">.*</span> <span class="n">P</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Ex ante returns to purchase of Arrow securities = </span><span class="si">$exant</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>P = [0.8 0.2; 0.4 0.6]
+Q = [0.768 0.192; 0.384 0.576]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Govt expenditures in peace and war = [1.0, 2.0]
+Constant tax collections = 1.3116883116883118
+Govt assets in two states = [0.0, 1.6233766233766234]
+Now let&#39;s check the government&#39;s budget constraint in peace and war.
+Our assumptions imply that the government always purchases 0 units of the
+Arrow peace security.
+
+Spending on Arrow war security in peace = 0.3116883116883117
+Spending on Arrow war security in war = 0.9350649350649349
+
+
+Government tax collections plus asset levels in peace and war
+T+b in peace = 1.3116883116883118
+T+b in war = 2.9350649350649354
+
+
+Total government spending in peace and war
+total govt spending in peace = 1.3116883116883118
+total govt spending in war = 2.935064935064935
+
+
+Let&#39;s see ex post and ex ante returns on Arrow securities
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ex post returns to purchase of Arrow securities = [1.3020833333333333 5.208333333333333; 2.6041666666666665 1.7361111111111112]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ex ante returns to purchase of Arrow securities = [1.0416666666666667 1.0416666666666667; 1.0416666666666667 1.0416666666666667]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="explanation">
+<h3>Explanation<a class="headerlink" href="#explanation" title="Permalink to this headline">¶</a></h3>
+<p>In this example, the government always purchase <span class="math notranslate nohighlight">\(0\)</span> units of the
+Arrow security that pays off in peace time (Markov state <span class="math notranslate nohighlight">\(1\)</span>).</p>
+<p>But it purchases a positive amount of the security that pays off in war
+time (Markov state <span class="math notranslate nohighlight">\(2\)</span>).</p>
+<p>We recommend plugging the quantities computed above into the government
+budget constraints in the two Markov states and staring.</p>
+<p>This is an example in which the government purchases <em>insurance</em> against
+the possibility that war breaks out or continues</p>
+<ul class="simple">
+<li><p>the insurance does not pay off so long as peace continues</p></li>
+<li><p>the insurance pays off when there is war</p></li>
+</ul>
+<p><em>Exercise:</em> try changing the Markov transition matrix so that</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+P = \begin{bmatrix}
+        1 &amp; 0 \\
+       .2 &amp; .8
+    \end{bmatrix}
+\end{split}\]</div>
+<p>Also, start the system in Markov state <span class="math notranslate nohighlight">\(2\)</span> (war) with initial
+government assets <span class="math notranslate nohighlight">\(- 10\)</span>, so that the government starts the
+war in debt and <span class="math notranslate nohighlight">\(b_2 = -10\)</span>.</p>
+</div>
+</div>
+<div class="section" id="linear-state-space-version-of-complete-markets-model">
+<h2><a class="toc-backref" href="#id20">Linear State Space Version of Complete Markets Model</a><a class="headerlink" href="#linear-state-space-version-of-complete-markets-model" title="Permalink to this headline">¶</a></h2>
+<p>Now we’ll use a setting like that in  <a class="reference internal" href="perm_income.html"><span class="doc">first lecture on the permanent income model</span></a>.</p>
+<p>In that model, there were</p>
+<ul class="simple">
+<li><p>incomplete markets: the consumer could trade only a single risk-free one-period bond bearing gross one-period risk-free interest rate equal to <span class="math notranslate nohighlight">\(\beta^{-1}\)</span></p></li>
+<li><p>the consumer’s exogenous nonfinancial income was governed by a linear state space model driven by Gaussian shocks, the kind of model studied in an earlier lecture about <a class="reference internal" href="../tools_and_techniques/linear_models.html"><span class="doc">linear state space models</span></a></p></li>
+</ul>
+<p>We’ll write down a complete markets counterpart of that model.</p>
+<p>So now we’ll  suppose that nonfinancial income is governed by the state
+space system</p>
+<div class="math notranslate nohighlight">
+\[
+\begin{aligned}
+     x_{t+1} &amp; = A x_t + C w_{t+1} \cr
+     y_t &amp; = S_y x_t
+\end{aligned}
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(x_t\)</span> is an <span class="math notranslate nohighlight">\(n \times 1\)</span> vector and <span class="math notranslate nohighlight">\(w_{t+1} \sim {\cal N}(0,I)\)</span> is IID over time.</p>
+<p>Again, as a counterpart of the Hall-Barro assumption that the risk-free
+gross interest rate is <span class="math notranslate nohighlight">\(\beta^{-1}\)</span>, we assume the scaled prices
+of one-period ahead Arrow securities are</p>
+<div class="math notranslate nohighlight" id="equation-cs-14">
+<span class="eqno">(237)<a class="headerlink" href="#equation-cs-14" title="Permalink to this equation">¶</a></span>\[p_{t+1}(x_{t+1} \,|\, x_t) = \beta \phi(x_{t+1} \,|\, A x_t, CC')\]</div>
+<p>where <span class="math notranslate nohighlight">\(\phi(\cdot \,|\, \mu, \Sigma)\)</span> is a multivariate Gaussian
+distribution with mean vector <span class="math notranslate nohighlight">\(\mu\)</span> and covariance matrix
+<span class="math notranslate nohighlight">\(\Sigma\)</span>.</p>
+<p>Let <span class="math notranslate nohighlight">\(b(x_{t+1})\)</span> be a vector of state-contingent debt due at <span class="math notranslate nohighlight">\(t+1\)</span>
+as a function of the <span class="math notranslate nohighlight">\(t+1\)</span> state <span class="math notranslate nohighlight">\(x_{t+1}\)</span>.</p>
+<p>Using the pricing function assumed in <a class="reference internal" href="#equation-cs-14">(237)</a>, the value at
+<span class="math notranslate nohighlight">\(t\)</span> of <span class="math notranslate nohighlight">\(b(x_{t+1})\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[
+\beta \int b(x_{t+1}) \phi(x_{t+1} \,|\, A x_t, CC') d x_{t+1} = \beta  \mathbb E_t b_{t+1}
+\]</div>
+<p>In the complete markets setting, the consumer faces a sequence of budget
+constraints</p>
+<div class="math notranslate nohighlight">
+\[
+c_t + b_t = y_t + \beta \mathbb E_t b_{t+1}, t \geq 0
+\]</div>
+<p>We can solve the time <span class="math notranslate nohighlight">\(t\)</span> budget constraint forward to obtain</p>
+<div class="math notranslate nohighlight">
+\[
+b_t = \mathbb E_t  \sum_{j=0}^\infty \beta^j (y_{t+j} - c_{t+j} )
+\]</div>
+<p>We assume as before that the consumer cares about the expected value
+of</p>
+<div class="math notranslate nohighlight">
+\[
+\sum_{t=0}^\infty \beta^t u(c_t), \quad 0 &lt; \beta &lt; 1
+\]</div>
+<p>In the incomplete markets version of the model, we assumed that
+<span class="math notranslate nohighlight">\(u(c_t) = - (c_t -\gamma)^2\)</span>, so that the above utility functional
+became</p>
+<div class="math notranslate nohighlight">
+\[
+-\sum_{t=0}^\infty \beta^t ( c_t - \gamma)^2, \quad 0 &lt; \beta &lt; 1
+\]</div>
+<p>But in the complete markets version, we can assume a more general form
+of utility function that satisfies <span class="math notranslate nohighlight">\(u' &gt; 0\)</span> and <span class="math notranslate nohighlight">\(u'' &lt; 0\)</span>.</p>
+<p>The first-order condition for the consumer’s problem with complete
+markets and our assumption about Arrow securities prices is</p>
+<div class="math notranslate nohighlight">
+\[
+u'(c_{t+1}) = u'(c_t) \quad \text{for all }  t\geq 0
+\]</div>
+<p>which again implies <span class="math notranslate nohighlight">\(c_t = \bar c\)</span> for some <span class="math notranslate nohighlight">\(\bar c\)</span>.</p>
+<p>So it follows that</p>
+<div class="math notranslate nohighlight">
+\[
+b_t = \mathbb E_t \sum_{j=0}^\infty \beta^j (y_{t+j} - \bar c)
+\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight" id="equation-cs-15">
+<span class="eqno">(238)<a class="headerlink" href="#equation-cs-15" title="Permalink to this equation">¶</a></span>\[b_t = S_y (I - \beta A)^{-1} x_t - \frac{1}{1-\beta} \bar c\]</div>
+<p>where the value of <span class="math notranslate nohighlight">\(\bar c\)</span> satisfies</p>
+<div class="math notranslate nohighlight" id="equation-cs-16">
+<span class="eqno">(239)<a class="headerlink" href="#equation-cs-16" title="Permalink to this equation">¶</a></span>\[\bar b_0 = S_y (I - \beta A)^{-1} x_0 - \frac{1}{1 - \beta } \bar c\]</div>
+<p>where <span class="math notranslate nohighlight">\(\bar b_0\)</span> is an initial level of the consumer’s debt, specified
+as a parameter of the problem.</p>
+<p>Thus, in the complete markets version of the consumption-smoothing
+model, <span class="math notranslate nohighlight">\(c_t = \bar c, \forall t \geq 0\)</span> is determined by <a class="reference internal" href="#equation-cs-16">(239)</a>
+and the consumer’s debt is a fixed function of
+the state <span class="math notranslate nohighlight">\(x_t\)</span> described by <a class="reference internal" href="#equation-cs-15">(238)</a>.</p>
+<p>Here’s an example that shows how in this setting the availability of insurance against fluctuating nonfinancial income
+allows the consumer completely to smooth consumption across time and across states of the world.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">complete_ss</span><span class="p">(</span><span class="n">β</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">S_y</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">12</span><span class="p">)</span>
+
+    <span class="c"># Create a linear state space for simulation purposes</span>
+    <span class="c"># This adds &quot;b&quot; as a state to the linear state space system</span>
+    <span class="c"># so that setting the seed places shocks in same place for</span>
+    <span class="c"># both the complete and incomplete markets economy</span>
+    <span class="c"># Atilde = vcat(hcat(A, zeros(size(A,1), 1)),</span>
+    <span class="c">#               zeros(1, size(A,2) + 1))</span>
+    <span class="c"># Ctilde = vcat(C, zeros(1, 1))</span>
+    <span class="c"># S_ytilde = hcat(S_y, zeros(1, 1))</span>
+
+    <span class="n">lss</span> <span class="o">=</span> <span class="n">LSS</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">S_y</span><span class="p">,</span> <span class="n">mu_0</span><span class="o">=</span><span class="n">x0</span><span class="p">)</span>
+
+    <span class="c"># Add extra state to initial condition</span>
+    <span class="c"># x0 = hcat(x0, 0)</span>
+
+    <span class="c"># Compute the (I - β*A)^{-1}</span>
+    <span class="n">rm</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="nb">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">A</span><span class="p">)</span>
+
+    <span class="c"># Constant level of consumption</span>
+    <span class="n">cbar</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">S_y</span> <span class="o">*</span> <span class="n">rm</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">.-</span> <span class="n">b0</span><span class="p">)</span>
+    <span class="n">c_hist</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="n">cbar</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c"># Debt</span>
+    <span class="n">x_hist</span><span class="p">,</span> <span class="n">y_hist</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">lss</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">b_hist</span> <span class="o">=</span> <span class="p">(</span><span class="n">S_y</span> <span class="o">*</span> <span class="n">rm</span> <span class="o">*</span> <span class="n">x_hist</span> <span class="o">.-</span> <span class="n">cbar</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">β</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">c_hist</span><span class="p">,</span> <span class="n">vec</span><span class="p">(</span><span class="n">b_hist</span><span class="p">),</span> <span class="n">vec</span><span class="p">(</span><span class="n">y_hist</span><span class="p">),</span> <span class="n">x_hist</span>
+<span class="k">end</span>
+
+<span class="n">N_simul</span> <span class="o">=</span> <span class="mi">150</span>
+
+<span class="c"># Define parameters</span>
+<span class="n">α</span><span class="p">,</span> <span class="n">ρ1</span><span class="p">,</span> <span class="n">ρ2</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span>
+<span class="n">σ</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="c"># N_simul = 1</span>
+<span class="c"># T = N_simul</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span><span class="p">;</span>
+     <span class="n">α</span>    <span class="n">ρ1</span>  <span class="n">ρ2</span><span class="p">;</span>
+     <span class="mf">0.0</span> <span class="mf">1.0</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">C</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">σ</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">S_y</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span> <span class="mf">1.0</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">β</span><span class="p">,</span> <span class="n">b0</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span> <span class="o">-</span><span class="mf">10.0</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">α</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ1</span><span class="p">),</span> <span class="n">α</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ρ1</span><span class="p">)]</span>
+
+<span class="c"># Do simulation for complete markets</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">complete_ss</span><span class="p">(</span><span class="n">β</span><span class="p">,</span> <span class="n">b0</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">S_y</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+<span class="n">c_hist_com</span><span class="p">,</span> <span class="n">b_hist_com</span><span class="p">,</span> <span class="n">y_hist_com</span><span class="p">,</span> <span class="n">x_hist_com</span> <span class="o">=</span> <span class="n">out</span>
+
+<span class="c"># Consumption plots</span>
+<span class="n">plt_cons</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Cons and income&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;Periods&quot;</span><span class="p">,</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mi">110</span><span class="p">])</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_cons</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">c_hist_com</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;consumption&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_cons</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">y_hist_com</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;income&quot;</span><span class="p">,</span>
+      <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">)</span>
+
+<span class="c"># Debt plots</span>
+<span class="n">plt_debt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Debt and income&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;Periods&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_debt</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">b_hist_com</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;debt&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_debt</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="n">N_simul</span><span class="p">,</span> <span class="n">y_hist_com</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Income&quot;</span><span class="p">,</span>
+      <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">)</span>
+<span class="n">hline!</span><span class="p">(</span><span class="n">plt_debt</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">plt_cons</span><span class="p">,</span> <span class="n">plt_debt</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">bottomleft</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/smoothing_18_0.png" src="../_images/smoothing_18_0.png" />
+</div>
+</div>
+<div class="section" id="interpretation-of-graph">
+<h3>Interpretation of Graph<a class="headerlink" href="#interpretation-of-graph" title="Permalink to this headline">¶</a></h3>
+<p>In the above graph, please note that:</p>
+<ul class="simple">
+<li><p>nonfinancial income fluctuates in a stationary manner</p></li>
+<li><p>consumption is completely constant</p></li>
+<li><p>the consumer’s debt fluctuates in a stationary manner; in fact, in
+this case because nonfinancial income is a first-order
+autoregressive process, the consumer’s debt is an exact affine function
+(meaning linear plus a constant) of the consumer’s nonfinancial
+income</p></li>
+</ul>
+</div>
+<div class="section" id="incomplete-markets-version">
+<h3>Incomplete Markets Version<a class="headerlink" href="#incomplete-markets-version" title="Permalink to this headline">¶</a></h3>
+<p>The incomplete markets version of the model with nonfinancial income being governed by a linear state space system
+is described in the first lecture on the <a class="reference internal" href="perm_income.html"><span class="doc">permanent income model</span></a> and the followup
+lecture on  the <a class="reference internal" href="perm_income_cons.html"><span class="doc">permanent income model</span></a>.</p>
+<p>In that version, consumption follows a random walk and the consumer’s debt follows a process with a unit root.</p>
+<p>We leave it to the reader to apply the usual isomorphism to deduce the corresponding implications for a tax-smoothing model like Barro’s <span id="id13">[<a class="reference internal" href="../zreferences.html#id63"><span>Bar79</span></a>]</span>.</p>
+</div>
+<div class="section" id="government-manipulation-of-arrow-securities-prices">
+<h3>Government Manipulation of  Arrow Securities Prices<a class="headerlink" href="#government-manipulation-of-arrow-securities-prices" title="Permalink to this headline">¶</a></h3>
+<p>In <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html"><span class="doc">optimal taxation in an LQ economy</span></a> and <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html"><span class="doc">recursive optimal taxation</span></a>, we study <strong>complete-markets</strong>
+models in which the government recognizes that it can manipulate  Arrow securities prices.</p>
+<p>In <a class="reference internal" href="../dynamic_programming_squared/amss.html"><span class="doc">optimal taxation with incomplete markets</span></a>, we study an <strong>incomplete-markets</strong> model in which the government  manipulates asset prices.</p>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.5"
+        },
+        kernelOptions: {
+            kernelName: "julia-1.5",
+            path: "./dynamic_programming"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.5'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   Introduction to Types and Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/tools_editors.html">
+   Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/version_control.html">
+   Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/testing.html">
+   Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/need_for_speed.html">
+   The Need for Speed
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="short_path.html">
+   Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="mccall_model.html">
+   Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="mccall_model_with_separation.html">
+   Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="wald_friedman.html">
+   A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="odu.html">
+   Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="career.html">
+   Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="jv.html">
+   Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="optgrowth.html">
+   Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="coleman_policy_iter.html">
+   Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="egm_policy_iter.html">
+   Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lqcontrol.html">
+   LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="perm_income.html">
+   Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="perm_income_cons.html">
+   Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ifp.html">
+   Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="robustness.html">
+   Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="discrete_dp.html">
+   Discrete State Dynamic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   Globalization and Cycles
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   Classical Filtering With Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   Lecture Status
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/dynamic_programming/smoothing.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/smoothing.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/smoothing.ipynb" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/smoothing.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>
