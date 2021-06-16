@@ -529,122 +529,122 @@ A few simple programming patterns ensure that this is possible
 
 * Do not declare types when declaring variables or functions unless necessary.
   
-  ```{code-cell} julia
-  # BAD
-  x = [5.0, 6.0, 2.1]
-  
-  function g(x::Array{Float64, 1})   # not generic!
-      y = zeros(length(x))   # not generic, hidden float!
-      z = Diagonal(ones(length(x)))  # not generic, hidden float!
-      q = ones(length(x))
-      y .= z * x + q
-      return y
-  end
-  
-  g(x)
-  
-  # GOOD
-  function g2(x)  # or `x::AbstractVector`
-      y = similar(x)
-      z = I
-      q = ones(eltype(x), length(x))  # or `fill(one(x), length(x))`
-      y .= z * x + q
-      return y
-  end
-  
-  g2(x)
-  ```
+```{code-cell} julia
+# BAD
+x = [5.0, 6.0, 2.1]
+
+function g(x::Array{Float64, 1})   # not generic!
+    y = zeros(length(x))   # not generic, hidden float!
+    z = Diagonal(ones(length(x)))  # not generic, hidden float!
+    q = ones(length(x))
+    y .= z * x + q
+    return y
+end
+
+g(x)
+
+# GOOD
+function g2(x)  # or `x::AbstractVector`
+    y = similar(x)
+    z = I
+    q = ones(eltype(x), length(x))  # or `fill(one(x), length(x))`
+    y .= z * x + q
+    return y
+end
+
+g2(x)
+```
   
 * Preallocate related vectors with `similar` where possible, and use `eltype` or `typeof`. This is important when using Multiple Dispatch given the different input types the function can call
   
-  ```{code-cell} julia
-  function g(x)
-      y = similar(x)
-      for i in eachindex(x)
-          y[i] = x[i]^2      # could broadcast
-      end
-      return y
-  end
-  
-  g([BigInt(1), BigInt(2)])
-  ```
+```{code-cell} julia
+function g(x)
+    y = similar(x)
+    for i in eachindex(x)
+        y[i] = x[i]^2      # could broadcast
+    end
+    return y
+end
+
+g([BigInt(1), BigInt(2)])
+```
   
 * Use `typeof` or `eltype` to declare a type
   
-  ```{code-cell} julia
-  @show typeof([1.0, 2.0, 3.0])
-  @show eltype([1.0, 2.0, 3.0]);
-  ```
+```{code-cell} julia
+@show typeof([1.0, 2.0, 3.0])
+@show eltype([1.0, 2.0, 3.0]);
+```
   
 * Beware of hidden floating points
   
-  ```{code-cell} julia
-  @show typeof(ones(3))
-  @show typeof(ones(Int64, 3))
-  @show typeof(zeros(3))
-  @show typeof(zeros(Int64, 3));
-  ```
+```{code-cell} julia
+@show typeof(ones(3))
+@show typeof(ones(Int64, 3))
+@show typeof(zeros(3))
+@show typeof(zeros(Int64, 3));
+```
   
 * Use `one` and `zero` to write generic code
   
-  ```{code-cell} julia
-  @show typeof(1)
-  @show typeof(1.0)
-  @show typeof(BigFloat(1.0))
-  @show typeof(one(BigFloat))  # gets multiplicative identity, passing in type
-  @show typeof(zero(BigFloat))
-  
-  x = BigFloat(2)
-  
-  @show typeof(one(x))  # can call with a variable for convenience
-  @show typeof(zero(x));
-  ```
+```{code-cell} julia
+@show typeof(1)
+@show typeof(1.0)
+@show typeof(BigFloat(1.0))
+@show typeof(one(BigFloat))  # gets multiplicative identity, passing in type
+@show typeof(zero(BigFloat))
+
+x = BigFloat(2)
+
+@show typeof(one(x))  # can call with a variable for convenience
+@show typeof(zero(x));
+```
   
 
 This last example is a subtle, because of something called [type promotion](https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1)
 
 * Assume reasonable type promotion exists for numeric types
   
-  ```{code-cell} julia
-  # ACCEPTABLE
-  function g(x::AbstractFloat)
-      return x + 1.0   # assumes `1.0` can be converted to something compatible with `typeof(x)`
-  end
-  
-  x = BigFloat(1.0)
-  
-  @show typeof(g(x));  # this has "promoted" the `1.0` to a `BigFloat`
-  ```
+```{code-cell} julia
+# ACCEPTABLE
+function g(x::AbstractFloat)
+    return x + 1.0   # assumes `1.0` can be converted to something compatible with `typeof(x)`
+end
+
+x = BigFloat(1.0)
+
+@show typeof(g(x));  # this has "promoted" the `1.0` to a `BigFloat`
+```
   But sometimes assuming promotion is not enough
   
-  ```{code-cell} julia
-  # BAD
-  function g2(x::AbstractFloat)
-      if x > 0.0   # can't efficiently call with `x::Integer`
-          return x + 1.0   # OK - assumes you can promote `Float64` to `AbstractFloat`
-      otherwise
-          return 0   # BAD! Returns a `Int64`
-      end
-  end
-  
-  x = BigFloat(1.0)
-  x2 = BigFloat(-1.0)
-  
-  @show typeof(g2(x))
-  @show typeof(g2(x2))  # type unstable
-  
-  # GOOD
-  function g3(x) #
-      if x > zero(x)   # any type with an additive identity
-          return x + one(x)  # more general but less important of a change
-      otherwise
-          return zero(x)
-      end
-  end
-  
-  @show typeof(g3(x))
-  @show typeof(g3(x2));  # type stable
-  ```
+```{code-cell} julia
+# BAD
+function g2(x::AbstractFloat)
+    if x > 0.0   # can't efficiently call with `x::Integer`
+        return x + 1.0   # OK - assumes you can promote `Float64` to `AbstractFloat`
+    otherwise
+        return 0   # BAD! Returns a `Int64`
+    end
+end
+
+x = BigFloat(1.0)
+x2 = BigFloat(-1.0)
+
+@show typeof(g2(x))
+@show typeof(g2(x2))  # type unstable
+
+# GOOD
+function g3(x) #
+    if x > zero(x)   # any type with an additive identity
+        return x + one(x)  # more general but less important of a change
+    otherwise
+        return zero(x)
+    end
+end
+
+@show typeof(g3(x))
+@show typeof(g3(x2));  # type stable
+```
   
 
 These patterns are relatively straightforward, but generic programming can be thought of
