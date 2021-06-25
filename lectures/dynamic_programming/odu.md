@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (odu)=
@@ -43,13 +43,6 @@ In the version considered below, the wage distribution is unknown and must be le
 * Infinite horizon dynamic programming with two states and one binary control.
 * Bayesian updating to learn the unknown distribution.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ## Model
 

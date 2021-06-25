@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (lucas_asset)=
@@ -377,13 +377,6 @@ Utility will take the isoelastic form $u(c) = c^{1-\gamma}/(1-\gamma)$, where $\
 
 Some code to implement the iterative computational procedure can be found below:
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

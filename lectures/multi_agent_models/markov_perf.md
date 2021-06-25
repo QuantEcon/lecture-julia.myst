@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (markov_perf)=
@@ -45,14 +45,6 @@ We will focus on settings with
 * linear transition rules for the state
 
 Other references include chapter 7 of {cite}`Ljungqvist2012`.
-
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics, QuantEcon

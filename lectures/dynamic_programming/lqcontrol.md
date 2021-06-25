@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (lqc)=
@@ -628,13 +628,6 @@ The following figure was computed using $r = 0.05, \beta = 1 / (1 + r), \bar c =
 
 The shocks $\{w_t\}$ were taken to be iid and standard normal.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---
@@ -1347,14 +1340,6 @@ p1 = plot(Vector[income, ap, c, zeros(T + 1)],
           bottom_margin = 20mm, size = (600, 600))
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    @test ap[20] ≈ -8.123970759436794
-end
-```
 
 ### Exercise 2
 

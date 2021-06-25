@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (julia_environment)=
@@ -112,11 +112,6 @@ The present working directory can be found by executing the command `pwd()`.
 
 Note that if you're using a JupyterHub setup, you will need to first run
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 in a new cell (i.e., `Shift + Enter`).
 

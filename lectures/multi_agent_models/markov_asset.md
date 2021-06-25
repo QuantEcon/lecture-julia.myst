@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (mass)=
@@ -285,13 +285,6 @@ The next figure shows a simulation, where
 * $\{X_t\}$ evolves as a discretized AR1 process produced using {ref}`Tauchen's method <mc_ex3>`
 * $g_t = \exp(X_t)$, so that $\ln g_t = X_t$ is the growth rate
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

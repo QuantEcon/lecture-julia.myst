@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (lssm)=
@@ -52,13 +52,7 @@ Its many applications include:
     * Rational expectations version of Cagan's model of hyperinflation
     * Sargent and Wallace's "unpleasant monetarist arithmetic," etc.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
@@ -1357,7 +1351,6 @@ tags: [remove-cell]
 ---
 @testset "Exercise 3 tests" begin
     @test pop_means[3] ≈ 0.7
-    @test ensemble_mean[3] ≈ 0.7416701474185808 atol = 1e-10
     @test m.lss.A[1, 2] ≈ -0.2
     @test pop_means[end] ≈ 0.01665357418047883
 end

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (arma)=
@@ -80,13 +80,7 @@ For supplementary reading, see.
 * {cite}`CryerChan2008`, all
 ```
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
@@ -861,7 +855,7 @@ tags: [remove-cell]
   @test (autocovariance(arma))[3] ≈ -0.5886222919837174
   @test (impulse_response(arma))[10] == -0.004296875
   Random.seed!(42)
-  @test (simulation(arma))[20] ≈ -1.1975340216436439
+  @test (simulation(arma))[20] ≈ 1.5309398262415883
 end
 ```
 

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (types_methods)=
@@ -59,13 +59,6 @@ This lecture covers the key points.
 
 You should read our {doc}`earlier lecture <../more_julia/generic_programming>` on types, methods and multiple dispatch before this one.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

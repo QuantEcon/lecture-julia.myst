@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (uncertainty_traps)=
@@ -220,13 +220,7 @@ The updating methods follow the laws of motion for $\theta$, $\mu$ and $\gamma$ 
 The method to evaluate the number of active firms generates $F_1,
 \ldots, F_{\bar M}$ and tests condition {eq}`firm_test` for each firm.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---
@@ -468,17 +462,6 @@ df = simulate(econ)
 plot(eachindex(df.μ), df.μ, lw = 2, label = "Mu")
 plot!(eachindex(df.θ), df.θ, lw = 2, label = "Theta")
 plot!(xlabel = "x", ylabel = "y", legend_title = "Variable", legend = :bottomright)
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    @test df.θ[1000] ≈ -7.122237942560729 rtol = 1e-4
-    @test df.θ[1500] ≈ 0.9768886175345713 rtol = 1e-4
-    @test df.θ[1750] ≈ 3.8193327654508775 rtol = 1e-4
-end
 ```
 
 Now let's plot the whole thing together

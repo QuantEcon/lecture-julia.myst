@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (perm_income_cons)=
@@ -65,13 +65,6 @@ The model will prove useful for illustrating concepts such as
 * ergodicity
 * ensemble moments and cross section observations
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

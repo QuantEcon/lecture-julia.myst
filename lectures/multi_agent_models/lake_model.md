@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (lake_model)=
@@ -191,13 +191,6 @@ Let's code up these equations.
 
 Here's the code:
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---
@@ -786,17 +779,6 @@ plt_welf = plot(title = "Welfare", c_vec, welfare_vec, color = :blue, lw = 2, al
                 grid = true)
 
 plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2,2), size = (800, 700))
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    @test tax_vec[40] ≈ 55.78515130142509 atol = 1e-7
-    @test empl_vec[50] ≈ 0.2787840354254594 atol = 1e-7
-    @test welfare_vec[17] ≈ 49.04659995995766 atol = 1e-6
-end
 ```
 
 Welfare first increases and then decreases as unemployment benefits rise.

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (seir_model)=
@@ -51,13 +51,6 @@ The interest is primarily in
 * the number of infections at a given time (which determines whether or not the health care system is overwhelmed); and
 * how long the caseload can be deferred (hopefully until a vaccine arrives)
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics, Random, SparseArrays

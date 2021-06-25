@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (estspec)=
@@ -45,13 +45,7 @@ Once the basic technique has been explained, we will apply it to the analysis of
 
 For supplementary reading, see {cite}`Sargent1987` or {cite}`CryerChan2008`.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
@@ -251,7 +245,7 @@ plot!(x_sd, y_sd, linecolor="red", linewidth=2, linealpha=0.8, lab="spectral den
 tags: [remove-cell]
 ---
 @testset begin
-  @test y[17] ≈ 0.034025657896215554
+  @test y[17] ≈ 0.016056828911473187
   @test x[17] ≈ 2.5132741228718345
   @test y_sd[76] ≈ 1.6587587789586284
 end

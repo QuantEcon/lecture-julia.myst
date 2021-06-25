@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (matsuyama)=
@@ -326,13 +326,7 @@ For some parameterizations, synchronization will occur for "most" initial condit
 
 Here's the main body of code.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---

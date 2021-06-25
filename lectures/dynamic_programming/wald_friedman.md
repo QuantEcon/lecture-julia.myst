@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (wald_friedman)=
@@ -158,13 +158,7 @@ The next figure shows two discretized beta distributions in the top panel.
 
 The bottom panel presents mixtures of these distributions, with various mixing probabilities $p_k$.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---
@@ -526,9 +520,9 @@ tags: [remove-cell]
     α, β, outcomes, costs, trials = simulation(Problem(return_output = true))
     @test α ≈ 0.57428237
     @test β ≈ 0.352510338
-    @test mean(outcomes) ≈ 0.43
-    @test mean(costs) ≈ 1.42
-    @test mean(trials) ≈ 1.4
+    @test mean(outcomes) ≈ 0.5
+    @test mean(costs) ≈ 1.28 atol = 1e-2
+    @test mean(trials) ≈ 1.41 atol = 1e-2
     choices = first.(choice.((clamp(β - eps(), 0, 1),
                               clamp(β + eps(), 0, 1),
                               clamp(α - eps(), 0, 1),

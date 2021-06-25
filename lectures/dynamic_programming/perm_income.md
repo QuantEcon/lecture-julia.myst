@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (perm_income)=
@@ -44,13 +44,7 @@ We use the model as a vehicle for illustrating
 
 Background readings on the linear-quadratic-Gaussian permanent income model are Hall's  {cite}`Hall1978`  and chapter 2 of  {cite}`Ljungqvist2012`.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
@@ -552,7 +546,7 @@ plot!(xlabel = "Time", ylabel = "Consumption", xlims = (0, T))
 tags: [remove-cell]
 ---
 @testset "Second Plot Tests" begin
-  @test time_paths[12][14] ≈ 0.9970822013087883
+  @test time_paths[12][14] ≈ 1.0032735614765316
   @test time_paths[4][20] ≈ 1.0405721547541182
 end
 ```

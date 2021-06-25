@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (aiyagari)=
@@ -191,13 +191,7 @@ The action is the choice of next period asset level $a_{t+1}$.
 
 The object also includes a default set of parameters that we'll adopt unless otherwise specified.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

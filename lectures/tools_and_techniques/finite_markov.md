@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (mc)=
@@ -40,13 +40,7 @@ We will also introduce some of the high quality routines for working with Markov
 
 Prerequisite knowledge is basic probability and linear algebra.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
@@ -336,8 +330,8 @@ tags: [remove-cell]
 ---
 @testset "QE Sample Path Test" begin
     @test P ≈ [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
-    @test X[1:5] == [2, 2, 1, 1, 2]
-    @test μ_1 ≈ μ_2 atol = 1e-4
+    @test X[1:5] == [2, 2, 2, 2, 2]
+    @test μ_1 ≈ μ_2 atol = 1e-2
 end
 ```
 

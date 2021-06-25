@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (multiplicative_functionals)=
@@ -102,13 +102,7 @@ Let's write a program to simulate sample paths of $\{ x_t, y_{t} \}_{t=0}^{\inft
 
 We'll do this by formulating the additive functional as a linear state space model and putting the [LSS](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl) struct to work.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---
@@ -279,16 +273,6 @@ plot!(plt_2, Ymean_pop, color = :black, label = "E y_t")
 plot!(plt_2, title = "y_t", xlim = (0, T), legend = :bottomleft)
 
 plot(plt_1, plt_2, layout = (2, 1), size = (800,500))
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    @test Xmean_t'[4] ≈ -0.012211946062314676 # These depend on the A, B, etc.
-    @test Ymean_t'[100] ≈ -0.3351148038056963
-end
 ```
 
 ### Simulating log-likelihoods

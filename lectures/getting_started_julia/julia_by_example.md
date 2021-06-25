@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (julia_by_example)=
@@ -81,11 +81,6 @@ There are three ways to install packages and versions (where the first two metho
 1. download an `Project.toml` and `Manifest.toml` file in the same directory as the notebook (i.e. from the `@__DIR__` argument), and then call `using Pkg; Pkg.activate(@__DIR__);`
 1. use the `InstantiateFromURL` package
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages.
 

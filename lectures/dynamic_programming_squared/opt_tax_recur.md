@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (opt_tax_recur)=
@@ -55,13 +55,6 @@ responses of private agents to a Ramsey plan.
 
 See {doc}`Optimal taxation <../dynamic_programming_squared/lqramsey>` for an analysis within a linear-quadratic setting.
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

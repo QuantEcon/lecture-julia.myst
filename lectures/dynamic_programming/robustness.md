@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (rob)=
@@ -141,13 +141,6 @@ Our discussion in this lecture is based on
 * {cite}`HansenSargent2000`
 * {cite}`HansenSargent2008`
 
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics

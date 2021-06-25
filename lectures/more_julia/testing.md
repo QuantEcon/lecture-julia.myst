@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (testing)=
@@ -76,13 +76,6 @@ The result should be
 
 This is all we need for now.
 
-### Julia Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 **Note:** Before these steps, make sure that you've either completed the {doc}`version control <../more_julia/version_control>` lecture or run.
 

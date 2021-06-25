@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (covid_sde)=
@@ -52,14 +52,6 @@ Unlike in discrete-time, where a modeller has license to be creative, the rules 
 Every other Levy Process can be represented by these building blocks (e.g. a [Diffusion Process](https://en.wikipedia.org/wiki/Diffusion_process) such as Geometric Brownian Motion is a transformation of a Weiner process, a [jump diffusion](https://en.wikipedia.org/wiki/Jump_diffusion#In_economics_and_finance) is a diffusion process with a Poisson arrival of jumps, and a continuous-time markov chain (CMTC) is a Poisson process jumping between a finite number of states).
 
 In this lecture, we will examine shocks driven by transformations of Brownian motion, as the prototypical Stochastic Differential Equation (SDE).
-
-### Setup
-
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics, Random, SparseArrays

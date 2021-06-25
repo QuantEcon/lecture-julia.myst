@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (ifp)=
@@ -365,13 +365,7 @@ Here's the code for a named-tuple constructor called `ConsumerProblem` that stor
 * a `K` function, which implements the Coleman operator $K$ specified above
 * an `initialize`, which generates suitable initial conditions for iteration
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---
@@ -770,15 +764,6 @@ cp = ConsumerProblem(r = 0.03, grid_max = 4)
 Random.seed!(42) # for reproducibility
 a = compute_asset_series(cp)
 histogram(a, nbins = 20, leg = false, normed = true, xlabel = "assets")
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    @test a[105] ≈ 0.006474493581506313
-end
 ```
 
 ### Exercise 4

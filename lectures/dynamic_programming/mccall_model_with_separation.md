@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (mccall_with_sep)=
@@ -40,13 +40,7 @@ Once separation enters the picture, the agent comes to view
 * the loss of a job as a capital loss, and
 * a spell of unemployment as an *investment* in searching for an acceptable job
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 ---
@@ -320,8 +314,8 @@ plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = ["V" "U"])
 tags: [remove-cell]
 ---
 @testset "First Plot Tests" begin
-    @test U ≈ 45.62325326780855 # U value
-    @test V[3] ≈ 45.58067806319422 # Arbitrary V
+    @test U ≈ 45.623683796824146 atol = 1e-3 # U value
+    @test V[3] ≈ 45.58110859220982 atol = 1e-3 # Arbitrary V
 end
 ```
 

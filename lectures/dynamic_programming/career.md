@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia
+  name: julia-1.6
 ---
 
 (career)=
@@ -40,13 +40,7 @@ This exposition draws on the presentation in {cite}`Ljungqvist2012`, section 6.5
 * Career and job within career both chosen to maximize expected discounted wage flow.
 * Infinite horizon dynamic programming with two state variables.
 
-### Setup
 
-```{literalinclude} _static/includes/deps_generic.jl
----
-tags: [hide-output]
----
-```
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
