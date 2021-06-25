@@ -314,8 +314,8 @@ plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = ["V" "U"])
 tags: [remove-cell]
 ---
 @testset "First Plot Tests" begin
-    @test U ≈ 45.62325326780855 # U value
-    @test V[3] ≈ 45.58067806319422 # Arbitrary V
+    @test U ≈ 45.623683796824146 atol = 1e-3 # U value
+    @test V[3] ≈ 45.58110859220982 atol = 1e-3 # Arbitrary V
 end
 ```
 

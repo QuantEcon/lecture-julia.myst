@@ -275,16 +275,6 @@ plot!(plt_2, title = "y_t", xlim = (0, T), legend = :bottomleft)
 plot(plt_1, plt_2, layout = (2, 1), size = (800,500))
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    @test Xmean_t'[4] ≈ -0.012211946062314676 # These depend on the A, B, etc.
-    @test Ymean_t'[100] ≈ -0.3351148038056963
-end
-```
-
 ### Simulating log-likelihoods
 
 Our next aim is to write a program to simulate $\{\log L_t \mid \theta_o\}_{t=1}^T$.

@@ -781,17 +781,6 @@ plt_welf = plot(title = "Welfare", c_vec, welfare_vec, color = :blue, lw = 2, al
 plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2,2), size = (800, 700))
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    @test tax_vec[40] ≈ 55.78515130142509 atol = 1e-7
-    @test empl_vec[50] ≈ 0.2787840354254594 atol = 1e-7
-    @test welfare_vec[17] ≈ 49.04659995995766 atol = 1e-6
-end
-```
-
 Welfare first increases and then decreases as unemployment benefits rise.
 
 The level that maximizes steady state welfare is approximately 62.

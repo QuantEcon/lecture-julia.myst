@@ -860,17 +860,6 @@ xlabels = reshape(repeat(l, n), 3n, 1)
 boxplot(xlabels, data, label = "", ylims = (-2, 14))
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset "Exercise 3 Tests" begin
-    @test x[5] ≈ 5.917186591766507
-    @test y[5] ≈ 2.8356012641450112
-    @test z[5] ≈ 3.921272296865464
-end
-```
-
 The three data sets are
 
 $$
@@ -907,7 +896,7 @@ initial_conditions = range(8, 0, length = J)
 For each $X_0$ in this set,
 
 1. Generate $k$ time series of length $n$, each starting at $X_0$ and obeying {eq}`statd_tar`.
-1. Create a boxplot representing $n$ distributions, where the $t$-th distribution shows the $k$ observations of $X_t$.
+2. Create a boxplot representing $n$ distributions, where the $t$-th distribution shows the $k$ observations of $X_t$.
 
 Use $\theta = 0.9, n = 20, k = 5000, J = 8$.
 

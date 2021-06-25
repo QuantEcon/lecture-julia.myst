@@ -855,7 +855,7 @@ tags: [remove-cell]
   @test (autocovariance(arma))[3] ≈ -0.5886222919837174
   @test (impulse_response(arma))[10] == -0.004296875
   Random.seed!(42)
-  @test (simulation(arma))[20] ≈ -1.1975340216436439
+  @test (simulation(arma))[20] ≈ 1.5309398262415883
 end
 ```
 

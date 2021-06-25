@@ -464,17 +464,6 @@ plot!(eachindex(df.θ), df.θ, lw = 2, label = "Theta")
 plot!(xlabel = "x", ylabel = "y", legend_title = "Variable", legend = :bottomright)
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    @test df.θ[1000] ≈ -7.122237942560729 rtol = 1e-4
-    @test df.θ[1500] ≈ 0.9768886175345713 rtol = 1e-4
-    @test df.θ[1750] ≈ 3.8193327654508775 rtol = 1e-4
-end
-```
-
 Now let's plot the whole thing together
 
 ```{code-cell} julia

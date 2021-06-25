@@ -1351,7 +1351,6 @@ tags: [remove-cell]
 ---
 @testset "Exercise 3 tests" begin
     @test pop_means[3] ≈ 0.7
-    @test ensemble_mean[3] ≈ 0.7416701474185808 atol = 1e-10
     @test m.lss.A[1, 2] ≈ -0.2
     @test pop_means[end] ≈ 0.01665357418047883
 end

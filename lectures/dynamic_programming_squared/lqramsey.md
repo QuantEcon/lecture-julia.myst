@@ -869,15 +869,15 @@ gen_fig_1(path)
 tags: [remove-cell]
 ---
 @testset begin
-  @test path.p[3] ≈ 1.5395294981420302 # randomness check.
-  @test path.g[31] ≈ 0.31995784745763833 # stuff we plot
-  @test path.c[36] ≈ 0.6387556584133354
-  @test path.B[9] ≈ 0.07442403655989423
-  @test path.rvn[27] ≈ 0.35087848425010165
-  @test path.π[31] ≈ 0.002863930880184773
-  @test path.R[43] ≈ 1.055269758955539
-  @test path.ξ[43] ≈ 0.9867651305840917
-  @test path.Π[43] ≈ -0.18634133373855144 # plot tests
+  @test path.p[3] ≈ 1.5304502950037784 # randomness check.
+  @test path.g[31] ≈ 0.37866955049102335 # stuff we plot
+  @test path.c[36] ≈ 0.5875170939410643
+  @test path.B[9] ≈ 0.06031487109789345
+  @test path.rvn[27] ≈ 0.35013269833342753
+  @test path.π[31] ≈ 0.08085809281745332
+  @test path.R[43] ≈ 1.0538340436504208
+  @test path.ξ[43] ≈  1.001895202392805
+  @test path.Π[43] ≈ 0.7474047114735535 # plot tests
 end
 ```
 

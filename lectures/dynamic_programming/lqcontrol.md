@@ -1340,14 +1340,6 @@ p1 = plot(Vector[income, ap, c, zeros(T + 1)],
           bottom_margin = 20mm, size = (600, 600))
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    @test ap[20] ≈ -8.123970759436794
-end
-```
 
 ### Exercise 2
 

@@ -245,7 +245,7 @@ plot!(x_sd, y_sd, linecolor="red", linewidth=2, linealpha=0.8, lab="spectral den
 tags: [remove-cell]
 ---
 @testset begin
-  @test y[17] ≈ 0.034025657896215554
+  @test y[17] ≈ 0.016056828911473187
   @test x[17] ≈ 2.5132741228718345
   @test y_sd[76] ≈ 1.6587587789586284
 end

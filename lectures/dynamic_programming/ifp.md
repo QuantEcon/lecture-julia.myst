@@ -766,15 +766,6 @@ a = compute_asset_series(cp)
 histogram(a, nbins = 20, leg = false, normed = true, xlabel = "assets")
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    @test a[105] ≈ 0.006474493581506313
-end
-```
-
 ### Exercise 4
 
 ```{code-cell} julia

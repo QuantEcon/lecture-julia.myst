@@ -546,7 +546,7 @@ plot!(xlabel = "Time", ylabel = "Consumption", xlims = (0, T))
 tags: [remove-cell]
 ---
 @testset "Second Plot Tests" begin
-  @test time_paths[12][14] ≈ 0.9970822013087883
+  @test time_paths[12][14] ≈ 1.0032735614765316
   @test time_paths[4][20] ≈ 1.0405721547541182
 end
 ```

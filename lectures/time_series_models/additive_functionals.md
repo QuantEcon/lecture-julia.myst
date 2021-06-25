@@ -683,7 +683,7 @@ tags: [remove-cell]
 ---
 @testset begin
     @test y[79] ≈ -0.07268127992877046
-    @test y[amf.nx + 1, :][19] ≈ 0.09115348523102862
+    @test y[amf.nx + 1, :][19] ≈ 0.0951768424187828
     @test F ≈ 0.01 && T == 150 # a few constants.
 end
 ```
