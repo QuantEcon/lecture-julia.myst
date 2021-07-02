@@ -1426,15 +1426,6 @@ p2 = plot([income, assets, c, zeros(T + 1)],
           bottom_margin = 20mm, size = (600, 600))
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    @test income[20] ≈ 3.0809720173965855
-end
-```
-
 ### Exercise 3
 
 The first task is to find the matrices $A, B, C, Q, R$ that define

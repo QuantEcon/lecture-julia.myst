@@ -1094,15 +1094,6 @@ end
 plot(plots..., layout = (J, 1), legend = :none, size = (800, 2000))
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset "Solution 3 Tests" begin
-    @test X[end-5] ≈ 0.48235969268877943
-    @test Z[1, 2, 3] ≈ 0.7233220581593061
-end
-```
 
 ## Appendix
 

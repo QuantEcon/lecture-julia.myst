@@ -712,15 +712,6 @@ plot!(plt, v_star, grid_y, linewidth = 2, alpha = 0.6, label = "true value funct
 plot!(plt, legend = :bottomright)
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset "Iteration Scheme Tests" begin
-    @test v_star_approx[4] ≈ -31.85032776321786
-end
-```
-
 The figure shows that we are pretty much on the money.
 
 ### The Policy Function
