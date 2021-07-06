@@ -869,15 +869,15 @@ gen_fig_1(path)
 tags: [remove-cell]
 ---
 @testset begin
-  @test path.p[3] ≈ 1.5304502950037784 atol = 1e-3 # randomness check.
-  @test path.g[31] ≈ 0.37866955049102335 atol = 1e-3 # stuff we plot
-  @test path.c[36] ≈ 0.5875170939410643 atol = 1e-3
-  @test path.B[9] ≈ 0.06031487109789345 atol = 1e-3
+  @test path.p[3] ≈ 1.5395294981420302 atol = 1e-3 # randomness check.
+  @test path.g[31] ≈ 0.366487070014081 atol = 1e-3 # stuff we plot
+  @test path.c[36] ≈ 0.6291101011610297 atol = 1e-3
+  @test path.B[9] ≈ 0.07442403655989423 atol = 1e-3
   @test path.rvn[27] ≈ 0.35013269833342753 atol = 1e-3
-  @test path.π[31] ≈ 0.08085809281745332 atol = 1e-3
-  @test path.R[43] ≈ 1.0538340436504208 atol = 1e-3
+  @test path.π[31] ≈ -0.05846215388377568 atol = 1e-3
+  @test path.R[43] ≈ 1.0437715852385672 atol = 1e-3
   @test path.ξ[43] ≈  1.001895202392805 atol = 1e-3
-  @test path.Π[43] ≈ 0.7474047114735535 atol = 1e-3 # plot tests
+  @test path.Π[43] ≈ -0.4185282208457552 atol = 1e-3 # plot tests
 end
 ```
 
@@ -1023,12 +1023,12 @@ tags: [remove-cell]
 ---
 @testset begin
   @test path.p[3]  ≈ 1.524261187305079
-  @test path.B[13]   ≈ 0.057880270344257134
-  @test path.g[7] ≈ 0.37173360141336675
-  @test path.rvn[7]  ≈ 0.3516395027502925
+  @test path.B[13]   ≈ -0.053219518947408805
+  @test path.g[7] ≈ 0.36908804521710115
+  @test path.rvn[7]  ≈ 0.35146870025913474
   @test path.c[2]  ≈ 0.6259521929536346
   @test path.R[5][1]  ≈ 1.0501742289013196
-  @test path.ξ[10] ≈ 1.0013523500366277
+  @test path.ξ[10] ≈ 1.002202281639002
 end
 ```
 

@@ -1561,7 +1561,9 @@ sim_seq_l_plot = [sim_seq_l[1:4]..., M_time_example.G[sHist_l],
 sim_seq_h_plot = [sim_seq_h[1:4]..., M_time_example.G[sHist_h],
                   M_time_example.Θ[sHist_h].*sim_seq_h[2]]
 
-plots = plot(layout=(3,2), size=(800,600))
+
+#plots = plot(layout=(3,2), size=(800,600))
+plots = [plot(), plot(), plot(), plot(), plot(), plot()]
 for i = 1:6
     plot!(plots[i], sim_seq_l_plot[i], color=:black, lw=2,
           marker=:circle, markersize=2, label="")
@@ -1569,7 +1571,7 @@ for i = 1:6
           marker=:circle, markersize=2, label="")
     plot!(plots[i], title=titles[i], grid=true)
 end
-plot(plots)
+plot(plots[1], plots[2], plots[3], plots[4], plots[5], plots[6], layout=(3,2), size=(800,600))
 ```
 
 ```{code-cell} julia

@@ -210,6 +210,7 @@ All of these objects are computed using the code below.
 using LinearAlgebra, Statistics
 ```
 
+
 ```{code-cell} julia
 ---
 tags: [remove-cell]
@@ -648,7 +649,7 @@ Random.seed!(42);
 σ = 0.01
 ν = 0.01 # growth rate
 
-# A matrix should be n x n
+## A matrix should be n x n
 A = [ϕ_1 ϕ_2 ϕ_3 ϕ_4;
        1   0   0   0;
        0   1   0   0;
@@ -665,7 +666,10 @@ amf = AMF_LSS_VAR(A, B, D, F, ν)
 T = 150
 x, y = simulate(amf.lss, T)
 
-plots = plot(layout = (2, 1))
+plt_1=plot()
+plt_2=plot()
+plots = [plt_1, plt_2]
+# plots = plot(layout = (2, 1))
 
 plot!(plots[1], 1:T, y[amf.nx + 1, :], color = :black, lw = 2, label = "")
 plot!(plots[1], title =  "A particular path of y_t")
@@ -673,8 +677,8 @@ plot!(plots[2], 1:T, y[1, :], color = :green, lw = 2, label = "")
 plot!(plots[2], seriestype = :hline, [0], color = :black, lw = 2, linestyle=:dashdot,
       label = "")
 plot!(plots[2], title = "Associated path of x_t")
-
-plot(plots)
+# plot(plots)
+plot(plots[1], plots[2], layout=(2,1), size=(700,500))
 ```
 
 ```{code-cell} julia

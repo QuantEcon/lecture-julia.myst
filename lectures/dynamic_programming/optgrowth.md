@@ -785,7 +785,7 @@ shocks = exp.(μ .+ s * randn(shock_size))
 tags: [remove-cell]
 ---
 @testset begin
-    @test shocks[25] ≈ 0.8050318706532391
+    @test shocks[25] ≈ 0.8281356207080574
 end
 ```
 
@@ -849,10 +849,10 @@ Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks,
 y = simulate_og(σ_func);
 
 @testset begin
-    @test y[5] ≈ 0.489631315122766
-    @test σ[3] ≈ 0.02508603753450376 atol = 1e-6
-    @test Tw[4] ≈ -22.27089960340596
-    @test v_star_approx[50] ≈ -17.79360247626825
+    @test y[5] ≈ 0.4896390574930345
+    @test σ[3] ≈ 0.025084788719798193 atol = 1e-6
+    @test Tw[4] ≈ -22.24681487036426
+    @test v_star_approx[50] ≈ -17.76952387641302
 end
 ```
 

@@ -436,8 +436,8 @@ plot!(title = "Distribution of (1/T)log(L_T) | theta_1)")
 tags: [remove-cell]
 ---
 @testset begin
-    @test LLT2[1] ≈ 0.08791248248646343
-    @test LLmean_t2 ≈ 0.09210776227743879
+    @test LLT2[1] ≈ 0.09636268288129826
+    @test LLmean_t2 ≈ 0.09215848797039161
 end
 ```
 
@@ -610,9 +610,9 @@ println("\t ($(minimum(mmcT)), $(mean(mmcT)), $(maximum(mmcT)))")
 tags: [remove-cell]
 ---
 @testset begin
-    @test amcT[20] ≈ -0.5863300446739321
-    @test amc[14, 38] ≈ -0.07979871433963322
-    @test mmcT[250] ≈ 0.7443371221714455
+    @test amcT[20] ≈ 0.48937834866761837
+    @test amc[14, 38] ≈ 0.10223016730936686
+    @test mmcT[250] ≈ 0.6101128099569552
 end
 ```
 
