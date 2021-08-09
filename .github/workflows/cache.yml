@@ -1,0 +1,45 @@
+name: Build Project [using jupyter-book]
+on:
+  push:
+    branches:
+      - main
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install Python Dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Install LaTeX dependencies
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get install -y     \
+            texlive-latex-recommended \
+            texlive-latex-extra       \
+            texlive-fonts-recommended \
+            texlive-fonts-extra       \
+            texlive-xetex             \
+            latexmk                   \
+            xindy
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: 1.6.0
+      - name: Install IJulia
+        run: julia -e 'using Pkg; Pkg.add("IJulia");'
+        shell: bash
+      - name: Build HTML
+        shell: bash -l {0}
+        run: |
+          jb build lectures --path-output ./
+      - name: Upload the "_build" folder (cache)
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-cache
+          path: _build          
