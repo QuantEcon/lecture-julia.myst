@@ -24,10 +24,12 @@ jobs:
             texlive-xetex             \
             latexmk                   \
             xindy
-      - uses: julia-actions/setup-julia@v1
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v1
         with:
           version: 1.6.0
-      - run: julia -e 'using Pkg; Pkg.add("IJulia");'
+      - name: Install IJulia
+        run: julia -e 'using Pkg; Pkg.add("IJulia");'
         shell: bash
       # - name: Download "build" folder (cache)
       #   uses: dawidd6/action-download-artifact@v2
@@ -61,7 +63,7 @@ jobs:
           name: _build
           path: _build
       - name: Preview Deploy to Netlify
-        uses: nwtgck/actions-netlify@v1.1
+        uses: nwtgck/actions-netlify@v1.2.2
         with:
           publish-dir: '_build/html/'
           production-branch: master
