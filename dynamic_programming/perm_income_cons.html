@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimal Savings II: LQ Techniques &#8212; Quantitative Economics with Julia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>37. Optimal Savings II: LQ Techniques &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -26,8 +26,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -42,15 +42,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -58,11 +55,13 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/perm_income_cons.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Consumption and Tax Smoothing with Complete and Incomplete Markets" href="smoothing.html" />
-    <link rel="prev" title="Optimal Savings I: The Permanent Income Model" href="perm_income.html" />
+    <link rel="next" title="38. Consumption and Tax Smoothing with Complete and Incomplete Markets" href="smoothing.html" />
+    <link rel="prev" title="36. Optimal Savings I: The Permanent Income Model" href="perm_income.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -112,85 +111,85 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   Overview
+   37.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#introduction">
-   Introduction
+   37.2. Introduction
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#digression-on-a-useful-isomorphism">
-     Digression on a useful isomorphism
+     37.2.1. Digression on a useful isomorphism
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#a-specification-of-the-nonfinancial-income-process">
-     A specification of the nonfinancial income process
+     37.2.2. A specification of the nonfinancial income process
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#the-lq-approach">
-   The LQ Approach
+   37.3. The LQ Approach
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-lq-problem">
-     The LQ Problem
+     37.3.1. The LQ Problem
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#mapping-into-the-lq-framework">
-     Mapping into the LQ framework
+     37.3.2. Mapping into the LQ framework
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#implementation">
-   Implementation
+   37.4. Implementation
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-exogenous-noinfinancial-income-process">
-     The exogenous noinfinancial income process
+     37.4.1. The exogenous noinfinancial income process
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#comparison-with-the-difference-equation-approach">
-     Comparison with the difference equation approach
+     37.4.2. Comparison with the difference equation approach
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#two-example-economies">
-   Two Example Economies
+   37.5. Two Example Economies
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#first-set-of-initial-conditions">
-     First set of initial conditions
+     37.5.1. First set of initial conditions
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#population-and-sample-panels">
-     Population and sample panels
+     37.5.2. Population and sample panels
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#cointegration-residual">
-       Cointegration residual
+       37.5.2.1. Cointegration residual
       </a>
      </li>
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#a-borrowers-and-lenders-closed-economy">
-     A “borrowers and lenders” closed economy
+     37.5.3. A “borrowers and lenders” closed economy
     </a>
    </li>
   </ul>
@@ -245,7 +244,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="optimal-savings-ii-lq-techniques">
-<h1><a class="toc-backref" href="#id7"><span class="target" id="index-0"></span>Optimal Savings II: LQ Techniques</a><a class="headerlink" href="#optimal-savings-ii-lq-techniques" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id7"><span class="section-number">37. </span><span class="target" id="index-0"></span>Optimal Savings II: LQ Techniques</a><a class="headerlink" href="#optimal-savings-ii-lq-techniques" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <span id="index-1"></span><p class="topic-title">Contents</p>
 <ul class="simple">
@@ -262,16 +261,16 @@
 </div>
 <p>Co-authored with Chase Coleman.</p>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id8">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8"><span class="section-number">37.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This lecture continues our analysis of the linear-quadratic (LQ) permanent income model of savings and consumption.</p>
-<p>As we saw in our <a class="reference internal" href="perm_income.html"><span class="doc">previous lecture</span></a> on this topic, Robert Hall <span id="id1">[<a class="reference internal" href="../zreferences.html#id79"><span>Hal78</span></a>]</span> used the LQ permanent income model to restrict and interpret intertemporal comovements of nondurable consumption, nonfinancial income, and financial wealth.</p>
+<p>As we saw in our <a class="reference internal" href="perm_income.html"><span class="doc">previous lecture</span></a> on this topic, Robert Hall <span id="id1">[<a class="reference internal" href="../zreferences.html#id79">Hal78</a>]</span> used the LQ permanent income model to restrict and interpret intertemporal comovements of nondurable consumption, nonfinancial income, and financial wealth.</p>
 <p>For example, we saw how the model asserts that for any covariance stationary process for nonfinancial income</p>
 <ul class="simple">
 <li><p>consumption is a random walk</p></li>
 <li><p>financial wealth has a unit root and is cointegrated with consumption</p></li>
 </ul>
 <p>Other applications use the same LQ framework.</p>
-<p>For example, a model isomorphic to the LQ permanent income model has been used by Robert Barro <span id="id2">[<a class="reference internal" href="../zreferences.html#id63"><span>Bar79</span></a>]</span> to interpret intertemporal comovements of a government’s tax collections, its  expenditures net of debt service, and its public debt.</p>
+<p>For example, a model isomorphic to the LQ permanent income model has been used by Robert Barro <span id="id2">[<a class="reference internal" href="../zreferences.html#id63">Bar79</a>]</span> to interpret intertemporal comovements of a government’s tax collections, its  expenditures net of debt service, and its public debt.</p>
 <p>This isomorphism means that in analyzing the LQ permanent income model, we are in effect also analyzing  the Barro tax smoothing model.</p>
 <p>It is just a matter of appropriately relabeling the variables in Hall’s model.</p>
 <p>In this lecture, we’ll</p>
@@ -281,7 +280,7 @@
 <li><p>apply <a class="reference external" href="http://quantecon.org/quantecon-jl">QuantEcon</a>’s <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl">LSS</a> type to characterize statistical features of the consumer’s optimal consumption and borrowing plans</p></li>
 </ul>
 <p>We’ll then use these characterizations to construct a simple model of cross-section wealth and
-consumption dynamics in the spirit of Truman Bewley <span id="id3">[<a class="reference internal" href="../zreferences.html#id29"><span>Bew86</span></a>]</span>.</p>
+consumption dynamics in the spirit of Truman Bewley <span id="id3">[<a class="reference internal" href="../zreferences.html#id29">Bew86</a>]</span>.</p>
 <p>(Later we’ll study other Bewley models—see <a class="reference internal" href="../multi_agent_models/aiyagari.html"><span class="doc">this lecture</span></a>)</p>
 <p>The model will prove useful for illustrating concepts such as</p>
 <ul class="simple">
@@ -298,36 +297,36 @@ consumption dynamics in the spirit of Truman Bewley <span id="id3">[<a class="re
 </div>
 </div>
 <div class="section" id="introduction">
-<h2><a class="toc-backref" href="#id9">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9"><span class="section-number">37.2. </span>Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>Let’s recall the basic features of the model  discussed in  <a class="reference internal" href="perm_income.html"><span class="doc">permanent income model</span></a>.</p>
 <p>Consumer preferences are ordered  by</p>
 <div class="math notranslate nohighlight" id="equation-old1">
-<span class="eqno">(217)<a class="headerlink" href="#equation-old1" title="Permalink to this equation">¶</a></span>\[E_0 \sum_{t=0}^\infty \beta^t u(c_t)\]</div>
+<span class="eqno">(37.1)<a class="headerlink" href="#equation-old1" title="Permalink to this equation">¶</a></span>\[E_0 \sum_{t=0}^\infty \beta^t u(c_t)\]</div>
 <p>where <span class="math notranslate nohighlight">\(u(c) = -(c - \gamma)^2\)</span>.</p>
-<p>The consumer maximizes <a class="reference internal" href="#equation-old1">(217)</a> by choosing a
+<p>The consumer maximizes <a class="reference internal" href="#equation-old1">(37.1)</a> by choosing a
 consumption, borrowing plan <span class="math notranslate nohighlight">\(\{c_t, b_{t+1}\}_{t=0}^\infty\)</span>
 subject to the sequence of budget constraints</p>
 <div class="math notranslate nohighlight" id="equation-old2">
-<span class="eqno">(218)<a class="headerlink" href="#equation-old2" title="Permalink to this equation">¶</a></span>\[c_t + b_t = \frac{1}{1 + r} b_{t+1}  + y_t,
+<span class="eqno">(37.2)<a class="headerlink" href="#equation-old2" title="Permalink to this equation">¶</a></span>\[c_t + b_t = \frac{1}{1 + r} b_{t+1}  + y_t,
 \quad t \geq 0\]</div>
 <p>and the no-Ponzi condition</p>
 <div class="math notranslate nohighlight" id="equation-old42">
-<span class="eqno">(219)<a class="headerlink" href="#equation-old42" title="Permalink to this equation">¶</a></span>\[E_0 \sum_{t=0}^\infty \beta^t b_t^2 &lt; \infty\]</div>
+<span class="eqno">(37.3)<a class="headerlink" href="#equation-old42" title="Permalink to this equation">¶</a></span>\[E_0 \sum_{t=0}^\infty \beta^t b_t^2 &lt; \infty\]</div>
 <p>The interpretation of all variables and parameters are the same as in the
 <a class="reference internal" href="perm_income.html"><span class="doc">previous lecture</span></a>.</p>
 <p>We continue to assume that <span class="math notranslate nohighlight">\((1 + r) \beta = 1\)</span>.</p>
 <p>The dynamics of <span class="math notranslate nohighlight">\(\{y_t\}\)</span> again follow the linear state space model</p>
 <div class="math notranslate nohighlight" id="equation-sprob15ab2">
-<span class="eqno">(220)<a class="headerlink" href="#equation-sprob15ab2" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(37.4)<a class="headerlink" href="#equation-sprob15ab2" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
     z_{t+1} &amp; = A z_t + C w_{t+1}
     \\
     y_t &amp; = U  z_t
 \end{aligned}\end{split}\]</div>
 <p>The restrictions on the shock process and parameters are the same as in our <a class="reference internal" href="perm_income.html"><span class="doc">previous lecture</span></a>.</p>
 <div class="section" id="digression-on-a-useful-isomorphism">
-<h3>Digression on a useful isomorphism<a class="headerlink" href="#digression-on-a-useful-isomorphism" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">37.2.1. </span>Digression on a useful isomorphism<a class="headerlink" href="#digression-on-a-useful-isomorphism" title="Permalink to this headline">¶</a></h3>
 <p>The LQ permanent income model of consumption is mathematically isomorphic with a version of
-Barro’s <span id="id4">[<a class="reference internal" href="../zreferences.html#id63"><span>Bar79</span></a>]</span> model of tax smoothing.</p>
+Barro’s <span id="id4">[<a class="reference internal" href="../zreferences.html#id63">Bar79</a>]</span> model of tax smoothing.</p>
 <p>In the LQ permanent income model</p>
 <ul class="simple">
 <li><p>the household faces an exogenous process of nonfinancial income</p></li>
@@ -350,13 +349,13 @@ Barro’s <span id="id4">[<a class="reference internal" href="../zreferences.htm
 <p>See <a class="reference internal" href="smoothing.html"><span class="doc">consumption and tax smoothing models</span></a> for further exploitation of an isomorphism between consumption and tax smoothing models.</p>
 </div>
 <div class="section" id="a-specification-of-the-nonfinancial-income-process">
-<h3>A specification of the nonfinancial income process<a class="headerlink" href="#a-specification-of-the-nonfinancial-income-process" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">37.2.2. </span>A specification of the nonfinancial income process<a class="headerlink" href="#a-specification-of-the-nonfinancial-income-process" title="Permalink to this headline">¶</a></h3>
 <p>For the purposes of this lecture, let’s assume <span class="math notranslate nohighlight">\(\{y_t\}\)</span> is a second-order univariate autoregressive process:</p>
 <div class="math notranslate nohighlight">
 \[
 y_{t+1} = \alpha + \rho_1 y_t + \rho_2 y_{t-1} + \sigma w_{t+1}
 \]</div>
-<p>We can map this into the linear state space framework in <a class="reference internal" href="#equation-sprob15ab2">(220)</a>, as
+<p>We can map this into the linear state space framework in <a class="reference internal" href="#equation-sprob15ab2">(37.4)</a>, as
 discussed in our lecture on  <a class="reference internal" href="../tools_and_techniques/linear_models.html"><span class="doc">linear models</span></a>.</p>
 <p>To do so we take</p>
 <div class="math notranslate nohighlight">
@@ -385,7 +384,7 @@ U = \begin{bmatrix} 0 &amp; 1 &amp; 0 \end{bmatrix}
 </div>
 </div>
 <div class="section" id="the-lq-approach">
-<h2><a class="toc-backref" href="#id10">The LQ Approach</a><a class="headerlink" href="#the-lq-approach" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10"><span class="section-number">37.3. </span>The LQ Approach</a><a class="headerlink" href="#the-lq-approach" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="perm_income.html#odr-pi"><span class="std std-ref">Previously</span></a> we solved the permanent income model  by solving a system of linear expectational difference equations subject to two boundary conditions.</p>
 <p>Here we solve the same model using <a class="reference internal" href="lqcontrol.html"><span class="doc">LQ methods</span></a> based on dynamic programming.</p>
 <p>After confirming that answers produced by the two methods agree, we apply <a class="reference external" href="http://quantecon.org/quantecon-jl">QuantEcon</a>’s <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl">LSS</a>
@@ -399,7 +398,7 @@ type to illustrate features of the model.</p>
 <li><p>iterations on a Bellman equation  implicitly jointly solve both a  forecasting problem and a control problem</p></li>
 </ul>
 <div class="section" id="the-lq-problem">
-<h3>The LQ Problem<a class="headerlink" href="#the-lq-problem" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">37.3.1. </span>The LQ Problem<a class="headerlink" href="#the-lq-problem" title="Permalink to this headline">¶</a></h3>
 <p>Recall from our <a class="reference internal" href="lqcontrol.html"><span class="doc">lecture on LQ theory</span></a> that the optimal linear regulator problem is to choose
 a decision rule for <span class="math notranslate nohighlight">\(u_t\)</span> to minimize</p>
 <div class="math notranslate nohighlight">
@@ -409,10 +408,10 @@ a decision rule for <span class="math notranslate nohighlight">\(u_t\)</span> to
 \]</div>
 <p>subject to <span class="math notranslate nohighlight">\(x_0\)</span> given and the law of motion</p>
 <div class="math notranslate nohighlight" id="equation-pilqsd">
-<span class="eqno">(221)<a class="headerlink" href="#equation-pilqsd" title="Permalink to this equation">¶</a></span>\[x_{t+1} =  \tilde A x_t+ \tilde B u_t+ \tilde C w_{t+1},
+<span class="eqno">(37.5)<a class="headerlink" href="#equation-pilqsd" title="Permalink to this equation">¶</a></span>\[x_{t+1} =  \tilde A x_t+ \tilde B u_t+ \tilde C w_{t+1},
 \qquad t\geq 0,\]</div>
 <p>where <span class="math notranslate nohighlight">\(w_{t+1}\)</span> is iid with mean vector zero and <span class="math notranslate nohighlight">\(\mathbb E w_t w'_t= I\)</span>.</p>
-<p>The tildes in <span class="math notranslate nohighlight">\(\tilde A, \tilde B, \tilde C\)</span> are to avoid clashing with notation in <a class="reference internal" href="#equation-sprob15ab2">(220)</a>.</p>
+<p>The tildes in <span class="math notranslate nohighlight">\(\tilde A, \tilde B, \tilde C\)</span> are to avoid clashing with notation in <a class="reference internal" href="#equation-sprob15ab2">(37.4)</a>.</p>
 <p>The value function for this problem is <span class="math notranslate nohighlight">\(v(x) = - x'Px - d\)</span>, where</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(P\)</span> is the unique positive semidefinite solution of the <a class="reference internal" href="lqcontrol.html#riccati-equation"><span class="std std-ref">corresponding matrix Riccati equation</span></a>.</p></li>
@@ -422,7 +421,7 @@ a decision rule for <span class="math notranslate nohighlight">\(u_t\)</span> to
 <p>Under an optimal decision rule <span class="math notranslate nohighlight">\(F\)</span>, the state vector <span class="math notranslate nohighlight">\(x_t\)</span> evolves according to <span class="math notranslate nohighlight">\(x_{t+1} = (\tilde A-\tilde BF) x_t + \tilde C w_{t+1}\)</span>.</p>
 </div>
 <div class="section" id="mapping-into-the-lq-framework">
-<h3>Mapping into the LQ framework<a class="headerlink" href="#mapping-into-the-lq-framework" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">37.3.2. </span>Mapping into the LQ framework<a class="headerlink" href="#mapping-into-the-lq-framework" title="Permalink to this headline">¶</a></h3>
 <p>To map into the LQ framework, we’ll use</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -441,7 +440,7 @@ x_t :=
 \end{split}\]</div>
 <p>as the state vector and <span class="math notranslate nohighlight">\(u_t := c_t - \gamma\)</span> as the control.</p>
 <p>With this notation and <span class="math notranslate nohighlight">\(U_\gamma := \begin{bmatrix} \gamma &amp; 0 &amp; 0
-\end{bmatrix}\)</span>, we can write the state dynamics as in <a class="reference internal" href="#equation-pilqsd">(221)</a> when</p>
+\end{bmatrix}\)</span>, we can write the state dynamics as in <a class="reference internal" href="#equation-pilqsd">(37.5)</a> when</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \tilde A :=
@@ -462,14 +461,14 @@ x_t :=
    \end{bmatrix}
    w_{t+1}
 \end{split}\]</div>
-<p>Please confirm for yourself that, with these definitions, the LQ dynamics <a class="reference internal" href="#equation-pilqsd">(221)</a>  match the dynamics of <span class="math notranslate nohighlight">\(z_t\)</span> and <span class="math notranslate nohighlight">\(b_t\)</span> described above.</p>
+<p>Please confirm for yourself that, with these definitions, the LQ dynamics <a class="reference internal" href="#equation-pilqsd">(37.5)</a>  match the dynamics of <span class="math notranslate nohighlight">\(z_t\)</span> and <span class="math notranslate nohighlight">\(b_t\)</span> described above.</p>
 <p>To map utility into the quadratic form <span class="math notranslate nohighlight">\(x_t' R x_t + u_t'Q u_t\)</span> we can set</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(Q := 1\)</span> (remember that we are minimizing) and</p></li>
 <li><p><span class="math notranslate nohighlight">\(R :=\)</span> a <span class="math notranslate nohighlight">\(4 \times 4\)</span> matrix of zeros</p></li>
 </ul>
 <p>However, there is one problem remaining.</p>
-<p>We have no direct way to capture the non-recursive restriction <a class="reference internal" href="#equation-old42">(219)</a>
+<p>We have no direct way to capture the non-recursive restriction <a class="reference internal" href="#equation-old42">(37.3)</a>
 on the debt sequence <span class="math notranslate nohighlight">\(\{b_t\}\)</span> from within the LQ framework.</p>
 <p>To try to enforce it, we’re going to use a trick: put a small penalty on <span class="math notranslate nohighlight">\(b_t^2\)</span> in the criterion function.</p>
 <p>In the present setting, this means adding a small entry <span class="math notranslate nohighlight">\(\epsilon &gt; 0\)</span> in the <span class="math notranslate nohighlight">\((4,4)\)</span> position of <span class="math notranslate nohighlight">\(R\)</span>.</p>
@@ -478,20 +477,20 @@ on the debt sequence <span class="math notranslate nohighlight">\(\{b_t\}\)</spa
 </div>
 </div>
 <div class="section" id="implementation">
-<h2><a class="toc-backref" href="#id11">Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11"><span class="section-number">37.4. </span>Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <p>Let’s write some code to solve the model.</p>
 <p>One comment before we start is that the bliss level of consumption <span class="math notranslate nohighlight">\(\gamma\)</span> in the utility function has no effect on the optimal decision rule.</p>
 <p>We saw this in the previous lecture  <a class="reference internal" href="perm_income.html"><span class="doc">permanent income</span></a>.</p>
 <p>The reason is that it drops out of the Euler equation for consumption.</p>
 <p>In what follows we set it equal to unity.</p>
 <div class="section" id="the-exogenous-noinfinancial-income-process">
-<h3>The exogenous noinfinancial income process<a class="headerlink" href="#the-exogenous-noinfinancial-income-process" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">37.4.1. </span>The exogenous noinfinancial income process<a class="headerlink" href="#the-exogenous-noinfinancial-income-process" title="Permalink to this headline">¶</a></h3>
 <p>First we create the objects for the optimal linear regulator</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">LinearAlgebra</span>
 <span class="k">using</span> <span class="n">Plots</span>
-<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=:</span><span class="n">png</span><span class="p">);</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="ss">:png</span><span class="p">);</span>
 
 <span class="c"># Set parameters</span>
 <span class="n">α</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">ρ1</span><span class="p">,</span> <span class="n">ρ2</span><span class="p">,</span> <span class="n">σ</span> <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span>
@@ -527,7 +526,7 @@ on the debt sequence <span class="math notranslate nohighlight">\(\{b_t\}\)</spa
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Matrix{Float64}:
  0.0  0.0      0.0      0.0
  0.0  5.26316  4.73684  0.0
  0.0  4.73684  5.26316  0.0
@@ -601,7 +600,7 @@ employing an alternative solution method.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Matrix{Float64}:
   1.0      0.0       0.0  0.0
  10.0      0.9       0.0  0.0
   0.0      1.0       0.0  0.0
@@ -612,7 +611,7 @@ employing an alternative solution method.</p>
 </div>
 </div>
 <div class="section" id="comparison-with-the-difference-equation-approach">
-<h3>Comparison with the difference equation approach<a class="headerlink" href="#comparison-with-the-difference-equation-approach" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">37.4.2. </span>Comparison with the difference equation approach<a class="headerlink" href="#comparison-with-the-difference-equation-approach" title="Permalink to this headline">¶</a></h3>
 <p>In our <a class="reference internal" href="perm_income.html"><span class="doc">first lecture</span></a> on the infinite horizon permanent
 income problem we used a different solution method.</p>
 <p>The method was based around</p>
@@ -635,8 +634,8 @@ income problem we used a different solution method.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Use the above formulas to create the optimal policies for b_{t+1} and c_t</span>
-<span class="n">b_pol</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="p">(</span><span class="n">inv</span><span class="p">(</span><span class="nb">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">A</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="nb">I</span><span class="p">)</span>
-<span class="n">c_pol</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">G</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="nb">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">A</span><span class="p">))</span>
+<span class="n">b_pol</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="p">(</span><span class="n">inv</span><span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">A</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">I</span><span class="p">)</span>
+<span class="n">c_pol</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">G</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">A</span><span class="p">))</span>
 
 <span class="c"># Create the A matrix for a LinearStateSpace instance</span>
 <span class="n">A_LSS1</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b_pol</span><span class="p">)</span>
@@ -658,7 +657,7 @@ income problem we used a different solution method.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Matrix{Float64}:
  0.0  0.0  0.0  0.0
  0.0  0.0  0.0  0.0
  0.0  0.0  0.0  0.0
@@ -675,7 +674,7 @@ income problem we used a different solution method.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Matrix{Float64}:
   0.0         0.0         0.0   0.0
   0.0         0.0         0.0   0.0
   0.0         0.0         0.0   0.0
@@ -703,8 +702,8 @@ income problem we used a different solution method.</p>
 </div>
 </div>
 <div class="section" id="two-example-economies">
-<h2><a class="toc-backref" href="#id12">Two Example Economies</a><a class="headerlink" href="#two-example-economies" title="Permalink to this headline">¶</a></h2>
-<p>In the spirit of Bewley models <span id="id5">[<a class="reference internal" href="../zreferences.html#id29"><span>Bew86</span></a>]</span>, we’ll generate panels of consumers.</p>
+<h2><a class="toc-backref" href="#id12"><span class="section-number">37.5. </span>Two Example Economies</a><a class="headerlink" href="#two-example-economies" title="Permalink to this headline">¶</a></h2>
+<p>In the spirit of Bewley models <span id="id5">[<a class="reference internal" href="../zreferences.html#id29">Bew86</a>]</span>, we’ll generate panels of consumers.</p>
 <p>The examples differ only in  the initial states with which we endow the consumers.</p>
 <p>All other parameter values are kept the same in the two examples</p>
 <ul class="simple">
@@ -727,7 +726,7 @@ pronounced transients early in the sample</p>
 <p>Those transient effects will not be present in the second example.</p>
 <p>We use methods affiliated with the <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl">LSS</a> type to simulate the model.</p>
 <div class="section" id="first-set-of-initial-conditions">
-<h3>First set of initial conditions<a class="headerlink" href="#first-set-of-initial-conditions" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">37.5.1. </span>First set of initial conditions<a class="headerlink" href="#first-set-of-initial-conditions" title="Permalink to this headline">¶</a></h3>
 <p>We generate  25 paths of the exogenous non-financial income process and the associated optimal consumption and debt paths.</p>
 <p>In a first set of graphs,  darker lines depict a particular sample path, while the lighter lines describe 24 other  paths.</p>
 <p>A second graph  plots a collection of simulations against the population distribution that we extract from the LSS instance LSS.</p>
@@ -741,7 +740,7 @@ pronounced transients early in the sample</p>
 </div>
 </div>
 <div class="section" id="population-and-sample-panels">
-<h3>Population and sample panels<a class="headerlink" href="#population-and-sample-panels" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">37.5.2. </span>Population and sample panels<a class="headerlink" href="#population-and-sample-panels" title="Permalink to this headline">¶</a></h3>
 <p>In the code below, we use the <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl">LSS</a> type to</p>
 <ul class="simple">
 <li><p>compute and plot population quantiles of the distributions of
@@ -763,7 +762,7 @@ graph as the population distribution</p></li>
     <span class="n">csim</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">npaths</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
     <span class="n">ysim</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">npaths</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">npaths</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">npaths</span>
         <span class="n">sims</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">lss</span><span class="p">,</span><span class="n">T</span><span class="p">)</span>
         <span class="n">bsim</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">sims</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="k">end</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
         <span class="n">csim</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">sims</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
@@ -793,17 +792,17 @@ graph as the population distribution</p></li>
     <span class="n">xvals</span> <span class="o">=</span> <span class="mi">1</span><span class="o">:</span><span class="n">T</span>
 
     <span class="c"># plot consumption and income</span>
-    <span class="n">plt_1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">csim</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;c&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">blue</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">ysim</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">green</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">csim</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">blue</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">ysim</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">green</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plt_1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">csim</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;c&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:blue</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">ysim</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:green</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">csim</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:blue</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">ysim</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:green</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&quot;Nonfinancial Income, Consumption, and Debt&quot;</span><span class="p">,</span>
-          <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;y and c&quot;</span><span class="p">,</span><span class="n">legend</span><span class="o">=:</span><span class="n">bottomright</span><span class="p">)</span>
+          <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;y and c&quot;</span><span class="p">,</span><span class="n">legend</span><span class="o">=</span><span class="ss">:bottomright</span><span class="p">)</span>
 
     <span class="c"># plot debt</span>
-    <span class="n">plt_2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">bsim</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span> <span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;b&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">red</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">bsim</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">red</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;debt&quot;</span><span class="p">,</span><span class="n">legend</span><span class="o">=:</span><span class="n">bottomright</span><span class="p">)</span>
+    <span class="n">plt_2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">bsim</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span> <span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;b&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:red</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">bsim</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:red</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;debt&quot;</span><span class="p">,</span><span class="n">legend</span><span class="o">=</span><span class="ss">:bottomright</span><span class="p">)</span>
 
     <span class="n">plot</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">600</span><span class="p">))</span>
 <span class="k">end</span>
@@ -830,18 +829,18 @@ graph as the population distribution</p></li>
     <span class="n">xvals</span> <span class="o">=</span> <span class="mi">1</span><span class="o">:</span><span class="n">T</span>
 
     <span class="c"># first fanchart</span>
-    <span class="n">plt_1</span><span class="o">=</span><span class="n">plot</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">cons_mean</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">xvals</span><span class="p">,</span> <span class="kt">Array</span><span class="p">(</span><span class="n">csim</span><span class="o">&#39;</span><span class="p">),</span> <span class="n">color</span><span class="o">=:</span><span class="n">black</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">fillrange</span><span class="o">=</span><span class="p">[</span><span class="n">c_perc_95m</span><span class="p">,</span> <span class="n">c_perc_95p</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">blue</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">fillrange</span><span class="o">=</span><span class="p">[</span><span class="n">c_perc_90m</span><span class="p">,</span> <span class="n">c_perc_90p</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">red</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plt_1</span><span class="o">=</span><span class="n">plot</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">cons_mean</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">xvals</span><span class="p">,</span> <span class="kt">Array</span><span class="p">(</span><span class="n">csim</span><span class="o">&#39;</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="ss">:black</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">fillrange</span><span class="o">=</span><span class="p">[</span><span class="n">c_perc_95m</span><span class="p">,</span> <span class="n">c_perc_95p</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:blue</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">fillrange</span><span class="o">=</span><span class="p">[</span><span class="n">c_perc_90m</span><span class="p">,</span> <span class="n">c_perc_90p</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:red</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&quot;Consumption/Debt over time&quot;</span><span class="p">,</span>
           <span class="n">ylim</span><span class="o">=</span><span class="p">(</span><span class="n">cmean</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="n">cmean</span><span class="o">+</span><span class="mi">15</span><span class="p">),</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;consumption&quot;</span><span class="p">)</span>
 
     <span class="c"># second fanchart</span>
-    <span class="n">plt_2</span><span class="o">=</span><span class="n">plot</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">debt_mean</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">xvals</span><span class="p">,</span> <span class="kt">Array</span><span class="p">(</span><span class="n">bsim</span><span class="o">&#39;</span><span class="p">),</span> <span class="n">color</span><span class="o">=:</span><span class="n">black</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">fillrange</span><span class="o">=</span><span class="p">[</span><span class="n">d_perc_95m</span><span class="p">,</span> <span class="n">d_perc_95p</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">blue</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">fillrange</span><span class="o">=</span><span class="p">[</span><span class="n">d_perc_90m</span><span class="p">,</span> <span class="n">d_perc_90p</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">red</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plt_2</span><span class="o">=</span><span class="n">plot</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">debt_mean</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">xvals</span><span class="p">,</span> <span class="kt">Array</span><span class="p">(</span><span class="n">bsim</span><span class="o">&#39;</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="ss">:black</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">fillrange</span><span class="o">=</span><span class="p">[</span><span class="n">d_perc_95m</span><span class="p">,</span> <span class="n">d_perc_95p</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:blue</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">xvals</span><span class="p">,</span> <span class="n">fillrange</span><span class="o">=</span><span class="p">[</span><span class="n">d_perc_90m</span><span class="p">,</span> <span class="n">d_perc_90p</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:red</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;debt&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;t&quot;</span><span class="p">)</span>
 
     <span class="n">plot</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">600</span><span class="p">))</span>
@@ -886,7 +885,7 @@ graph as the population distribution</p></li>
 <p>Because <span class="math notranslate nohighlight">\(y_{-1} = y_{-2} = 0\)</span>, nonfinancial income <span class="math notranslate nohighlight">\(y_t\)</span> starts far below its stationary mean <span class="math notranslate nohighlight">\(\mu_{y, \infty}\)</span> and rises early in each simulation.</p>
 <p>Recall from  the <a class="reference internal" href="perm_income.html"><span class="doc">previous lecture</span></a> that we can represent the optimal decision rule for consumption in terms of the <strong>co-integrating relationship</strong>.</p>
 <div class="math notranslate nohighlight" id="equation-old12">
-<span class="eqno">(222)<a class="headerlink" href="#equation-old12" title="Permalink to this equation">¶</a></span>\[(1-\beta) b_t + c_t = (1-\beta) E_t \sum_{j=0}^\infty \beta^j y_{t+j}\]</div>
+<span class="eqno">(37.6)<a class="headerlink" href="#equation-old12" title="Permalink to this equation">¶</a></span>\[(1-\beta) b_t + c_t = (1-\beta) E_t \sum_{j=0}^\infty \beta^j y_{t+j}\]</div>
 <p>So at time <span class="math notranslate nohighlight">\(0\)</span> we have</p>
 <div class="math notranslate nohighlight">
 \[
@@ -900,8 +899,8 @@ c_0 = (1-\beta) E_0 \sum_{t=0}^\infty \beta^j y_{t}
 <p>All of them accumulate debt in anticipation of rising nonfinancial income.</p>
 <p>They expect their nonfinancial income to rise toward the invariant distribution of income, a consequence of our having started them at <span class="math notranslate nohighlight">\(y_{-1} = y_{-2} = 0\)</span>.</p>
 <div class="section" id="cointegration-residual">
-<h4>Cointegration residual<a class="headerlink" href="#cointegration-residual" title="Permalink to this headline">¶</a></h4>
-<p>The following figure plots realizations of the left side of <a class="reference internal" href="#equation-old12">(222)</a>, which,
+<h4><span class="section-number">37.5.2.1. </span>Cointegration residual<a class="headerlink" href="#cointegration-residual" title="Permalink to this headline">¶</a></h4>
+<p>The following figure plots realizations of the left side of <a class="reference internal" href="#equation-old12">(37.6)</a>, which,
 <a class="reference internal" href="perm_income.html#coint-pi"><span class="std std-ref">as discussed in our last lecture</span></a>, is called the <strong>cointegrating residual</strong>.</p>
 <p>As mentioned above, the right side can be thought of as an
 annuity payment on the expected present value of future income
@@ -922,8 +921,8 @@ behavior early in the sample.</p>
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">cointegration_figure</span><span class="p">(</span><span class="n">bsim</span><span class="p">,</span> <span class="n">csim</span><span class="p">)</span>
     <span class="c"># create figure</span>
-    <span class="n">plot</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="n">bsim</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">+</span> <span class="n">csim</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">color</span><span class="o">=:</span><span class="n">black</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="n">bsim</span><span class="o">&#39;</span> <span class="o">+</span> <span class="n">csim</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=:</span><span class="n">black</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="n">bsim</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">+</span> <span class="n">csim</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="ss">:black</span><span class="p">,</span><span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="n">bsim</span><span class="o">&#39;</span> <span class="o">+</span> <span class="n">csim</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:black</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">.1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Cointegration of Assets and Consumption&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;t&quot;</span><span class="p">)</span>
 <span class="k">end</span>
 
@@ -938,7 +937,7 @@ behavior early in the sample.</p>
 </div>
 </div>
 <div class="section" id="a-borrowers-and-lenders-closed-economy">
-<h3>A “borrowers and lenders” closed economy<a class="headerlink" href="#a-borrowers-and-lenders-closed-economy" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">37.5.3. </span>A “borrowers and lenders” closed economy<a class="headerlink" href="#a-borrowers-and-lenders-closed-economy" title="Permalink to this headline">¶</a></h3>
 <p>When we set <span class="math notranslate nohighlight">\(y_{-1} = y_{-2} = 0\)</span> and <span class="math notranslate nohighlight">\(b_0 =0\)</span> in the
 preceding exercise, we make debt “head north” early in the sample.</p>
 <p>Average debt in the cross-section rises and approaches asymptote.</p>
@@ -949,7 +948,7 @@ anticipation of rising incomes.</p>
 steady state in which there is an excess aggregate supply of risk-free
 loans at a gross interest rate of <span class="math notranslate nohighlight">\(R\)</span>.</p>
 <p>This excess supply is filled by “foreigner lenders” willing to make those loans.</p>
-<p>We can use virtually the same code to rig a “poor man’s Bewley <span id="id6">[<a class="reference internal" href="../zreferences.html#id29"><span>Bew86</span></a>]</span> model” in the following way</p>
+<p>We can use virtually the same code to rig a “poor man’s Bewley <span id="id6">[<a class="reference internal" href="../zreferences.html#id29">Bew86</a>]</span> model” in the following way</p>
 <ul class="simple">
 <li><p>as before, we start everyone at <span class="math notranslate nohighlight">\(b_0 = 0\)</span></p></li>
 <li><p>But instead of starting everyone at <span class="math notranslate nohighlight">\(y_{-1} = y_{-2} = 0\)</span>, we
@@ -1023,16 +1022,16 @@ with each other at a gross risk-free interest rate of
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.5"
+            mode: "julia-1.6"
         },
         kernelOptions: {
-            kernelName: "julia-1.5",
+            kernelName: "julia-1.6",
             path: "./dynamic_programming"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.5'</script>
+    <script>kernelName = 'julia-1.6'</script>
 
                     </div>
                     
@@ -1061,340 +1060,408 @@ with each other at a gross risk-free interest rate of
                 </div>
 
                 <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
-                    <ul class="current nav bd-sidenav nav sidenav_l1">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/getting_started.html">
-   Setting up Your Julia Environment
+   1. Setting up Your Julia Environment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_environment.html">
-   Interacting with Julia
+   2. Interacting with Julia
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
-   Introductory Examples
+   3. Introductory Examples
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
-   Julia Essentials
+   4. Julia Essentials
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
-   Arrays, Tuples, Ranges, and Other Fundamental Types
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
-   Introduction to Types and Generic Programming
+   6. Introduction to Types and Generic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/generic_programming.html">
-   Generic Programming
+   7. Generic Programming
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/general_packages.html">
-   General Purpose Packages
+   8. General Purpose Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/data_statistical_packages.html">
-   Data and Statistics Packages
+   9. Data and Statistics Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
-   Solvers, Optimizers, and Automatic Differentiation
+   10. Solvers, Optimizers, and Automatic Differentiation
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/tools_editors.html">
-   Julia Tools and Editors
+   11. Julia Tools and Editors
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/version_control.html">
-   Git, GitHub, and Version Control
+   12. Git, GitHub, and Version Control
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/testing.html">
-   Packages, Testing, and Continuous Integration
+   13. Packages, Testing, and Continuous Integration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/need_for_speed.html">
-   The Need for Speed
+   14. The Need for Speed
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
-   Linear Algebra
+   15. Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
-   Orthogonal Projections and Their Applications
+   16. Orthogonal Projections and Their Applications
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
-   LLN and CLT
+   17. LLN and CLT
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   Linear State Space Models
+   18. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   Finite Markov Chains
+   19. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   Continuous State Markov Chains
+   20. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   A First Look at the Kalman Filter
+   22. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   Numerical Linear Algebra and Factorizations
+   23. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   Krylov Methods and Matrix Conditioning
+   24. Krylov Methods and Matrix Conditioning
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="short_path.html">
-   Shortest Paths
+   25. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="mccall_model.html">
-   Job Search I: The McCall Search Model
+   26. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="mccall_model_with_separation.html">
-   Job Search II: Search and Separation
+   27. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="wald_friedman.html">
-   A Problem that Stumped Milton Friedman
+   28. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="odu.html">
-   Job Search III: Search with Learning
+   29. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="career.html">
-   Job Search IV: Modeling Career Choice
+   30. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="jv.html">
-   Job Search V: On-the-Job Search
+   31. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="optgrowth.html">
-   Optimal Growth I: The Stochastic Optimal Growth Model
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="coleman_policy_iter.html">
-   Optimal Growth II: Time Iteration
+   33. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="egm_policy_iter.html">
-   Optimal Growth III: The Endogenous Grid Method
+   34. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lqcontrol.html">
-   LQ Dynamic Programming Problems
+   35. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="perm_income.html">
-   Optimal Savings I: The Permanent Income Model
+   36. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   Optimal Savings II: LQ Techniques
+   37. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="smoothing.html">
-   Consumption and Tax Smoothing with Complete and Incomplete Markets
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="ifp.html">
-   Optimal Savings III: Occasionally Binding Constraints
+   39. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="robustness.html">
-   Robustness
+   40. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="discrete_dp.html">
-   Discrete State Dynamic Programming
+   41. Discrete State Dynamic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   Modeling COVID 19 with Differential Equations
+   42. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   Schelling’s Segregation Model
+   44. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   A Lake Model of Employment and Unemployment
+   45. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   Rational Expectations Equilibrium
+   46. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   Markov Perfect Equilibrium
+   47. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   Asset Pricing I: Finite State Models
+   48. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   Asset Pricing II: The Lucas Asset Pricing Model
+   49. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   Asset Pricing III:  Incomplete Markets
+   50. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   Uncertainty Traps
+   51. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   The Aiyagari Model
+   52. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   Default Risk and Income Fluctuations
+   53. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   Globalization and Cycles
+   54. Globalization and Cycles
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   Covariance Stationary Processes
+   55. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   Estimation of Spectra
+   56. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   Additive Functionals
+   57. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   Multiplicative Functionals
+   58. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   Classical Control with Linear Algebra
+   59. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   Classical Filtering With Linear Algebra
+   60. Classical Filtering With Linear Algebra
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   Dynamic Stackelberg Problems
+   61. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   Optimal Taxation in an LQ Economy
+   62. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   Optimal Taxation with State-Contingent Debt
+   63. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   Optimal Taxation without State-Contingent Debt
+   64. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   About these Lectures
+   65. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   Troubleshooting
+   66. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   References
+   67. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   Lecture Status
+   68. Lecture Status
   </a>
  </li>
 </ul>
@@ -1433,7 +1500,7 @@ with each other at a gross risk-free interest rate of
                     <li data-tippy-content="Download Notebook"><a href="_notebooks/dynamic_programming/perm_income_cons.ipynb" download><i data-feather="download-cloud"></i></a></li>
                     <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/perm_income_cons.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
                         <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
-                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/perm_income_cons.ipynb" download><i data-feather="github"></i></a></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/perm_income_cons.md" download><i data-feather="github"></i></a></li>
                 </ul>
 
             </div>

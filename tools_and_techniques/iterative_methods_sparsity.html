@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Krylov Methods and Matrix Conditioning &#8212; Quantitative Economics with Julia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>24. Krylov Methods and Matrix Conditioning &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -26,8 +26,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -42,15 +42,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -58,11 +55,13 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/iterative_methods_sparsity.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Shortest Paths" href="../dynamic_programming/short_path.html" />
-    <link rel="prev" title="Numerical Linear Algebra and Factorizations" href="numerical_linear_algebra.html" />
+    <link rel="next" title="25. Shortest Paths" href="../dynamic_programming/short_path.html" />
+    <link rel="prev" title="23. Numerical Linear Algebra and Factorizations" href="numerical_linear_algebra.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -112,49 +111,49 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   Overview
+   24.1. Overview
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#applications">
-     Applications
+     24.1.1. Applications
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#ill-conditioned-matrices">
-   Ill-Conditioned Matrices
+   24.2. Ill-Conditioned Matrices
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#condition-number">
-     Condition Number
+     24.2.1. Condition Number
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#condition-numbers-and-matrix-operations">
-     Condition Numbers and Matrix Operations
+     24.2.2. Condition Numbers and Matrix Operations
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#why-a-monomial-basis-is-a-bad-idea">
-     Why a Monomial Basis Is a Bad Idea
+     24.2.3. Why a Monomial Basis Is a Bad Idea
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#aside-on-runge-s-phenomenon">
-       Aside on Runge’s Phenomenon
+       24.2.3.1. Aside on Runge’s Phenomenon
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#using-an-orthogonal-polynomial-basis">
-       Using an Orthogonal Polynomial Basis
+       24.2.3.2. Using an Orthogonal Polynomial Basis
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#lessons-for-approximation-and-interpolation">
-       Lessons for Approximation and Interpolation
+       24.2.3.3. Lessons for Approximation and Interpolation
       </a>
      </li>
     </ul>
@@ -163,76 +162,76 @@
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#stationary-iterative-algorithms-for-linear-systems">
-   Stationary Iterative Algorithms for Linear Systems
+   24.3. Stationary Iterative Algorithms for Linear Systems
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#stationary-methods">
-     Stationary Methods
+     24.3.1. Stationary Methods
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#jacobi-iteration">
-     Jacobi Iteration
+     24.3.2. Jacobi Iteration
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#other-stationary-methods">
-     Other Stationary Methods
+     24.3.3. Other Stationary Methods
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#krylov-methods">
-   Krylov Methods
+   24.4. Krylov Methods
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#introduction-to-preconditioning">
-     Introduction to Preconditioning
+     24.4.1. Introduction to Preconditioning
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#methods-for-general-matrices">
-     Methods for General Matrices
+     24.4.2. Methods for General Matrices
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#matrix-free-methods">
-     Matrix-Free Methods
+     24.4.3. Matrix-Free Methods
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#iterative-methods-for-linear-least-squares">
-   Iterative Methods for Linear Least Squares
+   24.5. Iterative Methods for Linear Least Squares
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#iterative-methods-for-eigensystems">
-   Iterative Methods for Eigensystems
+   24.6. Iterative Methods for Eigensystems
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#krylov-methods-for-markov-chain-dynamics">
-   Krylov Methods for Markov-Chain Dynamics
+   24.7. Krylov Methods for Markov-Chain Dynamics
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#matrix-free-infinitesimal-generator">
-     Matrix-free Infinitesimal Generator
+     24.7.1. Matrix-free Infinitesimal Generator
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#solving-a-valuation-problem">
-     Solving a Valuation Problem
+     24.7.2. Solving a Valuation Problem
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#markov-chain-steady-state-and-dynamics">
-     Markov Chain Steady State and Dynamics
+     24.7.3. Markov Chain Steady State and Dynamics
     </a>
    </li>
   </ul>
@@ -287,7 +286,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="krylov-methods-and-matrix-conditioning">
-<h1><a class="toc-backref" href="#id2">Krylov Methods and Matrix Conditioning</a><a class="headerlink" href="#krylov-methods-and-matrix-conditioning" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id2"><span class="section-number">24. </span>Krylov Methods and Matrix Conditioning</a><a class="headerlink" href="#krylov-methods-and-matrix-conditioning" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
@@ -305,7 +304,7 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id3">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3"><span class="section-number">24.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This lecture takes the structure of <a class="reference internal" href="numerical_linear_algebra.html"><span class="doc">numerical methods for linear algebra</span></a> and builds further
 toward working with large, sparse matrices.  In the process, we will examine foundational numerical analysis such as
 ill-conditioned matrices.</p>
@@ -318,7 +317,7 @@ ill-conditioned matrices.</p>
 </div>
 </div>
 <div class="section" id="applications">
-<h3>Applications<a class="headerlink" href="#applications" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.1.1. </span>Applications<a class="headerlink" href="#applications" title="Permalink to this headline">¶</a></h3>
 <p>In this section, we will consider variations on classic problems</p>
 <ol>
 <li><p>Solving a linear system for a square <span class="math notranslate nohighlight">\(A\)</span> where we will maintain throughout that there is a unique solution to</p>
@@ -349,7 +348,7 @@ ill-conditioned matrices.</p>
 </div>
 </div>
 <div class="section" id="ill-conditioned-matrices">
-<h2><a class="toc-backref" href="#id4">Ill-Conditioned Matrices</a><a class="headerlink" href="#ill-conditioned-matrices" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4"><span class="section-number">24.2. </span>Ill-Conditioned Matrices</a><a class="headerlink" href="#ill-conditioned-matrices" title="Permalink to this headline">¶</a></h2>
 <p>An important consideration in numerical linear algebra, and iterative methods in general, is the <a class="reference external" href="https://en.wikipedia.org/wiki/Condition_number#Matrices">condition number</a>.</p>
 <p>An ill-conditioned matrix is one where the basis eigenvectors are close to, but not exactly, collinear.  While this poses no problem on pen and paper,
 or with infinite-precision numerical methods, it is important in practice, for two reasons:</p>
@@ -364,7 +363,7 @@ or with infinite-precision numerical methods, it is important in practice, for t
 <li><p>use a preconditioner for iterative methods, which changes the spectral properties to increase convergence speed</p></li>
 </ul>
 <div class="section" id="condition-number">
-<h3>Condition Number<a class="headerlink" href="#condition-number" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.2.1. </span>Condition Number<a class="headerlink" href="#condition-number" title="Permalink to this headline">¶</a></h3>
 <p>First, let’s define and explore the condition number <span class="math notranslate nohighlight">\(\kappa\)</span></p>
 <div class="math notranslate nohighlight">
 \[
@@ -376,7 +375,7 @@ and should be thought of as roughly equivalent to doing an eigendecomposition.  
 <p>Let’s look at the condition number of a few matrices using the <code class="docutils literal notranslate"><span class="pre">cond</span></code> function (which allows a choice of the norm, but we’ll stick with the default 2-norm).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="nb">I</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">I</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">cond</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -413,7 +412,7 @@ are not careful.  For example, note that the inverse has both extremely large an
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:
   1.0    0.0
  -1.0e6  1.0e6
 </pre></div>
@@ -452,7 +451,7 @@ cond(1000A) = 2.0000000000005e6
 intuition that ill-conditioned matrices typically occur when a matrix has radically different scales (e.g., contains both <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">1E-6</span></code>, or <code class="docutils literal notranslate"><span class="pre">1000</span></code> and <code class="docutils literal notranslate"><span class="pre">1E-3</span></code>).  This can occur frequently with both function approximation and linear least squares.</p>
 </div>
 <div class="section" id="condition-numbers-and-matrix-operations">
-<h3>Condition Numbers and Matrix Operations<a class="headerlink" href="#condition-numbers-and-matrix-operations" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.2.2. </span>Condition Numbers and Matrix Operations<a class="headerlink" href="#condition-numbers-and-matrix-operations" title="Permalink to this headline">¶</a></h3>
 <p>Multiplying a matrix by a constant does not change the condition number.  What about other operations?</p>
 <p>For this example, we see that the inverse has the same condition number (though this will not always be the case).</p>
 <div class="cell docutils container">
@@ -474,14 +473,14 @@ even more ill-conditioned.</p>
 <p>This comes up frequently when calculating the product of a matrix and its transpose (e.g., forming the covariance matrix).  A classic example is the <a class="reference external" href="https://link.springer.com/article/10.1007%2FBF01386022">Läuchli matrix</a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">lauchli</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">ϵ</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">&#39;</span><span class="p">;</span> <span class="n">ϵ</span> <span class="o">*</span> <span class="nb">I</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span><span class="o">&#39;</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">lauchli</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">ϵ</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="o">&#39;</span><span class="p">;</span> <span class="n">ϵ</span> <span class="o">*</span> <span class="n">I</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span><span class="o">&#39;</span>
 <span class="n">ϵ</span> <span class="o">=</span> <span class="mf">1E-8</span>
 <span class="n">L</span> <span class="o">=</span> <span class="n">lauchli</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">ϵ</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="kt">Matrix</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×4 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×4 Matrix{Float64}:
  1.0  1.0e-8  0.0     0.0
  1.0  0.0     1.0e-8  0.0
  1.0  0.0     0.0     1.0e-8
@@ -499,9 +498,10 @@ even more ill-conditioned.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>cond(L) = 1.732050807568878e8
+cond(L&#39; * L) = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>cond(L&#39; * L) = 2.8104131146758097e32
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.8104131146758097e32
 </pre></div>
 </div>
 </div>
@@ -517,7 +517,7 @@ requires calculations of the eigenvalues of the covariance matrix</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Array{Complex{Float64},1}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{ComplexF64}:
                    0.0 + 0.0im
  4.2146848510894035e-8 + 0.0im
     1.7320508075688772 + 0.0im
@@ -533,7 +533,7 @@ requires calculations of the eigenvalues of the covariance matrix</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Array{Float64,1}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
  1.0e-8
  1.0e-8
  1.7320508075688772
@@ -550,7 +550,7 @@ and lets us clearly distinguish from zero</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Array{Float64,1}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
  9.999999999999997e-9
  9.999999999999999e-9
  1.7320508075688774
@@ -578,7 +578,7 @@ and lets us clearly distinguish from zero</p>
 </div>
 </div>
 <div class="section" id="why-a-monomial-basis-is-a-bad-idea">
-<h3>Why a Monomial Basis Is a Bad Idea<a class="headerlink" href="#why-a-monomial-basis-is-a-bad-idea" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.2.3. </span>Why a Monomial Basis Is a Bad Idea<a class="headerlink" href="#why-a-monomial-basis-is-a-bad-idea" title="Permalink to this headline">¶</a></h3>
 <p>A classic example of poorly conditioned matrices is using a monomial basis of a polynomial with interpolation.</p>
 <p>Take a grid of points, <span class="math notranslate nohighlight">\(x_0, \ldots x_N\)</span> and values <span class="math notranslate nohighlight">\(y_0, \ldots y_N\)</span> where we want to calculate the
 interpolating polynomial.</p>
@@ -617,7 +617,7 @@ A c = y
 <span class="n">x</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c"># generate some data to interpolate</span>
 
-<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="kp">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="k">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="k">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
 <span class="n">A_inv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 <span class="n">c</span> <span class="o">=</span> <span class="n">A_inv</span> <span class="o">*</span> <span class="n">y</span>
 <span class="n">norm</span><span class="p">(</span><span class="n">A</span> <span class="o">*</span> <span class="n">c</span> <span class="o">-</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">Inf</span><span class="p">)</span>
@@ -656,7 +656,7 @@ interpolation?</p>
 <span class="n">x</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c"># generate some data to interpolate</span>
 
-<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="kp">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="k">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="k">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
 <span class="n">A_inv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 <span class="n">c</span> <span class="o">=</span> <span class="n">A_inv</span> <span class="o">*</span> <span class="n">y</span>
 <span class="n">norm</span><span class="p">(</span><span class="n">A</span> <span class="o">*</span> <span class="n">c</span> <span class="o">-</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">Inf</span><span class="p">)</span>
@@ -679,7 +679,7 @@ introduced an error of about <code class="docutils literal notranslate"><span cl
 <span class="n">x</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c"># generate some data to interpolate</span>
 
-<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="kp">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="k">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="k">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
 <span class="n">A_inv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 <span class="n">c</span> <span class="o">=</span> <span class="n">A_inv</span> <span class="o">*</span> <span class="n">y</span>
 <span class="n">norm</span><span class="p">(</span><span class="n">A</span> <span class="o">*</span> <span class="n">c</span> <span class="o">-</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">Inf</span><span class="p">)</span>
@@ -687,7 +687,7 @@ introduced an error of about <code class="docutils literal notranslate"><span cl
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>35556.55954673688
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>35556.56219371484
 </pre></div>
 </div>
 </div>
@@ -716,7 +716,7 @@ error drops dramatically if we solve it as a linear system</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.4651748137548566e-10
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5.084075382910669e-10
 </pre></div>
 </div>
 </div>
@@ -726,7 +726,7 @@ then the error will become non-trivial eventually - even without taking the inve
 <p>The heart of the issue is that the monomial basis leads to a <a class="reference external" href="https://en.wikipedia.org/wiki/Vandermonde_matrix">Vandermonde matrix</a>, which
 is especially ill-conditioned.</p>
 <div class="section" id="aside-on-runge-s-phenomenon">
-<h4>Aside on Runge’s Phenomenon<a class="headerlink" href="#aside-on-runge-s-phenomenon" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">24.2.3.1. </span>Aside on Runge’s Phenomenon<a class="headerlink" href="#aside-on-runge-s-phenomenon" title="Permalink to this headline">¶</a></h4>
 <p>The monomial basis is also a good opportunity to look at a separate type of error due to <a class="reference external" href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge’s Phenomenon</a>.    It is an important
 issue in approximation theory, albeit not one driven by numerical approximation errors.</p>
 <p>It turns out that using a uniform grid of points is, in general, the worst possible choice of interpolation nodes for a polynomial approximation.  This phenomenon can be seen with the interpolation of the seemingly innocuous Runge’s function, <span class="math notranslate nohighlight">\(g(x) = \frac{1}{1 + 25 x^2}\)</span>.</p>
@@ -739,7 +739,7 @@ issue in approximation theory, albeit not one driven by numerical approximation 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Plots</span>
-<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=:</span><span class="n">png</span><span class="p">);</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="ss">:png</span><span class="p">);</span>
 
 <span class="n">N_display</span> <span class="o">=</span> <span class="mi">100</span>
 <span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">25</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
@@ -750,11 +750,11 @@ issue in approximation theory, albeit not one driven by numerical approximation 
 <span class="n">N</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">A_5</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="kp">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
+<span class="n">A_5</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="k">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="k">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
 <span class="n">c_5</span> <span class="o">=</span> <span class="n">A_5</span> <span class="o">\</span> <span class="n">y</span>
 
 <span class="c"># use the coefficients to evaluate on x_display grid</span>
-<span class="n">B_5</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="kp">in</span> <span class="n">x_display</span><span class="p">,</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>   <span class="c"># calculate monomials for display grid</span>
+<span class="n">B_5</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="k">in</span> <span class="n">x_display</span><span class="p">,</span> <span class="n">n</span> <span class="k">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>   <span class="c"># calculate monomials for display grid</span>
 <span class="n">y_5</span> <span class="o">=</span> <span class="n">B_5</span> <span class="o">*</span> <span class="n">c_5</span>  <span class="c"># calculates for each in x_display_grid</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_5</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;P_5(x)&quot;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_display</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;g(x)&quot;</span><span class="p">)</span>
@@ -774,11 +774,11 @@ of grid points and the order of the polynomial will lead to better approximation
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">9</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="n">A_9</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="kp">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
+<span class="n">A_9</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="k">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="k">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
 <span class="n">c_9</span> <span class="o">=</span> <span class="n">A_9</span> <span class="o">\</span> <span class="n">y</span>
 
 <span class="c"># use the coefficients to evaluate on x_display grid</span>
-<span class="n">B_9</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="kp">in</span> <span class="n">x_display</span><span class="p">,</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>   <span class="c"># calculate monomials for display grid</span>
+<span class="n">B_9</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="k">in</span> <span class="n">x_display</span><span class="p">,</span> <span class="n">n</span> <span class="k">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>   <span class="c"># calculate monomials for display grid</span>
 <span class="n">y_9</span> <span class="o">=</span> <span class="n">B_9</span> <span class="o">*</span> <span class="n">c_9</span>  <span class="c"># calculates for each in x_display_grid</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_9</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;P_9(x)&quot;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_display</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;g(x)&quot;</span><span class="p">)</span>
@@ -793,7 +793,7 @@ of grid points and the order of the polynomial will lead to better approximation
 globally increase the quality of the approximation.</p>
 </div>
 <div class="section" id="using-an-orthogonal-polynomial-basis">
-<h4>Using an Orthogonal Polynomial Basis<a class="headerlink" href="#using-an-orthogonal-polynomial-basis" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">24.2.3.2. </span>Using an Orthogonal Polynomial Basis<a class="headerlink" href="#using-an-orthogonal-polynomial-basis" title="Permalink to this headline">¶</a></h4>
 <p>We can minimize the numerical problems of an ill-conditioned basis matrix by choosing a different basis for the polynomials.</p>
 <p>For example, <a class="reference external" href="https://en.wikipedia.org/wiki/Chebyshev_polynomials">Chebyshev polynomials</a> form an orthonormal basis under an appropriate inner product, and we can form precise high-order approximations, with very little numerical error</p>
 <div class="cell docutils container">
@@ -811,20 +811,16 @@ globally increase the quality of the approximation.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>┌ Info: Precompiling ApproxFun [28f2ccd6-bb30-5033-b560-165f7b14dc2f]
-└ @ Base loading.jl:1278
-</pre></div>
-</div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(g_approx.(x) - g.(x), Inf) = 4.440892098500626e-16
 </pre></div>
 </div>
-<img alt="../_images/iterative_methods_sparsity_43_2.png" src="../_images/iterative_methods_sparsity_43_2.png" />
+<img alt="../_images/iterative_methods_sparsity_43_1.png" src="../_images/iterative_methods_sparsity_43_1.png" />
 </div>
 </div>
 <p>Besides the use of a different polynomial basis, we are approximating at different nodes (i.e., <a class="reference external" href="https://en.wikipedia.org/wiki/Chebyshev_nodes">Chebyshev nodes</a>).  Interpolation with Chebyshev polynomials at the Chebyshev nodes ends up minimizing (but not eliminating) Runge’s Phenomenon.</p>
 </div>
 <div class="section" id="lessons-for-approximation-and-interpolation">
-<h4>Lessons for Approximation and Interpolation<a class="headerlink" href="#lessons-for-approximation-and-interpolation" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">24.2.3.3. </span>Lessons for Approximation and Interpolation<a class="headerlink" href="#lessons-for-approximation-and-interpolation" title="Permalink to this headline">¶</a></h4>
 <p>To summarize:</p>
 <ol class="simple">
 <li><p>Check the condition number on systems you suspect might be ill-conditioned (based on intuition of collinearity).</p></li>
@@ -837,7 +833,7 @@ globally increase the quality of the approximation.</p>
 </div>
 </div>
 <div class="section" id="stationary-iterative-algorithms-for-linear-systems">
-<h2><a class="toc-backref" href="#id5">Stationary Iterative Algorithms for Linear Systems</a><a class="headerlink" href="#stationary-iterative-algorithms-for-linear-systems" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5"><span class="section-number">24.3. </span>Stationary Iterative Algorithms for Linear Systems</a><a class="headerlink" href="#stationary-iterative-algorithms-for-linear-systems" title="Permalink to this headline">¶</a></h2>
 <p>As before, consider solving the equation</p>
 <div class="math notranslate nohighlight">
 \[
@@ -867,19 +863,19 @@ discount rate <span class="math notranslate nohighlight">\(\rho\)</span>, and th
 <p>With the sizes and types of matrices here, iterative methods are inappropriate in practice, but they will help us understand
 the characteristics of convergence and how they relate to matrix conditioning.</p>
 <div class="section" id="stationary-methods">
-<h3>Stationary Methods<a class="headerlink" href="#stationary-methods" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.3.1. </span>Stationary Methods<a class="headerlink" href="#stationary-methods" title="Permalink to this headline">¶</a></h3>
 <p>First, we will solve with a direct method, which will give the solution to machine precision.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">IterativeSolvers</span><span class="p">,</span> <span class="n">Statistics</span>
 <span class="n">α</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="o">-</span><span class="n">α</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="o">-</span><span class="n">α</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">Tridiagonal</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="o">-</span><span class="n">α</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="o">-</span><span class="n">α</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
 <span class="n">r</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
 <span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.05</span>
 
-<span class="n">A</span> <span class="o">=</span> <span class="n">ρ</span> <span class="o">*</span> <span class="nb">I</span> <span class="o">-</span> <span class="n">Q</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">ρ</span> <span class="o">*</span> <span class="n">I</span> <span class="o">-</span> <span class="n">Q</span>
 <span class="n">v_direct</span> <span class="o">=</span> <span class="n">A</span> <span class="o">\</span> <span class="n">r</span>
 <span class="n">mean</span><span class="p">(</span><span class="n">v_direct</span><span class="p">)</span>
 </pre></div>
@@ -905,7 +901,7 @@ it is weakly diagonally dominant.</p>
 <p>However, notice that when <span class="math notranslate nohighlight">\(\rho &gt; 0\)</span>, and since the diagonal of <span class="math notranslate nohighlight">\(Q\)</span> is negative,  <span class="math notranslate nohighlight">\(A = ρ I - Q\)</span> makes the matrix strictly diagonally dominant.</p>
 </div>
 <div class="section" id="jacobi-iteration">
-<h3>Jacobi Iteration<a class="headerlink" href="#jacobi-iteration" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.3.2. </span>Jacobi Iteration<a class="headerlink" href="#jacobi-iteration" title="Permalink to this headline">¶</a></h3>
 <p>For matrices that are <strong>strictly diagonally dominant</strong>, you can prove that a simple decomposition and iteration procedure
 will converge.</p>
 <p>To solve a system <span class="math notranslate nohighlight">\(A x = b\)</span>, split the matrix <span class="math notranslate nohighlight">\(A\)</span> into its diagonal and off-diagonal elements.  That is,</p>
@@ -969,7 +965,7 @@ x^{k+1} = D^{-1}(b - R x^k)
 <p>With this, after 40 iterations we see that the error is in the order of <code class="docutils literal notranslate"><span class="pre">1E-2</span></code></p>
 </div>
 <div class="section" id="other-stationary-methods">
-<h3>Other Stationary Methods<a class="headerlink" href="#other-stationary-methods" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.3.3. </span>Other Stationary Methods<a class="headerlink" href="#other-stationary-methods" title="Permalink to this headline">¶</a></h3>
 <p>In practice, there are many methods that are better than Jacobi iteration. For example <a class="reference external" href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method">Gauss-Siedel</a>., which
 splits the matrix <span class="math notranslate nohighlight">\(A = L + U\)</span> into a lower-triangular matrix <span class="math notranslate nohighlight">\(L\)</span> and an upper-triangular matrix <span class="math notranslate nohighlight">\(U\)</span> without the diagonal.</p>
 <p>The iteration becomes</p>
@@ -1020,7 +1016,7 @@ L x^{k+1} = b - U x^k
 </div>
 </div>
 <div class="section" id="krylov-methods">
-<h2><a class="toc-backref" href="#id6">Krylov Methods</a><a class="headerlink" href="#krylov-methods" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6"><span class="section-number">24.4. </span>Krylov Methods</a><a class="headerlink" href="#krylov-methods" title="Permalink to this headline">¶</a></h2>
 <p>A more commonly used set of iterative methods is based on <a class="reference external" href="https://en.wikipedia.org/wiki/Krylov_subspace">Krylov subspaces</a>, which involve iterating the <span class="math notranslate nohighlight">\(A^k x\)</span> matrix-vector product, and orthogonalizing to ensure that the resulting iteration is not too collinear.</p>
 <p>The prototypical Krylov method is <a class="reference external" href="https://en.wikipedia.org/wiki/Conjugate_gradient_method">Conjugate Gradient</a>, which requires the <span class="math notranslate nohighlight">\(A\)</span> matrix to be
 symmetric and positive definite.</p>
@@ -1041,7 +1037,7 @@ symmetric and positive definite.</p>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>isposdef(A) = true
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.579158518330181e10
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.5791583348070595e10
 </pre></div>
 </div>
 </div>
@@ -1051,7 +1047,7 @@ symmetric and positive definite.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="n">sol</span> <span class="o">=</span> <span class="n">cg!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">cg!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">sol</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -1063,7 +1059,7 @@ symmetric and positive definite.</p>
 </div>
 </div>
 <div class="section" id="introduction-to-preconditioning">
-<h3>Introduction to Preconditioning<a class="headerlink" href="#introduction-to-preconditioning" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.4.1. </span>Introduction to Preconditioning<a class="headerlink" href="#introduction-to-preconditioning" title="Permalink to this headline">¶</a></h3>
 <p>If you tell a numerical analyst that you are using direct methods, their first question may be, “which factorization?” But if you tell them you
 are using an iterative method, they may ask “which preconditioner?”.</p>
 <p>As discussed at the beginning of the lecture, the spectral properties of matrices determine the rate of convergence
@@ -1087,17 +1083,15 @@ resulting system and they lower the condition number of the matrix.  To see this
 <p>The diagonal precondition is simply <code class="docutils literal notranslate"><span class="pre">P</span> <span class="pre">=</span> <span class="pre">Diagonal(A)</span></code>.  Depending on the matrix, this can change the condition number a little or a lot.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">AP</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="kt">Diagonal</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">AP</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="n">Diagonal</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
 <span class="nd">@show</span> <span class="n">cond</span><span class="p">(</span><span class="kt">Matrix</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
 <span class="nd">@show</span> <span class="n">cond</span><span class="p">(</span><span class="kt">Matrix</span><span class="p">(</span><span class="n">AP</span><span class="p">));</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>cond(Matrix(A)) = 189186.6473377194
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>cond(Matrix(AP)) = 175174.5909532281
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>cond(Matrix(A)) = 189186.64733797332
+cond(Matrix(AP)) = 175174.59095299678
 </pre></div>
 </div>
 </div>
@@ -1108,16 +1102,12 @@ resulting system and they lower the condition number of the matrix.  To see this
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Preconditioners</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 <span class="n">P</span> <span class="o">=</span> <span class="n">DiagonalPreconditioner</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
-<span class="n">sol</span> <span class="o">=</span> <span class="n">cg!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">cg!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">sol</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>┌ Info: Precompiling Preconditioners [af69fa37-3177-5a40-98ee-561f696e4fcd]
-└ @ Base loading.jl:1278
-</pre></div>
-</div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 173 iterations.
 </pre></div>
 </div>
@@ -1129,16 +1119,12 @@ resulting system and they lower the condition number of the matrix.  To see this
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">IncompleteLU</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 <span class="n">P</span> <span class="o">=</span> <span class="n">ilu</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">τ</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
-<span class="n">sol</span> <span class="o">=</span> <span class="n">cg!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">Pl</span> <span class="o">=</span> <span class="n">P</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">cg!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">Pl</span> <span class="o">=</span> <span class="n">P</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">sol</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>┌ Info: Precompiling IncompleteLU [40713840-3770-5561-ab4c-a76e7d0d7895]
-└ @ Base loading.jl:1278
-</pre></div>
-</div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 88 iterations.
 </pre></div>
 </div>
@@ -1150,8 +1136,8 @@ resulting system and they lower the condition number of the matrix.  To see this
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="n">P</span> <span class="o">=</span> <span class="n">AMGPreconditioner</span><span class="p">{</span><span class="n">RugeStuben</span><span class="p">}(</span><span class="n">A</span><span class="p">)</span>
-<span class="n">sol</span> <span class="o">=</span> <span class="n">cg!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">Pl</span> <span class="o">=</span> <span class="n">P</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">P</span> <span class="o">=</span> <span class="kt">AMGPreconditioner</span><span class="p">{</span><span class="kt">RugeStuben</span><span class="p">}(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">cg!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">Pl</span> <span class="o">=</span> <span class="n">P</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">sol</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
 </pre></div>
 </div>
@@ -1166,7 +1152,7 @@ resulting system and they lower the condition number of the matrix.  To see this
 is frequently not implemented since such methods are not often used for the complete solution.</p>
 </div>
 <div class="section" id="methods-for-general-matrices">
-<h3>Methods for General Matrices<a class="headerlink" href="#methods-for-general-matrices" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.4.2. </span>Methods for General Matrices<a class="headerlink" href="#methods-for-general-matrices" title="Permalink to this headline">¶</a></h3>
 <p>There are many algorithms which exploit matrix structure (e.g., the conjugate gradient method for positive-definite matrices, and  MINRES for matrices that are only symmetric/Hermitian).</p>
 <p>On the other hand, if there is no structure to a sparse matrix, then GMRES is a good approach.</p>
 <p>To experiment with these methods, we will use our ill-conditioned interpolation problem with a monomial basis.</p>
@@ -1178,9 +1164,9 @@ is frequently not implemented since such methods are not often used for the comp
 <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c"># generate some data to interpolate</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">([</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="kp">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">])</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">([</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="k">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="k">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">])</span>
 <span class="n">c</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>  <span class="c"># initial guess required for iterative solutions</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;cond(A) = </span><span class="si">$</span><span class="p">(</span><span class="n">cond</span><span class="p">(</span><span class="kt">Matrix</span><span class="p">(</span><span class="n">A</span><span class="p">)))</span><span class="s">, </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="k">end</span><span class="p">])</span><span class="s"> Norm error </span><span class="si">$</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="o">*</span><span class="n">c</span> <span class="o">-</span> <span class="n">y</span><span class="p">,</span> <span class="nb">Inf</span><span class="p">))</span><span class="s">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1198,10 +1184,10 @@ is frequently not implemented since such methods are not often used for the comp
 <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c"># generate some data to interpolate</span>
-<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="kp">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="kp">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
+<span class="n">A</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="k">in</span> <span class="n">x</span><span class="p">,</span> <span class="n">n</span> <span class="k">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>
 <span class="n">P</span> <span class="o">=</span> <span class="n">ilu</span><span class="p">(</span><span class="n">sparse</span><span class="p">(</span><span class="n">A</span><span class="p">),</span> <span class="n">τ</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">)</span>
 <span class="n">c</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>  <span class="c"># initial guess required for iterative solutions</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Pl</span> <span class="o">=</span> <span class="n">P</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="kc">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Pl</span> <span class="o">=</span> <span class="n">P</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="k">end</span><span class="p">])</span><span class="s"> Norm error </span><span class="si">$</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="o">*</span><span class="n">c</span> <span class="o">-</span> <span class="n">y</span><span class="p">,</span> <span class="nb">Inf</span><span class="p">))</span><span class="s">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1216,20 +1202,20 @@ is frequently not implemented since such methods are not often used for the comp
 however, to consider the cost of the preconditioning process in your problem.</p>
 </div>
 <div class="section" id="matrix-free-methods">
-<h3>Matrix-Free Methods<a class="headerlink" href="#matrix-free-methods" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.4.3. </span>Matrix-Free Methods<a class="headerlink" href="#matrix-free-methods" title="Permalink to this headline">¶</a></h3>
 <p>First, lets use a Krylov method to solve our simple valuation problem</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">α</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="o">-</span><span class="n">α</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="o">-</span><span class="n">α</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">Tridiagonal</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="o">-</span><span class="n">α</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="o">-</span><span class="n">α</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="n">α</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
 <span class="n">r</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="n">N</span><span class="p">)</span>
 <span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.05</span>
 
-<span class="n">A</span> <span class="o">=</span> <span class="n">ρ</span> <span class="o">*</span> <span class="nb">I</span> <span class="o">-</span> <span class="n">Q</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">ρ</span> <span class="o">*</span> <span class="n">I</span> <span class="o">-</span> <span class="n">Q</span>
 <span class="n">v</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">true</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span>
 <span class="n">v_sol</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="k">end</span><span class="p">])</span><span class="s">&quot;</span><span class="p">)</span>
 </pre></div>
@@ -1256,7 +1242,7 @@ A x = \begin{bmatrix} (\rho + \alpha) x_1 - \alpha x_2\\
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A_mul</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="n">ρ</span> <span class="o">+</span> <span class="n">α</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
-             <span class="p">[</span><span class="o">-</span><span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">ρ</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">α</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>  <span class="c"># comprehension</span>
+             <span class="p">[</span><span class="o">-</span><span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">ρ</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">α</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>  <span class="c"># comprehension</span>
              <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">ρ</span> <span class="o">+</span> <span class="n">α</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="p">]]</span>
 
 <span class="n">x</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
@@ -1308,11 +1294,16 @@ package is <a class="reference external" href="https://github.com/Jutho/LinearMa
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(A_map * x - A * x) = 0.0
 norm(y - A * x) = 0.0
-size(A_map) = (100, 100)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(Matrix(A_map) - A) = 0.0
-nnz(sparse(A_map)) = 298
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>size(A_map) = (100, 100)
+norm(Matrix(A_map) - A) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>nnz(sparse(A_map)) = 298
 </pre></div>
 </div>
 </div>
@@ -1337,7 +1328,7 @@ unnecessarily constrained to be <code class="docutils literal notranslate"><span
 <p>For example, the Krylov methods in <code class="docutils literal notranslate"><span class="pre">IterativeSolvers.jl</span></code> are written for generic left-multiplication</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">gmres</span><span class="p">(</span><span class="n">A_map</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>  <span class="c"># Krylov method using the matrix-free type</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">gmres</span><span class="p">(</span><span class="n">A_map</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>  <span class="c"># Krylov method using the matrix-free type</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="k">end</span><span class="p">])</span><span class="s">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1355,26 +1346,27 @@ we would use the in-place <code class="docutils literal notranslate"><span class
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">A_mul!</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>  <span class="c"># in-place version</span>
     <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ρ</span> <span class="o">+</span> <span class="n">α</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span>
         <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">ρ</span> <span class="o">+</span> <span class="mi">2</span><span class="n">α</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span><span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">end</span>
     <span class="n">y</span><span class="p">[</span><span class="k">end</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">ρ</span> <span class="o">+</span> <span class="n">α</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">y</span>
 <span class="k">end</span>
-<span class="n">A_map_2</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">(</span><span class="n">A_mul!</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>  <span class="c"># ismutating == in-place</span>
+<span class="n">A_map_2</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">(</span><span class="n">A_mul!</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>  <span class="c"># ismutating == in-place</span>
 
 <span class="n">v</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">norm</span><span class="p">(</span><span class="n">A_map_2</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="n">A</span> <span class="o">*</span> <span class="n">v</span><span class="p">)</span>  <span class="c"># can still call with * and have it allocate</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">A_map_2</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">true</span><span class="p">)</span>  <span class="c"># in-place gmres</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">A_map_2</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span>  <span class="c"># in-place gmres</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="k">end</span><span class="p">])</span><span class="s">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(A_map_2 * v - A * v) = 0.0
+Converged after 20 iterations.
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 20 iterations.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>
@@ -1384,14 +1376,14 @@ it would be for matrices <span class="math notranslate nohighlight">\(A, B\)</sp
 <p>For example, take <span class="math notranslate nohighlight">\(2 A x + x = (2 A + I) x \equiv B x\)</span> as a new linear map,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">A_map</span>  <span class="o">+</span> <span class="nb">I</span>  <span class="c"># composite linear operator</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">A_map</span>  <span class="o">+</span> <span class="n">I</span>  <span class="c"># composite linear operator</span>
 <span class="n">B</span> <span class="o">*</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>  <span class="c"># left-multiply works with the composition</span>
 <span class="n">typeof</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>LinearMaps.LinearCombination{Float64,Tuple{LinearMaps.ScaledMap{Float64,Float64,LinearMaps.FunctionMap{Float64,typeof(A_mul),Nothing}},LinearMaps.UniformScalingMap{Bool}}}
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>LinearMaps.LinearCombination{Float64, Tuple{LinearMaps.ScaledMap{Float64, Float64, LinearMaps.FunctionMap{Float64, typeof(A_mul), Nothing}}, LinearMaps.UniformScalingMap{Bool}}}
 </pre></div>
 </div>
 </div>
@@ -1403,12 +1395,12 @@ rather than by creating the full <span class="math notranslate nohighlight">\(A 
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Q_mul</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span> <span class="o">-</span><span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span>     <span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
-            <span class="p">[</span><span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">α</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>  <span class="c"># comprehension</span>
+            <span class="p">[</span><span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">α</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>  <span class="c"># comprehension</span>
             <span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="p">];]</span>
 <span class="n">Q_map</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">(</span><span class="n">Q_mul</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
-<span class="n">A_composed</span> <span class="o">=</span> <span class="n">ρ</span> <span class="o">*</span> <span class="nb">I</span> <span class="o">-</span> <span class="n">Q_map</span>   <span class="c"># map composition, performs no calculations</span>
+<span class="n">A_composed</span> <span class="o">=</span> <span class="n">ρ</span> <span class="o">*</span> <span class="n">I</span> <span class="o">-</span> <span class="n">Q_map</span>   <span class="c"># map composition, performs no calculations</span>
 <span class="nd">@show</span> <span class="n">norm</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">sparse</span><span class="p">(</span><span class="n">A_composed</span><span class="p">))</span>  <span class="c"># test produces the same matrix</span>
-<span class="n">gmres</span><span class="p">(</span><span class="n">A_composed</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">true</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">gmres</span><span class="p">(</span><span class="n">A_composed</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -1426,7 +1418,7 @@ of linearity.  The <code class="docutils literal notranslate"><span class="pre">
 </div>
 </div>
 <div class="section" id="iterative-methods-for-linear-least-squares">
-<h2><a class="toc-backref" href="#id7">Iterative Methods for Linear Least Squares</a><a class="headerlink" href="#iterative-methods-for-linear-least-squares" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7"><span class="section-number">24.5. </span>Iterative Methods for Linear Least Squares</a><a class="headerlink" href="#iterative-methods-for-linear-least-squares" title="Permalink to this headline">¶</a></h2>
 <p>In theory, the solution to the least-squares problem, <span class="math notranslate nohighlight">\(\min_x \| Ax -b \|^2\)</span>, is simply the solution to the normal equations <span class="math notranslate nohighlight">\((A'A) x  = A'b\)</span>.</p>
 <p>We saw, however, that in practice, direct methods use a QR decomposition - in part because an ill-conditioned matrix <span class="math notranslate nohighlight">\(A\)</span> becomes even worse when <span class="math notranslate nohighlight">\(A' A\)</span> is formed.</p>
 <p>For large problems, we can also consider Krylov methods for solving the linear least-squares problem.  One formulation is the <a class="reference external" href="https://stanford.edu/group/SOL/software/lsmr/LSMR-SISC-2011.pdf">LSMR</a> algorithm,
@@ -1448,7 +1440,7 @@ damping parameter, the normalized equations would become <span class="math notra
 <span class="n">X</span> <span class="o">=</span> <span class="n">sprand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">β</span> <span class="o">+</span> <span class="n">σ</span> <span class="o">*</span> <span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 <span class="n">β_direct</span> <span class="o">=</span> <span class="n">X</span> <span class="o">\</span> <span class="n">y</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">lsmr</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">lsmr</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 <span class="n">β_lsmr</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="nd">@show</span> <span class="n">norm</span><span class="p">(</span><span class="n">β_direct</span> <span class="o">-</span> <span class="n">β_lsmr</span><span class="p">)</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="k">end</span><span class="p">])</span><span class="s">&quot;</span><span class="p">)</span>
@@ -1456,7 +1448,7 @@ damping parameter, the normalized equations would become <span class="math notra
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(β_direct - β_lsmr) = 9.144972749404787e-6
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(β_direct - β_lsmr) = 9.144972747495447e-6
 Converged after 14 iterations.
 </pre></div>
 </div>
@@ -1472,7 +1464,7 @@ matrix-free methods, we need to define the <code class="docutils literal notrans
 <span class="n">X_T_func</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">=</span> <span class="n">X</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">v</span>  <span class="c"># i.e., adjoint-vector product</span>
 
 <span class="n">X_map</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">(</span><span class="n">X_func</span><span class="p">,</span> <span class="n">X_T_func</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">lsmr</span><span class="p">(</span><span class="n">X_map</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">lsmr</span><span class="p">(</span><span class="n">X_map</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="k">end</span><span class="p">])</span><span class="s">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1485,7 +1477,7 @@ matrix-free methods, we need to define the <code class="docutils literal notrans
 </div>
 </div>
 <div class="section" id="iterative-methods-for-eigensystems">
-<h2><a class="toc-backref" href="#id8">Iterative Methods for Eigensystems</a><a class="headerlink" href="#iterative-methods-for-eigensystems" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8"><span class="section-number">24.6. </span>Iterative Methods for Eigensystems</a><a class="headerlink" href="#iterative-methods-for-eigensystems" title="Permalink to this headline">¶</a></h2>
 <p>When you use <code class="docutils literal notranslate"><span class="pre">eigen</span></code> on a dense matrix, it calculates an eigendecomposition and provides all the eigenvalues and eigenvectors.</p>
 <p>While this is sometimes necessary, a spectral decomposition of a dense, unstructured matrix is one of the costliest <span class="math notranslate nohighlight">\(O(N^3)\)</span> operations (i.e., it has
 one of the largest constants).  For large matrices, it is often infeasible.</p>
@@ -1500,11 +1492,11 @@ to use is <a class="reference external" href="https://julialinearalgebra.github.
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Arpack</span><span class="p">,</span> <span class="n">LinearAlgebra</span>
 <span class="n">N</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="n">A</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">([</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);])</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">Tridiagonal</span><span class="p">([</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);])</span>
 <span class="n">A_adjoint</span> <span class="o">=</span> <span class="n">A</span><span class="o">&#39;</span>
 
 <span class="c"># Find 1 of the largest magnitude eigenvalue</span>
-<span class="n">λ</span><span class="p">,</span> <span class="n">ϕ</span> <span class="o">=</span> <span class="n">eigs</span><span class="p">(</span><span class="n">A_adjoint</span><span class="p">,</span> <span class="n">nev</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">which</span><span class="o">=:</span><span class="n">LM</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">λ</span><span class="p">,</span> <span class="n">ϕ</span> <span class="o">=</span> <span class="n">eigs</span><span class="p">(</span><span class="n">A_adjoint</span><span class="p">,</span> <span class="n">nev</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="ss">:LM</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 <span class="n">ϕ</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">ϕ</span><span class="p">)</span> <span class="o">./</span> <span class="n">sum</span><span class="p">(</span><span class="n">real</span><span class="p">(</span><span class="n">ϕ</span><span class="p">))</span>
 <span class="nd">@show</span> <span class="n">λ</span>
 <span class="nd">@show</span> <span class="n">mean</span><span class="p">(</span><span class="n">ϕ</span><span class="p">);</span>
@@ -1512,8 +1504,8 @@ to use is <a class="reference external" href="https://julialinearalgebra.github.
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>λ = Complex{Float64}[1.0000000000000113 + 0.0im]
-mean(ϕ) = 0.0009999999999999998
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>λ = ComplexF64[1.0000000000000102 + 0.0im]
+mean(ϕ) = 0.001
 </pre></div>
 </div>
 </div>
@@ -1534,13 +1526,13 @@ take the Markov chain for a simple counting process:</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">θ</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="n">ζ</span> <span class="o">=</span> <span class="mf">0.05</span>
 <span class="n">N</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">P</span> <span class="o">=</span> <span class="kt">Tridiagonal</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">ζ</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="n">θ</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">θ</span><span class="o">-</span><span class="n">ζ</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mi">1</span><span class="o">-</span><span class="n">ζ</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="n">θ</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">Tridiagonal</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">ζ</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="mi">1</span><span class="o">-</span><span class="n">θ</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">θ</span><span class="o">-</span><span class="n">ζ</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mi">1</span><span class="o">-</span><span class="n">ζ</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="n">θ</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">P</span><span class="o">&#39;</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 Tridiagonal{Float64,Array{Float64,1}}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 Tridiagonal{Float64, Vector{Float64}}:
  0.9  0.05   ⋅     ⋅     ⋅ 
  0.1  0.85  0.05   ⋅     ⋅ 
   ⋅   0.1   0.85  0.05   ⋅ 
@@ -1554,7 +1546,7 @@ take the Markov chain for a simple counting process:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">P_adj_mul</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">θ</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>
-                <span class="p">[</span><span class="n">θ</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">θ</span><span class="o">-</span><span class="n">ζ</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>  <span class="c"># comprehension</span>
+                <span class="p">[</span><span class="n">θ</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">θ</span><span class="o">-</span><span class="n">ζ</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>  <span class="c"># comprehension</span>
             <span class="n">θ</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ζ</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="p">];]</span>
 <span class="n">P_adj_map</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">(</span><span class="n">P_adj_mul</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">norm</span><span class="p">(</span><span class="n">P</span><span class="o">&#39;</span> <span class="o">-</span> <span class="n">sparse</span><span class="p">(</span><span class="n">P_adj_map</span><span class="p">))</span>
@@ -1573,7 +1565,7 @@ take the Markov chain for a simple counting process:</p>
 <p>Finally, solving for the stationary distribution using the matrix-free method (which could be verified against the decomposition approach of <span class="math notranslate nohighlight">\(P'\)</span>)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">λ</span><span class="p">,</span> <span class="n">ϕ</span> <span class="o">=</span> <span class="n">eigs</span><span class="p">(</span><span class="n">P_adj_map</span><span class="p">,</span> <span class="n">nev</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">which</span><span class="o">=:</span><span class="n">LM</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">λ</span><span class="p">,</span> <span class="n">ϕ</span> <span class="o">=</span> <span class="n">eigs</span><span class="p">(</span><span class="n">P_adj_map</span><span class="p">,</span> <span class="n">nev</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="ss">:LM</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 <span class="n">ϕ</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">ϕ</span><span class="p">)</span> <span class="o">./</span> <span class="n">sum</span><span class="p">(</span><span class="n">real</span><span class="p">(</span><span class="n">ϕ</span><span class="p">))</span>
 <span class="nd">@show</span> <span class="n">λ</span>
 <span class="nd">@show</span> <span class="n">ϕ</span>
@@ -1581,13 +1573,14 @@ take the Markov chain for a simple counting process:</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>λ = Complex{Float64}[1.0000000000000013 + 0.0im]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>λ = ComplexF64[1.0000000000000013 + 0.0im]
+ϕ = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ϕ = [0.03225806451612769; 0.06451612903225767; 0.12903225806451785; 0.2580645161290339; 0.5161290322580628]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.03225806451612769; 0.06451612903225767; 0.12903225806451785; 0.2580645161290339; 0.5161290322580628]
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×1 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×1 Matrix{Float64}:
  0.03225806451612769
  0.06451612903225767
  0.12903225806451785
@@ -1601,9 +1594,9 @@ take the Markov chain for a simple counting process:</p>
 you do not need all of the eigenvalues.</p>
 </div>
 <div class="section" id="krylov-methods-for-markov-chain-dynamics">
-<h2><a class="toc-backref" href="#id9">Krylov Methods for Markov-Chain Dynamics</a><a class="headerlink" href="#krylov-methods-for-markov-chain-dynamics" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9"><span class="section-number">24.7. </span>Krylov Methods for Markov-Chain Dynamics</a><a class="headerlink" href="#krylov-methods-for-markov-chain-dynamics" title="Permalink to this headline">¶</a></h2>
 <p>This example applies the methods in this lecture to a large continuous-time Markov chain, and provides some practice working with arrays of arbitrary dimensions.</p>
-<p>Consider a version of the Markov-chain dynamics in <span id="id1">[<a class="reference internal" href="../zreferences.html#id4"><span>Per19</span></a>]</span>, where a firm has a discrete number of customers of different types.  To keep things as simple as possible, assume that there are <span class="math notranslate nohighlight">\(m=1, \ldots M\)</span> types of customers and that the firm may have <span class="math notranslate nohighlight">\(n = 1, \ldots N\)</span> customers of each type.</p>
+<p>Consider a version of the Markov-chain dynamics in <span id="id1">[<a class="reference internal" href="../zreferences.html#id4">Per19</a>]</span>, where a firm has a discrete number of customers of different types.  To keep things as simple as possible, assume that there are <span class="math notranslate nohighlight">\(m=1, \ldots M\)</span> types of customers and that the firm may have <span class="math notranslate nohighlight">\(n = 1, \ldots N\)</span> customers of each type.</p>
 <p>To set the notation, let <span class="math notranslate nohighlight">\(n_m \in \{1, \ldots N\}\)</span> be the number of customers of type <span class="math notranslate nohighlight">\(m\)</span>, so that the state of a firm is <span class="math notranslate nohighlight">\(\{n_1, \ldots n_m \ldots, n_M\}\)</span>.  The cardinality of possible states is then <span class="math notranslate nohighlight">\(\mathbf{N}\equiv N^M\)</span>, which can blow up quickly as the number of types increases.</p>
 <p>The stochastic process is a simple counting/forgetting process, as follows:</p>
 <ol class="simple">
@@ -1611,7 +1604,7 @@ you do not need all of the eigenvalues.</p>
 <li><p>For every <span class="math notranslate nohighlight">\(1 &lt; n_m(t) \leq N\)</span>, there is a <span class="math notranslate nohighlight">\(\zeta\)</span> intensity of losing a customer, so that <span class="math notranslate nohighlight">\(n_m(t+\Delta) = n_m(t) - 1\)</span>.</p></li>
 </ol>
 <div class="section" id="matrix-free-infinitesimal-generator">
-<h3>Matrix-free Infinitesimal Generator<a class="headerlink" href="#matrix-free-infinitesimal-generator" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.7.1. </span>Matrix-free Infinitesimal Generator<a class="headerlink" href="#matrix-free-infinitesimal-generator" title="Permalink to this headline">¶</a></h3>
 <p>In order to define an intensity matrix <span class="math notranslate nohighlight">\(Q\)</span> of size <span class="math notranslate nohighlight">\(\mathbf{N}\times \mathcal{N}\)</span>, we need to choose a consistent ordering of the states.  But
 before we enumerate them linearly, take a <span class="math notranslate nohighlight">\(v\in R^{\mathbf{N}}\)</span> interpreted as a multidimensional array and look at the left product of the linear operator <span class="math notranslate nohighlight">\(Q v \to R^{\mathbf{N}}\)</span>.</p>
 <p>For example, if we were implementing the product at the row of <span class="math notranslate nohighlight">\(Q\)</span> corresponding to the <span class="math notranslate nohighlight">\((n_1, \ldots, n_M)\)</span> state, then</p>
@@ -1640,18 +1633,18 @@ approach is to enumerate them in the same order as the <span class="math notrans
 <span class="n">shape</span> <span class="o">=</span> <span class="kt">Tuple</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">))</span>
 <span class="n">v</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">shape</span><span class="o">...</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">ind</span> <span class="kp">in</span> <span class="n">CartesianIndices</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-    <span class="n">println</span><span class="p">(</span><span class="s">&quot;v</span><span class="si">$</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="nb">I</span><span class="p">)</span><span class="s"> = </span><span class="si">$</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span><span class="s">&quot;</span><span class="p">)</span>  <span class="c"># .I gets the tuple to display</span>
+<span class="k">for</span> <span class="n">ind</span> <span class="k">in</span> <span class="kt">CartesianIndices</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">&quot;v</span><span class="si">$</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">I</span><span class="p">)</span><span class="s"> = </span><span class="si">$</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span><span class="s">&quot;</span><span class="p">)</span>  <span class="c"># .I gets the tuple to display</span>
 <span class="k">end</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(v) = Array{Float64,3}
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(v) = Array{Float64, 3}
+v(1, 1, 1) = 0.639089412234831
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v(1, 1, 1) = 0.639089412234831
-v(2, 1, 1) = 0.4302368488000152
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v(2, 1, 1) = 0.4302368488000152
 v(1, 2, 1) = 0.21490768283644002
 v(2, 2, 1) = 0.7542051014748841
 v(1, 1, 2) = 0.4330861190374067
@@ -1666,12 +1659,12 @@ v(2, 2, 2) = 0.43231874437572815
 <p>For the counting process with arbitrary dimensions, we will frequently be incrementing or decrementing the <span class="math notranslate nohighlight">\(m\)</span> unit vectors of the <code class="docutils literal notranslate"><span class="pre">CartesianIndex</span></code> type with</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">e_m</span> <span class="o">=</span> <span class="p">[</span><span class="kt">CartesianIndex</span><span class="p">((</span><span class="mi">1</span><span class="o">:</span><span class="n">M</span> <span class="o">.==</span> <span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="mf">1.</span><span class="o">..</span><span class="p">)</span>  <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span><span class="p">]</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">e_m</span> <span class="o">=</span> <span class="p">[</span><span class="kt">CartesianIndex</span><span class="p">((</span><span class="mi">1</span><span class="o">:</span><span class="n">M</span> <span class="o">.==</span> <span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="o">...</span><span class="p">)</span>  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Array{CartesianIndex{3},1}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{CartesianIndex{3}}:
  CartesianIndex(1, 0, 0)
  CartesianIndex(0, 1, 0)
  CartesianIndex(0, 0, 1)
@@ -1700,17 +1693,18 @@ ind - e_m[3] = CartesianIndex(1, 2, 1)
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">ind</span>
-<span class="nd">@show</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="nb">I</span> <span class="o">.&gt;</span> <span class="mi">1</span><span class="p">)</span>
-<span class="nd">@show</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="nb">I</span> <span class="o">.&lt;</span> <span class="n">N</span><span class="p">);</span>
+<span class="nd">@show</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">I</span> <span class="o">.&gt;</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nd">@show</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">I</span> <span class="o">.&lt;</span> <span class="n">N</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ind = CartesianIndex(1, 2, 2)
-count(ind.I .&gt; 1) = 2
+count(ind.I .&gt; 1) = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>count(ind.I .&lt; N) = 1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+count(ind.I .&lt; N) = 1
 </pre></div>
 </div>
 </div>
@@ -1722,12 +1716,12 @@ parameters in a named tuple generator</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">BenchmarkTools</span>
 <span class="n">default_params</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">θ</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">ζ</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>
                            <span class="n">shape</span> <span class="o">=</span> <span class="kt">Tuple</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)),</span>  <span class="c"># for reshaping vector to M-d array</span>
-                           <span class="n">e_m</span> <span class="o">=</span> <span class="p">([</span><span class="kt">CartesianIndex</span><span class="p">((</span><span class="mi">1</span><span class="o">:</span><span class="n">M</span> <span class="o">.==</span> <span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="mf">1.</span><span class="o">..</span><span class="p">)</span>  <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span><span class="p">]))</span>
+                           <span class="n">e_m</span> <span class="o">=</span> <span class="p">([</span><span class="kt">CartesianIndex</span><span class="p">((</span><span class="mi">1</span><span class="o">:</span><span class="n">M</span> <span class="o">.==</span> <span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="o">...</span><span class="p">)</span>  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span><span class="p">]))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##NamedTuple_kw#256 (generic function with 2 methods)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##NamedTuple_kw#260 (generic function with 2 methods)
 </pre></div>
 </div>
 </div>
@@ -1740,9 +1734,9 @@ parameters in a named tuple generator</p>
     <span class="n">v</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>  <span class="c"># now can access v, dv as M-dim arrays</span>
     <span class="n">dv</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">dv</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
 
-    <span class="nd">@inbounds</span> <span class="k">for</span> <span class="n">ind</span> <span class="kp">in</span> <span class="n">CartesianIndices</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="nd">@inbounds</span> <span class="k">for</span> <span class="n">ind</span> <span class="k">in</span> <span class="kt">CartesianIndices</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="n">dv</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="k">for</span> <span class="n">m</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span>
             <span class="n">n_m</span> <span class="o">=</span> <span class="n">ind</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
             <span class="k">if</span><span class="p">(</span><span class="n">n_m</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">)</span>
                 <span class="n">dv</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">+=</span> <span class="n">θ</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="n">e_m</span><span class="p">[</span><span class="n">m</span><span class="p">]]</span>
@@ -1751,7 +1745,7 @@ parameters in a named tuple generator</p>
                 <span class="n">dv</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ζ</span> <span class="o">*</span><span class="n">v</span><span class="p">[</span><span class="n">ind</span> <span class="o">-</span> <span class="n">e_m</span><span class="p">[</span><span class="n">m</span><span class="p">]]</span>
             <span class="k">end</span>
         <span class="k">end</span>
-        <span class="n">dv</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="n">θ</span> <span class="o">*</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="nb">I</span> <span class="o">.&lt;</span> <span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="nb">I</span> <span class="o">.&gt;</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+        <span class="n">dv</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="n">θ</span> <span class="o">*</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">I</span> <span class="o">.&lt;</span> <span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">I</span> <span class="o">.&gt;</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
     <span class="k">end</span>
 <span class="k">end</span>
 
@@ -1763,7 +1757,7 @@ parameters in a named tuple generator</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  40.697 ms (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  61.953 ms (0 allocations: 0 bytes)
 </pre></div>
 </div>
 </div>
@@ -1771,7 +1765,7 @@ parameters in a named tuple generator</p>
 <p>From the output of the benchmarking, note that the implementation of the left-multiplication takes less than 100 milliseconds, and allocates little or no memory, even though the Markov chain has a million possible states (i.e., <span class="math notranslate nohighlight">\(N^M = 10^6\)</span>).</p>
 </div>
 <div class="section" id="solving-a-valuation-problem">
-<h3>Solving a Valuation Problem<a class="headerlink" href="#solving-a-valuation-problem" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.7.2. </span>Solving a Valuation Problem<a class="headerlink" href="#solving-a-valuation-problem" title="Permalink to this headline">¶</a></h3>
 <p>As before, we could use this Markov chain to solve a Bellman equation.  Assume that the firm discounts at rate <span class="math notranslate nohighlight">\(\rho &gt; 0\)</span> and gets a flow payoff of a different <span class="math notranslate nohighlight">\(z_m\)</span> per
 customer of type <span class="math notranslate nohighlight">\(m\)</span>.  For example, if the state of the firm is <span class="math notranslate nohighlight">\((n_1, n_2, n_3) = (2,3,2)\)</span>, then it gets <span class="math notranslate nohighlight">\(\begin{bmatrix}2 &amp; 3 &amp; 2\end{bmatrix} \cdot \begin{bmatrix}z_1&amp; z_2 &amp; z_3\end{bmatrix}\)</span> in flow profits.</p>
 <p>Given this profit function, we can write the simple Bellman equation in our standard form of <span class="math notranslate nohighlight">\(\rho v = r + Q v\)</span>, defining the appropriate payoff <span class="math notranslate nohighlight">\(r\)</span>.  For example, if <span class="math notranslate nohighlight">\(z_m = m^2\)</span>, then</p>
@@ -1779,7 +1773,7 @@ customer of type <span class="math notranslate nohighlight">\(m\)</span>.  For e
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">r_vec</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
     <span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span>  <span class="c"># payoffs per type m</span>
-    <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">dot</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="nb">I</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>  <span class="k">for</span> <span class="n">ind</span> <span class="kp">in</span> <span class="n">CartesianIndices</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">dot</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">I</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>  <span class="k">for</span> <span class="n">ind</span> <span class="k">in</span> <span class="kt">CartesianIndices</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">shape</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">reshape</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>  <span class="c"># return as a vector</span>
 <span class="k">end</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">r_vec</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
@@ -1788,7 +1782,7 @@ customer of type <span class="math notranslate nohighlight">\(m\)</span>.  For e
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(r_vec(p)) = Array{Float64,1}
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(r_vec(p)) = Vector{Float64}
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>250.25
@@ -1803,8 +1797,8 @@ of only 10,000 possible states.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_mul!</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
-<span class="n">A</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">ρ</span> <span class="o">*</span> <span class="nb">I</span> <span class="o">-</span> <span class="n">Q</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_mul!</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">ρ</span> <span class="o">*</span> <span class="n">I</span> <span class="o">-</span> <span class="n">Q</span>
 <span class="n">A_sparse</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>  <span class="c"># expensive: use only in tests</span>
 <span class="n">r</span> <span class="o">=</span> <span class="n">r_vec</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 <span class="n">v_direct</span> <span class="o">=</span> <span class="n">A_sparse</span> <span class="o">\</span> <span class="n">r</span>
@@ -1823,25 +1817,28 @@ of only 10,000 possible states.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  504.033 ms (75 allocations: 181.85 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  503.743 ms (75 allocations: 181.85 MiB)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(gmres(A, r) - v_direct) = 2.3579327575743365e-5
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(gmres(A, r) - v_direct) = 2.3579327624516535e-5
+  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3.295 ms (76 allocations: 2.53 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5.455 ms (76 allocations: 2.53 MiB)
+norm(bicgstabl(A, r) - v_direct) = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(bicgstabl(A, r) - v_direct) = 7.460583407851048e-6
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7.452458653681206e-6
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  10.234 ms (244 allocations: 7.95 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  12.821 ms (244 allocations: 7.95 MiB)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(idrs(A, r) - v_direct) = 5.911561737861058e-6
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(idrs(A, r) - v_direct) = 0.0002397692618663286
+  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4.351 ms (227 allocations: 3.30 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7.525 ms (227 allocations: 3.30 MiB)
 </pre></div>
 </div>
 </div>
@@ -1853,11 +1850,11 @@ of only 10,000 possible states.</p>
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">solve_bellman</span><span class="p">(</span><span class="n">p</span><span class="p">;</span> <span class="n">iv</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
     <span class="nd">@unpack</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="n">p</span>
-    <span class="n">Q</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_mul!</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">N</span><span class="o">^</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
-    <span class="n">A</span> <span class="o">=</span> <span class="n">ρ</span> <span class="o">*</span> <span class="nb">I</span> <span class="o">-</span> <span class="n">Q</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_mul!</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">N</span><span class="o">^</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">ρ</span> <span class="o">*</span> <span class="n">I</span> <span class="o">-</span> <span class="n">Q</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">r_vec</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-    <span class="n">sol</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>  <span class="c"># iterative solver, matrix-free</span>
+    <span class="n">sol</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>  <span class="c"># iterative solver, matrix-free</span>
     <span class="k">return</span> <span class="n">sol</span>
 <span class="k">end</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
@@ -1866,7 +1863,7 @@ of only 10,000 possible states.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  784.949 ms (81 allocations: 274.67 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.132 s (82 allocations: 274.67 MiB)
 </pre></div>
 </div>
 </div>
@@ -1875,7 +1872,7 @@ of only 10,000 possible states.</p>
 to solve an equation with a Markov chain with 100 million possible states, which can be solved in about 3-4 minutes.  Above that order of magnitude, you may need to tinker with the linear solver parameters to ensure that you are not memory limited (e.g., change the <code class="docutils literal notranslate"><span class="pre">restart</span></code> parameter of GMRES).</p>
 </div>
 <div class="section" id="markov-chain-steady-state-and-dynamics">
-<h3>Markov Chain Steady State and Dynamics<a class="headerlink" href="#markov-chain-steady-state-and-dynamics" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">24.7.3. </span>Markov Chain Steady State and Dynamics<a class="headerlink" href="#markov-chain-steady-state-and-dynamics" title="Permalink to this headline">¶</a></h3>
 <p>Recall that given an <span class="math notranslate nohighlight">\(N\)</span>-dimensional intensity matrix <span class="math notranslate nohighlight">\(Q\)</span> of a CTMC, the evolution of the pdf from an initial condition <span class="math notranslate nohighlight">\(\psi(0)\)</span> is the system of linear differential equations</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1905,9 +1902,9 @@ adjoint-vector product directly.</p>
     <span class="n">ψ</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">ψ</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
     <span class="n">dψ</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">dψ</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
 
-    <span class="nd">@inbounds</span> <span class="k">for</span> <span class="n">ind</span> <span class="kp">in</span> <span class="n">CartesianIndices</span><span class="p">(</span><span class="n">ψ</span><span class="p">)</span>
+    <span class="nd">@inbounds</span> <span class="k">for</span> <span class="n">ind</span> <span class="k">in</span> <span class="kt">CartesianIndices</span><span class="p">(</span><span class="n">ψ</span><span class="p">)</span>
         <span class="n">dψ</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-        <span class="k">for</span> <span class="n">m</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span>
             <span class="n">n_m</span> <span class="o">=</span> <span class="n">ind</span><span class="p">[</span><span class="n">m</span><span class="p">]</span>
             <span class="k">if</span><span class="p">(</span><span class="n">n_m</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
                 <span class="n">dψ</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">+=</span> <span class="n">θ</span> <span class="o">*</span> <span class="n">ψ</span><span class="p">[</span><span class="n">ind</span> <span class="o">-</span> <span class="n">e_m</span><span class="p">[</span><span class="n">m</span><span class="p">]]</span>
@@ -1916,7 +1913,7 @@ adjoint-vector product directly.</p>
                 <span class="n">dψ</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">+=</span> <span class="n">ζ</span> <span class="o">*</span><span class="n">ψ</span><span class="p">[</span><span class="n">ind</span> <span class="o">+</span> <span class="n">e_m</span><span class="p">[</span><span class="n">m</span><span class="p">]]</span>
             <span class="k">end</span>
         <span class="k">end</span>
-        <span class="n">dψ</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="n">θ</span> <span class="o">*</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="nb">I</span> <span class="o">.&lt;</span> <span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="nb">I</span> <span class="o">.&gt;</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">ψ</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+        <span class="n">dψ</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">-=</span> <span class="p">(</span><span class="n">θ</span> <span class="o">*</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">I</span> <span class="o">.&lt;</span> <span class="n">N</span><span class="p">)</span> <span class="o">+</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">I</span> <span class="o">.&gt;</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="n">ψ</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
     <span class="k">end</span>
 <span class="k">end</span>
 </pre></div>
@@ -1933,8 +1930,8 @@ our <code class="docutils literal notranslate"><span class="pre">Q</span></code>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>  <span class="c"># sparse is too slow for the full matrix</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_mul!</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
-<span class="n">Q_T</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_T_mul!</span><span class="p">(</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_mul!</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
+<span class="n">Q_T</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_T_mul!</span><span class="p">(</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">norm</span><span class="p">(</span><span class="n">sparse</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">-</span> <span class="n">sparse</span><span class="p">(</span><span class="n">Q_T</span><span class="p">));</span>  <span class="c"># reminder: use sparse only for testing!</span>
 </pre></div>
 </div>
@@ -1958,7 +1955,7 @@ do this with a dense eigenvalue solution for relatively small matrices</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>eig_Q_T.values[end] = -3.0774408448892207e-16 + 0.0im
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>eig_Q_T.values[end] = 1.5543122344752192e-15 + 0.0im
 </pre></div>
 </div>
 </div>
@@ -1975,7 +1972,7 @@ use GMRES since we do not have any structure.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>  <span class="c"># sparse is too slow for the full matrix</span>
-<span class="n">Q_T</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_T_mul!</span><span class="p">(</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+<span class="n">Q_T</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_T_mul!</span><span class="p">(</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 <span class="n">ψ</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">)</span> <span class="c"># can&#39;t use 0 as initial guess</span>
 <span class="n">sol</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">ψ</span><span class="p">,</span> <span class="n">Q_T</span><span class="p">,</span> <span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>  <span class="c"># i.e., solve Ax = 0 iteratively</span>
 <span class="n">ψ</span> <span class="o">=</span> <span class="n">ψ</span> <span class="o">/</span> <span class="n">sum</span><span class="p">(</span><span class="n">ψ</span><span class="p">)</span>
@@ -1984,7 +1981,7 @@ use GMRES since we do not have any structure.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(ψ - direct_ψ) = 6.098255551858044e-11
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(ψ - direct_ψ) = 6.098221803412833e-11
 </pre></div>
 </div>
 </div>
@@ -1993,24 +1990,24 @@ use GMRES since we do not have any structure.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>  <span class="c"># Dense and sparse matrices are too slow for the full dataset.</span>
-<span class="n">Q_T</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_T_mul!</span><span class="p">(</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+<span class="n">Q_T</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_T_mul!</span><span class="p">(</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 <span class="n">Q_T_dense</span> <span class="o">=</span> <span class="kt">Matrix</span><span class="p">(</span><span class="n">Q_T</span><span class="p">)</span>
 <span class="n">Q_T_sparse</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">(</span><span class="n">Q_T</span><span class="p">)</span>
 <span class="n">b</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">)</span>
 <span class="nd">@btime</span> <span class="n">eigen</span><span class="p">(</span><span class="o">$</span><span class="n">Q_T_dense</span><span class="p">)</span>
-<span class="nd">@btime</span> <span class="n">eigs</span><span class="p">(</span><span class="o">$</span><span class="n">Q_T_sparse</span><span class="p">,</span> <span class="n">nev</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">which</span><span class="o">=:</span><span class="n">SM</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="n">iv</span><span class="p">)</span> <span class="n">setup</span> <span class="o">=</span> <span class="p">(</span><span class="n">iv</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
+<span class="nd">@btime</span> <span class="n">eigs</span><span class="p">(</span><span class="o">$</span><span class="n">Q_T_sparse</span><span class="p">,</span> <span class="n">nev</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="ss">:SM</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="n">iv</span><span class="p">)</span> <span class="n">setup</span> <span class="o">=</span> <span class="p">(</span><span class="n">iv</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
 <span class="nd">@btime</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="o">$</span><span class="n">Q_T</span><span class="p">,</span> <span class="o">$</span><span class="n">b</span><span class="p">)</span> <span class="n">setup</span> <span class="o">=</span> <span class="p">(</span><span class="n">iv</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">));</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  44.375 ms (21 allocations: 2.27 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  27.316 ms (21 allocations: 2.27 MiB)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.946 ms (370 allocations: 1.21 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3.155 ms (370 allocations: 1.21 MiB)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  108.500 μs (57 allocations: 51.00 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  226.001 μs (57 allocations: 51.00 KiB)
 </pre></div>
 </div>
 </div>
@@ -2020,7 +2017,7 @@ use GMRES since we do not have any structure.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">stationary_ψ</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-    <span class="n">Q_T</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_T_mul!</span><span class="p">(</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+    <span class="n">Q_T</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_T_mul!</span><span class="p">(</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
     <span class="n">ψ</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">)</span> <span class="c"># can&#39;t use 0 as initial guess</span>
     <span class="n">sol</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">ψ</span><span class="p">,</span> <span class="n">Q_T</span><span class="p">,</span> <span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>  <span class="c"># i.e., solve Ax = 0 iteratively</span>
     <span class="k">return</span> <span class="n">ψ</span> <span class="o">/</span> <span class="n">sum</span><span class="p">(</span><span class="n">ψ</span><span class="p">)</span>
@@ -2031,7 +2028,7 @@ use GMRES since we do not have any structure.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.423 s (90 allocations: 19.09 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.793 s (90 allocations: 19.09 MiB)
 </pre></div>
 </div>
 </div>
@@ -2053,22 +2050,18 @@ use GMRES since we do not have any structure.</p>
 
     <span class="c"># define the corresponding ODE problem</span>
     <span class="n">prob</span> <span class="o">=</span> <span class="n">ODEProblem</span><span class="p">(</span><span class="n">O!</span><span class="p">,</span><span class="n">ψ_0</span><span class="p">,(</span><span class="mf">0.0</span><span class="p">,</span><span class="n">t</span><span class="p">[</span><span class="k">end</span><span class="p">]),</span> <span class="n">p</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">solve</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">LinearExponential</span><span class="p">(</span><span class="n">krylov</span><span class="o">=:</span><span class="n">simple</span><span class="p">),</span> <span class="n">tstops</span> <span class="o">=</span> <span class="n">t</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">solve</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">LinearExponential</span><span class="p">(</span><span class="n">krylov</span><span class="o">=</span><span class="ss">:simple</span><span class="p">),</span> <span class="n">tstops</span> <span class="o">=</span> <span class="n">t</span><span class="p">)</span>
 <span class="k">end</span>
 <span class="n">t</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">:</span><span class="mf">5.0</span><span class="o">:</span><span class="mf">100.0</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 <span class="n">sol</span> <span class="o">=</span> <span class="n">solve_transition_dynamics</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
 <span class="n">v</span> <span class="o">=</span> <span class="n">solve_bellman</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-<span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">dot</span><span class="p">(</span><span class="n">sol</span><span class="p">(</span><span class="n">tval</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">tval</span> <span class="kp">in</span> <span class="n">t</span><span class="p">],</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;E_t(v)&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">dot</span><span class="p">(</span><span class="n">sol</span><span class="p">(</span><span class="n">tval</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">tval</span> <span class="k">in</span> <span class="n">t</span><span class="p">],</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;E_t(v)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>┌ Info: Precompiling DiffEqOperators [9fdde737-9c7f-55bf-ade8-46b3f136cc48]
-└ @ Base loading.jl:1278
-</pre></div>
-</div>
-<img alt="../_images/iterative_methods_sparsity_129_1.png" src="../_images/iterative_methods_sparsity_129_1.png" />
+<img alt="../_images/iterative_methods_sparsity_129_0.png" src="../_images/iterative_methods_sparsity_129_0.png" />
 </div>
 </div>
 <p>The above plot (1) calculates the full dynamics of the Markov chain from the <span class="math notranslate nohighlight">\(n_m = 1\)</span> for all <span class="math notranslate nohighlight">\(m\)</span> initial condition; (2) solves the dynamics of a system of a million ODEs; and (3) uses the calculation of the Bellman equation to find the expected valuation during that transition.  The entire process takes less than 30 seconds.</p>
@@ -2085,16 +2078,16 @@ use GMRES since we do not have any structure.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.5"
+            mode: "julia-1.6"
         },
         kernelOptions: {
-            kernelName: "julia-1.5",
+            kernelName: "julia-1.6",
             path: "./tools_and_techniques"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.5'</script>
+    <script>kernelName = 'julia-1.6'</script>
 
                     </div>
                     
@@ -2123,340 +2116,408 @@ use GMRES since we do not have any structure.</p>
                 </div>
 
                 <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
-                    <ul class="current nav bd-sidenav nav sidenav_l1">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/getting_started.html">
-   Setting up Your Julia Environment
+   1. Setting up Your Julia Environment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_environment.html">
-   Interacting with Julia
+   2. Interacting with Julia
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
-   Introductory Examples
+   3. Introductory Examples
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
-   Julia Essentials
+   4. Julia Essentials
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
-   Arrays, Tuples, Ranges, and Other Fundamental Types
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
-   Introduction to Types and Generic Programming
+   6. Introduction to Types and Generic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/generic_programming.html">
-   Generic Programming
+   7. Generic Programming
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/general_packages.html">
-   General Purpose Packages
+   8. General Purpose Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/data_statistical_packages.html">
-   Data and Statistics Packages
+   9. Data and Statistics Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
-   Solvers, Optimizers, and Automatic Differentiation
+   10. Solvers, Optimizers, and Automatic Differentiation
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/tools_editors.html">
-   Julia Tools and Editors
+   11. Julia Tools and Editors
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/version_control.html">
-   Git, GitHub, and Version Control
+   12. Git, GitHub, and Version Control
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/testing.html">
-   Packages, Testing, and Continuous Integration
+   13. Packages, Testing, and Continuous Integration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/need_for_speed.html">
-   The Need for Speed
+   14. The Need for Speed
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="linear_algebra.html">
-   Linear Algebra
+   15. Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="orth_proj.html">
-   Orthogonal Projections and Their Applications
+   16. Orthogonal Projections and Their Applications
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lln_clt.html">
-   LLN and CLT
+   17. LLN and CLT
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="linear_models.html">
-   Linear State Space Models
+   18. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="finite_markov.html">
-   Finite Markov Chains
+   19. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="stationary_densities.html">
-   Continuous State Markov Chains
+   20. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="kalman.html">
-   A First Look at the Kalman Filter
+   22. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="numerical_linear_algebra.html">
-   Numerical Linear Algebra and Factorizations
+   23. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   Krylov Methods and Matrix Conditioning
+   24. Krylov Methods and Matrix Conditioning
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/short_path.html">
-   Shortest Paths
+   25. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   Job Search I: The McCall Search Model
+   26. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   Job Search II: Search and Separation
+   27. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   A Problem that Stumped Milton Friedman
+   28. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   Job Search III: Search with Learning
+   29. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   Job Search IV: Modeling Career Choice
+   30. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   Job Search V: On-the-Job Search
+   31. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   Optimal Growth I: The Stochastic Optimal Growth Model
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   Optimal Growth II: Time Iteration
+   33. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   Optimal Growth III: The Endogenous Grid Method
+   34. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   LQ Dynamic Programming Problems
+   35. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   Optimal Savings I: The Permanent Income Model
+   36. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   Optimal Savings II: LQ Techniques
+   37. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   Consumption and Tax Smoothing with Complete and Incomplete Markets
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   Optimal Savings III: Occasionally Binding Constraints
+   39. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   Robustness
+   40. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   Discrete State Dynamic Programming
+   41. Discrete State Dynamic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   Modeling COVID 19 with Differential Equations
+   42. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   Schelling’s Segregation Model
+   44. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   A Lake Model of Employment and Unemployment
+   45. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   Rational Expectations Equilibrium
+   46. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   Markov Perfect Equilibrium
+   47. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   Asset Pricing I: Finite State Models
+   48. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   Asset Pricing II: The Lucas Asset Pricing Model
+   49. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   Asset Pricing III:  Incomplete Markets
+   50. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   Uncertainty Traps
+   51. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   The Aiyagari Model
+   52. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   Default Risk and Income Fluctuations
+   53. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   Globalization and Cycles
+   54. Globalization and Cycles
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   Covariance Stationary Processes
+   55. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   Estimation of Spectra
+   56. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   Additive Functionals
+   57. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   Multiplicative Functionals
+   58. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   Classical Control with Linear Algebra
+   59. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   Classical Filtering With Linear Algebra
+   60. Classical Filtering With Linear Algebra
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   Dynamic Stackelberg Problems
+   61. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   Optimal Taxation in an LQ Economy
+   62. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   Optimal Taxation with State-Contingent Debt
+   63. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   Optimal Taxation without State-Contingent Debt
+   64. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   About these Lectures
+   65. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   Troubleshooting
+   66. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   References
+   67. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   Lecture Status
+   68. Lecture Status
   </a>
  </li>
 </ul>
@@ -2495,7 +2556,7 @@ use GMRES since we do not have any structure.</p>
                     <li data-tippy-content="Download Notebook"><a href="_notebooks/tools_and_techniques/iterative_methods_sparsity.ipynb" download><i data-feather="download-cloud"></i></a></li>
                     <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/tools_and_techniques/iterative_methods_sparsity.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
                         <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
-                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/tools_and_techniques/iterative_methods_sparsity.ipynb" download><i data-feather="github"></i></a></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/tools_and_techniques/iterative_methods_sparsity.md" download><i data-feather="github"></i></a></li>
                 </ul>
 
             </div>

@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Search IV: Modeling Career Choice &#8212; Quantitative Economics with Julia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>30. Job Search IV: Modeling Career Choice &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -26,8 +26,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -42,15 +42,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -58,11 +55,13 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/career.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Job Search V: On-the-Job Search" href="jv.html" />
-    <link rel="prev" title="Job Search III: Search with Learning" href="odu.html" />
+    <link rel="next" title="31. Job Search V: On-the-Job Search" href="jv.html" />
+    <link rel="prev" title="29. Job Search III: Search with Learning" href="odu.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -112,68 +111,68 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   Overview
+   30.1. Overview
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#model-features">
-     Model features
+     30.1.1. Model features
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#model">
-   Model
+   30.2. Model
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#parameterization">
-     Parameterization
+     30.2.1. Parameterization
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#exercises">
-   Exercises
+   30.3. Exercises
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-1">
-     Exercise 1
+     30.3.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-2">
-     Exercise 2
+     30.3.2. Exercise 2
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-3">
-     Exercise 3
+     30.3.3. Exercise 3
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solutions">
-   Solutions
+   30.4. Solutions
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id5">
-     Exercise 1
+     30.4.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id6">
-     Exercise 2
+     30.4.2. Exercise 2
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id7">
-     Exercise 3
+     30.4.3. Exercise 3
     </a>
    </li>
   </ul>
@@ -228,7 +227,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="job-search-iv-modeling-career-choice">
-<h1><a class="toc-backref" href="#id8">Job Search IV: Modeling Career Choice</a><a class="headerlink" href="#job-search-iv-modeling-career-choice" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id8"><span class="section-number">30. </span>Job Search IV: Modeling Career Choice</a><a class="headerlink" href="#job-search-iv-modeling-career-choice" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <span id="index-0"></span><p class="topic-title">Contents</p>
 <ul class="simple">
@@ -243,12 +242,12 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id9">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9"><span class="section-number">30.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Next we study a computational problem concerning career and job choices.</p>
-<p>The model is originally due to Derek Neal <span id="id1">[<a class="reference internal" href="../zreferences.html#id113"><span>Nea99</span></a>]</span>.</p>
-<p>This exposition draws on the presentation in <span id="id2">[<a class="reference internal" href="../zreferences.html#id99"><span>LS18</span></a>]</span>, section 6.5.</p>
+<p>The model is originally due to Derek Neal <span id="id1">[<a class="reference internal" href="../zreferences.html#id113">Nea99</a>]</span>.</p>
+<p>This exposition draws on the presentation in <span id="id2">[<a class="reference internal" href="../zreferences.html#id99">LS18</a>]</span>, section 6.5.</p>
 <div class="section" id="model-features">
-<h3>Model features<a class="headerlink" href="#model-features" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">30.1.1. </span>Model features<a class="headerlink" href="#model-features" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Career and job within career both chosen to maximize expected discounted wage flow.</p></li>
 <li><p>Infinite horizon dynamic programming with two state variables.</p></li>
@@ -263,7 +262,7 @@
 </div>
 </div>
 <div class="section" id="model">
-<h2><a class="toc-backref" href="#id10">Model</a><a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10"><span class="section-number">30.2. </span>Model</a><a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h2>
 <p>In what follows we distinguish between a career and a job, where</p>
 <ul class="simple">
 <li><p>a <em>career</em> is understood to be a general field encompassing many possible jobs, and</p></li>
@@ -297,10 +296,10 @@ past values, with</p>
 a career — starting a new career always requires starting a new job.</p>
 <p>A young worker aims to maximize the expected sum of discounted wages.</p>
 <div class="math notranslate nohighlight" id="equation-exw">
-<span class="eqno">(127)<a class="headerlink" href="#equation-exw" title="Permalink to this equation">¶</a></span>\[\mathbb{E} \sum_{t=0}^{\infty} \beta^t w_t\]</div>
+<span class="eqno">(30.1)<a class="headerlink" href="#equation-exw" title="Permalink to this equation">¶</a></span>\[\mathbb{E} \sum_{t=0}^{\infty} \beta^t w_t\]</div>
 <p>subject to the choice restrictions specified above.</p>
 <p>Let <span class="math notranslate nohighlight">\(V(\theta, \epsilon)\)</span> denote the value function, which is the
-maximum of <a class="reference internal" href="#equation-exw">(127)</a> over all feasible (career, job) policies, given the
+maximum of <a class="reference internal" href="#equation-exw">(30.1)</a> over all feasible (career, job) policies, given the
 initial state <span class="math notranslate nohighlight">\((\theta, \epsilon)\)</span>.</p>
 <p>The value function obeys</p>
 <div class="math notranslate nohighlight">
@@ -309,15 +308,15 @@ V(\theta, \epsilon) = \max\{I, II, III\},
 \]</div>
 <p>where</p>
 <div class="math notranslate nohighlight" id="equation-eyes">
-<span class="eqno">(128)<a class="headerlink" href="#equation-eyes" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(30.2)<a class="headerlink" href="#equation-eyes" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
 &amp; I = \theta + \epsilon + \beta V(\theta, \epsilon) \\
 &amp; II = \theta + \int \epsilon' G(d \epsilon') + \beta \int V(\theta, \epsilon') G(d \epsilon') \nonumber \\
 &amp; III = \int \theta' F(d \theta') + \int \epsilon' G(d \epsilon') + \beta \int \int V(\theta', \epsilon') G(d \epsilon') F(d \theta') \nonumber
 \end{aligned}\end{split}\]</div>
 <p>Evidently <span class="math notranslate nohighlight">\(I\)</span>, <span class="math notranslate nohighlight">\(II\)</span> and <span class="math notranslate nohighlight">\(III\)</span> correspond to “stay put”, “new job” and “new life”, respectively.</p>
 <div class="section" id="parameterization">
-<h3>Parameterization<a class="headerlink" href="#parameterization" title="Permalink to this headline">¶</a></h3>
-<p>As in <span id="id3">[<a class="reference internal" href="../zreferences.html#id99"><span>LS18</span></a>]</span>, section 6.5, we will focus on a discrete version of the model, parameterized as follows:</p>
+<h3><span class="section-number">30.2.1. </span>Parameterization<a class="headerlink" href="#parameterization" title="Permalink to this headline">¶</a></h3>
+<p>As in <span id="id3">[<a class="reference internal" href="../zreferences.html#id99">LS18</a>]</span>, section 6.5, we will focus on a discrete version of the model, parameterized as follows:</p>
 <ul class="simple">
 <li><p>both <span class="math notranslate nohighlight">\(\theta\)</span> and <span class="math notranslate nohighlight">\(\epsilon\)</span> take values in the set <code class="docutils literal notranslate"><span class="pre">linspace(0,</span> <span class="pre">B,</span> <span class="pre">N)</span></code> — an even grid of <span class="math notranslate nohighlight">\(N\)</span> points between <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(B\)</span> inclusive</p></li>
 <li><p><span class="math notranslate nohighlight">\(N = 50\)</span></p></li>
@@ -349,14 +348,14 @@ p(k \,|\, n, a, b)
 <div class="cell docutils container" id="beta-binom">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Distributions</span>
-<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=:</span><span class="n">png</span><span class="p">);</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="ss">:png</span><span class="p">);</span>
 
 <span class="n">n</span> <span class="o">=</span> <span class="mi">50</span>
 <span class="n">a_vals</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
 <span class="n">b_vals</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
 
 <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
-<span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="kp">in</span> <span class="n">zip</span><span class="p">(</span><span class="n">a_vals</span><span class="p">,</span> <span class="n">b_vals</span><span class="p">)</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">in</span> <span class="n">zip</span><span class="p">(</span><span class="n">a_vals</span><span class="p">,</span> <span class="n">b_vals</span><span class="p">)</span>
     <span class="n">ab_label</span> <span class="o">=</span> <span class="s">&quot;a = </span><span class="si">$a</span><span class="s">, b = </span><span class="si">$b</span><span class="s">&quot;</span>
     <span class="n">dist</span> <span class="o">=</span> <span class="n">BetaBinomial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="mi">0</span><span class="o">:</span><span class="n">n</span><span class="p">,</span> <span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">support</span><span class="p">(</span><span class="n">dist</span><span class="p">)),</span> <span class="n">label</span> <span class="o">=</span> <span class="n">ab_label</span><span class="p">)</span>
@@ -366,11 +365,7 @@ p(k \,|\, n, a, b)
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>┌ Info: Precompiling QuantEcon [fcd29c91-0bd7-5a09-975d-7ac3f643a60c]
-└ @ Base loading.jl:1278
-</pre></div>
-</div>
-<img alt="../_images/career_4_1.png" src="../_images/career_4_1.png" />
+<img alt="../_images/career_4_0.png" src="../_images/career_4_0.png" />
 </div>
 </div>
 <p>Implementation:</p>
@@ -397,15 +392,15 @@ p(k \,|\, n, a, b)
             <span class="n">F_mean</span> <span class="o">=</span> <span class="n">F_mean</span><span class="p">,</span> <span class="n">G_mean</span> <span class="o">=</span> <span class="n">G_mean</span><span class="p">)</span>
 <span class="k">end</span>
 
-<span class="k">function</span> <span class="n">update_bellman!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="p">;</span> <span class="n">ret_policy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+<span class="k">function</span> <span class="n">update_bellman!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="p">;</span> <span class="n">ret_policy</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
 
     <span class="c"># new life. This is a function of the distribution parameters and is</span>
     <span class="c"># always constant. No need to recompute it in the loop</span>
     <span class="n">v3</span> <span class="o">=</span> <span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">G_mean</span> <span class="o">+</span> <span class="n">cp</span><span class="o">.</span><span class="n">F_mean</span> <span class="o">.+</span> <span class="n">cp</span><span class="o">.</span><span class="n">β</span> <span class="o">.*</span>
           <span class="n">cp</span><span class="o">.</span><span class="n">F_probs</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">v</span> <span class="o">*</span> <span class="n">cp</span><span class="o">.</span><span class="n">G_probs</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="c"># do not need 1 element array</span>
 
-    <span class="k">for</span> <span class="n">j</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">cp</span><span class="o">.</span><span class="n">N</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">cp</span><span class="o">.</span><span class="n">N</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">cp</span><span class="o">.</span><span class="n">N</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">cp</span><span class="o">.</span><span class="n">N</span>
             <span class="c"># stay put</span>
             <span class="n">v1</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">θ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">cp</span><span class="o">.</span><span class="n">ϵ</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">cp</span><span class="o">.</span><span class="n">β</span> <span class="o">*</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
 
@@ -430,18 +425,18 @@ p(k \,|\, n, a, b)
 <span class="k">end</span>
 
 
-<span class="k">function</span> <span class="n">update_bellman</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">v</span><span class="p">;</span> <span class="n">ret_policy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+<span class="k">function</span> <span class="n">update_bellman</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">v</span><span class="p">;</span> <span class="n">ret_policy</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
     <span class="n">update_bellman!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">ret_policy</span> <span class="o">=</span> <span class="n">ret_policy</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">out</span>
 <span class="k">end</span>
 
 <span class="k">function</span> <span class="n">get_greedy!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-    <span class="n">update_bellman!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">ret_policy</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+    <span class="n">update_bellman!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">ret_policy</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 <span class="k">end</span>
 
 <span class="k">function</span> <span class="n">get_greedy</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-    <span class="n">update_bellman</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">ret_policy</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+    <span class="n">update_bellman</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">ret_policy</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -462,9 +457,9 @@ p(k \,|\, n, a, b)
 </li>
 </ul>
 <p>In this model, <span class="math notranslate nohighlight">\(T\)</span> is defined by <span class="math notranslate nohighlight">\(Tv(\theta, \epsilon) = \max\{I, II, III\}\)</span>, where
-<span class="math notranslate nohighlight">\(I\)</span>, <span class="math notranslate nohighlight">\(II\)</span> and <span class="math notranslate nohighlight">\(III\)</span> are as given in <a class="reference internal" href="#equation-eyes">(128)</a>, replacing <span class="math notranslate nohighlight">\(V\)</span> with <span class="math notranslate nohighlight">\(v\)</span>.</p>
+<span class="math notranslate nohighlight">\(I\)</span>, <span class="math notranslate nohighlight">\(II\)</span> and <span class="math notranslate nohighlight">\(III\)</span> are as given in <a class="reference internal" href="#equation-eyes">(30.2)</a>, replacing <span class="math notranslate nohighlight">\(V\)</span> with <span class="math notranslate nohighlight">\(v\)</span>.</p>
 <p>The default probability distributions in <code class="docutils literal notranslate"><span class="pre">CareerWorkerProblem</span></code> correspond to discrete uniform distributions (see <a class="reference internal" href="#beta-binom"><span class="std std-ref">the Beta-binomial figure</span></a>).</p>
-<p>In fact all our default settings correspond to the version studied in <span id="id4">[<a class="reference internal" href="../zreferences.html#id99"><span>LS18</span></a>]</span>, section 6.5.</p>
+<p>In fact all our default settings correspond to the version studied in <span id="id4">[<a class="reference internal" href="../zreferences.html#id99">LS18</a>]</span>, section 6.5.</p>
 <p>Hence we can reproduce figures 6.5.1 and 6.5.2 shown there, which exhibit the
 value function and optimal policy respectively.</p>
 <p>Here’s the value function</p>
@@ -473,10 +468,10 @@ value function and optimal policy respectively.</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">wp</span> <span class="o">=</span> <span class="n">CareerWorkerProblem</span><span class="p">()</span>
 <span class="n">v_init</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">wp</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="n">wp</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
 <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">update_bellman</span><span class="p">(</span><span class="n">wp</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="n">v</span> <span class="o">=</span> <span class="n">compute_fixed_point</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">v_init</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">compute_fixed_point</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">v_init</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">linetype</span> <span class="o">=</span> <span class="o">:</span><span class="n">surface</span><span class="p">,</span> <span class="n">wp</span><span class="o">.</span><span class="n">θ</span><span class="p">,</span> <span class="n">wp</span><span class="o">.</span><span class="n">ϵ</span><span class="p">,</span> <span class="n">transpose</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;theta&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;epsilon&quot;</span><span class="p">,</span>
-     <span class="n">seriescolor</span><span class="o">=:</span><span class="n">plasma</span><span class="p">,</span> <span class="n">gridalpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">linetype</span> <span class="o">=</span> <span class="ss">:surface</span><span class="p">,</span> <span class="n">wp</span><span class="o">.</span><span class="n">θ</span><span class="p">,</span> <span class="n">wp</span><span class="o">.</span><span class="n">ϵ</span><span class="p">,</span> <span class="n">transpose</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;theta&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;epsilon&quot;</span><span class="p">,</span>
+     <span class="n">seriescolor</span><span class="o">=</span><span class="ss">:plasma</span><span class="p">,</span> <span class="n">gridalpha</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -503,9 +498,9 @@ the worker cannot change careers without changing jobs.</p>
 </div>
 </div>
 <div class="section" id="exercises">
-<h2><a class="toc-backref" href="#id11">Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11"><span class="section-number">30.3. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exercise-1">
-<span id="career-ex1"></span><h3>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<span id="career-ex1"></span><h3><span class="section-number">30.3.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
 <p>Using the default parameterization in the <code class="docutils literal notranslate"><span class="pre">CareerWorkerProblem</span></code>,
 generate and plot typical sample paths for <span class="math notranslate nohighlight">\(\theta\)</span> and <span class="math notranslate nohighlight">\(\epsilon\)</span>
 when the worker follows the optimal policy.</p>
@@ -516,7 +511,7 @@ when the worker follows the optimal policy.</p>
 <p>Hint: To generate the draws from the distributions <span class="math notranslate nohighlight">\(F\)</span> and <span class="math notranslate nohighlight">\(G\)</span>, use the type <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl">DiscreteRV</a>.</p>
 </div>
 <div class="section" id="exercise-2">
-<span id="career-ex2"></span><h3>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+<span id="career-ex2"></span><h3><span class="section-number">30.3.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
 <p>Let’s now consider how long it takes for the worker to settle down to a
 permanent job, given a starting point of <span class="math notranslate nohighlight">\((\theta, \epsilon) = (0, 0)\)</span>.</p>
 <p>In other words, we want to study the distribution of the random variable</p>
@@ -536,7 +531,7 @@ T^* := \inf\{t \geq 0 \,|\, (\theta_t, \epsilon_t) \in S\}
 <p>Repeat the exercise with <span class="math notranslate nohighlight">\(\beta=0.99\)</span> and interpret the change.</p>
 </div>
 <div class="section" id="exercise-3">
-<span id="career-ex3"></span><h3>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
+<span id="career-ex3"></span><h3><span class="section-number">30.3.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
 <p>As best you can, reproduce <a class="reference internal" href="#career-opt-pol"><span class="std std-ref">the figure showing the optimal policy</span></a>.</p>
 <p>Hint: The <code class="docutils literal notranslate"><span class="pre">get_greedy()</span></code> method returns a representation of the optimal
 policy where values 1, 2 and 3 correspond to “stay put”, “new job” and “new life” respectively. Use this and the plots functions (e.g., <code class="docutils literal notranslate"><span class="pre">contour,</span> <span class="pre">contour!</span></code>) to produce the different shadings.</p>
@@ -544,9 +539,9 @@ policy where values 1, 2 and 3 correspond to “stay put”, “new job” and �
 </div>
 </div>
 <div class="section" id="solutions">
-<h2><a class="toc-backref" href="#id12">Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id12"><span class="section-number">30.4. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id5">
-<h3>Exercise 1<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">30.4.1. </span>Exercise 1<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">wp</span> <span class="o">=</span> <span class="n">CareerWorkerProblem</span><span class="p">()</span>
@@ -554,7 +549,7 @@ policy where values 1, 2 and 3 correspond to “stay put”, “new job” and �
 <span class="k">function</span> <span class="n">solve_wp</span><span class="p">(</span><span class="n">wp</span><span class="p">)</span>
     <span class="n">v_init</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">wp</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="n">wp</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
     <span class="n">func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">update_bellman</span><span class="p">(</span><span class="n">wp</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">compute_fixed_point</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">v_init</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">compute_fixed_point</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">v_init</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
     <span class="n">optimal_policy</span> <span class="o">=</span> <span class="n">get_greedy</span><span class="p">(</span><span class="n">wp</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">v</span><span class="p">,</span> <span class="n">optimal_policy</span>
 <span class="k">end</span>
@@ -583,11 +578,11 @@ policy where values 1, 2 and 3 correspond to “stay put”, “new job” and �
 <span class="k">end</span>
 
 <span class="n">plot_array</span> <span class="o">=</span> <span class="kt">Any</span><span class="p">[]</span>
-<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">2</span>
+<span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">2</span>
     <span class="n">θ_path</span><span class="p">,</span> <span class="n">ϵ_path</span> <span class="o">=</span> <span class="n">gen_path</span><span class="p">()</span>
     <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">ϵ_path</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;epsilon&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">θ_path</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;theta&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span><span class="o">=:</span><span class="n">bottomright</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="ss">:bottomright</span><span class="p">)</span>
     <span class="n">push!</span><span class="p">(</span><span class="n">plot_array</span><span class="p">,</span> <span class="n">plt</span><span class="p">)</span>
 <span class="k">end</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">plot_array</span><span class="o">...</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
@@ -600,14 +595,14 @@ policy where values 1, 2 and 3 correspond to “stay put”, “new job” and �
 </div>
 </div>
 <div class="section" id="id6">
-<h3>Exercise 2<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">30.4.2. </span>Exercise 2<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <p>The median for the original parameterization can be computed as follows</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">gen_first_passage_time</span><span class="p">(</span><span class="n">optimal_policy</span><span class="p">)</span>
     <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">i</span> <span class="o">=</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">while</span> <span class="kc">true</span>
+    <span class="k">while</span> <span class="nb">true</span>
         <span class="k">if</span> <span class="n">optimal_policy</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="c"># Stay put</span>
             <span class="k">return</span> <span class="n">t</span>
         <span class="k">elseif</span> <span class="n">optimal_policy</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span> <span class="c"># New job</span>
@@ -622,7 +617,7 @@ policy where values 1, 2 and 3 correspond to “stay put”, “new job” and �
 
 <span class="n">M</span> <span class="o">=</span> <span class="mi">25000</span>
 <span class="n">samples</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span>
+<span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span>
     <span class="n">samples</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">gen_first_passage_time</span><span class="p">(</span><span class="n">optimal_policy</span><span class="p">)</span>
 <span class="k">end</span>
 <span class="n">print</span><span class="p">(</span><span class="n">median</span><span class="p">(</span><span class="n">samples</span><span class="p">))</span>
@@ -644,7 +639,7 @@ policy where values 1, 2 and 3 correspond to “stay put”, “new job” and �
 <span class="n">v2</span><span class="p">,</span> <span class="n">optimal_policy2</span> <span class="o">=</span> <span class="n">solve_wp</span><span class="p">(</span><span class="n">wp2</span><span class="p">)</span>
 
 <span class="n">samples2</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span>
+<span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span>
     <span class="n">samples2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">gen_first_passage_time</span><span class="p">(</span><span class="n">optimal_policy2</span><span class="p">)</span>
 <span class="k">end</span>
 <span class="n">print</span><span class="p">(</span><span class="n">median</span><span class="p">(</span><span class="n">samples2</span><span class="p">))</span>
@@ -659,7 +654,7 @@ policy where values 1, 2 and 3 correspond to “stay put”, “new job” and �
 </div>
 </div>
 <div class="section" id="id7">
-<h3>Exercise 3<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">30.4.3. </span>Exercise 3<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>Here’s the code to reproduce the original figure</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -670,12 +665,12 @@ policy where values 1, 2 and 3 correspond to “stay put”, “new job” and �
 <span class="n">x_grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
 <span class="n">y_grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
 
-<span class="n">contour</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">optimal_policy</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">true</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">lvls</span><span class="p">,</span><span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">Blues</span><span class="p">,</span>
-        <span class="n">fillalpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cbar</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+<span class="n">contour</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">optimal_policy</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">lvls</span><span class="p">,</span><span class="n">color</span> <span class="o">=</span> <span class="ss">:Blues</span><span class="p">,</span>
+        <span class="n">fillalpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cbar</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
 <span class="n">contour!</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;theta&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;epsilon&quot;</span><span class="p">)</span>
-<span class="n">annotate!</span><span class="p">([(</span><span class="mf">1.8</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;new life&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="o">:</span><span class="n">white</span><span class="p">,</span> <span class="o">:</span><span class="n">center</span><span class="p">))])</span>
-<span class="n">annotate!</span><span class="p">([(</span><span class="mf">4.5</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;new job&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="o">:</span><span class="n">center</span><span class="p">))])</span>
-<span class="n">annotate!</span><span class="p">([(</span><span class="mf">4.0</span><span class="p">,</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;stay put&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="o">:</span><span class="n">center</span><span class="p">))])</span>
+<span class="n">annotate!</span><span class="p">([(</span><span class="mf">1.8</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;new life&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="ss">:white</span><span class="p">,</span> <span class="ss">:center</span><span class="p">))])</span>
+<span class="n">annotate!</span><span class="p">([(</span><span class="mf">4.5</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;new job&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="ss">:center</span><span class="p">))])</span>
+<span class="n">annotate!</span><span class="p">([(</span><span class="mf">4.0</span><span class="p">,</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;stay put&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="ss">:center</span><span class="p">))])</span>
 </pre></div>
 </div>
 </div>
@@ -693,12 +688,12 @@ policy where values 1, 2 and 3 correspond to “stay put”, “new job” and �
 <span class="n">x_grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
 <span class="n">y_grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
 
-<span class="n">contour</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">optimal_policy</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">true</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">lvls</span><span class="p">,</span><span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">Blues</span><span class="p">,</span>
-        <span class="n">fillalpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cbar</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+<span class="n">contour</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">optimal_policy</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">lvls</span><span class="p">,</span><span class="n">color</span> <span class="o">=</span> <span class="ss">:Blues</span><span class="p">,</span>
+        <span class="n">fillalpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">cbar</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
 <span class="n">contour!</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;theta&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;epsilon&quot;</span><span class="p">)</span>
-<span class="n">annotate!</span><span class="p">([(</span><span class="mf">1.8</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;new life&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="o">:</span><span class="n">white</span><span class="p">,</span> <span class="o">:</span><span class="n">center</span><span class="p">))])</span>
-<span class="n">annotate!</span><span class="p">([(</span><span class="mf">4.5</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;new job&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="o">:</span><span class="n">center</span><span class="p">))])</span>
-<span class="n">annotate!</span><span class="p">([(</span><span class="mf">4.0</span><span class="p">,</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;stay put&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="o">:</span><span class="n">center</span><span class="p">))])</span>
+<span class="n">annotate!</span><span class="p">([(</span><span class="mf">1.8</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;new life&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="ss">:white</span><span class="p">,</span> <span class="ss">:center</span><span class="p">))])</span>
+<span class="n">annotate!</span><span class="p">([(</span><span class="mf">4.5</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;new job&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="ss">:center</span><span class="p">))])</span>
+<span class="n">annotate!</span><span class="p">([(</span><span class="mf">4.0</span><span class="p">,</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">text</span><span class="p">(</span><span class="s">&quot;stay put&quot;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="ss">:center</span><span class="p">))])</span>
 </pre></div>
 </div>
 </div>
@@ -723,16 +718,16 @@ less realistic.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.5"
+            mode: "julia-1.6"
         },
         kernelOptions: {
-            kernelName: "julia-1.5",
+            kernelName: "julia-1.6",
             path: "./dynamic_programming"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.5'</script>
+    <script>kernelName = 'julia-1.6'</script>
 
                     </div>
                     
@@ -761,340 +756,408 @@ less realistic.</p>
                 </div>
 
                 <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
-                    <ul class="current nav bd-sidenav nav sidenav_l1">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/getting_started.html">
-   Setting up Your Julia Environment
+   1. Setting up Your Julia Environment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_environment.html">
-   Interacting with Julia
+   2. Interacting with Julia
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
-   Introductory Examples
+   3. Introductory Examples
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
-   Julia Essentials
+   4. Julia Essentials
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
-   Arrays, Tuples, Ranges, and Other Fundamental Types
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
-   Introduction to Types and Generic Programming
+   6. Introduction to Types and Generic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/generic_programming.html">
-   Generic Programming
+   7. Generic Programming
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/general_packages.html">
-   General Purpose Packages
+   8. General Purpose Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/data_statistical_packages.html">
-   Data and Statistics Packages
+   9. Data and Statistics Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
-   Solvers, Optimizers, and Automatic Differentiation
+   10. Solvers, Optimizers, and Automatic Differentiation
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/tools_editors.html">
-   Julia Tools and Editors
+   11. Julia Tools and Editors
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/version_control.html">
-   Git, GitHub, and Version Control
+   12. Git, GitHub, and Version Control
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/testing.html">
-   Packages, Testing, and Continuous Integration
+   13. Packages, Testing, and Continuous Integration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/need_for_speed.html">
-   The Need for Speed
+   14. The Need for Speed
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
-   Linear Algebra
+   15. Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
-   Orthogonal Projections and Their Applications
+   16. Orthogonal Projections and Their Applications
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
-   LLN and CLT
+   17. LLN and CLT
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   Linear State Space Models
+   18. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   Finite Markov Chains
+   19. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   Continuous State Markov Chains
+   20. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   A First Look at the Kalman Filter
+   22. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   Numerical Linear Algebra and Factorizations
+   23. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   Krylov Methods and Matrix Conditioning
+   24. Krylov Methods and Matrix Conditioning
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="short_path.html">
-   Shortest Paths
+   25. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="mccall_model.html">
-   Job Search I: The McCall Search Model
+   26. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="mccall_model_with_separation.html">
-   Job Search II: Search and Separation
+   27. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="wald_friedman.html">
-   A Problem that Stumped Milton Friedman
+   28. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="odu.html">
-   Job Search III: Search with Learning
+   29. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   Job Search IV: Modeling Career Choice
+   30. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="jv.html">
-   Job Search V: On-the-Job Search
+   31. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="optgrowth.html">
-   Optimal Growth I: The Stochastic Optimal Growth Model
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="coleman_policy_iter.html">
-   Optimal Growth II: Time Iteration
+   33. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="egm_policy_iter.html">
-   Optimal Growth III: The Endogenous Grid Method
+   34. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lqcontrol.html">
-   LQ Dynamic Programming Problems
+   35. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="perm_income.html">
-   Optimal Savings I: The Permanent Income Model
+   36. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="perm_income_cons.html">
-   Optimal Savings II: LQ Techniques
+   37. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="smoothing.html">
-   Consumption and Tax Smoothing with Complete and Incomplete Markets
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="ifp.html">
-   Optimal Savings III: Occasionally Binding Constraints
+   39. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="robustness.html">
-   Robustness
+   40. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="discrete_dp.html">
-   Discrete State Dynamic Programming
+   41. Discrete State Dynamic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   Modeling COVID 19 with Differential Equations
+   42. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   Schelling’s Segregation Model
+   44. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   A Lake Model of Employment and Unemployment
+   45. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   Rational Expectations Equilibrium
+   46. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   Markov Perfect Equilibrium
+   47. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   Asset Pricing I: Finite State Models
+   48. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   Asset Pricing II: The Lucas Asset Pricing Model
+   49. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   Asset Pricing III:  Incomplete Markets
+   50. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   Uncertainty Traps
+   51. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   The Aiyagari Model
+   52. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   Default Risk and Income Fluctuations
+   53. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   Globalization and Cycles
+   54. Globalization and Cycles
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   Covariance Stationary Processes
+   55. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   Estimation of Spectra
+   56. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   Additive Functionals
+   57. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   Multiplicative Functionals
+   58. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   Classical Control with Linear Algebra
+   59. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   Classical Filtering With Linear Algebra
+   60. Classical Filtering With Linear Algebra
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   Dynamic Stackelberg Problems
+   61. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   Optimal Taxation in an LQ Economy
+   62. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   Optimal Taxation with State-Contingent Debt
+   63. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   Optimal Taxation without State-Contingent Debt
+   64. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   About these Lectures
+   65. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   Troubleshooting
+   66. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   References
+   67. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   Lecture Status
+   68. Lecture Status
   </a>
  </li>
 </ul>
@@ -1133,7 +1196,7 @@ less realistic.</p>
                     <li data-tippy-content="Download Notebook"><a href="_notebooks/dynamic_programming/career.ipynb" download><i data-feather="download-cloud"></i></a></li>
                     <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/career.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
                         <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
-                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/career.ipynb" download><i data-feather="github"></i></a></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/career.md" download><i data-feather="github"></i></a></li>
                 </ul>
 
             </div>

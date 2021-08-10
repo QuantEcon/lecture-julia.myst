@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linear Algebra &#8212; Quantitative Economics with Julia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>15. Linear Algebra &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -26,8 +26,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -42,15 +42,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -58,11 +55,13 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/linear_algebra.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Orthogonal Projections and Their Applications" href="orth_proj.html" />
-    <link rel="prev" title="The Need for Speed" href="../more_julia/need_for_speed.html" />
+    <link rel="next" title="16. Orthogonal Projections and Their Applications" href="orth_proj.html" />
+    <link rel="prev" title="14. The Need for Speed" href="../more_julia/need_for_speed.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -112,78 +111,78 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   Overview
+   15.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#vectors">
-   Vectors
+   15.2. Vectors
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#vector-operations">
-     Vector Operations
+     15.2.1. Vector Operations
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#inner-product-and-norm">
-     Inner Product and Norm
+     15.2.2. Inner Product and Norm
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#span">
-     Span
+     15.2.3. Span
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#examples">
-       Examples
+       15.2.3.1. Examples
       </a>
      </li>
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#linear-independence">
-     Linear Independence
+     15.2.4. Linear Independence
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#unique-representations">
-     Unique Representations
+     15.2.5. Unique Representations
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#matrices">
-   Matrices
+   15.3. Matrices
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#matrix-operations">
-     Matrix Operations
+     15.3.1. Matrix Operations
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#matrices-in-julia">
-     Matrices in Julia
+     15.3.2. Matrices in Julia
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#matrices-as-maps">
-     Matrices as Maps
+     15.3.3. Matrices as Maps
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solving-systems-of-equations">
-   Solving Systems of Equations
+   15.4. Solving Systems of Equations
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-n-times-n-case">
-     The
+     15.4.1. The
      <span class="math notranslate nohighlight">
       \(n \times n\)
      </span>
@@ -192,124 +191,124 @@
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#inverse-matrices">
-       Inverse Matrices
+       15.4.1.1. Inverse Matrices
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#determinants">
-       Determinants
+       15.4.1.2. Determinants
       </a>
      </li>
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#more-rows-than-columns">
-     More Rows than Columns
+     15.4.2. More Rows than Columns
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#more-columns-than-rows">
-     More Columns than Rows
+     15.4.3. More Columns than Rows
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#linear-equations-with-julia">
-     Linear Equations with Julia
+     15.4.4. Linear Equations with Julia
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#eigenvalues-and-eigenvectors">
-   Eigenvalues and Eigenvectors
+   15.5. Eigenvalues and Eigenvectors
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#generalized-eigenvalues">
-     Generalized Eigenvalues
+     15.5.1. Generalized Eigenvalues
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#further-topics">
-   Further Topics
+   15.6. Further Topics
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#series-expansions">
-     Series Expansions
+     15.6.1. Series Expansions
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#matrix-norms">
-       Matrix Norms
+       15.6.1.1. Matrix Norms
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#neumann-s-theorem">
-       Neumann’s Theorem
+       15.6.1.2. Neumann’s Theorem
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#spectral-radius">
-       Spectral Radius
+       15.6.1.3. Spectral Radius
       </a>
      </li>
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#positive-definite-matrices">
-     Positive Definite Matrices
+     15.6.2. Positive Definite Matrices
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#differentiating-linear-and-quadratic-forms">
-     Differentiating Linear and Quadratic forms
+     15.6.3. Differentiating Linear and Quadratic forms
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#further-reading">
-     Further Reading
+     15.6.4. Further Reading
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#exercises">
-   Exercises
+   15.7. Exercises
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-1">
-     Exercise 1
+     15.7.1. Exercise 1
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solutions">
-   Solutions
+   15.8. Solutions
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id4">
-     Exercise 1
+     15.8.1. Exercise 1
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#id5">
-       1.
+       15.8.1.1. 1.
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#id6">
-       2.
+       15.8.1.2. 2.
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#id7">
-       3.
+       15.8.1.3. 3.
       </a>
      </li>
     </ul>
@@ -366,7 +365,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="id1">
-<h1><a class="toc-backref" href="#id8">Linear Algebra</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id8"><span class="section-number">15. </span>Linear Algebra</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <span id="index-0"></span><p class="topic-title">Contents</p>
 <ul class="simple">
@@ -385,7 +384,7 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id9">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9"><span class="section-number">15.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Linear algebra is one of the most useful branches of applied mathematics for economists to invest in.</p>
 <p>For example, many applied problems in economics and finance require the solution of a linear system of equations, such as</p>
 <div class="math notranslate nohighlight">
@@ -397,7 +396,7 @@
 \end{split}\]</div>
 <p>or, more generally,</p>
 <div class="math notranslate nohighlight" id="equation-la-se">
-<span class="eqno">(8)<a class="headerlink" href="#equation-la-se" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{array}{c}
+<span class="eqno">(15.1)<a class="headerlink" href="#equation-la-se" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{array}{c}
     y_1 = a_{11} x_1 + a_{12} x_2 + \cdots + a_{1k} x_k \\
     \vdots  \\
     y_n = a_{n1} x_1 + a_{n2} x_2 + \cdots + a_{nk} x_k
@@ -417,7 +416,7 @@
 material that will be used in applications as we go along.</p>
 </div>
 <div class="section" id="vectors">
-<h2><a class="toc-backref" href="#id10"><span class="target" id="index-1"></span>Vectors</a><a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10"><span class="section-number">15.2. </span><span class="target" id="index-1"></span>Vectors</a><a class="headerlink" href="#vectors" title="Permalink to this headline">¶</a></h2>
 <p id="index-2">A <em>vector</em> is an element of a vector space.</p>
 <p>Vectors can be added together and scaled (multiplied) by scalars.</p>
 <p>Vectors can be written as <span class="math notranslate nohighlight">\(x = [x_1, \ldots, x_n]\)</span>.</p>
@@ -429,7 +428,7 @@ the point.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span><span class="p">,</span> <span class="n">Plots</span>
-<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=:</span><span class="n">png</span><span class="p">);</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="ss">:png</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -439,13 +438,13 @@ the point.</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x_vals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="p">;</span> <span class="mi">2</span> <span class="o">-</span><span class="mi">3</span> <span class="o">-</span><span class="mi">4</span><span class="p">]</span>
 <span class="n">y_vals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="p">;</span> <span class="mi">4</span> <span class="mi">3</span> <span class="o">-</span><span class="mf">3.5</span><span class="p">]</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">x_vals</span><span class="p">,</span> <span class="n">y_vals</span><span class="p">,</span> <span class="n">arrow</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">blue</span><span class="p">,</span>
-     <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">none</span><span class="p">,</span> <span class="n">xlims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">ylims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x_vals</span><span class="p">,</span> <span class="n">y_vals</span><span class="p">,</span> <span class="n">arrow</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:blue</span><span class="p">,</span>
+     <span class="n">legend</span> <span class="o">=</span> <span class="ss">:none</span><span class="p">,</span> <span class="n">xlims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">ylims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
      <span class="n">annotations</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">2.2</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">,</span> <span class="s">&quot;[2, 4]&quot;</span><span class="p">),</span>
                     <span class="p">(</span><span class="o">-</span><span class="mf">3.3</span><span class="p">,</span> <span class="mf">3.3</span><span class="p">,</span> <span class="s">&quot;[-3, 3]&quot;</span><span class="p">),</span>
                     <span class="p">(</span><span class="o">-</span><span class="mf">4.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.85</span><span class="p">,</span> <span class="s">&quot;[-4, -3.5]&quot;</span><span class="p">)],</span>
      <span class="n">xticks</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="o">:</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">,</span> <span class="n">yticks</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="o">:</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">,</span>
-     <span class="n">framestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">origin</span><span class="p">)</span>
+     <span class="n">framestyle</span> <span class="o">=</span> <span class="ss">:origin</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -454,7 +453,7 @@ the point.</p>
 </div>
 </div>
 <div class="section" id="vector-operations">
-<h3>Vector Operations<a class="headerlink" href="#vector-operations" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.2.1. </span>Vector Operations<a class="headerlink" href="#vector-operations" title="Permalink to this headline">¶</a></h3>
 <p id="index-3">The two most common operators for vectors are addition and scalar multiplication, which we now describe.</p>
 <p>As a matter of definition, when we add two vectors, we add them element by element</p>
 <div class="math notranslate nohighlight">
@@ -513,10 +512,10 @@ vector <span class="math notranslate nohighlight">\(x\)</span> and produces</p>
 <span class="n">vals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">;</span> <span class="n">x</span> <span class="o">*</span> <span class="n">scalars</span><span class="p">]</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[(</span><span class="o">-</span><span class="mf">3.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.2</span><span class="p">,</span> <span class="s">&quot;-2x&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mf">2.4</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="s">&quot;x&quot;</span><span class="p">),</span> <span class="p">(</span><span class="mf">4.4</span><span class="p">,</span> <span class="mf">3.8</span><span class="p">,</span> <span class="s">&quot;2x&quot;</span><span class="p">)]</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">arrow</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="o">:</span><span class="n">red</span> <span class="o">:</span><span class="n">red</span> <span class="o">:</span><span class="n">blue</span><span class="p">],</span>
-     <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">none</span><span class="p">,</span> <span class="n">xlims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">ylims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">arrow</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="ss">:red</span> <span class="ss">:red</span> <span class="ss">:blue</span><span class="p">],</span>
+     <span class="n">legend</span> <span class="o">=</span> <span class="ss">:none</span><span class="p">,</span> <span class="n">xlims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">ylims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
      <span class="n">annotations</span> <span class="o">=</span> <span class="n">labels</span><span class="p">,</span> <span class="n">xticks</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="o">:</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">,</span> <span class="n">yticks</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span><span class="o">:</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">,</span>
-     <span class="n">framestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">origin</span><span class="p">)</span>
+     <span class="n">framestyle</span> <span class="o">=</span> <span class="ss">:origin</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -533,7 +532,7 @@ vector <span class="math notranslate nohighlight">\(x\)</span> and produces</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Array{Float64,1}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
  1.0
  1.0
  1.0
@@ -548,7 +547,7 @@ vector <span class="math notranslate nohighlight">\(x\)</span> and produces</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Array{Int64,1}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Int64}:
  2
  4
  6
@@ -563,7 +562,7 @@ vector <span class="math notranslate nohighlight">\(x\)</span> and produces</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Array{Float64,1}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
  3.0
  5.0
  7.0
@@ -578,7 +577,7 @@ vector <span class="math notranslate nohighlight">\(x\)</span> and produces</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Array{Float64,1}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
  4.0
  4.0
  4.0
@@ -588,7 +587,7 @@ vector <span class="math notranslate nohighlight">\(x\)</span> and produces</p>
 </div>
 </div>
 <div class="section" id="inner-product-and-norm">
-<h3>Inner Product and Norm<a class="headerlink" href="#inner-product-and-norm" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.2.2. </span>Inner Product and Norm<a class="headerlink" href="#inner-product-and-norm" title="Permalink to this headline">¶</a></h3>
 <span class="target" id="index-4"></span><p id="index-5">The <em>inner product</em> of vectors <span class="math notranslate nohighlight">\(x,y \in \mathbb R ^n\)</span> is defined as</p>
 <div class="math notranslate nohighlight">
 \[
@@ -660,7 +659,7 @@ follows</p>
 </div>
 </div>
 <div class="section" id="span">
-<h3>Span<a class="headerlink" href="#span" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.2.3. </span>Span<a class="headerlink" href="#span" title="Permalink to this headline">¶</a></h3>
 <p id="index-6">Given a set of vectors <span class="math notranslate nohighlight">\(A := \{a_1, \ldots, a_k\}\)</span> in <span class="math notranslate nohighlight">\(\mathbb R ^n\)</span>, it’s natural to think about the new vectors we can create by performing linear operations.</p>
 <p>New vectors created in this manner are called <em>linear combinations</em> of <span class="math notranslate nohighlight">\(A\)</span>.</p>
 <p>In particular, <span class="math notranslate nohighlight">\(y \in \mathbb R ^n\)</span> is a linear combination of <span class="math notranslate nohighlight">\(A := \{a_1, \ldots, a_k\}\)</span> if</p>
@@ -686,10 +685,10 @@ y = \beta_1 a_1 + \cdots + \beta_k a_k
 <span class="c"># draw the plane</span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">n</span><span class="p">)</span>
-<span class="n">z2</span> <span class="o">=</span> <span class="p">[</span> <span class="n">f</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="n">row</span><span class="p">],</span> <span class="n">grid</span><span class="p">[</span><span class="n">col</span><span class="p">])</span> <span class="k">for</span> <span class="n">row</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span> <span class="n">col</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span> <span class="p">]</span>
-<span class="n">wireframe</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="o">:</span><span class="n">blues</span><span class="p">,</span> <span class="n">gridalpha</span> <span class="o">=</span><span class="mi">1</span> <span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">x_vec</span><span class="p">,</span> <span class="n">y_vec</span><span class="p">,</span> <span class="n">z_vec</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="o">:</span><span class="n">blue</span> <span class="o">:</span><span class="n">green</span><span class="p">],</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
-      <span class="n">colorbar</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+<span class="n">z2</span> <span class="o">=</span> <span class="p">[</span> <span class="n">f</span><span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="n">row</span><span class="p">],</span> <span class="n">grid</span><span class="p">[</span><span class="n">col</span><span class="p">])</span> <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span> <span class="n">col</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span> <span class="p">]</span>
+<span class="n">wireframe</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="ss">:blues</span><span class="p">,</span> <span class="n">gridalpha</span> <span class="o">=</span><span class="mi">1</span> <span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">x_vec</span><span class="p">,</span> <span class="n">y_vec</span><span class="p">,</span> <span class="n">z_vec</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="ss">:blue</span> <span class="ss">:green</span><span class="p">],</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span>
+      <span class="n">colorbar</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -698,7 +697,7 @@ y = \beta_1 a_1 + \cdots + \beta_k a_k
 </div>
 </div>
 <div class="section" id="examples">
-<h4>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">15.2.3.1. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h4>
 <p>If <span class="math notranslate nohighlight">\(A\)</span> contains only one vector <span class="math notranslate nohighlight">\(a_1 \in \mathbb R ^2\)</span>, then its
 span is just the scalar multiples of <span class="math notranslate nohighlight">\(a_1\)</span>, which is the unique line passing through both <span class="math notranslate nohighlight">\(a_1\)</span> and the origin.</p>
 <p>If <span class="math notranslate nohighlight">\(A = \{e_1, e_2, e_3\}\)</span> consists  of the <em>canonical basis vectors</em> of <span class="math notranslate nohighlight">\(\mathbb R ^3\)</span>, that is</p>
@@ -746,7 +745,7 @@ x = x_1 e_1 + x_2 e_2 + x_3 e_3
 </div>
 </div>
 <div class="section" id="linear-independence">
-<span id="la-li"></span><h3>Linear Independence<a class="headerlink" href="#linear-independence" title="Permalink to this headline">¶</a></h3>
+<span id="la-li"></span><h3><span class="section-number">15.2.4. </span>Linear Independence<a class="headerlink" href="#linear-independence" title="Permalink to this headline">¶</a></h3>
 <p id="index-7">As we’ll see, it’s often desirable to find families of vectors with relatively large span, so that many vectors can be described by linear operators on a few vectors.</p>
 <p>The condition we need for a set of vectors to have a large span is what’s called linear independence.</p>
 <p>In particular, a collection of vectors <span class="math notranslate nohighlight">\(A := \{a_1, \ldots, a_k\}\)</span> in <span class="math notranslate nohighlight">\(\mathbb R ^n\)</span> is said to be</p>
@@ -772,7 +771,7 @@ x = x_1 e_1 + x_2 e_2 + x_3 e_3
 <p>(The zero in the first expression is the origin of <span class="math notranslate nohighlight">\(\mathbb R ^n\)</span>)</p>
 </div>
 <div class="section" id="unique-representations">
-<span id="la-unique-reps"></span><h3>Unique Representations<a class="headerlink" href="#unique-representations" title="Permalink to this headline">¶</a></h3>
+<span id="la-unique-reps"></span><h3><span class="section-number">15.2.5. </span>Unique Representations<a class="headerlink" href="#unique-representations" title="Permalink to this headline">¶</a></h3>
 <p>Another nice thing about sets of linearly independent vectors is that each element in the span has a unique representation as a linear combination of these vectors.</p>
 <p>In other words, if <span class="math notranslate nohighlight">\(A := \{a_1, \ldots, a_k\} \subset \mathbb R ^n\)</span> is
 linearly independent and</p>
@@ -792,7 +791,7 @@ then</p>
 </div>
 </div>
 <div class="section" id="matrices">
-<h2><a class="toc-backref" href="#id11">Matrices</a><a class="headerlink" href="#matrices" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11"><span class="section-number">15.3. </span>Matrices</a><a class="headerlink" href="#matrices" title="Permalink to this headline">¶</a></h2>
 <p id="index-8">Matrices are a neat way of organizing data for use in linear operations.</p>
 <p>An <span class="math notranslate nohighlight">\(n \times k\)</span> matrix is a rectangular array <span class="math notranslate nohighlight">\(A\)</span> of numbers with <span class="math notranslate nohighlight">\(n\)</span> rows and <span class="math notranslate nohighlight">\(k\)</span> columns:</p>
 <div class="math notranslate nohighlight">
@@ -817,7 +816,7 @@ A =
 <p><span class="math notranslate nohighlight">\(A\)</span> is called <em>diagonal</em> if the only nonzero entries are on the principal diagonal.</p>
 <p>If, in addition to being diagonal, each element along the principal diagonal is equal to 1, then <span class="math notranslate nohighlight">\(A\)</span> is called the <em>identity matrix</em>, and denoted by <span class="math notranslate nohighlight">\(I\)</span>.</p>
 <div class="section" id="matrix-operations">
-<h3>Matrix Operations<a class="headerlink" href="#matrix-operations" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.3.1. </span>Matrix Operations<a class="headerlink" href="#matrix-operations" title="Permalink to this headline">¶</a></h3>
 <p id="index-9">Just as was the case for vectors, a number of algebraic operations are defined for matrices.</p>
 <p>Scalar multiplication and addition are immediate generalizations of the vector case:</p>
 <div class="math notranslate nohighlight">
@@ -883,7 +882,7 @@ resulting matrix <span class="math notranslate nohighlight">\(A B\)</span> is <s
 <p>As perhaps the most important special case, consider multiplying <span class="math notranslate nohighlight">\(n \times k\)</span> matrix <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(k \times 1\)</span> column vector <span class="math notranslate nohighlight">\(x\)</span>.</p>
 <p>According to the preceding rule, this gives us an <span class="math notranslate nohighlight">\(n \times 1\)</span> column vector</p>
 <div class="math notranslate nohighlight" id="equation-la-atx">
-<span class="eqno">(9)<a class="headerlink" href="#equation-la-atx" title="Permalink to this equation">¶</a></span>\[\begin{split}A x =
+<span class="eqno">(15.2)<a class="headerlink" href="#equation-la-atx" title="Permalink to this equation">¶</a></span>\[\begin{split}A x =
 \left[
 \begin{array}{ccc}
     a_{11} &amp;  \cdots &amp; a_{1k} \\
@@ -914,7 +913,7 @@ resulting matrix <span class="math notranslate nohighlight">\(A B\)</span> is <s
 <p>If <span class="math notranslate nohighlight">\(I\)</span> is the <span class="math notranslate nohighlight">\(n \times n\)</span> identity matrix, then <span class="math notranslate nohighlight">\(IA = A\)</span>.</p>
 </div>
 <div class="section" id="matrices-in-julia">
-<h3>Matrices in Julia<a class="headerlink" href="#matrices-in-julia" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.3.2. </span>Matrices in Julia<a class="headerlink" href="#matrices-in-julia" title="Permalink to this headline">¶</a></h3>
 <p>Julia arrays are also used as matrices, and have fast, efficient functions and methods for all the standard matrix operations.</p>
 <p>You can create them as follows</p>
 <div class="cell docutils container">
@@ -925,7 +924,7 @@ resulting matrix <span class="math notranslate nohighlight">\(A B\)</span> is <s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Array{Int64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Int64}:
  1  2
  3  4
 </pre></div>
@@ -939,7 +938,7 @@ resulting matrix <span class="math notranslate nohighlight">\(A B\)</span> is <s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Array{Int64,2}
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Matrix{Int64} (alias for Array{Int64, 2})
 </pre></div>
 </div>
 </div>
@@ -967,7 +966,7 @@ resulting matrix <span class="math notranslate nohighlight">\(A B\)</span> is <s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×3 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×3 Matrix{Float64}:
  1.0  1.0  1.0
  1.0  1.0  1.0
  1.0  1.0  1.0
@@ -977,7 +976,7 @@ resulting matrix <span class="math notranslate nohighlight">\(A B\)</span> is <s
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="mi">2</span><span class="nb">I</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="mi">2</span><span class="n">I</span>
 </pre></div>
 </div>
 </div>
@@ -990,12 +989,12 @@ resulting matrix <span class="math notranslate nohighlight">\(A B\)</span> is <s
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">+</span> <span class="nb">I</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">+</span> <span class="n">I</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×3 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×3 Matrix{Float64}:
  2.0  1.0  1.0
  1.0  2.0  1.0
  1.0  1.0  2.0
@@ -1007,7 +1006,7 @@ resulting matrix <span class="math notranslate nohighlight">\(A B\)</span> is <s
 <p>In particular, <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">*</span> <span class="pre">B</span></code> is matrix multiplication, whereas <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">.*</span> <span class="pre">B</span></code> is element by element multiplication.</p>
 </div>
 <div class="section" id="matrices-as-maps">
-<span id="la-linear-map"></span><h3>Matrices as Maps<a class="headerlink" href="#matrices-as-maps" title="Permalink to this headline">¶</a></h3>
+<span id="la-linear-map"></span><h3><span class="section-number">15.3.3. </span>Matrices as Maps<a class="headerlink" href="#matrices-as-maps" title="Permalink to this headline">¶</a></h3>
 <p id="index-10">Each <span class="math notranslate nohighlight">\(n \times k\)</span> matrix <span class="math notranslate nohighlight">\(A\)</span> can be identified with a function <span class="math notranslate nohighlight">\(f(x) = Ax\)</span> that maps <span class="math notranslate nohighlight">\(x \in \mathbb R ^k\)</span> into <span class="math notranslate nohighlight">\(y = Ax \in \mathbb R ^n\)</span>.</p>
 <p>These kinds of functions have a special property: they are <em>linear</em>.</p>
 <p>A function <span class="math notranslate nohighlight">\(f \colon \mathbb R ^k \to \mathbb R ^n\)</span> is called <em>linear</em> if, for all <span class="math notranslate nohighlight">\(x, y \in \mathbb R ^k\)</span> and all scalars <span class="math notranslate nohighlight">\(\alpha, \beta\)</span>, we have</p>
@@ -1020,13 +1019,13 @@ f(\alpha x + \beta y) = \alpha f(x) + \beta f(y)
 </div>
 </div>
 <div class="section" id="solving-systems-of-equations">
-<h2><a class="toc-backref" href="#id12">Solving Systems of Equations</a><a class="headerlink" href="#solving-systems-of-equations" title="Permalink to this headline">¶</a></h2>
-<p id="index-11">Recall again the system of equations <a class="reference internal" href="#equation-la-se">(8)</a>.</p>
-<p>If we compare <a class="reference internal" href="#equation-la-se">(8)</a> and <a class="reference internal" href="#equation-la-atx">(9)</a>, we see that <a class="reference internal" href="#equation-la-se">(8)</a> can now be
+<h2><a class="toc-backref" href="#id12"><span class="section-number">15.4. </span>Solving Systems of Equations</a><a class="headerlink" href="#solving-systems-of-equations" title="Permalink to this headline">¶</a></h2>
+<p id="index-11">Recall again the system of equations <a class="reference internal" href="#equation-la-se">(15.1)</a>.</p>
+<p>If we compare <a class="reference internal" href="#equation-la-se">(15.1)</a> and <a class="reference internal" href="#equation-la-atx">(15.2)</a>, we see that <a class="reference internal" href="#equation-la-se">(15.1)</a> can now be
 written more conveniently as</p>
 <div class="math notranslate nohighlight" id="equation-la-se2">
-<span class="eqno">(10)<a class="headerlink" href="#equation-la-se2" title="Permalink to this equation">¶</a></span>\[y = Ax\]</div>
-<p>The problem we face is to determine a vector <span class="math notranslate nohighlight">\(x \in \mathbb R ^k\)</span> that solves <a class="reference internal" href="#equation-la-se2">(10)</a>, taking <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(A\)</span> as given.</p>
+<span class="eqno">(15.3)<a class="headerlink" href="#equation-la-se2" title="Permalink to this equation">¶</a></span>\[y = Ax\]</div>
+<p>The problem we face is to determine a vector <span class="math notranslate nohighlight">\(x \in \mathbb R ^k\)</span> that solves <a class="reference internal" href="#equation-la-se2">(15.3)</a>, taking <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(A\)</span> as given.</p>
 <p>This is a special case of a more general problem: Find an <span class="math notranslate nohighlight">\(x\)</span> such that <span class="math notranslate nohighlight">\(y = f(x)\)</span>.</p>
 <p>Given an arbitrary function <span class="math notranslate nohighlight">\(f\)</span> and a <span class="math notranslate nohighlight">\(y\)</span>, is there always an <span class="math notranslate nohighlight">\(x\)</span> such that <span class="math notranslate nohighlight">\(y = f(x)\)</span>?</p>
 <p>If so, is it always unique?</p>
@@ -1035,15 +1034,15 @@ written more conveniently as</p>
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="mf">0.6</span><span class="n">cos</span><span class="p">(</span><span class="mi">4</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.3</span>
 <span class="n">grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
-<span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">extrema</span><span class="p">(</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="kp">in</span> <span class="n">grid</span> <span class="p">)</span>
+<span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">=</span> <span class="n">extrema</span><span class="p">(</span> <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="k">in</span> <span class="n">grid</span> <span class="p">)</span>
 <span class="n">plt1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;f&quot;</span><span class="p">)</span>
-<span class="n">hline!</span><span class="p">(</span><span class="n">plt1</span><span class="p">,</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)],</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dot</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
-<span class="n">vline!</span><span class="p">(</span><span class="n">plt1</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.07</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.07</span><span class="p">],</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dot</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt1</span><span class="p">,</span> <span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="n">y_min</span> <span class="n">y_min</span><span class="p">;</span> <span class="n">y_max</span> <span class="n">y_max</span><span class="p">],</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">blue</span><span class="p">,</span>
+<span class="n">hline!</span><span class="p">(</span><span class="n">plt1</span><span class="p">,</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)],</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="ss">:dot</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">vline!</span><span class="p">(</span><span class="n">plt1</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.07</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.07</span><span class="p">],</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="ss">:dot</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt1</span><span class="p">,</span> <span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="n">y_min</span> <span class="n">y_min</span><span class="p">;</span> <span class="n">y_max</span> <span class="n">y_max</span><span class="p">],</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:blue</span><span class="p">,</span>
       <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;range of f&quot;</span> <span class="s">&quot;&quot;</span><span class="p">])</span>
 <span class="n">plt2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;f&quot;</span><span class="p">)</span>
-<span class="n">hline!</span><span class="p">(</span><span class="n">plt2</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dot</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt2</span><span class="p">,</span> <span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="n">y_min</span> <span class="n">y_min</span><span class="p">;</span> <span class="n">y_max</span> <span class="n">y_max</span><span class="p">],</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">blue</span><span class="p">,</span>
+<span class="n">hline!</span><span class="p">(</span><span class="n">plt2</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="ss">:dot</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt2</span><span class="p">,</span> <span class="n">fill</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">[</span><span class="n">y_min</span> <span class="n">y_min</span><span class="p">;</span> <span class="n">y_max</span> <span class="n">y_max</span><span class="p">],</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:blue</span><span class="p">,</span>
       <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;range of f&quot;</span> <span class="s">&quot;&quot;</span><span class="p">])</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">plt1</span><span class="p">,</span> <span class="n">plt2</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">))</span>
 </pre></div>
@@ -1055,7 +1054,7 @@ written more conveniently as</p>
 </div>
 <p>In the first plot there are multiple solutions, as the function is not one-to-one, while
 in the second there are no solutions, since <span class="math notranslate nohighlight">\(y\)</span> lies outside the range of <span class="math notranslate nohighlight">\(f\)</span>.</p>
-<p>Can we impose conditions on <span class="math notranslate nohighlight">\(A\)</span> in <a class="reference internal" href="#equation-la-se2">(10)</a> that rule out these problems?</p>
+<p>Can we impose conditions on <span class="math notranslate nohighlight">\(A\)</span> in <a class="reference internal" href="#equation-la-se2">(15.3)</a> that rule out these problems?</p>
 <p>In this context, the most important thing to recognize about the expression
 <span class="math notranslate nohighlight">\(Ax\)</span> is that it corresponds to a linear combination of the columns of <span class="math notranslate nohighlight">\(A\)</span>.</p>
 <p>In particular, if <span class="math notranslate nohighlight">\(a_1, \ldots, a_k\)</span> are the columns of <span class="math notranslate nohighlight">\(A\)</span>, then</p>
@@ -1069,7 +1068,7 @@ Ax = x_1 a_1 + \cdots + x_k a_k
 <p>A happy fact is that linear independence of the columns of <span class="math notranslate nohighlight">\(A\)</span> also gives us uniqueness.</p>
 <p>Indeed, it follows from our <a class="reference internal" href="#la-unique-reps"><span class="std std-ref">earlier discussion</span></a> that if <span class="math notranslate nohighlight">\(\{a_1, \ldots, a_k\}\)</span> are linearly independent and <span class="math notranslate nohighlight">\(y = Ax = x_1 a_1 + \cdots + x_k a_k\)</span>, then no <span class="math notranslate nohighlight">\(z \not= x\)</span> satisfies <span class="math notranslate nohighlight">\(y = Az\)</span>.</p>
 <div class="section" id="the-n-times-n-case">
-<h3>The <span class="math notranslate nohighlight">\(n \times n\)</span> Case<a class="headerlink" href="#the-n-times-n-case" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.4.1. </span>The <span class="math notranslate nohighlight">\(n \times n\)</span> Case<a class="headerlink" href="#the-n-times-n-case" title="Permalink to this headline">¶</a></h3>
 <p>Let’s discuss some more details, starting with the case where <span class="math notranslate nohighlight">\(A\)</span> is <span class="math notranslate nohighlight">\(n \times n\)</span>.</p>
 <p>This is the familiar case where the number of unknowns equals the number of equations.</p>
 <p>For arbitrary <span class="math notranslate nohighlight">\(y \in \mathbb R ^n\)</span>, we hope to find a unique <span class="math notranslate nohighlight">\(x \in \mathbb R ^n\)</span> such that <span class="math notranslate nohighlight">\(y = Ax\)</span>.</p>
@@ -1085,7 +1084,7 @@ Ax\)</span>, is all of <span class="math notranslate nohighlight">\(\mathbb R ^n
 </ol>
 <p>The property of having linearly independent columns is sometimes expressed as having <em>full column rank</em>.</p>
 <div class="section" id="inverse-matrices">
-<h4>Inverse Matrices<a class="headerlink" href="#inverse-matrices" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">15.4.1.1. </span>Inverse Matrices<a class="headerlink" href="#inverse-matrices" title="Permalink to this headline">¶</a></h4>
 <p id="index-12">Can we give some sort of expression for the solution?</p>
 <p>If <span class="math notranslate nohighlight">\(y\)</span> and <span class="math notranslate nohighlight">\(A\)</span> are scalar with <span class="math notranslate nohighlight">\(A \not= 0\)</span>, then the
 solution is <span class="math notranslate nohighlight">\(x = A^{-1} y\)</span>.</p>
@@ -1096,7 +1095,7 @@ solution is <span class="math notranslate nohighlight">\(x = A^{-1} y\)</span>.<
 <p>This is the solution that we’re looking for.</p>
 </div>
 <div class="section" id="determinants">
-<h4>Determinants<a class="headerlink" href="#determinants" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">15.4.1.2. </span>Determinants<a class="headerlink" href="#determinants" title="Permalink to this headline">¶</a></h4>
 <p id="index-13">Another quick comment about square matrices is that to every such matrix we
 assign a unique number called the <em>determinant</em> of the matrix — you can find
 the expression for it <a class="reference external" href="https://en.wikipedia.org/wiki/Determinant">here</a>.</p>
@@ -1108,7 +1107,7 @@ inverted.</p>
 </div>
 </div>
 <div class="section" id="more-rows-than-columns">
-<h3>More Rows than Columns<a class="headerlink" href="#more-rows-than-columns" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.4.2. </span>More Rows than Columns<a class="headerlink" href="#more-rows-than-columns" title="Permalink to this headline">¶</a></h3>
 <p>This is the <span class="math notranslate nohighlight">\(n \times k\)</span> case with <span class="math notranslate nohighlight">\(n &gt; k\)</span>.</p>
 <p>This case is very important in many settings, not least in the setting of linear regression (where <span class="math notranslate nohighlight">\(n\)</span> is the number of observations, and <span class="math notranslate nohighlight">\(k\)</span> is the number of explanatory variables).</p>
 <p>Given arbitrary <span class="math notranslate nohighlight">\(y \in \mathbb R ^n\)</span>, we seek an <span class="math notranslate nohighlight">\(x \in \mathbb R ^k\)</span> such that <span class="math notranslate nohighlight">\(y = Ax\)</span>.</p>
@@ -1130,7 +1129,7 @@ projections.</p>
 chapter 3 of <a href=/_static/pdfs/course_notes.pdf download>these notes</a></p>
 </div>
 <div class="section" id="more-columns-than-rows">
-<h3>More Columns than Rows<a class="headerlink" href="#more-columns-than-rows" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.4.3. </span>More Columns than Rows<a class="headerlink" href="#more-columns-than-rows" title="Permalink to this headline">¶</a></h3>
 <p>This is the <span class="math notranslate nohighlight">\(n \times k\)</span> case with <span class="math notranslate nohighlight">\(n &lt; k\)</span>, so there are fewer
 equations than unknowns.</p>
 <p>In this case there are either no solutions or infinitely many — in other words, uniqueness never holds.</p>
@@ -1151,7 +1150,7 @@ y
 <p>In other words, uniqueness fails.</p>
 </div>
 <div class="section" id="linear-equations-with-julia">
-<h3>Linear Equations with Julia<a class="headerlink" href="#linear-equations-with-julia" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.4.4. </span>Linear Equations with Julia<a class="headerlink" href="#linear-equations-with-julia" title="Permalink to this headline">¶</a></h3>
 <p>Here’s an illustration of how to solve linear equations with Julia’s built-in linear algebra facilities</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1186,7 +1185,7 @@ y
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:
  -2.0   1.0
   1.5  -0.5
 </pre></div>
@@ -1200,7 +1199,7 @@ y
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×1 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×1 Matrix{Float64}:
  -0.9999999999999998
   0.9999999999999999
 </pre></div>
@@ -1214,7 +1213,7 @@ y
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×1 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×1 Matrix{Float64}:
  1.0
  1.0000000000000004
 </pre></div>
@@ -1228,7 +1227,7 @@ y
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×1 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×1 Matrix{Float64}:
  -1.0
   1.0
 </pre></div>
@@ -1241,7 +1240,7 @@ y
 </div>
 </div>
 <div class="section" id="eigenvalues-and-eigenvectors">
-<span id="la-eigen"></span><h2><a class="toc-backref" href="#id13"><span class="target" id="index-14"></span>Eigenvalues and <span class="target" id="index-15"></span>Eigenvectors</a><a class="headerlink" href="#eigenvalues-and-eigenvectors" title="Permalink to this headline">¶</a></h2>
+<span id="la-eigen"></span><h2><a class="toc-backref" href="#id13"><span class="section-number">15.5. </span><span class="target" id="index-14"></span>Eigenvalues and <span class="target" id="index-15"></span>Eigenvectors</a><a class="headerlink" href="#eigenvalues-and-eigenvectors" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="index-16"></span><p id="index-17">Let <span class="math notranslate nohighlight">\(A\)</span> be an <span class="math notranslate nohighlight">\(n \times n\)</span> square matrix.</p>
 <p>If <span class="math notranslate nohighlight">\(\lambda\)</span> is scalar and <span class="math notranslate nohighlight">\(v\)</span> is a non-zero vector in <span class="math notranslate nohighlight">\(\mathbb R ^n\)</span> such that</p>
 <div class="math notranslate nohighlight">
@@ -1265,13 +1264,13 @@ A v = \lambda v
 <span class="n">x</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">x</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">eig_1</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">eig_2</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">arrow</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">red</span><span class="p">,</span>
-     <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">none</span><span class="p">,</span> <span class="n">xlims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">ylims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">xticks</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span><span class="o">:</span><span class="mi">3</span><span class="p">,</span> <span class="n">yticks</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span><span class="o">:</span><span class="mi">3</span><span class="p">,</span>
-     <span class="n">framestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">origin</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">a2</span> <span class="o">*</span> <span class="n">eig_1</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">a2</span> <span class="o">*</span> <span class="n">eig_2</span><span class="p">,</span> <span class="n">arrow</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">red</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">eig_1</span><span class="p">,</span> <span class="n">eig_2</span><span class="p">,</span> <span class="n">arrow</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">blue</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">blue</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">blue</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">eig_1</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">eig_2</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">arrow</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:red</span><span class="p">,</span>
+     <span class="n">legend</span> <span class="o">=</span> <span class="ss">:none</span><span class="p">,</span> <span class="n">xlims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">ylims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">xticks</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span><span class="o">:</span><span class="mi">3</span><span class="p">,</span> <span class="n">yticks</span> <span class="o">=</span> <span class="o">-</span><span class="mi">3</span><span class="o">:</span><span class="mi">3</span><span class="p">,</span>
+     <span class="n">framestyle</span> <span class="o">=</span> <span class="ss">:origin</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">a2</span> <span class="o">*</span> <span class="n">eig_1</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">a2</span> <span class="o">*</span> <span class="n">eig_2</span><span class="p">,</span> <span class="n">arrow</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:red</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">eig_1</span><span class="p">,</span> <span class="n">eig_2</span><span class="p">,</span> <span class="n">arrow</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:blue</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:blue</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:blue</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1320,7 +1319,7 @@ follows</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Array{Float64,1}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
  -1.0
   3.0
 </pre></div>
@@ -1334,7 +1333,7 @@ follows</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:
  -0.707107  0.707107
   0.707107  0.707107
 </pre></div>
@@ -1346,7 +1345,7 @@ follows</p>
 eigenvalue (check it), the eig routine normalizes the length of each eigenvector
 to one.</p>
 <div class="section" id="generalized-eigenvalues">
-<h3>Generalized Eigenvalues<a class="headerlink" href="#generalized-eigenvalues" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.5.1. </span>Generalized Eigenvalues<a class="headerlink" href="#generalized-eigenvalues" title="Permalink to this headline">¶</a></h3>
 <p>It is sometimes useful to consider the <em>generalized eigenvalue problem</em>, which, for given
 matrices <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span>, seeks generalized eigenvalues
 <span class="math notranslate nohighlight">\(\lambda\)</span> and eigenvectors <span class="math notranslate nohighlight">\(v\)</span> such that</p>
@@ -1361,16 +1360,16 @@ A v = \lambda v\)</span>, but this is not always the case.</p>
 </div>
 </div>
 <div class="section" id="further-topics">
-<h2><a class="toc-backref" href="#id14">Further Topics</a><a class="headerlink" href="#further-topics" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id14"><span class="section-number">15.6. </span>Further Topics</a><a class="headerlink" href="#further-topics" title="Permalink to this headline">¶</a></h2>
 <p>We round out our discussion by briefly mentioning several other important
 topics.</p>
 <div class="section" id="series-expansions">
-<h3>Series Expansions<a class="headerlink" href="#series-expansions" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.6.1. </span>Series Expansions<a class="headerlink" href="#series-expansions" title="Permalink to this headline">¶</a></h3>
 <p id="index-18">Recall the usual summation formula for a geometric progression, which states
 that if <span class="math notranslate nohighlight">\(|a| &lt; 1\)</span>, then <span class="math notranslate nohighlight">\(\sum_{k=0}^{\infty} a^k = (1 - a)^{-1}\)</span>.</p>
 <p>A generalization of this idea exists in the matrix setting.</p>
 <div class="section" id="matrix-norms">
-<span id="la-mn"></span><h4>Matrix Norms<a class="headerlink" href="#matrix-norms" title="Permalink to this headline">¶</a></h4>
+<span id="la-mn"></span><h4><span class="section-number">15.6.1.1. </span>Matrix Norms<a class="headerlink" href="#matrix-norms" title="Permalink to this headline">¶</a></h4>
 <p id="index-19">Let <span class="math notranslate nohighlight">\(A\)</span> be a square matrix, and let</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1382,16 +1381,16 @@ the left-hand side is a <em>matrix norm</em> — in this case, the so-called
 <p>For example, for a square matrix <span class="math notranslate nohighlight">\(S\)</span>, the condition <span class="math notranslate nohighlight">\(\| S \| &lt; 1\)</span> means that <span class="math notranslate nohighlight">\(S\)</span> is <em>contractive</em>, in the sense that it pulls all vectors towards the origin <a class="footnote-reference brackets" href="#cfn" id="id2">1</a>.</p>
 </div>
 <div class="section" id="neumann-s-theorem">
-<span id="la-neumann"></span><h4><span class="target" id="index-20"></span>Neumann’s Theorem<a class="headerlink" href="#neumann-s-theorem" title="Permalink to this headline">¶</a></h4>
+<span id="la-neumann"></span><h4><span class="section-number">15.6.1.2. </span><span class="target" id="index-20"></span>Neumann’s Theorem<a class="headerlink" href="#neumann-s-theorem" title="Permalink to this headline">¶</a></h4>
 <p id="index-21">Let <span class="math notranslate nohighlight">\(A\)</span> be a square matrix and let <span class="math notranslate nohighlight">\(A^k := A A^{k-1}\)</span> with <span class="math notranslate nohighlight">\(A^1 := A\)</span>.</p>
 <p>In other words, <span class="math notranslate nohighlight">\(A^k\)</span> is the <span class="math notranslate nohighlight">\(k\)</span>-th power of <span class="math notranslate nohighlight">\(A\)</span>.</p>
 <p>Neumann’s theorem states the following: If <span class="math notranslate nohighlight">\(\| A^k \| &lt; 1\)</span> for some
 <span class="math notranslate nohighlight">\(k \in \mathbb{N}\)</span>, then <span class="math notranslate nohighlight">\(I - A\)</span> is invertible, and</p>
 <div class="math notranslate nohighlight" id="equation-la-neumann">
-<span class="eqno">(11)<a class="headerlink" href="#equation-la-neumann" title="Permalink to this equation">¶</a></span>\[(I - A)^{-1} = \sum_{k=0}^{\infty} A^k\]</div>
+<span class="eqno">(15.4)<a class="headerlink" href="#equation-la-neumann" title="Permalink to this equation">¶</a></span>\[(I - A)^{-1} = \sum_{k=0}^{\infty} A^k\]</div>
 </div>
 <div class="section" id="spectral-radius">
-<span id="la-neumann-remarks"></span><h4><span class="target" id="index-22"></span>Spectral Radius<a class="headerlink" href="#spectral-radius" title="Permalink to this headline">¶</a></h4>
+<span id="la-neumann-remarks"></span><h4><span class="section-number">15.6.1.3. </span><span class="target" id="index-22"></span>Spectral Radius<a class="headerlink" href="#spectral-radius" title="Permalink to this headline">¶</a></h4>
 <p id="index-23">A result known as Gelfand’s formula tells us that, for any square matrix <span class="math notranslate nohighlight">\(A\)</span>,</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1400,11 +1399,11 @@ the left-hand side is a <em>matrix norm</em> — in this case, the so-called
 <p>Here <span class="math notranslate nohighlight">\(\rho(A)\)</span> is the <em>spectral radius</em>, defined as <span class="math notranslate nohighlight">\(\max_i |\lambda_i|\)</span>, where <span class="math notranslate nohighlight">\(\{\lambda_i\}_i\)</span> is the set of eigenvalues of <span class="math notranslate nohighlight">\(A\)</span>.</p>
 <p>As a consequence of Gelfand’s formula, if all eigenvalues are strictly less than one in modulus,
 there exists a <span class="math notranslate nohighlight">\(k\)</span> with <span class="math notranslate nohighlight">\(\| A^k \| &lt; 1\)</span>.</p>
-<p>In which case <a class="reference internal" href="#equation-la-neumann">(11)</a> is valid.</p>
+<p>In which case <a class="reference internal" href="#equation-la-neumann">(15.4)</a> is valid.</p>
 </div>
 </div>
 <div class="section" id="positive-definite-matrices">
-<h3><span class="target" id="index-24"></span>Positive Definite Matrices<a class="headerlink" href="#positive-definite-matrices" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.6.2. </span><span class="target" id="index-24"></span>Positive Definite Matrices<a class="headerlink" href="#positive-definite-matrices" title="Permalink to this headline">¶</a></h3>
 <p id="index-25">Let <span class="math notranslate nohighlight">\(A\)</span> be a symmetric <span class="math notranslate nohighlight">\(n \times n\)</span> matrix.</p>
 <p>We say that <span class="math notranslate nohighlight">\(A\)</span> is</p>
 <ol class="simple">
@@ -1417,7 +1416,7 @@ are strictly positive, and hence <span class="math notranslate nohighlight">\(A\
 definite inverse).</p>
 </div>
 <div class="section" id="differentiating-linear-and-quadratic-forms">
-<span id="la-mcalc"></span><h3>Differentiating Linear and Quadratic forms<a class="headerlink" href="#differentiating-linear-and-quadratic-forms" title="Permalink to this headline">¶</a></h3>
+<span id="la-mcalc"></span><h3><span class="section-number">15.6.3. </span>Differentiating Linear and Quadratic forms<a class="headerlink" href="#differentiating-linear-and-quadratic-forms" title="Permalink to this headline">¶</a></h3>
 <p id="index-26">The following formulas are useful in many economic contexts.  Let</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(z, x\)</span> and <span class="math notranslate nohighlight">\(a\)</span> all be <span class="math notranslate nohighlight">\(n \times 1\)</span> vectors</p></li>
@@ -1435,18 +1434,18 @@ definite inverse).</p>
 <p>Exercise 1 below asks you to apply these formulas.</p>
 </div>
 <div class="section" id="further-reading">
-<h3>Further Reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.6.4. </span>Further Reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h3>
 <p>The documentation of the linear algebra features built into Julia can be found <a class="reference external" href="https://docs.julialang.org/en/stable/manual/linear-algebra/">here</a>.</p>
 <p>Chapters 2 and 3 of the <a class="reference external" href="http://www.johnstachurski.net/emet.html">Econometric Theory</a> contains
 a discussion of linear algebra along the same lines as above, with solved exercises.</p>
 <p>If you don’t mind a slightly abstract approach, a nice intermediate-level text on linear algebra
-is <span id="id3">[<a class="reference internal" href="../zreferences.html#id91"><span>Janich94</span></a>]</span>.</p>
+is <span id="id3">[<a class="reference internal" href="../zreferences.html#id91">Janich94</a>]</span>.</p>
 </div>
 </div>
 <div class="section" id="exercises">
-<h2><a class="toc-backref" href="#id15">Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id15"><span class="section-number">15.7. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exercise-1">
-<h3>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.7.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
 <p>Let <span class="math notranslate nohighlight">\(x\)</span> be a given <span class="math notranslate nohighlight">\(n \times 1\)</span> vector and consider the problem</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1485,11 +1484,11 @@ y = A x + B u
 </div>
 </div>
 <div class="section" id="solutions">
-<h2><a class="toc-backref" href="#id16">Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id16"><span class="section-number">15.8. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
 <p>Thanks to <a class="reference external" href="https://qutech.nl/person/willem-hekman/">Willem Hekman</a> and Guanlong Ren
 for providing this solution.</p>
 <div class="section" id="id4">
-<h3>Exercise 1<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">15.8.1. </span>Exercise 1<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>We have an optimization problem:</p>
 <div class="math notranslate nohighlight">
 \[
@@ -1515,7 +1514,7 @@ matrix.</p></li>
 L = -y'Py - u'Qu + \lambda' \lbrack Ax + Bu - y \rbrack
 \]</div>
 <div class="section" id="id5">
-<h4>1.<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">15.8.1.1. </span>1.<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
 <p>Differentiating Lagrangian equation w.r.t y and setting its derivative
 equal to zero yields</p>
 <div class="math notranslate nohighlight">
@@ -1530,7 +1529,7 @@ equal to zero yields</p>
 \]</div>
 </div>
 <div class="section" id="id6">
-<h4>2.<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">15.8.1.2. </span>2.<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
 <p>Differentiating Lagrangian equation w.r.t. u and setting its derivative
 equal to zero yields</p>
 <div class="math notranslate nohighlight">
@@ -1562,7 +1561,7 @@ u = -(Q + B'PB)^{-1}B'PAx \:,
 Lagrangian equation.</p>
 </div>
 <div class="section" id="id7">
-<h4>3.<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">15.8.1.3. </span>3.<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h4>
 <p>Rewriting our problem by substituting the constraint into the objective
 function, we get</p>
 <div class="math notranslate nohighlight">
@@ -1626,16 +1625,16 @@ are symmetric.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.5"
+            mode: "julia-1.6"
         },
         kernelOptions: {
-            kernelName: "julia-1.5",
+            kernelName: "julia-1.6",
             path: "./tools_and_techniques"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.5'</script>
+    <script>kernelName = 'julia-1.6'</script>
 
                     </div>
                     
@@ -1664,340 +1663,408 @@ are symmetric.</p>
                 </div>
 
                 <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
-                    <ul class="current nav bd-sidenav nav sidenav_l1">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/getting_started.html">
-   Setting up Your Julia Environment
+   1. Setting up Your Julia Environment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_environment.html">
-   Interacting with Julia
+   2. Interacting with Julia
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
-   Introductory Examples
+   3. Introductory Examples
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
-   Julia Essentials
+   4. Julia Essentials
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
-   Arrays, Tuples, Ranges, and Other Fundamental Types
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
-   Introduction to Types and Generic Programming
+   6. Introduction to Types and Generic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/generic_programming.html">
-   Generic Programming
+   7. Generic Programming
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/general_packages.html">
-   General Purpose Packages
+   8. General Purpose Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/data_statistical_packages.html">
-   Data and Statistics Packages
+   9. Data and Statistics Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
-   Solvers, Optimizers, and Automatic Differentiation
+   10. Solvers, Optimizers, and Automatic Differentiation
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/tools_editors.html">
-   Julia Tools and Editors
+   11. Julia Tools and Editors
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/version_control.html">
-   Git, GitHub, and Version Control
+   12. Git, GitHub, and Version Control
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/testing.html">
-   Packages, Testing, and Continuous Integration
+   13. Packages, Testing, and Continuous Integration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/need_for_speed.html">
-   The Need for Speed
+   14. The Need for Speed
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   Linear Algebra
+   15. Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="orth_proj.html">
-   Orthogonal Projections and Their Applications
+   16. Orthogonal Projections and Their Applications
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lln_clt.html">
-   LLN and CLT
+   17. LLN and CLT
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="linear_models.html">
-   Linear State Space Models
+   18. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="finite_markov.html">
-   Finite Markov Chains
+   19. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="stationary_densities.html">
-   Continuous State Markov Chains
+   20. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="kalman.html">
-   A First Look at the Kalman Filter
+   22. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="numerical_linear_algebra.html">
-   Numerical Linear Algebra and Factorizations
+   23. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="iterative_methods_sparsity.html">
-   Krylov Methods and Matrix Conditioning
+   24. Krylov Methods and Matrix Conditioning
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/short_path.html">
-   Shortest Paths
+   25. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   Job Search I: The McCall Search Model
+   26. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   Job Search II: Search and Separation
+   27. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   A Problem that Stumped Milton Friedman
+   28. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   Job Search III: Search with Learning
+   29. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   Job Search IV: Modeling Career Choice
+   30. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   Job Search V: On-the-Job Search
+   31. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   Optimal Growth I: The Stochastic Optimal Growth Model
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   Optimal Growth II: Time Iteration
+   33. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   Optimal Growth III: The Endogenous Grid Method
+   34. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   LQ Dynamic Programming Problems
+   35. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   Optimal Savings I: The Permanent Income Model
+   36. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   Optimal Savings II: LQ Techniques
+   37. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   Consumption and Tax Smoothing with Complete and Incomplete Markets
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   Optimal Savings III: Occasionally Binding Constraints
+   39. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   Robustness
+   40. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   Discrete State Dynamic Programming
+   41. Discrete State Dynamic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   Modeling COVID 19 with Differential Equations
+   42. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   Schelling’s Segregation Model
+   44. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   A Lake Model of Employment and Unemployment
+   45. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   Rational Expectations Equilibrium
+   46. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   Markov Perfect Equilibrium
+   47. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   Asset Pricing I: Finite State Models
+   48. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   Asset Pricing II: The Lucas Asset Pricing Model
+   49. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   Asset Pricing III:  Incomplete Markets
+   50. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   Uncertainty Traps
+   51. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   The Aiyagari Model
+   52. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   Default Risk and Income Fluctuations
+   53. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   Globalization and Cycles
+   54. Globalization and Cycles
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   Covariance Stationary Processes
+   55. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   Estimation of Spectra
+   56. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   Additive Functionals
+   57. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   Multiplicative Functionals
+   58. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   Classical Control with Linear Algebra
+   59. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   Classical Filtering With Linear Algebra
+   60. Classical Filtering With Linear Algebra
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   Dynamic Stackelberg Problems
+   61. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   Optimal Taxation in an LQ Economy
+   62. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   Optimal Taxation with State-Contingent Debt
+   63. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   Optimal Taxation without State-Contingent Debt
+   64. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   About these Lectures
+   65. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   Troubleshooting
+   66. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   References
+   67. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   Lecture Status
+   68. Lecture Status
   </a>
  </li>
 </ul>
@@ -2036,7 +2103,7 @@ are symmetric.</p>
                     <li data-tippy-content="Download Notebook"><a href="_notebooks/tools_and_techniques/linear_algebra.ipynb" download><i data-feather="download-cloud"></i></a></li>
                     <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/tools_and_techniques/linear_algebra.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
                         <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
-                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/tools_and_techniques/linear_algebra.ipynb" download><i data-feather="github"></i></a></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/tools_and_techniques/linear_algebra.md" download><i data-feather="github"></i></a></li>
                 </ul>
 
             </div>

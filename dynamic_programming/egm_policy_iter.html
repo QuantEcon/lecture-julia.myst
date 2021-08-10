@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimal Growth III: The Endogenous Grid Method &#8212; Quantitative Economics with Julia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>34. Optimal Growth III: The Endogenous Grid Method &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -26,8 +26,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -42,15 +42,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -58,11 +55,13 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/egm_policy_iter.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="LQ Dynamic Programming Problems" href="lqcontrol.html" />
-    <link rel="prev" title="Optimal Growth II: Time Iteration" href="coleman_policy_iter.html" />
+    <link rel="next" title="35. LQ Dynamic Programming Problems" href="lqcontrol.html" />
+    <link rel="prev" title="33. Optimal Growth II: Time Iteration" href="coleman_policy_iter.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -112,51 +111,51 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   Overview
+   34.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#key-idea">
-   Key Idea
+   34.2. Key Idea
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#theory">
-     Theory
+     34.2.1. Theory
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exogenous-grid">
-     Exogenous Grid
+     34.2.2. Exogenous Grid
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#endogenous-grid">
-     Endogenous Grid
+     34.2.3. Endogenous Grid
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#implementation">
-   Implementation
+   34.3. Implementation
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-operator">
-     The Operator
+     34.3.1. The Operator
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#testing-on-the-log-cobb-douglas-case">
-     Testing on the Log / Cobb–Douglas case
+     34.3.2. Testing on the Log / Cobb–Douglas case
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#speed">
-   Speed
+   34.4. Speed
   </a>
  </li>
 </ul>
@@ -209,7 +208,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="optimal-growth-iii-the-endogenous-grid-method">
-<h1><a class="toc-backref" href="#id3"><span class="target" id="index-0"></span>Optimal Growth III: The Endogenous Grid Method</a><a class="headerlink" href="#optimal-growth-iii-the-endogenous-grid-method" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id3"><span class="section-number">34. </span><span class="target" id="index-0"></span>Optimal Growth III: The Endogenous Grid Method</a><a class="headerlink" href="#optimal-growth-iii-the-endogenous-grid-method" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
@@ -224,7 +223,7 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id4">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4"><span class="section-number">34.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>We solved the stochastic optimal growth model using</p>
 <ol class="simple">
 <li><p><a class="reference internal" href="optgrowth.html"><span class="doc">value function iteration</span></a></p></li>
@@ -235,27 +234,27 @@
 <p>EGM is a numerical method for implementing policy iteration invented by <a class="reference external" href="http://www.econ2.jhu.edu/people/ccarroll/">Chris Carroll</a>.</p>
 <p>It is a good example of how a clever algorithm can save a massive amount of computer time.</p>
 <p>(Massive when we multiply saved CPU cycles on each implementation times the number of implementations worldwide)</p>
-<p>The original reference is <span id="id1">[<a class="reference internal" href="../zreferences.html#id68"><span>Car06</span></a>]</span>.</p>
+<p>The original reference is <span id="id1">[<a class="reference internal" href="../zreferences.html#id68">Car06</a>]</span>.</p>
 </div>
 <div class="section" id="key-idea">
-<h2><a class="toc-backref" href="#id5">Key Idea</a><a class="headerlink" href="#key-idea" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5"><span class="section-number">34.2. </span>Key Idea</a><a class="headerlink" href="#key-idea" title="Permalink to this headline">¶</a></h2>
 <p>Let’s start by reminding ourselves of the theory and then see how the numerics fit in.</p>
 <div class="section" id="theory">
-<h3>Theory<a class="headerlink" href="#theory" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">34.2.1. </span>Theory<a class="headerlink" href="#theory" title="Permalink to this headline">¶</a></h3>
 <p>Take the model set out in <a class="reference internal" href="coleman_policy_iter.html"><span class="doc">the time iteration lecture</span></a>, following the same terminology and notation.</p>
 <p>The Euler equation is</p>
 <div class="math notranslate nohighlight" id="equation-egm-euler">
-<span class="eqno">(154)<a class="headerlink" href="#equation-egm-euler" title="Permalink to this equation">¶</a></span>\[(u'\circ c^*)(y)
+<span class="eqno">(34.1)<a class="headerlink" href="#equation-egm-euler" title="Permalink to this equation">¶</a></span>\[(u'\circ c^*)(y)
 = \beta \int (u'\circ c^*)(f(y - c^*(y)) z) f'(y - c^*(y)) z \phi(dz)\]</div>
 <p>As we saw, the Coleman operator is a nonlinear operator <span class="math notranslate nohighlight">\(K\)</span> engineered so that <span class="math notranslate nohighlight">\(c^*\)</span> is a fixed point of <span class="math notranslate nohighlight">\(K\)</span>.</p>
 <p>It takes as its argument a continuous strictly increasing consumption policy <span class="math notranslate nohighlight">\(g \in \Sigma\)</span>.</p>
 <p>It returns a new function <span class="math notranslate nohighlight">\(Kg\)</span>,  where <span class="math notranslate nohighlight">\((Kg)(y)\)</span> is the <span class="math notranslate nohighlight">\(c \in (0, \infty)\)</span> that solves</p>
 <div class="math notranslate nohighlight" id="equation-egm-coledef">
-<span class="eqno">(155)<a class="headerlink" href="#equation-egm-coledef" title="Permalink to this equation">¶</a></span>\[u'(c)
+<span class="eqno">(34.2)<a class="headerlink" href="#equation-egm-coledef" title="Permalink to this equation">¶</a></span>\[u'(c)
 = \beta \int (u' \circ g) (f(y - c) z ) f'(y - c) z \phi(dz)\]</div>
 </div>
 <div class="section" id="exogenous-grid">
-<h3>Exogenous Grid<a class="headerlink" href="#exogenous-grid" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">34.2.2. </span>Exogenous Grid<a class="headerlink" href="#exogenous-grid" title="Permalink to this headline">¶</a></h3>
 <p>As discussed in <a class="reference internal" href="coleman_policy_iter.html"><span class="doc">the lecture on time iteration</span></a>, to implement the method on a computer we need numerical approximation.</p>
 <p>In particular, we represent a policy function by a set of values on a finite grid.</p>
 <p>The function itself is reconstructed from this representation when necessary, using interpolation or some other method.</p>
@@ -263,48 +262,48 @@
 <ul class="simple">
 <li><p>fixed a grid of income points <span class="math notranslate nohighlight">\(\{y_i\}\)</span></p></li>
 <li><p>calculated the consumption value <span class="math notranslate nohighlight">\(c_i\)</span> corresponding to each
-<span class="math notranslate nohighlight">\(y_i\)</span> using <a class="reference internal" href="#equation-egm-coledef">(155)</a> and a root finding routine</p></li>
+<span class="math notranslate nohighlight">\(y_i\)</span> using <a class="reference internal" href="#equation-egm-coledef">(34.2)</a> and a root finding routine</p></li>
 </ul>
 <p>Each <span class="math notranslate nohighlight">\(c_i\)</span> is then interpreted as the value of the function <span class="math notranslate nohighlight">\(K g\)</span> at <span class="math notranslate nohighlight">\(y_i\)</span>.</p>
 <p>Thus, with the points <span class="math notranslate nohighlight">\(\{y_i, c_i\}\)</span> in hand, we can reconstruct <span class="math notranslate nohighlight">\(Kg\)</span> via approximation.</p>
 <p>Iteration then continues…</p>
 </div>
 <div class="section" id="endogenous-grid">
-<h3>Endogenous Grid<a class="headerlink" href="#endogenous-grid" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">34.2.3. </span>Endogenous Grid<a class="headerlink" href="#endogenous-grid" title="Permalink to this headline">¶</a></h3>
 <p>The method discussed above requires a root finding routine to find the
 <span class="math notranslate nohighlight">\(c_i\)</span> corresponding to a given income value <span class="math notranslate nohighlight">\(y_i\)</span>.</p>
 <p>Root finding is costly because it typically involves a significant number of
 function evaluations.</p>
-<p>As pointed out by Carroll <span id="id2">[<a class="reference internal" href="../zreferences.html#id68"><span>Car06</span></a>]</span>, we can avoid this if
+<p>As pointed out by Carroll <span id="id2">[<a class="reference internal" href="../zreferences.html#id68">Car06</a>]</span>, we can avoid this if
 <span class="math notranslate nohighlight">\(y_i\)</span> is chosen endogenously.</p>
 <p>The only assumption required is that <span class="math notranslate nohighlight">\(u'\)</span> is invertible on <span class="math notranslate nohighlight">\((0, \infty)\)</span>.</p>
 <p>The idea is this:</p>
 <p>First we fix an <em>exogenous</em> grid <span class="math notranslate nohighlight">\(\{k_i\}\)</span> for capital (<span class="math notranslate nohighlight">\(k = y - c\)</span>).</p>
 <p>Then we obtain  <span class="math notranslate nohighlight">\(c_i\)</span> via</p>
 <div class="math notranslate nohighlight" id="equation-egm-getc">
-<span class="eqno">(156)<a class="headerlink" href="#equation-egm-getc" title="Permalink to this equation">¶</a></span>\[c_i =
+<span class="eqno">(34.3)<a class="headerlink" href="#equation-egm-getc" title="Permalink to this equation">¶</a></span>\[c_i =
 (u')^{-1}
 \left\{
     \beta \int (u' \circ g) (f(k_i) z ) \, f'(k_i) \, z \, \phi(dz)
 \right\}\]</div>
 <p>where <span class="math notranslate nohighlight">\((u')^{-1}\)</span> is the inverse function of <span class="math notranslate nohighlight">\(u'\)</span>.</p>
 <p>Finally, for each <span class="math notranslate nohighlight">\(c_i\)</span> we set <span class="math notranslate nohighlight">\(y_i = c_i + k_i\)</span>.</p>
-<p>It is clear that each <span class="math notranslate nohighlight">\((y_i, c_i)\)</span> pair constructed in this manner satisfies <a class="reference internal" href="#equation-egm-coledef">(155)</a>.</p>
+<p>It is clear that each <span class="math notranslate nohighlight">\((y_i, c_i)\)</span> pair constructed in this manner satisfies <a class="reference internal" href="#equation-egm-coledef">(34.2)</a>.</p>
 <p>With the points <span class="math notranslate nohighlight">\(\{y_i, c_i\}\)</span> in hand, we can reconstruct <span class="math notranslate nohighlight">\(Kg\)</span> via approximation as before.</p>
 <p>The name EGM comes from the fact that the grid <span class="math notranslate nohighlight">\(\{y_i\}\)</span> is  determined <strong>endogenously</strong>.</p>
 </div>
 </div>
 <div class="section" id="implementation">
-<h2><a class="toc-backref" href="#id6">Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6"><span class="section-number">34.3. </span>Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <p>Let’s implement this version of the Coleman operator and see how it performs.</p>
 <div class="section" id="the-operator">
-<h3>The Operator<a class="headerlink" href="#the-operator" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">34.3.1. </span>The Operator<a class="headerlink" href="#the-operator" title="Permalink to this headline">¶</a></h3>
 <p>Here’s an implementation of <span class="math notranslate nohighlight">\(K\)</span> using EGM as described above.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
 <span class="k">using</span> <span class="n">BenchmarkTools</span><span class="p">,</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Random</span><span class="p">,</span> <span class="n">Roots</span>
-<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="o">:</span><span class="n">png</span><span class="p">);</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="ss">:png</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -317,7 +316,7 @@ function evaluations.</p>
     <span class="n">c</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">k_grid</span><span class="p">)</span>
 
     <span class="c"># Solve for updated consumption value</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">k_grid</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">k_grid</span><span class="p">)</span>
         <span class="n">vals</span> <span class="o">=</span> <span class="n">u′</span><span class="o">.</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">shocks</span><span class="p">))</span> <span class="o">.*</span> <span class="n">f′</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">.*</span> <span class="n">shocks</span>
         <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">u′_inv</span><span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">mean</span><span class="p">(</span><span class="n">vals</span><span class="p">))</span>
     <span class="k">end</span>
@@ -351,7 +350,7 @@ function evaluations.</p>
     <span class="n">g_func</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">extrapolation_bc</span> <span class="o">=</span> <span class="n">Line</span><span class="p">())</span>
 
     <span class="c"># solve for updated consumption value #</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
         <span class="k">function</span> <span class="n">h</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
             <span class="n">vals</span> <span class="o">=</span> <span class="n">u′</span><span class="o">.</span><span class="p">(</span><span class="n">g_func</span><span class="o">.</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">shocks</span><span class="p">))</span> <span class="o">.*</span> <span class="n">f′</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">.*</span> <span class="n">shocks</span>
             <span class="k">return</span> <span class="n">u′</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">mean</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
@@ -376,7 +375,7 @@ function evaluations.</p>
 <p>Let’s test out the code above on some example parameterizations, after the following imports.</p>
 </div>
 <div class="section" id="testing-on-the-log-cobb-douglas-case">
-<h3>Testing on the Log / Cobb–Douglas case<a class="headerlink" href="#testing-on-the-log-cobb-douglas-case" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">34.3.2. </span>Testing on the Log / Cobb–Douglas case<a class="headerlink" href="#testing-on-the-log-cobb-douglas-case" title="Permalink to this headline">¶</a></h3>
 <p>As we <a class="reference internal" href="optgrowth.html"><span class="doc">did for value function iteration</span></a> and <a class="reference internal" href="coleman_policy_iter.html"><span class="doc">time iteration</span></a>, let’s start by testing our method with the log-linear benchmark.</p>
 <p>The first step is to bring in the model that we used in the <a class="reference internal" href="coleman_policy_iter.html"><span class="doc">Coleman policy function iteration</span></a></p>
 <div class="cell docutils container">
@@ -385,14 +384,14 @@ function evaluations.</p>
 
 <span class="n">Model</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">α</span> <span class="o">=</span> <span class="mf">0.65</span><span class="p">,</span> <span class="c"># productivity parameter</span>
                   <span class="n">β</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span> <span class="c"># discount factor</span>
-                  <span class="nb">γ</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>  <span class="c"># risk aversion</span>
+                  <span class="n">γ</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>  <span class="c"># risk aversion</span>
                   <span class="n">μ</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="c"># lognorm(μ, σ)</span>
                   <span class="n">s</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>  <span class="c"># lognorm(μ, σ)</span>
                   <span class="n">grid_min</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="c"># smallest grid point</span>
                   <span class="n">grid_max</span> <span class="o">=</span> <span class="mf">4.0</span><span class="p">,</span>  <span class="c"># largest grid point</span>
                   <span class="n">grid_size</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="c"># grid size</span>
-                  <span class="n">u</span> <span class="o">=</span> <span class="nb">γ</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">?</span> <span class="n">log</span> <span class="o">:</span> <span class="n">c</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="nb">γ</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="nb">γ</span><span class="p">),</span> <span class="c"># utility function</span>
-                  <span class="n">u′</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span> <span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="nb">γ</span><span class="p">),</span> <span class="c"># u&#39;</span>
+                  <span class="n">u</span> <span class="o">=</span> <span class="n">γ</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">?</span> <span class="n">log</span> <span class="o">:</span> <span class="n">c</span><span class="o">-&gt;</span><span class="p">(</span><span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">γ</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">γ</span><span class="p">),</span> <span class="c"># utility function</span>
+                  <span class="n">u′</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span> <span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="n">γ</span><span class="p">),</span> <span class="c"># u&#39;</span>
                   <span class="n">f</span> <span class="o">=</span> <span class="n">k</span><span class="o">-&gt;</span> <span class="n">k</span><span class="o">^</span><span class="n">α</span><span class="p">,</span> <span class="c"># production function</span>
                   <span class="n">f′</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">α</span><span class="o">*</span><span class="n">k</span><span class="o">^</span><span class="p">(</span><span class="n">α</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="c"># f&#39;</span>
                   <span class="n">grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="n">grid_min</span><span class="p">,</span> <span class="n">grid_max</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">grid_size</span><span class="p">))</span> <span class="c"># grid</span>
@@ -400,7 +399,7 @@ function evaluations.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##NamedTuple_kw#253 (generic function with 2 methods)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##NamedTuple_kw#257 (generic function with 2 methods)
 </pre></div>
 </div>
 </div>
@@ -455,7 +454,7 @@ function evaluations.</p>
     <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">k_grid</span><span class="p">,</span> <span class="n">c_star</span><span class="o">.</span><span class="p">(</span><span class="n">k_grid</span><span class="p">),</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;optimal policy c*&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">k_grid</span><span class="p">,</span> <span class="n">c_star_new</span><span class="o">.</span><span class="p">(</span><span class="n">k_grid</span><span class="p">),</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Kc*&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -485,7 +484,7 @@ function evaluations.</p>
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">c_star_new</span> <span class="o">=</span> <span class="n">coleman_egm</span><span class="p">(</span><span class="n">c_star</span><span class="p">,</span> <span class="n">mlog</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">mlog</span><span class="o">.</span><span class="n">β</span><span class="p">,</span> <span class="n">mlog</span><span class="o">.</span><span class="n">u′</span><span class="p">,</span>
                          <span class="n">mlog</span><span class="o">.</span><span class="n">u′</span><span class="p">,</span> <span class="n">mlog</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">mlog</span><span class="o">.</span><span class="n">f′</span><span class="p">,</span> <span class="n">shocks</span><span class="p">)</span>
-<span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">c_star_new</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">-</span> <span class="n">c_star</span><span class="p">(</span><span class="n">g</span><span class="p">))</span> <span class="k">for</span> <span class="n">g</span> <span class="kp">in</span> <span class="n">mlog</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
+<span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">c_star_new</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">-</span> <span class="n">c_star</span><span class="p">(</span><span class="n">g</span><span class="p">))</span> <span class="k">for</span> <span class="n">g</span> <span class="k">in</span> <span class="n">mlog</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -507,7 +506,7 @@ converge towards <span class="math notranslate nohighlight">\(c^*\)</span>.</p>
     <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">grid</span><span class="p">),</span>
           <span class="n">color</span> <span class="o">=</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;initial condition c(y) = y&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n_iter</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n_iter</span>
         <span class="n">new_g</span> <span class="o">=</span> <span class="n">coleman_egm</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">k_grid</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">β</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">u′</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">u′</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">f′</span><span class="p">,</span> <span class="n">shocks</span><span class="p">)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">new_g</span>
         <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">k_grid</span><span class="p">,</span> <span class="n">new_g</span><span class="o">.</span><span class="p">(</span><span class="n">k_grid</span><span class="p">),</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">RGBA</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,(</span><span class="n">i</span> <span class="o">/</span> <span class="n">n_iter</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span>
@@ -515,8 +514,8 @@ converge towards <span class="math notranslate nohighlight">\(c^*\)</span>.</p>
     <span class="k">end</span>
 
     <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">k_grid</span><span class="p">,</span> <span class="n">c_star</span><span class="o">.</span><span class="p">(</span><span class="n">k_grid</span><span class="p">),</span>
-          <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;true policy function c*&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">)</span>
+          <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;true policy function c*&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -541,15 +540,15 @@ converge towards <span class="math notranslate nohighlight">\(c^*\)</span>.</p>
 </div>
 </div>
 <div class="section" id="speed">
-<h2><a class="toc-backref" href="#id7">Speed</a><a class="headerlink" href="#speed" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7"><span class="section-number">34.4. </span>Speed</a><a class="headerlink" href="#speed" title="Permalink to this headline">¶</a></h2>
 <p>Now let’s compare the clock times per iteration for the standard Coleman
 operator (with exogenous grid) and the EGM version.</p>
 <p>We’ll do so using the CRRA model adopted in the exercises of the <a class="reference internal" href="coleman_policy_iter.html"><span class="doc">Euler equation time iteration lecture</span></a>.</p>
 <p>Here’s the model and some convenient functions</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">mcrra</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">α</span> <span class="o">=</span> <span class="mf">0.65</span><span class="p">,</span> <span class="n">β</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span> <span class="nb">γ</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">)</span>
-<span class="n">u′_inv</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">=</span> <span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="n">mcrra</span><span class="o">.</span><span class="nb">γ</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">mcrra</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">α</span> <span class="o">=</span> <span class="mf">0.65</span><span class="p">,</span> <span class="n">β</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span> <span class="n">γ</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">)</span>
+<span class="n">u′_inv</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">=</span> <span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="n">mcrra</span><span class="o">.</span><span class="n">γ</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -567,13 +566,13 @@ operator (with exogenous grid) and the EGM version.</p>
                                              <span class="n">u′_inv</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">f′</span><span class="p">,</span> <span class="n">shocks</span><span class="p">)</span>
 <span class="k">function</span> <span class="n">coleman</span><span class="p">(</span><span class="n">m</span> <span class="o">=</span> <span class="n">m</span><span class="p">,</span> <span class="n">shocks</span> <span class="o">=</span> <span class="n">shocks</span><span class="p">;</span> <span class="n">sim_length</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">grid</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">sim_length</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">sim_length</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">crra_coleman</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">shocks</span><span class="p">)</span>
     <span class="k">end</span>
     <span class="k">return</span> <span class="n">g</span>
 <span class="k">end</span>
 <span class="k">function</span> <span class="n">egm</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="n">identity</span><span class="p">,</span> <span class="n">shocks</span> <span class="o">=</span> <span class="n">shocks</span><span class="p">;</span> <span class="n">sim_length</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">sim_length</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">sim_length</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">crra_coleman_egm</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">shocks</span><span class="p">)</span>
     <span class="k">end</span>
     <span class="k">return</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
@@ -594,17 +593,9 @@ operator (with exogenous grid) and the EGM version.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 
-  memory estimate:  1.03 GiB
-  allocs estimate:  610978
-  --------------
-  minimum time:     7.003 s (2.54% GC)
-  median time:      7.003 s (2.54% GC)
-  mean time:        7.003 s (2.54% GC)
-  maximum time:     7.003 s (2.54% GC)
-  --------------
-  samples:          1
-  evals/sample:     1
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 1 sample with 1 evaluation.
+ Single result which took <span class=" -Color -Color-Blue">9.935 s</span> (1.36% GC) to evaluate,
+ with a memory estimate of <span class=" -Color -Color-Yellow">1002.08 MiB</span>, over <span class=" -Color -Color-Yellow">535131</span> allocations.
 </pre></div>
 </div>
 </div>
@@ -616,17 +607,16 @@ operator (with exogenous grid) and the EGM version.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 
-  memory estimate:  19.35 MiB
-  allocs estimate:  76466
-  --------------
-  minimum time:     149.903 ms (0.00% GC)
-  median time:      155.514 ms (0.00% GC)
-  mean time:        156.493 ms (1.84% GC)
-  maximum time:     164.763 ms (7.32% GC)
-  --------------
-  samples:          32
-  evals/sample:     1
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 22 samples with 1 evaluation.
+ Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">222.481 ms</span> … <span class=" -Color -Color-Magenta">278.768 ms</span>  ┊ GC (min … max): 0.00% … 6.06%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">232.841 ms               </span>┊ GC (median):    0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">236.227 ms</span> ± <span class=" -Color -Color-Green"> 12.424 ms</span>  ┊ GC (mean ± σ):  1.21% ± 2.15%
+
+        █ ▁  <span class=" -Color -Color-Blue">▄</span> ▁ <span class=" -Color -Color-Green"> </span>                                               
+  ▆▁▁▁▆▆█▁█▆▁<span class=" -Color -Color-Blue">█</span>▆█▁<span class=" -Color -Color-Green">▁</span>▁▁▁▆▆▁▁▁▁▆▁▁▆▁▁▁▁▁▁▁▁▆▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▆ ▁
+  222 ms           Histogram: frequency by time          279 ms <span class=" -Color -Color-Bold">&lt;</span>
+
+ Memory estimate: <span class=" -Color -Color-Yellow">19.35 MiB</span>, allocs estimate: <span class=" -Color -Color-Yellow">76466</span>.
 </pre></div>
 </div>
 </div>
@@ -646,16 +636,16 @@ typically more accurate at each step as well.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.5"
+            mode: "julia-1.6"
         },
         kernelOptions: {
-            kernelName: "julia-1.5",
+            kernelName: "julia-1.6",
             path: "./dynamic_programming"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.5'</script>
+    <script>kernelName = 'julia-1.6'</script>
 
                     </div>
                     
@@ -684,340 +674,408 @@ typically more accurate at each step as well.</p>
                 </div>
 
                 <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
-                    <ul class="current nav bd-sidenav nav sidenav_l1">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/getting_started.html">
-   Setting up Your Julia Environment
+   1. Setting up Your Julia Environment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_environment.html">
-   Interacting with Julia
+   2. Interacting with Julia
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
-   Introductory Examples
+   3. Introductory Examples
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
-   Julia Essentials
+   4. Julia Essentials
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
-   Arrays, Tuples, Ranges, and Other Fundamental Types
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
-   Introduction to Types and Generic Programming
+   6. Introduction to Types and Generic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/generic_programming.html">
-   Generic Programming
+   7. Generic Programming
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/general_packages.html">
-   General Purpose Packages
+   8. General Purpose Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/data_statistical_packages.html">
-   Data and Statistics Packages
+   9. Data and Statistics Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
-   Solvers, Optimizers, and Automatic Differentiation
+   10. Solvers, Optimizers, and Automatic Differentiation
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/tools_editors.html">
-   Julia Tools and Editors
+   11. Julia Tools and Editors
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/version_control.html">
-   Git, GitHub, and Version Control
+   12. Git, GitHub, and Version Control
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/testing.html">
-   Packages, Testing, and Continuous Integration
+   13. Packages, Testing, and Continuous Integration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/need_for_speed.html">
-   The Need for Speed
+   14. The Need for Speed
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
-   Linear Algebra
+   15. Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
-   Orthogonal Projections and Their Applications
+   16. Orthogonal Projections and Their Applications
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
-   LLN and CLT
+   17. LLN and CLT
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   Linear State Space Models
+   18. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   Finite Markov Chains
+   19. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   Continuous State Markov Chains
+   20. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   A First Look at the Kalman Filter
+   22. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   Numerical Linear Algebra and Factorizations
+   23. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   Krylov Methods and Matrix Conditioning
+   24. Krylov Methods and Matrix Conditioning
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="short_path.html">
-   Shortest Paths
+   25. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="mccall_model.html">
-   Job Search I: The McCall Search Model
+   26. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="mccall_model_with_separation.html">
-   Job Search II: Search and Separation
+   27. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="wald_friedman.html">
-   A Problem that Stumped Milton Friedman
+   28. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="odu.html">
-   Job Search III: Search with Learning
+   29. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="career.html">
-   Job Search IV: Modeling Career Choice
+   30. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="jv.html">
-   Job Search V: On-the-Job Search
+   31. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="optgrowth.html">
-   Optimal Growth I: The Stochastic Optimal Growth Model
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="coleman_policy_iter.html">
-   Optimal Growth II: Time Iteration
+   33. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   Optimal Growth III: The Endogenous Grid Method
+   34. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lqcontrol.html">
-   LQ Dynamic Programming Problems
+   35. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="perm_income.html">
-   Optimal Savings I: The Permanent Income Model
+   36. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="perm_income_cons.html">
-   Optimal Savings II: LQ Techniques
+   37. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="smoothing.html">
-   Consumption and Tax Smoothing with Complete and Incomplete Markets
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="ifp.html">
-   Optimal Savings III: Occasionally Binding Constraints
+   39. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="robustness.html">
-   Robustness
+   40. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="discrete_dp.html">
-   Discrete State Dynamic Programming
+   41. Discrete State Dynamic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   Modeling COVID 19 with Differential Equations
+   42. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   Schelling’s Segregation Model
+   44. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   A Lake Model of Employment and Unemployment
+   45. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   Rational Expectations Equilibrium
+   46. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   Markov Perfect Equilibrium
+   47. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   Asset Pricing I: Finite State Models
+   48. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   Asset Pricing II: The Lucas Asset Pricing Model
+   49. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   Asset Pricing III:  Incomplete Markets
+   50. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   Uncertainty Traps
+   51. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   The Aiyagari Model
+   52. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   Default Risk and Income Fluctuations
+   53. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   Globalization and Cycles
+   54. Globalization and Cycles
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   Covariance Stationary Processes
+   55. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   Estimation of Spectra
+   56. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   Additive Functionals
+   57. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   Multiplicative Functionals
+   58. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   Classical Control with Linear Algebra
+   59. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   Classical Filtering With Linear Algebra
+   60. Classical Filtering With Linear Algebra
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   Dynamic Stackelberg Problems
+   61. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   Optimal Taxation in an LQ Economy
+   62. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   Optimal Taxation with State-Contingent Debt
+   63. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   Optimal Taxation without State-Contingent Debt
+   64. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   About these Lectures
+   65. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   Troubleshooting
+   66. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   References
+   67. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   Lecture Status
+   68. Lecture Status
   </a>
  </li>
 </ul>
@@ -1056,7 +1114,7 @@ typically more accurate at each step as well.</p>
                     <li data-tippy-content="Download Notebook"><a href="_notebooks/dynamic_programming/egm_policy_iter.ipynb" download><i data-feather="download-cloud"></i></a></li>
                     <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/egm_policy_iter.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
                         <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
-                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/egm_policy_iter.ipynb" download><i data-feather="github"></i></a></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/egm_policy_iter.md" download><i data-feather="github"></i></a></li>
                 </ul>
 
             </div>

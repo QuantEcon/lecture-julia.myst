@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Optimal Growth II: Time Iteration &#8212; Quantitative Economics with Julia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>33. Optimal Growth II: Time Iteration &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -26,8 +26,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -42,15 +42,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -58,11 +55,13 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/coleman_policy_iter.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Optimal Growth III: The Endogenous Grid Method" href="egm_policy_iter.html" />
-    <link rel="prev" title="Optimal Growth I: The Stochastic Optimal Growth Model" href="optgrowth.html" />
+    <link rel="next" title="34. Optimal Growth III: The Endogenous Grid Method" href="egm_policy_iter.html" />
+    <link rel="prev" title="32. Optimal Growth I: The Stochastic Optimal Growth Model" href="optgrowth.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -112,49 +111,49 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   Overview
+   33.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#the-euler-equation">
-   The Euler Equation
+   33.2. The Euler Equation
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-coleman-operator">
-     The Coleman Operator
+     33.2.1. The Coleman Operator
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#is-the-coleman-operator-well-defined">
-     Is the Coleman Operator Well Defined?
+     33.2.2. Is the Coleman Operator Well Defined?
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#comparison-with-value-function-iteration">
-   Comparison with Value Function Iteration
+   33.3. Comparison with Value Function Iteration
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#equivalent-dynamics">
-     Equivalent Dynamics
+     33.3.1. Equivalent Dynamics
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#back-to-economics">
-     Back to Economics
+     33.3.2. Back to Economics
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#a-bijection">
-       A Bijection
+       33.3.2.1. A Bijection
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#commutative-operators">
-       Commutative Operators
+       33.3.2.2. Commutative Operators
       </a>
      </li>
     </ul>
@@ -163,71 +162,71 @@
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#implementation">
-   Implementation
+   33.4. Implementation
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-operator">
-     The Operator
+     33.4.1. The Operator
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#testing-on-the-log-cobb-douglas-case">
-     Testing on the Log / Cobb–Douglas case
+     33.4.2. Testing on the Log / Cobb–Douglas case
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#exercises">
-   Exercises
+   33.5. Exercises
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-1">
-     Exercise 1
+     33.5.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-2">
-     Exercise 2
+     33.5.2. Exercise 2
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-3">
-     Exercise 3
+     33.5.3. Exercise 3
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-4">
-     Exercise 4
+     33.5.4. Exercise 4
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solutions">
-   Solutions
+   33.6. Solutions
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#solution-to-exercise-1">
-     Solution to Exercise 1
+     33.6.1. Solution to Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#solution-to-exercise-2">
-     Solution to Exercise 2
+     33.6.2. Solution to Exercise 2
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#solution-to-exercise-3">
-     Solution to Exercise 3
+     33.6.3. Solution to Exercise 3
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#solution-to-exercise-4">
-     Solution to Exercise 4
+     33.6.4. Solution to Exercise 4
     </a>
    </li>
   </ul>
@@ -282,7 +281,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="optimal-growth-ii-time-iteration">
-<h1><a class="toc-backref" href="#id2"><span class="target" id="index-0"></span>Optimal Growth II: Time Iteration</a><a class="headerlink" href="#optimal-growth-ii-time-iteration" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id2"><span class="section-number">33. </span><span class="target" id="index-0"></span>Optimal Growth II: Time Iteration</a><a class="headerlink" href="#optimal-growth-ii-time-iteration" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
@@ -299,7 +298,7 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id3">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3"><span class="section-number">33.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>In this lecture we’ll continue our <a class="reference internal" href="optgrowth.html"><span class="doc">earlier study</span></a> of the stochastic optimal growth model.</p>
 <p>In that lecture we solved the associated discounted dynamic programming problem using value function iteration.</p>
 <p>The beauty of this technique is its broad applicability.</p>
@@ -309,7 +308,7 @@
 <p>In a <a class="reference internal" href="egm_policy_iter.html"><span class="doc">subsequent lecture</span></a> we’ll see that the numerical implementation part of the Euler equation method can be further adjusted to obtain even more efficiency.</p>
 </div>
 <div class="section" id="the-euler-equation">
-<h2><a class="toc-backref" href="#id4">The Euler Equation</a><a class="headerlink" href="#the-euler-equation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4"><span class="section-number">33.2. </span>The Euler Equation</a><a class="headerlink" href="#the-euler-equation" title="Permalink to this headline">¶</a></h2>
 <p>Let’s take the model set out in <a class="reference internal" href="optgrowth.html"><span class="doc">the stochastic growth model lecture</span></a> and add the assumptions that</p>
 <ol class="simple">
 <li><p><span class="math notranslate nohighlight">\(u\)</span> and <span class="math notranslate nohighlight">\(f\)</span> are continuously differentiable and strictly concave</p></li>
@@ -320,14 +319,14 @@
 <p>The last two conditions are usually called <strong>Inada conditions</strong>.</p>
 <p>Recall the Bellman equation</p>
 <div class="math notranslate nohighlight" id="equation-cpi-fpb30">
-<span class="eqno">(144)<a class="headerlink" href="#equation-cpi-fpb30" title="Permalink to this equation">¶</a></span>\[v^*(y) = \max_{0 \leq c \leq y}
+<span class="eqno">(33.1)<a class="headerlink" href="#equation-cpi-fpb30" title="Permalink to this equation">¶</a></span>\[v^*(y) = \max_{0 \leq c \leq y}
     \left\{
         u(c) + \beta \int v^*(f(y - c) z) \phi(dz)
     \right\}
 \quad \text{for all} \quad
 y \in \mathbb R_+\]</div>
 <p>Let the optimal consumption policy be denoted by <span class="math notranslate nohighlight">\(c^*\)</span>.</p>
-<p>We know that <span class="math notranslate nohighlight">\(c^*\)</span> is a <span class="math notranslate nohighlight">\(v^*\)</span> greedy policy, so that <span class="math notranslate nohighlight">\(c^*(y)\)</span> is the maximizer in <a class="reference internal" href="#equation-cpi-fpb30">(144)</a>.</p>
+<p>We know that <span class="math notranslate nohighlight">\(c^*\)</span> is a <span class="math notranslate nohighlight">\(v^*\)</span> greedy policy, so that <span class="math notranslate nohighlight">\(c^*(y)\)</span> is the maximizer in <a class="reference internal" href="#equation-cpi-fpb30">(33.1)</a>.</p>
 <p>The conditions above imply that</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(c^*\)</span> is the unique optimal policy for the stochastic optimal growth model</p></li>
@@ -335,9 +334,9 @@ y \in \mathbb R_+\]</div>
 <li><p>the value function is strictly concave and continuously differentiable, with</p></li>
 </ul>
 <div class="math notranslate nohighlight" id="equation-cpi-env">
-<span class="eqno">(145)<a class="headerlink" href="#equation-cpi-env" title="Permalink to this equation">¶</a></span>\[(v^*)'(y) = u' (c^*(y) ) := (u' \circ c^*)(y)\]</div>
+<span class="eqno">(33.2)<a class="headerlink" href="#equation-cpi-env" title="Permalink to this equation">¶</a></span>\[(v^*)'(y) = u' (c^*(y) ) := (u' \circ c^*)(y)\]</div>
 <p>The last result is called the <strong>envelope condition</strong> due to its relationship with the <a class="reference external" href="https://en.wikipedia.org/wiki/Envelope_theorem">envelope theorem</a>.</p>
-<p>To see why <a class="reference internal" href="#equation-cpi-env">(145)</a> might be valid, write the Bellman equation in the equivalent
+<p>To see why <a class="reference internal" href="#equation-cpi-env">(33.2)</a> might be valid, write the Bellman equation in the equivalent
 form</p>
 <div class="math notranslate nohighlight">
 \[
@@ -350,24 +349,24 @@ v^*(y) = \max_{0 \leq k \leq y}
 <p>Section 12.1 of <a class="reference external" href="http://johnstachurski.net/edtc.html">EDTC</a> contains full proofs of these results, and closely related discussions can be found in many other texts.</p>
 <p>Differentiability of the value function and iteriority of the optimal policy
 imply that optimal consumption satisfies the first order condition associated
-with <a class="reference internal" href="#equation-cpi-fpb30">(144)</a>, which is</p>
+with <a class="reference internal" href="#equation-cpi-fpb30">(33.1)</a>, which is</p>
 <div class="math notranslate nohighlight" id="equation-cpi-foc">
-<span class="eqno">(146)<a class="headerlink" href="#equation-cpi-foc" title="Permalink to this equation">¶</a></span>\[u'(c^*(y)) = \beta \int (v^*)'(f(y - c^*(y)) z) f'(y - c^*(y)) z \phi(dz)\]</div>
-<p>Combining <a class="reference internal" href="#equation-cpi-env">(145)</a> and the first-order condition <a class="reference internal" href="#equation-cpi-foc">(146)</a> gives the famous <strong>Euler equation</strong></p>
+<span class="eqno">(33.3)<a class="headerlink" href="#equation-cpi-foc" title="Permalink to this equation">¶</a></span>\[u'(c^*(y)) = \beta \int (v^*)'(f(y - c^*(y)) z) f'(y - c^*(y)) z \phi(dz)\]</div>
+<p>Combining <a class="reference internal" href="#equation-cpi-env">(33.2)</a> and the first-order condition <a class="reference internal" href="#equation-cpi-foc">(33.3)</a> gives the famous <strong>Euler equation</strong></p>
 <div class="math notranslate nohighlight" id="equation-cpi-euler">
-<span class="eqno">(147)<a class="headerlink" href="#equation-cpi-euler" title="Permalink to this equation">¶</a></span>\[(u'\circ c^*)(y)
+<span class="eqno">(33.4)<a class="headerlink" href="#equation-cpi-euler" title="Permalink to this equation">¶</a></span>\[(u'\circ c^*)(y)
 = \beta \int (u'\circ c^*)(f(y - c^*(y)) z) f'(y - c^*(y)) z \phi(dz)\]</div>
 <p>We can think of the Euler equation as a functional equation</p>
 <div class="math notranslate nohighlight" id="equation-cpi-euler-func">
-<span class="eqno">(148)<a class="headerlink" href="#equation-cpi-euler-func" title="Permalink to this equation">¶</a></span>\[(u'\circ \sigma)(y)
+<span class="eqno">(33.5)<a class="headerlink" href="#equation-cpi-euler-func" title="Permalink to this equation">¶</a></span>\[(u'\circ \sigma)(y)
 = \beta \int (u'\circ \sigma)(f(y - \sigma(y)) z) f'(y - \sigma(y)) z \phi(dz)\]</div>
 <p>over interior consumption policies <span class="math notranslate nohighlight">\(\sigma\)</span>, one solution of which is the optimal policy <span class="math notranslate nohighlight">\(c^*\)</span>.</p>
-<p>Our aim is to solve the functional equation <a class="reference internal" href="#equation-cpi-euler-func">(148)</a> and hence obtain <span class="math notranslate nohighlight">\(c^*\)</span>.</p>
+<p>Our aim is to solve the functional equation <a class="reference internal" href="#equation-cpi-euler-func">(33.5)</a> and hence obtain <span class="math notranslate nohighlight">\(c^*\)</span>.</p>
 <div class="section" id="the-coleman-operator">
-<h3>The Coleman Operator<a class="headerlink" href="#the-coleman-operator" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.2.1. </span>The Coleman Operator<a class="headerlink" href="#the-coleman-operator" title="Permalink to this headline">¶</a></h3>
 <p>Recall the Bellman operator</p>
 <div class="math notranslate nohighlight" id="equation-fcbell20-coleman">
-<span class="eqno">(149)<a class="headerlink" href="#equation-fcbell20-coleman" title="Permalink to this equation">¶</a></span>\[Tw(y) := \max_{0 \leq c \leq y}
+<span class="eqno">(33.6)<a class="headerlink" href="#equation-fcbell20-coleman" title="Permalink to this equation">¶</a></span>\[Tw(y) := \max_{0 \leq c \leq y}
 \left\{
     u(c) + \beta \int w(f(y - c) z) \phi(dz)
 \right\}\]</div>
@@ -382,14 +381,14 @@ that are continuous, strictly increasing and interior (i.e., <span class="math n
 <li><p>returns a new function <span class="math notranslate nohighlight">\(K\sigma\)</span>,  where <span class="math notranslate nohighlight">\(K\sigma(y)\)</span> is the <span class="math notranslate nohighlight">\(c \in (0, y)\)</span> that solves</p></li>
 </ol>
 <div class="math notranslate nohighlight" id="equation-cpi-coledef">
-<span class="eqno">(150)<a class="headerlink" href="#equation-cpi-coledef" title="Permalink to this equation">¶</a></span>\[u'(c)
+<span class="eqno">(33.7)<a class="headerlink" href="#equation-cpi-coledef" title="Permalink to this equation">¶</a></span>\[u'(c)
 = \beta \int (u' \circ \sigma) (f(y - c) z ) f'(y - c) z \phi(dz)\]</div>
-<p>We call this operator the <strong>Coleman operator</strong> to acknowledge the work of <span id="id1">[<a class="reference internal" href="../zreferences.html#id69"><span>Col90</span></a>]</span>  (although many people have studied this and other closely related iterative techniques).</p>
+<p>We call this operator the <strong>Coleman operator</strong> to acknowledge the work of <span id="id1">[<a class="reference internal" href="../zreferences.html#id69">Col90</a>]</span>  (although many people have studied this and other closely related iterative techniques).</p>
 <p>In essence, <span class="math notranslate nohighlight">\(K\sigma\)</span> is the consumption policy that the Euler equation tells
 you to choose today when your future consumption policy is <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
 <p>The  important thing to note about <span class="math notranslate nohighlight">\(K\)</span> is that, by
 construction, its fixed points coincide with solutions to the functional
-equation <a class="reference internal" href="#equation-cpi-euler-func">(148)</a>.</p>
+equation <a class="reference internal" href="#equation-cpi-euler-func">(33.5)</a>.</p>
 <p>In particular, the optimal policy <span class="math notranslate nohighlight">\(c^*\)</span> is a fixed point.</p>
 <p>Indeed, for fixed <span class="math notranslate nohighlight">\(y\)</span>, the value <span class="math notranslate nohighlight">\(Kc^*(y)\)</span> is the <span class="math notranslate nohighlight">\(c\)</span> that
 solves</p>
@@ -401,16 +400,16 @@ u'(c)
 <p>In view of the Euler equation, this is exactly <span class="math notranslate nohighlight">\(c^*(y)\)</span>.</p>
 </div>
 <div class="section" id="is-the-coleman-operator-well-defined">
-<h3>Is the Coleman Operator Well Defined?<a class="headerlink" href="#is-the-coleman-operator-well-defined" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.2.2. </span>Is the Coleman Operator Well Defined?<a class="headerlink" href="#is-the-coleman-operator-well-defined" title="Permalink to this headline">¶</a></h3>
 <p>In particular, is there always a unique <span class="math notranslate nohighlight">\(c \in (0, y)\)</span> that solves
-<a class="reference internal" href="#equation-cpi-coledef">(150)</a>?</p>
+<a class="reference internal" href="#equation-cpi-coledef">(33.7)</a>?</p>
 <p>The answer is yes, under our assumptions.</p>
-<p>For any <span class="math notranslate nohighlight">\(\sigma \in \mathscr P\)</span>, the right side of <a class="reference internal" href="#equation-cpi-coledef">(150)</a></p>
+<p>For any <span class="math notranslate nohighlight">\(\sigma \in \mathscr P\)</span>, the right side of <a class="reference internal" href="#equation-cpi-coledef">(33.7)</a></p>
 <ul class="simple">
 <li><p>is continuous and strictly increasing in <span class="math notranslate nohighlight">\(c\)</span> on <span class="math notranslate nohighlight">\((0, y)\)</span></p></li>
 <li><p>diverges to <span class="math notranslate nohighlight">\(+\infty\)</span> as <span class="math notranslate nohighlight">\(c \uparrow y\)</span></p></li>
 </ul>
-<p>The left side of <a class="reference internal" href="#equation-cpi-coledef">(150)</a></p>
+<p>The left side of <a class="reference internal" href="#equation-cpi-coledef">(33.7)</a></p>
 <ul class="simple">
 <li><p>is continuous and strictly decreasing in <span class="math notranslate nohighlight">\(c\)</span> on <span class="math notranslate nohighlight">\((0, y)\)</span></p></li>
 <li><p>diverges to <span class="math notranslate nohighlight">\(+\infty\)</span> as <span class="math notranslate nohighlight">\(c \downarrow 0\)</span></p></li>
@@ -421,7 +420,7 @@ whenever <span class="math notranslate nohighlight">\(\sigma \in \mathscr P\)</s
 </div>
 </div>
 <div class="section" id="comparison-with-value-function-iteration">
-<h2><a class="toc-backref" href="#id5">Comparison with Value Function Iteration</a><a class="headerlink" href="#comparison-with-value-function-iteration" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5"><span class="section-number">33.3. </span>Comparison with Value Function Iteration</a><a class="headerlink" href="#comparison-with-value-function-iteration" title="Permalink to this headline">¶</a></h2>
 <p>How does Euler equation time iteration compare with value function iteration?</p>
 <p>Both can be used to compute the optimal policy, but is one faster or more
 accurate?</p>
@@ -433,7 +432,7 @@ accurate?</p>
 <p>It turns out that, once we actually implement these two routines, time iteration is faster and more accurate than value function iteration.</p>
 <p>More on this below.</p>
 <div class="section" id="equivalent-dynamics">
-<h3>Equivalent Dynamics<a class="headerlink" href="#equivalent-dynamics" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.3.1. </span>Equivalent Dynamics<a class="headerlink" href="#equivalent-dynamics" title="Permalink to this headline">¶</a></h3>
 <p>Let’s talk about the theory first.</p>
 <p>To explain the connection between the two algorithms, it helps to understand
 the notion of equivalent dynamics.</p>
@@ -465,7 +464,7 @@ composition of <span class="math notranslate nohighlight">\(g\)</span> with itse
 \]</div>
 <p>or, by applying <span class="math notranslate nohighlight">\(\tau^{-1}\)</span> to both sides</p>
 <div class="math notranslate nohighlight" id="equation-cpi-ghcom">
-<span class="eqno">(151)<a class="headerlink" href="#equation-cpi-ghcom" title="Permalink to this equation">¶</a></span>\[g = \tau^{-1} \circ h \circ \tau\]</div>
+<span class="eqno">(33.8)<a class="headerlink" href="#equation-cpi-ghcom" title="Permalink to this equation">¶</a></span>\[g = \tau^{-1} \circ h \circ \tau\]</div>
 <p>Here’s a commutative diagram that illustrates</p>
 <div class="figure align-default">
 <a class="reference internal image-reference" href="../_images/col_pol_bij1.png"><img alt="../_images/col_pol_bij1.png" src="../_images/col_pol_bij1.png" style="width: 50%;" /></a>
@@ -475,7 +474,7 @@ composition of <span class="math notranslate nohighlight">\(g\)</span> with itse
 <div class="figure align-default">
 <a class="reference internal image-reference" href="../_images/col_pol_bij2.png"><img alt="../_images/col_pol_bij2.png" src="../_images/col_pol_bij2.png" style="width: 50%;" /></a>
 </div>
-<p>Now, it’s easy to check from <a class="reference internal" href="#equation-cpi-ghcom">(151)</a> that <span class="math notranslate nohighlight">\(g^2 = \tau^{-1} \circ h^2 \circ \tau\)</span> holds.</p>
+<p>Now, it’s easy to check from <a class="reference internal" href="#equation-cpi-ghcom">(33.8)</a> that <span class="math notranslate nohighlight">\(g^2 = \tau^{-1} \circ h^2 \circ \tau\)</span> holds.</p>
 <p>In fact, if you like proofs by induction, you won’t have trouble showing that</p>
 <div class="math notranslate nohighlight">
 \[
@@ -491,7 +490,7 @@ g^n = \tau^{-1} \circ h^n \circ \tau
 <p>We end up with exactly the same object.</p>
 </div>
 <div class="section" id="back-to-economics">
-<h3>Back to Economics<a class="headerlink" href="#back-to-economics" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.3.2. </span>Back to Economics<a class="headerlink" href="#back-to-economics" title="Permalink to this headline">¶</a></h3>
 <p>Have you guessed where this is leading?</p>
 <p>What we’re going to show now is that the operators <span class="math notranslate nohighlight">\(T\)</span> and <span class="math notranslate nohighlight">\(K\)</span>
 commute under a certain bijection.</p>
@@ -499,7 +498,7 @@ commute under a certain bijection.</p>
 <p>To make life a little easier, we’ll assume in the following analysis (although not
 always in our applications) that <span class="math notranslate nohighlight">\(u(0) = 0\)</span>.</p>
 <div class="section" id="a-bijection">
-<h4>A Bijection<a class="headerlink" href="#a-bijection" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">33.3.2.1. </span>A Bijection<a class="headerlink" href="#a-bijection" title="Permalink to this headline">¶</a></h4>
 <p>Let <span class="math notranslate nohighlight">\(\mathscr V\)</span> be all strictly concave, continuously differentiable functions <span class="math notranslate nohighlight">\(v\)</span> mapping <span class="math notranslate nohighlight">\(\mathbb R_+\)</span> to itself and satisfying <span class="math notranslate nohighlight">\(v(0) = 0\)</span> and <span class="math notranslate nohighlight">\(v'(y) &gt; u'(y)\)</span> for all positive <span class="math notranslate nohighlight">\(y\)</span>.</p>
 <p>For <span class="math notranslate nohighlight">\(v \in \mathscr V\)</span> let</p>
 <div class="math notranslate nohighlight">
@@ -515,10 +514,10 @@ M v := h \circ v' \qquad \text{where } h := (u')^{-1}
 <p>A (solved) exercise below asks you to confirm this.</p>
 </div>
 <div class="section" id="commutative-operators">
-<h4>Commutative Operators<a class="headerlink" href="#commutative-operators" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">33.3.2.2. </span>Commutative Operators<a class="headerlink" href="#commutative-operators" title="Permalink to this headline">¶</a></h4>
 <p>It is an additional solved exercise (see below) to show that <span class="math notranslate nohighlight">\(T\)</span> and <span class="math notranslate nohighlight">\(K\)</span> commute under <span class="math notranslate nohighlight">\(M\)</span>, in the sense that</p>
 <div class="math notranslate nohighlight" id="equation-cpi-ed-tk">
-<span class="eqno">(152)<a class="headerlink" href="#equation-cpi-ed-tk" title="Permalink to this equation">¶</a></span>\[M \circ T = K \circ M\]</div>
+<span class="eqno">(33.9)<a class="headerlink" href="#equation-cpi-ed-tk" title="Permalink to this equation">¶</a></span>\[M \circ T = K \circ M\]</div>
 <p>In view of the preceding discussion, this implies that</p>
 <div class="math notranslate nohighlight">
 \[
@@ -529,7 +528,7 @@ T^n = M^{-1} \circ K^n \circ M
 </div>
 </div>
 <div class="section" id="implementation">
-<h2><a class="toc-backref" href="#id6">Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6"><span class="section-number">33.4. </span>Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <p>We’ve just shown that the operators <span class="math notranslate nohighlight">\(T\)</span> and <span class="math notranslate nohighlight">\(K\)</span> have the same rate of convergence.</p>
 <p>However, it turns out that, once numerical approximation is taken into account, significant differences arises.</p>
 <p>In particular, the image of policy functions under <span class="math notranslate nohighlight">\(K\)</span> can be calculated faster and with greater accuracy than the image of value functions under <span class="math notranslate nohighlight">\(T\)</span>.</p>
@@ -539,7 +538,7 @@ T^n = M^{-1} \circ K^n \circ M
 <li><p>policy functions generally have less curvature than value functions, and hence admit more accurate approximations based on grid point information</p></li>
 </ul>
 <div class="section" id="the-operator">
-<h3>The Operator<a class="headerlink" href="#the-operator" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.4.1. </span>The Operator<a class="headerlink" href="#the-operator" title="Permalink to this headline">¶</a></h3>
 <p>Here’s some code that implements the Coleman operator.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
@@ -549,22 +548,12 @@ T^n = M^{-1} \circ K^n \circ M
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>┌ Info: Precompiling Interpolations [a98d9a8b-a2ab-59e6-89dd-64a1c18fca59]
-└ @ Base loading.jl:1278
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>┌ Info: Precompiling Roots [f2b01f46-fcfa-551c-844a-d8ac1e96c665]
-└ @ Base loading.jl:1278
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">BenchmarkTools</span><span class="p">,</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Roots</span>
 
-<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="o">:</span><span class="n">png</span><span class="p">);</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="ss">:png</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -578,7 +567,7 @@ T^n = M^{-1} \circ K^n \circ M
     <span class="n">g_func</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">extrapolation_bc</span><span class="o">=</span><span class="n">Line</span><span class="p">())</span>
 
     <span class="c"># solve for updated consumption value</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
         <span class="k">function</span> <span class="n">h</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
             <span class="n">vals</span> <span class="o">=</span> <span class="n">∂u∂c</span><span class="o">.</span><span class="p">(</span><span class="n">g_func</span><span class="o">.</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="n">shocks</span><span class="p">))</span> <span class="o">.*</span> <span class="n">f′</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">.*</span> <span class="n">shocks</span>
             <span class="k">return</span> <span class="n">∂u∂c</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">mean</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
@@ -608,7 +597,7 @@ T^n = M^{-1} \circ K^n \circ M
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Optim</span>
 
 <span class="k">function</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">shocks</span><span class="p">,</span> <span class="n">Tw</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">w</span><span class="p">);</span>
-                          <span class="n">compute_policy</span> <span class="o">=</span> <span class="kc">false</span><span class="p">)</span>
+                          <span class="n">compute_policy</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
 
     <span class="c"># apply linear interpolation to w</span>
     <span class="n">w_func</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">extrapolation_bc</span><span class="o">=</span><span class="n">Line</span><span class="p">())</span>
@@ -618,7 +607,7 @@ T^n = M^{-1} \circ K^n \circ M
     <span class="k">end</span>
 
     <span class="c"># set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)}</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
         <span class="n">objective</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">=</span>  <span class="n">u</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">mean</span><span class="p">(</span><span class="n">w_func</span><span class="o">.</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">.*</span> <span class="n">shocks</span><span class="p">))</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">maximize</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="mf">1e-10</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
@@ -645,25 +634,25 @@ T^n = M^{-1} \circ K^n \circ M
 </div>
 </div>
 <div class="section" id="testing-on-the-log-cobb-douglas-case">
-<h3>Testing on the Log / Cobb–Douglas case<a class="headerlink" href="#testing-on-the-log-cobb-douglas-case" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.4.2. </span>Testing on the Log / Cobb–Douglas case<a class="headerlink" href="#testing-on-the-log-cobb-douglas-case" title="Permalink to this headline">¶</a></h3>
 <p>As we <a class="reference internal" href="optgrowth.html"><span class="doc">did for value function iteration</span></a>, let’s start by
 testing our method in the presence of a model that does have an analytical
 solution.</p>
 <p>Here’s an object containing data from the log-linear growth model we used in the <a class="reference internal" href="optgrowth.html"><span class="doc">value function iteration lecture</span></a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">isoelastic</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">γ</span><span class="p">)</span> <span class="o">=</span> <span class="n">isone</span><span class="p">(</span><span class="nb">γ</span><span class="p">)</span> <span class="o">?</span> <span class="n">log</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="nb">γ</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="nb">γ</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">isoelastic</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">γ</span><span class="p">)</span> <span class="o">=</span> <span class="n">isone</span><span class="p">(</span><span class="n">γ</span><span class="p">)</span> <span class="o">?</span> <span class="n">log</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">:</span> <span class="p">(</span><span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">γ</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">γ</span><span class="p">)</span>
 <span class="n">Model</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">α</span> <span class="o">=</span> <span class="mf">0.65</span><span class="p">,</span>                            <span class="c"># Productivity parameter</span>
                   <span class="n">β</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span>                            <span class="c"># Discount factor</span>
-                  <span class="nb">γ</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>                             <span class="c"># Risk aversion</span>
+                  <span class="n">γ</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>                             <span class="c"># Risk aversion</span>
                   <span class="n">μ</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>                             <span class="c"># First parameter in lognorm(μ, σ)</span>
                   <span class="n">s</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>                             <span class="c"># Second parameter in lognorm(μ, σ)</span>
                   <span class="n">grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">200</span><span class="p">),</span> <span class="c"># Grid</span>
                   <span class="n">grid_min</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span>                     <span class="c"># Smallest grid point</span>
                   <span class="n">grid_max</span> <span class="o">=</span> <span class="mf">4.0</span><span class="p">,</span>                      <span class="c"># Largest grid point</span>
                   <span class="n">grid_size</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span>                     <span class="c"># Number of grid points</span>
-                  <span class="n">u</span> <span class="o">=</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">γ</span> <span class="o">=</span> <span class="nb">γ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">isoelastic</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">γ</span><span class="p">),</span>  <span class="c"># utility function</span>
-                  <span class="n">∂u∂c</span> <span class="o">=</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="nb">γ</span><span class="p">),</span>                  <span class="c"># u′</span>
+                  <span class="n">u</span> <span class="o">=</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">γ</span> <span class="o">=</span> <span class="n">γ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">isoelastic</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">γ</span><span class="p">),</span>  <span class="c"># utility function</span>
+                  <span class="n">∂u∂c</span> <span class="o">=</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="n">γ</span><span class="p">),</span>                  <span class="c"># u′</span>
                   <span class="n">f</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">k</span><span class="o">^</span><span class="n">α</span><span class="p">,</span>                        <span class="c"># production function</span>
                   <span class="n">f′</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">α</span> <span class="o">*</span> <span class="n">k</span><span class="o">^</span><span class="p">(</span><span class="n">α</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span>             <span class="c"># f′</span>
                   <span class="p">)</span>
@@ -671,7 +660,7 @@ solution.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##NamedTuple_kw#253 (generic function with 2 methods)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##NamedTuple_kw#257 (generic function with 2 methods)
 </pre></div>
 </div>
 </div>
@@ -708,7 +697,7 @@ theory</p>
     <span class="c"># plot c_star and Kc_star</span>
     <span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">c_star</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;optimal policy cc_star&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">c_star_new</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Kc_star&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -741,14 +730,14 @@ converge towards <span class="math notranslate nohighlight">\(c^*\)</span>.</p>
     <span class="nd">@unpack</span> <span class="n">grid</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">∂u∂c</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">f′</span> <span class="o">=</span> <span class="n">m</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">g_init</span><span class="p">;</span>
     <span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;intial condition c(y) = y&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n_iter</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n_iter</span>
         <span class="n">new_g</span> <span class="o">=</span> <span class="n">K</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">∂u∂c</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">f′</span><span class="p">,</span> <span class="n">shocks</span><span class="p">)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">new_g</span>
         <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
     <span class="k">end</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">c_star</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">c_star</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span>
           <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;true policy function c_star&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -785,7 +774,7 @@ discussed above</p>
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">iterate_updating</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">arg_init</span><span class="p">;</span> <span class="n">sim_length</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
     <span class="n">arg</span> <span class="o">=</span> <span class="n">arg_init</span><span class="p">;</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">sim_length</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">sim_length</span>
         <span class="n">new_arg</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
         <span class="n">arg</span> <span class="o">=</span> <span class="n">new_arg</span>
     <span class="k">end</span>
@@ -802,15 +791,15 @@ discussed above</p>
 
     <span class="n">g</span> <span class="o">=</span> <span class="n">iterate_updating</span><span class="p">(</span><span class="n">coleman_single_arg</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">sim_length</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">iterate_updating</span><span class="p">(</span><span class="n">bellman_single_arg</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="p">(</span><span class="n">grid</span><span class="p">),</span> <span class="n">sim_length</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
-    <span class="n">new_w</span><span class="p">,</span> <span class="n">vf_g</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">shocks</span><span class="p">,</span> <span class="n">compute_policy</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+    <span class="n">new_w</span><span class="p">,</span> <span class="n">vf_g</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">shocks</span><span class="p">,</span> <span class="n">compute_policy</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 
     <span class="n">pf_error</span> <span class="o">=</span> <span class="n">c_star</span> <span class="o">-</span> <span class="n">g</span>
     <span class="n">vf_error</span> <span class="o">=</span> <span class="n">c_star</span> <span class="o">-</span> <span class="n">vf_g</span>
 
-    <span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">zero</span><span class="p">(</span><span class="n">grid</span><span class="p">),</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">zero</span><span class="p">(</span><span class="n">grid</span><span class="p">),</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">pf_error</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;policy iteration error&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">vf_error</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;value iteration error&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">bottomleft</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomleft</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -836,21 +825,21 @@ number of iterations.</p>
 </div>
 </div>
 <div class="section" id="exercises">
-<h2><a class="toc-backref" href="#id7">Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7"><span class="section-number">33.5. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exercise-1">
-<h3>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
-<p>Show that <a class="reference internal" href="#equation-cpi-ed-tk">(152)</a> is valid.  In particular,</p>
+<h3><span class="section-number">33.5.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<p>Show that <a class="reference internal" href="#equation-cpi-ed-tk">(33.9)</a> is valid.  In particular,</p>
 <ul class="simple">
 <li><p>Let <span class="math notranslate nohighlight">\(v\)</span> be strictly concave and continuously differentiable on <span class="math notranslate nohighlight">\((0, \infty)\)</span></p></li>
 <li><p>Fix <span class="math notranslate nohighlight">\(y \in (0, \infty)\)</span> and show that <span class="math notranslate nohighlight">\(MTv(y) = KMv(y)\)</span></p></li>
 </ul>
 </div>
 <div class="section" id="exercise-2">
-<h3>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.5.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
 <p>Show that <span class="math notranslate nohighlight">\(M\)</span> is a bijection from <span class="math notranslate nohighlight">\(\mathscr V\)</span> to <span class="math notranslate nohighlight">\(\mathscr P\)</span>.</p>
 </div>
 <div class="section" id="exercise-3">
-<h3>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.5.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
 <p>Consider the same model as above but with the CRRA utility function</p>
 <div class="math notranslate nohighlight">
 \[
@@ -865,20 +854,20 @@ u(c) = \frac{c^{1 - \gamma} - 1}{1 - \gamma}
 <p>Compare the resulting policies and check that they are close.</p>
 </div>
 <div class="section" id="exercise-4">
-<h3>Exercise 4<a class="headerlink" href="#exercise-4" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.5.4. </span>Exercise 4<a class="headerlink" href="#exercise-4" title="Permalink to this headline">¶</a></h3>
 <p>Do the same exercise, but now, rather than plotting results, benchmark both approaches with 20
 iterations.</p>
 </div>
 </div>
 <div class="section" id="solutions">
-<h2><a class="toc-backref" href="#id8">Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8"><span class="section-number">33.6. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="solution-to-exercise-1">
-<h3>Solution to Exercise 1<a class="headerlink" href="#solution-to-exercise-1" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.6.1. </span>Solution to Exercise 1<a class="headerlink" href="#solution-to-exercise-1" title="Permalink to this headline">¶</a></h3>
 <p>Let <span class="math notranslate nohighlight">\(T, K, M, v\)</span> and <span class="math notranslate nohighlight">\(y\)</span> be as stated in the exercise.</p>
 <p>Using the envelope theorem, one can show that <span class="math notranslate nohighlight">\((Tv)'(y) = u'(c(y))\)</span>
 where <span class="math notranslate nohighlight">\(c(y)\)</span> solves</p>
 <div class="math notranslate nohighlight" id="equation-cpi-foo">
-<span class="eqno">(153)<a class="headerlink" href="#equation-cpi-foo" title="Permalink to this equation">¶</a></span>\[u'(c(y))
+<span class="eqno">(33.10)<a class="headerlink" href="#equation-cpi-foo" title="Permalink to this equation">¶</a></span>\[u'(c(y))
 = \beta \int v' (f(y - c(y)) z ) f'(y - c(y)) z \phi(dz)\]</div>
 <p>Hence <span class="math notranslate nohighlight">\(MTv(y) = (u')^{-1} (u'(c(y))) = c(y)\)</span>.</p>
 <p>On the other hand, <span class="math notranslate nohighlight">\(KMv(y)\)</span> is the <span class="math notranslate nohighlight">\(c(y)\)</span> that solves</p>
@@ -897,7 +886,7 @@ where <span class="math notranslate nohighlight">\(c(y)\)</span> solves</p>
 <p>We see that <span class="math notranslate nohighlight">\(c(y)\)</span> is the same in each case.</p>
 </div>
 <div class="section" id="solution-to-exercise-2">
-<h3>Solution to Exercise 2<a class="headerlink" href="#solution-to-exercise-2" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.6.2. </span>Solution to Exercise 2<a class="headerlink" href="#solution-to-exercise-2" title="Permalink to this headline">¶</a></h3>
 <p>We need to show that <span class="math notranslate nohighlight">\(M\)</span> is a bijection from <span class="math notranslate nohighlight">\(\mathscr V\)</span> to <span class="math notranslate nohighlight">\(\mathscr P\)</span>.</p>
 <p>To see this, first observe that, in view of our assumptions above, <span class="math notranslate nohighlight">\(u'\)</span> is a strictly decreasing continuous bijection from <span class="math notranslate nohighlight">\((0,\infty)\)</span> to itself.</p>
 <p>It <a class="reference external" href="https://math.stackexchange.com/questions/672174/continuity-of-an-inverse-function">follows</a> that <span class="math notranslate nohighlight">\(h\)</span> has the same properties.</p>
@@ -922,13 +911,13 @@ satisfying <span class="math notranslate nohighlight">\(Mv = Mw\)</span>.</p>
 <p>The fundamental theorem of calculus then implies that <span class="math notranslate nohighlight">\(v = w\)</span> on <span class="math notranslate nohighlight">\(\mathbb R_+\)</span>.</p>
 </div>
 <div class="section" id="solution-to-exercise-3">
-<h3>Solution to Exercise 3<a class="headerlink" href="#solution-to-exercise-3" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.6.3. </span>Solution to Exercise 3<a class="headerlink" href="#solution-to-exercise-3" title="Permalink to this headline">¶</a></h3>
 <p>Here’s the code, which will execute if you’ve run all the code above</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Model instance with risk aversion = 1.5</span>
 <span class="c"># others are the same as the previous instance</span>
-<span class="n">m_ex</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="nb">γ</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">);</span>
+<span class="n">m_ex</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">γ</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -946,11 +935,11 @@ satisfying <span class="math notranslate nohighlight">\(Mv = Mw\)</span>.</p>
 
     <span class="n">g</span> <span class="o">=</span> <span class="n">iterate_updating</span><span class="p">(</span><span class="n">coleman_single_arg</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">sim_length</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">iterate_updating</span><span class="p">(</span><span class="n">bellman_single_arg</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">grid</span><span class="p">),</span> <span class="n">sim_length</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
-    <span class="n">new_w</span><span class="p">,</span> <span class="n">vf_g</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">shocks</span><span class="p">,</span> <span class="n">compute_policy</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
+    <span class="n">new_w</span><span class="p">,</span> <span class="n">vf_g</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">shocks</span><span class="p">,</span> <span class="n">compute_policy</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 
     <span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;policy iteration&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">vf_g</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;value iteration&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">topleft</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -974,7 +963,7 @@ satisfying <span class="math notranslate nohighlight">\(Mv = Mw\)</span>.</p>
 <p>The policies are indeed close.</p>
 </div>
 <div class="section" id="solution-to-exercise-4">
-<h3>Solution to Exercise 4<a class="headerlink" href="#solution-to-exercise-4" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">33.6.4. </span>Solution to Exercise 4<a class="headerlink" href="#solution-to-exercise-4" title="Permalink to this headline">¶</a></h3>
 <p>Here’s the code.</p>
 <p>It assumes that you’ve just run the code from the previous exercise</p>
 <div class="cell docutils container">
@@ -1005,17 +994,16 @@ satisfying <span class="math notranslate nohighlight">\(Mv = Mw\)</span>.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 
-  memory estimate:  150.79 MiB
-  allocs estimate:  80347
-  --------------
-  minimum time:     171.038 ms (5.76% GC)
-  median time:      206.064 ms (8.76% GC)
-  mean time:        209.336 ms (8.59% GC)
-  maximum time:     254.390 ms (13.61% GC)
-  --------------
-  samples:          24
-  evals/sample:     1
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 17 samples with 1 evaluation.
+ Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">296.014 ms</span> … <span class=" -Color -Color-Magenta">324.213 ms</span>  ┊ GC (min … max): 6.43% … 5.81%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">307.607 ms               </span>┊ GC (median):    6.22%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">307.555 ms</span> ± <span class=" -Color -Color-Green">  6.482 ms</span>  ┊ GC (mean ± σ):  6.31% ± 0.29%
+
+  ▁    ▁     ▁   ▁     █▁▁<span class=" -Color -Color-Blue"> </span><span class=" -Color -Color-Green">█</span>█    █▁           ▁               ▁  
+  █▁▁▁▁█▁▁▁▁▁█▁▁▁█▁▁▁▁▁███<span class=" -Color -Color-Blue">▁</span><span class=" -Color -Color-Green">█</span>█▁▁▁▁██▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▁
+  296 ms           Histogram: frequency by time          324 ms <span class=" -Color -Color-Bold">&lt;</span>
+
+ Memory estimate: <span class=" -Color -Color-Yellow">150.52 MiB</span>, allocs estimate: <span class=" -Color -Color-Yellow">80214</span>.
 </pre></div>
 </div>
 </div>
@@ -1027,17 +1015,16 @@ satisfying <span class="math notranslate nohighlight">\(Mv = Mw\)</span>.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 
-  memory estimate:  150.79 MiB
-  allocs estimate:  80347
-  --------------
-  minimum time:     169.195 ms (5.60% GC)
-  median time:      177.062 ms (5.92% GC)
-  mean time:        179.449 ms (6.55% GC)
-  maximum time:     199.891 ms (8.22% GC)
-  --------------
-  samples:          28
-  evals/sample:     1
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 16 samples with 1 evaluation.
+ Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">300.369 ms</span> … <span class=" -Color -Color-Magenta">360.697 ms</span>  ┊ GC (min … max): 6.41% … 5.37%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">314.232 ms               </span>┊ GC (median):    6.29%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">316.838 ms</span> ± <span class=" -Color -Color-Green"> 15.238 ms</span>  ┊ GC (mean ± σ):  6.18% ± 0.97%
+
+  ▁ ▁▁▁ ▁ ▁   ▁▁<span class=" -Color -Color-Blue">▁</span>  <span class=" -Color -Color-Green">█</span>▁ ▁    ▁            ▁                     ▁  
+  █▁███▁█▁█▁▁▁██<span class=" -Color -Color-Blue">█</span>▁▁<span class=" -Color -Color-Green">█</span>█▁█▁▁▁▁█▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▁
+  300 ms           Histogram: frequency by time          361 ms <span class=" -Color -Color-Bold">&lt;</span>
+
+ Memory estimate: <span class=" -Color -Color-Yellow">150.52 MiB</span>, allocs estimate: <span class=" -Color -Color-Yellow">80214</span>.
 </pre></div>
 </div>
 </div>
@@ -1055,16 +1042,16 @@ satisfying <span class="math notranslate nohighlight">\(Mv = Mw\)</span>.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.5"
+            mode: "julia-1.6"
         },
         kernelOptions: {
-            kernelName: "julia-1.5",
+            kernelName: "julia-1.6",
             path: "./dynamic_programming"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.5'</script>
+    <script>kernelName = 'julia-1.6'</script>
 
                     </div>
                     
@@ -1093,340 +1080,408 @@ satisfying <span class="math notranslate nohighlight">\(Mv = Mw\)</span>.</p>
                 </div>
 
                 <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
-                    <ul class="current nav bd-sidenav nav sidenav_l1">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/getting_started.html">
-   Setting up Your Julia Environment
+   1. Setting up Your Julia Environment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_environment.html">
-   Interacting with Julia
+   2. Interacting with Julia
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
-   Introductory Examples
+   3. Introductory Examples
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
-   Julia Essentials
+   4. Julia Essentials
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
-   Arrays, Tuples, Ranges, and Other Fundamental Types
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
-   Introduction to Types and Generic Programming
+   6. Introduction to Types and Generic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/generic_programming.html">
-   Generic Programming
+   7. Generic Programming
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/general_packages.html">
-   General Purpose Packages
+   8. General Purpose Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/data_statistical_packages.html">
-   Data and Statistics Packages
+   9. Data and Statistics Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
-   Solvers, Optimizers, and Automatic Differentiation
+   10. Solvers, Optimizers, and Automatic Differentiation
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/tools_editors.html">
-   Julia Tools and Editors
+   11. Julia Tools and Editors
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/version_control.html">
-   Git, GitHub, and Version Control
+   12. Git, GitHub, and Version Control
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/testing.html">
-   Packages, Testing, and Continuous Integration
+   13. Packages, Testing, and Continuous Integration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/need_for_speed.html">
-   The Need for Speed
+   14. The Need for Speed
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
-   Linear Algebra
+   15. Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
-   Orthogonal Projections and Their Applications
+   16. Orthogonal Projections and Their Applications
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
-   LLN and CLT
+   17. LLN and CLT
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   Linear State Space Models
+   18. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   Finite Markov Chains
+   19. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   Continuous State Markov Chains
+   20. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   A First Look at the Kalman Filter
+   22. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   Numerical Linear Algebra and Factorizations
+   23. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   Krylov Methods and Matrix Conditioning
+   24. Krylov Methods and Matrix Conditioning
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="short_path.html">
-   Shortest Paths
+   25. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="mccall_model.html">
-   Job Search I: The McCall Search Model
+   26. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="mccall_model_with_separation.html">
-   Job Search II: Search and Separation
+   27. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="wald_friedman.html">
-   A Problem that Stumped Milton Friedman
+   28. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="odu.html">
-   Job Search III: Search with Learning
+   29. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="career.html">
-   Job Search IV: Modeling Career Choice
+   30. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="jv.html">
-   Job Search V: On-the-Job Search
+   31. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="optgrowth.html">
-   Optimal Growth I: The Stochastic Optimal Growth Model
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   Optimal Growth II: Time Iteration
+   33. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="egm_policy_iter.html">
-   Optimal Growth III: The Endogenous Grid Method
+   34. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lqcontrol.html">
-   LQ Dynamic Programming Problems
+   35. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="perm_income.html">
-   Optimal Savings I: The Permanent Income Model
+   36. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="perm_income_cons.html">
-   Optimal Savings II: LQ Techniques
+   37. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="smoothing.html">
-   Consumption and Tax Smoothing with Complete and Incomplete Markets
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="ifp.html">
-   Optimal Savings III: Occasionally Binding Constraints
+   39. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="robustness.html">
-   Robustness
+   40. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="discrete_dp.html">
-   Discrete State Dynamic Programming
+   41. Discrete State Dynamic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   Modeling COVID 19 with Differential Equations
+   42. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   Schelling’s Segregation Model
+   44. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   A Lake Model of Employment and Unemployment
+   45. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   Rational Expectations Equilibrium
+   46. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   Markov Perfect Equilibrium
+   47. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   Asset Pricing I: Finite State Models
+   48. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   Asset Pricing II: The Lucas Asset Pricing Model
+   49. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   Asset Pricing III:  Incomplete Markets
+   50. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   Uncertainty Traps
+   51. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   The Aiyagari Model
+   52. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   Default Risk and Income Fluctuations
+   53. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   Globalization and Cycles
+   54. Globalization and Cycles
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   Covariance Stationary Processes
+   55. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   Estimation of Spectra
+   56. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   Additive Functionals
+   57. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   Multiplicative Functionals
+   58. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   Classical Control with Linear Algebra
+   59. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   Classical Filtering With Linear Algebra
+   60. Classical Filtering With Linear Algebra
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   Dynamic Stackelberg Problems
+   61. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   Optimal Taxation in an LQ Economy
+   62. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   Optimal Taxation with State-Contingent Debt
+   63. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   Optimal Taxation without State-Contingent Debt
+   64. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   About these Lectures
+   65. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   Troubleshooting
+   66. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   References
+   67. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   Lecture Status
+   68. Lecture Status
   </a>
  </li>
 </ul>
@@ -1465,7 +1520,7 @@ satisfying <span class="math notranslate nohighlight">\(Mv = Mw\)</span>.</p>
                     <li data-tippy-content="Download Notebook"><a href="_notebooks/dynamic_programming/coleman_policy_iter.ipynb" download><i data-feather="download-cloud"></i></a></li>
                     <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/dynamic_programming/coleman_policy_iter.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
                         <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
-                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/coleman_policy_iter.ipynb" download><i data-feather="github"></i></a></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/dynamic_programming/coleman_policy_iter.md" download><i data-feather="github"></i></a></li>
                 </ul>
 
             </div>

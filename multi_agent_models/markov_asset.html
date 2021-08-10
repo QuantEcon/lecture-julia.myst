@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asset Pricing I: Finite State Models &#8212; Quantitative Economics with Julia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>48. Asset Pricing I: Finite State Models &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -26,8 +26,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -42,15 +42,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -58,11 +55,13 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/multi_agent_models/markov_asset.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Asset Pricing II: The Lucas Asset Pricing Model" href="lucas_model.html" />
-    <link rel="prev" title="Markov Perfect Equilibrium" href="markov_perf.html" />
+    <link rel="next" title="49. Asset Pricing II: The Lucas Asset Pricing Model" href="lucas_model.html" />
+    <link rel="prev" title="47. Markov Perfect Equilibrium" href="markov_perf.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -112,117 +111,117 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   Overview
+   48.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#pricing-models">
-   Pricing Models
+   48.2. Pricing Models
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#risk-neutral-pricing">
-     Risk Neutral Pricing
+     48.2.1. Risk Neutral Pricing
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#pricing-with-random-discount-factor">
-     Pricing with Random Discount Factor
+     48.2.2. Pricing with Random Discount Factor
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#asset-pricing-and-covariances">
-     Asset Pricing and Covariances
+     48.2.3. Asset Pricing and Covariances
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-price-dividend-ratio">
-     The Price-Dividend Ratio
+     48.2.4. The Price-Dividend Ratio
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#prices-in-the-risk-neutral-case">
-   Prices in the Risk Neutral Case
+   48.3. Prices in the Risk Neutral Case
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#example-1-constant-dividends">
-     Example 1: Constant dividends
+     48.3.1. Example 1: Constant dividends
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#example-2-dividends-with-deterministic-growth-paths">
-     Example 2: Dividends with deterministic growth paths
+     48.3.2. Example 2: Dividends with deterministic growth paths
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#example-3-markov-growth-risk-neutral-pricing">
-     Example 3: Markov growth, risk neutral pricing
+     48.3.3. Example 3: Markov growth, risk neutral pricing
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#pricing">
-       Pricing
+       48.3.3.1. Pricing
       </a>
      </li>
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#code">
-     Code
+     48.3.4. Code
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#asset-prices-under-risk-aversion">
-   Asset Prices under Risk Aversion
+   48.4. Asset Prices under Risk Aversion
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#pricing-a-lucas-tree">
-     Pricing a Lucas tree
+     48.4.1. Pricing a Lucas tree
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#special-cases">
-       Special cases
+       48.4.1.1. Special cases
       </a>
      </li>
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#a-risk-free-consol">
-     A Risk-Free Consol
+     48.4.2. A Risk-Free Consol
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#pricing-an-option-to-purchase-the-consol">
-     Pricing an Option to Purchase the Consol
+     48.4.3. Pricing an Option to Purchase the Consol
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#an-infinite-horizon-call-option">
-       An infinite horizon call option
+       48.4.3.1. An infinite horizon call option
       </a>
      </li>
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#risk-free-rates">
-     Risk Free Rates
+     48.4.4. Risk Free Rates
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#the-one-period-risk-free-interest-rate">
-       The one-period risk-free interest rate
+       48.4.4.1. The one-period risk-free interest rate
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#other-terms">
-       Other terms
+       48.4.4.2. Other terms
       </a>
      </li>
     </ul>
@@ -231,39 +230,39 @@
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#exercises">
-   Exercises
+   48.5. Exercises
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-1">
-     Exercise 1
+     48.5.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-2">
-     Exercise 2
+     48.5.2. Exercise 2
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-3">
-     Exercise 3
+     48.5.3. Exercise 3
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solutions">
-   Solutions
+   48.6. Solutions
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id6">
-     Exercise 2
+     48.6.1. Exercise 2
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id7">
-     Exercise 3
+     48.6.2. Exercise 3
     </a>
    </li>
   </ul>
@@ -318,7 +317,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="asset-pricing-i-finite-state-models">
-<h1><a class="toc-backref" href="#id8"><span class="target" id="index-0"></span>Asset Pricing I: Finite State Models</a><a class="headerlink" href="#asset-pricing-i-finite-state-models" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id8"><span class="section-number">48. </span><span class="target" id="index-0"></span>Asset Pricing I: Finite State Models</a><a class="headerlink" href="#asset-pricing-i-finite-state-models" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <span id="index-1"></span><p class="topic-title">Contents</p>
 <ul class="simple">
@@ -341,7 +340,7 @@
 <div><p>“Asset pricing is all about covariances” – Lars Peter Hansen</p>
 </div></blockquote>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id9">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9"><span class="section-number">48.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p id="index-2">An asset is a claim on one or more future payoffs.</p>
 <p>The spot price of an asset depends primarily on</p>
 <ul class="simple">
@@ -359,7 +358,7 @@
 </ul>
 </div>
 <div class="section" id="pricing-models">
-<h2><a class="toc-backref" href="#id10"><span class="target" id="index-3"></span>Pricing Models</a><a class="headerlink" href="#pricing-models" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10"><span class="section-number">48.2. </span><span class="target" id="index-3"></span>Pricing Models</a><a class="headerlink" href="#pricing-models" title="Permalink to this headline">¶</a></h2>
 <p id="index-4">In what follows let <span class="math notranslate nohighlight">\(\{d_t\}_{t \geq 0}\)</span> be a stream of dividends.</p>
 <ul class="simple">
 <li><p>A time-<span class="math notranslate nohighlight">\(t\)</span> <strong>cum-dividend</strong> asset is a claim to the stream <span class="math notranslate nohighlight">\(d_t, d_{t+1}, \ldots\)</span>.</p></li>
@@ -368,59 +367,59 @@
 <p>Let’s look at some equations that we expect to hold for prices of assets under ex-dividend contracts
 (we will consider cum-dividend pricing in the exercises).</p>
 <div class="section" id="risk-neutral-pricing">
-<h3>Risk Neutral Pricing<a class="headerlink" href="#risk-neutral-pricing" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.2.1. </span>Risk Neutral Pricing<a class="headerlink" href="#risk-neutral-pricing" title="Permalink to this headline">¶</a></h3>
 <p id="index-5">Our first scenario is risk-neutral pricing.</p>
 <p>Let <span class="math notranslate nohighlight">\(\beta = 1/(1+\rho)\)</span> be an intertemporal discount factor, where
 <span class="math notranslate nohighlight">\(\rho\)</span> is the rate at which agents discount the future.</p>
 <p>The basic risk-neutral asset pricing equation for pricing one unit of an ex-dividend asset is.</p>
 <div class="math notranslate nohighlight" id="equation-rnapex">
-<span id="mass-pra"></span><span class="eqno">(328)<a class="headerlink" href="#equation-rnapex" title="Permalink to this equation">¶</a></span>\[p_t = \beta {\mathbb E}_t [d_{t+1} + p_{t+1}]\]</div>
+<span id="mass-pra"></span><span class="eqno">(48.1)<a class="headerlink" href="#equation-rnapex" title="Permalink to this equation">¶</a></span>\[p_t = \beta {\mathbb E}_t [d_{t+1} + p_{t+1}]\]</div>
 <p>This is a simple “cost equals expected benefit” relationship.</p>
 <p>Here <span class="math notranslate nohighlight">\({\mathbb E}_t [y]\)</span> denotes the best forecast of <span class="math notranslate nohighlight">\(y\)</span>, conditioned on information available at time <span class="math notranslate nohighlight">\(t\)</span>.</p>
 </div>
 <div class="section" id="pricing-with-random-discount-factor">
-<h3>Pricing with Random Discount Factor<a class="headerlink" href="#pricing-with-random-discount-factor" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.2.2. </span>Pricing with Random Discount Factor<a class="headerlink" href="#pricing-with-random-discount-factor" title="Permalink to this headline">¶</a></h3>
 <p id="index-6">What happens if for some reason traders discount payouts differently depending on the state of the world?</p>
-<p>Michael Harrison and David Kreps <span id="id1">[<a class="reference internal" href="../zreferences.html#id42"><span>HK79</span></a>]</span> and Lars Peter Hansen
-and Scott Richard <span id="id2">[<a class="reference internal" href="../zreferences.html#id43"><span>HR87</span></a>]</span> showed that in quite general
+<p>Michael Harrison and David Kreps <span id="id1">[<a class="reference internal" href="../zreferences.html#id42">HK79</a>]</span> and Lars Peter Hansen
+and Scott Richard <span id="id2">[<a class="reference internal" href="../zreferences.html#id43">HR87</a>]</span> showed that in quite general
 settings the price of an ex-dividend asset obeys</p>
 <div class="math notranslate nohighlight" id="equation-lteeqs0">
-<span class="eqno">(329)<a class="headerlink" href="#equation-lteeqs0" title="Permalink to this equation">¶</a></span>\[p_t = {\mathbb E}_t \left[ m_{t+1}  ( d_{t+1} + p_{t+1} ) \right]\]</div>
+<span class="eqno">(48.2)<a class="headerlink" href="#equation-lteeqs0" title="Permalink to this equation">¶</a></span>\[p_t = {\mathbb E}_t \left[ m_{t+1}  ( d_{t+1} + p_{t+1} ) \right]\]</div>
 <p>for some  <strong>stochastic discount factor</strong> <span class="math notranslate nohighlight">\(m_{t+1}\)</span>.</p>
-<p>The fixed discount factor <span class="math notranslate nohighlight">\(\beta\)</span> in <a class="reference internal" href="#equation-rnapex">(328)</a> has been replaced by the random variable <span class="math notranslate nohighlight">\(m_{t+1}\)</span>.</p>
+<p>The fixed discount factor <span class="math notranslate nohighlight">\(\beta\)</span> in <a class="reference internal" href="#equation-rnapex">(48.1)</a> has been replaced by the random variable <span class="math notranslate nohighlight">\(m_{t+1}\)</span>.</p>
 <p>The way anticipated future payoffs are evaluated can now depend on various random outcomes.</p>
 <p>One example of this idea is that assets that tend to have good payoffs in bad states of the world might be regarded as more valuable.</p>
 <p>This is because they pay well when the funds are more urgently needed.</p>
 <p>We give examples of how the stochastic discount factor has been modeled below.</p>
 </div>
 <div class="section" id="asset-pricing-and-covariances">
-<h3>Asset Pricing and Covariances<a class="headerlink" href="#asset-pricing-and-covariances" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.2.3. </span>Asset Pricing and Covariances<a class="headerlink" href="#asset-pricing-and-covariances" title="Permalink to this headline">¶</a></h3>
 <p>Recall that, from the definition of a conditional covariance <span class="math notranslate nohighlight">\({\rm cov}_t (x_{t+1}, y_{t+1})\)</span>, we have</p>
 <div class="math notranslate nohighlight" id="equation-lteeqs101">
-<span class="eqno">(330)<a class="headerlink" href="#equation-lteeqs101" title="Permalink to this equation">¶</a></span>\[{\mathbb E}_t (x_{t+1} y_{t+1}) = {\rm cov}_t (x_{t+1}, y_{t+1}) + {\mathbb E}_t x_{t+1} {\mathbb E}_t y_{t+1}\]</div>
-<p>If we apply this definition to the asset pricing equation <a class="reference internal" href="#equation-lteeqs0">(329)</a> we obtain</p>
+<span class="eqno">(48.3)<a class="headerlink" href="#equation-lteeqs101" title="Permalink to this equation">¶</a></span>\[{\mathbb E}_t (x_{t+1} y_{t+1}) = {\rm cov}_t (x_{t+1}, y_{t+1}) + {\mathbb E}_t x_{t+1} {\mathbb E}_t y_{t+1}\]</div>
+<p>If we apply this definition to the asset pricing equation <a class="reference internal" href="#equation-lteeqs0">(48.2)</a> we obtain</p>
 <div class="math notranslate nohighlight" id="equation-lteeqs102">
-<span class="eqno">(331)<a class="headerlink" href="#equation-lteeqs102" title="Permalink to this equation">¶</a></span>\[p_t = {\mathbb E}_t m_{t+1} {\mathbb E}_t (d_{t+1} + p_{t+1}) + {\rm cov}_t (m_{t+1}, d_{t+1}+ p_{t+1})\]</div>
-<p>It is useful to regard equation <a class="reference internal" href="#equation-lteeqs102">(331)</a>   as a generalization of equation <a class="reference internal" href="#equation-rnapex">(328)</a>.</p>
+<span class="eqno">(48.4)<a class="headerlink" href="#equation-lteeqs102" title="Permalink to this equation">¶</a></span>\[p_t = {\mathbb E}_t m_{t+1} {\mathbb E}_t (d_{t+1} + p_{t+1}) + {\rm cov}_t (m_{t+1}, d_{t+1}+ p_{t+1})\]</div>
+<p>It is useful to regard equation <a class="reference internal" href="#equation-lteeqs102">(48.4)</a>   as a generalization of equation <a class="reference internal" href="#equation-rnapex">(48.1)</a>.</p>
 <ul class="simple">
-<li><p>In equation <a class="reference internal" href="#equation-rnapex">(328)</a>, the stochastic discount factor <span class="math notranslate nohighlight">\(m_{t+1} = \beta\)</span>,  a constant.</p></li>
-<li><p>In equation <a class="reference internal" href="#equation-rnapex">(328)</a>, the covariance term <span class="math notranslate nohighlight">\({\rm cov}_t (m_{t+1}, d_{t+1}+ p_{t+1})\)</span> is zero because <span class="math notranslate nohighlight">\(m_{t+1} = \beta\)</span>.</p></li>
+<li><p>In equation <a class="reference internal" href="#equation-rnapex">(48.1)</a>, the stochastic discount factor <span class="math notranslate nohighlight">\(m_{t+1} = \beta\)</span>,  a constant.</p></li>
+<li><p>In equation <a class="reference internal" href="#equation-rnapex">(48.1)</a>, the covariance term <span class="math notranslate nohighlight">\({\rm cov}_t (m_{t+1}, d_{t+1}+ p_{t+1})\)</span> is zero because <span class="math notranslate nohighlight">\(m_{t+1} = \beta\)</span>.</p></li>
 </ul>
-<p>Equation <a class="reference internal" href="#equation-lteeqs102">(331)</a> asserts that the covariance of the stochastic discount factor with the one period payout <span class="math notranslate nohighlight">\(d_{t+1} + p_{t+1}\)</span> is an important determinant of the price <span class="math notranslate nohighlight">\(p_t\)</span>.</p>
+<p>Equation <a class="reference internal" href="#equation-lteeqs102">(48.4)</a> asserts that the covariance of the stochastic discount factor with the one period payout <span class="math notranslate nohighlight">\(d_{t+1} + p_{t+1}\)</span> is an important determinant of the price <span class="math notranslate nohighlight">\(p_t\)</span>.</p>
 <p>We give examples of some models of stochastic discount factors that have been proposed later in this lecture and also in a <a class="reference internal" href="lucas_model.html"><span class="doc">later lecture</span></a>.</p>
 </div>
 <div class="section" id="the-price-dividend-ratio">
-<h3>The Price-Dividend Ratio<a class="headerlink" href="#the-price-dividend-ratio" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.2.4. </span>The Price-Dividend Ratio<a class="headerlink" href="#the-price-dividend-ratio" title="Permalink to this headline">¶</a></h3>
 <p>Aside from prices, another quantity of interest is the <strong>price-dividend ratio</strong> <span class="math notranslate nohighlight">\(v_t := p_t / d_t\)</span>.</p>
 <p>Let’s write down an expression that this ratio should satisfy.</p>
-<p>We can divide both sides of <a class="reference internal" href="#equation-lteeqs0">(329)</a> by <span class="math notranslate nohighlight">\(d_t\)</span> to get</p>
+<p>We can divide both sides of <a class="reference internal" href="#equation-lteeqs0">(48.2)</a> by <span class="math notranslate nohighlight">\(d_t\)</span> to get</p>
 <div class="math notranslate nohighlight" id="equation-pdex">
-<span class="eqno">(332)<a class="headerlink" href="#equation-pdex" title="Permalink to this equation">¶</a></span>\[v_t = {\mathbb E}_t \left[ m_{t+1} \frac{d_{t+1}}{d_t} (1 + v_{t+1}) \right]\]</div>
+<span class="eqno">(48.5)<a class="headerlink" href="#equation-pdex" title="Permalink to this equation">¶</a></span>\[v_t = {\mathbb E}_t \left[ m_{t+1} \frac{d_{t+1}}{d_t} (1 + v_{t+1}) \right]\]</div>
 <p>Below we’ll discuss the implication of this equation.</p>
 </div>
 </div>
 <div class="section" id="prices-in-the-risk-neutral-case">
-<h2><a class="toc-backref" href="#id11">Prices in the Risk Neutral Case</a><a class="headerlink" href="#prices-in-the-risk-neutral-case" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11"><span class="section-number">48.3. </span>Prices in the Risk Neutral Case</a><a class="headerlink" href="#prices-in-the-risk-neutral-case" title="Permalink to this headline">¶</a></h2>
 <p>What can we say about price dynamics on the basis of the models described above?</p>
 <p>The answer to this question depends on</p>
 <ol class="simple">
@@ -429,9 +428,9 @@ settings the price of an ex-dividend asset obeys</p>
 </ol>
 <p>For now let’s focus on the risk neutral case, where the stochastic discount factor is constant, and study how prices depend on the dividend process.</p>
 <div class="section" id="example-1-constant-dividends">
-<h3>Example 1: Constant dividends<a class="headerlink" href="#example-1-constant-dividends" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.3.1. </span>Example 1: Constant dividends<a class="headerlink" href="#example-1-constant-dividends" title="Permalink to this headline">¶</a></h3>
 <p>The simplest case is risk neutral pricing in the face of a constant, non-random dividend stream <span class="math notranslate nohighlight">\(d_t = d &gt; 0\)</span>.</p>
-<p>Removing the expectation from <a class="reference internal" href="#equation-rnapex">(328)</a> and iterating forward gives</p>
+<p>Removing the expectation from <a class="reference internal" href="#equation-rnapex">(48.1)</a> and iterating forward gives</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
@@ -446,18 +445,18 @@ settings the price of an ex-dividend asset obeys</p>
 \end{split}\]</div>
 <p>Unless prices explode in the future, this sequence converges to</p>
 <div class="math notranslate nohighlight" id="equation-ddet">
-<span class="eqno">(333)<a class="headerlink" href="#equation-ddet" title="Permalink to this equation">¶</a></span>\[\bar p := \frac{\beta d}{1-\beta}\]</div>
+<span class="eqno">(48.6)<a class="headerlink" href="#equation-ddet" title="Permalink to this equation">¶</a></span>\[\bar p := \frac{\beta d}{1-\beta}\]</div>
 <p>This price is the equilibrium price in the constant dividend case.</p>
 <p>Indeed, simple algebra shows that setting <span class="math notranslate nohighlight">\(p_t = \bar p\)</span> for all <span class="math notranslate nohighlight">\(t\)</span>
 satisfies the equilibrium condition <span class="math notranslate nohighlight">\(p_t = \beta (d + p_{t+1})\)</span>.</p>
 </div>
 <div class="section" id="example-2-dividends-with-deterministic-growth-paths">
-<h3>Example 2: Dividends with deterministic growth paths<a class="headerlink" href="#example-2-dividends-with-deterministic-growth-paths" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.3.2. </span>Example 2: Dividends with deterministic growth paths<a class="headerlink" href="#example-2-dividends-with-deterministic-growth-paths" title="Permalink to this headline">¶</a></h3>
 <p>Consider a growing, non-random dividend process <span class="math notranslate nohighlight">\(d_{t+1} = g d_t\)</span>
 where <span class="math notranslate nohighlight">\(0 &lt; g \beta &lt; 1\)</span>.</p>
 <p>While prices are not usually constant when dividends grow over time, the price
 dividend-ratio might be.</p>
-<p>If we guess this, substituting <span class="math notranslate nohighlight">\(v_t = v\)</span> into <a class="reference internal" href="#equation-pdex">(332)</a> as well as our
+<p>If we guess this, substituting <span class="math notranslate nohighlight">\(v_t = v\)</span> into <a class="reference internal" href="#equation-pdex">(48.5)</a> as well as our
 other assumptions, we get <span class="math notranslate nohighlight">\(v = \beta g (1 + v)\)</span>.</p>
 <p>Since <span class="math notranslate nohighlight">\(\beta g &lt; 1\)</span>, we have a unique positive solution:</p>
 <div class="math notranslate nohighlight">
@@ -478,10 +477,10 @@ p_t = \frac{1 + \kappa}{ \rho - \kappa} d_t
 <p>This is called the <em>Gordon formula</em>.</p>
 </div>
 <div class="section" id="example-3-markov-growth-risk-neutral-pricing">
-<span id="mass-mg"></span><h3>Example 3: Markov growth, risk neutral pricing<a class="headerlink" href="#example-3-markov-growth-risk-neutral-pricing" title="Permalink to this headline">¶</a></h3>
+<span id="mass-mg"></span><h3><span class="section-number">48.3.3. </span>Example 3: Markov growth, risk neutral pricing<a class="headerlink" href="#example-3-markov-growth-risk-neutral-pricing" title="Permalink to this headline">¶</a></h3>
 <p>Next we consider a dividend process</p>
 <div class="math notranslate nohighlight" id="equation-mass-fmce">
-<span class="eqno">(334)<a class="headerlink" href="#equation-mass-fmce" title="Permalink to this equation">¶</a></span>\[d_{t+1} = g_{t+1} d_t\]</div>
+<span class="eqno">(48.7)<a class="headerlink" href="#equation-mass-fmce" title="Permalink to this equation">¶</a></span>\[d_{t+1} = g_{t+1} d_t\]</div>
 <p>The stochastic growth factor <span class="math notranslate nohighlight">\(\{g_t\}\)</span> is given by</p>
 <div class="math notranslate nohighlight">
 \[
@@ -518,7 +517,7 @@ factor <span class="math notranslate nohighlight">\(g_t = g(X_t)\)</span> for th
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
 <span class="k">using</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span>
-<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="o">:</span><span class="n">png</span><span class="p">);</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="ss">:png</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -544,12 +543,12 @@ factor <span class="math notranslate nohighlight">\(g_t = g(X_t)\)</span> for th
 </div>
 </div>
 <div class="section" id="pricing">
-<h4>Pricing<a class="headerlink" href="#pricing" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">48.3.3.1. </span>Pricing<a class="headerlink" href="#pricing" title="Permalink to this headline">¶</a></h4>
 <p>To obtain asset prices in this setting, let’s adapt our analysis from the case of deterministic growth.</p>
 <p>In that case we found that <span class="math notranslate nohighlight">\(v\)</span> is constant.</p>
 <p>This encourages us to guess that, in the current case, <span class="math notranslate nohighlight">\(v_t\)</span> is constant given the state <span class="math notranslate nohighlight">\(X_t\)</span>.</p>
 <p>In other words, we are looking for a fixed function <span class="math notranslate nohighlight">\(v\)</span> such that the price-dividend ratio satisfies  <span class="math notranslate nohighlight">\(v_t = v(X_t)\)</span>.</p>
-<p>We can substitute this guess into <a class="reference internal" href="#equation-pdex">(332)</a> to get</p>
+<p>We can substitute this guess into <a class="reference internal" href="#equation-pdex">(48.5)</a> to get</p>
 <div class="math notranslate nohighlight">
 \[
 v(X_t) = \beta {\mathbb E}_t [ g(X_{t+1}) (1 + v(X_{t+1})) ]
@@ -561,29 +560,29 @@ v(x) = \beta \sum_{y \in S}  g(y) (1 + v(y)) P(x, y)
 \]</div>
 <p>or</p>
 <div class="math notranslate nohighlight" id="equation-pstack">
-<span class="eqno">(335)<a class="headerlink" href="#equation-pstack" title="Permalink to this equation">¶</a></span>\[v(x) = \beta \sum_{y \in S}   K(x, y) (1 + v(y))
+<span class="eqno">(48.8)<a class="headerlink" href="#equation-pstack" title="Permalink to this equation">¶</a></span>\[v(x) = \beta \sum_{y \in S}   K(x, y) (1 + v(y))
 \quad \text{where} \quad
 K(x, y) := g(y) P(x, y)\]</div>
 <p>Suppose that there are <span class="math notranslate nohighlight">\(n\)</span> possible states <span class="math notranslate nohighlight">\(x_1, \ldots, x_n\)</span>.</p>
-<p>We can then think of <a class="reference internal" href="#equation-pstack">(335)</a> as <span class="math notranslate nohighlight">\(n\)</span> stacked equations, one for each state, and write it in matrix form as</p>
+<p>We can then think of <a class="reference internal" href="#equation-pstack">(48.8)</a> as <span class="math notranslate nohighlight">\(n\)</span> stacked equations, one for each state, and write it in matrix form as</p>
 <div class="math notranslate nohighlight" id="equation-vcumrn">
-<span class="eqno">(336)<a class="headerlink" href="#equation-vcumrn" title="Permalink to this equation">¶</a></span>\[v = \beta K (\mathbb 1 + v)\]</div>
+<span class="eqno">(48.9)<a class="headerlink" href="#equation-vcumrn" title="Permalink to this equation">¶</a></span>\[v = \beta K (\mathbb 1 + v)\]</div>
 <p>Here</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(v\)</span> is understood to be the column vector <span class="math notranslate nohighlight">\((v(x_1), \ldots, v(x_n))'\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(K\)</span> is the matrix <span class="math notranslate nohighlight">\((K(x_i, x_j))_{1 \leq i, j \leq n}\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\({\mathbb 1}\)</span> is a column vector of ones</p></li>
 </ul>
-<p>When does <a class="reference internal" href="#equation-vcumrn">(336)</a> have a unique solution?</p>
+<p>When does <a class="reference internal" href="#equation-vcumrn">(48.9)</a> have a unique solution?</p>
 <p>From the <a class="reference internal" href="../tools_and_techniques/linear_algebra.html#la-neumann"><span class="std std-ref">Neumann series lemma</span></a> and Gelfand’s formula, this will be the case if <span class="math notranslate nohighlight">\(\beta K\)</span> has spectral radius strictly less than one.</p>
 <p>In other words, we require that the eigenvalues of <span class="math notranslate nohighlight">\(K\)</span>  be strictly less than <span class="math notranslate nohighlight">\(\beta^{-1}\)</span> in modulus.</p>
 <p>The solution is then</p>
 <div class="math notranslate nohighlight" id="equation-rned">
-<span class="eqno">(337)<a class="headerlink" href="#equation-rned" title="Permalink to this equation">¶</a></span>\[v = (I - \beta K)^{-1} \beta K{\mathbb 1}\]</div>
+<span class="eqno">(48.10)<a class="headerlink" href="#equation-rned" title="Permalink to this equation">¶</a></span>\[v = (I - \beta K)^{-1} \beta K{\mathbb 1}\]</div>
 </div>
 </div>
 <div class="section" id="code">
-<h3>Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.3.4. </span>Code<a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h3>
 <p>Let’s calculate and plot the price-dividend ratio at a set of parameters.</p>
 <p>As before, we’ll generate <span class="math notranslate nohighlight">\(\{X_t\}\)</span>  as a <a class="reference internal" href="../tools_and_techniques/finite_markov.html#mc-ex3"><span class="std std-ref">discretized AR1 process</span></a> and set <span class="math notranslate nohighlight">\(g_t = \exp(X_t)\)</span>.</p>
 <p>Here’s the code, including a test of the spectral radius condition</p>
@@ -595,7 +594,7 @@ K(x, y) := g(y) P(x, y)\]</div>
 
 <span class="n">K</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">p</span> <span class="o">.*</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="p">)</span><span class="o">&#39;</span>
 
-<span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="nb">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">K</span><span class="p">)</span> <span class="o">\</span>  <span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">K</span> <span class="o">*</span> <span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">K</span><span class="p">)</span> <span class="o">\</span>  <span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">K</span> <span class="o">*</span> <span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
 <span class="n">plot</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="p">,</span>
      <span class="n">v</span><span class="p">,</span>
@@ -619,7 +618,7 @@ current states suggest high future states.</p>
 </div>
 </div>
 <div class="section" id="asset-prices-under-risk-aversion">
-<h2><a class="toc-backref" href="#id12">Asset Prices under Risk Aversion</a><a class="headerlink" href="#asset-prices-under-risk-aversion" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id12"><span class="section-number">48.4. </span>Asset Prices under Risk Aversion</a><a class="headerlink" href="#asset-prices-under-risk-aversion" title="Permalink to this headline">¶</a></h2>
 <p>Now let’s turn to the case where agents are risk averse.</p>
 <p>We’ll price several distinct assets, including</p>
 <ul class="simple">
@@ -628,28 +627,28 @@ current states suggest high future states.</p>
 <li><p>Call options on a consol.</p></li>
 </ul>
 <div class="section" id="pricing-a-lucas-tree">
-<h3>Pricing a Lucas tree<a class="headerlink" href="#pricing-a-lucas-tree" title="Permalink to this headline">¶</a></h3>
-<p id="index-7">Let’s start with a version of the celebrated asset pricing model of Robert E. Lucas, Jr. <span id="id3">[<a class="reference internal" href="../zreferences.html#id100"><span>Luc78</span></a>]</span>.</p>
-<p>As in <span id="id4">[<a class="reference internal" href="../zreferences.html#id100"><span>Luc78</span></a>]</span>, suppose that the stochastic discount factor takes the form</p>
+<h3><span class="section-number">48.4.1. </span>Pricing a Lucas tree<a class="headerlink" href="#pricing-a-lucas-tree" title="Permalink to this headline">¶</a></h3>
+<p id="index-7">Let’s start with a version of the celebrated asset pricing model of Robert E. Lucas, Jr. <span id="id3">[<a class="reference internal" href="../zreferences.html#id100">Luc78</a>]</span>.</p>
+<p>As in <span id="id4">[<a class="reference internal" href="../zreferences.html#id100">Luc78</a>]</span>, suppose that the stochastic discount factor takes the form</p>
 <div class="math notranslate nohighlight" id="equation-lucsdf">
-<span class="eqno">(338)<a class="headerlink" href="#equation-lucsdf" title="Permalink to this equation">¶</a></span>\[m_{t+1} = \beta \frac{u'(c_{t+1})}{u'(c_t)}\]</div>
+<span class="eqno">(48.11)<a class="headerlink" href="#equation-lucsdf" title="Permalink to this equation">¶</a></span>\[m_{t+1} = \beta \frac{u'(c_{t+1})}{u'(c_t)}\]</div>
 <p>where <span class="math notranslate nohighlight">\(u\)</span> is a concave utility function and <span class="math notranslate nohighlight">\(c_t\)</span> is time <span class="math notranslate nohighlight">\(t\)</span> consumption of a representative consumer.</p>
 <p>(A derivation of this expression is given in a <a class="reference internal" href="lucas_model.html"><span class="doc">later lecture</span></a>)</p>
-<p>Assume the existence of an endowment that follows <a class="reference internal" href="#equation-mass-fmce">(334)</a>.</p>
+<p>Assume the existence of an endowment that follows <a class="reference internal" href="#equation-mass-fmce">(48.7)</a>.</p>
 <p>The asset being priced is a claim on the endowment process.</p>
-<p>Following <span id="id5">[<a class="reference internal" href="../zreferences.html#id100"><span>Luc78</span></a>]</span>, suppose further that in equilibrium, consumption
+<p>Following <span id="id5">[<a class="reference internal" href="../zreferences.html#id100">Luc78</a>]</span>, suppose further that in equilibrium, consumption
 is equal to the endowment, so that <span class="math notranslate nohighlight">\(d_t = c_t\)</span> for all <span class="math notranslate nohighlight">\(t\)</span>.</p>
 <p>For utility, we’ll assume the <strong>constant relative risk aversion</strong> (CRRA)
 specification</p>
 <div class="math notranslate nohighlight" id="equation-eqcrra">
-<span class="eqno">(339)<a class="headerlink" href="#equation-eqcrra" title="Permalink to this equation">¶</a></span>\[u(c) = \frac{c^{1-\gamma}}{1 - \gamma} \ {\rm with} \ \gamma &gt; 0\]</div>
+<span class="eqno">(48.12)<a class="headerlink" href="#equation-eqcrra" title="Permalink to this equation">¶</a></span>\[u(c) = \frac{c^{1-\gamma}}{1 - \gamma} \ {\rm with} \ \gamma &gt; 0\]</div>
 <p>When <span class="math notranslate nohighlight">\(\gamma =1\)</span> we let <span class="math notranslate nohighlight">\(u(c) = \ln c\)</span>.</p>
-<p>Inserting the CRRA specification into <a class="reference internal" href="#equation-lucsdf">(338)</a> and using <span class="math notranslate nohighlight">\(c_t = d_t\)</span> gives</p>
+<p>Inserting the CRRA specification into <a class="reference internal" href="#equation-lucsdf">(48.11)</a> and using <span class="math notranslate nohighlight">\(c_t = d_t\)</span> gives</p>
 <div class="math notranslate nohighlight" id="equation-lucsdf2">
-<span class="eqno">(340)<a class="headerlink" href="#equation-lucsdf2" title="Permalink to this equation">¶</a></span>\[m_{t+1}
+<span class="eqno">(48.13)<a class="headerlink" href="#equation-lucsdf2" title="Permalink to this equation">¶</a></span>\[m_{t+1}
 = \beta \left(\frac{c_{t+1}}{c_t}\right)^{-\gamma}
 = \beta g_{t+1}^{-\gamma}\]</div>
-<p>Substituting this into <a class="reference internal" href="#equation-pdex">(332)</a> gives the price-dividend ratio
+<p>Substituting this into <a class="reference internal" href="#equation-pdex">(48.5)</a> gives the price-dividend ratio
 formula</p>
 <div class="math notranslate nohighlight">
 \[
@@ -677,7 +676,7 @@ v = \beta J ({\mathbb 1} + v )
 \]</div>
 <p>Assuming that the spectral radius of <span class="math notranslate nohighlight">\(J\)</span> is strictly less than <span class="math notranslate nohighlight">\(\beta^{-1}\)</span>, this equation has the unique solution</p>
 <div class="math notranslate nohighlight" id="equation-resolvent2">
-<span class="eqno">(341)<a class="headerlink" href="#equation-resolvent2" title="Permalink to this equation">¶</a></span>\[v = (I - \beta J)^{-1} \beta  J {\mathbb 1}\]</div>
+<span class="eqno">(48.14)<a class="headerlink" href="#equation-resolvent2" title="Permalink to this equation">¶</a></span>\[v = (I - \beta J)^{-1} \beta  J {\mathbb 1}\]</div>
 <p>We will define a function tree_price to solve for <span class="math notranslate nohighlight">\(v\)</span> given parameters stored in
 the AssetPriceModel objects</p>
 <div class="cell docutils container">
@@ -689,7 +688,7 @@ the AssetPriceModel objects</p>
 <span class="n">default_mc</span> <span class="o">=</span> <span class="n">tauchen</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">σ</span><span class="p">)</span>
 
 <span class="n">AssetPriceModel</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">β</span> <span class="o">=</span> <span class="mf">0.96</span><span class="p">,</span>
-                            <span class="nb">γ</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
+                            <span class="n">γ</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
                             <span class="n">mc</span> <span class="o">=</span> <span class="n">default_mc</span><span class="p">,</span>
                             <span class="n">n</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
                             <span class="n">g</span> <span class="o">=</span> <span class="n">exp</span><span class="p">)</span>
@@ -704,18 +703,18 @@ the AssetPriceModel objects</p>
 <span class="k">end</span>
 
 <span class="c"># price/dividend ratio of the Lucas tree</span>
-<span class="k">function</span> <span class="n">tree_price</span><span class="p">(</span><span class="n">ap</span><span class="p">;</span> <span class="nb">γ</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="nb">γ</span><span class="p">)</span>
+<span class="k">function</span> <span class="n">tree_price</span><span class="p">(</span><span class="n">ap</span><span class="p">;</span> <span class="n">γ</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">γ</span><span class="p">)</span>
     <span class="c"># Simplify names, set up matrices</span>
     <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">mc</span> <span class="o">=</span> <span class="n">ap</span>
     <span class="n">P</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">mc</span><span class="o">.</span><span class="n">state_values</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ap</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
-    <span class="n">J</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">ap</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="nb">γ</span><span class="p">)</span>
+    <span class="n">J</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">ap</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">γ</span><span class="p">)</span>
 
     <span class="c"># Make sure that a unique solution exists</span>
     <span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">J</span><span class="p">)</span>
 
     <span class="c"># Compute v</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="nb">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">J</span><span class="p">)</span> <span class="o">\</span> <span class="n">sum</span><span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">J</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">J</span><span class="p">)</span> <span class="o">\</span> <span class="n">sum</span><span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">J</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">v</span>
 <span class="k">end</span>
@@ -739,8 +738,8 @@ with a positively correlated Markov process and <span class="math notranslate no
 <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
 
-<span class="k">for</span> <span class="nb">γ</span> <span class="kp">in</span> <span class="n">γs</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">tree_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="nb">γ</span> <span class="o">=</span> <span class="nb">γ</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">γ</span> <span class="k">in</span> <span class="n">γs</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">tree_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">γ</span> <span class="o">=</span> <span class="n">γ</span><span class="p">)</span>
     <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;gamma = </span><span class="si">$γ</span><span class="s">&quot;</span>
     <span class="n">push!</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
     <span class="n">push!</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
@@ -760,10 +759,10 @@ with a positively correlated Markov process and <span class="math notranslate no
 </div>
 <p>Notice that <span class="math notranslate nohighlight">\(v\)</span> is decreasing in each case.</p>
 <p>This is because, with a positively correlated state process, higher states suggest higher future consumption growth.</p>
-<p>In the stochastic discount factor <a class="reference internal" href="#equation-lucsdf2">(340)</a>, higher growth decreases the
+<p>In the stochastic discount factor <a class="reference internal" href="#equation-lucsdf2">(48.13)</a>, higher growth decreases the
 discount factor, lowering the weight placed on future returns.</p>
 <div class="section" id="special-cases">
-<h4>Special cases<a class="headerlink" href="#special-cases" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">48.4.1.1. </span>Special cases<a class="headerlink" href="#special-cases" title="Permalink to this headline">¶</a></h4>
 <p>In the special case <span class="math notranslate nohighlight">\(\gamma =1\)</span>, we have <span class="math notranslate nohighlight">\(J = P\)</span>.</p>
 <p>Recalling that <span class="math notranslate nohighlight">\(P^i {\mathbb 1} = {\mathbb 1}\)</span> for all <span class="math notranslate nohighlight">\(i\)</span> and applying <a class="reference internal" href="../tools_and_techniques/linear_algebra.html#la-neumann"><span class="std std-ref">Neumann’s geometric series lemma</span></a>, we are led to</p>
 <div class="math notranslate nohighlight">
@@ -774,12 +773,12 @@ v = \beta(I-\beta P)^{-1} {\mathbb 1}
 \]</div>
 <p>Thus, with log preferences, the price-dividend ratio for a Lucas tree is constant.</p>
 <p>Alternatively, if <span class="math notranslate nohighlight">\(\gamma = 0\)</span>, then <span class="math notranslate nohighlight">\(J = K\)</span> and we recover the
-risk neutral solution <a class="reference internal" href="#equation-rned">(337)</a>.</p>
+risk neutral solution <a class="reference internal" href="#equation-rned">(48.10)</a>.</p>
 <p>This is as expected, since <span class="math notranslate nohighlight">\(\gamma = 0\)</span> implies <span class="math notranslate nohighlight">\(u(c) = c\)</span> (and hence agents are risk neutral).</p>
 </div>
 </div>
 <div class="section" id="a-risk-free-consol">
-<h3>A Risk-Free Consol<a class="headerlink" href="#a-risk-free-consol" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.4.2. </span>A Risk-Free Consol<a class="headerlink" href="#a-risk-free-consol" title="Permalink to this headline">¶</a></h3>
 <p>Consider the same pure exchange representative agent economy.</p>
 <p>A risk-free consol promises to pay a constant amount  <span class="math notranslate nohighlight">\(\zeta&gt; 0\)</span> each period.</p>
 <p>Recycling notation, let <span class="math notranslate nohighlight">\(p_t\)</span> now be the price of an  ex-coupon claim to the consol.</p>
@@ -788,14 +787,14 @@ risk neutral solution <a class="reference internal" href="#equation-rned">(337)<
 <li><p><span class="math notranslate nohighlight">\(\zeta\)</span> in period <span class="math notranslate nohighlight">\(t+1\)</span>, plus</p></li>
 <li><p>the right to sell the claim for <span class="math notranslate nohighlight">\(p_{t+1}\)</span> next period</p></li>
 </ul>
-<p>The price satisfies <a class="reference internal" href="#equation-lteeqs0">(329)</a> with <span class="math notranslate nohighlight">\(d_t = \zeta\)</span>, or</p>
+<p>The price satisfies <a class="reference internal" href="#equation-lteeqs0">(48.2)</a> with <span class="math notranslate nohighlight">\(d_t = \zeta\)</span>, or</p>
 <div class="math notranslate nohighlight">
 \[
 p_t = {\mathbb E}_t \left[ m_{t+1}  ( \zeta + p_{t+1} ) \right]
 \]</div>
-<p>We maintain the stochastic discount factor <a class="reference internal" href="#equation-lucsdf2">(340)</a>, so this becomes</p>
+<p>We maintain the stochastic discount factor <a class="reference internal" href="#equation-lucsdf2">(48.13)</a>, so this becomes</p>
 <div class="math notranslate nohighlight" id="equation-consolguess1">
-<span class="eqno">(342)<a class="headerlink" href="#equation-consolguess1" title="Permalink to this equation">¶</a></span>\[p_t
+<span class="eqno">(48.15)<a class="headerlink" href="#equation-consolguess1" title="Permalink to this equation">¶</a></span>\[p_t
 = {\mathbb E}_t \left[ \beta g_{t+1}^{-\gamma}  ( \zeta + p_{t+1} ) \right]\]</div>
 <p>Guessing a solution of the form <span class="math notranslate nohighlight">\(p_t = p(X_t)\)</span> and conditioning on
 <span class="math notranslate nohighlight">\(X_t = x\)</span>, we get</p>
@@ -807,22 +806,22 @@ p(x)
 <p>Letting <span class="math notranslate nohighlight">\(M(x, y) = P(x, y) g(y)^{-\gamma}\)</span> and rewriting in vector notation
 yields the solution</p>
 <div class="math notranslate nohighlight" id="equation-consol-price">
-<span class="eqno">(343)<a class="headerlink" href="#equation-consol-price" title="Permalink to this equation">¶</a></span>\[p = (I - \beta M)^{-1} \beta M \zeta {\mathbb 1}\]</div>
+<span class="eqno">(48.16)<a class="headerlink" href="#equation-consol-price" title="Permalink to this equation">¶</a></span>\[p = (I - \beta M)^{-1} \beta M \zeta {\mathbb 1}\]</div>
 <p>The above is implemented in the function consol_price</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">)</span>
     <span class="c"># Simplify names, set up matrices</span>
-    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">mc</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">ap</span>
+    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">γ</span><span class="p">,</span> <span class="n">mc</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">ap</span>
     <span class="n">P</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">mc</span><span class="o">.</span><span class="n">state_values</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span><span class="nb">γ</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span><span class="n">γ</span><span class="p">)</span>
 
     <span class="c"># Make sure that a unique solution exists</span>
     <span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
 
     <span class="c"># Compute price</span>
-    <span class="k">return</span> <span class="p">(</span><span class="nb">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">M</span><span class="p">)</span> <span class="o">\</span> <span class="n">sum</span><span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">M</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">M</span><span class="p">)</span> <span class="o">\</span> <span class="n">sum</span><span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">M</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -835,10 +834,10 @@ yields the solution</p>
 </div>
 </div>
 <div class="section" id="pricing-an-option-to-purchase-the-consol">
-<h3>Pricing an Option to Purchase the Consol<a class="headerlink" href="#pricing-an-option-to-purchase-the-consol" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.4.3. </span>Pricing an Option to Purchase the Consol<a class="headerlink" href="#pricing-an-option-to-purchase-the-consol" title="Permalink to this headline">¶</a></h3>
 <p>Let’s now price options of varying maturity that give the right to purchase a consol at a price <span class="math notranslate nohighlight">\(p_S\)</span>.</p>
 <div class="section" id="an-infinite-horizon-call-option">
-<h4>An infinite horizon call option<a class="headerlink" href="#an-infinite-horizon-call-option" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">48.4.3.1. </span>An infinite horizon call option<a class="headerlink" href="#an-infinite-horizon-call-option" title="Permalink to this headline">¶</a></h4>
 <p>We want to price an infinite horizon  option to purchase a consol at a price <span class="math notranslate nohighlight">\(p_S\)</span>.</p>
 <p>The option entitles the owner at the beginning of a period either to</p>
 <ol class="simple">
@@ -863,17 +862,17 @@ w(X_t, p_S)
 <p>The first term on the right is the value of waiting, while the second is the value of exercising now.</p>
 <p>We can also write this as</p>
 <div class="math notranslate nohighlight" id="equation-feoption0">
-<span class="eqno">(344)<a class="headerlink" href="#equation-feoption0" title="Permalink to this equation">¶</a></span>\[w(x, p_S)
+<span class="eqno">(48.17)<a class="headerlink" href="#equation-feoption0" title="Permalink to this equation">¶</a></span>\[w(x, p_S)
 = \max \left\{
     \beta \sum_{y \in S} P(x, y) g(y)^{-\gamma}
     w (y, p_S), \;
     p(x) - p_S
 \right\}\]</div>
 <p>With <span class="math notranslate nohighlight">\(M(x, y) = P(x, y) g(y)^{-\gamma}\)</span> and <span class="math notranslate nohighlight">\(w\)</span> as the vector of
-values <span class="math notranslate nohighlight">\((w(x_i), p_S)_{i = 1}^n\)</span>, we can express <a class="reference internal" href="#equation-feoption0">(344)</a> as the nonlinear vector equation</p>
+values <span class="math notranslate nohighlight">\((w(x_i), p_S)_{i = 1}^n\)</span>, we can express <a class="reference internal" href="#equation-feoption0">(48.17)</a> as the nonlinear vector equation</p>
 <div class="math notranslate nohighlight" id="equation-feoption">
-<span class="eqno">(345)<a class="headerlink" href="#equation-feoption" title="Permalink to this equation">¶</a></span>\[w = \max \{ \beta M w, \; p - p_S {\mathbb 1} \}\]</div>
-<p>To solve <a class="reference internal" href="#equation-feoption">(345)</a>, form the operator <span class="math notranslate nohighlight">\(T\)</span> mapping vector <span class="math notranslate nohighlight">\(w\)</span>
+<span class="eqno">(48.18)<a class="headerlink" href="#equation-feoption" title="Permalink to this equation">¶</a></span>\[w = \max \{ \beta M w, \; p - p_S {\mathbb 1} \}\]</div>
+<p>To solve <a class="reference internal" href="#equation-feoption">(48.18)</a>, form the operator <span class="math notranslate nohighlight">\(T\)</span> mapping vector <span class="math notranslate nohighlight">\(w\)</span>
 into vector <span class="math notranslate nohighlight">\(Tw\)</span> via</p>
 <div class="math notranslate nohighlight">
 \[
@@ -888,10 +887,10 @@ T w
 <span class="k">function</span> <span class="n">call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">,</span> <span class="n">p_s</span><span class="p">,</span> <span class="n">ϵ</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">)</span>
 
     <span class="c"># Simplify names, set up matrices</span>
-    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">mc</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">ap</span>
+    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">γ</span><span class="p">,</span> <span class="n">mc</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">ap</span>
     <span class="n">P</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">mc</span><span class="o">.</span><span class="n">state_values</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span><span class="nb">γ</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span><span class="n">γ</span><span class="p">)</span>
 
     <span class="c"># Make sure that a unique console price exists</span>
     <span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
@@ -946,10 +945,10 @@ where the consol prices is high — will eventually be visited.</p>
 </div>
 </div>
 <div class="section" id="risk-free-rates">
-<h3>Risk Free Rates<a class="headerlink" href="#risk-free-rates" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.4.4. </span>Risk Free Rates<a class="headerlink" href="#risk-free-rates" title="Permalink to this headline">¶</a></h3>
 <p>Let’s look at risk free interest rates over different periods.</p>
 <div class="section" id="the-one-period-risk-free-interest-rate">
-<h4>The one-period risk-free interest rate<a class="headerlink" href="#the-one-period-risk-free-interest-rate" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">48.4.4.1. </span>The one-period risk-free interest rate<a class="headerlink" href="#the-one-period-risk-free-interest-rate" title="Permalink to this headline">¶</a></h4>
 <p>As before, the stochastic discount factor is <span class="math notranslate nohighlight">\(m_{t+1} = \beta g_{t+1}^{-\gamma}\)</span>.</p>
 <p>It follows that the reciprocal <span class="math notranslate nohighlight">\(R_t^{-1}\)</span> of the gross risk-free interest rate <span class="math notranslate nohighlight">\(R_t\)</span> in state <span class="math notranslate nohighlight">\(x\)</span> is</p>
 <div class="math notranslate nohighlight">
@@ -964,19 +963,19 @@ m_1 = \beta M {\mathbb 1}
 <p>where the <span class="math notranslate nohighlight">\(i\)</span>-th  element of <span class="math notranslate nohighlight">\(m_1\)</span> is the reciprocal of the one-period gross risk-free interest rate in state <span class="math notranslate nohighlight">\(x_i\)</span>.</p>
 </div>
 <div class="section" id="other-terms">
-<h4>Other terms<a class="headerlink" href="#other-terms" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">48.4.4.2. </span>Other terms<a class="headerlink" href="#other-terms" title="Permalink to this headline">¶</a></h4>
 <p>Let <span class="math notranslate nohighlight">\(m_j\)</span> be an <span class="math notranslate nohighlight">\(n \times 1\)</span> vector whose <span class="math notranslate nohighlight">\(i\)</span> th component is the reciprocal of the <span class="math notranslate nohighlight">\(j\)</span> -period gross risk-free interest rate in state <span class="math notranslate nohighlight">\(x_i\)</span>.</p>
 <p>Then <span class="math notranslate nohighlight">\(m_1 = \beta M\)</span>, and <span class="math notranslate nohighlight">\(m_{j+1} = M m_j\)</span> for <span class="math notranslate nohighlight">\(j \geq 1\)</span>.</p>
 </div>
 </div>
 </div>
 <div class="section" id="exercises">
-<h2><a class="toc-backref" href="#id13">Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id13"><span class="section-number">48.5. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exercise-1">
-<h3>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.5.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
 <p>In the lecture, we considered <strong>ex-dividend assets</strong>.</p>
 <p>A <strong>cum-dividend</strong> asset is a claim to the stream <span class="math notranslate nohighlight">\(d_t, d_{t+1}, \ldots\)</span>.</p>
-<p>Following <a class="reference internal" href="#equation-rnapex">(328)</a>, find the risk-neutral asset pricing equation for
+<p>Following <a class="reference internal" href="#equation-rnapex">(48.1)</a>, find the risk-neutral asset pricing equation for
 one unit of a cum-dividend asset.</p>
 <p>With a constant, non-random dividend stream <span class="math notranslate nohighlight">\(d_t = d &gt; 0\)</span>, what is the equilibrium
 price of a cum-dividend asset?</p>
@@ -984,14 +983,14 @@ price of a cum-dividend asset?</p>
 what is the equilibrium price of a cum-dividend asset?</p>
 </div>
 <div class="section" id="exercise-2">
-<h3>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.5.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
 <p>Consider the following primitives</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">P</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.0125</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.95</span> <span class="o">-</span> <span class="mf">0.0125</span><span class="p">)</span><span class="nb">I</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.0125</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.95</span> <span class="o">-</span> <span class="mf">0.0125</span><span class="p">)</span><span class="n">I</span>
 <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.05</span><span class="p">,</span> <span class="mf">1.025</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.975</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">]</span>
-<span class="nb">γ</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">γ</span> <span class="o">=</span> <span class="mf">2.0</span>
 <span class="n">β</span> <span class="o">=</span> <span class="mf">0.94</span>
 <span class="n">ζ</span> <span class="o">=</span> <span class="mf">1.0</span>
 </pre></div>
@@ -1012,10 +1011,10 @@ what is the equilibrium price of a cum-dividend asset?</p>
 </ul>
 </div>
 <div class="section" id="exercise-3">
-<h3>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.5.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
 <p>Let’s consider finite horizon call options, which are more common than the
 infinite horizon variety.</p>
-<p>Finite horizon options obey functional equations closely related to <a class="reference internal" href="#equation-feoption0">(344)</a>.</p>
+<p>Finite horizon options obey functional equations closely related to <a class="reference internal" href="#equation-feoption0">(48.17)</a>.</p>
 <p>A <span class="math notranslate nohighlight">\(k\)</span> period option expires after <span class="math notranslate nohighlight">\(k\)</span> periods.</p>
 <p>If we view today as date zero, a <span class="math notranslate nohighlight">\(k\)</span> period option gives the owner the right to exercise the option to purchase the risk-free consol at the strike price <span class="math notranslate nohighlight">\(p_S\)</span> at dates <span class="math notranslate nohighlight">\(0, 1, \ldots , k-1\)</span>.</p>
 <p>The option expires at time <span class="math notranslate nohighlight">\(k\)</span>.</p>
@@ -1044,17 +1043,17 @@ w_k = \max \{ \beta M w_{k-1}, \; p - p_S {\mathbb 1} \}
 </div>
 </div>
 <div class="section" id="solutions">
-<h2><a class="toc-backref" href="#id14">Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id14"><span class="section-number">48.6. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id6">
-<h3>Exercise 2<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.6.1. </span>Exercise 2<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">P</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.0125</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.95</span> <span class="o">-</span> <span class="mf">0.0125</span><span class="p">)</span><span class="nb">I</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.0125</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.95</span> <span class="o">-</span> <span class="mf">0.0125</span><span class="p">)</span><span class="n">I</span>
 <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.975</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.025</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">]</span>  <span class="c"># state values</span>
 <span class="n">mc</span> <span class="o">=</span> <span class="n">MarkovChain</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 
-<span class="nb">γ</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">γ</span> <span class="o">=</span> <span class="mf">2.0</span>
 <span class="n">β</span> <span class="o">=</span> <span class="mf">0.94</span>
 <span class="n">ζ</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">p_s</span> <span class="o">=</span> <span class="mf">150.0</span>
@@ -1070,13 +1069,13 @@ w_k = \max \{ \beta M w_{k-1}, \; p - p_S {\mathbb 1} \}
 <p>Next we’ll create an instance of AssetPriceModel to feed into the functions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ap</span> <span class="o">=</span> <span class="n">AssetPriceModel</span><span class="p">(</span><span class="n">β</span> <span class="o">=</span> <span class="n">β</span><span class="p">,</span> <span class="n">mc</span> <span class="o">=</span> <span class="n">mc</span><span class="p">,</span> <span class="nb">γ</span> <span class="o">=</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ap</span> <span class="o">=</span> <span class="n">AssetPriceModel</span><span class="p">(</span><span class="n">β</span> <span class="o">=</span> <span class="n">β</span><span class="p">,</span> <span class="n">mc</span> <span class="o">=</span> <span class="n">mc</span><span class="p">,</span> <span class="n">γ</span> <span class="o">=</span> <span class="n">γ</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(β = 0.94, γ = 2.0, mc = Discrete Markov Chain
-stochastic matrix of type Array{Float64,2}:
+stochastic matrix of type Matrix{Float64}:
 [0.95 0.0125 … 0.0125 0.0125; 0.0125 0.95 … 0.0125 0.0125; … ; 0.0125 0.0125 … 0.95 0.0125; 0.0125 0.0125 … 0.0125 0.95], n = 5, g = var&quot;#3#4&quot;())
 </pre></div>
 </div>
@@ -1115,7 +1114,7 @@ stochastic matrix of type Array{Float64,2}:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×1 Array{Float64,2}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×1 Matrix{Float64}:
  603.8710047641985
  176.83933430191294
  108.67734499336997
@@ -1127,17 +1126,17 @@ stochastic matrix of type Array{Float64,2}:
 </div>
 </div>
 <div class="section" id="id7">
-<h3>Exercise 3<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">48.6.2. </span>Exercise 3<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
 <p>Here’s a suitable function:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">finite_horizon_call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">,</span> <span class="n">p_s</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
 
     <span class="c"># Simplify names, set up matrices</span>
-    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="nb">γ</span><span class="p">,</span> <span class="n">mc</span> <span class="o">=</span> <span class="n">ap</span>
+    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">γ</span><span class="p">,</span> <span class="n">mc</span> <span class="o">=</span> <span class="n">ap</span>
     <span class="n">P</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">mc</span><span class="o">.</span><span class="n">state_values</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">&#39;</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">ap</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span> <span class="nb">γ</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">ap</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span> <span class="n">γ</span><span class="p">)</span>
 
     <span class="c"># Make sure that a unique console price exists</span>
     <span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
@@ -1145,7 +1144,7 @@ stochastic matrix of type Array{Float64,2}:
     <span class="c"># Compute option price</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">)</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">k</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">k</span>
         <span class="c"># Maximize across columns</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">max</span><span class="o">.</span><span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">M</span> <span class="o">*</span> <span class="n">w</span><span class="p">,</span> <span class="n">p</span> <span class="o">.-</span> <span class="n">p_s</span><span class="p">)</span>
     <span class="k">end</span>
@@ -1165,7 +1164,7 @@ stochastic matrix of type Array{Float64,2}:
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">k</span> <span class="kp">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">k</span> <span class="k">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">finite_horizon_call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">,</span> <span class="n">p_s</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
     <span class="n">push!</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
     <span class="n">push!</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="s">&quot;k = </span><span class="si">$k</span><span class="s">&quot;</span><span class="p">)</span>
@@ -1194,16 +1193,16 @@ may exercise the option.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.5"
+            mode: "julia-1.6"
         },
         kernelOptions: {
-            kernelName: "julia-1.5",
+            kernelName: "julia-1.6",
             path: "./multi_agent_models"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.5'</script>
+    <script>kernelName = 'julia-1.6'</script>
 
                     </div>
                     
@@ -1232,340 +1231,408 @@ may exercise the option.</p>
                 </div>
 
                 <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
-                    <ul class="current nav bd-sidenav nav sidenav_l1">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/getting_started.html">
-   Setting up Your Julia Environment
+   1. Setting up Your Julia Environment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_environment.html">
-   Interacting with Julia
+   2. Interacting with Julia
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
-   Introductory Examples
+   3. Introductory Examples
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
-   Julia Essentials
+   4. Julia Essentials
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
-   Arrays, Tuples, Ranges, and Other Fundamental Types
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
-   Introduction to Types and Generic Programming
+   6. Introduction to Types and Generic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/generic_programming.html">
-   Generic Programming
+   7. Generic Programming
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/general_packages.html">
-   General Purpose Packages
+   8. General Purpose Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/data_statistical_packages.html">
-   Data and Statistics Packages
+   9. Data and Statistics Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
-   Solvers, Optimizers, and Automatic Differentiation
+   10. Solvers, Optimizers, and Automatic Differentiation
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/tools_editors.html">
-   Julia Tools and Editors
+   11. Julia Tools and Editors
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/version_control.html">
-   Git, GitHub, and Version Control
+   12. Git, GitHub, and Version Control
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/testing.html">
-   Packages, Testing, and Continuous Integration
+   13. Packages, Testing, and Continuous Integration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/need_for_speed.html">
-   The Need for Speed
+   14. The Need for Speed
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
-   Linear Algebra
+   15. Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
-   Orthogonal Projections and Their Applications
+   16. Orthogonal Projections and Their Applications
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
-   LLN and CLT
+   17. LLN and CLT
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   Linear State Space Models
+   18. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   Finite Markov Chains
+   19. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   Continuous State Markov Chains
+   20. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   A First Look at the Kalman Filter
+   22. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   Numerical Linear Algebra and Factorizations
+   23. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   Krylov Methods and Matrix Conditioning
+   24. Krylov Methods and Matrix Conditioning
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/short_path.html">
-   Shortest Paths
+   25. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   Job Search I: The McCall Search Model
+   26. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   Job Search II: Search and Separation
+   27. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   A Problem that Stumped Milton Friedman
+   28. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   Job Search III: Search with Learning
+   29. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   Job Search IV: Modeling Career Choice
+   30. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   Job Search V: On-the-Job Search
+   31. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   Optimal Growth I: The Stochastic Optimal Growth Model
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   Optimal Growth II: Time Iteration
+   33. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   Optimal Growth III: The Endogenous Grid Method
+   34. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   LQ Dynamic Programming Problems
+   35. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   Optimal Savings I: The Permanent Income Model
+   36. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   Optimal Savings II: LQ Techniques
+   37. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   Consumption and Tax Smoothing with Complete and Incomplete Markets
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   Optimal Savings III: Occasionally Binding Constraints
+   39. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   Robustness
+   40. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   Discrete State Dynamic Programming
+   41. Discrete State Dynamic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   Modeling COVID 19 with Differential Equations
+   42. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="schelling.html">
-   Schelling’s Segregation Model
+   44. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lake_model.html">
-   A Lake Model of Employment and Unemployment
+   45. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="rational_expectations.html">
-   Rational Expectations Equilibrium
+   46. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="markov_perf.html">
-   Markov Perfect Equilibrium
+   47. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   Asset Pricing I: Finite State Models
+   48. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lucas_model.html">
-   Asset Pricing II: The Lucas Asset Pricing Model
+   49. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="harrison_kreps.html">
-   Asset Pricing III:  Incomplete Markets
+   50. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="uncertainty_traps.html">
-   Uncertainty Traps
+   51. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="aiyagari.html">
-   The Aiyagari Model
+   52. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="arellano.html">
-   Default Risk and Income Fluctuations
+   53. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="matsuyama.html">
-   Globalization and Cycles
+   54. Globalization and Cycles
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   Covariance Stationary Processes
+   55. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   Estimation of Spectra
+   56. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   Additive Functionals
+   57. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   Multiplicative Functionals
+   58. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   Classical Control with Linear Algebra
+   59. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   Classical Filtering With Linear Algebra
+   60. Classical Filtering With Linear Algebra
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   Dynamic Stackelberg Problems
+   61. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   Optimal Taxation in an LQ Economy
+   62. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   Optimal Taxation with State-Contingent Debt
+   63. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   Optimal Taxation without State-Contingent Debt
+   64. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   About these Lectures
+   65. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   Troubleshooting
+   66. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   References
+   67. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   Lecture Status
+   68. Lecture Status
   </a>
  </li>
 </ul>
@@ -1604,7 +1671,7 @@ may exercise the option.</p>
                     <li data-tippy-content="Download Notebook"><a href="_notebooks/multi_agent_models/markov_asset.ipynb" download><i data-feather="download-cloud"></i></a></li>
                     <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/multi_agent_models/markov_asset.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
                         <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
-                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/multi_agent_models/markov_asset.ipynb" download><i data-feather="github"></i></a></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/multi_agent_models/markov_asset.md" download><i data-feather="github"></i></a></li>
                 </ul>
 
             </div>

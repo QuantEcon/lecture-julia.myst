@@ -4,8 +4,8 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multiplicative Functionals &#8212; Quantitative Economics with Julia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>58. Multiplicative Functionals &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -26,8 +26,8 @@
       
 
     
-    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -42,15 +42,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -58,11 +55,13 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/time_series_models/multiplicative_functionals.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Classical Control with Linear Algebra" href="lu_tricks.html" />
-    <link rel="prev" title="Additive Functionals" href="additive_functionals.html" />
+    <link rel="next" title="59. Classical Control with Linear Algebra" href="lu_tricks.html" />
+    <link rel="prev" title="57. Additive Functionals" href="additive_functionals.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -112,66 +111,66 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   Overview
+   58.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#a-log-likelihood-process">
-   A Log-Likelihood Process
+   58.2. A Log-Likelihood Process
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#simulating-sample-paths">
-     Simulating sample paths
+     58.2.1. Simulating sample paths
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#simulating-log-likelihoods">
-     Simulating log-likelihoods
+     58.2.2. Simulating log-likelihoods
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#an-alternative-parameter-vector">
-     An alternative parameter vector
+     58.2.3. An alternative parameter vector
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#interpretation">
-     Interpretation
+     58.2.4. Interpretation
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#benefits-from-reduced-aggregate-fluctuations">
-   Benefits from Reduced Aggregate Fluctuations
+   58.3. Benefits from Reduced Aggregate Fluctuations
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#consumption-as-a-multiplicative-process">
-     Consumption as a multiplicative process
+     58.3.1. Consumption as a multiplicative process
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#simulating-a-likelihood-ratio-process-again">
-     Simulating a likelihood ratio process again
+     58.3.2. Simulating a likelihood ratio process again
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#comments">
-       Comments
+       58.3.2.1. Comments
       </a>
      </li>
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#representing-the-likelihood-ratio-process">
-     Representing the likelihood ratio process
+     58.3.3. Representing the likelihood ratio process
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#welfare-benefits-of-reduced-random-aggregate-fluctuations">
-     Welfare benefits of reduced random aggregate fluctuations
+     58.3.4. Welfare benefits of reduced random aggregate fluctuations
     </a>
    </li>
   </ul>
@@ -226,7 +225,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="id1">
-<h1><a class="toc-backref" href="#id11">Multiplicative Functionals</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id11"><span class="section-number">58. </span>Multiplicative Functionals</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <span id="index-0"></span><p class="topic-title">Contents</p>
 <ul class="simple">
@@ -241,7 +240,7 @@
 </div>
 <p>Co-authored with Chase Coleman and Balint Szoke</p>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id12">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id12"><span class="section-number">58.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This lecture is a sequel to the <a class="reference internal" href="additive_functionals.html"><span class="doc">lecture on additive functionals</span></a>.</p>
 <p>That lecture</p>
 <ol class="simple">
@@ -251,11 +250,11 @@
 <p>This lecture uses this special class to create and analyze two examples</p>
 <ul class="simple">
 <li><p>A  <strong>log likelihood process</strong>, an object at the foundation of both frequentist and Bayesian approaches to statistical inference.</p></li>
-<li><p>A version of Robert E. Lucas’s <span id="id2">[<a class="reference internal" href="../zreferences.html#id129"><span>Luc03</span></a>]</span> and Thomas Tallarini’s <span id="id3">[<a class="reference internal" href="../zreferences.html#id30"><span>Tal00</span></a>]</span> approaches to measuring the benefits of moderating aggregate fluctuations.</p></li>
+<li><p>A version of Robert E. Lucas’s <span id="id2">[<a class="reference internal" href="../zreferences.html#id129">Luc03</a>]</span> and Thomas Tallarini’s <span id="id3">[<a class="reference internal" href="../zreferences.html#id30">Tal00</a>]</span> approaches to measuring the benefits of moderating aggregate fluctuations.</p></li>
 </ul>
 </div>
 <div class="section" id="a-log-likelihood-process">
-<h2><a class="toc-backref" href="#id13">A Log-Likelihood Process</a><a class="headerlink" href="#a-log-likelihood-process" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id13"><span class="section-number">58.2. </span>A Log-Likelihood Process</a><a class="headerlink" href="#a-log-likelihood-process" title="Permalink to this headline">¶</a></h2>
 <p>Consider a vector of additive functionals <span class="math notranslate nohighlight">\(\{y_t\}_{t=0}^\infty\)</span> described by</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -296,7 +295,7 @@ x_{t+1} = \left(A - B F^{-1}D \right)x_t
 <p>For the purposes of this exercise,  set <span class="math notranslate nohighlight">\(\theta_o = (A, B, D, F) = (0.8, 1, 0.5, 0.2)\)</span>.</p>
 <p>Set <span class="math notranslate nohighlight">\(x_0 = y_0 = 0\)</span>.</p>
 <div class="section" id="simulating-sample-paths">
-<h3>Simulating sample paths<a class="headerlink" href="#simulating-sample-paths" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">58.2.1. </span>Simulating sample paths<a class="headerlink" href="#simulating-sample-paths" title="Permalink to this headline">¶</a></h3>
 <p>Let’s write a program to simulate sample paths of <span class="math notranslate nohighlight">\(\{ x_t, y_{t} \}_{t=0}^{\infty}\)</span>.</p>
 <p>We’ll do this by formulating the additive functional as a linear state space model and putting the <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl">LSS</a> struct to work.</p>
 <div class="cell docutils container">
@@ -304,7 +303,7 @@ x_{t+1} = \left(A - B F^{-1}D \right)x_t
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
 <span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span>
 <span class="k">import</span> <span class="n">Distributions</span><span class="o">:</span> <span class="n">loglikelihood</span>
-<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="o">:</span><span class="n">png</span><span class="p">);</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="ss">:png</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -394,12 +393,12 @@ x_{t+1} = \left(A - B F^{-1}D \right)x_t
     <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
 <span class="k">end</span>
 
-<span class="k">function</span> <span class="n">simulate_paths</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span> <span class="nb">I</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">)</span>
+<span class="k">function</span> <span class="n">simulate_paths</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">)</span>
     <span class="c"># Allocate space</span>
-    <span class="n">storeX</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">I</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-    <span class="n">storeY</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">I</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">storeX</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">storeY</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="nb">I</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">I</span>
         <span class="c"># Do specific simulation</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">simulate_xy</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 
@@ -448,10 +447,10 @@ simulations.</p>
 <span class="n">amf</span> <span class="o">=</span> <span class="n">AMF_LSS_VAR</span><span class="p">(</span><span class="n">A</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">F</span> <span class="o">=</span> <span class="n">F</span><span class="p">)</span>
 
 <span class="n">T</span> <span class="o">=</span> <span class="mi">150</span>
-<span class="nb">I</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">I</span> <span class="o">=</span> <span class="mi">5000</span>
 
 <span class="c"># Simulate and compute sample means</span>
-<span class="n">Xit</span><span class="p">,</span> <span class="n">Yit</span> <span class="o">=</span> <span class="n">simulate_paths</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="nb">I</span><span class="p">)</span>
+<span class="n">Xit</span><span class="p">,</span> <span class="n">Yit</span> <span class="o">=</span> <span class="n">simulate_paths</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
 <span class="n">Xmean_t</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">Xit</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">Ymean_t</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">Yit</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
 
@@ -459,13 +458,13 @@ simulations.</p>
 <span class="n">Xmean_pop</span><span class="p">,</span> <span class="n">Ymean_pop</span> <span class="o">=</span> <span class="n">population_means</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 
 <span class="c"># Plot sample means vs population means</span>
-<span class="n">plt_1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Xmean_t</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">blue</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;1/I sum_i x_t^i&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">Xmean_pop</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;E x_t&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;x_t&quot;</span><span class="p">,</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">),</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">bottomleft</span><span class="p">)</span>
+<span class="n">plt_1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Xmean_t</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:blue</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;1/I sum_i x_t^i&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">Xmean_pop</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;E x_t&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;x_t&quot;</span><span class="p">,</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">),</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomleft</span><span class="p">)</span>
 
-<span class="n">plt_2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Ymean_t</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">blue</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;1/I sum_i x_t^i&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">Ymean_pop</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;E y_t&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;y_t&quot;</span><span class="p">,</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">),</span> <span class="n">legend</span> <span class="o">=</span> <span class="o">:</span><span class="n">bottomleft</span><span class="p">)</span>
+<span class="n">plt_2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">Ymean_t</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:blue</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;1/I sum_i x_t^i&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">Ymean_pop</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;E y_t&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;y_t&quot;</span><span class="p">,</span> <span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">T</span><span class="p">),</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomleft</span><span class="p">)</span>
 
 <span class="n">plot</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
 </pre></div>
@@ -477,7 +476,7 @@ simulations.</p>
 </div>
 </div>
 <div class="section" id="simulating-log-likelihoods">
-<h3>Simulating log-likelihoods<a class="headerlink" href="#simulating-log-likelihoods" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">58.2.2. </span>Simulating log-likelihoods<a class="headerlink" href="#simulating-log-likelihoods" title="Permalink to this headline">¶</a></h3>
 <p>Our next aim is to write a program to simulate <span class="math notranslate nohighlight">\(\{\log L_t \mid \theta_o\}_{t=1}^T\)</span>.</p>
 <p>We want as inputs to this program the <em>same</em> sample paths <span class="math notranslate nohighlight">\(\{x_t^i, y_t^i\}_{t=0}^T\)</span> that we  have already computed.</p>
 <p>We now want to simulate <span class="math notranslate nohighlight">\(I = 5000\)</span> paths of <span class="math notranslate nohighlight">\(\{\log L_t^i  \mid \theta_o\}_{t=1}^T\)</span>.</p>
@@ -491,12 +490,12 @@ simulations.</p>
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">simulate_likelihood</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">Xit</span><span class="p">,</span> <span class="n">Yit</span><span class="p">)</span>
     <span class="c"># Get size</span>
-    <span class="nb">I</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">Xit</span><span class="p">)</span>
+    <span class="n">I</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">Xit</span><span class="p">)</span>
 
     <span class="c"># Allocate space</span>
-    <span class="n">LLit</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">I</span><span class="p">,</span> <span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">LLit</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="nb">I</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">I</span>
         <span class="n">LLit</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">loglikelihood_path</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">Xit</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">Yit</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">:</span><span class="p">])</span>
     <span class="k">end</span>
 
@@ -509,11 +508,14 @@ simulations.</p>
 <span class="n">LLT</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">T</span> <span class="o">*</span> <span class="n">LLit</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="k">end</span><span class="p">]</span>
 <span class="n">LLmean_t</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">LLT</span><span class="p">)</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">histogram</span><span class="p">,</span> <span class="n">LLT</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="ss">:histogram</span><span class="p">,</span> <span class="n">LLT</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Distribution of (I/T)log(L_T)|theta_0&quot;</span><span class="p">)</span>
-<span class="n">vline!</span><span class="p">([</span><span class="n">LLmean_t</span><span class="p">],</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">vline!</span><span class="p">([</span><span class="n">LLmean_t</span><span class="p">],</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="ss">:dash</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_11_0.png" src="../_images/multiplicative_functionals_11_0.png" />
 </div>
 </div>
 <p>Notice that the log likelihood is almost always nonnegative, implying that <span class="math notranslate nohighlight">\(L_t\)</span> is typically bigger than 1.</p>
@@ -537,6 +539,17 @@ simulations.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The pdf at +/- 1.175 sigma takes the value: 1.0001868966924388
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Probability of dL being larger than 1 is approx: 0.7600052842019751
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Fraction of dlogL being nonnegative in the sample is: 0.7593054054054054
+</pre></div>
+</div>
+</div>
 </div>
 <p>Let’s also plot the conditional pdf of <span class="math notranslate nohighlight">\(\Delta y_{t+1}\)</span></p>
 <div class="cell docutils container">
@@ -548,10 +561,16 @@ simulations.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The pdf at +/- one sigma takes the value: 1.2098536225957168 
+</pre></div>
+</div>
+<img alt="../_images/multiplicative_functionals_17_1.png" src="../_images/multiplicative_functionals_17_1.png" />
+</div>
 </div>
 </div>
 <div class="section" id="an-alternative-parameter-vector">
-<h3>An alternative parameter vector<a class="headerlink" href="#an-alternative-parameter-vector" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">58.2.3. </span>An alternative parameter vector<a class="headerlink" href="#an-alternative-parameter-vector" title="Permalink to this headline">¶</a></h3>
 <p>Now consider alternative parameter vector <span class="math notranslate nohighlight">\(\theta_1 = [A, B, D, F] = [0.9, 1.0, 0.55, 0.25]\)</span>.</p>
 <p>We want to compute <span class="math notranslate nohighlight">\(\{\log L_t \mid \theta_1\}_{t=1}^T\)</span>.</p>
 <p>The <span class="math notranslate nohighlight">\(x_t, y_t\)</span> inputs to this program should be exactly the <strong>same</strong> sample paths <span class="math notranslate nohighlight">\(\{x_t^i, y_t^i\}_{t=0}^T\)</span> that we we computed above.</p>
@@ -584,23 +603,29 @@ simulations.</p>
 <span class="n">LLT2</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">LLit2</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="k">end</span><span class="p">]</span>
 <span class="n">LLmean_t2</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">LLT2</span><span class="p">)</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">histogram</span><span class="p">,</span> <span class="n">LLT2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
-<span class="n">vline!</span><span class="p">([</span><span class="n">LLmean_t2</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="ss">:histogram</span><span class="p">,</span> <span class="n">LLT2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">vline!</span><span class="p">([</span><span class="n">LLmean_t2</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="ss">:dash</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Distribution of (1/T)log(L_T) | theta_1)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_20_0.png" src="../_images/multiplicative_functionals_20_0.png" />
 </div>
 </div>
 <p>Let’s see a histogram of the log-likelihoods under the true and the alternative model (same sample paths)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">histogram</span><span class="p">,</span> <span class="n">LLT</span><span class="p">,</span> <span class="n">bin</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;True&quot;</span><span class="p">,</span> <span class="n">normed</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">histogram</span><span class="p">,</span> <span class="n">LLT2</span><span class="p">,</span> <span class="n">bin</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Alternative&quot;</span><span class="p">,</span>
-      <span class="n">normed</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span>
-<span class="n">vline!</span><span class="p">([</span><span class="n">mean</span><span class="p">(</span><span class="n">LLT</span><span class="p">)],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
-<span class="n">vline!</span><span class="p">([</span><span class="n">mean</span><span class="p">(</span><span class="n">LLT2</span><span class="p">)],</span> <span class="n">color</span> <span class="o">=</span> <span class="o">:</span><span class="n">black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="o">:</span><span class="n">dash</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="ss">:histogram</span><span class="p">,</span> <span class="n">LLT</span><span class="p">,</span> <span class="n">bin</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;True&quot;</span><span class="p">,</span> <span class="n">normed</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="ss">:histogram</span><span class="p">,</span> <span class="n">LLT2</span><span class="p">,</span> <span class="n">bin</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Alternative&quot;</span><span class="p">,</span>
+      <span class="n">normed</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
+<span class="n">vline!</span><span class="p">([</span><span class="n">mean</span><span class="p">(</span><span class="n">LLT</span><span class="p">)],</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="ss">:dash</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">vline!</span><span class="p">([</span><span class="n">mean</span><span class="p">(</span><span class="n">LLT2</span><span class="p">)],</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="ss">:dash</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_23_0.png" src="../_images/multiplicative_functionals_23_0.png" />
 </div>
 </div>
 <p>Now we’ll plot the histogram of the difference in log likelihood ratio</p>
@@ -608,15 +633,18 @@ simulations.</p>
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">LLT_diff</span> <span class="o">=</span> <span class="n">LLT</span> <span class="o">-</span> <span class="n">LLT2</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">histogram</span><span class="p">,</span> <span class="n">LLT_diff</span><span class="p">,</span> <span class="n">bin</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="ss">:histogram</span><span class="p">,</span> <span class="n">LLT_diff</span><span class="p">,</span> <span class="n">bin</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;(1/T)[log(L_T^i | theta_0) - log(L_T^i |theta_1)]&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_25_0.png" src="../_images/multiplicative_functionals_25_0.png" />
+</div>
 </div>
 </div>
 <div class="section" id="interpretation">
-<h3>Interpretation<a class="headerlink" href="#interpretation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">58.2.4. </span>Interpretation<a class="headerlink" href="#interpretation" title="Permalink to this headline">¶</a></h3>
 <p>These histograms of  log likelihood ratios illustrate  important features of <strong>likelihood ratio tests</strong> as tools for discriminating between statistical models.</p>
 <ul class="simple">
 <li><p>The loglikeklihood is higher on average under the true model – obviously a very useful property.</p></li>
@@ -630,12 +658,12 @@ simulations.</p>
 </div>
 </div>
 <div class="section" id="benefits-from-reduced-aggregate-fluctuations">
-<h2><a class="toc-backref" href="#id14">Benefits from Reduced Aggregate Fluctuations</a><a class="headerlink" href="#benefits-from-reduced-aggregate-fluctuations" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id14"><span class="section-number">58.3. </span>Benefits from Reduced Aggregate Fluctuations</a><a class="headerlink" href="#benefits-from-reduced-aggregate-fluctuations" title="Permalink to this headline">¶</a></h2>
 <p>Now let’s turn to a new example of multiplicative functionals.</p>
 <p>This example illustrates  ideas in the literatures on</p>
 <ul class="simple">
-<li><p><strong>long-run risk</strong> in the consumption based asset pricing literature (e.g., <span id="id4">[<a class="reference internal" href="../zreferences.html#id126"><span>BY04</span></a>]</span>, <span id="id5">[<a class="reference internal" href="../zreferences.html#id127"><span>HHL08</span></a>]</span>, <span id="id6">[<a class="reference internal" href="../zreferences.html#id128"><span>Han07</span></a>]</span>)</p></li>
-<li><p><strong>benefits of eliminating aggregate fluctuations</strong> in representative agent macro models (e.g., <span id="id7">[<a class="reference internal" href="../zreferences.html#id30"><span>Tal00</span></a>]</span>, <span id="id8">[<a class="reference internal" href="../zreferences.html#id129"><span>Luc03</span></a>]</span>)</p></li>
+<li><p><strong>long-run risk</strong> in the consumption based asset pricing literature (e.g., <span id="id4">[<a class="reference internal" href="../zreferences.html#id126">BY04</a>]</span>, <span id="id5">[<a class="reference internal" href="../zreferences.html#id127">HHL08</a>]</span>, <span id="id6">[<a class="reference internal" href="../zreferences.html#id128">Han07</a>]</span>)</p></li>
+<li><p><strong>benefits of eliminating aggregate fluctuations</strong> in representative agent macro models (e.g., <span id="id7">[<a class="reference internal" href="../zreferences.html#id30">Tal00</a>]</span>, <span id="id8">[<a class="reference internal" href="../zreferences.html#id129">Luc03</a>]</span>)</p></li>
 </ul>
 <p>Let <span class="math notranslate nohighlight">\(c_t\)</span> be consumption at date <span class="math notranslate nohighlight">\(t \geq 0\)</span>.</p>
 <p>Suppose that <span class="math notranslate nohighlight">\(\{\log c_t \}_{t=0}^\infty\)</span> is an additive functional described by</p>
@@ -651,7 +679,7 @@ x_{t+1} = A x_t + B z_{t+1}
 <p>Here <span class="math notranslate nohighlight">\(\{z_{t+1}\}_{t=0}^\infty\)</span> is an i.i.d. sequence of <span class="math notranslate nohighlight">\({\cal N}(0,I)\)</span> random vectors.</p>
 <p>A representative household ranks consumption processes <span class="math notranslate nohighlight">\(\{c_t\}_{t=0}^\infty\)</span> with a utility functional <span class="math notranslate nohighlight">\(\{V_t\}_{t=0}^\infty\)</span> that satisfies</p>
 <div class="math notranslate nohighlight" id="equation-old1mf">
-<span class="eqno">(396)<a class="headerlink" href="#equation-old1mf" title="Permalink to this equation">¶</a></span>\[\log V_t - \log c_t = U \cdot x_t + {\sf u}\]</div>
+<span class="eqno">(58.1)<a class="headerlink" href="#equation-old1mf" title="Permalink to this equation">¶</a></span>\[\log V_t - \log c_t = U \cdot x_t + {\sf u}\]</div>
 <p>where</p>
 <div class="math notranslate nohighlight">
 \[
@@ -666,10 +694,10 @@ U = \exp(-\delta) \left[ I - \exp(-\delta) A' \right]^{-1} D
 \]</div>
 <p>Here <span class="math notranslate nohighlight">\(\gamma \geq 1\)</span> is a risk-aversion coefficient and <span class="math notranslate nohighlight">\(\delta &gt; 0\)</span> is a rate of time preference.</p>
 <div class="section" id="consumption-as-a-multiplicative-process">
-<h3>Consumption as a multiplicative process<a class="headerlink" href="#consumption-as-a-multiplicative-process" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">58.3.1. </span>Consumption as a multiplicative process<a class="headerlink" href="#consumption-as-a-multiplicative-process" title="Permalink to this headline">¶</a></h3>
 <p>We begin by showing that consumption is a <strong>multiplicative functional</strong> with representation</p>
 <div class="math notranslate nohighlight" id="equation-old2mf">
-<span class="eqno">(397)<a class="headerlink" href="#equation-old2mf" title="Permalink to this equation">¶</a></span>\[\frac{c_t}{c_0}
+<span class="eqno">(58.2)<a class="headerlink" href="#equation-old2mf" title="Permalink to this equation">¶</a></span>\[\frac{c_t}{c_0}
 = \exp(\tilde{\nu}t )
 \left( \frac{\tilde{M}_t}{\tilde{M}_0} \right)
 \left( \frac{\tilde{e}(x_0)}{\tilde{e}(x_t)} \right)\]</div>
@@ -686,7 +714,7 @@ U = \exp(-\delta) \left[ I - \exp(-\delta) A' \right]^{-1} D
 \]</div>
 </div>
 <div class="section" id="simulating-a-likelihood-ratio-process-again">
-<h3>Simulating a likelihood ratio process again<a class="headerlink" href="#simulating-a-likelihood-ratio-process-again" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">58.3.2. </span>Simulating a likelihood ratio process again<a class="headerlink" href="#simulating-a-likelihood-ratio-process-again" title="Permalink to this headline">¶</a></h3>
 <p>Next, we want a program to simulate the likelihood ratio process <span class="math notranslate nohighlight">\(\{ \tilde{M}_t \}_{t=0}^\infty\)</span>.</p>
 <p>In particular, we want to simulate 5000 sample paths of length <span class="math notranslate nohighlight">\(T=1000\)</span> for the case in which <span class="math notranslate nohighlight">\(x\)</span> is a scalar and <span class="math notranslate nohighlight">\([A, B, D, F] = [0.8, 0.001, 1.0, 0.01]\)</span> and <span class="math notranslate nohighlight">\(\nu = 0.005\)</span>.</p>
 <p>After accomplishing this, we want to display a histogram of <span class="math notranslate nohighlight">\(\tilde{M}_T^i\)</span> for
@@ -694,16 +722,16 @@ U = \exp(-\delta) \left[ I - \exp(-\delta) A' \right]^{-1} D
 <p>Here is code that accomplishes these tasks</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">simulate_martingale_components</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">1_000</span><span class="p">,</span> <span class="nb">I</span> <span class="o">=</span> <span class="mi">5_000</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">simulate_martingale_components</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">1_000</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="mi">5_000</span><span class="p">)</span>
     <span class="c"># Get the multiplicative decomposition</span>
     <span class="nd">@unpack</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span><span class="p">,</span> <span class="n">lss</span> <span class="o">=</span> <span class="n">amf</span>
     <span class="n">ν</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="n">multiplicative_decomp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span><span class="p">)</span>
 
     <span class="c"># Allocate space</span>
-    <span class="n">add_mart_comp</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="nb">I</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+    <span class="n">add_mart_comp</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
 
     <span class="c"># Simulate and pull out additive martingale component</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="kp">in</span> <span class="mi">1</span><span class="o">:</span><span class="nb">I</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">I</span>
         <span class="n">foo</span><span class="p">,</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">lss</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
         <span class="c"># Martingale component is third component</span>
         <span class="n">add_mart_comp</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">bar</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
@@ -730,9 +758,17 @@ U = \exp(-\delta) \left[ I - \exp(-\delta) A' \right]^{-1} D
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The (min, mean, max) of additive Martingale component in period T is
+	 (-1.7437162246900972, 0.01035003118701151, 1.7555896322222506)
+The (min, mean, max) of multiplicative Martingale component in period T is
+	 (0.15628035696036363, 1.0087436260285634, 5.171703504527901)
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="comments">
-<h4>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">58.3.2.1. </span>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
 <li><p>The preceding min, mean, and max of the cross-section of the date
 <span class="math notranslate nohighlight">\(T\)</span> realizations of the multiplicative martingale component of
@@ -752,25 +788,31 @@ well.</p></li>
 <p>Here’s a histogram of the additive martingale component</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">histogram</span><span class="p">,</span> <span class="n">amcT</span><span class="p">,</span> <span class="n">bin</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="n">normed</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="ss">:histogram</span><span class="p">,</span> <span class="n">amcT</span><span class="p">,</span> <span class="n">bin</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="n">normed</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Histogram of Additive Martingale Component&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_31_0.png" src="../_images/multiplicative_functionals_31_0.png" />
 </div>
 </div>
 <p>Here’s a histogram of the multiplicative martingale component</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="o">:</span><span class="n">histogram</span><span class="p">,</span> <span class="n">mmcT</span><span class="p">,</span> <span class="n">bin</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="n">normed</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">seriestype</span> <span class="o">=</span> <span class="ss">:histogram</span><span class="p">,</span> <span class="n">mmcT</span><span class="p">,</span> <span class="n">bin</span> <span class="o">=</span> <span class="mi">25</span><span class="p">,</span> <span class="n">normed</span> <span class="o">=</span> <span class="nb">true</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Histogram of Multiplicative Martingale Component&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_33_0.png" src="../_images/multiplicative_functionals_33_0.png" />
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="representing-the-likelihood-ratio-process">
-<h3>Representing the likelihood ratio process<a class="headerlink" href="#representing-the-likelihood-ratio-process" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">58.3.3. </span>Representing the likelihood ratio process<a class="headerlink" href="#representing-the-likelihood-ratio-process" title="Permalink to this headline">¶</a></h3>
 <p>The likelihood ratio process <span class="math notranslate nohighlight">\(\{\widetilde M_t\}_{t=0}^\infty\)</span> can be represented as</p>
 <div class="math notranslate nohighlight">
 \[
@@ -816,14 +858,14 @@ well.</p></li>
 <span class="k">end</span>
 
 <span class="n">times_to_plot</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2500</span><span class="p">,</span> <span class="mi">5000</span><span class="p">]</span>
-<span class="n">dens_to_plot</span> <span class="o">=</span> <span class="p">[</span><span class="n">Mtilde_t_density</span><span class="p">(</span><span class="n">amf_2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">6.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="n">times_to_plot</span><span class="p">]</span>
-<span class="n">ldens_to_plot</span> <span class="o">=</span> <span class="p">[</span><span class="n">logMtilde_t_density</span><span class="p">(</span><span class="n">amf_2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=-</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="kp">in</span> <span class="n">times_to_plot</span><span class="p">]</span>
+<span class="n">dens_to_plot</span> <span class="o">=</span> <span class="p">[</span><span class="n">Mtilde_t_density</span><span class="p">(</span><span class="n">amf_2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">6.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="k">in</span> <span class="n">times_to_plot</span><span class="p">]</span>
+<span class="n">ldens_to_plot</span> <span class="o">=</span> <span class="p">[</span><span class="n">logMtilde_t_density</span><span class="p">(</span><span class="n">amf_2</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=-</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="k">in</span> <span class="n">times_to_plot</span><span class="p">]</span>
 
 <span class="c"># plot_title = &quot;Densities of M_t^tilda&quot; is required, however, plot_title is not yet</span>
 <span class="c"># supported in Plots</span>
 <span class="n">plots</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">600</span><span class="p">,</span><span class="mi">800</span><span class="p">))</span>
 
-<span class="k">for</span> <span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">dens_t</span><span class="p">)</span> <span class="kp">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">dens_to_plot</span><span class="p">)</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">dens_t</span><span class="p">)</span> <span class="k">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">dens_to_plot</span><span class="p">)</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">pdf</span> <span class="o">=</span> <span class="n">dens_t</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="n">it</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Density for time (time_to_plot[it])&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">plots</span><span class="p">[</span><span class="n">it</span><span class="p">],</span> <span class="n">pdf</span><span class="p">,</span> <span class="n">fillrange</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pdf</span><span class="p">],</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
@@ -831,6 +873,9 @@ well.</p></li>
 <span class="n">plot</span><span class="p">(</span><span class="n">plots</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_35_0.png" src="../_images/multiplicative_functionals_35_0.png" />
 </div>
 </div>
 <p>These probability density functions illustrate a <strong>peculiar property</strong> of log likelihood ratio processes:</p>
@@ -840,14 +885,14 @@ well.</p></li>
 </ul>
 </div>
 <div class="section" id="welfare-benefits-of-reduced-random-aggregate-fluctuations">
-<h3>Welfare benefits of reduced random aggregate fluctuations<a class="headerlink" href="#welfare-benefits-of-reduced-random-aggregate-fluctuations" title="Permalink to this headline">¶</a></h3>
-<p>Suppose in the tradition of a strand of macroeconomics (for example Tallarini <span id="id9">[<a class="reference internal" href="../zreferences.html#id30"><span>Tal00</span></a>]</span>, <span id="id10">[<a class="reference internal" href="../zreferences.html#id129"><span>Luc03</span></a>]</span>) we want to estimate the welfare benefits from removing random fluctuations around trend growth.</p>
-<p>We shall  compute how much initial consumption <span class="math notranslate nohighlight">\(c_0\)</span> a representative consumer who ranks consumption streams according to <a class="reference internal" href="#equation-old1mf">(396)</a> would be willing to sacrifice to enjoy the consumption stream</p>
+<h3><span class="section-number">58.3.4. </span>Welfare benefits of reduced random aggregate fluctuations<a class="headerlink" href="#welfare-benefits-of-reduced-random-aggregate-fluctuations" title="Permalink to this headline">¶</a></h3>
+<p>Suppose in the tradition of a strand of macroeconomics (for example Tallarini <span id="id9">[<a class="reference internal" href="../zreferences.html#id30">Tal00</a>]</span>, <span id="id10">[<a class="reference internal" href="../zreferences.html#id129">Luc03</a>]</span>) we want to estimate the welfare benefits from removing random fluctuations around trend growth.</p>
+<p>We shall  compute how much initial consumption <span class="math notranslate nohighlight">\(c_0\)</span> a representative consumer who ranks consumption streams according to <a class="reference internal" href="#equation-old1mf">(58.1)</a> would be willing to sacrifice to enjoy the consumption stream</p>
 <div class="math notranslate nohighlight">
 \[
 \frac{c_t}{c_0} = \exp (\tilde{\nu} t)
 \]</div>
-<p>rather than the stream described by equation <a class="reference internal" href="#equation-old2mf">(397)</a>.</p>
+<p>rather than the stream described by equation <a class="reference internal" href="#equation-old2mf">(58.2)</a>.</p>
 <p>We want to compute the implied percentage reduction in <span class="math notranslate nohighlight">\(c_0\)</span> that the representative consumer would accept.</p>
 <p>To accomplish this, we write a function that computes the coefficients <span class="math notranslate nohighlight">\(U\)</span>
 and <span class="math notranslate nohighlight">\(u\)</span> for the original values of <span class="math notranslate nohighlight">\(A, B, D, F, \nu\)</span>, but
@@ -856,7 +901,7 @@ also for the case that  <span class="math notranslate nohighlight">\(A, B, D, F 
 <p>Here’s our code</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">Uu</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="nb">γ</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">Uu</span><span class="p">(</span><span class="n">amf</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">γ</span><span class="p">)</span>
     <span class="nd">@unpack</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span> <span class="o">=</span> <span class="n">amf</span>
     <span class="n">ν_tilde</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="n">multiplicative_decomp</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">ν</span><span class="p">)</span>
 
@@ -864,7 +909,7 @@ also for the case that  <span class="math notranslate nohighlight">\(A, B, D, F 
     <span class="n">vect</span> <span class="o">=</span> <span class="n">F</span> <span class="o">+</span> <span class="n">D</span> <span class="o">*</span> <span class="n">resolv</span> <span class="o">*</span> <span class="n">B</span>
 
     <span class="n">U_risky</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span> <span class="o">*</span> <span class="n">resolv</span> <span class="o">*</span> <span class="n">D</span>
-    <span class="n">u_risky</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">δ</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">ν</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="nb">γ</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">vect</span><span class="o">^</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">u_risky</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">δ</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">ν</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">γ</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">vect</span><span class="o">^</span><span class="mi">2</span><span class="p">))</span>
 
     <span class="n">U_det</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">u_det</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">δ</span><span class="p">))</span>  <span class="o">*</span> <span class="n">ν_tilde</span>
@@ -874,10 +919,15 @@ also for the case that  <span class="math notranslate nohighlight">\(A, B, D, F 
 
 <span class="c"># Set remaining parameters</span>
 <span class="n">δ</span> <span class="o">=</span> <span class="mf">0.02</span>
-<span class="nb">γ</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">γ</span> <span class="o">=</span> <span class="mf">2.0</span>
 
 <span class="c"># Get coeffs</span>
-<span class="n">U_r</span><span class="p">,</span> <span class="n">u_r</span><span class="p">,</span> <span class="n">U_d</span><span class="p">,</span> <span class="n">u_d</span> <span class="o">=</span> <span class="n">Uu</span><span class="p">(</span><span class="n">amf_2</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="nb">γ</span><span class="p">)</span>
+<span class="n">U_r</span><span class="p">,</span> <span class="n">u_r</span><span class="p">,</span> <span class="n">U_d</span><span class="p">,</span> <span class="n">u_d</span> <span class="o">=</span> <span class="n">Uu</span><span class="p">(</span><span class="n">amf_2</span><span class="p">,</span> <span class="n">δ</span><span class="p">,</span> <span class="n">γ</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(4.54129843114712, 0.24220854072375247, 0, 0.25307727077652764)
 </pre></div>
 </div>
 </div>
@@ -921,6 +971,11 @@ representative consumer would accept is given by</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0809878812017448
+</pre></div>
+</div>
+</div>
 </div>
 <p>We find that the consumer would be willing to take a percentage reduction of initial consumption equal to around 1.081.</p>
 </div>
@@ -936,16 +991,16 @@ representative consumer would accept is given by</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.5"
+            mode: "julia-1.6"
         },
         kernelOptions: {
-            kernelName: "julia-1.5",
+            kernelName: "julia-1.6",
             path: "./time_series_models"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.5'</script>
+    <script>kernelName = 'julia-1.6'</script>
 
                     </div>
                     
@@ -974,340 +1029,408 @@ representative consumer would accept is given by</p>
                 </div>
 
                 <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
-                    <ul class="current nav bd-sidenav nav sidenav_l1">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/getting_started.html">
-   Setting up Your Julia Environment
+   1. Setting up Your Julia Environment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_environment.html">
-   Interacting with Julia
+   2. Interacting with Julia
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
-   Introductory Examples
+   3. Introductory Examples
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
-   Julia Essentials
+   4. Julia Essentials
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
-   Arrays, Tuples, Ranges, and Other Fundamental Types
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
-   Introduction to Types and Generic Programming
+   6. Introduction to Types and Generic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/generic_programming.html">
-   Generic Programming
+   7. Generic Programming
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/general_packages.html">
-   General Purpose Packages
+   8. General Purpose Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/data_statistical_packages.html">
-   Data and Statistics Packages
+   9. Data and Statistics Packages
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
-   Solvers, Optimizers, and Automatic Differentiation
+   10. Solvers, Optimizers, and Automatic Differentiation
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/tools_editors.html">
-   Julia Tools and Editors
+   11. Julia Tools and Editors
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/version_control.html">
-   Git, GitHub, and Version Control
+   12. Git, GitHub, and Version Control
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/testing.html">
-   Packages, Testing, and Continuous Integration
+   13. Packages, Testing, and Continuous Integration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/need_for_speed.html">
-   The Need for Speed
+   14. The Need for Speed
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
-   Linear Algebra
+   15. Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
-   Orthogonal Projections and Their Applications
+   16. Orthogonal Projections and Their Applications
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
-   LLN and CLT
+   17. LLN and CLT
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   Linear State Space Models
+   18. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   Finite Markov Chains
+   19. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   Continuous State Markov Chains
+   20. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   A First Look at the Kalman Filter
+   22. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   Numerical Linear Algebra and Factorizations
+   23. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   Krylov Methods and Matrix Conditioning
+   24. Krylov Methods and Matrix Conditioning
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/short_path.html">
-   Shortest Paths
+   25. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   Job Search I: The McCall Search Model
+   26. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   Job Search II: Search and Separation
+   27. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   A Problem that Stumped Milton Friedman
+   28. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   Job Search III: Search with Learning
+   29. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   Job Search IV: Modeling Career Choice
+   30. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   Job Search V: On-the-Job Search
+   31. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   Optimal Growth I: The Stochastic Optimal Growth Model
+   32. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   Optimal Growth II: Time Iteration
+   33. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   Optimal Growth III: The Endogenous Grid Method
+   34. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   LQ Dynamic Programming Problems
+   35. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   Optimal Savings I: The Permanent Income Model
+   36. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   Optimal Savings II: LQ Techniques
+   37. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   Consumption and Tax Smoothing with Complete and Incomplete Markets
+   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   Optimal Savings III: Occasionally Binding Constraints
+   39. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   Robustness
+   40. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   Discrete State Dynamic Programming
+   41. Discrete State Dynamic Programming
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   Modeling COVID 19 with Differential Equations
+   42. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   Schelling’s Segregation Model
+   44. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   A Lake Model of Employment and Unemployment
+   45. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   Rational Expectations Equilibrium
+   46. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   Markov Perfect Equilibrium
+   47. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   Asset Pricing I: Finite State Models
+   48. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   Asset Pricing II: The Lucas Asset Pricing Model
+   49. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   Asset Pricing III:  Incomplete Markets
+   50. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   Uncertainty Traps
+   51. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   The Aiyagari Model
+   52. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   Default Risk and Income Fluctuations
+   53. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   Globalization and Cycles
+   54. Globalization and Cycles
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="arma.html">
-   Covariance Stationary Processes
+   55. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="estspec.html">
-   Estimation of Spectra
+   56. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="additive_functionals.html">
-   Additive Functionals
+   57. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   Multiplicative Functionals
+   58. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lu_tricks.html">
-   Classical Control with Linear Algebra
+   59. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="classical_filtering.html">
-   Classical Filtering With Linear Algebra
+   60. Classical Filtering With Linear Algebra
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   Dynamic Stackelberg Problems
+   61. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   Optimal Taxation in an LQ Economy
+   62. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   Optimal Taxation with State-Contingent Debt
+   63. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   Optimal Taxation without State-Contingent Debt
+   64. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   About these Lectures
+   65. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   Troubleshooting
+   66. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   References
+   67. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   Lecture Status
+   68. Lecture Status
   </a>
  </li>
 </ul>
@@ -1346,7 +1469,7 @@ representative consumer would accept is given by</p>
                     <li data-tippy-content="Download Notebook"><a href="_notebooks/time_series_models/multiplicative_functionals.ipynb" download><i data-feather="download-cloud"></i></a></li>
                     <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/time_series_models/multiplicative_functionals.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
                         <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
-                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/time_series_models/multiplicative_functionals.ipynb" download><i data-feather="github"></i></a></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/time_series_models/multiplicative_functionals.md" download><i data-feather="github"></i></a></li>
                 </ul>
 
             </div>
