@@ -32,8 +32,10 @@ jobs:
         uses: julia-actions/setup-julia@v1
         with:
           version: 1.6.0
-      - run: julia -e 'using Pkg; Pkg.activate("lectures"); Pkg.instantiate(); Pkg.add("IJulia");'
-        shell: bash
+      - name: Install IJulia and Activate Lectures
+        shell: bash -l {0}
+        run: |
+          julia -e 'using Pkg; Pkg.activate("lectures"); Pkg.instantiate(); Pkg.add("IJulia");'s
       - name: Build Download Notebooks (sphinx-tojupyter)
         shell: bash -l {0}
         run: |
@@ -47,13 +49,12 @@ jobs:
         shell: bash -l {0}
         run: |
           mkdir -p _build/html/_notebooks
-          rsync -r  _build/jupyter/ _build/html/_notebooks/
-          
+          rsync -r  _build/jupyter/ _build/html/_notebooks/s
       # Build Website
       - name: Build HTML
         shell: bash -l {0}
         run: |
-          jb build lectures --path-output ./ 
+          jb build lectures --path-output ./ -W --keep-going
       - name: Deploy website to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
