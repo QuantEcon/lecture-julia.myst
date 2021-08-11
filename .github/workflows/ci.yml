@@ -33,6 +33,7 @@ jobs:
         run: |
           julia -e 'using Pkg; Pkg.add("IJulia");'
           julia --project --threads auto -e 'using Pkg; Pkg.instantiate();'
+      # Download Jupyter Book Cache
       - name: Download "build" folder (cache)
         uses: dawidd6/action-download-artifact@v2
         with:
@@ -47,12 +48,12 @@ jobs:
       #     jb build lectures --builder pdflatex --path-output ./ -n --keep-going
       #     mkdir -p _build/html/_pdf
       #     cp -u _build/latex/*.pdf _build/html/_pdf
-      # - name: Build Download Notebooks (sphinx-tojupyter)
-      #   shell: bash -l {0}
-      #   run: |
-      #     jb build lectures --path-output ./ --builder=custom --custom-builder=jupyter
-      #     mkdir -p _build/html/_notebooks
-      #     cp -u _build/jupyter/*.ipynb _build/html/_notebooks
+      - name: Build Download Notebooks (sphinx-tojupyter)
+        shell: bash -l {0}
+        run: |
+          jb build lectures --path-output ./ --builder=custom --custom-builder=jupyter
+          mkdir -p _build/html/_notebooks
+          cp -u _build/jupyter/*.ipynb _build/html/_notebooks
       # Build HTML (Website)
       - name: Build HTML
         shell: bash -l {0}

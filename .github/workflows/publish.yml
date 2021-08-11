@@ -37,6 +37,15 @@ jobs:
         run: |
           julia -e 'using Pkg; Pkg.add("IJulia");'
           julia --project --threads auto -e 'using Pkg; Pkg.instantiate();'
+      # Download Jupyter Book Cache
+      - name: Download "build" folder (cache)
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: cache.yml
+          branch: main
+          name: build-cache
+          path: _build
+      # Build Assets for Julia site
       - name: Build Download Notebooks (sphinx-tojupyter)
         shell: bash -l {0}
         run: |
