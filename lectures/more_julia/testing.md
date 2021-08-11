@@ -535,7 +535,7 @@ By default, Travis will compile and test your project (i.e., "build" it) for new
 
 We can see ours by opening it in Atom
 
-```{code-block} julia
+```
 # Documentation: http://docs.travis-ci.com/user/languages/julia/
 language: julia
 os:
