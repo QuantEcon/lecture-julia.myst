@@ -32,10 +32,11 @@ jobs:
         uses: julia-actions/setup-julia@v1
         with:
           version: 1.6.0
-      - name: Install IJulia and Activate Lectures
+      - name: Install IJulia and Setup Project
         shell: bash -l {0}
         run: |
-          julia -e 'using Pkg; Pkg.activate("lectures"); Pkg.instantiate(); Pkg.add("IJulia");'s
+          julia -e 'using Pkg; Pkg.add("IJulia");'
+          julia --project --threads auto -e 'using;Pkg;Pkg.instantiate();'
       - name: Build Download Notebooks (sphinx-tojupyter)
         shell: bash -l {0}
         run: |
