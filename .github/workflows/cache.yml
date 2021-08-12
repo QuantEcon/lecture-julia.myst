@@ -31,15 +31,17 @@ jobs:
         uses: julia-actions/setup-julia@v1
         with:
           version: 1.6.0
-      - name: Install IJulia
-        run: julia -e 'using Pkg; Pkg.add("IJulia");'
-        shell: bash
+      - name: Install IJulia and Setup Project
+        shell: bash -l {0}
+        run: |
+          julia -e 'using Pkg; Pkg.add("IJulia");'
+          julia --project --threads auto -e 'using Pkg; Pkg.instantiate();'
       - name: Build HTML
         shell: bash -l {0}
         run: |
-          jb build lectures --path-output ./
+          jb build lectures --path-output ./ 
       - name: Upload the "_build" folder (cache)
         uses: actions/upload-artifact@v2
         with:
           name: build-cache
-          path: _build          
+          path: _build
