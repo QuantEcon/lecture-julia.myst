@@ -461,7 +461,7 @@ In this case, for any initial choice of $\Sigma_0$ that is both nonnegative and 
 ```{index} single: Kalman Filter; Programming Implementation
 ```
 
-The [QuantEcon.jl]() package is able to implement the Kalman filter by using methods for the type `Kalman`
+The [QuantEcon.jl](http://quantecon.org/quantecon-jl) package is able to implement the Kalman filter by using methods for the type `Kalman`
 
 * Instance data consists of:
     * The parameters $A, G, Q, R$ of a given model

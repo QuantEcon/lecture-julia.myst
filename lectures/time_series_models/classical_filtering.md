@@ -389,7 +389,7 @@ Thus, we have
 \, X_t
 ```
 
-This formula is useful in solving stochastic versions of problem 1 of lecture {doc}`Classical Control with Linear Algebra <time_series_models/lu_tricks>` in which the randomness emerges because $\{a_t\}$ is a stochastic
+This formula is useful in solving stochastic versions of problem 1 of lecture {doc}`Classical Control with Linear Algebra <lu_tricks>` in which the randomness emerges because $\{a_t\}$ is a stochastic
 process.
 
 The problem is to maximize
@@ -575,7 +575,7 @@ component not in this space.
 
 ### Implementation
 
-Code that computes solutions to  LQ control and filtering problems  using the methods described here and in {doc}`Classical Control with Linear Algebra <time_series_models/lu_tricks>` can be found in the file [control_and_filter.jl](https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/lu_tricks/control_and_filter.jl).
+Code that computes solutions to  LQ control and filtering problems  using the methods described here and in {doc}`Classical Control with Linear Algebra <lu_tricks>` can be found in the file [control_and_filter.jl](https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/lu_tricks/control_and_filter.jl).
 
 Here's how it looks
 

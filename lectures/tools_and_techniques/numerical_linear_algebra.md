@@ -40,7 +40,7 @@ The methods in this section are called direct methods, and they are qualitativel
 The list of specialized packages for these tasks is enormous and growing, but some of the important organizations to
 look at are [JuliaMatrices](https://github.com/JuliaMatrices) , [JuliaSparse](https://github.com/JuliaSparse), and [JuliaMath](https://github.com/JuliaMath)
 
-*NOTE*: As this section uses advanced Julia techniques, you may wish to review multiple-dispatch and generic programming in  {doc}`introduction to types <../getting_starting_julia/introduction_to_types>`, and consider further study on {doc}`generic programming <../more_julia/generic_programming>`.
+*NOTE*: As this section uses advanced Julia techniques, you may wish to review multiple-dispatch and generic programming in  {doc}`introduction to types <../getting_started_julia/introduction_to_types>`, and consider further study on {doc}`generic programming <../more_julia/generic_programming>`.
 
 The theme of this lecture, and numerical linear algebra in general, comes down to three principles:
 
@@ -455,7 +455,7 @@ benchmark_solve(A_dense, b)
 
 ### QR Decomposition
 
-{ref}`Previously <qr_decomposition>`, we learned about applications of the QR decomposition to solving the linear least squares.
+Previously, we learned about applications of the QR decomposition to solving the linear least squares.
 
 While in principle the solution to the least-squares problem
 
@@ -468,7 +468,7 @@ is $x = (A'A)^{-1}A'b$, in practice note that $A'A$ becomes dense and calculatin
 The QR decomposition is a decomposition $A = Q R$ where $Q$ is an orthogonal matrix (i.e., $Q'Q = Q Q' = I$) and $R$ is
 an upper triangular matrix.
 
-Given the  {ref}`previous derivation <qr_decomposition>`, we showed that we can write the least-squares problem as
+Given the  previous derivation, we showed that we can write the least-squares problem as
 the solution to
 
 $$
@@ -567,7 +567,7 @@ Keep in mind that a real matrix may have complex eigenvalues and eigenvectors, s
 
 ## Continuous-Time Markov Chains (CTMCs)
 
-In the previous lecture on {doc}`discrete-time Markov chains <mc>`, we saw that the transition probability
+In the previous lecture on {doc}`discrete-time Markov chains <finite_markov>`, we saw that the transition probability
 between state $x$ and state $y$ was summarized by the matrix $P(x, y) := \mathbb P \{ X_{t+1} = y \,|\, X_t = x \}$.
 
 As a brief introduction to continuous time processes, consider the same state space as in the discrete
