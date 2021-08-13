@@ -1,67 +1,40 @@
 # lecture-julia.myst
 Source for julia.quantecon.org
 
-## Content Development Installation Instructions (Not for End-users)
-### WSL and VSCode if on Windows
-- To get "Ubuntu on Windows" and other linux kernels see [instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
-  - For the installation, run it in `Powershell` as an administrator
-  - Hint on copy-paste:  One way to paste into a a windows (of any sort) is the `<ctrl-c>` text somewhere else and then, while selected in the terminal at the cursor, to `<right click>` the mouse (which pastes).
-  - Use WSL2 and see https://docs.microsoft.com/en-us/windows/wsl/wsl2-kernel for manual installation instructions if required.
-- Install [VSCode](https://code.visualstudio.com/) with remote WSL support on windows
- - See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview)
- - [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
+## Development 
 
+### Setup
 
-To open the WSL in VS Code
-- Click on the "><" icon on the bottom left hand corner, and open the remote folder in your WSL image (e.g. `~/lecture-source-jl`)
-- Choose "TERMINAL" to open a [WSL terminal](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl), and run any of the above jupinx or make commands.
+1. Download and install [Julia 1.6](https://julialang.org/downloads).
 
+2. Install [`conda`](https://www.anaconda.com/products/individual).
 
-To get git credentials integrated, in a windows terminal (i.e. not in WSL) run
+3. Download this repo in VSCode, and create a conda environment for it: 
+
 ```
-git config --global credential.helper wincred
+conda env create -f environment.yml
 ```
-Then in a WSL terminal (within VS Code or otherwise),
+This will install all packages required to edit and build the lectures.
+
+**Note**: Make sure you activate this environment whenever working on the lectures, by running `conda activate lecture-datascience`
+
+4. In VSCode, open Julia REPL, install `IJulia`, then activate the project in `lectures` and install all of its packages:
+
 ```
-git config --global user.email "you@example.com"
-git config --global user.name "Your Name"
-git config --global credential.helper "/mnt/c/Program\ Files/Git/mingw64/libexec/git-core/git-credential-wincred.exe"
+] add IJulia
+] activate lectures
+] instantiate
 ```
-(See more details in [Sharing Credentials](https://code.visualstudio.com/docs/remote/troubleshooting#_sharing-git-credentials-between-windows-and-wsl) )
 
-### Installation
-1. Start within your home directory in linux or in a WSL terminal
-2. Install Conda
+5. Try building the lectures:
 
-   -  In the Ubuntu terminal, first install python/etc. tools
-   ```bash
-   cd ~
-   wget https://repo.anaconda.com/archive/Anaconda3-2021.05-Linux-x86_64.sh
-   bash Anaconda3-2021.05-Linux-x86_64.sh
-   ```
-   -  Create a directory `.conda` by running `mkdir ~/.conda` if the warning "Unable to register the environment" shows up
-3. The installation will take time. You should:
-- accept default paths
-- accept licensing terms
-- *IMPORTANT* Manually choose `yes` to have it do the `conda init`
-- Delete the installation file
-    ```bash
-    pip install --upgrade --force-reinstall pyzmq
-    rm Anaconda3-2021.05-Linux-x86_64.sh
-    cd -
-    ```
-4. Install and activate the conda environment:
-    ```bash
-    conda env create -f environment.yml
-    conda activate lecture-datascience    
-    ```
-4. Either manually run the steps in [setup.sh](deps/setup.sh) or execute it in a terminal within the cloned repo
-   ```bash
-   bash deps/setup.sh
-   ```
-
-## Building the Lectures
-To build the lectures and cache all results:
 ```bash
 jupyter-book build lectures
+```
+This will take a while. But it will populate your cache, so future iteration is faster. 
+
+4. To clean up (i.e., delete the build.)
+
+```
+jupyter-book clean lectures
 ```
