@@ -822,16 +822,15 @@ Use the same parameters.
 
 For the four initial distributions, use the beta distribution and shift the random draws as shown below
 
-```{code-block} none
-```
+```{code-block} julia
+ψ_0 = Beta(5.0, 5.0)  # Initial distribution
+n = 1000
+# .... more setup
 
-> ψ_0 = Beta(5.0, 5.0)  # Initial distribution
-> n = 1000
-> # .... more setup
-> 
-> for i in 1:4
->     # .... some code
->     rand_draws = (rand(ψ_0, n) .+ 2.5i) ./ 2
+for i in 1:4
+    # .... some code
+    rand_draws = (rand(ψ_0, n) .+ 2.5i) ./ 2
+```
 
 (statd_ex3)=
 ### Exercise 3
