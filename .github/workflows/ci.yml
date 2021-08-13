@@ -6,24 +6,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Setup Anaconda
+        uses: conda-incubator/setup-miniconda@v2
         with:
+          auto-update-conda: true
+          auto-activate-base: true
+          miniconda-version: 'latest'
           python-version: 3.8
-      - name: Install Python Dependencies
-        run: |
-          pip install -r requirements.txt
-      - name: Install LaTeX dependencies
-        run: |
-          sudo apt-get -qq update
-          sudo apt-get install -y     \
-            texlive-latex-recommended \
-            texlive-latex-extra       \
-            texlive-fonts-recommended \
-            texlive-fonts-extra       \
-            texlive-xetex             \
-            latexmk                   \
-            xindy
+          environment-file: environment.yml
+          activate-environment: lecture-datascience
+      - name: Download "build" folder (cache)
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: cache.yml
+          branch: main
+          name: build-cache
+          path: _build          
       - name: Set up Julia
         uses: julia-actions/setup-julia@v1
         with:
@@ -32,15 +30,7 @@ jobs:
         shell: bash -l {0}
         run: |
           julia -e 'using Pkg; Pkg.add("IJulia");'
-          julia --project --threads auto -e 'using Pkg; Pkg.instantiate();'
-      # Download Jupyter Book Cache
-      - name: Download "build" folder (cache)
-        uses: dawidd6/action-download-artifact@v2
-        with:
-          workflow: cache.yml
-          branch: main
-          name: build-cache
-          path: _build
+          julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
       # Build Assets (Download Notebooks and PDF via LaTeX)
       # - name: Build PDF from LaTeX
       #   shell: bash -l {0}
