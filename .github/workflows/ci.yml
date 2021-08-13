@@ -28,11 +28,14 @@ jobs:
         uses: julia-actions/setup-julia@v1
         with:
           version: 1.6.0
-      - name: Install IJulia and Setup Project
+      - name: Install IJulia
         shell: bash -l {0}
         run: |
           julia -e 'using Pkg; Pkg.add("IJulia");'
-          julia --project --threads auto -e 'using Pkg; Pkg.instantiate();'
+      - name: Installing all the packages
+        shell: bash -l {0}
+        run: |
+          julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
       # Download Jupyter Book Cache
       - name: Download "build" folder (cache)
         uses: dawidd6/action-download-artifact@v2
