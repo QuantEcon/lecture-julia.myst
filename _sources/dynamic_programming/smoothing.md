@@ -62,7 +62,7 @@ But for each version of the consumption-smoothing model there is a natural tax-s
 * relabeling consumption as tax collections and nonfinancial income as government expenditures
 * relabeling the consumer's debt as the government's *assets*
 
-For elaborations on this theme, please see {doc}`Optimal Savings II: LQ Techniques <dynamic_programming/perm_income_cons>` and later parts of this lecture.
+For elaborations on this theme, please see {doc}`Optimal Savings II: LQ Techniques <perm_income_cons>` and later parts of this lecture.
 
 We'll consider two closely related alternative assumptions about the consumer's
 exogenous nonfinancial income process (or in the tax-smoothing
@@ -77,7 +77,7 @@ We'll spend most of this lecture studying the finite-state Markov specification,
 
 ### Relationship to Other Lectures
 
-This lecture can be viewed as a followup to {doc}`Optimal Savings II: LQ Techniques <dynamic_programming/perm_income_cons>` and  a warm up for a model of tax smoothing described in {doc}`opt_tax_recur <../dynamic_programming_squared/opt_tax_recur>`.
+This lecture can be viewed as a followup to {doc}`Optimal Savings II: LQ Techniques <perm_income_cons>` and  a warm up for a model of tax smoothing described in {doc}`opt_tax_recur <../dynamic_programming_squared/opt_tax_recur>`.
 
 Linear-quadratic versions of the Lucas-Stokey tax-smoothing model are described in {doc}`lqramsey <../dynamic_programming_squared/lqramsey>`.
 

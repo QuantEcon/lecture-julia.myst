@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>57. Additive Functionals &#8212; Quantitative Economics with Julia</title>
+    <title>56. Additive Functionals &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -60,8 +60,8 @@
     <link rel="canonical" href="https://julia.quantecon.org/time_series_models/additive_functionals.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="58. Multiplicative Functionals" href="multiplicative_functionals.html" />
-    <link rel="prev" title="56. Estimation of Spectra" href="estspec.html" />
+    <link rel="next" title="57. Multiplicative Functionals" href="multiplicative_functionals.html" />
+    <link rel="prev" title="55. Estimation of Spectra" href="estspec.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -111,51 +111,51 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   57.1. Overview
+   56.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#a-particular-additive-functional">
-   57.2. A Particular Additive Functional
+   56.2. A Particular Additive Functional
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#a-linear-state-space-representation">
-     57.2.1. A linear state space representation
+     56.2.1. A linear state space representation
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#dynamics">
-   57.3. Dynamics
+   56.3. Dynamics
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#simulation">
-     57.3.1. Simulation
+     56.3.1. Simulation
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#decomposition">
-     57.3.2. Decomposition
+     56.3.2. Decomposition
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#code">
-   57.4. Code
+   56.4. Code
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#an-associated-multiplicative-functional">
-     57.4.1. An associated multiplicative functional
+     56.4.1. An associated multiplicative functional
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#a-peculiar-large-sample-property">
-     57.4.2. A peculiar large sample property
+     56.4.2. A peculiar large sample property
     </a>
    </li>
   </ul>
@@ -210,7 +210,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="id1">
-<h1><a class="toc-backref" href="#id9"><span class="section-number">57. </span>Additive Functionals</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id9"><span class="section-number">56. </span>Additive Functionals</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <span id="index-0"></span><p class="topic-title">Contents</p>
 <ul class="simple">
@@ -226,7 +226,7 @@
 </div>
 <p>Co-authored with Chase Coleman and Balint Szoke</p>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id10"><span class="section-number">57.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10"><span class="section-number">56.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Some time series are nonstationary.</p>
 <p>For example, output, prices, and dividends are typically nonstationary, due to irregular but persistent growth.</p>
 <p>Which kinds of models are useful for studying such time series?</p>
@@ -244,12 +244,12 @@
 <p>We also consider fruitful decompositions of additive and multiplicative processes, a more in depth discussion of which can be found in Hansen and Sargent <span id="id4">[<a class="reference internal" href="../zreferences.html#id33">HS17</a>]</span>.</p>
 </div>
 <div class="section" id="a-particular-additive-functional">
-<h2><a class="toc-backref" href="#id11"><span class="section-number">57.2. </span>A Particular Additive Functional</a><a class="headerlink" href="#a-particular-additive-functional" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11"><span class="section-number">56.2. </span>A Particular Additive Functional</a><a class="headerlink" href="#a-particular-additive-functional" title="Permalink to this headline">¶</a></h2>
 <p>This lecture focuses on a particular type of additive functional: a scalar process <span class="math notranslate nohighlight">\(\{y_t\}_{t=0}^\infty\)</span> whose increments are driven by a Gaussian vector autoregression.</p>
 <p>It is simple to construct, simulate, and analyze.</p>
 <p>This additive functional consists of two components, the first of which is a <strong>first-order vector autoregression</strong> (VAR)</p>
 <div class="math notranslate nohighlight" id="equation-old1-additive-functionals">
-<span class="eqno">(57.1)<a class="headerlink" href="#equation-old1-additive-functionals" title="Permalink to this equation">¶</a></span>\[x_{t+1} = A x_t + B z_{t+1}\]</div>
+<span class="eqno">(56.1)<a class="headerlink" href="#equation-old1-additive-functionals" title="Permalink to this equation">¶</a></span>\[x_{t+1} = A x_t + B z_{t+1}\]</div>
 <p>Here</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(x_t\)</span> is an <span class="math notranslate nohighlight">\(n \times 1\)</span> vector,</p></li>
@@ -263,17 +263,17 @@ of <span class="math notranslate nohighlight">\(\{y_t\}_{t=0}^\infty\)</span> as
 <ul class="simple">
 <li><p>a scalar constant <span class="math notranslate nohighlight">\(\nu\)</span>,</p></li>
 <li><p>the vector <span class="math notranslate nohighlight">\(x_t\)</span>, and</p></li>
-<li><p>the same Gaussian vector <span class="math notranslate nohighlight">\(z_{t+1}\)</span> that appears in the VAR <a class="reference internal" href="#equation-old1-additive-functionals">(57.1)</a></p></li>
+<li><p>the same Gaussian vector <span class="math notranslate nohighlight">\(z_{t+1}\)</span> that appears in the VAR <a class="reference internal" href="#equation-old1-additive-functionals">(56.1)</a></p></li>
 </ul>
 <p>In particular,</p>
 <div class="math notranslate nohighlight" id="equation-old2-additive-functionals">
-<span class="eqno">(57.2)<a class="headerlink" href="#equation-old2-additive-functionals" title="Permalink to this equation">¶</a></span>\[y_{t+1} - y_{t} = \nu + D x_{t} + F z_{t+1}\]</div>
+<span class="eqno">(56.2)<a class="headerlink" href="#equation-old2-additive-functionals" title="Permalink to this equation">¶</a></span>\[y_{t+1} - y_{t} = \nu + D x_{t} + F z_{t+1}\]</div>
 <p>Here <span class="math notranslate nohighlight">\(y_0 \sim {\cal N}(\mu_{y0}, \Sigma_{y0})\)</span> is a random
 initial condition.</p>
 <p>The nonstationary random process <span class="math notranslate nohighlight">\(\{y_t\}_{t=0}^\infty\)</span> displays
 systematic but random <em>arithmetic growth</em>.</p>
 <div class="section" id="a-linear-state-space-representation">
-<h3><span class="section-number">57.2.1. </span>A linear state space representation<a class="headerlink" href="#a-linear-state-space-representation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">56.2.1. </span>A linear state space representation<a class="headerlink" href="#a-linear-state-space-representation" title="Permalink to this headline">¶</a></h3>
 <p>One way to represent the overall dynamics is to use a <a class="reference internal" href="../tools_and_techniques/linear_models.html"><span class="doc">linear state space system</span></a>.</p>
 <p>To do this, we set up state and observation vectors</p>
 <div class="math notranslate nohighlight">
@@ -334,11 +334,11 @@ z_{t+1}
 </div>
 </div>
 <div class="section" id="dynamics">
-<h2><a class="toc-backref" href="#id12"><span class="section-number">57.3. </span>Dynamics</a><a class="headerlink" href="#dynamics" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id12"><span class="section-number">56.3. </span>Dynamics</a><a class="headerlink" href="#dynamics" title="Permalink to this headline">¶</a></h2>
 <p>Let’s run some simulations to build intuition.</p>
 <p id="addfunc-eg1">In doing so we’ll assume that <span class="math notranslate nohighlight">\(z_{t+1}\)</span> is scalar and that <span class="math notranslate nohighlight">\(\tilde x_t\)</span> follows a 4th-order scalar autoregession</p>
 <div class="math notranslate nohighlight" id="equation-ftaf">
-<span class="eqno">(57.3)<a class="headerlink" href="#equation-ftaf" title="Permalink to this equation">¶</a></span>\[\tilde x_{t+1} = \phi_1 \tilde x_{t} + \phi_2 \tilde x_{t-1} +
+<span class="eqno">(56.3)<a class="headerlink" href="#equation-ftaf" title="Permalink to this equation">¶</a></span>\[\tilde x_{t+1} = \phi_1 \tilde x_{t} + \phi_2 \tilde x_{t-1} +
 \phi_3 \tilde x_{t-2} +
 \phi_4 \tilde x_{t-3} + \sigma z_{t+1}\]</div>
 <p>Let the increment in <span class="math notranslate nohighlight">\(\{y_t\}\)</span> obey</p>
@@ -347,14 +347,14 @@ z_{t+1}
 y_{t+1} - y_t =  \nu + \tilde x_t + \sigma z_{t+1}
 \]</div>
 <p>with an initial condition for <span class="math notranslate nohighlight">\(y_0\)</span>.</p>
-<p>While <a class="reference internal" href="#equation-ftaf">(57.3)</a> is not a first order system like <a class="reference internal" href="#equation-old1-additive-functionals">(57.1)</a>, we know that it can be mapped  into a first order system</p>
+<p>While <a class="reference internal" href="#equation-ftaf">(56.3)</a> is not a first order system like <a class="reference internal" href="#equation-old1-additive-functionals">(56.1)</a>, we know that it can be mapped  into a first order system</p>
 <ul class="simple">
 <li><p>for an example of such a mapping, see <a class="reference internal" href="../tools_and_techniques/linear_models.html#lss-sode"><span class="std std-ref">this example</span></a></p></li>
 </ul>
-<p>In fact this whole model can be mapped into the additive functional system definition in <a class="reference internal" href="#equation-old1-additive-functionals">(57.1)</a> – <a class="reference internal" href="#equation-old2-additive-functionals">(57.2)</a>  by appropriate selection of the matrices <span class="math notranslate nohighlight">\(A, B, D, F\)</span>.</p>
+<p>In fact this whole model can be mapped into the additive functional system definition in <a class="reference internal" href="#equation-old1-additive-functionals">(56.1)</a> – <a class="reference internal" href="#equation-old2-additive-functionals">(56.2)</a>  by appropriate selection of the matrices <span class="math notranslate nohighlight">\(A, B, D, F\)</span>.</p>
 <p>You can try writing these matrices down now as an exercise — the correct expressions will appear in the code below.</p>
 <div class="section" id="simulation">
-<h3><span class="section-number">57.3.1. </span>Simulation<a class="headerlink" href="#simulation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">56.3.1. </span>Simulation<a class="headerlink" href="#simulation" title="Permalink to this headline">¶</a></h3>
 <p>When simulating we embed our variables into a bigger system.</p>
 <p>This system also constructs the components of the decompositions of <span class="math notranslate nohighlight">\(y_t\)</span> and of <span class="math notranslate nohighlight">\(\exp(y_t)\)</span> proposed by Hansen and Scheinkman <span id="id5">[<a class="reference internal" href="../zreferences.html#id32">HS09</a>]</span>.</p>
 <p>All of these objects are computed using the code below.</p>
@@ -369,6 +369,25 @@ y_{t+1} - y_t =  \nu + \tilde x_t + \sigma z_{t+1}
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span>
 <span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="ss">:png</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package Distributions [31c24e10-a181-5473-b8eb-7969acd0382f] is required but does not seem to be installed:
+ - Run `Pkg.instantiate()` to install all recorded dependencies.
+
+
+Stacktrace:
+ [1] _require(pkg::Base.PkgId)
+   @ Base ./loading.jl:990
+ [2] require(uuidkey::Base.PkgId)
+   @ Base ./loading.jl:914
+ [3] require(into::Module, mod::Symbol)
+   @ Base ./loading.jl:901
+ [4] eval
+   @ ./boot.jl:360 [inlined]
+ [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
+   @ Base ./loading.jl:1094
 </pre></div>
 </div>
 </div>
@@ -786,11 +805,6 @@ y_{t+1} - y_t =  \nu + \tilde x_t + \sigma z_{t+1}
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>plot_martingale_paths (generic function with 1 method)
-</pre></div>
-</div>
-</div>
 </div>
 <p>For now, we just plot <span class="math notranslate nohighlight">\(y_t\)</span> and <span class="math notranslate nohighlight">\(x_t\)</span>, postponing until later a description of exactly how we compute them.</p>
 <div class="cell docutils container" id="addfunc-egcode">
@@ -832,14 +846,11 @@ y_{t+1} - y_t =  \nu + \tilde x_t + \sigma z_{t+1}
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/additive_functionals_7_0.png" src="../_images/additive_functionals_7_0.png" />
-</div>
 </div>
 <p>Notice the irregular but persistent growth in <span class="math notranslate nohighlight">\(y_t\)</span>.</p>
 </div>
 <div class="section" id="decomposition">
-<h3><span class="section-number">57.3.2. </span>Decomposition<a class="headerlink" href="#decomposition" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">56.3.2. </span>Decomposition<a class="headerlink" href="#decomposition" title="Permalink to this headline">¶</a></h3>
 <p>Hansen and Sargent <span id="id6">[<a class="reference internal" href="../zreferences.html#id33">HS17</a>]</span> describe how to construct a decomposition of
 an additive functional into four parts:</p>
 <ul class="simple">
@@ -849,7 +860,7 @@ an additive functional into four parts:</p>
 <li><p>an (asymptotically) stationary component</p></li>
 </ul>
 <p>To attain this decomposition for the particular class of additive
-functionals defined by <a class="reference internal" href="#equation-old1-additive-functionals">(57.1)</a> and <a class="reference internal" href="#equation-old2-additive-functionals">(57.2)</a>, we first construct the matrices</p>
+functionals defined by <a class="reference internal" href="#equation-old1-additive-functionals">(56.1)</a> and <a class="reference internal" href="#equation-old2-additive-functionals">(56.2)</a>, we first construct the matrices</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
 \begin{aligned}
@@ -869,7 +880,7 @@ functionals defined by <a class="reference internal" href="#equation-old1-additi
      \overbrace{g x_0 + y_0}^{\text{initial conditions}}
 \end{aligned}
 \]</div>
-<p>At this stage you should pause and verify that <span class="math notranslate nohighlight">\(y_{t+1} - y_t\)</span> satisfies <a class="reference internal" href="#equation-old2-additive-functionals">(57.2)</a>.</p>
+<p>At this stage you should pause and verify that <span class="math notranslate nohighlight">\(y_{t+1} - y_t\)</span> satisfies <a class="reference internal" href="#equation-old2-additive-functionals">(56.2)</a>.</p>
 <p>It is convenient for us to introduce the following notation:</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\tau_t = \nu t\)</span> , a linear, deterministic trend</p></li>
@@ -879,7 +890,7 @@ functionals defined by <a class="reference internal" href="#equation-old1-additi
 <p>We want to characterize and simulate components <span class="math notranslate nohighlight">\(\tau_t, m_t, s_t\)</span> of the decomposition.</p>
 <p>A convenient way to do this is to construct an appropriate instance of a <a class="reference internal" href="../tools_and_techniques/linear_models.html"><span class="doc">linear state space system</span></a> by using <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl">LSS</a> from <a class="reference external" href="http://quantecon.org/quantecon-jl">QuantEcon.jl</a>.</p>
 <p>This will allow us to use the routines in <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl">LSS</a> to study dynamics.</p>
-<p>To start, observe that, under the dynamics in <a class="reference internal" href="#equation-old1-additive-functionals">(57.1)</a> and <a class="reference internal" href="#equation-old2-additive-functionals">(57.2)</a> and with the
+<p>To start, observe that, under the dynamics in <a class="reference internal" href="#equation-old1-additive-functionals">(56.1)</a> and <a class="reference internal" href="#equation-old2-additive-functionals">(56.2)</a> and with the
 definitions just given,</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -961,7 +972,7 @@ interest.</p>
 </div>
 </div>
 <div class="section" id="code">
-<h2><a class="toc-backref" href="#id13"><span class="section-number">57.4. </span>Code</a><a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id13"><span class="section-number">56.4. </span>Code</a><a class="headerlink" href="#code" title="Permalink to this headline">¶</a></h2>
 <p>The type <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl">AMF_LSS_VAR</a> mentioned above does all that we want to study our additive functional.</p>
 <p>In fact <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/additive_functionals/amflss.jl">AMF_LSS_VAR</a> does more, as we shall explain below.</p>
 <p>(A hint that it does more is the name of the type – here AMF stands for
@@ -977,9 +988,6 @@ you will generate (modulo randomness) the plot</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/additive_functionals_10_0.png" src="../_images/additive_functionals_10_0.png" />
-</div>
 </div>
 <p>When we plot multiple realizations of a component in the 2nd, 3rd, and 4th panels, we also plot population 95% probability coverage sets computed using the LSS type.</p>
 <p>We have chosen to simulate many paths, all starting from the <em>same</em> nonrandom initial conditions <span class="math notranslate nohighlight">\(x_0, y_0\)</span> (you can tell this from the shape of the 95% probability coverage shaded areas).</p>
@@ -991,7 +999,7 @@ you will generate (modulo randomness) the plot</p>
 constant band</p></li>
 </ul>
 <div class="section" id="an-associated-multiplicative-functional">
-<h3><span class="section-number">57.4.1. </span>An associated multiplicative functional<a class="headerlink" href="#an-associated-multiplicative-functional" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">56.4.1. </span>An associated multiplicative functional<a class="headerlink" href="#an-associated-multiplicative-functional" title="Permalink to this headline">¶</a></h3>
 <p>Where <span class="math notranslate nohighlight">\(\{y_t\}\)</span> is our additive functional, let <span class="math notranslate nohighlight">\(M_t = \exp(y_t)\)</span>.</p>
 <p>As mentioned above, the process <span class="math notranslate nohighlight">\(\{M_t\}\)</span> is called a <strong>multiplicative functional</strong>.</p>
 <p>Corresponding to the additive decomposition described above we have the multiplicative decomposition of the <span class="math notranslate nohighlight">\(M_t\)</span></p>
@@ -1027,16 +1035,13 @@ constant band</p></li>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/additive_functionals_12_0.png" src="../_images/additive_functionals_12_0.png" />
-</div>
 </div>
 <p>As before, when we plotted multiple realizations of a component in the 2nd, 3rd, and 4th panels, we also plotted population 95% confidence bands computed using the LSS type.</p>
 <p>Comparing this figure and the last also helps show how geometric growth differs from
 arithmetic growth.</p>
 </div>
 <div class="section" id="a-peculiar-large-sample-property">
-<h3><span class="section-number">57.4.2. </span>A peculiar large sample property<a class="headerlink" href="#a-peculiar-large-sample-property" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">56.4.2. </span>A peculiar large sample property<a class="headerlink" href="#a-peculiar-large-sample-property" title="Permalink to this headline">¶</a></h3>
 <p>Hansen and Sargent <span id="id8">[<a class="reference internal" href="../zreferences.html#id33">HS17</a>]</span> (ch. 6) note that the martingale component
 <span class="math notranslate nohighlight">\(\widetilde M_t\)</span> of the multiplicative decomposition has a peculiar property.</p>
 <ul class="simple">
@@ -1052,9 +1057,6 @@ zero almost surely.</p></li>
 <span class="n">plt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/additive_functionals_15_0.png" src="../_images/additive_functionals_15_0.png" />
 </div>
 </div>
 </div>
@@ -1237,17 +1239,17 @@ zero almost surely.</p></li>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   22. A First Look at the Kalman Filter
+   21. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   23. Numerical Linear Algebra and Factorizations
+   22. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   24. Krylov Methods and Matrix Conditioning
+   23. Krylov Methods and Matrix Conditioning
   </a>
  </li>
 </ul>
@@ -1259,87 +1261,87 @@ zero almost surely.</p></li>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/short_path.html">
-   25. Shortest Paths
+   24. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   26. Job Search I: The McCall Search Model
+   25. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   27. Job Search II: Search and Separation
+   26. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   28. A Problem that Stumped Milton Friedman
+   27. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   29. Job Search III: Search with Learning
+   28. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   30. Job Search IV: Modeling Career Choice
+   29. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   31. Job Search V: On-the-Job Search
+   30. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   32. Optimal Growth I: The Stochastic Optimal Growth Model
+   31. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   33. Optimal Growth II: Time Iteration
+   32. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   34. Optimal Growth III: The Endogenous Grid Method
+   33. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   35. LQ Dynamic Programming Problems
+   34. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   36. Optimal Savings I: The Permanent Income Model
+   35. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   37. Optimal Savings II: LQ Techniques
+   36. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   39. Optimal Savings III: Occasionally Binding Constraints
+   38. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   40. Robustness
+   39. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   41. Discrete State Dynamic Programming
+   40. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -1351,12 +1353,12 @@ zero almost surely.</p></li>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   42. Modeling COVID 19 with Differential Equations
+   41. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1368,57 +1370,57 @@ zero almost surely.</p></li>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   44. Schelling’s Segregation Model
+   43. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   45. A Lake Model of Employment and Unemployment
+   44. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   46. Rational Expectations Equilibrium
+   45. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   47. Markov Perfect Equilibrium
+   46. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   48. Asset Pricing I: Finite State Models
+   47. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   49. Asset Pricing II: The Lucas Asset Pricing Model
+   48. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   50. Asset Pricing III:  Incomplete Markets
+   49. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   51. Uncertainty Traps
+   50. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   52. The Aiyagari Model
+   51. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   53. Default Risk and Income Fluctuations
+   52. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   54. Globalization and Cycles
+   53. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1430,32 +1432,32 @@ zero almost surely.</p></li>
 <ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="arma.html">
-   55. Covariance Stationary Processes
+   54. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="estspec.html">
-   56. Estimation of Spectra
+   55. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   57. Additive Functionals
+   56. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="multiplicative_functionals.html">
-   58. Multiplicative Functionals
+   57. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lu_tricks.html">
-   59. Classical Control with Linear Algebra
+   58. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="classical_filtering.html">
-   60. Classical Filtering With Linear Algebra
+   59. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1467,22 +1469,22 @@ zero almost surely.</p></li>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   61. Dynamic Stackelberg Problems
+   60. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   62. Optimal Taxation in an LQ Economy
+   61. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   63. Optimal Taxation with State-Contingent Debt
+   62. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   64. Optimal Taxation without State-Contingent Debt
+   63. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1494,22 +1496,22 @@ zero almost surely.</p></li>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   65. About these Lectures
+   64. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   66. Troubleshooting
+   65. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   67. References
+   66. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   68. Lecture Status
+   67. Lecture Status
   </a>
  </li>
 </ul>

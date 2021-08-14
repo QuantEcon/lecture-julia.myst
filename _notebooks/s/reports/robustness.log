@@ -1,0 +1,139 @@
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.8.11/x64/lib/python3.8/site-packages/jupyter_cache/executors/utils.py", line 51, in single_nb_execution
+    executenb(
+  File "/opt/hostedtoolcache/Python/3.8.11/x64/lib/python3.8/site-packages/nbclient/client.py", line 1112, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/hostedtoolcache/Python/3.8.11/x64/lib/python3.8/site-packages/nbclient/util.py", line 74, in wrapped
+    return just_run(coro(*args, **kwargs))
+  File "/opt/hostedtoolcache/Python/3.8.11/x64/lib/python3.8/site-packages/nbclient/util.py", line 53, in just_run
+    return loop.run_until_complete(coro)
+  File "/opt/hostedtoolcache/Python/3.8.11/x64/lib/python3.8/asyncio/base_events.py", line 616, in run_until_complete
+    return future.result()
+  File "/opt/hostedtoolcache/Python/3.8.11/x64/lib/python3.8/site-packages/nbclient/client.py", line 553, in async_execute
+    await self.async_execute_cell(
+  File "/opt/hostedtoolcache/Python/3.8.11/x64/lib/python3.8/site-packages/nbclient/client.py", line 857, in async_execute_cell
+    self._check_raise_for_error(cell, exec_reply)
+  File "/opt/hostedtoolcache/Python/3.8.11/x64/lib/python3.8/site-packages/nbclient/client.py", line 760, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+using QuantEcon, Plots, LinearAlgebra, Interpolations
+gr(fmt = :png);
+
+# model parameters
+a_0 = 100
+a_1 = 0.5
+ρ = 0.9
+σ_d = 0.05
+β = 0.95
+c = 2
+γ = 50.0
+θ = 0.002
+ac = (a_0 - c) / 2.0
+
+# Define LQ matrices
+R = [ 0   ac    0;
+    ac -a_1  0.5;
+    0.  0.5    0]
+R = -R  # For minimization
+Q = Matrix([γ / 2.0]')
+A = [1. 0. 0.;
+    0. 1. 0.;
+    0. 0.  ρ]
+B = [0. 1. 0.]'
+C = [0. 0. σ_d]'
+
+## Functions
+
+function evaluate_policy(θ, F)
+    rlq = RBLQ(Q, R, A, B, C, β, θ)
+    K_F, P_F, d_F, O_F, o_F = evaluate_F(rlq, F)
+    x0 = [1.0 0.0 0.0]'
+    value = - x0' * P_F * x0 .- d_F
+    entropy = x0' * O_F * x0 .+ o_F
+    return value[1], entropy[1]    # return scalars
+end
+
+function value_and_entropy(emax, F, bw, grid_size = 1000)
+    if lowercase(bw) == "worst"
+        θs = 1 ./ range(1e-8,  1000, length = grid_size)
+    else
+        θs = -1 ./ range(1e-8,  1000, length = grid_size)
+    end
+
+    data = zeros(grid_size, 2)
+
+    for (i, θ) in enumerate(θs)
+        data[i, :] = collect(evaluate_policy(θ, F))
+        if data[i, 2] ≥ emax      # stop at this entropy level
+            data = data[1:i, :]
+            break
+        end
+    end
+    return data
+end
+
+## Main
+
+# compute optimal rule
+optimal_lq = QuantEcon.LQ(Q, R, A, B, C, zero(B'A), bet=β)
+Po, Fo, Do = stationary_values(optimal_lq)
+
+# compute robust rule for our θ
+baseline_robust = RBLQ(Q, R, A, B, C, β, θ)
+Fb, Kb, Pb = robust_rule(baseline_robust)
+
+# Check the positive definiteness of worst-case covariance matrix to
+# ensure that θ exceeds the breakdown point
+test_matrix = I - (C' * Pb * C ./ θ)[1]
+eigenvals, eigenvecs = eigen(test_matrix)
+@assert all(x -> x ≥ 0, eigenvals)
+
+emax = 1.6e6
+
+# compute values and entropies
+optimal_best_case = value_and_entropy(emax, Fo, "best")
+robust_best_case = value_and_entropy(emax, Fb, "best")
+optimal_worst_case = value_and_entropy(emax, Fo, "worst")
+robust_worst_case = value_and_entropy(emax, Fb, "worst")
+
+# we reverse order of "worst_case"s so values are ascending
+data_pairs = ((optimal_best_case, optimal_worst_case),
+              (robust_best_case, robust_worst_case))
+
+egrid = range(0,  emax, length = 100)
+egrid_data = []
+for data_pair in data_pairs
+    for data in data_pair
+        x, y = data[:, 2], data[:, 1]
+        curve = LinearInterpolation(x, y, extrapolation_bc = Line())
+        push!(egrid_data, curve.(egrid))
+    end
+end
+plot(egrid, egrid_data, color=[:red :red :blue :blue])
+plot!(egrid, egrid_data[1], fillrange=egrid_data[2],
+    fillcolor=:red, fillalpha=0.1, color=:red, legend=:none)
+plot!(egrid, egrid_data[3], fillrange=egrid_data[4],
+    fillcolor=:blue, fillalpha=0.1, color=:blue, legend=:none)
+plot!(xlabel="Entropy", ylabel="Value")
+------------------
+
+ArgumentError: Package QuantEcon [fcd29c91-0bd7-5a09-975d-7ac3f643a60c] is required but does not seem to be installed:
+ - Run `Pkg.instantiate()` to install all recorded dependencies.
+
+
+Stacktrace:
+ [1] _require(pkg::Base.PkgId)
+   @ Base ./loading.jl:990
+ [2] require(uuidkey::Base.PkgId)
+   @ Base ./loading.jl:914
+ [3] require(into::Module, mod::Symbol)
+   @ Base ./loading.jl:901
+ [4] eval
+   @ ./boot.jl:360 [inlined]
+ [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
+   @ Base ./loading.jl:1094
+LoadError: ArgumentError: Package QuantEcon [fcd29c91-0bd7-5a09-975d-7ac3f643a60c] is required but does not seem to be installed:
+ - Run `Pkg.instantiate()` to install all recorded dependencies.
+
+

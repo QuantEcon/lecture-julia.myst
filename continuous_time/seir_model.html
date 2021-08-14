@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>42. Modeling COVID 19 with Differential Equations &#8212; Quantitative Economics with Julia</title>
+    <title>41. Modeling COVID 19 with Differential Equations &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -60,8 +60,8 @@
     <link rel="canonical" href="https://julia.quantecon.org/continuous_time/seir_model.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="43. Modeling Shocks in COVID 19 with Stochastic Differential Equations" href="covid_sde.html" />
-    <link rel="prev" title="41. Discrete State Dynamic Programming" href="../dynamic_programming/discrete_dp.html" />
+    <link rel="next" title="42. Modeling Shocks in COVID 19 with Stochastic Differential Equations" href="covid_sde.html" />
+    <link rel="prev" title="40. Discrete State Dynamic Programming" href="../dynamic_programming/discrete_dp.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -111,78 +111,78 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   42.1. Overview
+   41.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#the-seir-model">
-   42.2. The SEIR Model
+   41.2. The SEIR Model
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#changes-in-the-infected-state">
-     42.2.1. Changes in the Infected State
+     41.2.1. Changes in the Infected State
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#basic-reproduction-number">
-     42.2.2. Basic Reproduction Number
+     41.2.2. Basic Reproduction Number
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#implementation">
-     42.2.3. Implementation
+     41.2.3. Implementation
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#extending-the-model">
-     42.2.4. Extending the Model
+     41.2.4. Extending the Model
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#parameters">
-     42.2.5. Parameters
+     41.2.5. Parameters
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id4">
-   42.3. Implementation
+   41.3. Implementation
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id5">
-     42.3.1. Parameters
+     41.3.1. Parameters
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#experiments">
-   42.4. Experiments
+   41.4. Experiments
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#experiment-1-constant-reproduction-case">
-     42.4.1. Experiment 1: Constant Reproduction Case
+     41.4.1. Experiment 1: Constant Reproduction Case
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#experiment-2-changing-mitigation">
-     42.4.2. Experiment 2: Changing Mitigation
+     41.4.2. Experiment 2: Changing Mitigation
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#ending-lockdown">
-   42.5. Ending Lockdown
+   41.5. Ending Lockdown
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#randomness">
-     42.5.1. Randomness
+     41.5.1. Randomness
     </a>
    </li>
   </ul>
@@ -237,7 +237,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="modeling-covid-19-with-differential-equations">
-<h1><a class="toc-backref" href="#id6"><span class="section-number">42. </span><span class="target" id="index-0"></span>Modeling COVID 19 with Differential Equations</a><a class="headerlink" href="#modeling-covid-19-with-differential-equations" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id6"><span class="section-number">41. </span><span class="target" id="index-0"></span>Modeling COVID 19 with Differential Equations</a><a class="headerlink" href="#modeling-covid-19-with-differential-equations" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
@@ -253,7 +253,7 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id7"><span class="section-number">42.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7"><span class="section-number">41.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Coauthored with Chris Rackauckas</p>
 <p>This is a Julia version of code for analyzing the COVID-19 pandemic.</p>
 <p>The purpose of these notes is to introduce economists to quantitative modeling of infectious disease dynamics, and to modeling with ordinary differential
@@ -291,10 +291,29 @@ equations where the number of agents is large and there are no exogenous stochas
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package OrdinaryDiffEq [1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] is required but does not seem to be installed:
+ - Run `Pkg.instantiate()` to install all recorded dependencies.
+
+
+Stacktrace:
+ [1] _require(pkg::Base.PkgId)
+   @ Base ./loading.jl:990
+ [2] require(uuidkey::Base.PkgId)
+   @ Base ./loading.jl:914
+ [3] require(into::Module, mod::Symbol)
+   @ Base ./loading.jl:901
+ [4] eval
+   @ ./boot.jl:360 [inlined]
+ [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
+   @ Base ./loading.jl:1094
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="the-seir-model">
-<h2><a class="toc-backref" href="#id8"><span class="section-number">42.2. </span>The SEIR Model</a><a class="headerlink" href="#the-seir-model" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8"><span class="section-number">41.2. </span>The SEIR Model</a><a class="headerlink" href="#the-seir-model" title="Permalink to this headline">¶</a></h2>
 <p>In the version of the SEIR model, all individuals in the population are assumed to be in a finite number of states.</p>
 <p>The states are: susceptible (S), exposed (E), infected (I) and removed (R).</p>
 <p>This type of <a class="reference external" href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#Elaborations_on_the_basic_SIR_model">compartmentalized model</a>  has many extensions (e.g. SEIRS relaxes lifetime immunity and allow transitions from <span class="math notranslate nohighlight">\(R \to S\)</span>).</p>
@@ -305,7 +324,7 @@ equations where the number of agents is large and there are no exogenous stochas
 <li><p>Those in the exposed group are not yet infectious.</p></li>
 </ul>
 <div class="section" id="changes-in-the-infected-state">
-<h3><span class="section-number">42.2.1. </span>Changes in the Infected State<a class="headerlink" href="#changes-in-the-infected-state" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.2.1. </span>Changes in the Infected State<a class="headerlink" href="#changes-in-the-infected-state" title="Permalink to this headline">¶</a></h3>
 <p>Within the SEIR model, the flow across states follows the path <span class="math notranslate nohighlight">\(S \to E \to I \to R\)</span>.</p>
 <p>We will ignore birth and non-covid death during our time horizon, and assume a large, constant, number of individuals of size <span class="math notranslate nohighlight">\(N\)</span> throughout.</p>
 <p>With this, the symbols <span class="math notranslate nohighlight">\(S, E, I, R\)</span> are used for the total number of individuals in each state at each point in time, and <span class="math notranslate nohighlight">\(S(t) + E(t) + I(t) + R(t) = N\)</span> for all <span class="math notranslate nohighlight">\(t\)</span>.</p>
@@ -319,7 +338,7 @@ equations where the number of agents is large and there are no exogenous stochas
 <p>The rate <span class="math notranslate nohighlight">\(\beta(t)\)</span> is influenced by both the characteristics of the disease (e.g. the type and length of prolonged contact required for a transmission) and behavior of the individuals (e.g. social distancing, hygiene).</p>
 <p>The SEIR model can then be written as</p>
 <div class="math notranslate nohighlight" id="equation-seir-system-big">
-<span class="eqno">(42.1)<a class="headerlink" href="#equation-seir-system-big" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(41.1)<a class="headerlink" href="#equation-seir-system-big" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
      \frac{d S}{d t}  &amp; = - \beta \, S \,  \frac{I}{N}
      \\
      \frac{d E}{d t}   &amp; = \beta \, S \,   \frac{I}{N}  - \sigma E
@@ -329,7 +348,7 @@ equations where the number of agents is large and there are no exogenous stochas
       \frac{d R}{d t}  &amp; = \gamma  I
 \end{aligned}\end{split}\]</div>
 <p>Here, <span class="math notranslate nohighlight">\(dy/dt\)</span> represents the time derivative for the particular variable.</p>
-<p>The first term of <a class="reference internal" href="#equation-seir-system-big">(42.1)</a>, <span class="math notranslate nohighlight">\(-\beta \, S \,  \frac{I}{N}\)</span>, is the flow of individuals moving from <span class="math notranslate nohighlight">\(S \to E\)</span>, and highlights the underlying dynamics of the epidemic</p>
+<p>The first term of <a class="reference internal" href="#equation-seir-system-big">(41.1)</a>, <span class="math notranslate nohighlight">\(-\beta \, S \,  \frac{I}{N}\)</span>, is the flow of individuals moving from <span class="math notranslate nohighlight">\(S \to E\)</span>, and highlights the underlying dynamics of the epidemic</p>
 <ul class="simple">
 <li><p>Individuals in the susceptible state (S) have a rate <span class="math notranslate nohighlight">\(\beta(t)\)</span> of prolonged contacts with other individuals where transmission would occur if either was infected</p></li>
 <li><p>Of these contacts, a fraction <span class="math notranslate nohighlight">\(\frac{I(t)}{N}\)</span> will be with infected agents (since we assumed that exposed individuals are not yet infectious)</p></li>
@@ -338,24 +357,24 @@ equations where the number of agents is large and there are no exogenous stochas
 </ul>
 </div>
 <div class="section" id="basic-reproduction-number">
-<h3><span class="section-number">42.2.2. </span>Basic Reproduction Number<a class="headerlink" href="#basic-reproduction-number" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.2.2. </span>Basic Reproduction Number<a class="headerlink" href="#basic-reproduction-number" title="Permalink to this headline">¶</a></h3>
 <p>If <span class="math notranslate nohighlight">\(\beta\)</span> was constant, then we could define <span class="math notranslate nohighlight">\(R_0 := \beta / \gamma\)</span>.  This is the famous <em>basic reproduction number</em> for the SEIR model.  See <span id="id1">[<a class="reference internal" href="../zreferences.html#id5">HSW05</a>]</span> for more details.</p>
 <p>When the transmission rate is time-varying, we will follow notation in <span id="id2">[<a class="reference internal" href="../zreferences.html#id6">FVJ20</a>]</span> and refer to <span class="math notranslate nohighlight">\(R_0(t)\)</span> as a time-varying version of the basic reproduction number.</p>
-<p>Analyzing the system in <a class="reference internal" href="#equation-seir-system-big">(42.1)</a> provides some intuition on the <span class="math notranslate nohighlight">\(R_0(t) := \beta(t) / \gamma\)</span> expression:</p>
+<p>Analyzing the system in <a class="reference internal" href="#equation-seir-system-big">(41.1)</a> provides some intuition on the <span class="math notranslate nohighlight">\(R_0(t) := \beta(t) / \gamma\)</span> expression:</p>
 <ul class="simple">
 <li><p>Individual transitions from the infected to removed state occur at a Poisson rate <span class="math notranslate nohighlight">\(\gamma\)</span>, the expected time in the infected state is <span class="math notranslate nohighlight">\(1/\gamma\)</span></p></li>
 <li><p>Prolonged interactions occur at rate <span class="math notranslate nohighlight">\(\beta\)</span>, so a new individual entering the infected state will potentially transmit the virus to an average of <span class="math notranslate nohighlight">\(R_0 = \beta \times 1 / \gamma\)</span> others</p></li>
 <li><p>In more complicated models, see <span id="id3">[<a class="reference internal" href="../zreferences.html#id5">HSW05</a>]</span> for a formal definition for arbitrary models, and an analysis on the role of <span class="math notranslate nohighlight">\(R_0 &lt; 1\)</span>.</p></li>
 </ul>
 <p>Note that the notation <span class="math notranslate nohighlight">\(R_0\)</span> is standard in the epidemiology literature - though confusing, since <span class="math notranslate nohighlight">\(R_0\)</span> is unrelated to <span class="math notranslate nohighlight">\(R\)</span>, the symbol that represents the removed state.  For the remainder of the lecture, we will avoid using <span class="math notranslate nohighlight">\(R\)</span> for removed state.</p>
-<p>Prior to solving the model directly, we make a few changes to <a class="reference internal" href="#equation-seir-system-big">(42.1)</a></p>
+<p>Prior to solving the model directly, we make a few changes to <a class="reference internal" href="#equation-seir-system-big">(41.1)</a></p>
 <ul class="simple">
 <li><p>Re-parameterize using <span class="math notranslate nohighlight">\(\beta(t) = \gamma R_0(t)\)</span></p></li>
 <li><p>Define the proportion of individuals in each state as <span class="math notranslate nohighlight">\(s := S/N\)</span> etc.</p></li>
-<li><p>Divide each equation in <a class="reference internal" href="#equation-seir-system-big">(42.1)</a> by <span class="math notranslate nohighlight">\(N\)</span>, and write the system of ODEs in terms of the proportions</p></li>
+<li><p>Divide each equation in <a class="reference internal" href="#equation-seir-system-big">(41.1)</a> by <span class="math notranslate nohighlight">\(N\)</span>, and write the system of ODEs in terms of the proportions</p></li>
 </ul>
 <div class="math notranslate nohighlight" id="equation-seir-system">
-<span class="eqno">(42.2)<a class="headerlink" href="#equation-seir-system" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(41.2)<a class="headerlink" href="#equation-seir-system" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
      \frac{d s}{d t}  &amp; = - \gamma \, R_0 \, s \,  i
      \\
      \frac{d e}{d t}   &amp; = \gamma \, R_0 \, s \,  i  - \sigma e
@@ -367,7 +386,7 @@ equations where the number of agents is large and there are no exogenous stochas
 <p>Since the states form a partition, we could reconstruct the “removed” fraction of the population as <span class="math notranslate nohighlight">\(r = 1 - s - e - i\)</span>.  However, keeping it in the system will make plotting more convenient.</p>
 </div>
 <div class="section" id="implementation">
-<h3><span class="section-number">42.2.3. </span>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.2.3. </span>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
 <p>We begin by implementing a simple version of this model with a constant <span class="math notranslate nohighlight">\(R_0\)</span> and some baseline parameter values (which we discuss later).</p>
 <p>First, define the system of equations</p>
 <div class="cell docutils container">
@@ -381,11 +400,6 @@ equations where the number of agents is large and there are no exogenous stochas
                    <span class="n">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span>      <span class="c"># dr/dt =             γi</span>
             <span class="p">]</span>
 <span class="k">end</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>F_simple (generic function with 1 method)
 </pre></div>
 </div>
 </div>
@@ -404,17 +418,6 @@ equations where the number of agents is large and there are no exogenous stochas
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Cyan">ODEProblem</span> with uType <span class=" -Color -Color-Cyan">Vector{Float64}</span> and tType <span class=" -Color -Color-Cyan">Float64</span>. In-place: <span class=" -Color -Color-Cyan">false</span>
-timespan: (0.0, 350.0)
-u0: 4-element Vector{Float64}:
- 0.9999995
- 4.0e-7
- 1.0e-7
- 0.0
-</pre></div>
-</div>
-</div>
 </div>
 <p>With this, choose an ODE algorithm and solve the initial value problem.  A good default algorithm for non-stiff ODEs of this sort might be <code class="docutils literal notranslate"><span class="pre">Tsit5()</span></code>, which is the Tsitouras 5/4 Runge-Kutta method).</p>
 <div class="cell docutils container">
@@ -423,9 +426,6 @@ u0: 4-element Vector{Float64}:
 <span class="n">plot</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;s&quot;</span> <span class="s">&quot;e&quot;</span> <span class="s">&quot;i&quot;</span> <span class="s">&quot;r&quot;</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;SEIR Dynamics&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/seir_model_10_0.png" src="../_images/seir_model_10_0.png" />
 </div>
 </div>
 <p>We did not provide either a set of time steps or a <code class="docutils literal notranslate"><span class="pre">dt</span></code> time step size to the <code class="docutils literal notranslate"><span class="pre">solve</span></code>.  Most accurate and high-performance ODE solvers appropriate for this problem use adaptive time-stepping, changing the step size based the degree of curvature in the derivatives.</p>
@@ -436,33 +436,30 @@ u0: 4-element Vector{Float64}:
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/seir_model_12_0.png" src="../_images/seir_model_12_0.png" />
-</div>
 </div>
 <p>While maintaining the core system of ODEs in <span class="math notranslate nohighlight">\((s, e, i, r)\)</span>, we will extend the basic model to enable some policy experiments and calculations of aggregate values.</p>
 </div>
 <div class="section" id="extending-the-model">
-<h3><span class="section-number">42.2.4. </span>Extending the Model<a class="headerlink" href="#extending-the-model" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.2.4. </span>Extending the Model<a class="headerlink" href="#extending-the-model" title="Permalink to this headline">¶</a></h3>
 <p>First, we can consider some additional calculations such as the cumulative caseload (i.e., all those who have or have had the infection) as <span class="math notranslate nohighlight">\(c = i + r\)</span>.  Differentiating that expression and substituting from the time-derivatives of <span class="math notranslate nohighlight">\(i(t)\)</span> and <span class="math notranslate nohighlight">\(r(t)\)</span> yields <span class="math notranslate nohighlight">\(\frac{d c}{d t} = \sigma e\)</span>.</p>
 <p>We will assume that the transmission rate follows a process with a reversion to a value <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> which could conceivably be influenced by policy.  The intuition is that even if the targeted <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> was changed through social distancing/etc., lags in behavior and implementation would smooth out the transition, where <span class="math notranslate nohighlight">\(\eta\)</span> governs the speed of <span class="math notranslate nohighlight">\(R_0(t)\)</span> moves towards <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span>.</p>
 <div class="math notranslate nohighlight" id="equation-rode">
-<span class="eqno">(42.3)<a class="headerlink" href="#equation-rode" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(41.3)<a class="headerlink" href="#equation-rode" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
 \frac{d R_0}{d t} &amp;= \eta (\bar{R}_0 - R_0)\\
 \end{aligned}\end{split}\]</div>
 <p>Finally, let <span class="math notranslate nohighlight">\(\delta\)</span> be the mortality rate, which we will leave constant.  The cumulative deaths can be integrated through the flow <span class="math notranslate nohighlight">\(\gamma i\)</span> entering the “Removed” state.</p>
 <p>Define the cumulative number of deaths as <span class="math notranslate nohighlight">\(D(t)\)</span> with the proportion <span class="math notranslate nohighlight">\(d(t) := D(t)/N\)</span>.</p>
 <div class="math notranslate nohighlight" id="equation-mode">
-<span class="eqno">(42.4)<a class="headerlink" href="#equation-mode" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}\\
+<span class="eqno">(41.4)<a class="headerlink" href="#equation-mode" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}\\
 \frac{d}{d t}d(t) &amp;= \delta \gamma  i
 \end{aligned}\end{split}\]</div>
 <p>While we could integrate the deaths given the solution to the model ex-post, it is more convenient to use the integrator built into the ODE solver.  That is, we add <span class="math notranslate nohighlight">\(\frac{d}{dt} d(t)\)</span> rather than calculating <span class="math notranslate nohighlight">\(d(t) = \int_0^t \delta \gamma\, i(\tau) d \tau\)</span> ex-post.</p>
 <p>This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is not a regular time grid). Note that when doing so, <span class="math notranslate nohighlight">\(d(0) = \int_0^0 \delta \gamma i(\tau) d \tau = 0\)</span> is the initial condition.</p>
-<p>The system <a class="reference internal" href="#equation-seir-system">(42.2)</a> and the supplemental equations can be written in vector form <span class="math notranslate nohighlight">\(x := [s, e, i, r, R₀, c, d]\)</span> with parameter tuple <span class="math notranslate nohighlight">\(p := (\sigma, \gamma, \eta, \delta, \bar{R}_0(\cdot))\)</span></p>
+<p>The system <a class="reference internal" href="#equation-seir-system">(41.2)</a> and the supplemental equations can be written in vector form <span class="math notranslate nohighlight">\(x := [s, e, i, r, R₀, c, d]\)</span> with parameter tuple <span class="math notranslate nohighlight">\(p := (\sigma, \gamma, \eta, \delta, \bar{R}_0(\cdot))\)</span></p>
 <p>Note that in those parameters, the targeted reproduction number, <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span>, is an exogenous function.</p>
 <p>The model is then <span class="math notranslate nohighlight">\(\frac{d x}{d t} = F(x,t)\)</span>  where,</p>
 <div class="math notranslate nohighlight" id="equation-dfcv">
-<span class="eqno">(42.5)<a class="headerlink" href="#equation-dfcv" title="Permalink to this equation">¶</a></span>\[\begin{split}F(x,t) := \begin{bmatrix}
+<span class="eqno">(41.5)<a class="headerlink" href="#equation-dfcv" title="Permalink to this equation">¶</a></span>\[\begin{split}F(x,t) := \begin{bmatrix}
     -\gamma \, R_0 \, s \,  i
     \\
     \gamma \, R_0 \,  s \,  i  - \sigma e
@@ -480,7 +477,7 @@ u0: 4-element Vector{Float64}:
 <p>Note that if <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> is time-invariant, then <span class="math notranslate nohighlight">\(F(x, t)\)</span> is time-invariant as well.</p>
 </div>
 <div class="section" id="parameters">
-<h3><span class="section-number">42.2.5. </span>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.2.5. </span>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
 <p>The parameters, <span class="math notranslate nohighlight">\(\sigma, \delta,\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> should be thought of as parameters determined from biology and medical technology, and independent of social interactions.</p>
 <p>As in Atkeson’s note, we set</p>
 <ul class="simple">
@@ -493,8 +490,8 @@ u0: 4-element Vector{Float64}:
 </div>
 </div>
 <div class="section" id="id4">
-<h2><a class="toc-backref" href="#id9"><span class="section-number">42.3. </span>Implementation</a><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
-<p>First, construct our <span class="math notranslate nohighlight">\(F\)</span> from <a class="reference internal" href="#equation-dfcv">(42.5)</a></p>
+<h2><a class="toc-backref" href="#id9"><span class="section-number">41.3. </span>Implementation</a><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>First, construct our <span class="math notranslate nohighlight">\(F\)</span> from <a class="reference internal" href="#equation-dfcv">(41.5)</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">F</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
@@ -517,7 +514,7 @@ u0: 4-element Vector{Float64}:
 <p>This function takes the vector <code class="docutils literal notranslate"><span class="pre">x</span></code> of states in the system and extracts the fixed parameters passed into the <code class="docutils literal notranslate"><span class="pre">p</span></code> object.</p>
 <p>The only confusing part of the notation is the <code class="docutils literal notranslate"><span class="pre">R̄₀(t,</span> <span class="pre">p)</span></code> which evaluates the <code class="docutils literal notranslate"><span class="pre">p.R̄₀</span></code> at this time (and also allows it to depend on the <code class="docutils literal notranslate"><span class="pre">p</span></code> parameter).</p>
 <div class="section" id="id5">
-<h3><span class="section-number">42.3.1. </span>Parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.3.1. </span>Parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>The baseline parameters are put into a named tuple generator (see previous lectures using <a class="reference external" href="https://github.com/mauro3/Parameters.jl">Parameters.jl</a>) with default values discussed above.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -544,20 +541,6 @@ u0: 4-element Vector{Float64}:
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Cyan">ODEProblem</span> with uType <span class=" -Color -Color-Cyan">Vector{Float64}</span> and tType <span class=" -Color -Color-Cyan">Float64</span>. In-place: <span class=" -Color -Color-Cyan">false</span>
-timespan: (0.0, 550.0)
-u0: 7-element Vector{Float64}:
- 0.9999995
- 4.0e-7
- 1.0e-7
- 0.0
- 1.6
- 0.0
- 0.0
-</pre></div>
-</div>
-</div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">tspan</span></code> of <code class="docutils literal notranslate"><span class="pre">(0.0,</span> <span class="pre">p.T)</span></code> determines the <span class="math notranslate nohighlight">\(t\)</span> used by the solver.  The time scale needs to be consistent with the arrival
 rate of the transition probabilities (i.e. the <span class="math notranslate nohighlight">\(\gamma, \sigma\)</span> were chosen based on daily data, so the unit of <span class="math notranslate nohighlight">\(t\)</span> is a day).</p>
@@ -565,17 +548,12 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 </div>
 </div>
 <div class="section" id="experiments">
-<h2><a class="toc-backref" href="#id10"><span class="section-number">42.4. </span>Experiments</a><a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10"><span class="section-number">41.4. </span>Experiments</a><a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h2>
 <p>Let’s run some experiments using this code.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sol</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="n">Tsit5</span><span class="p">())</span>
 <span class="nd">@show</span> <span class="n">length</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">t</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>length(sol.t) = 45
 </pre></div>
 </div>
 </div>
@@ -591,9 +569,6 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/seir_model_22_0.png" src="../_images/seir_model_22_0.png" />
-</div>
 </div>
 <p>A few more comments:</p>
 <ul class="simple">
@@ -602,7 +577,7 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 <li><p>See <a class="reference external" href="https://docs.sciml.ai/stable/basics/solution/">here</a> for details on analyzing the solution and extracting the output.</p></li>
 </ul>
 <div class="section" id="experiment-1-constant-reproduction-case">
-<h3><span class="section-number">42.4.1. </span>Experiment 1: Constant Reproduction Case<a class="headerlink" href="#experiment-1-constant-reproduction-case" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.4.1. </span>Experiment 1: Constant Reproduction Case<a class="headerlink" href="#experiment-1-constant-reproduction-case" title="Permalink to this headline">¶</a></h3>
 <p>Let’s start with the case where <span class="math notranslate nohighlight">\(\bar{R}_0(t) = R_{0n}\)</span> is constant.</p>
 <p>We calculate the time path of infected people under different assumptions of <span class="math notranslate nohighlight">\(R_{0n}\)</span>:</p>
 <div class="cell docutils container">
@@ -626,9 +601,6 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/seir_model_26_0.png" src="../_images/seir_model_26_0.png" />
-</div>
 </div>
 <p>As expected, lower effective transmission rates defer the peak of infections.</p>
 <p>They also lead to a lower peak in current cases.</p>
@@ -641,13 +613,10 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/seir_model_28_0.png" src="../_images/seir_model_28_0.png" />
-</div>
 </div>
 </div>
 <div class="section" id="experiment-2-changing-mitigation">
-<h3><span class="section-number">42.4.2. </span>Experiment 2: Changing Mitigation<a class="headerlink" href="#experiment-2-changing-mitigation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.4.2. </span>Experiment 2: Changing Mitigation<a class="headerlink" href="#experiment-2-changing-mitigation" title="Permalink to this headline">¶</a></h3>
 <p>Let’s look at a scenario where mitigation (e.g., social distancing) is
 successively imposed, but the target (maintaining <span class="math notranslate nohighlight">\(R_{0n}\)</span>) is fixed.</p>
 <p>To do this, we start with <span class="math notranslate nohighlight">\(R_0(0) \neq R_{0n}\)</span> and examine the dynamics using the <span class="math notranslate nohighlight">\(\frac{d R_0}{d t} = \eta (R_{0n} - R_0)\)</span> ODE.</p>
@@ -682,9 +651,6 @@ imposed.</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/seir_model_34_0.png" src="../_images/seir_model_34_0.png" />
-</div>
 </div>
 <p>Now let’s plot the number of infected persons and the cumulative number
 of infected persons:</p>
@@ -696,9 +662,6 @@ of infected persons:</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/seir_model_36_0.png" src="../_images/seir_model_36_0.png" />
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -708,14 +671,11 @@ of infected persons:</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/seir_model_37_0.png" src="../_images/seir_model_37_0.png" />
-</div>
 </div>
 </div>
 </div>
 <div class="section" id="ending-lockdown">
-<h2><a class="toc-backref" href="#id11"><span class="section-number">42.5. </span>Ending Lockdown</a><a class="headerlink" href="#ending-lockdown" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11"><span class="section-number">41.5. </span>Ending Lockdown</a><a class="headerlink" href="#ending-lockdown" title="Permalink to this headline">¶</a></h2>
 <p>The following is inspired by <a class="reference external" href="https://drive.google.com/file/d/1uS7n-7zq5gfSgrL3S0HByExmpq4Bn3oh/view">additional results</a> by Andrew Atkeson on the timing of lifting lockdown.</p>
 <p>Consider these two mitigation scenarios:</p>
 <ol class="simple">
@@ -747,20 +707,6 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.</
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Cyan">ODEProblem</span> with uType <span class=" -Color -Color-Cyan">Vector{Float64}</span> and tType <span class=" -Color -Color-Cyan">Float64</span>. In-place: <span class=" -Color -Color-Cyan">false</span>
-timespan: (0.0, 550.0)
-u0: 7-element Vector{Float64}:
- 0.9996969696969696
- 0.00022727272727272727
- 7.575757575757576e-5
- 0.0
- 0.5
- 0.0
- 0.0
-</pre></div>
-</div>
-</div>
 </div>
 <p>Unlike the previous examples, the <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> functions have discontinuities which might occur.  We can improve the efficiency of the adaptive time-stepping methods by telling them to include a step exactly at those points by using <code class="docutils literal notranslate"><span class="pre">tstops</span></code></p>
 <p>Let’s calculate the paths:</p>
@@ -773,9 +719,6 @@ u0: 7-element Vector{Float64}:
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/seir_model_41_0.png" src="../_images/seir_model_41_0.png" />
-</div>
 </div>
 <p>Next we examine the daily deaths, <span class="math notranslate nohighlight">\(\frac{d D(t)}{dt} = N \delta \gamma i(t)\)</span>.</p>
 <div class="cell docutils container">
@@ -787,14 +730,11 @@ u0: 7-element Vector{Float64}:
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/seir_model_43_0.png" src="../_images/seir_model_43_0.png" />
-</div>
 </div>
 <p>Pushing the peak of curve further into the future may reduce cumulative deaths
 if a vaccine is found, or allow health authorities to better smooth the caseload.</p>
 <div class="section" id="randomness">
-<h3><span class="section-number">42.5.1. </span>Randomness<a class="headerlink" href="#randomness" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.5.1. </span>Randomness<a class="headerlink" href="#randomness" title="Permalink to this headline">¶</a></h3>
 <p>Despite its richness, the model above is fully deterministic.  The policy <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> could change over time, but only in predictable ways.</p>
 <p>One way that randomness can lead to aggregate fluctuations is the granularity that comes through the discreteness of individuals.  This topic, the connection between SDEs and the Langevin equations typically used in the approximation of chemical reactions in well-mixed media is explored in further lectures on continuous time Markov chains.</p>
 <p>Instead, in the <a class="reference internal" href="covid_sde.html"><span class="doc">next lecture</span></a>, we will concentrate on randomness that comes from aggregate changes in behavior or policy.</p>
@@ -978,17 +918,17 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   22. A First Look at the Kalman Filter
+   21. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   23. Numerical Linear Algebra and Factorizations
+   22. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   24. Krylov Methods and Matrix Conditioning
+   23. Krylov Methods and Matrix Conditioning
   </a>
  </li>
 </ul>
@@ -1000,87 +940,87 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/short_path.html">
-   25. Shortest Paths
+   24. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   26. Job Search I: The McCall Search Model
+   25. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   27. Job Search II: Search and Separation
+   26. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   28. A Problem that Stumped Milton Friedman
+   27. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   29. Job Search III: Search with Learning
+   28. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   30. Job Search IV: Modeling Career Choice
+   29. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   31. Job Search V: On-the-Job Search
+   30. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   32. Optimal Growth I: The Stochastic Optimal Growth Model
+   31. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   33. Optimal Growth II: Time Iteration
+   32. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   34. Optimal Growth III: The Endogenous Grid Method
+   33. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   35. LQ Dynamic Programming Problems
+   34. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   36. Optimal Savings I: The Permanent Income Model
+   35. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   37. Optimal Savings II: LQ Techniques
+   36. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   39. Optimal Savings III: Occasionally Binding Constraints
+   38. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   40. Robustness
+   39. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   41. Discrete State Dynamic Programming
+   40. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -1092,12 +1032,12 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 <ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   42. Modeling COVID 19 with Differential Equations
+   41. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="covid_sde.html">
-   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1109,57 +1049,57 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   44. Schelling’s Segregation Model
+   43. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   45. A Lake Model of Employment and Unemployment
+   44. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   46. Rational Expectations Equilibrium
+   45. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   47. Markov Perfect Equilibrium
+   46. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   48. Asset Pricing I: Finite State Models
+   47. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   49. Asset Pricing II: The Lucas Asset Pricing Model
+   48. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   50. Asset Pricing III:  Incomplete Markets
+   49. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   51. Uncertainty Traps
+   50. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   52. The Aiyagari Model
+   51. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   53. Default Risk and Income Fluctuations
+   52. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   54. Globalization and Cycles
+   53. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1171,32 +1111,32 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   55. Covariance Stationary Processes
+   54. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   56. Estimation of Spectra
+   55. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   57. Additive Functionals
+   56. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   58. Multiplicative Functionals
+   57. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   59. Classical Control with Linear Algebra
+   58. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   60. Classical Filtering With Linear Algebra
+   59. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1208,22 +1148,22 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   61. Dynamic Stackelberg Problems
+   60. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   62. Optimal Taxation in an LQ Economy
+   61. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   63. Optimal Taxation with State-Contingent Debt
+   62. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   64. Optimal Taxation without State-Contingent Debt
+   63. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1235,22 +1175,22 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   65. About these Lectures
+   64. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   66. Troubleshooting
+   65. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   67. References
+   66. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   68. Lecture Status
+   67. Lecture Status
   </a>
  </li>
 </ul>

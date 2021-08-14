@@ -908,7 +908,10 @@ be unnecessarily constraining what is allowed</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f(foo) = 11.0
-f(foo_nt) = 11.0
+f(foo_nt) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>11.0
 </pre></div>
 </div>
 </div>
@@ -1006,18 +1009,21 @@ f(foo_nt) = 11.0
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>foo = Foo5
-  a: Float64 0.1
-  b: Int64 2
-  c: Array{Float64}((3,)) [1.0, 2.0, 3.0]
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package Parameters [d96e819e-fc66-5662-9728-84c9c7592b0a] is required but does not seem to be installed:
+ - Run `Pkg.instantiate()` to install all recorded dependencies.
 
-foo2 = Foo5
-  a: Float64 2.0
-  b: Int64 2
-  c: Array{Float64}((3,)) [1.0, 2.0, 3.0]
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.1
+
+Stacktrace:
+ [1] _require(pkg::Base.PkgId)
+   @ Base ./loading.jl:990
+ [2] require(uuidkey::Base.PkgId)
+   @ Base ./loading.jl:914
+ [3] require(into::Module, mod::Symbol)
+   @ Base ./loading.jl:901
+ [4] eval
+   @ ./boot.jl:360 [inlined]
+ [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
+   @ Base ./loading.jl:1094
 </pre></div>
 </div>
 </div>
@@ -1068,14 +1074,6 @@ and many more packages – including ones that have not even been written yet.</
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
- 6.0
- 7.0
- 3.1
-</pre></div>
-</div>
-</div>
 </div>
 <ul class="simple">
 <li><p>Preallocate related vectors with <code class="docutils literal notranslate"><span class="pre">similar</span></code> where possible, and use <code class="docutils literal notranslate"><span class="pre">eltype</span></code> or <code class="docutils literal notranslate"><span class="pre">typeof</span></code>. This is important when using Multiple Dispatch given the different input types the function can call</p></li>
@@ -1094,13 +1092,6 @@ and many more packages – including ones that have not even been written yet.</
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{BigInt}:
- 1
- 4
-</pre></div>
-</div>
-</div>
 </div>
 <ul class="simple">
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">typeof</span></code> or <code class="docutils literal notranslate"><span class="pre">eltype</span></code> to declare a type</p></li>
@@ -1109,12 +1100,6 @@ and many more packages – including ones that have not even been written yet.</
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">typeof</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
 <span class="nd">@show</span> <span class="n">eltype</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">]);</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof([1.0, 2.0, 3.0]) = Vector{Float64}
-eltype([1.0, 2.0, 3.0]) = Float64
 </pre></div>
 </div>
 </div>
@@ -1128,14 +1113,6 @@ eltype([1.0, 2.0, 3.0]) = Float64
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="kt">Int64</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="kt">Int64</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(ones(3)) = Vector{Float64}
-typeof(ones(Int64, 3)) = Vector{Int64}
-typeof(zeros(3)) = Vector{Float64}
-typeof(zeros(Int64, 3)) = Vector{Int64}
 </pre></div>
 </div>
 </div>
@@ -1158,20 +1135,6 @@ typeof(zeros(Int64, 3)) = Vector{Int64}
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(1) = Int64
-typeof(1.0) = Float64
-typeof(BigFloat(1.0)) = BigFloat
-typeof(one(BigFloat)) = BigFloat
-typeof(zero(BigFloat)) = BigFloat
-typeof(one(x)) = 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BigFloat
-typeof(zero(x)) = BigFloat
-</pre></div>
-</div>
-</div>
 </div>
 <p>This last example is a subtle, because of something called <a class="reference external" href="https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1">type promotion</a></p>
 <ul class="simple">
@@ -1187,11 +1150,6 @@ typeof(zero(x)) = BigFloat
 <span class="n">x</span> <span class="o">=</span> <span class="kt">BigFloat</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>  <span class="c"># this has &quot;promoted&quot; the `1.0` to a `BigFloat`</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(g(x)) = BigFloat
 </pre></div>
 </div>
 </div>
@@ -1225,14 +1183,6 @@ typeof(zero(x)) = BigFloat
 
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">g3</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">g3</span><span class="p">(</span><span class="n">x2</span><span class="p">));</span>  <span class="c"># type stable</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(g2(x)) = BigFloat
-typeof(g2(x2)) = Nothing
-typeof(g3(x)) = BigFloat
-typeof(g3(x2)) = Nothing
 </pre></div>
 </div>
 </div>
@@ -1300,15 +1250,6 @@ all variables in the code to reflect it.</p></li>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>abs(-1) = 1
-abs(-1.0) = 1.0
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>abs(0.0 - 1.0im) = 1.0
-</pre></div>
-</div>
-</div>
 </div>
 <p>In all of these cases, the <code class="docutils literal notranslate"><span class="pre">abs</span></code> function has specialized code depending on the type passed in.</p>
 <p>To do this, a function specifies different <strong>methods</strong> which operate on a particular set of types.</p>
@@ -1334,13 +1275,6 @@ abs(-1.0) = 1.0
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ourabs(-1) = 1
-ourabs(-1.0) = 1.0
-ourabs(1.0 - 2.0im) = 2.23606797749979
-</pre></div>
-</div>
-</div>
 </div>
 <p>Note that in the above, <code class="docutils literal notranslate"><span class="pre">x</span></code> works for any type of <code class="docutils literal notranslate"><span class="pre">Real</span></code>, including <code class="docutils literal notranslate"><span class="pre">Int64</span></code>, <code class="docutils literal notranslate"><span class="pre">Float64</span></code>, and ones you may not have realized exist</p>
 <div class="cell docutils container">
@@ -1348,12 +1282,6 @@ ourabs(1.0 - 2.0im) = 2.23606797749979
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">//</span><span class="mi">3</span>  <span class="c"># `Rational` number, -2/3</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">ourabs</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x) = Rational{Int64}
-ourabs(x) = 2//3
 </pre></div>
 </div>
 </div>
@@ -1385,16 +1313,6 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x) = StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}}
-typeof(x_2) = StepRange{Int64, Int64}
-supertype(typeof(x)) = AbstractRange{Float64}
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AbstractRange{Float64}
-</pre></div>
-</div>
-</div>
 </div>
 <p>To see the entire tree about a particular type, use <code class="docutils literal notranslate"><span class="pre">show_supertypes</span></code>.</p>
 <div class="cell docutils container">
@@ -1403,23 +1321,10 @@ supertype(typeof(x)) = AbstractRange{Float64}
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}} &lt;: AbstractRange{Float64} &lt;: AbstractVector{
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Float64} &lt;: Any
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">show_supertypes</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">x_2</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>StepRange{Int64, Int64} &lt;: OrdinalRange{Int64, Int64} &lt;: AbstractRange{Int64} &lt;: AbstractVector{Int64} &lt;: Any
 </pre></div>
 </div>
 </div>
@@ -1432,12 +1337,6 @@ supertype(typeof(x)) = AbstractRange{Float64}
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x) &lt;: AbstractRange = true
-typeof(x_2) &lt;: AbstractRange = true
-</pre></div>
-</div>
-</div>
 </div>
 <p>While you may not know the exact concrete type, any <code class="docutils literal notranslate"><span class="pre">AbstractRange</span></code> has an informal set of operations that are available.</p>
 <div class="cell docutils container">
@@ -1446,14 +1345,6 @@ typeof(x_2) &lt;: AbstractRange = true
 <span class="nd">@show</span> <span class="n">maximum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">step</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>minimum(x) = 0.0
-maximum(x) = 1.0
-length(x) = 20
-step(x) = 0.05263157894736842
 </pre></div>
 </div>
 </div>
@@ -1471,23 +1362,10 @@ step(x) = 0.05263157894736842
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(f_x) = Vector{Float64}
-supertype(typeof(f_x)) = DenseVector{Float64}
-supertype(supertype(typeof(f_x))) = AbstractVector{Float64}
-length(f_x) = 20
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">show_supertypes</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">f_x</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Vector{Float64} &lt;: DenseVector{Float64} &lt;: AbstractVector{Float64} &lt;: Any
 </pre></div>
 </div>
 </div>
@@ -1508,11 +1386,6 @@ length(f_x) = 20
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">slopes</span><span class="p">(</span><span class="n">f_x</span><span class="o">::</span><span class="kt">AbstractVector</span><span class="p">,</span> <span class="n">x</span><span class="o">::</span><span class="kt">AbstractRange</span><span class="p">)</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">f_x</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>slopes (generic function with 1 method)
 </pre></div>
 </div>
 </div>
@@ -1539,9 +1412,6 @@ length(f_x) = 20
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/introduction_to_types_94_0.png" src="../_images/introduction_to_types_94_0.png" />
-</div>
 </div>
 <p>Consider a variation where we pass a function instead of an <code class="docutils literal notranslate"><span class="pre">AbstractArray</span></code></p>
 <div class="cell docutils container">
@@ -1552,13 +1422,6 @@ length(f_x) = 20
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;:</span> <span class="kt">AbstractRange</span>
 <span class="n">q_slopes_x</span> <span class="o">=</span> <span class="n">slopes</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>  <span class="c"># use slopes(f::Function, x)</span>
 <span class="nd">@show</span> <span class="n">q_slopes_x</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(q) &lt;: Function = true
-typeof(x) &lt;: AbstractRange = true
-q_slopes_x[1] = 0.9983341664682815
 </pre></div>
 </div>
 </div>
@@ -1574,15 +1437,6 @@ q_slopes_x[1] = 0.9983341664682815
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">x_array</span><span class="p">)</span> <span class="o">&lt;:</span> <span class="kt">AbstractArray</span>
 <span class="n">q_slopes_x</span> <span class="o">=</span> <span class="n">slopes</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">x_array</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">q_slopes_x</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x_array) &lt;: AbstractArray = true
-q_slopes_x[1] = 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9983341664682815
 </pre></div>
 </div>
 </div>
@@ -1614,20 +1468,6 @@ compared to the following for a dense array for <code class="docutils literal no
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  84.913 ns (1 allocation: 112 bytes)
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  805.419 ns (4 allocations: 1.95 KiB)
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×3 Matrix{Float64}:
-  1.74603   -0.238994   0.0222087
- -0.187029  -0.253639   1.17725
- -0.522378   1.50682   -0.588779
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="exercise-2">
@@ -1643,16 +1483,6 @@ compared to the following for a dense array for <code class="docutils literal no
 
 <span class="n">gain</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span> <span class="o">=</span> <span class="n">Σ</span> <span class="o">*</span> <span class="n">G</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="n">G</span> <span class="o">*</span> <span class="n">Σ</span> <span class="o">*</span> <span class="n">G</span><span class="o">&#39;</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span>
 <span class="nd">@btime</span> <span class="n">gain</span><span class="p">(</span><span class="o">$</span><span class="n">Σ</span><span class="p">,</span> <span class="o">$</span><span class="n">G</span><span class="p">,</span> <span class="o">$</span><span class="n">R</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  923.077 ns (9 allocations: 1.91 KiB)
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:
- 0.666667     1.11022e-16
- 1.11022e-16  0.666667
 </pre></div>
 </div>
 </div>
@@ -1672,18 +1502,6 @@ compared to the following for a dense array for <code class="docutils literal no
 <span class="n">p′</span> <span class="o">=</span> <span class="n">derivative</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>   <span class="c"># gives the derivative of p, another polynomial</span>
 <span class="nd">@show</span> <span class="n">p</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">p′</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>  <span class="c"># call like a function</span>
 <span class="nd">@show</span> <span class="n">roots</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>   <span class="c"># find roots such that p(x) = 0</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>p = Polynomial(2 - 5*x + 2*x^2)
-(p(0.1), p′(0.1)) = 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1.52, -4.6)
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>roots(p) = [0.5, 2.0]
 </pre></div>
 </div>
 </div>
@@ -1737,11 +1555,6 @@ library for numerical integration such as <a class="reference external" href="ht
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.3333333333333333, 5.551115123125783e-17)
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="exercise-6-advanced">
@@ -1769,15 +1582,6 @@ follow the <a class="reference internal" href="#generic-tips-tricks"><span class
 <span class="nd">@show</span> <span class="n">f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">)</span>
 
 <span class="n">Df</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f(0.0, 3.0) = 1.5
-f(0.0, 3.1) = 1.55
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5
 </pre></div>
 </div>
 </div>
@@ -1962,17 +1766,17 @@ f(0.0, 3.1) = 1.55
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   22. A First Look at the Kalman Filter
+   21. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   23. Numerical Linear Algebra and Factorizations
+   22. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   24. Krylov Methods and Matrix Conditioning
+   23. Krylov Methods and Matrix Conditioning
   </a>
  </li>
 </ul>
@@ -1984,87 +1788,87 @@ f(0.0, 3.1) = 1.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/short_path.html">
-   25. Shortest Paths
+   24. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   26. Job Search I: The McCall Search Model
+   25. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   27. Job Search II: Search and Separation
+   26. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   28. A Problem that Stumped Milton Friedman
+   27. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   29. Job Search III: Search with Learning
+   28. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   30. Job Search IV: Modeling Career Choice
+   29. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   31. Job Search V: On-the-Job Search
+   30. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   32. Optimal Growth I: The Stochastic Optimal Growth Model
+   31. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   33. Optimal Growth II: Time Iteration
+   32. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   34. Optimal Growth III: The Endogenous Grid Method
+   33. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   35. LQ Dynamic Programming Problems
+   34. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   36. Optimal Savings I: The Permanent Income Model
+   35. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   37. Optimal Savings II: LQ Techniques
+   36. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   38. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   39. Optimal Savings III: Occasionally Binding Constraints
+   38. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   40. Robustness
+   39. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   41. Discrete State Dynamic Programming
+   40. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -2076,12 +1880,12 @@ f(0.0, 3.1) = 1.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   42. Modeling COVID 19 with Differential Equations
+   41. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   43. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -2093,57 +1897,57 @@ f(0.0, 3.1) = 1.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   44. Schelling’s Segregation Model
+   43. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   45. A Lake Model of Employment and Unemployment
+   44. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   46. Rational Expectations Equilibrium
+   45. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   47. Markov Perfect Equilibrium
+   46. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   48. Asset Pricing I: Finite State Models
+   47. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   49. Asset Pricing II: The Lucas Asset Pricing Model
+   48. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   50. Asset Pricing III:  Incomplete Markets
+   49. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   51. Uncertainty Traps
+   50. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   52. The Aiyagari Model
+   51. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   53. Default Risk and Income Fluctuations
+   52. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   54. Globalization and Cycles
+   53. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -2155,32 +1959,32 @@ f(0.0, 3.1) = 1.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   55. Covariance Stationary Processes
+   54. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   56. Estimation of Spectra
+   55. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   57. Additive Functionals
+   56. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   58. Multiplicative Functionals
+   57. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   59. Classical Control with Linear Algebra
+   58. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   60. Classical Filtering With Linear Algebra
+   59. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -2192,22 +1996,22 @@ f(0.0, 3.1) = 1.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   61. Dynamic Stackelberg Problems
+   60. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   62. Optimal Taxation in an LQ Economy
+   61. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   63. Optimal Taxation with State-Contingent Debt
+   62. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   64. Optimal Taxation without State-Contingent Debt
+   63. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -2219,22 +2023,22 @@ f(0.0, 3.1) = 1.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   65. About these Lectures
+   64. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   66. Troubleshooting
+   65. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   67. References
+   66. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   68. Lecture Status
+   67. Lecture Status
   </a>
  </li>
 </ul>
