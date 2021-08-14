@@ -42,14 +42,16 @@ Source for julia.quantecon.org
     ```
 
     This will install all the jupyterbook packages required to edit and build the lectures.
-
-7.  Install general julia packages if not already installed
+7.  Set the default interpreter for vscode's python to be the conda env
+    - Go `<Ctrl-Shift-P>` then `Python: Select Interpreter`
+    - Then choose the interpeter with `lecture-datascience` which should now be automatically activated in the terminal.
+8.  Install general julia packages if not already installed
 
     ```bash
     julia -e 'using Pkg; Pkg.add(\"IJulia\");'
     ```
 
-8.  Install Julia packages required for lecture notes
+9.  Install Julia packages required for lecture notes
 
     ```bash
     julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
