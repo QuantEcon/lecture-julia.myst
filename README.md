@@ -64,9 +64,9 @@ Source for julia.quantecon.org
 
 10.  Install Julia packages required for lecture notes
 
-    ```bash
-    julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
-    ```
+     ```bash
+     julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
+     ```
 
 **(Optional) REPL Integration**
 With [MyST-Markdown](https://github.com/executablebooks/myst-vs-code) and [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) installed, you can ensure that `<Ctrl-Enter>` on lines of code are sent to a Julia REPL.
