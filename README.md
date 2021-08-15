@@ -14,10 +14,10 @@ Source for julia.quantecon.org
 
 3. Install with [vscode](https://code.visualstudio.com/) and accept defaults if possible:
    - Some highly recommended packages.  After installation of vscode, you should be able to click `Install` link on the webpage of any extensions
-      - [Live Preview](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server)
       - [MyST-Markdown](https://github.com/executablebooks/myst-vs-code)
       - [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia)
    - Other optional, but recommended extensions
+      - [Live Preview](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server)
       - [Github Support](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
       - [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter)
       - [Editing Markdown](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
@@ -68,6 +68,20 @@ Source for julia.quantecon.org
     julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
     ```
 
+**(Optional) REPL Integration**
+With [MyST-Markdown](https://github.com/executablebooks/myst-vs-code) and [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) installed, you can ensure that `<Ctrl-Enter>` on lines of code are sent to a Julia REPL.
+1.  Open Key Bindings with `<Ctrl-K Ctrl-S>`
+2.  Search for the `Julia: Send Current Line or Selection to REPL` binding
+3.  Right Click on the key binding with `juliamarkdown` on it, and choose `Change When Expression`, and change `juliamarkdown` to just `markdown`
+
+## Executing Code in Markdown Files
+If you installed the REPL Integration above, then in a `.md` file,
+
+1. Start a Julia REPL with `> Julia: Start REPL`
+2. Activate the project file in the REPL with `] activate lectures`
+3. Then, assuming that you setup the keybindings above, you can send a line of code in the markdown to the REPL with `<Ctrl-Enter>`
+
+Code can be executed line by line, or you can select a chunk of code and 
 ## Example Operations
 ### Building the lectures
 To do a full build of the lectures:
@@ -104,8 +118,7 @@ to clean the `execution` cache you can use
 ```bash
 jb clean lectures --all
 ```
-
-### Debugging Code
+### Debugging Generated Content
 
 After execution, you can find the generated `.ipynb` and `.jl` files in `_build/jupyter_execute` for each lecture.
 - To see errors, you can open these in jupyterlab, the Jupyter support within VSCode, etc.
