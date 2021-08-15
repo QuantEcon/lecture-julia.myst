@@ -12,7 +12,7 @@ Source for julia.quantecon.org
     - See [Conda Installation](https://datascience.quantecon.org/introduction/local_install.html#installation) for examples
     - Add conda to path  
 
-3. Install with [vscode](https://code.visualstudio.com/) and accept defaults if possible:
+3. Install [vscode](https://code.visualstudio.com/) and accept defaults if possible:
    - Some highly recommended packages.  After installation of vscode, you should be able to click `Install` link on the webpage of any extensions
       - [MyST-Markdown](https://github.com/executablebooks/myst-vs-code)
       - [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia)
@@ -55,17 +55,33 @@ Source for julia.quantecon.org
 8.  Set the default interpreter for vscode's python to be the conda env
     - Go `<Ctrl-Shift-P>` then `Python: Select Interpreter`
     - Then choose the interpeter with `lecture-julia.myst` which should now be automatically activated in the terminal.
+    - If the interpreter does not show up in the drop-down, close and reopen vscode, then try again. Alternatively, you can run this step at the end of the setup process.
+        - Whenever reopening vscode,  re-run `conda activate lecture-julia.myst` to ensure the environment remains active.
 
-9.  Install general julia packages if not already installed
+9.  Install general julia packages if not already installed.
 
     ```bash
     julia -e 'using Pkg; Pkg.add("IJulia");'
     ```
+    
+    On Windows, you should run the following instead to avoid a quoting issue:
+    
+    ```bash
+    julia -e "using Pkg; Pkg.add(\"IJulia\");"
+    ```
+    
+    If the terminal responds with `'Julia' is not recognized`, close and reopen vscode, then try again. Make sure to re-activate the environment.
 
-10.  Install Julia packages required for lecture notes
+10.  Install Julia packages required for lecture notes.
 
      ```bash
      julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
+     ```
+     
+     On Windows, run the following instead:
+     
+     ```bash
+     julia --project=lectures --threads auto -e "using Pkg; Pkg.instantiate();"
      ```
 
 **(Optional) REPL Integration**
@@ -97,6 +113,14 @@ jb build lectures
 ```
 
 This will take a while. But it will populate your cache, so future iteration is faster. 
+
+On Windows, if you get the following error:
+
+```
+ImportError: DLL load failed while importing win32api: The specified procedure could not be found.
+```
+
+then run `conda install pywin32` and build the lectures again.
 
 If you have [Live Preview](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server) installed, then go to `_build/html/index.html` in the explorer, and right-click to choose `Live Preview: Show Preview`
 
