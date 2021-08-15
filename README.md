@@ -14,6 +14,7 @@ Source for julia.quantecon.org
 
 3. Install with [vscode](https://code.visualstudio.com/) and accept defaults if possible:
    - (Optional) some highly recommended packages .  After installation of vscode, you should be able to click `Install` link on the webpage of any extensions
+      - [Live Preview](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server)
       - [Github Support](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
       - [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter)
       - [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia)
@@ -80,6 +81,8 @@ jb build lectures
 ```
 
 This will take a while. But it will populate your cache, so future iteration is faster. 
+
+If you have [Live Preview](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server) installed, then go to `_build/html/index.html` in the explorer, and right-click to choose `Live Preview: Show Preview`
 
 To clean up (i.e., delete the build)
 
