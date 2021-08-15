@@ -13,11 +13,13 @@ Source for julia.quantecon.org
     - Add conda to path  
 
 3. Install with [vscode](https://code.visualstudio.com/) and accept defaults if possible:
-   - (Optional) some highly recommended packages .  After installation of vscode, you should be able to click `Install` link on the webpage of any extensions
+   - Some highly recommended packages.  After installation of vscode, you should be able to click `Install` link on the webpage of any extensions
       - [Live Preview](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server)
+      - [MyST-Markdown](https://github.com/executablebooks/myst-vs-code)
+      - [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia)
+   - Other optional, but recommended extensions
       - [Github Support](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
       - [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter)
-      - [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia)
       - [Editing Markdown](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
       - [Extra Git Tools](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
       - [Spell Checking](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
@@ -66,8 +68,8 @@ Source for julia.quantecon.org
     julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
     ```
 
+## Example Operations
 ### Building the lectures
-
 To do a full build of the lectures:
 
 ```bash
@@ -84,6 +86,7 @@ This will take a while. But it will populate your cache, so future iteration is 
 
 If you have [Live Preview](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server) installed, then go to `_build/html/index.html` in the explorer, and right-click to choose `Live Preview: Show Preview`
 
+### Cleaning Lectures
 To clean up (i.e., delete the build)
 
 ```bash
@@ -101,3 +104,10 @@ to clean the `execution` cache you can use
 ```bash
 jb clean lectures --all
 ```
+
+### Debugging Code
+
+After execution, you can find the generated `.ipynb` and `.jl` files in `_build/jupyter_execute` for each lecture.
+- To see errors, you can open these in jupyterlab, the Jupyter support within VSCode, etc.
+- If using the Julia REPL in VS Code, make sure to do `] activate lectures` prior to testing to ensure the packages are activated.  This is not necessary when opening in Jupyter.
+- Finally, the code is written using interactive scoping, so `include(_build/jupyter_execute/dynamic_programming/mccall_model.jl)` etc. may not work.  However, `shift-enter` within VS Code to the REPL will work, and you can execute these with [SoftGlobalScope.jl](https://github.com/stevengj/SoftGlobalScope.jl) if strictly required.
