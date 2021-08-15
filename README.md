@@ -42,8 +42,8 @@ Source for julia.quantecon.org
 7. Start a vscode terminal with ``<Ctrl+`>`` or through any other method.  Create a conda environment.
 
     ```bash
-    conda env create -n lecture-julia.myst python=3.8
-    conda activate leture-julia.myst
+    conda create -n lecture-julia.myst python=3.8
+    conda activate lecture-julia.myst
     pip install -r requirements.txt
     ```
 
