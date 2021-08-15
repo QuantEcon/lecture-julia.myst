@@ -56,7 +56,7 @@ Source for julia.quantecon.org
 9.  Install general julia packages if not already installed
 
     ```bash
-    julia -e 'using Pkg; Pkg.add(\"IJulia\");'
+    julia -e 'using Pkg; Pkg.add("IJulia");'
     ```
 
 10.  Install Julia packages required for lecture notes
