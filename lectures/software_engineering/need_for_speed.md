@@ -535,9 +535,10 @@ To illustrate, consider this code, where `b` is global
 b = 1.0
 function g(a)
     global b
-    for i ∈ 1:1_000_000
+    for i in 1:1_000_000
         tmp = a + b
     end
+    return tmp
 end
 ```
 
@@ -559,9 +560,10 @@ If we eliminate the global variable like so
 
 ```{code-cell} julia
 function g(a, b)
-    for i ∈ 1:1_000_000
+    for i in 1:1_000_000
         tmp = a + b
     end
+    return tmp    
 end
 ```
 
@@ -573,7 +575,7 @@ then execution speed improves dramatically
 
 Note that the second run was dramatically faster than the first.
 
-That's because the first call included the time for JIT compilaiton.
+That's because the first call included the time for JIT compilation.
 
 Notice also how small the memory footprint of the execution is.
 
@@ -595,15 +597,16 @@ prepend it with `const`
 const b_const = 1.0
 function g(a)
     global b_const
-    for i ∈ 1:1_000_000
+    for i in 1:1_000_000
         tmp = a + b_const
     end
+    return tmp
 end
 ```
 
 Now the compiler can again generate efficient machine code.
 
-We'll leave you to experiment with it.
+However, global variables within a function is almost always a bad idea.  Instead, the `b_const` should be passed as a parameter to the function.
 
 ### Composite Types with Abstract Field Types
 
@@ -666,9 +669,10 @@ Here's a function that uses the field `a` of our objects
 
 ```{code-cell} julia
 function f(foo)
-    for i ∈ 1:1_000_000
+    for i in 1:1_000_000
         tmp = i + foo.a
     end
+    return tmp
 end
 ```
 
@@ -710,8 +714,31 @@ Here's the corresponding machine code
 @code_native f(fc)
 ```
 
-Much nicer...
 
+Finally, note that if we compile a slightly different version of the function, which doesn't actually return the value
+```{code-cell} julia
+function f_no_return(foo)
+    for i in 1:1_000_000
+        tmp = i + foo.a
+    end
+end
+```
+That
+```{code-cell} julia
+@btime f_no_return($fc)
+```
+Which seems improbably small.  The machine code gives a hint,
+```{code-cell} julia
+@code_native f_no_return(fc)
+```
+
+Note that in this case, the machine code is doing nothing.  The compiler was able to prove that the function had no side effects and hence it could simply ignore the inputs.
+
+This is not the case with the abstract case, because the compiler is unable to prove this invariant.
+
+```{code-cell} julia
+@btime f_no_return($fa)
+```
 ### Abstract Containers
 
 Another way we can run into trouble is with abstract container types.
@@ -721,7 +748,7 @@ Consider the following function, which essentially does the same job as Julia's 
 ```{code-cell} julia
 function sum_float_array(x::AbstractVector{<:Number})
     sum = 0.0
-    for i ∈ eachindex(x)
+    for i in eachindex(x)
         sum += x[i]
     end
     return sum
@@ -755,7 +782,7 @@ Here's the same function minus the type annotation in the function signature
 ```{code-cell} julia
 function sum_array(x)
     sum = 0.0
-    for i ∈ eachindex(x)
+    for i in eachindex(x)
         sum += x[i]
     end
     return sum
@@ -782,7 +809,7 @@ Things get tougher for the interpreter when the data type within the array is im
 For example, the following snippet creates an array where the element type is `Any`
 
 ```{code-cell} julia
-x = Any[ 1/i for i ∈ 1:1e6 ];
+x = Any[ 1/i for i in 1:1e6 ];
 ```
 
 ```{code-cell} julia
@@ -798,29 +825,6 @@ Now summation is much slower and memory management is less efficient.
 ## Further Comments
 
 Here are some final comments on performance.
-
-### Explicit Typing
-
-Writing fast Julia code amounts to writing Julia from which the compiler can
-generate efficient machine code.
-
-For this, Julia needs to know about the type of data it's processing as early as possible.
-
-We could hard code the type of all variables and function arguments but this comes at a cost.
-
-Our code becomes more cumbersome and less generic.
-
-We are starting to loose the advantages that drew us to Julia in the first place.
-
-Moreover, explicitly typing everything is not necessary for optimal performance.
-
-The Julia compiler is smart and can often infer types perfectly well, without
-any performance cost.
-
-What we really want to do is
-
-* keep our code simple, elegant and generic
-* help the compiler out in situations where it's liable to get tripped up
 
 ### Summary and Tips
 
