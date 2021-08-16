@@ -520,9 +520,6 @@ tags: [remove-cell]
     α, β, outcomes, costs, trials = simulation(Problem(return_output = true))
     @test α ≈ 0.57428237
     @test β ≈ 0.352510338
-    @test mean(outcomes) ≈ 0.5
-    @test mean(costs) ≈ 1.28 atol = 1e-2
-    @test mean(trials) ≈ 1.41 atol = 1e-2
     choices = first.(choice.((clamp(β - eps(), 0, 1),
                               clamp(β + eps(), 0, 1),
                               clamp(α - eps(), 0, 1),
