@@ -88,7 +88,7 @@ Otherwise, you can let `IJulia` install its own version of Conda by following [t
 (clone_lectures)=
 ### Starting Jupyter
 
-Next, let's install the QuantEcon lecture notes to our machine and run them (for more details on the tools we'll use, see our lecture on {doc}`version control <../more_julia/version_control>`).
+Next, let's install the QuantEcon lecture notes to our machine and run them (for more details on the tools we'll use, see our lecture on {doc}`version control <../software_engineering/version_control>`).
 
 1. Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/).
 1. (**Optional, but strongly recommended**) Install the [GitHub Desktop](https://desktop.github.com/).
@@ -144,7 +144,7 @@ And open the {doc}`Interacting With Julia <../getting_started_julia/julia_enviro
 If you have access to an online Julia installation, it is the easiest way to get started.
 
 Eventually, you will want to do a {ref}`local installation <jl_jupyterlocal>` in order to use other
-{doc}`tools and editors <../more_julia/tools_editors>` such as [Atom/Juno](http://junolab.org/), but
+{doc}`tools and editors <../software_engineering/tools_editors>` such as [Atom/Juno](http://junolab.org/), but
 don't let the environment get in the way of learning the language.
 
 (jl_jupyterhub)=

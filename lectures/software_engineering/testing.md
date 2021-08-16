@@ -77,7 +77,7 @@ The result should be
 This is all we need for now.
 
 
-**Note:** Before these steps, make sure that you've either completed the {doc}`version control <../more_julia/version_control>` lecture or run.
+**Note:** Before these steps, make sure that you've either completed the {doc}`version control <../software_engineering/version_control>` lecture or run.
 
 ```{code-block} julia
 git config --global user.name "Your Name"
@@ -187,7 +187,7 @@ You can see the change reflected in our default package list by running
 ] st
 ```
 
-For more on the package mode, see the {doc}`tools and editors <../more_julia/tools_editors>` lecture.
+For more on the package mode, see the {doc}`tools and editors <../software_engineering/tools_editors>` lecture.
 
 ### Using the Package Manager
 
@@ -293,7 +293,7 @@ Here's the `Manifest.toml`
 
 We can also run other operations, like `] up`, `] precompile`, etc.
 
-Package operations are listed in detail in the {doc}`tools and editors <../more_julia/tools_editors>` lecture.
+Package operations are listed in detail in the {doc}`tools and editors <../software_engineering/tools_editors>` lecture.
 
 Recall that, to quit the active environment and return to the base `(v1.1)`, simply run
 
@@ -642,7 +642,7 @@ This shows us precisely which methods (and parts of methods) are untested.
 
 ## Pull Requests to External Julia Projects
 
-As mentioned in {doc}`version control <../more_julia/version_control>`, sometimes we'll want to work on external repos that are also Julia projects.
+As mentioned in {doc}`version control <../software_engineering/version_control>`, sometimes we'll want to work on external repos that are also Julia projects.
 
 * `] dev` the git URL (or package name, if the project is a registered Julia package), which will both clone the git repo to `~/.julia/dev` and sync it with the Julia package manager.
 
@@ -694,7 +694,7 @@ Here, for example, we're revising the README.
 
 * Clicking "commit to master" (recall that the checkboxes next to each file indicate whether it's to be committed) and then pushing (e.g., hitting "push" under the "Repository" dropdown) will add the committed changes to your account.
 
-To confirm this, we can check the history on our account [here](https://github.com/quanteconuser/Expectations.jl/commits/master); for more on working with git repositories, see the {doc}`version control <../more_julia/version_control>` lecture.
+To confirm this, we can check the history on our account [here](https://github.com/quanteconuser/Expectations.jl/commits/master); for more on working with git repositories, see the {doc}`version control <../software_engineering/version_control>` lecture.
 
 ```{figure} /_static/figures/testing-expectations.png
 :width: 100%
@@ -708,7 +708,7 @@ The green check mark indicates that Travis tests passed for this commit.
 :width: 100%
 ```
 
-For more on PRs, see the relevant section of the {doc}`version control <../more_julia/version_control>` lecture.
+For more on PRs, see the relevant section of the {doc}`version control <../software_engineering/version_control>` lecture.
 
 For more on forking, see the docs on [GitHub Desktop](https://help.github.com/desktop/guides/contributing-to-projects/cloning-a-repository-from-github-to-github-desktop/) and [the GitHub Website](https://guides.github.com/activities/forking/).
 
@@ -763,7 +763,7 @@ Another goal of testing is to make sure that code doesn't slow down significantl
 
 We can do this using tools provided by the `BenchmarkTools.jl` package.
 
-See the {doc}`need for speed <../more_julia/need_for_speed>` lecture for more details.
+See the {doc}`need for speed <../software_engineering/need_for_speed>` lecture for more details.
 
 ## Additional Notes
 
