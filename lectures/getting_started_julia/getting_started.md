@@ -175,5 +175,4 @@ julia --project --threads auto -e 'using Pkg; Pkg.instantiate();'
 ```
 Or, alternatively, in a Julia REPL (e.g. in vscode) run `] activate; instantiate` or simply `] instantiate` if in vscode (which automatically activates projects)
 
-After this step, open the downloaded {doc}`Interacting with Julia <../getting_started_juli
-a/julia_environment>` notebook to begin writing code.
+After this step, open the downloaded {doc}`Interacting with Julia <../getting_started_julia/julia_environment>` notebook to begin writing code.
