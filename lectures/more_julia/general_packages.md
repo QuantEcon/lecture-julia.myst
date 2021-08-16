@@ -44,8 +44,8 @@ Also see {doc}`data and statistical packages <../more_julia/data_statistical_pac
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using QuantEcon, QuadGK, FastGaussQuadrature, Distributions, Expectations
-using Interpolations, Plots, LaTeXStrings, ProgressMeter
+using QuadGK, FastGaussQuadrature, Distributions, Expectations
+using Interpolations, Plots,  ProgressMeter
 ```
 
 ## Numerical Integration
@@ -81,15 +81,6 @@ f(x) = x^2
 ```
 
 The only problem with the `FastGaussQuadrature` package is that you will need to deal with affine transformations to the non-default domains yourself.
-
-Alternatively, `QuantEcon.jl` has routines for Gaussian quadrature that translate the domains.
-
-```{code-cell} julia
-using QuantEcon
-
-x, w = qnwlege(65, -2π, 2π);
-@show w ⋅ cos.(x); # i.e. on [-2π, 2π] domain
-```
 
 ### Expectations
 
@@ -212,15 +203,6 @@ Routines are available for
 See [here](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/) for further details.
 
 ## General Tools
-
-### LaTeXStrings.jl
-
-When you need to properly escape latex code (e.g. for equation labels), use [LaTeXStrings.jl](https://github.com/stevengj/LaTeXStrings.jl).
-
-```{code-cell} julia
-using LaTeXStrings
-L"an equation: $1 + \alpha^2$"
-```
 
 ### ProgressMeter.jl
 
