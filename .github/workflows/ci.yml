@@ -1,7 +1,7 @@
 name: Build Project [using jupyter-book]
 on: [push]
 jobs:
-  tests:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,13 +28,10 @@ jobs:
         uses: julia-actions/setup-julia@v1
         with:
           version: 1.6.0
-      - name: Install IJulia
-        shell: bash -l {0}
+      - name: Install IJulia and Setup Project
+        shell: bash
         run: |
           julia -e 'using Pkg; Pkg.add("IJulia");'
-      - name: Installing all the packages
-        shell: bash -l {0}
-        run: |
           julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
       # Download Jupyter Book Cache
       - name: Download "build" folder (cache)

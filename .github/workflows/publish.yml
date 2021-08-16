@@ -33,10 +33,10 @@ jobs:
         with:
           version: 1.6.0
       - name: Install IJulia and Setup Project
-        shell: bash -l {0}
+        shell: bash
         run: |
           julia -e 'using Pkg; Pkg.add("IJulia");'
-          julia --project --threads auto -e 'using Pkg; Pkg.instantiate();'
+          julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
       # Download Jupyter Book Cache
       - name: Download "build" folder (cache)
         uses: dawidd6/action-download-artifact@v2
@@ -70,8 +70,30 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: _build/html/
+          # cname: julia.quantecon.org
       - name: Upload "_build" folder (cache)
         uses: actions/upload-artifact@v2
         with:
           name: build-publish
           path: _build
+      # Sync Download Notebooks
+      - name: Prepare lecture-julia.notebooks sync
+        shell: bash
+        run: |
+          mkdir -p _build/lecture-julia.notebooks
+          cp -a _notebook_repo/. _build/lecture-julia.notebooks
+          cp _build/jupyter/*.ipynb _build/lecture-julia.notebooks
+          cp lectures/Project.toml _build/lecture-julia.notebooks
+          cp lectures/Manifest.toml _build/lecture-julia.notebooks
+          ls -a _build/lecture-julia.notebooks
+      - name: Commit latest notebooks to lecture-julia.notebooks
+        uses: cpina/github-action-push-to-another-repository@v1.3
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.QUANTECON_SERVICES_PAT }}
+        with:
+          source-directory: '_build/lecture-julia.notebooks/'
+          destination-repository-username: 'QuantEcon'
+          destination-repository-name: 'lecture-julia.notebooks'
+          commit-message: 'auto publishing updates to notebooks'
+          destination-github-username: 'quantecon-services'
+          user-email: services@quantecon.org
