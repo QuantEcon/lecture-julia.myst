@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/multi_agent_models/markov_perf.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="47. Asset Pricing I: Finite State Models" href="markov_asset.html" />
@@ -302,25 +303,6 @@
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span><span class="p">,</span> <span class="n">QuantEcon</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package QuantEcon [fcd29c91-0bd7-5a09-975d-7ac3f643a60c] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
 </pre></div>
 </div>
 </div>
@@ -618,6 +600,15 @@ B_2 :=
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Computed policies for firm 1 and firm 2:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>F1 = [-0.6684661455442794 0.295124817744414 0.07584666305807419]
+F2 = [-0.6684661455442794 0.07584666305807419 0.295124817744414]
+</pre></div>
+</div>
+</div>
 </div>
 <p>Running the code produces the following output.</p>
 <p>One way to see that <span class="math notranslate nohighlight">\(F_i\)</span> is indeed optimal for firm <span class="math notranslate nohighlight">\(i\)</span> taking <span class="math notranslate nohighlight">\(F_2\)</span> as given is to use <a class="reference external" href="http://quantecon.org/quantecon-jl">QuantEcon.jl</a>’s LQ type.</p>
@@ -632,12 +623,23 @@ B_2 :=
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1×3 Matrix{Float64}:
+ -0.668466  0.295125  0.0758467
+</pre></div>
+</div>
+</div>
 </div>
 <p>This is close enough for rock and roll, as they say in the trade.</p>
 <p>Indeed, isapprox agrees with our assessment</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">isapprox</span><span class="p">(</span><span class="n">F1</span><span class="p">,</span> <span class="n">F1_ih</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -675,6 +677,9 @@ B_2 :=
 <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&quot;Output and prices, duopoly MPE&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/markov_perf_12_0.png" src="../_images/markov_perf_12_0.png" />
 </div>
 </div>
 <p>Note that the initial condition has been set to <span class="math notranslate nohighlight">\(q_{10} = q_{20} = 1.0\)</span>.</p>
@@ -768,6 +773,14 @@ x_t =
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Int64}:
+ 10
+ 10
+  3
+</pre></div>
+</div>
+</div>
 </div>
 <div class="figure align-default">
 <a class="reference internal image-reference" href="../_images/judd_fig2.png"><img alt="../_images/judd_fig2.png" src="../_images/judd_fig2.png" style="width: 70%;" /></a>
@@ -815,6 +828,11 @@ x_t =
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>([-0.6684661455442794 0.295124817744414 0.07584666305807419], [-0.6684661455442794 0.07584666305807419 0.295124817744414], [-100.74013291681779 -13.28370101134053 2.435873888234418; -13.283701011340526 5.441368457863284 1.9305445296892967; 2.4358738882344166 1.9305445296892967 -0.18944247543524873], [-100.74013291681771 2.435873888234418 -13.283701011340526; 2.435873888234417 -0.18944247543524873 1.9305445296892967; -13.283701011340526 1.9305445296892967 5.441368457863284])
+</pre></div>
+</div>
+</div>
 </div>
 <p>Now we evaluate the time path of industry output and prices given
 initial condition <span class="math notranslate nohighlight">\(q_{10} = q_{20} = 1\)</span></p>
@@ -831,6 +849,31 @@ initial condition <span class="math notranslate nohighlight">\(q_{10} = q_{20} =
 <span class="n">q2</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span>
 <span class="n">q</span> <span class="o">=</span> <span class="n">q1</span> <span class="o">+</span> <span class="n">q2</span>       <span class="c"># Total output, MPE</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">a0</span> <span class="o">.-</span> <span class="n">a1</span> <span class="o">*</span> <span class="n">q</span>   <span class="c"># Price, MPE</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20-element Vector{Float64}:
+ 6.0
+ 4.810021341032835
+ 4.061490827306079
+ 3.5906437866823833
+ 3.2944675699503314
+ 3.108164282917846
+ 2.990974202154174
+ 2.917258299186763
+ 2.8708888939018653
+ 2.8417212155594376
+ 2.8233739140432705
+ 2.811832938139286
+ 2.8045733351563085
+ 2.8000068378419645
+ 2.7971343807984024
+ 2.795327523397832
+ 2.7941909585627513
+ 2.793476026867568
+ 2.7930263144420193
+ 2.7927434325009113
 </pre></div>
 </div>
 </div>
@@ -878,6 +921,31 @@ resulting dynamics of <span class="math notranslate nohighlight">\(\{q_t\}\)</sp
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>20-element Vector{Float64}:
+ 6.0
+ 5.6828385746634025
+ 5.466268519048347
+ 5.318386130957389
+ 5.217406331855539
+ 5.148453429767034
+ 5.1013697283860155
+ 5.069219160845123
+ 5.04726551313088
+ 5.032274715617025
+ 5.022038420809596
+ 5.015048683853457
+ 5.010275821833055
+ 5.007016727533978
+ 5.004791292228103
+ 5.003271679155834
+ 5.002234028731525
+ 5.0015254809947916
+ 5.00104165726816
+ 5.000711283764278
+</pre></div>
+</div>
+</div>
 </div>
 <p>Let’s have a look at the different time paths</p>
 <div class="cell docutils container">
@@ -894,6 +962,9 @@ resulting dynamics of <span class="math notranslate nohighlight">\(\{q_t\}\)</sp
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/markov_perf_26_0.png" src="../_images/markov_perf_26_0.png" />
+</div>
 </div>
 </div>
 <div class="section" id="id9">
@@ -908,6 +979,11 @@ resulting dynamics of <span class="math notranslate nohighlight">\(\{q_t\}\)</sp
 <span class="n">c1</span> <span class="o">=</span> <span class="n">c2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="n">e1</span> <span class="o">=</span> <span class="n">e2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="n">δ_1</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">δ</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.98
 </pre></div>
 </div>
 </div>
@@ -972,6 +1048,13 @@ x_t =
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:
+ 0.0  0.0
+ 0.0  0.25
+</pre></div>
+</div>
+</div>
 </div>
 <p>We can now compute the equilibrium using <code class="docutils literal notranslate"><span class="pre">qe.nnash</span></code></p>
 <div class="cell docutils container">
@@ -983,6 +1066,18 @@ x_t =
 
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">Firm 2&#39;s feedback rule:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
 <span class="n">println</span><span class="p">(</span><span class="n">F2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Firm 1&#39;s feedback rule:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.24366658220856505 0.02723606266195122 -6.827882926030329; 0.3923707338756386 0.13969645088599783 -37.734107288592014]
+
+Firm 2&#39;s feedback rule:
+
+[0.027236062661951208 0.243666582208565 -6.827882926030323; 0.1396964508859978 0.39237073387563864 -37.73410728859201]
 </pre></div>
 </div>
 </div>
@@ -1006,6 +1101,9 @@ corresponding to <span class="math notranslate nohighlight">\(\delta = 0.02\)</s
 <span class="n">plot!</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;delta = 0.02&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/markov_perf_36_0.png" src="../_images/markov_perf_36_0.png" />
 </div>
 </div>
 </div>

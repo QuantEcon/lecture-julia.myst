@@ -56,6 +56,7 @@
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/more_julia/data_statistical_packages.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="10. Solvers, Optimizers, and Automatic Differentiation" href="optimization_solver_packages.html" />
@@ -238,25 +239,6 @@
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package DataFrames [a93c6f00-e57d-5684-b7b6-d8193f3e46c0] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="dataframes">
@@ -281,11 +263,22 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div class="data-frame"><p>4 rows × 2 columns</p><table class="data-frame"><thead><tr><th></th><th>commod</th><th>price</th></tr><tr><th></th><th title="String">String</th><th title="Union{Missing, Float64}">Float64?</th></tr></thead><tbody><tr><th>1</th><td>crude</td><td>4.2</td></tr><tr><th>2</th><td>gas</td><td>11.3</td></tr><tr><th>3</th><td>gold</td><td>12.1</td></tr><tr><th>4</th><td>silver</td><td><em>missing</em></td></tr></tbody></table></div></div></div>
 </div>
 <p>Columns of the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> can be accessed by name using <code class="docutils literal notranslate"><span class="pre">df.col</span></code>, as below</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">price</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Union{Missing, Float64}}:
+  4.2
+ 11.3
+ 12.1
+   missing
 </pre></div>
 </div>
 </div>
@@ -297,6 +290,15 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{String}:
+ &quot;crude&quot;
+ &quot;gas&quot;
+ &quot;gold&quot;
+ &quot;silver&quot;
+</pre></div>
+</div>
+</div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">DataFrames.jl</span></code> package provides a number of methods for acting on <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>’s, such as <code class="docutils literal notranslate"><span class="pre">describe</span></code>.</p>
 <div class="cell docutils container">
@@ -305,6 +307,8 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div class="data-frame"><p>2 rows × 7 columns</p><table class="data-frame"><thead><tr><th></th><th>variable</th><th>mean</th><th>min</th><th>median</th><th>max</th><th>nmissing</th><th>eltype</th></tr><tr><th></th><th title="Symbol">Symbol</th><th title="Union{Nothing, Float64}">Union…</th><th title="Any">Any</th><th title="Union{Nothing, Float64}">Union…</th><th title="Any">Any</th><th title="Int64">Int64</th><th title="Type">Type</th></tr></thead><tbody><tr><th>1</th><td>commod</td><td></td><td>crude</td><td></td><td>silver</td><td>0</td><td>String</td></tr><tr><th>2</th><td>price</td><td>9.2</td><td>4.2</td><td>11.3</td><td>12.1</td><td>1</td><td>Union{Missing, Float64}</td></tr></tbody></table></div></div></div>
 </div>
 <p>While often data will be generated all at once, or read from a file, you can add to a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> by providing the key parameters.</p>
 <div class="cell docutils container">
@@ -314,6 +318,8 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div class="data-frame"><p>5 rows × 2 columns</p><table class="data-frame"><thead><tr><th></th><th>commod</th><th>price</th></tr><tr><th></th><th title="String">String</th><th title="Union{Missing, Float64}">Float64?</th></tr></thead><tbody><tr><th>1</th><td>crude</td><td>4.2</td></tr><tr><th>2</th><td>gas</td><td>11.3</td></tr><tr><th>3</th><td>gold</td><td>12.1</td></tr><tr><th>4</th><td>silver</td><td><em>missing</em></td></tr><tr><th>5</th><td>nickel</td><td>5.1</td></tr></tbody></table></div></div></div>
 </div>
 <p>Named tuples can also be used to construct a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>, and have it properly deduce all types.</p>
 <div class="cell docutils container">
@@ -324,6 +330,8 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div class="data-frame"><p>2 rows × 2 columns</p><table class="data-frame"><thead><tr><th></th><th>t</th><th>col1</th></tr><tr><th></th><th title="Int64">Int64</th><th title="Float64">Float64</th></tr></thead><tbody><tr><th>1</th><td>1</td><td>3.0</td></tr><tr><th>2</th><td>2</td><td>4.0</td></tr></tbody></table></div></div></div>
 </div>
 <p>In order to modify a column, access the mutating version by the symbol <code class="docutils literal notranslate"><span class="pre">df[!,</span> <span class="pre">:col]</span></code>.</p>
 <div class="cell docutils container">
@@ -332,11 +340,31 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Union{Missing, Float64}}:
+  4.2
+ 11.3
+ 12.1
+   missing
+  5.1
+</pre></div>
+</div>
+</div>
 </div>
 <p>Which allows modifications, like other mutating <code class="docutils literal notranslate"><span class="pre">!</span></code> functions in julia.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="o">!</span><span class="p">,</span> <span class="ss">:price</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">2.0</span>  <span class="c"># double prices</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Union{Missing, Float64}}:
+  8.4
+ 22.6
+ 24.2
+   missing
+ 10.2
 </pre></div>
 </div>
 </div>
@@ -356,6 +384,8 @@ from a source with <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div class="data-frame"><p>4 rows × 2 columns</p><table class="data-frame"><thead><tr><th></th><th>t</th><th>col1</th></tr><tr><th></th><th title="Int64">Int64</th><th title="Union{Missing, Float64}">Float64?</th></tr></thead><tbody><tr><th>1</th><td>1</td><td>3.0</td></tr><tr><th>2</th><td>2</td><td>4.0</td></tr><tr><th>3</th><td>3</td><td><em>missing</em></td></tr><tr><th>4</th><td>4</td><td>5.1</td></tr></tbody></table></div></div></div>
 </div>
 <p>We can see the propagation of <code class="docutils literal notranslate"><span class="pre">missing</span></code> to caller functions, as well as a way to efficiently calculate with non-missing data.</p>
 <div class="cell docutils container">
@@ -365,11 +395,29 @@ from a source with <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>mean(df2.col1) = missing
+mean(skipmissing(df2.col1)) = 4.033333333333333
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.033333333333333
+</pre></div>
+</div>
+</div>
 </div>
 <p>And to replace the <code class="docutils literal notranslate"><span class="pre">missing</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df2</span><span class="o">.</span><span class="n">col1</span>  <span class="o">.=</span> <span class="n">coalesce</span><span class="o">.</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">col1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="c"># replace all missing with 0.0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Union{Missing, Float64}}:
+ 3.0
+ 4.0
+ 0.0
+ 5.1
 </pre></div>
 </div>
 </div>
@@ -386,6 +434,8 @@ from a source with <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div class="data-frame"><p>4 rows × 3 columns</p><table class="data-frame"><thead><tr><th></th><th>t</th><th>col1</th><th>col2</th></tr><tr><th></th><th title="Int64">Int64</th><th title="Union{Missing, Float64}">Float64?</th><th title="Float64">Float64</th></tr></thead><tbody><tr><th>1</th><td>1</td><td>3.0</td><td>9.0</td></tr><tr><th>2</th><td>2</td><td>4.0</td><td>16.0</td></tr><tr><th>3</th><td>3</td><td>0.0</td><td>0.0</td></tr><tr><th>4</th><td>4</td><td>5.1</td><td>26.01</td></tr></tbody></table></div></div></div>
 </div>
 </div>
 <div class="section" id="categorical-data">
@@ -401,10 +451,19 @@ from a source with <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div class="data-frame"><p>4 rows × 2 columns</p><table class="data-frame"><thead><tr><th></th><th>id</th><th>y</th></tr><tr><th></th><th title="Int64">Int64</th><th title="CategoricalValue{String, UInt32}">Cat…</th></tr></thead><tbody><tr><th>1</th><td>1</td><td>old</td></tr><tr><th>2</th><td>2</td><td>young</td></tr><tr><th>3</th><td>3</td><td>young</td></tr><tr><th>4</th><td>4</td><td>old</td></tr></tbody></table></div></div></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">levels</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{String}:
+ &quot;old&quot;
+ &quot;young&quot;
 </pre></div>
 </div>
 </div>
@@ -426,6 +485,12 @@ from a source with <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>g(f(x)) = 2.1972245773362196
+(x |&gt; f) |&gt; g = 2.1972245773362196
+</pre></div>
+</div>
+</div>
 </div>
 <p>To give an example directly from the source of the LINQ inspired <a class="reference external" href="http://www.queryverse.org/Query.jl/stable/">Query.jl</a></p>
 <div class="cell docutils container">
@@ -442,6 +507,8 @@ from a source with <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div class="data-frame"><p>1 rows × 2 columns</p><table class="data-frame"><thead><tr><th></th><th>name</th><th>children</th></tr><tr><th></th><th title="String">String</th><th title="Int64">Int64</th></tr></thead><tbody><tr><th>1</th><td>Kirk</td><td>2</td></tr></tbody></table></div></div></div>
 </div>
 <p>While it is possible to just use the <code class="docutils literal notranslate"><span class="pre">Plots.jl</span></code> library, there may be better options for displaying tabular data – such as <a class="reference external" href="https://github.com/queryverse/VegaLite.jl">VegaLite.jl</a>.</p>
 <div class="cell docutils container">
@@ -458,6 +525,8 @@ from a source with <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/data_statistical_packages_34_0.svg" src="../_images/data_statistical_packages_34_0.svg" /></div>
 </div>
 </div>
 </div>
@@ -484,6 +553,21 @@ from a source with <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>StatsModels.TableRegressionModel{LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}}}}, Matrix{Float64}}
+
+y ~ 1 + x
+
+Coefficients:
+────────────────────────────────────────────────────────────────────────
+                Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
+────────────────────────────────────────────────────────────────────────
+(Intercept)  0.263241   0.015038   17.51    &lt;1e-31   0.233399   0.293083
+x            0.896095   0.0156592  57.22    &lt;1e-76   0.865019   0.92717
+────────────────────────────────────────────────────────────────────────
+</pre></div>
+</div>
+</div>
 </div>
 <p>To display the results in a useful tables for LaTeX and the REPL, use
 <a class="reference external" href="https://github.com/jmboehm/RegressionTables.jl/">RegressionTables</a> for output
@@ -493,6 +577,25 @@ similar to the Stata package esttab and the R package stargazer.</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">RegressionTables</span>
 <span class="n">regtable</span><span class="p">(</span><span class="n">ols</span><span class="p">)</span>
 <span class="c"># regtable(ols,  renderSettings = latexOutput()) # for LaTex output</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>----------------------
+                  y   
+              --------
+                   (1)
+----------------------
+(Intercept)   0.263***
+               (0.015)
+x             0.896***
+               (0.016)
+----------------------
+Estimator          OLS
+----------------------
+N                  100
+R2               0.971
+----------------------
 </pre></div>
 </div>
 </div>
@@ -512,6 +615,26 @@ fixed-effects estimation with dummies for multiple variables are much more compu
 <span class="n">fixedeffectresults</span> <span class="o">=</span> <span class="n">reg</span><span class="p">(</span><span class="n">cigar</span><span class="p">,</span> <span class="nd">@formula</span><span class="p">(</span><span class="n">Sales</span> <span class="o">~</span> <span class="n">NDI</span> <span class="o">+</span> <span class="n">fe</span><span class="p">(</span><span class="n">StateCategorical</span><span class="p">)</span> <span class="o">+</span> <span class="n">fe</span><span class="p">(</span><span class="n">YearCategorical</span><span class="p">)),</span>
                             <span class="n">weights</span> <span class="o">=</span> <span class="ss">:Pop</span><span class="p">,</span> <span class="n">Vcov</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="ss">:State</span><span class="p">))</span>
 <span class="n">regtable</span><span class="p">(</span><span class="n">fixedeffectresults</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>----------------------------
+                     Sales  
+                   ---------
+                         (1)
+----------------------------
+NDI                -0.005***
+                     (0.001)
+----------------------------
+StateCategorical         Yes
+YearCategorical          Yes
+----------------------------
+Estimator                OLS
+----------------------------
+N                      1,380
+R2                     0.803
+----------------------------
 </pre></div>
 </div>
 </div>

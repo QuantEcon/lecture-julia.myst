@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/mccall_model.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="26. Job Search II: Search and Separation" href="mccall_model_with_separation.html" />
@@ -453,25 +454,6 @@ generates a sequence that converges to the fixed point.</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package Distributions [31c24e10-a181-5473-b8eb-7969acd0382f] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -493,6 +475,12 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>support(dist) = 0:50
+</pre></div>
+</div>
+<img alt="../_images/mccall_model_5_1.png" src="../_images/mccall_model_5_1.png" />
+</div>
 </div>
 <p>We can explore taking expectations over this distribution</p>
 <div class="cell docutils container">
@@ -508,6 +496,13 @@ Stacktrace:
 <span class="c"># use operator with left-multiply</span>
 <span class="nd">@show</span> <span class="n">E</span> <span class="o">*</span> <span class="n">w</span> <span class="c"># the `w` are values assigned for the discrete states</span>
 <span class="nd">@show</span> <span class="n">dot</span><span class="p">(</span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="n">support</span><span class="p">(</span><span class="n">dist</span><span class="p">)),</span> <span class="n">w</span><span class="p">);</span> <span class="c"># identical calculation</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(E_w, E_w_2) = (43.3333333333357, 12.919896640724119)
+E * w = 43.3333333333357
+dot(pdf.(dist, support(dist)), w) = 43.3333333333357
 </pre></div>
 </div>
 </div>
@@ -541,6 +536,9 @@ this fixed point algorithm generates.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/mccall_model_9_0.png" src="../_images/mccall_model_9_0.png" />
+</div>
 </div>
 <p>One approach to solving the model is to directly implement this sort of iteration, and continues until measured deviation
 between successive iterates is below tol</p>
@@ -566,6 +564,11 @@ between successive iterates is below tol</p>
     <span class="c"># now compute the reservation wage</span>
     <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">c</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">E</span><span class="o">*</span><span class="n">v</span><span class="p">)</span> <span class="c"># (2)</span>
 <span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>compute_reservation_wage_direct (generic function with 1 method)
 </pre></div>
 </div>
 </div>
@@ -595,6 +598,11 @@ between successive iterates is below tol</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>compute_reservation_wage (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Let’s compute the reservation wage at the default parameters</p>
 <div class="cell docutils container">
@@ -602,6 +610,11 @@ between successive iterates is below tol</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">mcm</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">c</span><span class="o">=</span><span class="mf">25.0</span><span class="p">,</span> <span class="n">β</span><span class="o">=</span><span class="mf">0.99</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">)</span> <span class="c"># named tuples</span>
 
 <span class="n">compute_reservation_wage</span><span class="p">(</span><span class="n">mcm</span><span class="p">())</span> <span class="c"># call with default parameters</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>47.3164997014716
 </pre></div>
 </div>
 </div>
@@ -639,6 +652,9 @@ parameters.</p>
         <span class="n">fill</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/mccall_model_20_0.png" src="../_images/mccall_model_20_0.png" />
 </div>
 </div>
 <p>As expected, the reservation wage increases both with patience and with
@@ -705,6 +721,11 @@ V(w_i)
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>47.31649976654621
+</pre></div>
+</div>
+</div>
 </div>
 <p>You can use this code to solve the exercise below.</p>
 <p>Another option is to solve for the root of the  <span class="math notranslate nohighlight">\(T_{\psi}(\psi) - \psi\)</span> equation</p>
@@ -717,6 +738,11 @@ V(w_i)
     <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="n">ψ_star</span> <span class="c"># (2)</span>
 <span class="k">end</span>
 <span class="n">compute_reservation_wage_ψ2</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">β</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>47.3164997665462
 </pre></div>
 </div>
 </div>
@@ -779,6 +805,9 @@ given the parameters, and then simulate to see how long it takes to accept.</p>
      <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;unemployment compensation&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;months&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/mccall_model_27_0.png" src="../_images/mccall_model_27_0.png" />
 </div>
 </div>
 </div>

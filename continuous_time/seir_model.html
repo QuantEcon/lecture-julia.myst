@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/continuous_time/seir_model.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="42. Modeling Shocks in COVID 19 with Stochastic Differential Equations" href="covid_sde.html" />
@@ -291,25 +292,6 @@ equations where the number of agents is large and there are no exogenous stochas
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package OrdinaryDiffEq [1dea7af3-3e70-54e6-95c3-0bf5283fa5ed] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="the-seir-model">
@@ -403,6 +385,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>F_simple (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Given this system, we choose an initial condition and a timespan, and create a <code class="docutils literal notranslate"><span class="pre">ODEProblem</span></code> encapsulating the system.</p>
 <div class="cell docutils container">
@@ -418,6 +405,17 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Cyan">ODEProblem</span> with uType <span class=" -Color -Color-Cyan">Vector{Float64}</span> and tType <span class=" -Color -Color-Cyan">Float64</span>. In-place: <span class=" -Color -Color-Cyan">false</span>
+timespan: (0.0, 350.0)
+u0: 4-element Vector{Float64}:
+ 0.9999995
+ 4.0e-7
+ 1.0e-7
+ 0.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>With this, choose an ODE algorithm and solve the initial value problem.  A good default algorithm for non-stiff ODEs of this sort might be <code class="docutils literal notranslate"><span class="pre">Tsit5()</span></code>, which is the Tsitouras 5/4 Runge-Kutta method).</p>
 <div class="cell docutils container">
@@ -427,6 +425,9 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/seir_model_10_0.png" src="../_images/seir_model_10_0.png" />
+</div>
 </div>
 <p>We did not provide either a set of time steps or a <code class="docutils literal notranslate"><span class="pre">dt</span></code> time step size to the <code class="docutils literal notranslate"><span class="pre">solve</span></code>.  Most accurate and high-performance ODE solvers appropriate for this problem use adaptive time-stepping, changing the step size based the degree of curvature in the derivatives.</p>
 <p>Or, as an alternative visualization, the proportions in each state over time</p>
@@ -435,6 +436,9 @@ Stacktrace:
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">areaplot</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">sol</span><span class="o">&#39;</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;s&quot;</span> <span class="s">&quot;e&quot;</span> <span class="s">&quot;i&quot;</span> <span class="s">&quot;r&quot;</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;SEIR Proportions&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/seir_model_12_0.png" src="../_images/seir_model_12_0.png" />
 </div>
 </div>
 <p>While maintaining the core system of ODEs in <span class="math notranslate nohighlight">\((s, e, i, r)\)</span>, we will extend the basic model to enable some policy experiments and calculations of aggregate values.</p>
@@ -541,6 +545,20 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Cyan">ODEProblem</span> with uType <span class=" -Color -Color-Cyan">Vector{Float64}</span> and tType <span class=" -Color -Color-Cyan">Float64</span>. In-place: <span class=" -Color -Color-Cyan">false</span>
+timespan: (0.0, 550.0)
+u0: 7-element Vector{Float64}:
+ 0.9999995
+ 4.0e-7
+ 1.0e-7
+ 0.0
+ 1.6
+ 0.0
+ 0.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">tspan</span></code> of <code class="docutils literal notranslate"><span class="pre">(0.0,</span> <span class="pre">p.T)</span></code> determines the <span class="math notranslate nohighlight">\(t\)</span> used by the solver.  The time scale needs to be consistent with the arrival
 rate of the transition probabilities (i.e. the <span class="math notranslate nohighlight">\(\gamma, \sigma\)</span> were chosen based on daily data, so the unit of <span class="math notranslate nohighlight">\(t\)</span> is a day).</p>
@@ -557,6 +575,11 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>length(sol.t) = 45
+</pre></div>
+</div>
+</div>
 </div>
 <p>We see that the adaptive time-stepping used approximately 45 time-steps to solve this problem to the desired accuracy.  Evaluating the solver at points outside of those time-steps uses an interpolator consistent with the solution to the ODE.</p>
 <p>While it may seem that 45 time intervals is extremely small for that range, for much of the <span class="math notranslate nohighlight">\(t\)</span>, the functions are very flat - and hence adaptive time-stepping algorithms can move quickly and interpolate accurately.</p>
@@ -568,6 +591,9 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
      <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">900</span><span class="p">,</span> <span class="mi">300</span><span class="p">))</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/seir_model_22_0.png" src="../_images/seir_model_22_0.png" />
 </div>
 </div>
 <p>A few more comments:</p>
@@ -601,6 +627,9 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/seir_model_26_0.png" src="../_images/seir_model_26_0.png" />
+</div>
 </div>
 <p>As expected, lower effective transmission rates defer the peak of infections.</p>
 <p>They also lead to a lower peak in current cases.</p>
@@ -612,6 +641,9 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
      <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;c(t)&quot;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Cumulative Cases&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/seir_model_28_0.png" src="../_images/seir_model_28_0.png" />
 </div>
 </div>
 </div>
@@ -651,6 +683,9 @@ imposed.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/seir_model_34_0.png" src="../_images/seir_model_34_0.png" />
+</div>
 </div>
 <p>Now let’s plot the number of infected persons and the cumulative number
 of infected persons:</p>
@@ -662,6 +697,9 @@ of infected persons:</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/seir_model_36_0.png" src="../_images/seir_model_36_0.png" />
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -670,6 +708,9 @@ of infected persons:</p>
      <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;c(t)&quot;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Cumulative Infected&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/seir_model_37_0.png" src="../_images/seir_model_37_0.png" />
 </div>
 </div>
 </div>
@@ -707,6 +748,20 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.</
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Cyan">ODEProblem</span> with uType <span class=" -Color -Color-Cyan">Vector{Float64}</span> and tType <span class=" -Color -Color-Cyan">Float64</span>. In-place: <span class=" -Color -Color-Cyan">false</span>
+timespan: (0.0, 550.0)
+u0: 7-element Vector{Float64}:
+ 0.9996969696969696
+ 0.00022727272727272727
+ 7.575757575757576e-5
+ 0.0
+ 0.5
+ 0.0
+ 0.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>Unlike the previous examples, the <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> functions have discontinuities which might occur.  We can improve the efficiency of the adaptive time-stepping methods by telling them to include a step exactly at those points by using <code class="docutils literal notranslate"><span class="pre">tstops</span></code></p>
 <p>Let’s calculate the paths:</p>
@@ -719,6 +774,9 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.</
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/seir_model_41_0.png" src="../_images/seir_model_41_0.png" />
+</div>
 </div>
 <p>Next we examine the daily deaths, <span class="math notranslate nohighlight">\(\frac{d D(t)}{dt} = N \delta \gamma i(t)\)</span>.</p>
 <div class="cell docutils container">
@@ -729,6 +787,9 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.</
 <span class="n">plot!</span><span class="p">(</span><span class="n">sol_late</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="n">flow_deaths</span><span class="p">(</span><span class="n">sol_late</span><span class="p">,</span> <span class="n">p_late</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Lift Late&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/seir_model_43_0.png" src="../_images/seir_model_43_0.png" />
 </div>
 </div>
 <p>Pushing the peak of curve further into the future may reduce cumulative deaths

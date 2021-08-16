@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/time_series_models/classical_filtering.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="60. Dynamic Stackelberg Problems" href="../dynamic_programming_squared/dyn_stack.html" />
@@ -831,21 +832,7 @@ component not in this space.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package Polynomials [f27b6e38-b328-58d1-80ce-0feddd5e7a45] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>optimal_y (generic function with 2 methods)
 </pre></div>
 </div>
 </div>
@@ -873,6 +860,11 @@ x_t = (1 - 2 L) \varepsilon_t
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(d = [1.0, -2.0], h = 0.0, y_m = [0.0], m = 1, ϕ = [-2.0, 5.0, -2.0], β = 1.0, ϕ_r = [-2.0, 5.0, -2.0], k = 1)
+</pre></div>
+</div>
+</div>
 </div>
 <p>The Wold representation is computed by example.coefficients_of_c().</p>
 <p>Let’s check that it “flips roots” as required</p>
@@ -882,10 +874,22 @@ x_t = (1 - 2 L) \varepsilon_t
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
+  2.0
+ -1.0
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">roots_of_characteristic</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>([2.0], -2.0, [0.5])
 </pre></div>
 </div>
 </div>
@@ -899,6 +903,16 @@ and put it in <span class="math notranslate nohighlight">\(V\)</span>.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 Matrix{Float64}:
+  5.0  -2.0   0.0   0.0   0.0
+ -2.0   5.0  -2.0   0.0   0.0
+  0.0  -2.0   5.0  -2.0   0.0
+  0.0   0.0  -2.0   5.0  -2.0
+  0.0   0.0   0.0  -2.0   5.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>Notice how the lower rows of the “moving average representations” are converging to the appropriate infinite history Wold representation</p>
 <div class="cell docutils container">
@@ -908,11 +922,31 @@ and put it in <span class="math notranslate nohighlight">\(V\)</span>.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 LowerTriangular{Float64, Matrix{Float64}}:
+  2.23607     ⋅         ⋅         ⋅         ⋅ 
+ -0.894427   2.04939    ⋅         ⋅         ⋅ 
+  0.0       -0.9759    2.01187    ⋅         ⋅ 
+  0.0        0.0      -0.9941    2.00294    ⋅ 
+  0.0        0.0       0.0      -0.998533  2.00073
+</pre></div>
+</div>
+</div>
 </div>
 <p>Notice how the lower rows of the “autoregressive representations” are converging to the appropriate infinite history autoregressive representation</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">Li</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 LowerTriangular{Float64, Matrix{Float64}}:
+ 0.447214    ⋅          ⋅         ⋅         ⋅ 
+ 0.19518    0.48795     ⋅         ⋅         ⋅ 
+ 0.0946762  0.236691   0.49705    ⋅         ⋅ 
+ 0.0469898  0.117474   0.246696  0.499266   ⋅ 
+ 0.0234518  0.0586295  0.123122  0.249176  0.499817
 </pre></div>
 </div>
 </div>
@@ -959,10 +993,23 @@ with mean zero and variance unity.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(d = [1.0, 0.0, -1.4142135623730951], h = 0.0, y_m = [0.0, 0.0], m = 2, ϕ = [-1.4142135623730951, 0.0, 3.0000000000000004, 0.0, -1.4142135623730951], β = 1.0, ϕ_r = [-1.4142135623730951, 0.0, 3.0000000000000004, 0.0, -1.4142135623730951], k = 2)
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">coeffs_of_c</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
+  1.4142135623731003
+ -0.0
+ -1.0000000000000064
 </pre></div>
 </div>
 </div>
@@ -973,10 +1020,28 @@ with mean zero and variance unity.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>([1.1892071150027195, -1.1892071150027195], -1.4142135623731096, [0.8408964152537157, -0.8408964152537157])
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">V</span> <span class="o">=</span> <span class="n">construct_V</span><span class="p">(</span><span class="n">example</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8×8 Matrix{Float64}:
+  3.0       0.0      -1.41421   0.0      …   0.0       0.0       0.0
+  0.0       3.0       0.0      -1.41421      0.0       0.0       0.0
+ -1.41421   0.0       3.0       0.0          0.0       0.0       0.0
+  0.0      -1.41421   0.0       3.0         -1.41421   0.0       0.0
+  0.0       0.0      -1.41421   0.0          0.0      -1.41421   0.0
+  0.0       0.0       0.0      -1.41421  …   3.0       0.0      -1.41421
+  0.0       0.0       0.0       0.0          0.0       3.0       0.0
+  0.0       0.0       0.0       0.0         -1.41421   0.0       3.0
 </pre></div>
 </div>
 </div>
@@ -989,10 +1054,31 @@ with mean zero and variance unity.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×8 Matrix{Float64}:
+ 0.0  0.0  0.0  -0.92582   0.0        1.46385   0.0      0.0
+ 0.0  0.0  0.0   0.0      -0.966092   0.0       1.43759  0.0
+ 0.0  0.0  0.0   0.0       0.0       -0.966092  0.0      1.43759
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">Li</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8×8 LowerTriangular{Float64, Matrix{Float64}}:
+ 0.57735    ⋅         ⋅         ⋅        …   ⋅         ⋅         ⋅ 
+ 0.0       0.57735    ⋅         ⋅            ⋅         ⋅         ⋅ 
+ 0.308607  0.0       0.654654   ⋅            ⋅         ⋅         ⋅ 
+ 0.0       0.308607  0.0       0.654654      ⋅         ⋅         ⋅ 
+ 0.19518   0.0       0.414039  0.0           ⋅         ⋅         ⋅ 
+ 0.0       0.19518   0.0       0.414039  …  0.68313    ⋅         ⋅ 
+ 0.131165  0.0       0.278243  0.0          0.0       0.695608   ⋅ 
+ 0.0       0.131165  0.0       0.278243     0.459078  0.0       0.695608
 </pre></div>
 </div>
 </div>

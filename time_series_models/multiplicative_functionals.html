@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/time_series_models/multiplicative_functionals.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="58. Classical Control with Linear Algebra" href="lu_tricks.html" />
@@ -307,25 +308,6 @@ x_{t+1} = \left(A - B F^{-1}D \right)x_t
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package Distributions [31c24e10-a181-5473-b8eb-7969acd0382f] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -395,6 +377,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>loglikelihood (generic function with 8 methods)
+</pre></div>
+</div>
+</div>
 </div>
 <p>The heavy lifting is done inside the AMF_LSS_VAR struct.</p>
 <p>The following code adds some simple functions that make it straightforward to generate sample paths from an instance of AMF_LSS_VAR</p>
@@ -444,6 +431,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>population_means (generic function with 2 methods)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Now that we have these functions in our took kit, let’s apply them to run some
 simulations.</p>
@@ -478,6 +470,9 @@ simulations.</p>
 <span class="n">plot</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="mi">500</span><span class="p">))</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_8_0.png" src="../_images/multiplicative_functionals_8_0.png" />
 </div>
 </div>
 </div>
@@ -520,6 +515,9 @@ simulations.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_11_0.png" src="../_images/multiplicative_functionals_11_0.png" />
+</div>
 </div>
 <p>Notice that the log likelihood is almost always nonnegative, implying that <span class="math notranslate nohighlight">\(L_t\)</span> is typically bigger than 1.</p>
 <p>Recall that the likelihood function is a pdf (probability density function) and <strong>not</strong> a probability measure, so it can take values larger than 1.</p>
@@ -542,6 +540,17 @@ simulations.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The pdf at +/- 1.175 sigma takes the value: 1.0001868966924388
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Probability of dL being larger than 1 is approx: 0.7600052842019751
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Fraction of dlogL being nonnegative in the sample is: 0.7593054054054054
+</pre></div>
+</div>
+</div>
 </div>
 <p>Let’s also plot the conditional pdf of <span class="math notranslate nohighlight">\(\Delta y_{t+1}\)</span></p>
 <div class="cell docutils container">
@@ -552,6 +561,12 @@ simulations.</p>
 <span class="n">plot!</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Conditional pdf f(Delta y_(t+1) | x_t)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The pdf at +/- one sigma takes the value: 1.2098536225957168 
+</pre></div>
+</div>
+<img alt="../_images/multiplicative_functionals_17_1.png" src="../_images/multiplicative_functionals_17_1.png" />
 </div>
 </div>
 </div>
@@ -595,6 +610,9 @@ simulations.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_20_0.png" src="../_images/multiplicative_functionals_20_0.png" />
+</div>
 </div>
 <p>Let’s see a histogram of the log-likelihoods under the true and the alternative model (same sample paths)</p>
 <div class="cell docutils container">
@@ -607,6 +625,9 @@ simulations.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_23_0.png" src="../_images/multiplicative_functionals_23_0.png" />
+</div>
 </div>
 <p>Now we’ll plot the histogram of the difference in log likelihood ratio</p>
 <div class="cell docutils container">
@@ -617,6 +638,9 @@ simulations.</p>
 <span class="n">plot!</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;(1/T)[log(L_T^i | theta_0) - log(L_T^i |theta_1)]&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_25_0.png" src="../_images/multiplicative_functionals_25_0.png" />
 </div>
 </div>
 </div>
@@ -735,6 +759,14 @@ U = \exp(-\delta) \left[ I - \exp(-\delta) A' \right]^{-1} D
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The (min, mean, max) of additive Martingale component in period T is
+	 (-1.7437162246900972, 0.01035003118701151, 1.7555896322222506)
+The (min, mean, max) of multiplicative Martingale component in period T is
+	 (0.15628035696036363, 1.0087436260285634, 5.171703504527901)
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="comments">
 <h4><span class="section-number">57.3.2.1. </span>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h4>
@@ -762,6 +794,9 @@ well.</p></li>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_31_0.png" src="../_images/multiplicative_functionals_31_0.png" />
+</div>
 </div>
 <p>Here’s a histogram of the multiplicative martingale component</p>
 <div class="cell docutils container">
@@ -770,6 +805,9 @@ well.</p></li>
 <span class="n">plot!</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Histogram of Multiplicative Martingale Component&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_33_0.png" src="../_images/multiplicative_functionals_33_0.png" />
 </div>
 </div>
 </div>
@@ -837,6 +875,9 @@ well.</p></li>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/multiplicative_functionals_35_0.png" src="../_images/multiplicative_functionals_35_0.png" />
+</div>
 </div>
 <p>These probability density functions illustrate a <strong>peculiar property</strong> of log likelihood ratio processes:</p>
 <ul class="simple">
@@ -886,6 +927,11 @@ also for the case that  <span class="math notranslate nohighlight">\(A, B, D, F 
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(4.54129843114712, 0.24220854072375247, 0, 0.25307727077652764)
+</pre></div>
+</div>
+</div>
 </div>
 <p>The values of the two processes are</p>
 <div class="math notranslate nohighlight">
@@ -923,6 +969,11 @@ representative consumer would accept is given by</p>
 
 <span class="n">perc_reduct</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">exp</span><span class="p">(</span><span class="n">logVC_r</span> <span class="o">-</span> <span class="n">logVC_d</span><span class="p">))</span>
 <span class="n">perc_reduct</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0809878812017448
 </pre></div>
 </div>
 </div>

@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/smoothing.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="38. Optimal Savings III: Occasionally Binding Constraints" href="ifp.html" />
@@ -537,25 +538,6 @@ values.</p></li>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package Parameters [d96e819e-fc66-5662-9728-84c9c7592b0a] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -613,6 +595,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>consumption_incomplete (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Let’s test by checking that <span class="math notranslate nohighlight">\(\bar c\)</span> and <span class="math notranslate nohighlight">\(b_2\)</span> satisfy the budget constraint</p>
 <div class="cell docutils container">
@@ -621,6 +608,11 @@ Stacktrace:
 <span class="n">c̄</span><span class="p">,</span> <span class="n">b1</span><span class="p">,</span> <span class="n">b2</span> <span class="o">=</span> <span class="n">consumption_complete</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
 <span class="n">debt_complete</span> <span class="o">=</span> <span class="p">[</span><span class="n">b1</span><span class="p">,</span> <span class="n">b2</span><span class="p">]</span>
 <span class="n">isapprox</span><span class="p">((</span><span class="n">c̄</span> <span class="o">+</span> <span class="n">b2</span> <span class="o">-</span> <span class="n">cp</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">debt_complete</span><span class="o">&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">β</span> <span class="o">*</span> <span class="n">cp</span><span class="o">.</span><span class="n">P</span><span class="p">)[</span><span class="mi">2</span><span class="p">,</span> <span class="o">:</span><span class="p">])[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -755,6 +747,9 @@ time in consumption</p></li>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/smoothing_8_0.png" src="../_images/smoothing_8_0.png" />
+</div>
 </div>
 <p>In the graph on the left, for the same sample path of nonfinancial
 income <span class="math notranslate nohighlight">\(y_t\)</span>, notice that</p>
@@ -785,6 +780,9 @@ markets economy</p></li>
 <span class="n">plot</span><span class="p">(</span><span class="n">plt_tax</span><span class="p">,</span> <span class="n">plt_gov</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/smoothing_11_0.png" src="../_images/smoothing_11_0.png" />
 </div>
 </div>
 </div>
@@ -874,6 +872,40 @@ asset level to <span class="math notranslate nohighlight">\(0\)</span>, so that 
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;Ex post returns to purchase of Arrow securities = </span><span class="si">$exret</span><span class="s">&quot;</span><span class="p">)</span>
 <span class="n">exant</span> <span class="o">=</span> <span class="n">Π</span> <span class="o">.*</span> <span class="n">P</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;Ex ante returns to purchase of Arrow securities = </span><span class="si">$exant</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>P = [0.8 0.2; 0.4 0.6]
+Q = [0.768 0.192; 0.384 0.576]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Govt expenditures in peace and war = [1.0, 2.0]
+Constant tax collections = 1.3116883116883118
+Govt assets in two states = [0.0, 1.6233766233766234]
+Now let&#39;s check the government&#39;s budget constraint in peace and war.
+Our assumptions imply that the government always purchases 0 units of the
+Arrow peace security.
+
+Spending on Arrow war security in peace = 0.3116883116883117
+Spending on Arrow war security in war = 0.9350649350649349
+
+
+Government tax collections plus asset levels in peace and war
+T+b in peace = 1.3116883116883118
+T+b in war = 2.9350649350649354
+
+
+Total government spending in peace and war
+total govt spending in peace = 1.3116883116883118
+total govt spending in war = 2.935064935064935
+
+
+Let&#39;s see ex post and ex ante returns on Arrow securities
+Ex post returns to purchase of Arrow securities = [1.3020833333333333 5.208333333333333; 2.6041666666666665 1.7361111111111112]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ex ante returns to purchase of Arrow securities = [1.0416666666666667 1.0416666666666667; 1.0416666666666667 1.0416666666666667]
 </pre></div>
 </div>
 </div>
@@ -1059,6 +1091,9 @@ allows the consumer completely to smooth consumption across time and across stat
 <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomleft</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/smoothing_18_0.png" src="../_images/smoothing_18_0.png" />
 </div>
 </div>
 <div class="section" id="interpretation-of-graph">

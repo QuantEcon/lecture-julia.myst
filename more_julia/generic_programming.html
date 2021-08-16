@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/more_julia/generic_programming.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="8. General Purpose Packages" href="general_packages.html" />
@@ -305,25 +306,6 @@
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package Distributions [31c24e10-a181-5473-b8eb-7969acd0382f] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -349,6 +331,20 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(x, y, z) = (1, Normal{Float64}(μ=0.0, σ=1.0), &quot;foo&quot;)
+(typeof(x), typeof(y), typeof(z)) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(Int64, Normal{Float64}, String)
+supertype(typeof(x)) = Signed
+typeof(x) |&gt; supertype = Signed
+supertype(typeof(y)) = Distribution{Univariate, Continuous}
+typeof(z) |&gt; supertype = AbstractString
+typeof(x) &lt;: Any = true
+</pre></div>
+</div>
+</div>
 </div>
 <p>Beyond the <code class="docutils literal notranslate"><span class="pre">typeof</span></code> and <code class="docutils literal notranslate"><span class="pre">supertype</span></code> functions, a few other useful tools for analyzing the tree of types are discussed in the <a class="reference internal" href="../getting_started_julia/introduction_to_types.html"><span class="doc">introduction to types lecture</span></a></p>
 <div class="cell docutils container">
@@ -359,10 +355,24 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Int64 &lt;: Signed &lt;: Integer &lt;: Real &lt;: Number &lt;: Any
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">subtypes</span><span class="p">(</span><span class="kt">Integer</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Any}:
+ Bool
+ GeometryBasics.OffsetInteger
+ Signed
+ Unsigned
 </pre></div>
 </div>
 </div>
@@ -383,11 +393,55 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>subtypetree (generic function with 3 methods)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Applying this to <code class="docutils literal notranslate"><span class="pre">Number</span></code>, we see the tree of types currently loaded</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">subtypetree</span><span class="p">(</span><span class="kt">Number</span><span class="p">)</span> <span class="c"># warning: do not use this function on ``Any``!</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Number
+    Complex
+    Real
+        AbstractFloat
+            BigFloat
+            Float16
+            Float32
+            Float64
+        AbstractIrrational
+            Irrational
+        FixedPointNumbers.FixedPoint
+            FixedPointNumbers.Fixed
+            FixedPointNumbers.Normed
+        Integer
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>            Bool
+            GeometryBasics.OffsetInteger
+            Signed
+                BigInt
+                Int128
+                Int16
+                Int32
+                Int64
+                Int8
+            Unsigned
+                UInt128
+                UInt16
+                UInt32
+                UInt64
+                UInt8
+        Rational
+        Ratios.SimpleRatio
+        StatsBase.PValue
+        StatsBase.TestStat
 </pre></div>
 </div>
 </div>
@@ -413,6 +467,14 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>myval = MyType(2.0)
+typeof(myval) = MyType
+supertype(typeof(myval)) = Any
+typeof(myval) &lt;: Any = true
+</pre></div>
+</div>
+</div>
 </div>
 <p>Here we see another example of generic programming: every type <code class="docutils literal notranslate"><span class="pre">&lt;:</span> <span class="pre">Any</span></code> supports the <code class="docutils literal notranslate"><span class="pre">&#64;show</span></code> macro, which in turn, relies on the <code class="docutils literal notranslate"><span class="pre">show</span></code> function.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">&#64;show</span></code> macro (1) prints the expression as a string; (2) evaluates the expression; and (3) calls the <code class="docutils literal notranslate"><span class="pre">show</span></code> function on the returned values.</p>
@@ -424,6 +486,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1, 2]
+</pre></div>
+</div>
+</div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">Any</span></code> type is useful, because it provides a fall-back implementation for a variety of functions.</p>
 <p>Hence, calling <code class="docutils literal notranslate"><span class="pre">show</span></code> on our custom type dispatches to the fallback function</p>
@@ -431,6 +498,11 @@ Stacktrace:
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">myval</span> <span class="o">=</span> <span class="n">MyType</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
 <span class="n">show</span><span class="p">(</span><span class="n">myval</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MyType(2.0)
 </pre></div>
 </div>
 </div>
@@ -455,11 +527,21 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(MyType.a = 2.0)
+</pre></div>
+</div>
+</div>
 </div>
 <p>At that point, we can use the <code class="docutils literal notranslate"><span class="pre">&#64;show</span></code> macro, which in turn calls <code class="docutils literal notranslate"><span class="pre">show</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">myval</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>myval = (MyType.a = 2.0)
 </pre></div>
 </div>
 </div>
@@ -500,6 +582,11 @@ Stacktrace:
 <span class="n">set_a!</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mf">4.1</span><span class="p">)</span>
 <span class="n">myalgorithm!</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">m</span><span class="o">.</span><span class="n">algorithmcalculation</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>m.algorithmcalculation = 7.199999999999999
 </pre></div>
 </div>
 </div>
@@ -546,11 +633,22 @@ to the creation of the <a class="reference external" href="https://github.com/Ju
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>d1 = Normal{Float64}(μ=1.0, σ=2.0)
+Normal{Float64} &lt;: Distribution{Univariate, Continuous} &lt;: Sampleable{Univariate, Continuous} &lt;: Any
+</pre></div>
+</div>
+</div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">Sampleable{Univariate,Continuous}</span></code> type has a limited number of functions, chiefly the ability to draw a random number</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">rand</span><span class="p">(</span><span class="n">d1</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>rand(d1) = -1.4624147364160764
 </pre></div>
 </div>
 </div>
@@ -572,6 +670,11 @@ iid shocks, where you did not need to assume an existing pdf etc., this is a nat
     <span class="k">return</span> <span class="n">x</span>
 <span class="k">end</span>
 <span class="nd">@show</span> <span class="n">simulateprocess</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">Normal</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>simulateprocess(0.0, d = Normal(0.2, 2.0)) = [0.0, 0.5843820149094059, 2.3522734712268227, 0.744672616865405, 0.5870372401290447, 2.608261723954029]
 </pre></div>
 </div>
 </div>
@@ -601,6 +704,27 @@ iid shocks, where you did not need to assume an existing pdf etc., this is a nat
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>d1 = Normal{Float64}(μ=1.0, σ=2.0)
+d2 = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Exponential{Float64}(θ=0.1)
+supertype(typeof(d1)) = Distribution{Univariate, Continuous}
+supertype(typeof(d2)) = Distribution{Univariate, Continuous}
+pdf(d1, 0.1) = 0.18026348123082397
+pdf(d2, 0.1) = 3.6787944117144233
+cdf(d1, 0.1) = 0.32635522028792
+cdf(d2, 0.1) = 0.6321205588285577
+support(d1) = RealInterval(-Inf, Inf)
+support(d2) = RealInterval(0.0, Inf)
+minimum(d1) = -Inf
+minimum(d2) = 0.0
+maximum(d1) = Inf
+maximum(d2) = Inf
+</pre></div>
+</div>
+</div>
 </div>
 <p>You could create your own <code class="docutils literal notranslate"><span class="pre">Distributions{Univariate,</span> <span class="pre">Continuous}</span></code> type by implementing those functions – as is described in <a class="reference external" href="https://juliastats.github.io/Distributions.jl/latest/extends/">the documentation</a>.</p>
 <p>If you fulfill all of the conditions of a particular interface, you can use algorithms from the present, past, and future  that are written for the abstract <code class="docutils literal notranslate"><span class="pre">Distributions{Univariate,</span> <span class="pre">Continuous}</span></code> type.</p>
@@ -612,6 +736,9 @@ iid shocks, where you did not need to assume an existing pdf etc., this is a nat
 <span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="c"># note no other arguments!</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/generic_programming_32_0.png" src="../_images/generic_programming_32_0.png" />
 </div>
 </div>
 <p>Calling <code class="docutils literal notranslate"><span class="pre">plot</span></code> on any subtype of <code class="docutils literal notranslate"><span class="pre">Distributions{Univariate,</span> <span class="pre">Continuous}</span></code>
@@ -640,6 +767,15 @@ displays the <code class="docutils literal notranslate"><span class="pre">pdf</s
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(minimum(d), maximum(d)) = (0, 2.0)
+support(d) = RealInterval(0.0, 2.0)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>RealInterval(0.0, 2.0)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Curiously, you will note that the <code class="docutils literal notranslate"><span class="pre">support</span></code> function works, even though we did not provide one.</p>
 <p>This is another example of the power of multiple dispatch and generic programming.</p>
@@ -657,6 +793,9 @@ implementation as a fallback.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/generic_programming_38_0.png" src="../_images/generic_programming_38_0.png" />
+</div>
 </div>
 <p>A few things to point out</p>
 <ul class="simple">
@@ -671,6 +810,12 @@ implementation as a fallback.</p>
 <span class="n">plot</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(d) = Truncated{Exponential{Float64}, Continuous, Float64}
+</pre></div>
+</div>
+<img alt="../_images/generic_programming_40_1.png" src="../_images/generic_programming_40_1.png" />
 </div>
 </div>
 <p>This is the power of generic programming in general, and Julia in particular: you can combine and compose completely separate packages and code, as long as there is an agreement on abstract types and functions.</p>
@@ -721,6 +866,21 @@ implementation as a fallback.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(a) = ComplexF64
+typeof(a) &lt;: Number = true
+a + b = 1.0 + 3.0im
+a * b = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-2.0 + 2.0im
+-a = -1.0 - 1.0im
+a - b = 1.0 - 1.0im
+zero(a) = 0.0 + 0.0im
+one(a) = 1.0 + 0.0im
+</pre></div>
+</div>
+</div>
 </div>
 <p>And for an arbitrary precision integer where <code class="docutils literal notranslate"><span class="pre">BigInt</span> <span class="pre">&lt;:</span> <span class="pre">Number</span></code>
 (i.e., a different type than the <code class="docutils literal notranslate"><span class="pre">Int64</span></code> you have worked with, but nevertheless a <code class="docutils literal notranslate"><span class="pre">Number</span></code>)</p>
@@ -736,6 +896,20 @@ implementation as a fallback.</p>
 <span class="nd">@show</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
 <span class="nd">@show</span> <span class="n">zero</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">one</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(a) = BigInt
+typeof(a) &lt;: Number = true
+a + b = 14
+a * b = 40
+-a = -10
+a - b = 6
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>zero(a) = 0
+one(a) = 1
 </pre></div>
 </div>
 </div>
@@ -755,6 +929,15 @@ implementation as a fallback.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(x, typeof(x)) = (4.0 + 1.0im, ComplexF64)
+(xbig, typeof(xbig)) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(4.0 + 1.0im, Complex{BigFloat})
+</pre></div>
+</div>
+</div>
 </div>
 <p>The implementation of the <code class="docutils literal notranslate"><span class="pre">Complex</span></code> numbers use the underlying operations of
 storage type, so as long as <code class="docutils literal notranslate"><span class="pre">+</span></code>, <code class="docutils literal notranslate"><span class="pre">*</span></code> etc. are defined – as they should be
@@ -765,6 +948,8 @@ for any <code class="docutils literal notranslate"><span class="pre">Number</spa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html">+(z::<b>Complex</b>, w::<b>Complex</b>) in Base at <a href="https://github.com/JuliaLang/julia/tree/f9720dc2ebd6cd9e3086365f281e62506444ef37/base/complex.jl#L275" target="_blank">complex.jl:275</a></div></div>
 </div>
 <p>Following that link, the implementation of <code class="docutils literal notranslate"><span class="pre">+</span></code> for complex numbers is</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">+</span><span class="p">(</span><span class="n">z</span><span class="o">::</span><span class="kt">Complex</span><span class="p">,</span> <span class="n">w</span><span class="o">::</span><span class="kt">Complex</span><span class="p">)</span> <span class="o">=</span> <span class="kt">Complex</span><span class="p">(</span><span class="n">real</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="n">real</span><span class="p">(</span><span class="n">w</span><span class="p">),</span> <span class="n">imag</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">+</span> <span class="n">imag</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
@@ -779,6 +964,8 @@ for any <code class="docutils literal notranslate"><span class="pre">Number</spa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html">abs(z::<b>Complex</b>) in Base at <a href="https://github.com/JuliaLang/julia/tree/f9720dc2ebd6cd9e3086365f281e62506444ef37/base/complex.jl#L264" target="_blank">complex.jl:264</a></div></div>
 </div>
 <p>The source is</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="o">::</span><span class="kt">Complex</span><span class="p">)</span>  <span class="o">=</span> <span class="n">hypot</span><span class="p">(</span><span class="n">real</span><span class="p">(</span><span class="n">z</span><span class="p">),</span> <span class="n">imag</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
@@ -793,6 +980,8 @@ for any <code class="docutils literal notranslate"><span class="pre">Number</spa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html">abs(x::<b>Float64</b>) in Base at <a href="https://github.com/JuliaLang/julia/tree/f9720dc2ebd6cd9e3086365f281e62506444ef37/base/float.jl#L441" target="_blank">float.jl:441</a></div></div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -800,6 +989,8 @@ for any <code class="docutils literal notranslate"><span class="pre">Number</spa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html">abs(x::<b>Real</b>) in Base at <a href="https://github.com/JuliaLang/julia/tree/f9720dc2ebd6cd9e3086365f281e62506444ef37/base/number.jl#L138" target="_blank">number.jl:138</a></div></div>
 </div>
 <p>With implementations</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Real</span><span class="p">)</span> <span class="o">=</span> <span class="n">ifelse</span><span class="p">(</span><span class="n">signbit</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
@@ -846,6 +1037,16 @@ for any <code class="docutils literal notranslate"><span class="pre">Number</spa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(a) = Rational{Int64}
+typeof(a) &lt;: Number = true
+typeof(a) &lt;: Real = true
+inv(a) = 10//1
+a / b = 3//20
+a &lt; b = true
+</pre></div>
+</div>
+</div>
 </div>
 <p><strong>Remark:</strong> Here we see where and how the precise connection to the mathematics for number types breaks down for practical reasons, in particular</p>
 <ul class="simple">
@@ -866,6 +1067,17 @@ for any <code class="docutils literal notranslate"><span class="pre">Number</spa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Float64 &lt;: AbstractFloat = true
+BigFloat &lt;: AbstractFloat = true
+eps(Float64) = 2.220446049250313e-16
+eps(BigFloat) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.727233711018888925077270372560079914223200072887256277004740694033718360632485e-77
+</pre></div>
+</div>
+</div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">isless</span></code> function also has multiple methods.</p>
 <p>First let’s try with integers</p>
@@ -875,6 +1087,8 @@ for any <code class="docutils literal notranslate"><span class="pre">Number</spa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html">isless(x::<b>Real</b>, y::<b>Real</b>) in Base at <a href="https://github.com/JuliaLang/julia/tree/f9720dc2ebd6cd9e3086365f281e62506444ef37/base/operators.jl#L357" target="_blank">operators.jl:357</a></div></div>
 </div>
 <p>As we saw previously, the <code class="docutils literal notranslate"><span class="pre">Real</span></code> data type is an <em>abstract</em> type, and encompasses both floats and integers.</p>
 <p>If we go to the provided link in the source, we see the entirety of the function is</p>
@@ -892,6 +1106,8 @@ for any <code class="docutils literal notranslate"><span class="pre">Number</spa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_html">isless(x::<b>Float64</b>, y::<b>Float64</b>) in Base at <a href="https://github.com/JuliaLang/julia/tree/f9720dc2ebd6cd9e3086365f281e62506444ef37/base/float.jl#L381" target="_blank">float.jl:381</a></div></div>
 </div>
 <p>Note that the reason  <code class="docutils literal notranslate"><span class="pre">Float64</span> <span class="pre">&lt;:</span> <span class="pre">Real</span></code> calls this implementation rather than the one given above, is that <code class="docutils literal notranslate"><span class="pre">Float64</span> <span class="pre">&lt;:</span> <span class="pre">Real</span></code>, and Julia chooses the most specialized implementation for each function.</p>
 <p>The specialized implementations are often more subtle than you may realize due to <a class="reference external" href="https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html">floating point arithmetic</a>, <a class="reference external" href="https://en.wikipedia.org/wiki/Arithmetic_underflow">underflow</a>, etc.</p>
@@ -919,6 +1135,12 @@ for any <code class="docutils literal notranslate"><span class="pre">Number</spa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>quadgk(f, 0.0, 1.0) = (0.3333333333333333, 5.551115123125783e-17)
+</pre></div>
+</div>
+<img alt="../_images/generic_programming_63_1.png" src="../_images/generic_programming_63_1.png" />
+</div>
 </div>
 <p>Of course, univariate polynomials are another type of univariate function</p>
 <div class="cell docutils container">
@@ -931,6 +1153,13 @@ for any <code class="docutils literal notranslate"><span class="pre">Number</spa
 <span class="n">plotfunctions</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>  <span class="c"># same generic function</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>p = Polynomial(2 - 5*x + 2*x^2)
+p(1.0) = -1.0
+</pre></div>
+</div>
+<img alt="../_images/generic_programming_65_1.png" src="../_images/generic_programming_65_1.png" />
 </div>
 </div>
 <p>Similarly, the result of interpolating data is also a function</p>
@@ -945,6 +1174,12 @@ for any <code class="docutils literal notranslate"><span class="pre">Number</spa
 <span class="n">plotfunctions</span><span class="p">(</span><span class="n">f_int</span><span class="p">)</span>  <span class="c"># same generic function</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f_int(1.0) = 1.0
+</pre></div>
+</div>
+<img alt="../_images/generic_programming_67_1.png" src="../_images/generic_programming_67_1.png" />
 </div>
 </div>
 <p>Note that the same generic <code class="docutils literal notranslate"><span class="pre">plotfunctions</span></code> could use any variable passed to it that “looks” like a function, i.e., can call <code class="docutils literal notranslate"><span class="pre">f(x)</span></code>.</p>
@@ -992,6 +1227,11 @@ of <span class="math notranslate nohighlight">\(\Delta\)</span>,</p>
 <span class="n">ω</span> <span class="o">=</span> <span class="n">trap_weights</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span>
 <span class="n">dot</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">ω</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.3333503384008434
 </pre></div>
 </div>
 </div>

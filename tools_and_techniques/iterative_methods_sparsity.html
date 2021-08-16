@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/iterative_methods_sparsity.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="24. Shortest Paths" href="../dynamic_programming/short_path.html" />
@@ -315,25 +316,6 @@ ill-conditioned matrices.</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package BenchmarkTools [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 <div class="section" id="applications">
 <h3><span class="section-number">23.1.1. </span>Applications<a class="headerlink" href="#applications" title="Permalink to this headline">¶</a></h3>
@@ -399,6 +381,11 @@ and should be thought of as roughly equivalent to doing an eigendecomposition.  
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>Here we see an example of the best-conditioned matrix, the identity matrix with its completely orthonormal basis, which has a condition number of 1.</p>
 <p>On the other hand, notice that</p>
@@ -411,12 +398,24 @@ and should be thought of as roughly equivalent to doing an eigendecomposition.  
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.0000000000005004e6
+</pre></div>
+</div>
+</div>
 </div>
 <p>has a condition number of order <code class="docutils literal notranslate"><span class="pre">10E6</span></code> - and hence (taking the base-10 log) you would expect to be introducing numerical errors of about 6 significant digits if you
 are not careful.  For example, note that the inverse has both extremely large and extremely small negative numbers</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:
+  1.0    0.0
+ -1.0e6  1.0e6
 </pre></div>
 </div>
 </div>
@@ -428,12 +427,23 @@ are not careful.  For example, note that the inverse has both extremely large an
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0e-6
+</pre></div>
+</div>
+</div>
 </div>
 <p>However, be careful since the determinant has a scale, while the condition number is dimensionless.  That is,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">det</span><span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">A</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">cond</span><span class="p">(</span><span class="mi">1000</span> <span class="o">*</span> <span class="n">A</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>det(1000A) = 1.0
+cond(1000A) = 2.0000000000005001e6
 </pre></div>
 </div>
 </div>
@@ -452,6 +462,12 @@ intuition that ill-conditioned matrices typically occur when a matrix has radica
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>cond(A) = 2.0000000000005004e6
+cond(inv(A)) = 2.0000000002463197e6
+</pre></div>
+</div>
+</div>
 </div>
 <p>The condition number of the product of two matrices can change radically and lead things to becoming
 even more ill-conditioned.</p>
@@ -464,12 +480,29 @@ even more ill-conditioned.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×4 Matrix{Float64}:
+ 1.0  1.0e-8  0.0     0.0
+ 1.0  0.0     1.0e-8  0.0
+ 1.0  0.0     0.0     1.0e-8
+</pre></div>
+</div>
+</div>
 </div>
 <p>Note that the condition number increases substantially</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">cond</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">cond</span><span class="p">(</span><span class="n">L</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">L</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>cond(L) = 1.732050807568878e8
+cond(L&#39; * L) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5.345191558726545e32
 </pre></div>
 </div>
 </div>
@@ -484,11 +517,27 @@ requires calculations of the eigenvalues of the covariance matrix</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{ComplexF64}:
+                   0.0 + 4.870456104375987e-9im
+ 4.2146848510894035e-8 + 0.0im
+    1.7320508075688772 + 0.0im
+</pre></div>
+</div>
+</div>
 </div>
 <p>Note that these are significantly different than the known analytic solution and, in particular, are difficult to distinguish from 0.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sqrt</span><span class="o">.</span><span class="p">([</span><span class="mi">3</span> <span class="o">+</span> <span class="n">ϵ</span><span class="o">^</span><span class="mi">2</span><span class="p">,</span> <span class="n">ϵ</span><span class="o">^</span><span class="mi">2</span><span class="p">,</span> <span class="n">ϵ</span><span class="o">^</span><span class="mi">2</span><span class="p">])</span> <span class="o">|&gt;</span> <span class="n">sort</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
+ 1.0e-8
+ 1.0e-8
+ 1.7320508075688772
 </pre></div>
 </div>
 </div>
@@ -498,6 +547,14 @@ and lets us clearly distinguish from zero</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">svd</span><span class="p">(</span><span class="n">L</span><span class="p">)</span><span class="o">.</span><span class="n">S</span>  <span class="o">|&gt;</span> <span class="n">sort</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
+ 9.999999999999997e-9
+ 1.0e-8
+ 1.7320508075688774
 </pre></div>
 </div>
 </div>
@@ -511,6 +568,11 @@ and lets us clearly distinguish from zero</p>
 <span class="n">x_sol_1</span> <span class="o">=</span> <span class="n">A</span> <span class="o">\</span> <span class="n">b</span>  <span class="c"># using a least-squares solver</span>
 <span class="n">x_sol_2</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">A</span><span class="p">)</span> <span class="o">\</span> <span class="p">(</span><span class="n">A</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">b</span><span class="p">)</span>  <span class="c"># forming the normal equation ourselves</span>
 <span class="n">norm</span><span class="p">(</span><span class="n">x_sol_1</span> <span class="o">-</span> <span class="n">x_sol_2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2502.05373776057
 </pre></div>
 </div>
 </div>
@@ -563,6 +625,11 @@ A c = y
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.67435859516263e-10
+</pre></div>
+</div>
+</div>
 </div>
 <p>The final step just checks the interpolation vs. the analytic function at the nodes.  Keep in mind that this should be very close to zero
 since we are interpolating the function precisely at those nodes.
@@ -572,6 +639,11 @@ is reasonable for many problems.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cond</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>564652.3214053963
 </pre></div>
 </div>
 </div>
@@ -589,6 +661,11 @@ interpolation?</p>
 <span class="n">A_inv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 <span class="n">c</span> <span class="o">=</span> <span class="n">A_inv</span> <span class="o">*</span> <span class="n">y</span>
 <span class="n">norm</span><span class="p">(</span><span class="n">A</span> <span class="o">*</span> <span class="n">c</span> <span class="o">-</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">Inf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.159603122388944e-6
 </pre></div>
 </div>
 </div>
@@ -610,11 +687,21 @@ introduced an error of about <code class="docutils literal notranslate"><span cl
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>27826.246592740674
+</pre></div>
+</div>
+</div>
 </div>
 <p>To see the source of the problem, note that the condition number is astronomical.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cond</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.0386741019186427e24
 </pre></div>
 </div>
 </div>
@@ -626,6 +713,11 @@ error drops dramatically if we solve it as a linear system</p>
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">c</span> <span class="o">=</span> <span class="n">A</span> <span class="o">\</span> <span class="n">y</span>
 <span class="n">norm</span><span class="p">(</span><span class="n">A</span> <span class="o">*</span> <span class="n">c</span> <span class="o">-</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">Inf</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.4097167877480388e-10
 </pre></div>
 </div>
 </div>
@@ -670,6 +762,9 @@ issue in approximation theory, albeit not one driven by numerical approximation 
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/iterative_methods_sparsity_39_0.png" src="../_images/iterative_methods_sparsity_39_0.png" />
+</div>
 </div>
 <p>Note that while the function, <span class="math notranslate nohighlight">\(g(x)\)</span>, and the approximation with a 5th-order polynomial, <span class="math notranslate nohighlight">\(P_5(x)\)</span>, coincide at the 6 nodes, the
 approximation has a great deal of error everywhere else.</p>
@@ -690,6 +785,9 @@ of grid points and the order of the polynomial will lead to better approximation
 <span class="n">plot!</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_display</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;g(x)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/iterative_methods_sparsity_41_0.png" src="../_images/iterative_methods_sparsity_41_0.png" />
 </div>
 </div>
 <p>While the approximation is better near <code class="docutils literal notranslate"><span class="pre">x=0</span></code>, the oscillations near the boundaries have become worse.  Adding on extra polynomial terms will not
@@ -712,6 +810,12 @@ globally increase the quality of the approximation.</p>
 <span class="n">plot!</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">x_display</span><span class="p">),</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;g(x)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(g_approx.(x) - g.(x), Inf) = 4.440892098500626e-16
+</pre></div>
+</div>
+<img alt="../_images/iterative_methods_sparsity_43_1.png" src="../_images/iterative_methods_sparsity_43_1.png" />
 </div>
 </div>
 <p>Besides the use of a different polynomial basis, we are approximating at different nodes (i.e., <a class="reference external" href="https://en.wikipedia.org/wiki/Chebyshev_nodes">Chebyshev nodes</a>).  Interpolation with Chebyshev polynomials at the Chebyshev nodes ends up minimizing (but not eliminating) Runge’s Phenomenon.</p>
@@ -775,6 +879,11 @@ the characteristics of convergence and how they relate to matrix conditioning.</
 <span class="n">A</span> <span class="o">=</span> <span class="n">ρ</span> <span class="o">*</span> <span class="n">I</span> <span class="o">-</span> <span class="n">Q</span>
 <span class="n">v_direct</span> <span class="o">=</span> <span class="n">A</span> <span class="o">\</span> <span class="n">r</span>
 <span class="n">mean</span><span class="p">(</span><span class="n">v_direct</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100.00000000000004
 </pre></div>
 </div>
 </div>
@@ -845,6 +954,14 @@ x^{k+1} = D^{-1}(b - R x^k)
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(v - v_direct, Inf) = 0.022858373200932647
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.022858373200932647
+</pre></div>
+</div>
+</div>
 </div>
 <p>With this, after 40 iterations we see that the error is in the order of <code class="docutils literal notranslate"><span class="pre">1E-2</span></code></p>
 </div>
@@ -866,6 +983,11 @@ L x^{k+1} = b - U x^k
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(v - v_direct, Inf) = 1.5616376089155892e-5
+</pre></div>
+</div>
+</div>
 </div>
 <p>The accuracy increases substantially. After 40 iterations, we see that the error is of the order of <code class="docutils literal notranslate"><span class="pre">1E-5</span></code></p>
 <p>Another example is <a class="reference external" href="https://en.wikipedia.org/wiki/Successive_over-relaxation">Successive Over-relaxation (SOR)</a>, which takes a relaxation parameter <span class="math notranslate nohighlight">\(\omega &gt; 1\)</span> and decomposes the matrix as <span class="math notranslate nohighlight">\(A = L + D + U\)</span>, where <span class="math notranslate nohighlight">\(L, U\)</span> are strictly upper- and lower-diagonal matrices and <span class="math notranslate nohighlight">\(D\)</span> is diagonal.</p>
@@ -880,6 +1002,11 @@ L x^{k+1} = b - U x^k
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">v</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 <span class="n">sor!</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">40</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">norm</span><span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="n">v_direct</span><span class="p">,</span> <span class="nb">Inf</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(v - v_direct, Inf) = 3.745356593753968e-7
 </pre></div>
 </div>
 </div>
@@ -907,6 +1034,14 @@ symmetric and positive definite.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>isposdef(A) = true
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.5791585364800934e10
+</pre></div>
+</div>
+</div>
 </div>
 <p>Notice that the condition numbers tend to be large for large random matrices.</p>
 <p>Solving this system with the conjugate gradient method:</p>
@@ -915,6 +1050,11 @@ symmetric and positive definite.</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 <span class="n">sol</span> <span class="o">=</span> <span class="n">cg!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">sol</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 174 iterations.
 </pre></div>
 </div>
 </div>
@@ -950,6 +1090,12 @@ resulting system and they lower the condition number of the matrix.  To see this
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>cond(Matrix(A)) = 189186.6473381337
+cond(Matrix(AP)) = 175174.59095330362
+</pre></div>
+</div>
+</div>
 </div>
 <p>But it may or may not decrease the number of iterations</p>
 <div class="cell docutils container">
@@ -959,6 +1105,11 @@ resulting system and they lower the condition number of the matrix.  To see this
 <span class="n">P</span> <span class="o">=</span> <span class="n">DiagonalPreconditioner</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 <span class="n">sol</span> <span class="o">=</span> <span class="n">cg!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">sol</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 174 iterations.
 </pre></div>
 </div>
 </div>
@@ -974,6 +1125,11 @@ resulting system and they lower the condition number of the matrix.  To see this
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 86 iterations.
+</pre></div>
+</div>
+</div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">τ</span></code> parameter determines the degree of the LU decomposition to conduct, providing a tradeoff between preconditioner and solve speed.</p>
 <p>A good rule of thumb is that you should almost always be using a preconditioner with iterative methods, and you should experiment to find preconditioners that are appropriate for your problem.</p>
@@ -984,6 +1140,11 @@ resulting system and they lower the condition number of the matrix.  To see this
 <span class="n">P</span> <span class="o">=</span> <span class="kt">AMGPreconditioner</span><span class="p">{</span><span class="kt">RugeStuben</span><span class="p">}(</span><span class="n">A</span><span class="p">)</span>
 <span class="n">sol</span> <span class="o">=</span> <span class="n">cg!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">Pl</span> <span class="o">=</span> <span class="n">P</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">sol</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 59 iterations.
 </pre></div>
 </div>
 </div>
@@ -1011,6 +1172,11 @@ is frequently not implemented since such methods are not often used for the comp
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>cond(A) = 4.462833495403007e12, Converged after 11 iterations. Norm error 8.800998330116272e-8
+</pre></div>
+</div>
+</div>
 </div>
 <p>That method converged in 11 iterations.  Now if we try it with an incomplete LU preconditioner, we see that it converges immediately.</p>
 <div class="cell docutils container">
@@ -1024,6 +1190,11 @@ is frequently not implemented since such methods are not often used for the comp
 <span class="n">c</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>  <span class="c"># initial guess required for iterative solutions</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Pl</span> <span class="o">=</span> <span class="n">P</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">maxiter</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">)</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="k">end</span><span class="p">])</span><span class="s"> Norm error </span><span class="si">$</span><span class="p">(</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="o">*</span><span class="n">c</span> <span class="o">-</span> <span class="n">y</span><span class="p">,</span> <span class="nb">Inf</span><span class="p">))</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 1 iterations. Norm error 4.5034175855107605e-7
 </pre></div>
 </div>
 </div>
@@ -1051,6 +1222,11 @@ however, to consider the cost of the preconditioning process in your problem.</p
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 20 iterations.
+</pre></div>
+</div>
+</div>
 </div>
 <p>While the <code class="docutils literal notranslate"><span class="pre">A</span></code> matrix was important to be kept in memory for direct methods, Krylov methods such as GMRES are built on matrix-vector products, i.e., <span class="math notranslate nohighlight">\(A x\)</span> for iterations on the <span class="math notranslate nohighlight">\(x\)</span>.</p>
 <p>This product can be written directly for a given <span class="math notranslate nohighlight">\(x\)</span>,</p>
@@ -1075,6 +1251,11 @@ A x = \begin{bmatrix} (\rho + \alpha) x_1 - \alpha x_2\\
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(A * x - A_mul(x)) = 0.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>The final line verifies that the <code class="docutils literal notranslate"><span class="pre">A_mul</span></code> function provides the same result as the matrix multiplication with our original <code class="docutils literal notranslate"><span class="pre">A</span></code> for a random vector.</p>
 <p>In abstract mathematics, a finite-dimensional <a class="reference external" href="https://en.wikipedia.org/wiki/Linear_map">linear operator</a> is a mapping <span class="math notranslate nohighlight">\(A : R^N \to R^N\)</span>
@@ -1088,6 +1269,11 @@ package is <a class="reference external" href="https://github.com/Jutho/LinearMa
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearMaps</span>
 <span class="n">A_map</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">(</span><span class="n">A_mul</span><span class="p">,</span> <span class="n">N</span><span class="p">)</span>  <span class="c"># map uses the A_mul function</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100×100 LinearMaps.FunctionMap{Float64}(A_mul; ismutating=false, issymmetric=false, ishermitian=false, isposdef=false)
 </pre></div>
 </div>
 </div>
@@ -1106,6 +1292,20 @@ package is <a class="reference external" href="https://github.com/Jutho/LinearMa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(A_map * x - A * x) = 0.0
+norm(y - A * x) = 0.0
+size(A_map) = (100, 100)
+norm(Matrix(A_map) - A) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>nnz(sparse(A_map)) = 298
+</pre></div>
+</div>
+</div>
 </div>
 <p><strong>Note:</strong>  In the case of <code class="docutils literal notranslate"><span class="pre">sparse(A_map)</span></code> and <code class="docutils literal notranslate"><span class="pre">Matrix(A_map)</span></code>, the code is using the left-multiplication operator with <code class="docutils literal notranslate"><span class="pre">N</span></code> standard basis vectors to construct
 the full matrix.  This should be used only for testing purposes.</p>
@@ -1113,6 +1313,11 @@ the full matrix.  This should be used only for testing purposes.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">typeof</span><span class="p">(</span><span class="n">A_map</span><span class="p">)</span> <span class="o">&lt;:</span> <span class="kt">AbstractArray</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>false
 </pre></div>
 </div>
 </div>
@@ -1124,6 +1329,11 @@ unnecessarily constrained to be <code class="docutils literal notranslate"><span
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">gmres</span><span class="p">(</span><span class="n">A_map</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>  <span class="c"># Krylov method using the matrix-free type</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="k">end</span><span class="p">])</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 20 iterations.
 </pre></div>
 </div>
 </div>
@@ -1150,6 +1360,15 @@ we would use the in-place <code class="docutils literal notranslate"><span class
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(A_map_2 * v - A * v) = 0.0
+Converged after 20 iterations.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
 </div>
 <p>Finally, keep in mind that the linear operators can compose, so that <span class="math notranslate nohighlight">\(A (c_1 x) + B (c_2 x) + x  = (c_1 A + c_2 B + I) x\)</span> is well defined for any linear operators - just as
 it would be for matrices <span class="math notranslate nohighlight">\(A, B\)</span> and scalars <span class="math notranslate nohighlight">\(c_1, c_2\)</span>.</p>
@@ -1159,6 +1378,11 @@ it would be for matrices <span class="math notranslate nohighlight">\(A, B\)</sp
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">A_map</span>  <span class="o">+</span> <span class="n">I</span>  <span class="c"># composite linear operator</span>
 <span class="n">B</span> <span class="o">*</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>  <span class="c"># left-multiply works with the composition</span>
 <span class="n">typeof</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>LinearMaps.LinearCombination{Float64, Tuple{LinearMaps.ScaledMap{Float64, Float64, LinearMaps.FunctionMap{Float64, typeof(A_mul), Nothing}}, LinearMaps.UniformScalingMap{Bool}}}
 </pre></div>
 </div>
 </div>
@@ -1176,6 +1400,14 @@ rather than by creating the full <span class="math notranslate nohighlight">\(A 
 <span class="n">A_composed</span> <span class="o">=</span> <span class="n">ρ</span> <span class="o">*</span> <span class="n">I</span> <span class="o">-</span> <span class="n">Q_map</span>   <span class="c"># map composition, performs no calculations</span>
 <span class="nd">@show</span> <span class="n">norm</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">sparse</span><span class="p">(</span><span class="n">A_composed</span><span class="p">))</span>  <span class="c"># test produces the same matrix</span>
 <span class="n">gmres</span><span class="p">(</span><span class="n">A_composed</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="nb">true</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(A - sparse(A_composed)) = 0.0
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 20 iterations.
 </pre></div>
 </div>
 </div>
@@ -1214,6 +1446,12 @@ damping parameter, the normalized equations would become <span class="math notra
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(β_direct - β_lsmr) = 9.144972747723753e-6
+Converged after 14 iterations.
+</pre></div>
+</div>
+</div>
 </div>
 <p>Note that rather than forming this version of the normal equations, the LSMR algorithm uses the <span class="math notranslate nohighlight">\(A x\)</span> and <span class="math notranslate nohighlight">\(A' y\)</span> (i.e., the matrix-vector product and the matrix-transpose vector product) to implement an iterative
 solution.  Unlike the previous versions, the left-multiply is insufficient since the least squares also deals with the transpose of the operator.  For this reason, in order to use
@@ -1227,6 +1465,11 @@ matrix-free methods, we need to define the <code class="docutils literal notrans
 <span class="n">X_map</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">(</span><span class="n">X_func</span><span class="p">,</span> <span class="n">X_T_func</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">lsmr</span><span class="p">(</span><span class="n">X_map</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">log</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="k">end</span><span class="p">])</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 14 iterations.
 </pre></div>
 </div>
 </div>
@@ -1259,6 +1502,12 @@ to use is <a class="reference external" href="https://julialinearalgebra.github.
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>λ = ComplexF64[1.0000000000000189 + 0.0im]
+mean(ϕ) = 0.001
+</pre></div>
+</div>
+</div>
 </div>
 <p>Indeed, the <code class="docutils literal notranslate"><span class="pre">λ</span></code> is equal to <code class="docutils literal notranslate"><span class="pre">1</span></code>.  If we choose <code class="docutils literal notranslate"><span class="pre">nev</span> <span class="pre">=</span> <span class="pre">2</span></code>, it will provide the eigenpairs with the two eigenvalues of largest absolute value.</p>
 <p><em>Hint</em>: If you get errors using <code class="docutils literal notranslate"><span class="pre">Arpack</span></code>, increase the <code class="docutils literal notranslate"><span class="pre">maxiter</span></code> parameter for your problems.</p>
@@ -1281,6 +1530,16 @@ take the Markov chain for a simple counting process:</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 Tridiagonal{Float64, Vector{Float64}}:
+ 0.9  0.05   ⋅     ⋅     ⋅ 
+ 0.1  0.85  0.05   ⋅     ⋅ 
+  ⋅   0.1   0.85  0.05   ⋅ 
+  ⋅    ⋅    0.1   0.85  0.05
+  ⋅    ⋅     ⋅    0.1   0.95
+</pre></div>
+</div>
+</div>
 </div>
 <p>Implementing the adjoint-vector product directly, and verifying that it gives the same matrix as the adjoint</p>
 <div class="cell docutils container">
@@ -1293,6 +1552,14 @@ take the Markov chain for a simple counting process:</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(P&#39; - sparse(P_adj_map)) = 0.0
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>Finally, solving for the stationary distribution using the matrix-free method (which could be verified against the decomposition approach of <span class="math notranslate nohighlight">\(P'\)</span>)</p>
 <div class="cell docutils container">
@@ -1301,6 +1568,23 @@ take the Markov chain for a simple counting process:</p>
 <span class="n">ϕ</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">ϕ</span><span class="p">)</span> <span class="o">./</span> <span class="n">sum</span><span class="p">(</span><span class="n">real</span><span class="p">(</span><span class="n">ϕ</span><span class="p">))</span>
 <span class="nd">@show</span> <span class="n">λ</span>
 <span class="nd">@show</span> <span class="n">ϕ</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>λ = ComplexF64[1.0 + 0.0im]
+ϕ = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.03225806451612657; 0.06451612903225695; 0.1290322580645172; 0.25806451612903425; 0.516129032258065]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×1 Matrix{Float64}:
+ 0.03225806451612657
+ 0.06451612903225695
+ 0.1290322580645172
+ 0.25806451612903425
+ 0.516129032258065
 </pre></div>
 </div>
 </div>
@@ -1354,12 +1638,35 @@ approach is to enumerate them in the same order as the <span class="math notrans
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(v) = Array{Float64, 3}
+v(1, 1, 1) = 0.639089412234831
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v(2, 1, 1) = 0.4302368488000152
+v(1, 2, 1) = 0.21490768283644002
+v(2, 2, 1) = 0.7542051014748841
+v(1, 1, 2) = 0.4330861190374067
+v(2, 1, 2) = 0.07556766967902084
+v(1, 2, 2) = 0.2143739072351467
+v(2, 2, 2) = 0.43231874437572815
+</pre></div>
+</div>
+</div>
 </div>
 <p>The added benefit of this approach is that it will be the most efficient way to iterate through vectors in the implementation.</p>
 <p>For the counting process with arbitrary dimensions, we will frequently be incrementing or decrementing the <span class="math notranslate nohighlight">\(m\)</span> unit vectors of the <code class="docutils literal notranslate"><span class="pre">CartesianIndex</span></code> type with</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">e_m</span> <span class="o">=</span> <span class="p">[</span><span class="kt">CartesianIndex</span><span class="p">((</span><span class="mi">1</span><span class="o">:</span><span class="n">M</span> <span class="o">.==</span> <span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="o">...</span><span class="p">)</span>  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{CartesianIndex{3}}:
+ CartesianIndex(1, 0, 0)
+ CartesianIndex(0, 1, 0)
+ CartesianIndex(0, 0, 1)
 </pre></div>
 </div>
 </div>
@@ -1374,6 +1681,12 @@ of <code class="docutils literal notranslate"><span class="pre">1</span></code> 
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ind + e_m[1] = CartesianIndex(2, 2, 2)
+ind - e_m[3] = CartesianIndex(1, 2, 1)
+</pre></div>
+</div>
+</div>
 </div>
 <p>This works, of course, because the <code class="docutils literal notranslate"><span class="pre">CartesianIndex</span></code> type is written to support efficient addition and subtraction.  Finally, to implement the operator, we need to count the indices in the states where increment and decrement occurs.</p>
 <div class="cell docutils container">
@@ -1381,6 +1694,15 @@ of <code class="docutils literal notranslate"><span class="pre">1</span></code> 
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">ind</span>
 <span class="nd">@show</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">I</span> <span class="o">.&gt;</span> <span class="mi">1</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">count</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">I</span> <span class="o">.&lt;</span> <span class="n">N</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ind = CartesianIndex(1, 2, 2)
+count(ind.I .&gt; 1) = 2
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>count(ind.I .&lt; N) = 1
 </pre></div>
 </div>
 </div>
@@ -1393,6 +1715,11 @@ parameters in a named tuple generator</p>
 <span class="n">default_params</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">θ</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">ζ</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">,</span> <span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">M</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>
                            <span class="n">shape</span> <span class="o">=</span> <span class="kt">Tuple</span><span class="p">(</span><span class="n">fill</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)),</span>  <span class="c"># for reshaping vector to M-d array</span>
                            <span class="n">e_m</span> <span class="o">=</span> <span class="p">([</span><span class="kt">CartesianIndex</span><span class="p">((</span><span class="mi">1</span><span class="o">:</span><span class="n">M</span> <span class="o">.==</span> <span class="n">i</span><span class="p">)</span><span class="o">*</span><span class="mi">1</span><span class="o">...</span><span class="p">)</span>  <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##NamedTuple_kw#260 (generic function with 2 methods)
 </pre></div>
 </div>
 </div>
@@ -1427,6 +1754,11 @@ parameters in a named tuple generator</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  54.515 ms (0 allocations: 0 bytes)
+</pre></div>
+</div>
+</div>
 </div>
 <p>From the output of the benchmarking, note that the implementation of the left-multiplication takes less than 100 milliseconds, and allocates little or no memory, even though the Markov chain has a million possible states (i.e., <span class="math notranslate nohighlight">\(N^M = 10^6\)</span>).</p>
 </div>
@@ -1444,6 +1776,14 @@ customer of type <span class="math notranslate nohighlight">\(m\)</span>.  For e
 <span class="k">end</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">r_vec</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
 <span class="n">r_vec</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">mean</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(r_vec(p)) = Vector{Float64}
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>250.25
 </pre></div>
 </div>
 </div>
@@ -1474,6 +1814,32 @@ of only 10,000 possible states.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  428.491 ms (75 allocations: 181.85 MiB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(gmres(A, r) - v_direct) = 2.3908379262155663e-5
+  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.153 ms (76 allocations: 2.53 MiB)
+norm(bicgstabl(A, r) - v_direct) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7.44132362371748e-6
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  11.021 ms (244 allocations: 7.95 MiB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(idrs(A, r) - v_direct) = 0.0009605838507060645
+  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5.169 ms (227 allocations: 3.30 MiB)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Here, we see that even if the <span class="math notranslate nohighlight">\(A\)</span> matrix has been created, the direct sparse solver (which uses a sparse LU or QR) is at least an order of magnitude slower and allocates over an order of magnitude more memory.  This is in addition to the allocation for the <code class="docutils literal notranslate"><span class="pre">A_sparse</span></code> matrix itself, which is not needed for iterative methods.</p>
 <p>The different iterative methods have tradeoffs when it comes to accuracy, speed, convergence rate, memory requirements, and usefulness of preconditioning.  Going much above <span class="math notranslate nohighlight">\(\mathbf{N} = 10^4\)</span>, the direct methods quickly become infeasible.</p>
@@ -1491,6 +1857,11 @@ of only 10,000 possible states.</p>
 <span class="k">end</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 <span class="nd">@btime</span> <span class="n">solve_bellman</span><span class="p">(</span><span class="o">$</span><span class="n">p</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.006 s (82 allocations: 274.67 MiB)
 </pre></div>
 </div>
 </div>
@@ -1546,6 +1917,11 @@ adjoint-vector product directly.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Q_T_mul! (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">sparse</span></code> function for the operator is useful for testing that the function is correct, and is the adjoint of
 our <code class="docutils literal notranslate"><span class="pre">Q</span></code> operator.</p>
@@ -1555,6 +1931,11 @@ our <code class="docutils literal notranslate"><span class="pre">Q</span></code>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_mul!</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 <span class="n">Q_T</span> <span class="o">=</span> <span class="n">LinearMap</span><span class="p">((</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Q_T_mul!</span><span class="p">(</span><span class="n">dψ</span><span class="p">,</span> <span class="n">ψ</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">ismutating</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">norm</span><span class="p">(</span><span class="n">sparse</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">-</span> <span class="n">sparse</span><span class="p">(</span><span class="n">Q_T</span><span class="p">));</span>  <span class="c"># reminder: use sparse only for testing!</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm((sparse(Q))&#39; - sparse(Q_T)) = 0.0
 </pre></div>
 </div>
 </div>
@@ -1568,6 +1949,11 @@ do this with a dense eigenvalue solution for relatively small matrices</p>
 <span class="n">vec</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">eig_Q_T</span><span class="o">.</span><span class="n">vectors</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="k">end</span><span class="p">])</span>
 <span class="n">direct_ψ</span> <span class="o">=</span> <span class="n">vec</span> <span class="o">./</span> <span class="n">sum</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">eig_Q_T</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="k">end</span><span class="p">];</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>eig_Q_T.values[end] = 1.1102230246251565e-15 + 0.0im
 </pre></div>
 </div>
 </div>
@@ -1592,6 +1978,11 @@ use GMRES since we do not have any structure.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(ψ - direct_ψ) = 6.098218047075983e-11
+</pre></div>
+</div>
+</div>
 </div>
 <p>The speed and memory differences between these methods can be orders of magnitude.</p>
 <div class="cell docutils container">
@@ -1604,6 +1995,17 @@ use GMRES since we do not have any structure.</p>
 <span class="nd">@btime</span> <span class="n">eigen</span><span class="p">(</span><span class="o">$</span><span class="n">Q_T_dense</span><span class="p">)</span>
 <span class="nd">@btime</span> <span class="n">eigs</span><span class="p">(</span><span class="o">$</span><span class="n">Q_T_sparse</span><span class="p">,</span> <span class="n">nev</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="ss">:SM</span><span class="p">,</span> <span class="n">v0</span> <span class="o">=</span> <span class="n">iv</span><span class="p">)</span> <span class="n">setup</span> <span class="o">=</span> <span class="p">(</span><span class="n">iv</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">))</span>
 <span class="nd">@btime</span> <span class="n">gmres!</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="o">$</span><span class="n">Q_T</span><span class="p">,</span> <span class="o">$</span><span class="n">b</span><span class="p">)</span> <span class="n">setup</span> <span class="o">=</span> <span class="p">(</span><span class="n">iv</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">),</span> <span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">M</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  30.199 ms (21 allocations: 2.27 MiB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.338 ms (370 allocations: 1.21 MiB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  174.415 μs (57 allocations: 51.00 KiB)
 </pre></div>
 </div>
 </div>
@@ -1620,6 +2022,11 @@ use GMRES since we do not have any structure.</p>
 <span class="k">end</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="nd">@btime</span> <span class="n">stationary_ψ</span><span class="p">(</span><span class="o">$</span><span class="n">p</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.524 s (90 allocations: 19.09 MiB)
 </pre></div>
 </div>
 </div>
@@ -1650,6 +2057,9 @@ use GMRES since we do not have any structure.</p>
 <span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">dot</span><span class="p">(</span><span class="n">sol</span><span class="p">(</span><span class="n">tval</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">tval</span> <span class="k">in</span> <span class="n">t</span><span class="p">],</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;E_t(v)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/iterative_methods_sparsity_129_0.png" src="../_images/iterative_methods_sparsity_129_0.png" />
 </div>
 </div>
 <p>The above plot (1) calculates the full dynamics of the Markov chain from the <span class="math notranslate nohighlight">\(n_m = 1\)</span> for all <span class="math notranslate nohighlight">\(m\)</span> initial condition; (2) solves the dynamics of a system of a million ODEs; and (3) uses the calculation of the Bellman equation to find the expected valuation during that transition.  The entire process takes less than 30 seconds.</p>

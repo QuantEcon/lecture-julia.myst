@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/more_julia/optimization_solver_packages.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="11. Julia Tools and Editors" href="tools_editors.html" />
@@ -292,25 +293,6 @@
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package ForwardDiff [f6369f11-7733-5829-9624-2563aa707210] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="introduction-to-differentiable-programming">
@@ -377,6 +359,11 @@ f(x_1, x_2) = x_1 x_2 + \sin(x_1)
     <span class="n">w_5</span> <span class="o">=</span> <span class="n">w_3</span> <span class="o">+</span> <span class="n">w_4</span>
     <span class="k">return</span> <span class="n">w_5</span>
 <span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f (generic function with 1 method)
 </pre></div>
 </div>
 </div>
@@ -470,6 +457,19 @@ all of the basic operations.  Each definition then has the chain-rule built into
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ForwardDiff.gradient(h, x) = [26.35476496103098 16.663053156992287]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Float64}:
+ 2.6668660493424907
+ 4.138248388487394
+ 2.7819758120416846
+ 2.6637269172405427
+ 2.6072735540448035
+</pre></div>
+</div>
+</div>
 </div>
 <p>We can even auto-differentiate complicated functions with embedded iterations.</p>
 <div class="cell docutils container">
@@ -485,12 +485,22 @@ all of the basic operations.  Each definition then has the chain-rule built into
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.4142135623730951
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">ForwardDiff</span>
 <span class="n">dsqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">squareroot</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 <span class="n">dsqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.35355339059327373
 </pre></div>
 </div>
 </div>
@@ -510,6 +520,11 @@ all of the basic operations.  Each definition then has the chain-rule built into
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(25.0, 2.0)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Here we see that Zygote has a gradient function as the interface, which returns a tuple.</p>
 <p>You could create this as an operator if you wanted to.,</p>
@@ -519,6 +534,11 @@ all of the basic operations.  Each definition then has the chain-rule built into
 
 <span class="n">D_sin</span> <span class="o">=</span> <span class="n">D</span><span class="p">(</span><span class="n">sin</span><span class="p">)</span>
 <span class="n">D_sin</span><span class="p">(</span><span class="mf">4.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-0.6536436208636119
 </pre></div>
 </div>
 </div>
@@ -532,11 +552,24 @@ all of the basic operations.  Each definition then has the chain-rule built into
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
+  0.3333333333333333
+  0.3333333333333333
+ -0.3333333333333333
+</pre></div>
+</div>
+</div>
 </div>
 <p>Or, using the complicated iterative function we defined for the squareroot,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">squareroot</span><span class="o">&#39;</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.3535533905932737
 </pre></div>
 </div>
 </div>
@@ -546,6 +579,11 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">h</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.^</span><span class="n">n</span><span class="p">))</span><span class="o">^</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
 <span class="n">gradient</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">],</span> <span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>([0.137360563948689, 0.549442255794756, 0.824163383692134], -1.2725553130925453)
 </pre></div>
 </div>
 </div>
@@ -568,6 +606,11 @@ with 1 million dimensions, solved in a few seconds.</p>
 <span class="n">results</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">g!</span><span class="p">,</span> <span class="n">x_iv</span><span class="p">,</span> <span class="n">LBFGS</span><span class="p">())</span> <span class="c"># or ConjugateGradient()</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;minimum = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span><span class="s"> with in &quot;</span><span class="o">*</span>
 <span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>minimum = 5.773983194305791 with in 2 iterations
 </pre></div>
 </div>
 </div>
@@ -606,6 +649,18 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Results of Optimization Algorithm
+ * Algorithm: Brent&#39;s Method
+ * Search Interval: [-2.000000, 1.000000]
+ * Minimizer: 0.000000e+00
+ * Minimum: 0.000000e+00
+ * Iterations: 5
+ * Convergence: max(|x - x_upper|, |x - x_lower|) &lt;= 2*(1.5e-08*|x|+2.2e-16): true
+ * Objective Function Calls: 6
+</pre></div>
+</div>
+</div>
 </div>
 <p>Always check if the results converged, and throw errors otherwise</p>
 <div class="cell docutils container">
@@ -613,6 +668,11 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">converged</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">||</span> <span class="n">error</span><span class="p">(</span><span class="s">&quot;Failed to converge in </span><span class="si">$</span><span class="p">(</span><span class="n">iterations</span><span class="p">(</span><span class="n">result</span><span class="p">))</span><span class="s"> iterations&quot;</span><span class="p">)</span>
 <span class="n">xmin</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">minimizer</span>
 <span class="n">result</span><span class="o">.</span><span class="n">minimum</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
 </pre></div>
 </div>
 </div>
@@ -627,6 +687,11 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <span class="n">converged</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">||</span> <span class="n">error</span><span class="p">(</span><span class="s">&quot;Failed to converge in </span><span class="si">$</span><span class="p">(</span><span class="n">iterations</span><span class="p">(</span><span class="n">result</span><span class="p">))</span><span class="s"> iterations&quot;</span><span class="p">)</span>
 <span class="n">xmin</span> <span class="o">=</span> <span class="n">maximizer</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
 <span class="n">fmax</span> <span class="o">=</span> <span class="n">maximum</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-0.0
 </pre></div>
 </div>
 </div>
@@ -645,6 +710,25 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> * Status: success
+
+ * Candidate solution
+    Final objective value:     3.525527e-09
+
+ * Found with
+    Algorithm:     Nelder-Mead
+
+ * Convergence measures
+    √(Σ(yᵢ-ȳ)²)/n ≤ 1.0e-08
+
+ * Work counters
+    Seconds run:   0  (vs limit Inf)
+    Iterations:    60
+    f(x) calls:    117
+</pre></div>
+</div>
+</div>
 </div>
 <p>The default algorithm in <code class="docutils literal notranslate"><span class="pre">NelderMead</span></code>, which is derivative-free and hence requires many function evaluations.</p>
 <p>To change the algorithm type to <a class="reference external" href="http://julianlsolvers.github.io/Optim.jl/stable/algo/lbfgs/">L-BFGS</a></p>
@@ -653,6 +737,11 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x_iv</span><span class="p">,</span> <span class="n">LBFGS</span><span class="p">())</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;minimum = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span><span class="s"> with argmin = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimizer</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span>
 <span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>minimum = 5.3784046148998115e-17 with argmin = [0.9999999926662393, 0.9999999853324786] in 24 iterations
 </pre></div>
 </div>
 </div>
@@ -667,6 +756,11 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <span class="n">results</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x_iv</span><span class="p">,</span> <span class="n">LBFGS</span><span class="p">(),</span> <span class="n">autodiff</span><span class="o">=</span><span class="ss">:forward</span><span class="p">)</span> <span class="c"># i.e. use ForwardDiff.jl</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;minimum = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span><span class="s"> with argmin = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimizer</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span>
 <span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>minimum = 5.191703158437428e-27 with argmin = [0.999999999999928, 0.9999999999998559] in 24 iterations
 </pre></div>
 </div>
 </div>
@@ -688,6 +782,11 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>minimum = 5.191703158437428e-27 with argmin = [0.999999999999928, 0.9999999999998559] in 24 iterations
+</pre></div>
+</div>
+</div>
 </div>
 <p>For derivative-free methods, you can change the algorithm – and have no need to provide a gradient</p>
 <div class="cell docutils container">
@@ -695,6 +794,29 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span>
 <span class="n">x_iv</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
 <span class="n">results</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x_iv</span><span class="p">,</span> <span class="n">SimulatedAnnealing</span><span class="p">())</span> <span class="c"># or ParticleSwarm() or NelderMead()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> * Status: failure (reached maximum number of iterations)
+
+ * Candidate solution
+    Final objective value:     1.258157e-02
+
+ * Found with
+    Algorithm:     Simulated Annealing
+
+ * Convergence measures
+    |x - x&#39;|               = NaN ≰ 0.0e+00
+    |x - x&#39;|/|x&#39;|          = NaN ≰ 0.0e+00
+    |f(x) - f(x&#39;)|         = NaN ≰ 0.0e+00
+    |f(x) - f(x&#39;)|/|f(x&#39;)| = NaN ≰ 0.0e+00
+    |g(x)|                 = NaN ≰ 1.0e-08
+
+ * Work counters
+    Seconds run:   0  (vs limit Inf)
+    Iterations:    1000
+    f(x) calls:    1001
 </pre></div>
 </div>
 </div>
@@ -739,6 +861,63 @@ language with macros, and able to use a variety of different commerical and open
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit https://github.com/coin-or/Ipopt
+******************************************************************************
+
+This is Ipopt version 3.13.4, running with linear solver mumps.
+NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
+
+Number of nonzeros in equality constraint Jacobian...:        0
+Number of nonzeros in inequality constraint Jacobian.:        2
+Number of nonzeros in Lagrangian Hessian.............:        3
+
+Total number of variables............................:        2
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:        0
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:        0
+Total number of inequality constraints...............:        1
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        1
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  1.0000000e+00 0.00e+00 2.07e-01  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  1.4100714e+00 0.00e+00 5.48e-02  -1.7 3.94e-01    -  1.00e+00 7.36e-01f  1
+   2  1.4113851e+00 0.00e+00 2.83e-08  -2.5 9.29e-04    -  1.00e+00 1.00e+00f  1
+   3  1.4140632e+00 0.00e+00 1.50e-09  -3.8 1.89e-03    -  1.00e+00 1.00e+00f  1
+   4  1.4142117e+00 0.00e+00 1.84e-11  -5.7 1.05e-04    -  1.00e+00 1.00e+00f  1
+   5  1.4142136e+00 0.00e+00 8.23e-09  -8.6 1.30e-06    -  1.00e+00 1.00e+00f  1
+
+Number of Iterations....: 5
+
+                                   (scaled)                 (unscaled)
+Objective...............:  -1.4142135740093271e+00    1.4142135740093271e+00
+Dual infeasibility......:   8.2280586788385790e-09    8.2280586788385790e-09
+Constraint violation....:   0.0000000000000000e+00    0.0000000000000000e+00
+Complementarity.........:   2.5059035815063646e-09   -2.5059035815063646e-09
+Overall NLP error.......:   8.2280586788385790e-09    8.2280586788385790e-09
+
+
+Number of objective function evaluations             = 6
+Number of objective gradient evaluations             = 6
+Number of equality constraint evaluations            = 0
+Number of inequality constraint evaluations          = 6
+Number of equality constraint Jacobian evaluations   = 0
+Number of inequality constraint Jacobian evaluations = 6
+Number of Lagrangian Hessian evaluations             = 5
+Total CPU secs in IPOPT (w/o function evaluations)   =      1.120
+Total CPU secs in NLP function evaluations           =      1.748
+
+EXIT: Optimal Solution Found.
+JuMP.optimize!(m) = nothing
+</pre></div>
+</div>
+</div>
 </div>
 <p>And this is an example of a quadratic objective</p>
 <div class="cell docutils container">
@@ -764,6 +943,121 @@ language with macros, and able to use a variety of different commerical and open
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>This is Ipopt version 3.13.4, running with linear solver mumps.
+NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
+
+Number of nonzeros in equality constraint Jacobian...:        0
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        3
+
+Total number of variables............................:        2
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:        0
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:        0
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  1.0000000e+00 0.00e+00 2.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  9.5312500e-01 0.00e+00 1.25e+01  -1.0 1.00e+00    -  1.00e+00 2.50e-01f  3
+   2  4.8320569e-01 0.00e+00 1.01e+00  -1.0 9.03e-02    -  1.00e+00 1.00e+00f  1
+   3  4.5708829e-01 0.00e+00 9.53e+00  -1.0 4.29e-01    -  1.00e+00 5.00e-01f  2
+   4  1.8894205e-01 0.00e+00 4.15e-01  -1.0 9.51e-02    -  1.00e+00 1.00e+00f  1
+   5  1.3918726e-01 0.00e+00 6.51e+00  -1.7 3.49e-01    -  1.00e+00 5.00e-01f  2
+   6  5.4940990e-02 0.00e+00 4.51e-01  -1.7 9.29e-02    -  1.00e+00 1.00e+00f  1
+   7  2.9144630e-02 0.00e+00 2.27e+00  -1.7 2.49e-01    -  1.00e+00 5.00e-01f  2
+   8  9.8586451e-03 0.00e+00 1.15e+00  -1.7 1.10e-01    -  1.00e+00 1.00e+00f  1
+   9  2.3237475e-03 0.00e+00 1.00e+00  -1.7 1.00e-01    -  1.00e+00 1.00e+00f  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  10  2.3797236e-04 0.00e+00 2.19e-01  -1.7 5.09e-02    -  1.00e+00 1.00e+00f  1
+  11  4.9267371e-06 0.00e+00 5.95e-02  -1.7 2.53e-02    -  1.00e+00 1.00e+00f  1
+  12  2.8189505e-09 0.00e+00 8.31e-04  -2.5 3.20e-03    -  1.00e+00 1.00e+00f  1
+  13  1.0095040e-15 0.00e+00 8.68e-07  -5.7 9.78e-05    -  1.00e+00 1.00e+00f  1
+  14  1.3288608e-28 0.00e+00 2.02e-13  -8.6 4.65e-08    -  1.00e+00 1.00e+00f  1
+
+Number of Iterations....: 14
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.3288608467480825e-28    1.3288608467480825e-28
+Dual infeasibility......:   2.0183854587685121e-13    2.0183854587685121e-13
+Constraint violation....:   0.0000000000000000e+00    0.0000000000000000e+00
+Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
+Overall NLP error.......:   2.0183854587685121e-13    2.0183854587685121e-13
+
+
+Number of objective function evaluations             = 36
+Number of objective gradient evaluations             = 15
+Number of equality constraint evaluations            = 0
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 0
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 14
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.071
+Total CPU secs in NLP function evaluations           =      0.010
+
+EXIT: Optimal Solution Found.
+x = 0.9999999999999899 y = 0.9999999999999792
+This is Ipopt version 3.13.4, running with linear solver mumps.
+NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
+
+Number of nonzeros in equality constraint Jacobian...:        2
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        3
+
+Total number of variables............................:        2
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:        0
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:        1
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  1.0000000e+00 1.00e+01 1.00e+00  -1.0 0.00e+00    -  0.00e+00 0.00e+00   0
+   1  9.6315968e+05 1.78e-15 3.89e+05  -1.0 9.91e+00    -  1.00e+00 1.00e+00h  1
+   2  1.6901461e+05 0.00e+00 1.16e+05  -1.0 3.24e+00    -  1.00e+00 1.00e+00f  1
+   3  2.5433173e+04 0.00e+00 3.18e+04  -1.0 2.05e+00    -  1.00e+00 1.00e+00f  1
+   4  2.6527756e+03 0.00e+00 7.79e+03  -1.0 1.19e+00    -  1.00e+00 1.00e+00f  1
+   5  1.1380324e+02 0.00e+00 1.35e+03  -1.0 5.62e-01    -  1.00e+00 1.00e+00f  1
+   6  3.3745506e+00 0.00e+00 8.45e+01  -1.0 1.50e-01    -  1.00e+00 1.00e+00f  1
+   7  2.8946196e+00 0.00e+00 4.22e-01  -1.0 1.07e-02    -  1.00e+00 1.00e+00f  1
+   8  2.8946076e+00 0.00e+00 1.07e-05  -1.7 5.42e-05    -  1.00e+00 1.00e+00f  1
+   9  2.8946076e+00 0.00e+00 5.91e-13  -8.6 1.38e-09    -  1.00e+00 1.00e+00f  1
+
+Number of Iterations....: 9
+
+                                   (scaled)                 (unscaled)
+Objective...............:   2.8946075504894599e+00    2.8946075504894599e+00
+Dual infeasibility......:   5.9130478291535837e-13    5.9130478291535837e-13
+Constraint violation....:   0.0000000000000000e+00    0.0000000000000000e+00
+Complementarity.........:   0.0000000000000000e+00    0.0000000000000000e+00
+Overall NLP error.......:   5.9130478291535837e-13    5.9130478291535837e-13
+
+
+Number of objective function evaluations             = 10
+Number of objective gradient evaluations             = 10
+Number of equality constraint evaluations            = 10
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 1
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 9
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.004
+Total CPU secs in NLP function evaluations           =      0.000
+
+EXIT: Optimal Solution Found.
+x = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.701147124098218 y = 7.2988528759017814
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="blackboxoptim-jl">
@@ -779,6 +1073,32 @@ language with macros, and able to use a variety of different commerical and open
 <span class="k">end</span>
 
 <span class="n">results</span> <span class="o">=</span> <span class="n">bboptimize</span><span class="p">(</span><span class="n">rosenbrock2d</span><span class="p">;</span> <span class="n">SearchRange</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">NumDimensions</span> <span class="o">=</span> <span class="mi">2</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting optimization with optimizer DiffEvoOpt{FitPopulation{Float64}, RadiusLimitedSelector, BlackBoxOptim.AdaptiveDiffEvoRandBin{3}, RandomBound{ContinuousRectSearchSpace}}
+0.00 secs, 0 evals, 0 steps
+
+Optimization stopped after 10001 steps and 0.08 seconds
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Termination reason: Max number of steps (10000) reached
+Steps per second = 124956.01
+Function evals per second = 126442.84
+Improvements/step = 0.20720
+Total function evaluations = 10120
+
+
+Best candidate found: [1.0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>, 1.0]
+
+Fitness: 0.000000000
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>
@@ -808,6 +1128,11 @@ language with macros, and able to use a variety of different commerical and open
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.40829350427936706
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="nlsolve-jl">
@@ -825,6 +1150,21 @@ language with macros, and able to use a variety of different commerical and open
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Results of Nonlinear Solver Algorithm
+ * Algorithm: Trust-region with dogleg and autoscaling
+ * Starting Point: [0.1, 1.2]
+ * Zero: [-7.775548712324193e-17, 0.9999999999999999]
+ * Inf-norm of residuals: 0.000000
+ * Iterations: 4
+ * Convergence: true
+   * |x - x&#39;| &lt; 0.0e+00: false
+   * |f(x)| &lt; 1.0e-08: true
+ * Function Calls (f): 5
+ * Jacobian Calls (df/dx): 5
+</pre></div>
+</div>
+</div>
 </div>
 <p>In the above case, the algorithm used finite differences to calculate the Jacobian.</p>
 <p>Alternatively, if <code class="docutils literal notranslate"><span class="pre">f(x)</span></code> is written generically, you can use auto-differentiation with a single setting.</p>
@@ -834,6 +1174,11 @@ language with macros, and able to use a variety of different commerical and open
 
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;converged=</span><span class="si">$</span><span class="p">(</span><span class="n">NLsolve</span><span class="o">.</span><span class="n">converged</span><span class="p">(</span><span class="n">results</span><span class="p">))</span><span class="s"> at root=</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span>
 <span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations and </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">f_calls</span><span class="p">)</span><span class="s"> function calls&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged=true at root=[-3.487552479724522e-16, 1.0000000000000002] in 4 iterations and 5 function calls
 </pre></div>
 </div>
 </div>
@@ -850,6 +1195,11 @@ language with macros, and able to use a variety of different commerical and open
 
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;converged=</span><span class="si">$</span><span class="p">(</span><span class="n">NLsolve</span><span class="o">.</span><span class="n">converged</span><span class="p">(</span><span class="n">results</span><span class="p">))</span><span class="s"> at root=</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span>
 <span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations and </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">f_calls</span><span class="p">)</span><span class="s"> function calls&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged=true at root=[-3.487552479724522e-16, 1.0000000000000002] in 4 iterations and 5 function calls
 </pre></div>
 </div>
 </div>
@@ -880,6 +1230,22 @@ language with macros, and able to use a variety of different commerical and open
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Results of Optimization Algorithm
+ * Algorithm: Dogleg
+ * Minimizer: [1.0,1.0]
+ * Sum of squares at Minimum: 0.000000
+ * Iterations: 51
+ * Convergence: true
+ * |x - x&#39;| &lt; 1.0e-08: false
+ * |f(x) - f(x&#39;)| / |f(x)| &lt; 1.0e-08: true
+ * |g(x)| &lt; 1.0e-08: false
+ * Function Calls: 52
+ * Gradient Calls: 36
+ * Multiplication Calls: 159
+</pre></div>
+</div>
+</div>
 </div>
 <p><strong>Note:</strong> Because there is a name clash between <code class="docutils literal notranslate"><span class="pre">Optim.jl</span></code> and this package, to use both we need to qualify the use of the <code class="docutils literal notranslate"><span class="pre">optimize</span></code> function (i.e. <code class="docutils literal notranslate"><span class="pre">LeastSquaresOptim.optimize</span></code>).</p>
 <p>Here, by default it will use AD with <code class="docutils literal notranslate"><span class="pre">ForwardDiff.jl</span></code> to calculate the Jacobian,
@@ -902,6 +1268,22 @@ but you could also provide your own calculation of the Jacobian (analytical or u
 <span class="k">end</span>
 <span class="n">LeastSquaresOptim</span><span class="o">.</span><span class="n">optimize!</span><span class="p">(</span><span class="n">LeastSquaresProblem</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
                                 <span class="n">f!</span> <span class="o">=</span> <span class="n">rosenbrock_f!</span><span class="p">,</span> <span class="n">g!</span> <span class="o">=</span> <span class="n">rosenbrock_g!</span><span class="p">,</span> <span class="n">output_length</span> <span class="o">=</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Results of Optimization Algorithm
+ * Algorithm: Dogleg
+ * Minimizer: [1.0,1.0]
+ * Sum of squares at Minimum: 0.000000
+ * Iterations: 51
+ * Convergence: true
+ * |x - x&#39;| &lt; 1.0e-08: false
+ * |f(x) - f(x&#39;)| / |f(x)| &lt; 1.0e-08: true
+ * |g(x)| &lt; 1.0e-08: false
+ * Function Calls: 52
+ * Gradient Calls: 36
+ * Multiplication Calls: 159
 </pre></div>
 </div>
 </div>
@@ -939,6 +1321,11 @@ will fill in a few of the operations required for a simple AD implementation.</p
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+ (generic function with 356 methods)
+</pre></div>
+</div>
+</div>
 </div>
 <p>With that, we can seed a dual number and find simple derivatives,</p>
 <div class="cell docutils container">
@@ -951,6 +1338,11 @@ will fill in a few of the operations required for a simple AD implementation.</p
 
 <span class="c"># seeded calculates both teh function and the d/dx gradient!</span>
 <span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DualNumber{Float64}(8.0, 1.0)
 </pre></div>
 </div>
 </div>

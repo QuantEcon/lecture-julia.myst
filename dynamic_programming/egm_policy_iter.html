@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/egm_policy_iter.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="34. LQ Dynamic Programming Problems" href="lqcontrol.html" />
@@ -307,25 +308,6 @@ function evaluations.</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package BenchmarkTools [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -348,6 +330,11 @@ Stacktrace:
     <span class="n">Kg_f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">Kg</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Kg_f</span>
 <span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>coleman_egm (generic function with 1 method)
 </pre></div>
 </div>
 </div>
@@ -380,6 +367,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>K (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Let’s test out the code above on some example parameterizations, after the following imports.</p>
 </div>
@@ -404,6 +396,11 @@ Stacktrace:
                   <span class="n">f</span> <span class="o">=</span> <span class="n">k</span><span class="o">-&gt;</span> <span class="n">k</span><span class="o">^</span><span class="n">α</span><span class="p">,</span> <span class="c"># production function</span>
                   <span class="n">f′</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">α</span><span class="o">*</span><span class="n">k</span><span class="o">^</span><span class="p">(</span><span class="n">α</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="c"># f&#39;</span>
                   <span class="n">grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="n">grid_min</span><span class="p">,</span> <span class="n">grid_max</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">grid_size</span><span class="p">))</span> <span class="c"># grid</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##NamedTuple_kw#257 (generic function with 2 methods)
 </pre></div>
 </div>
 </div>
@@ -443,6 +440,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v_star (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -458,12 +460,20 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>verify_true_policy (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">verify_true_policy</span><span class="p">(</span><span class="n">mlog</span><span class="p">,</span> <span class="n">shocks</span><span class="p">,</span> <span class="n">c_star</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/egm_policy_iter_17_0.png" src="../_images/egm_policy_iter_17_0.png" />
 </div>
 </div>
 <p>Notice that we’re passing u′ to coleman_egm twice.</p>
@@ -476,6 +486,11 @@ Stacktrace:
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">c_star_new</span> <span class="o">=</span> <span class="n">coleman_egm</span><span class="p">(</span><span class="n">c_star</span><span class="p">,</span> <span class="n">mlog</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">mlog</span><span class="o">.</span><span class="n">β</span><span class="p">,</span> <span class="n">mlog</span><span class="o">.</span><span class="n">u′</span><span class="p">,</span>
                          <span class="n">mlog</span><span class="o">.</span><span class="n">u′</span><span class="p">,</span> <span class="n">mlog</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">mlog</span><span class="o">.</span><span class="n">f′</span><span class="p">,</span> <span class="n">shocks</span><span class="p">)</span>
 <span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">c_star_new</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">-</span> <span class="n">c_star</span><span class="p">(</span><span class="n">g</span><span class="p">))</span> <span class="k">for</span> <span class="n">g</span> <span class="k">in</span> <span class="n">mlog</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.440892098500626e-16
 </pre></div>
 </div>
 </div>
@@ -506,12 +521,20 @@ converge towards <span class="math notranslate nohighlight">\(c^*\)</span>.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>check_convergence (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">check_convergence</span><span class="p">(</span><span class="n">mlog</span><span class="p">,</span> <span class="n">shocks</span><span class="p">,</span> <span class="n">c_star</span><span class="p">,</span> <span class="n">identity</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/egm_policy_iter_24_0.png" src="../_images/egm_policy_iter_24_0.png" />
 </div>
 </div>
 <p>We see that the policy has converged nicely, in only a few steps.</p>
@@ -527,6 +550,11 @@ operator (with exogenous grid) and the EGM version.</p>
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">mcrra</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">α</span> <span class="o">=</span> <span class="mf">0.65</span><span class="p">,</span> <span class="n">β</span> <span class="o">=</span> <span class="mf">0.95</span><span class="p">,</span> <span class="n">γ</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">)</span>
 <span class="n">u′_inv</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">=</span> <span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="n">mcrra</span><span class="o">.</span><span class="n">γ</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>u′_inv (generic function with 1 method)
 </pre></div>
 </div>
 </div>
@@ -553,6 +581,11 @@ operator (with exogenous grid) and the EGM version.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>egm (generic function with 3 methods)
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -560,10 +593,31 @@ operator (with exogenous grid) and the EGM version.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 1 sample with 1 evaluation.
+ Single result which took <span class=" -Color -Color-Blue">8.861 s</span> (0.91% GC) to evaluate,
+ with a memory estimate of <span class=" -Color -Color-Yellow">1002.08 MiB</span>, over <span class=" -Color -Color-Yellow">535131</span> allocations.
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@benchmark</span> <span class="n">egm</span><span class="p">(</span><span class="o">$</span><span class="n">mcrra</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 29 samples with 1 evaluation.
+ Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">167.587 ms</span> … <span class=" -Color -Color-Magenta">185.361 ms</span>  ┊ GC (min … max): 0.00% … 3.98%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">172.207 ms               </span>┊ GC (median):    0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">174.081 ms</span> ± <span class=" -Color -Color-Green">  4.563 ms</span>  ┊ GC (mean ± σ):  1.02% ± 1.77%
+
+       ▁     ▁ █<span class=" -Color -Color-Blue"> </span>       <span class=" -Color -Color-Green"> </span>                     ▁                  
+  ▆▁▁▁▁█▆▁▆▆▆█▆█<span class=" -Color -Color-Blue">▁</span>▆▁▁▁▁▆▁<span class=" -Color -Color-Green">▆</span>▆▆▆▆▁▆▁▁▁▁▁▁▆▁▆▁▁▁▁▁▁█▆▁▁▁▁▁▆▁▁▁▁▁▁▁▁▆ ▁
+  168 ms           Histogram: frequency by time          185 ms <span class=" -Color -Color-Bold">&lt;</span>
+
+ Memory estimate: <span class=" -Color -Color-Yellow">19.35 MiB</span>, allocs estimate: <span class=" -Color -Color-Yellow">76466</span>.
 </pre></div>
 </div>
 </div>

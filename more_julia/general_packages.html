@@ -55,7 +55,10 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/more_julia/general_packages.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="9. Data and Statistics Packages" href="data_statistical_packages.html" />
@@ -266,25 +269,6 @@
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package QuantEcon [fcd29c91-0bd7-5a09-975d-7ac3f643a60c] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="numerical-integration">
@@ -297,6 +281,11 @@ Stacktrace:
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">QuadGK</span>
 <span class="nd">@show</span> <span class="n">value</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="n">quadgk</span><span class="p">(</span><span class="n">cos</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="nb">π</span><span class="p">,</span> <span class="mi">2</span><span class="nb">π</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(value, tol) = quadgk(cos, -2π, 2π) = (-1.5474478810961125e-14, 5.7846097329025695e-24)
 </pre></div>
 </div>
 </div>
@@ -319,6 +308,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>w ⋅ f.(x) = 0.6666666666666667
+</pre></div>
+</div>
+</div>
 </div>
 <p>The only problem with the <code class="docutils literal notranslate"><span class="pre">FastGaussQuadrature</span></code> package is that you will need to deal with affine transformations to the non-default domains yourself.</p>
 <p>Alternatively, <code class="docutils literal notranslate"><span class="pre">QuantEcon.jl</span></code> has routines for Gaussian quadrature that translate the domains.</p>
@@ -328,6 +322,11 @@ Stacktrace:
 
 <span class="n">x</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">qnwlege</span><span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="nb">π</span><span class="p">,</span> <span class="mi">2</span><span class="nb">π</span><span class="p">);</span>
 <span class="nd">@show</span> <span class="n">w</span> <span class="o">⋅</span> <span class="n">cos</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="c"># i.e. on [-2π, 2π] domain</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>w ⋅ cos.(x) = -3.0064051806277455e-15
 </pre></div>
 </div>
 </div>
@@ -350,6 +349,14 @@ Stacktrace:
 <span class="n">x</span> <span class="o">=</span> <span class="n">nodes</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 <span class="n">w</span> <span class="o">=</span> <span class="n">weights</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
 <span class="n">E</span> <span class="o">*</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">⋅</span> <span class="n">w</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>E(f) = -5.028942338420413e-18
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -380,6 +387,9 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/general_packages_11_0.png" src="../_images/general_packages_11_0.png" />
+</div>
 </div>
 <p>To implement linear and cubic <a class="reference external" href="https://en.wikipedia.org/wiki/Spline_%28mathematics%29">spline</a> interpolation</p>
 <div class="cell docutils container">
@@ -394,6 +404,12 @@ Stacktrace:
 <span class="n">plot!</span><span class="p">(</span><span class="n">xf</span><span class="p">,</span> <span class="n">li_spline</span><span class="o">.</span><span class="p">(</span><span class="n">xf</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;spline&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>li(0.3) = 0.25244129544236954
+</pre></div>
+</div>
+<img alt="../_images/general_packages_13_1.png" src="../_images/general_packages_13_1.png" />
 </div>
 </div>
 </div>
@@ -415,6 +431,9 @@ for regular grids since <code class="docutils literal notranslate"><span class="
 <span class="n">scatter!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;sampled data&quot;</span><span class="p">,</span> <span class="n">markersize</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">400</span><span class="p">))</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/general_packages_15_0.png" src="../_images/general_packages_15_0.png" />
 </div>
 </div>
 <p>At this point, <code class="docutils literal notranslate"><span class="pre">Interpolations.jl</span></code> does not have support for cubic splines with irregular grids, but there are plenty of other packages that do (e.g. <a class="reference external" href="https://github.com/kbarbary/Dierckx.jl">Dierckx.jl</a>  and <a class="reference external" href="https://github.com/sisl/GridInterpolations.jl">GridInterpolations.jl</a>).</p>
@@ -438,6 +457,16 @@ for regular grids since <code class="docutils literal notranslate"><span class="
 <span class="n">interp_cubic</span> <span class="o">=</span> <span class="n">CubicSplineInterpolation</span><span class="p">((</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">),</span> <span class="n">A</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">interp_cubic</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c"># exactly log(3 + 2)</span>
 <span class="nd">@show</span> <span class="n">interp_cubic</span><span class="p">(</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">)</span> <span class="c"># approximately log(3.1 + 2.1);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>interp_linear(3, 2) = 1.6094379124341003
+interp_linear(3.1, 2.1) = 1.6484736801441782
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>interp_cubic(3, 2) = 1.6094379124341
+interp_cubic(3.1, 2.1) = 1.6486586594237707
 </pre></div>
 </div>
 </div>
@@ -473,6 +502,10 @@ addition to standard functions such as <code class="docutils literal notranslate
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[an equation: $1 + \alpha^2$\]</div>
+</div>
 </div>
 </div>
 <div class="section" id="progressmeter-jl">
@@ -487,6 +520,23 @@ addition to standard functions such as <code class="docutils literal notranslate
 <span class="nd">@showprogress</span> <span class="mi">1</span> <span class="s">&quot;Computing...&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">50</span>
     <span class="n">sleep</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="c"># some computation....</span>
 <span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing...  4%|█▌                                     |  ETA: 0:00:47</span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing... 38%|██████████████▉                        |  ETA: 0:00:07</span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing... 64%|█████████████████████████              |  ETA: 0:00:03</span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing... 84%|████████████████████████████████▊      |  ETA: 0:00:01</span>
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing...100%|███████████████████████████████████████| Time: 0:00:07</span>
 </pre></div>
 </div>
 </div>

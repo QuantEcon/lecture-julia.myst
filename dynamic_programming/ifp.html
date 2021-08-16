@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/ifp.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="39. Robustness" href="robustness.html" />
@@ -522,25 +523,6 @@ the unique optimal path from <span class="math notranslate nohighlight">\((a_0,z
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package BenchmarkTools [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -654,6 +636,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>initialize (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Both <code class="docutils literal notranslate"><span class="pre">T</span></code> and <code class="docutils literal notranslate"><span class="pre">K</span></code> use linear interpolation along the asset grid to approximate the value and consumption functions.</p>
 <p>The following exercises walk you through several applications where policy functions are computed.</p>
@@ -691,6 +678,11 @@ faster than iteration with <span class="math notranslate nohighlight">\(T\)</spa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>([-17.328679513998615 0.0; -4.664387247760648 7.125637140580436; … ; 69.82541010621486 70.57937835479346; 70.32526591846735 71.06452735149534], [0.5 1.0; 0.8297959183673469 1.329795918367347; … ; 16.33020408163265 16.83020408163265; 16.66 17.16])
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -698,10 +690,20 @@ faster than iteration with <span class="math notranslate nohighlight">\(T\)</spa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  414.634 μs (4351 allocations: 407.12 KiB)
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@btime</span> <span class="n">K</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  573.547 μs (7824 allocations: 732.72 KiB)
 </pre></div>
 </div>
 </div>
@@ -749,6 +751,9 @@ faster than iteration with <span class="math notranslate nohighlight">\(T\)</spa
 <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ifp_10_0.png" src="../_images/ifp_10_0.png" />
 </div>
 </div>
 <p>The blue line and orange line represent the function</p>
@@ -829,6 +834,13 @@ when <span class="math notranslate nohighlight">\(r=0\)</span> for both cases sh
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting value function iteration
+Starting policy function iteration
+</pre></div>
+</div>
+<img alt="../_images/ifp_13_1.png" src="../_images/ifp_13_1.png" />
+</div>
 </div>
 </div>
 <div class="section" id="id16">
@@ -855,6 +867,9 @@ when <span class="math notranslate nohighlight">\(r=0\)</span> for both cases sh
 <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ifp_16_0.png" src="../_images/ifp_16_0.png" />
 </div>
 </div>
 </div>
@@ -887,6 +902,9 @@ when <span class="math notranslate nohighlight">\(r=0\)</span> for both cases sh
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/ifp_19_0.png" src="../_images/ifp_19_0.png" />
+</div>
 </div>
 </div>
 <div class="section" id="id18">
@@ -916,6 +934,15 @@ when <span class="math notranslate nohighlight">\(r=0\)</span> for both cases sh
 <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomright</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Finished iteration b = 1.0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Finished iteration b = 3.0
+</pre></div>
+</div>
+<img alt="../_images/ifp_22_2.png" src="../_images/ifp_22_2.png" />
 </div>
 </div>
 </div>

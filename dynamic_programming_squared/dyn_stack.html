@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming_squared/dyn_stack.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="61. Optimal Taxation in an LQ Economy" href="lqramsey.html" />
@@ -1060,25 +1061,6 @@ dynamic program as outlined above</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package QuantEcon [fcd29c91-0bd7-5a09-975d-7ac3f643a60c] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 <p>We define named tuples and default values for the model and solver settings, and
 instantiate one copy of each</p>
@@ -1144,6 +1126,11 @@ instantiate one copy of each</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Computed policy for Stackelberg leader: [-1.5800445387726552 0.294613127470314 0.6748093760774969 6.539705936147513]
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="implied-time-series-for-price-and-quantities">
 <h3><span class="section-number">60.5.1. </span>Implied Time Series for Price and Quantities<a class="headerlink" href="#implied-time-series-for-price-and-quantities" title="Permalink to this headline">¶</a></h3>
@@ -1162,6 +1149,9 @@ instantiate one copy of each</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_9_0.png" src="../_images/dyn_stack_9_0.png" />
+</div>
 </div>
 </div>
 <div class="section" id="value-of-stackelberg-leader">
@@ -1179,12 +1169,23 @@ on coding and thinking)</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v_leader_forward (forward sim) is 150.0316212532548
+v_leader_direct is 150.03237147548847
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># manually check whether P is an approximate fixed point</span>
 <span class="n">P_next</span> <span class="o">=</span> <span class="p">(</span><span class="n">R</span> <span class="o">+</span> <span class="n">F</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">F</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">));</span>
 <span class="n">all</span><span class="p">(</span><span class="n">P</span> <span class="o">-</span> <span class="n">P_next</span> <span class="o">.&lt;</span> <span class="n">tol0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -1196,6 +1197,11 @@ on coding and thinking)</p>
 <span class="n">v_expanded</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="n">y0</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">R</span> <span class="o">*</span> <span class="n">y0</span> <span class="o">+</span> <span class="n">ut</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">ut</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span>
            <span class="n">β</span> <span class="o">*</span> <span class="p">(</span><span class="n">y0</span><span class="o">&#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">)</span> <span class="o">*</span> <span class="n">y0</span><span class="p">)));</span>
 <span class="p">(</span><span class="n">v_leader_direct</span> <span class="o">-</span> <span class="n">v_expanded</span> <span class="o">&lt;</span> <span class="n">tol0</span><span class="p">)[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -1236,6 +1242,9 @@ inconsistency of the Stackelberg plan</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_18_0.png" src="../_images/dyn_stack_18_0.png" />
+</div>
 </div>
 </div>
 <div class="section" id="recursive-formulation-of-the-follower-s-problem">
@@ -1268,6 +1277,9 @@ problem.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_21_0.png" src="../_images/dyn_stack_21_0.png" />
+</div>
 </div>
 <p>Note: Variables with <code class="docutils literal notranslate"><span class="pre">_tilde</span></code> are obtained from solving the follower’s
 problem – those without are from the Stackelberg problem.</p>
@@ -1278,11 +1290,21 @@ problem – those without are from the Stackelberg problem.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># x0 == x0_tilde</span>
 <span class="n">yt</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">][</span><span class="k">end</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">yt_tilde</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">yt_tilde</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">])[</span><span class="k">end</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">tol0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -1301,10 +1323,25 @@ the recursive formulation of the follower problem.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1×5 Matrix{Float64}:
+ 2.5489e-17  -3.18612e-18  -0.103187  -1.0  0.103187
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">P</span> <span class="c"># value function in the Stackelberg problem</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Matrix{Float64}:
+   963.541  -194.605   -511.622   -5258.23
+  -194.605    37.3536    81.9771    784.765
+  -511.622    81.9771   247.343    2517.05
+ -5258.23    784.765   2517.05    25556.2
 </pre></div>
 </div>
 </div>
@@ -1315,11 +1352,26 @@ the recursive formulation of the follower problem.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 Matrix{Float64}:
+ -18.1991     2.58003     15.6049     151.23      -5.0
+   2.58003   -0.969466    -5.26008    -50.9764     1.0
+  15.6049    -5.26008    -32.2759    -312.792    -12.3824
+ 151.23     -50.9764    -312.792    -3031.33    -120.0
+  -5.0        1.0        -12.3824    -120.0       14.3824
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># manually check that P is an approximate fixed point</span>
 <span class="n">all</span><span class="p">((</span><span class="n">P</span>  <span class="o">-</span> <span class="p">((</span><span class="n">R</span> <span class="o">+</span> <span class="n">F</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">F</span><span class="p">)</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">)</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">B</span> <span class="o">*</span> <span class="n">F</span><span class="p">))</span> <span class="o">.&lt;</span> <span class="n">tol0</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -1346,11 +1398,21 @@ the recursive formulation of the follower problem.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>112.65590740578102
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># value function using P_guess</span>
 <span class="o">-</span><span class="p">(</span><span class="n">y0_tilde</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P_guess</span> <span class="o">*</span> <span class="n">y0_tilde</span><span class="p">)[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>112.65590740578097
 </pre></div>
 </div>
 </div>
@@ -1394,6 +1456,15 @@ end
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>F_iter = [0.0 -1.474514954580286e-17 -0.1031865014522383 -1.0000000000000007 0.10318650145223823]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1×5 adjoint(::Vector{Float64}) with eltype Float64:
+ 0.0  -1.47451e-17  -0.103187  -1.0  0.103187
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1408,10 +1479,18 @@ end
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_39_0.png" src="../_images/dyn_stack_39_0.png" />
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">yt_tilde_star</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">-</span> <span class="n">yt_tilde</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
 </pre></div>
 </div>
 </div>
@@ -1476,6 +1555,12 @@ z_{t+1} = (A - B_1 F_1 - B_2 F_2) z_t
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Policy for F1 is [-0.22701362843207126 0.03129874118441059 0.09447112842804818]
+Policy for F2 is [-0.22701362843207126 0.09447112842804818 0.03129874118441059]
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1487,11 +1572,19 @@ z_{t+1} = (A - B_1 F_1 - B_2 F_2) z_t
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_45_0.png" src="../_images/dyn_stack_45_0.png" />
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># computes the maximum difference in quantities across firms</span>
 <span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">q1</span> <span class="o">-</span> <span class="n">q2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.881784197001252e-16
 </pre></div>
 </div>
 </div>
@@ -1515,6 +1608,12 @@ z_{t+1} = (A - B_1 F_1 - B_2 F_2) z_t
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Firm 1: Direct is 133.3295555721595, Forward is 133.33033197956638
+Firm 2: Direct is 133.32955557215945, Forward is 133.33033197956638
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1525,6 +1624,11 @@ z_{t+1} = (A - B_1 F_1 - B_2 F_2) z_t
 
 <span class="n">v2_direct_alt</span> <span class="o">=</span> <span class="o">-</span><span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P1_ih</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">d</span><span class="p">;</span>
 <span class="n">all</span><span class="p">(</span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">v2_direct</span> <span class="o">-</span> <span class="n">v2_direct_alt</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -1548,6 +1652,9 @@ z_{t+1} = (A - B_1 F_1 - B_2 F_2) z_t
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/dyn_stack_52_0.png" src="../_images/dyn_stack_52_0.png" />
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1558,11 +1665,23 @@ z_{t+1} = (A - B_1 F_1 - B_2 F_2) z_t
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>vt_leader(y0) = 150.03237147548847
+vt_follower(y0) = 112.65590740578102
+vt_MPE(y0) = 133.3295555721595
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># total difference in value b/t Stackelberg and MPE</span>
 <span class="n">vt_leader</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">vt_follower</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="o">*</span><span class="n">vt_MPE</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-3.9708322630494877
 </pre></div>
 </div>
 </div>

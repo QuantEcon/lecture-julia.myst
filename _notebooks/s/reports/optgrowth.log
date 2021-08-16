@@ -17,27 +17,39 @@ Traceback (most recent call last):
     raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
 nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
 ------------------
-using LinearAlgebra, Statistics
-using Plots, QuantEcon, Interpolations, NLsolve, Optim, Random
-gr(fmt = :png);
+using Random
+Random.seed!(42)
+β = 0.94
+
+Tw = similar(grid_y)
+initial_w = 5 * log.(grid_y)
+v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks),
+                           initial_w).zero
+Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks,
+                         compute_policy = true)
+σ_func = LinearInterpolation(grid_y, σ)
+y = simulate_og(σ_func);
+
+@testset begin
+    @test y[5] ≈ 0.4896390574930345
+    @test σ[3] ≈ 0.025084788719798193 atol = 1e-6
+    @test Tw[4] ≈ -22.24681487036426
+    @test v_star_approx[50] ≈ -17.76952387641302
+end
 ------------------
 
-ArgumentError: Package Plots [91a5bcdd-55d7-5caf-9e0b-520d859cae80] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
+[91mSome tests did not pass: 3 passed, 1 failed, 0 errored, 0 broken.[39m
 
 Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
+ [1] finish(ts::Test.DefaultTestSet)
+   @ Test /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.6/Test/src/Test.jl:913
+ [2] macro expansion
+   @ /buildworker/worker/package_linux64/build/usr/share/julia/stdlib/v1.6/Test/src/Test.jl:1161 [inlined]
+ [3] top-level scope
+   @ In[20]:15
  [4] eval
    @ ./boot.jl:360 [inlined]
  [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
    @ Base ./loading.jl:1094
-LoadError: ArgumentError: Package Plots [91a5bcdd-55d7-5caf-9e0b-520d859cae80] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
+LoadError: [91mSome tests did not pass: 3 passed, 1 failed, 0 errored, 0 broken.[39m
 

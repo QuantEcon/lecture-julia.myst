@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/perm_income_cons.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="37. Consumption and Tax Smoothing with Complete and Incomplete Markets" href="smoothing.html" />
@@ -526,21 +527,11 @@ on the debt sequence <span class="math notranslate nohighlight">\(\{b_t\}\)</spa
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package QuantEcon [fcd29c91-0bd7-5a09-975d-7ac3f643a60c] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Matrix{Float64}:
+ 0.0  0.0      0.0      0.0
+ 0.0  5.26316  4.73684  0.0
+ 0.0  4.73684  5.26316  0.0
+ 0.0  0.0      0.0      0.0
 </pre></div>
 </div>
 </div>
@@ -565,6 +556,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.95
+</pre></div>
+</div>
+</div>
 </div>
 <p>Let’s print these out and have a look at them</p>
 <div class="cell docutils container">
@@ -573,6 +569,16 @@ Stacktrace:
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;B = </span><span class="si">$BLQ</span><span class="s">&quot;</span><span class="p">)</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;R = </span><span class="si">$RLQ</span><span class="s">&quot;</span><span class="p">)</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;Q = </span><span class="si">$QLQ</span><span class="s">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A = [1.0 0.0 0.0 0.0; 10.0 0.9 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 -1.0526315789473684 0.0 1.0526315789473684]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>B = [0.0, 0.0, 0.0, 1.0526315789473684]
+R = [0.0 0.0 0.0 0.0; 0.0 0.0 0.0 0.0; 0.0 0.0 0.0 0.0; 0.0 0.0 0.0 1.0e-9]
+Q = 1.0
 </pre></div>
 </div>
 </div>
@@ -591,6 +597,15 @@ employing an alternative solution method.</p>
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">P</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">stationary_values</span><span class="p">(</span><span class="n">LQPI</span><span class="p">)</span>    <span class="c">#  compute value function and decision rule</span>
 <span class="n">ABF</span> <span class="o">=</span> <span class="n">ALQ</span> <span class="o">-</span> <span class="n">BLQ</span> <span class="o">*</span> <span class="n">F</span>    <span class="c">#  form closed loop system</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Matrix{Float64}:
+  1.0      0.0       0.0  0.0
+ 10.0      0.9       0.0  0.0
+  0.0      1.0       0.0  0.0
+ 68.9655  -0.689655  0.0  1.0
 </pre></div>
 </div>
 </div>
@@ -642,6 +657,15 @@ income problem we used a different solution method.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Matrix{Float64}:
+ 0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0
+ 0.0  0.0  0.0  0.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>A_LSS calculated as we have here should equal ABF calculated above using the LQ model</p>
 <div class="cell docutils container">
@@ -650,11 +674,25 @@ income problem we used a different solution method.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Matrix{Float64}:
+  0.0         0.0         0.0   0.0
+  0.0         0.0         0.0   0.0
+  0.0         0.0         0.0   0.0
+ -9.51248e-6  9.51248e-8  0.0  -2.0e-8
+</pre></div>
+</div>
+</div>
 </div>
 <p>Now compare pertinent elements of c_pol and F</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">println</span><span class="p">(</span><span class="n">c_pol</span><span class="p">,</span> <span class="o">-</span><span class="n">F</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[65.51724137931033 0.34482758620689685 0.0][65.51723234245394 0.344827676575457 -0.0 -0.050000018999992145]
 </pre></div>
 </div>
 </div>
@@ -811,6 +849,11 @@ graph as the population distribution</p></li>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>consumption_debt_fanchart (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Now let’s create figures with initial conditions of zero for <span class="math notranslate nohighlight">\(y_0\)</span> and <span class="math notranslate nohighlight">\(b_0\)</span></p>
 <div class="cell docutils container">
@@ -823,6 +866,9 @@ graph as the population distribution</p></li>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/perm_income_cons_26_0.png" src="../_images/perm_income_cons_26_0.png" />
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -830,6 +876,9 @@ graph as the population distribution</p></li>
                           <span class="n">bsim0</span><span class="p">,</span> <span class="n">debt_mean0</span><span class="p">,</span> <span class="n">debt_var0</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/perm_income_cons_27_0.png" src="../_images/perm_income_cons_27_0.png" />
 </div>
 </div>
 <p>Here is what is going on in the above graphs.</p>
@@ -882,6 +931,9 @@ behavior early in the sample.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/perm_income_cons_29_0.png" src="../_images/perm_income_cons_29_0.png" />
+</div>
 </div>
 </div>
 </div>
@@ -922,6 +974,9 @@ with each other at a gross risk-free interest rate of
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/perm_income_cons_31_0.png" src="../_images/perm_income_cons_31_0.png" />
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -929,6 +984,9 @@ with each other at a gross risk-free interest rate of
                           <span class="n">bsimb</span><span class="p">,</span> <span class="n">debt_meanb</span><span class="p">,</span> <span class="n">debt_varb</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/perm_income_cons_32_0.png" src="../_images/perm_income_cons_32_0.png" />
 </div>
 </div>
 <p>The graphs confirm the following outcomes:</p>
@@ -947,6 +1005,9 @@ with each other at a gross risk-free interest rate of
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cointegration_figure</span><span class="p">(</span><span class="n">bsimb</span><span class="p">,</span> <span class="n">csimb</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/perm_income_cons_34_0.png" src="../_images/perm_income_cons_34_0.png" />
 </div>
 </div>
 </div>

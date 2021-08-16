@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/finite_markov.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="20. Continuous State Markov Chains" href="stationary_densities.html" />
@@ -389,25 +390,6 @@
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package Distributions [31c24e10-a181-5473-b8eb-7969acd0382f] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 <div class="section" id="definitions">
@@ -551,6 +533,20 @@ P =
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>rand(d, 5) = [3, 1, 2, 3, 2]
+supertype(typeof(d)) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Distribution{Univariate, Discrete}
+pdf(d, 1) = 0.5
+support(d) = Base.OneTo(3)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>pdf.(d, support(d)) = [0.5, 0.3, 0.2]
+</pre></div>
+</div>
+</div>
 </div>
 <p>We’ll write our code as a function that takes the following three arguments</p>
 <ul class="simple">
@@ -580,6 +576,11 @@ P =
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>mc_sample_path (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Let’s see how it works using the small matrix</p>
 <div class="math notranslate nohighlight" id="equation-fm-smat">
@@ -600,6 +601,11 @@ P =
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.25267
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="using-quantecon-s-routines">
@@ -612,6 +618,11 @@ P =
 <span class="n">mc</span> <span class="o">=</span> <span class="n">MarkovChain</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="mi">100_000</span><span class="p">);</span>
 <span class="n">μ_2</span> <span class="o">=</span> <span class="n">count</span><span class="p">(</span><span class="n">X</span> <span class="o">.==</span> <span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">length</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="c"># or mean(x -&gt; x == 1, X)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.25291
 </pre></div>
 </div>
 </div>
@@ -628,10 +639,28 @@ P =
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{String}:
+ &quot;unemployed&quot;
+ &quot;employed&quot;
+ &quot;employed&quot;
+ &quot;unemployed&quot;
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">simulate</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">init</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="c"># start at state 2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{String}:
+ &quot;employed&quot;
+ &quot;employed&quot;
+ &quot;unemployed&quot;
+ &quot;employed&quot;
 </pre></div>
 </div>
 </div>
@@ -642,10 +671,28 @@ P =
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{String}:
+ &quot;unemployed&quot;
+ &quot;employed&quot;
+ &quot;unemployed&quot;
+ &quot;employed&quot;
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">simulate_indices</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Int64}:
+ 2
+ 2
+ 2
+ 2
 </pre></div>
 </div>
 </div>
@@ -801,6 +848,11 @@ reach any state from any other state eventually.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
+</pre></div>
+</div>
+</div>
 </div>
 <p>Here’s a more pessimistic scenario, where the poor are poor forever</p>
 <div class="figure align-default">
@@ -816,11 +868,23 @@ reach any state from any other state eventually.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>false
+</pre></div>
+</div>
+</div>
 </div>
 <p>We can also determine the “communication classes,” or the sets of communicating states (where communication refers to a nonzero probability of moving in each direction).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">communication_classes</span><span class="p">(</span><span class="n">mc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Vector{Int64}}:
+ [1]
+ [2, 3]
 </pre></div>
 </div>
 </div>
@@ -842,6 +906,11 @@ reach any state from any other state eventually.</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">P</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">;</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span><span class="p">];</span>
 <span class="n">mc</span> <span class="o">=</span> <span class="n">MarkovChain</span><span class="p">(</span><span class="n">P</span><span class="p">);</span>
 <span class="n">period</span><span class="p">(</span><span class="n">mc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3
 </pre></div>
 </div>
 </div>
@@ -871,10 +940,20 @@ D(x) := \{j \geq 1 : P^j(x, x) &gt; 0\}
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">is_aperiodic</span><span class="p">(</span><span class="n">mc</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>false
 </pre></div>
 </div>
 </div>
@@ -890,6 +969,12 @@ D(x) := \{j \geq 1 : P^j(x, x) &gt; 0\}
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">P</span> <span class="o">=</span> <span class="p">[</span><span class="mf">.4</span> <span class="mf">.6</span><span class="p">;</span> <span class="mf">.2</span> <span class="mf">.8</span><span class="p">];</span>
 <span class="n">ψ</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">];</span>
 <span class="n">ψ</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">P</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1×2 adjoint(::Vector{Float64}) with eltype Float64:
+ 0.25  0.75
 </pre></div>
 </div>
 </div>
@@ -960,6 +1045,12 @@ p = \frac{\beta}{\alpha + \beta}
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1-element Vector{Vector{Float64}}:
+ [0.25, 0.7499999999999999]
+</pre></div>
+</div>
+</div>
 </div>
 <p>The stationary distribution is unique.</p>
 </div>
@@ -997,6 +1088,9 @@ p = \frac{\beta}{\alpha + \beta}
 <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">camera</span> <span class="o">=</span> <span class="p">(</span><span class="mi">45</span><span class="p">,</span><span class="mi">45</span><span class="p">))</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/finite_markov_41_0.png" src="../_images/finite_markov_41_0.png" />
 </div>
 </div>
 <p>Here</p>
@@ -1304,6 +1398,9 @@ to the stationary probability.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/finite_markov_45_0.png" src="../_images/finite_markov_45_0.png" />
+</div>
 </div>
 </div>
 <div class="section" id="id9">
@@ -1324,6 +1421,25 @@ to the stationary probability.</p>
                            <span class="sc">&#39;l&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="sc">&#39;m&#39;</span><span class="p">],</span>
                            <span class="sc">&#39;m&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="sc">&#39;g&#39;</span><span class="p">],</span>
                            <span class="sc">&#39;n&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="sc">&#39;c&#39;</span><span class="p">,</span> <span class="sc">&#39;j&#39;</span><span class="p">,</span> <span class="sc">&#39;m&#39;</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>OrderedCollections.OrderedDict{Char, Vector{Char}} with 14 entries:
+  &#39;a&#39; =&gt; [&#39;d&#39;, &#39;f&#39;]
+  &#39;b&#39; =&gt; [&#39;j&#39;, &#39;k&#39;, &#39;m&#39;]
+  &#39;c&#39; =&gt; [&#39;c&#39;, &#39;g&#39;, &#39;j&#39;, &#39;m&#39;]
+  &#39;d&#39; =&gt; [&#39;f&#39;, &#39;h&#39;, &#39;k&#39;]
+  &#39;e&#39; =&gt; [&#39;d&#39;, &#39;h&#39;, &#39;l&#39;]
+  &#39;f&#39; =&gt; [&#39;a&#39;, &#39;b&#39;, &#39;j&#39;, &#39;l&#39;]
+  &#39;g&#39; =&gt; [&#39;b&#39;, &#39;j&#39;]
+  &#39;h&#39; =&gt; [&#39;d&#39;, &#39;g&#39;, &#39;l&#39;, &#39;m&#39;]
+  &#39;i&#39; =&gt; [&#39;g&#39;, &#39;h&#39;, &#39;n&#39;]
+  &#39;j&#39; =&gt; [&#39;e&#39;, &#39;i&#39;, &#39;k&#39;]
+  &#39;k&#39; =&gt; [&#39;n&#39;]
+  &#39;l&#39; =&gt; [&#39;m&#39;]
+  &#39;m&#39; =&gt; [&#39;g&#39;]
+  &#39;n&#39; =&gt; [&#39;c&#39;, &#39;j&#39;, &#39;m&#39;]
 </pre></div>
 </div>
 </div>
@@ -1348,6 +1464,29 @@ to the stationary probability.</p>
 <span class="c"># print solution</span>
 <span class="n">println</span><span class="p">(</span><span class="s">&quot;Rankings</span><span class="se">\n</span><span class="s"> ***&quot;</span><span class="p">)</span>
 <span class="n">sort</span><span class="p">(</span><span class="n">collect</span><span class="p">(</span><span class="n">ranked_pages</span><span class="p">),</span> <span class="n">by</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">rev</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span> <span class="c"># print sorted</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Rankings
+ ***
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14-element Vector{Pair{Char, Float64}}:
+ &#39;g&#39; =&gt; 0.16070778858515053
+ &#39;j&#39; =&gt; 0.15936158342833578
+ &#39;m&#39; =&gt; 0.119515123584059
+ &#39;n&#39; =&gt; 0.10876973827831275
+ &#39;k&#39; =&gt; 0.0910628956751643
+ &#39;b&#39; =&gt; 0.0832646081451476
+ &#39;e&#39; =&gt; 0.05312052780944526
+ &#39;i&#39; =&gt; 0.05312052780944526
+ &#39;c&#39; =&gt; 0.04834210590147233
+ &#39;h&#39; =&gt; 0.04560118369030004
+ &#39;l&#39; =&gt; 0.032017852378295776
+ &#39;d&#39; =&gt; 0.030562495452009602
+ &#39;f&#39; =&gt; 0.011642855410289372
+ &#39;a&#39; =&gt; 0.002910713852572343
 </pre></div>
 </div>
 </div>

@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/numerical_linear_algebra.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="23. Krylov Methods and Matrix Conditioning" href="iterative_methods_sparsity.html" />
@@ -337,25 +338,6 @@ look at are <a class="reference external" href="https://github.com/JuliaMatrices
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package BenchmarkTools [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 <div class="section" id="computational-complexity">
 <h3><span class="section-number">22.1.1. </span>Computational Complexity<a class="headerlink" href="#computational-complexity" title="Permalink to this headline">¶</a></h3>
@@ -422,6 +404,15 @@ fixed size.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>nnz(A) = 47
+nnz(invA) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100
+</pre></div>
+</div>
+</div>
 </div>
 <p>This increase from less than 50 to 100 percent dense demonstrates that significant sparsity can be lost when computing an inverse.</p>
 <p>The results can be even more extreme.  Consider a tridiagonal matrix of size <span class="math notranslate nohighlight">\(N \times N\)</span>
@@ -430,6 +421,16 @@ that might come out of a Markov chain or a discretization of a diffusion process
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">Tridiagonal</span><span class="p">([</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 Tridiagonal{Float64, Vector{Float64}}:
+ 0.8  0.2   ⋅    ⋅    ⋅ 
+ 0.1  0.8  0.1   ⋅    ⋅ 
+  ⋅   0.1  0.8  0.1   ⋅ 
+  ⋅    ⋅   0.1  0.8  0.1
+  ⋅    ⋅    ⋅   0.2  0.8
 </pre></div>
 </div>
 </div>
@@ -442,6 +443,16 @@ that might come out of a Markov chain or a discretization of a diffusion process
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 Matrix{Float64}:
+  1.29099      -0.327957     0.0416667  -0.00537634   0.000672043
+ -0.163978      1.31183     -0.166667    0.0215054   -0.00268817
+  0.0208333    -0.166667     1.29167    -0.166667     0.0208333
+ -0.00268817    0.0215054   -0.166667    1.31183     -0.163978
+  0.000672043  -0.00537634   0.0416667  -0.327957     1.29099
+</pre></div>
+</div>
+</div>
 </div>
 <p>Now, the matrix is fully dense and has <span class="math notranslate nohighlight">\(N^2\)</span> non-zeros.</p>
 <p>This also applies to the <span class="math notranslate nohighlight">\(A' A\)</span> operation when forming the normal equations of linear least squares.</p>
@@ -450,6 +461,15 @@ that might come out of a Markov chain or a discretization of a diffusion process
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">sprand</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">nnz</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">/</span><span class="mi">20</span><span class="o">^</span><span class="mi">2</span>
 <span class="nd">@show</span> <span class="n">nnz</span><span class="p">(</span><span class="n">A</span><span class="o">&#39;*</span><span class="n">A</span><span class="p">)</span><span class="o">/</span><span class="mi">21</span><span class="o">^</span><span class="mi">2</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>nnz(A) / 20 ^ 2 = 0.2825
+nnz(A&#39; * A) / 21 ^ 2 = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.800453514739229
 </pre></div>
 </div>
 </div>
@@ -469,6 +489,11 @@ have a lower computational order than unstructured dense, or even unstructured s
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>benchmark_solve (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Then, take away structure to see the impact on performance,</p>
 <div class="cell docutils container">
@@ -483,6 +508,22 @@ have a lower computational order than unstructured dense, or even unstructured s
 <span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 <span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A_sparse</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 <span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A_dense</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A\b for typeof(A) = Tridiagonal{Float64, Vector{Float64}}
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  23.901 μs (8 allocations: 47.72 KiB)
+A\b for typeof(A) = SparseMatrixCSC{Float64, Int64}
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  630.553 μs (69 allocations: 1.06 MiB)
+A\b for typeof(A) = Matrix{Float64}
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  14.697 ms (4 allocations: 7.64 MiB)
 </pre></div>
 </div>
 </div>
@@ -505,10 +546,30 @@ using a dense matrix.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 UpperTriangular{Float64, Matrix{Float64}}:
+ 0.299976  0.176934  0.0608682  0.20465   0.409653
+  ⋅        0.523923  0.127154   0.512531  0.235328
+  ⋅         ⋅        0.600588   0.682868  0.330638
+  ⋅         ⋅         ⋅         0.345419  0.0312986
+  ⋅         ⋅         ⋅          ⋅        0.471043
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">U</span><span class="o">&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 LowerTriangular{Float64, Adjoint{Float64, Matrix{Float64}}}:
+ 0.299976    ⋅         ⋅         ⋅          ⋅ 
+ 0.176934   0.523923   ⋅         ⋅          ⋅ 
+ 0.0608682  0.127154  0.600588   ⋅          ⋅ 
+ 0.20465    0.512531  0.682868  0.345419    ⋅ 
+ 0.409653   0.235328  0.330638  0.0312986  0.471043
 </pre></div>
 </div>
 </div>
@@ -520,6 +581,16 @@ using a dense matrix.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 Matrix{Float64}:
+ 0.0899855  0.0530758  0.018259   0.0613901  0.122886
+ 0.0530758  0.305801   0.0773883  0.304736   0.195775
+ 0.018259   0.0773883  0.380579   0.487749   0.253435
+ 0.0613901  0.304736   0.487749   0.890193   0.441042
+ 0.122886   0.195775   0.253435   0.441042   0.555378
+</pre></div>
+</div>
+</div>
 </div>
 <p>On the other hand, a tridiagonal matrix times a diagonal matrix is still tridiagonal - and can use specialized <span class="math notranslate nohighlight">\(O(N)\)</span> algorithms.</p>
 <div class="cell docutils container">
@@ -527,6 +598,16 @@ using a dense matrix.</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">Tridiagonal</span><span class="p">([</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);])</span>
 <span class="n">D</span> <span class="o">=</span> <span class="n">Diagonal</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
 <span class="n">D</span> <span class="o">*</span> <span class="n">A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5×5 Tridiagonal{Float64, Vector{Float64}}:
+ 0.0156225  0.00390564   ⋅           ⋅          ⋅ 
+ 0.0436677  0.349342    0.0436677    ⋅          ⋅ 
+  ⋅         0.0213158   0.170526    0.0213158   ⋅ 
+  ⋅          ⋅          0.00790566  0.0632453  0.00790566
+  ⋅          ⋅           ⋅          0.19686    0.787442
 </pre></div>
 </div>
 </div>
@@ -556,11 +637,29 @@ x = A^{-1} b
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Float64}:
+ 0.5682240701809245
+ 0.40245385575255055
+ 0.1825995192132288
+ 0.06160128039631019
+</pre></div>
+</div>
+</div>
 </div>
 <p>On paper, we try to solve the system <span class="math notranslate nohighlight">\(A x = b\)</span> by inverting the matrix,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">*</span> <span class="n">b</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Float64}:
+ -0.0339069840407679
+  0.7988200873225003
+  0.9963711951331815
+ -0.9276352098500461
 </pre></div>
 </div>
 </div>
@@ -602,6 +701,17 @@ x = A^{-1} b
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  302.325 μs (67 allocations: 205.25 KiB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  191.916 μs (96 allocations: 155.59 KiB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  122.411 μs (5 allocations: 102.59 KiB)
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="triangular-matrices-and-back-forward-substitution">
@@ -615,11 +725,27 @@ x = A^{-1} b
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×3 UpperTriangular{Float64, Matrix{Float64}}:
+ 1.0  2.0  3.0
+  ⋅   5.0  6.0
+  ⋅    ⋅   9.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>This system is especially easy to solve using <a class="reference external" href="https://en.wikipedia.org/wiki/Triangular_matrix#Forward_and_back_substitution">back substitution</a>.  In particular, <span class="math notranslate nohighlight">\(x_3 = b_3 / U_{33}, x_2 = (b_2 - x_3 U_{23})/U_{22}\)</span>, etc.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">U</span> <span class="o">\</span> <span class="n">b</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
+ 1.1102230246251563e-17
+ 2.2204460492503132e-17
+ 0.3333333333333333
 </pre></div>
 </div>
 </div>
@@ -646,6 +772,23 @@ matrix.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>LU{Float64, Matrix{Float64}}
+L factor:
+4×4 Matrix{Float64}:
+ 1.0       0.0       0.0       0.0
+ 0.563082  1.0       0.0       0.0
+ 0.730109  0.912509  1.0       0.0
+ 0.114765  0.227879  0.115228  1.0
+U factor:
+4×4 Matrix{Float64}:
+ 0.79794  0.28972   0.765939   0.496278
+ 0.0      0.82524   0.23962   -0.130989
+ 0.0      0.0      -0.447888   0.374303
+ 0.0      0.0       0.0        0.725264
+</pre></div>
+</div>
+</div>
 </div>
 <p>In this case, it provides an <span class="math notranslate nohighlight">\(L\)</span> and <span class="math notranslate nohighlight">\(U\)</span> factorization (with <a class="reference external" href="https://en.wikipedia.org/wiki/LU_decomposition#LU_factorization_with_full_pivoting">pivoting</a> ).</p>
 <p>With the factorization complete, we can solve different <code class="docutils literal notranslate"><span class="pre">b</span></code> right hand sides.</p>
@@ -655,11 +798,29 @@ matrix.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Float64}:
+ -0.49842605495731557
+ -0.11835721499695576
+  1.5055538550184817
+  0.07694455957797537
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">b2</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 <span class="n">Af</span> <span class="o">\</span> <span class="n">b2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Float64}:
+ -0.6456780666059364
+ -0.2601515737654759
+  1.116889566296631
+  0.5405293106660054
 </pre></div>
 </div>
 </div>
@@ -672,6 +833,11 @@ that <span class="math notranslate nohighlight">\(P A = L U\)</span>.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
+</pre></div>
+</div>
+</div>
 </div>
 <p>We can also directly calculate an LU decomposition with <code class="docutils literal notranslate"><span class="pre">lu</span></code> but without the pivoting,</p>
 <div class="cell docutils container">
@@ -680,11 +846,33 @@ that <span class="math notranslate nohighlight">\(P A = L U\)</span>.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>LU{Float64, Matrix{Float64}}
+L factor:
+4×4 Matrix{Float64}:
+ 1.0       0.0       0.0       0.0
+ 0.730109  1.0       0.0       0.0
+ 0.563082  1.09588   1.0       0.0
+ 0.114765  0.249728  0.122733  1.0
+U factor:
+4×4 Matrix{Float64}:
+ 0.79794  0.28972    0.765939   0.496278
+ 0.0      0.753039  -0.229233   0.254774
+ 0.0      0.0        0.490832  -0.410191
+ 0.0      0.0        0.0        0.725264
+</pre></div>
+</div>
+</div>
 </div>
 <p>And we can verify the decomposition</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">≈</span> <span class="n">L</span> <span class="o">*</span> <span class="n">U</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -706,11 +894,25 @@ U x &amp;= y
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Float64}:
+  0.759344042755733
+ -0.4146467815590597
+  0.707411438334498
+  0.05580508465599857
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">U</span> <span class="o">\</span> <span class="n">y</span>
 <span class="n">x</span> <span class="o">≈</span> <span class="n">A</span> <span class="o">\</span> <span class="n">b</span>  <span class="c"># Check identical</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -722,6 +924,11 @@ U x &amp;= y
 <span class="n">b</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 <span class="n">A</span> <span class="o">=</span> <span class="n">Tridiagonal</span><span class="p">([</span><span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span> <span class="mf">0.2</span><span class="p">],</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">N</span><span class="p">),</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">;</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">2</span><span class="p">);])</span>
 <span class="n">factorize</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">typeof</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>LU{Float64, Tridiagonal{Float64, Vector{Float64}}}
 </pre></div>
 </div>
 </div>
@@ -737,11 +944,28 @@ so will the sparse solvers</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SuiteSparse.UMFPACK.UmfpackLU{Float64, Int64}
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 <span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A_sparse</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A\b for typeof(A) = Tridiagonal{Float64, Vector{Float64}}
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24.103 μs (8 allocations: 47.72 KiB)
+A\b for typeof(A) = SparseMatrixCSC{Float64, Int64}
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  627.752 μs (69 allocations: 1.06 MiB)
 </pre></div>
 </div>
 </div>
@@ -764,12 +988,22 @@ so will the sparse solvers</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BunchKaufman{Float64, Matrix{Float64}}
+</pre></div>
+</div>
+</div>
 </div>
 <p>Here, the <span class="math notranslate nohighlight">\(A\)</span> decomposition is <a class="reference external" href="https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/index.html#LinearAlgebra.bunchkaufman">Bunch-Kaufman</a> rather than
 Cholesky, because Julia doesn’t know that the matrix is positive semi-definite.  We can manually factorize with a Cholesky,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cholesky</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="n">typeof</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Cholesky{Float64, Matrix{Float64}}
 </pre></div>
 </div>
 </div>
@@ -783,6 +1017,21 @@ Cholesky, because Julia doesn’t know that the matrix is positive semi-definite
 <span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 <span class="n">benchmark_solve</span><span class="p">(</span><span class="n">A_dense</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 <span class="nd">@btime</span> <span class="n">cholesky</span><span class="p">(</span><span class="o">$</span><span class="n">A</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="nb">false</span><span class="p">)</span> <span class="o">\</span> <span class="o">$</span><span class="n">b</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A\b for typeof(A) = Symmetric{Float64, Matrix{Float64}}
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.537 ms (6 allocations: 2.16 MiB)
+A\b for typeof(A) = Matrix{Float64}
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.834 ms (4 allocations: 1.92 MiB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.721 ms (5 allocations: 1.91 MiB)
 </pre></div>
 </div>
 </div>
@@ -819,6 +1068,14 @@ R x = Q' b
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
+  0.40117471248725856
+  0.07361080010718479
+ -0.23478068012724582
+</pre></div>
+</div>
+</div>
 </div>
 <p>To manually use the QR decomposition in solving linear least squares:</p>
 <div class="cell docutils container">
@@ -828,6 +1085,17 @@ R x = Q' b
 <span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="n">Af</span><span class="o">.</span><span class="n">R</span><span class="p">;</span> <span class="n">zeros</span><span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">M</span><span class="p">,</span> <span class="n">M</span><span class="p">)]</span> <span class="c"># Stack with zeros</span>
 <span class="nd">@show</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">R</span> <span class="o">≈</span> <span class="n">A</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">\</span> <span class="n">Q</span><span class="o">&#39;*</span><span class="n">b</span>  <span class="c"># simplified QR solution for least squares</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Q * R ≈ A = true
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
+  0.4011747124872585
+  0.07361080010718478
+ -0.2347806801272457
 </pre></div>
 </div>
 </div>
@@ -870,6 +1138,15 @@ factorization with <code class="docutils literal notranslate"><span class="pre">
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A \ b = [-1.478040941944558, 2.09875752634393, -0.6857071090150306, -0.16849538664184543, 2.012803045177841]
+qr(A) \ b = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-1.4780409419445586, 2.0987575263439306, -0.685707109015032, -0.16849538664184413, 2.0128030451778414]
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="spectral-decomposition">
@@ -889,6 +1166,11 @@ A = Q \Lambda Q^{-1}
 <span class="n">Λ</span> <span class="o">=</span> <span class="n">Diagonal</span><span class="p">(</span><span class="n">A_eig</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">A_eig</span><span class="o">.</span><span class="n">vectors</span>
 <span class="n">norm</span><span class="p">(</span><span class="n">Q</span> <span class="o">*</span> <span class="n">Λ</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span> <span class="o">-</span> <span class="n">A</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.803627108839096e-15
 </pre></div>
 </div>
 </div>
@@ -947,6 +1229,17 @@ Q = \begin{bmatrix} -0.1 &amp; 0.1  &amp; 0 &amp; 0 &amp; 0 &amp; 0\\
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6×6 Tridiagonal{Float64, Vector{Float64}}:
+ -0.1   0.1    ⋅     ⋅     ⋅     ⋅ 
+  0.1  -0.2   0.1    ⋅     ⋅     ⋅ 
+   ⋅    0.1  -0.2   0.1    ⋅     ⋅ 
+   ⋅     ⋅    0.1  -0.2   0.1    ⋅ 
+   ⋅     ⋅     ⋅    0.1  -0.2   0.1
+   ⋅     ⋅     ⋅     ⋅    0.1  -0.1
+</pre></div>
+</div>
+</div>
 </div>
 <p>Here we can use <code class="docutils literal notranslate"><span class="pre">Tridiagonal</span></code> to exploit the structure of the problem.</p>
 <p>Consider a simple payoff vector <span class="math notranslate nohighlight">\(r\)</span> associated with each state, and a discount rate <span class="math notranslate nohighlight">\(ρ\)</span>.  Then we can solve for
@@ -970,12 +1263,34 @@ the expected present discounted value in a way similar to the discrete-time case
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6×6 Tridiagonal{Float64, Vector{Float64}}:
+  0.15  -0.1     ⋅      ⋅      ⋅      ⋅ 
+ -0.1    0.25  -0.1     ⋅      ⋅      ⋅ 
+   ⋅    -0.1    0.25  -0.1     ⋅      ⋅ 
+   ⋅      ⋅    -0.1    0.25  -0.1     ⋅ 
+   ⋅      ⋅      ⋅    -0.1    0.25  -0.1
+   ⋅      ⋅      ⋅      ⋅    -0.1    0.15
+</pre></div>
+</div>
+</div>
 </div>
 <p>Note that this <span class="math notranslate nohighlight">\(A\)</span> matrix is maintaining the tridiagonal structure of the problem, which leads to an efficient solution to the
 linear problem.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">v</span> <span class="o">=</span> <span class="n">A</span> <span class="o">\</span> <span class="n">r</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6-element Vector{Float64}:
+  38.15384615384615
+  57.23076923076923
+  84.92307692307693
+ 115.07692307692311
+ 142.76923076923077
+ 161.84615384615384
 </pre></div>
 </div>
 </div>
@@ -1000,12 +1315,44 @@ linear problem.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Eigen{Float64, Float64, Matrix{Float64}, Vector{Float64}}
+values:
+6-element Vector{Float64}:
+ -0.3732050807568874
+ -0.29999999999999993
+ -0.19999999999999998
+ -0.09999999999999995
+ -0.026794919243112274
+  0.0
+vectors:
+6×6 Matrix{Float64}:
+ -0.149429  -0.288675   0.408248   0.5          -0.557678  0.408248
+  0.408248   0.57735   -0.408248   1.38778e-16  -0.408248  0.408248
+ -0.557678  -0.288675  -0.408248  -0.5          -0.149429  0.408248
+  0.557678  -0.288675   0.408248  -0.5           0.149429  0.408248
+ -0.408248   0.57735    0.408248   7.63278e-16   0.408248  0.408248
+  0.149429  -0.288675  -0.408248   0.5           0.557678  0.408248
+</pre></div>
+</div>
+</div>
 </div>
 <p>Indeed, there is a <span class="math notranslate nohighlight">\(\lambda = 0\)</span> eigenvalue, which is associated with the last column in the eigenvector.  To turn that into a probability,
 we need to normalize it.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">vecs</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">N</span><span class="p">]</span> <span class="o">./</span> <span class="n">sum</span><span class="p">(</span><span class="n">vecs</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">N</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6-element Vector{Float64}:
+ 0.16666666666666657
+ 0.16666666666666657
+ 0.1666666666666667
+ 0.16666666666666682
+ 0.16666666666666685
+ 0.16666666666666663
 </pre></div>
 </div>
 </div>
@@ -1038,6 +1385,19 @@ enumerate it as a single state variable.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8×8 Matrix{Float64}:
+ -0.2   0.1   0.0   0.0   0.1   0.0   0.0   0.0
+  0.1  -0.3   0.1   0.0   0.0   0.1   0.0   0.0
+  0.0   0.1  -0.3   0.1   0.0   0.0   0.1   0.0
+  0.0   0.0   0.1  -0.2   0.0   0.0   0.0   0.1
+  0.2   0.0   0.0   0.0  -0.3   0.1   0.0   0.0
+  0.0   0.2   0.0   0.0   0.1  -0.4   0.1   0.0
+  0.0   0.0   0.2   0.0   0.0   0.1  -0.4   0.1
+  0.0   0.0   0.0   0.2   0.0   0.0   0.1  -0.3
+</pre></div>
+</div>
+</div>
 </div>
 <p>This provides the combined Markov chain for the <span class="math notranslate nohighlight">\((i,j)\)</span> process.  To see the sparsity pattern,</p>
 <div class="cell docutils container">
@@ -1048,12 +1408,28 @@ enumerate it as a single state variable.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/numerical_linear_algebra_77_0.png" src="../_images/numerical_linear_algebra_77_0.png" />
+</div>
 </div>
 <p>To calculate a simple dynamic valuation, consider whether the payoff of being in state <span class="math notranslate nohighlight">\((i,j)\)</span> is <span class="math notranslate nohighlight">\(r_{ij} = i + 2j\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mf">2.0</span><span class="n">j</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">N</span><span class="p">,</span> <span class="n">j</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">M</span><span class="p">]</span>
 <span class="n">r</span> <span class="o">=</span> <span class="n">vec</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>  <span class="c"># vectorize it since stacked in same order</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8-element Vector{Float64}:
+ 3.0
+ 4.0
+ 5.0
+ 6.0
+ 5.0
+ 6.0
+ 7.0
+ 8.0
 </pre></div>
 </div>
 </div>
@@ -1064,6 +1440,15 @@ enumerate it as a single state variable.</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.05</span>
 <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">ρ</span> <span class="o">*</span> <span class="n">I</span> <span class="o">-</span> <span class="n">L</span><span class="p">)</span> <span class="o">\</span> <span class="n">r</span>
 <span class="n">reshape</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×2 Matrix{Float64}:
+  87.8992   93.6134
+  96.1345  101.849
+ 106.723   112.437
+ 114.958   120.672
 </pre></div>
 </div>
 </div>
@@ -1081,11 +1466,33 @@ case, we can verify that it is the last one.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8-element Vector{Float64}:
+ 0.16666666666666677
+ 0.1666666666666665
+ 0.16666666666666682
+ 0.16666666666666666
+ 0.08333333333333325
+ 0.08333333333333345
+ 0.0833333333333333
+ 0.08333333333333334
+</pre></div>
+</div>
+</div>
 </div>
 <p>Reshape this to be two-dimensional if it is helpful for visualization.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">reshape</span><span class="p">(</span><span class="n">ψ</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">size</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×2 Matrix{Float64}:
+ 0.166667  0.0833333
+ 0.166667  0.0833333
+ 0.166667  0.0833333
+ 0.166667  0.0833333
 </pre></div>
 </div>
 </div>
@@ -1104,12 +1511,28 @@ is isomorphic to determining whether the directed graph of the Markov chain is <
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6×6 Tridiagonal{Float64, Vector{Float64}}:
+ -0.1   0.1    ⋅     ⋅     ⋅     ⋅ 
+  0.1  -0.2   0.1    ⋅     ⋅     ⋅ 
+   ⋅    0.1  -0.2   0.1    ⋅     ⋅ 
+   ⋅     ⋅    0.1  -0.2   0.1    ⋅ 
+   ⋅     ⋅     ⋅    0.1  -0.2   0.1
+   ⋅     ⋅     ⋅     ⋅    0.1  -0.1
+</pre></div>
+</div>
+</div>
 </div>
 <p>We can verify that it is possible to move between every pair of states in a finite number of steps with</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Q_graph</span> <span class="o">=</span> <span class="n">DiGraph</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">is_strongly_connected</span><span class="p">(</span><span class="n">Q_graph</span><span class="p">);</span>  <span class="c"># i.e., can follow directional edges to get to every state</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>is_strongly_connected(Q_graph) = true
 </pre></div>
 </div>
 </div>
@@ -1122,6 +1545,11 @@ is isomorphic to determining whether the directed graph of the Markov chain is <
     <span class="mf">0.2</span> <span class="mf">0.6</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">]</span>
 <span class="n">Q_graph</span> <span class="o">=</span> <span class="n">DiGraph</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">is_strongly_connected</span><span class="p">(</span><span class="n">Q_graph</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>is_strongly_connected(Q_graph) = false
 </pre></div>
 </div>
 </div>
@@ -1141,11 +1569,29 @@ total width of main-, sub-, and super-diagonals is called the bandwidth.  For ex
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 Matrix{Int64}:
+ 0  1  0  0
+ 4  0  2  0
+ 0  5  0  3
+ 0  0  6  0
+</pre></div>
+</div>
+</div>
 </div>
 <p>Or as a sparse matrix,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">spdiagm</span><span class="p">(</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span> <span class="o">=&gt;</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 SparseMatrixCSC{Int64, Int64} with 6 stored entries:
+ ⋅  1  ⋅  ⋅
+ 4  ⋅  2  ⋅
+ ⋅  5  ⋅  3
+ ⋅  ⋅  6  ⋅
 </pre></div>
 </div>
 </div>
@@ -1158,11 +1604,32 @@ total width of main-, sub-, and super-diagonals is called the bandwidth.  For ex
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4×4 BandedMatrix{Int64, Matrix{Int64}, Base.OneTo{Int64}}:
+ 0  1  ⋅  ⋅
+ 4  0  2  ⋅
+ ⋅  5  0  3
+ ⋅  ⋅  6  0
+</pre></div>
+</div>
+</div>
 </div>
 <p>There is also a convenience function for generating random banded matrices</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">brand</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c"># 7x7 matrix, 3 subdiagonals, 1 superdiagonal</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7×7 BandedMatrix{Float64, Matrix{Float64}, Base.OneTo{Int64}}:
+ 0.386608  0.346262    ⋅         ⋅          ⋅          ⋅         ⋅ 
+ 0.479616  0.750276   0.50362    ⋅          ⋅          ⋅         ⋅ 
+ 0.857743  0.913585   0.087322  0.0676183   ⋅          ⋅         ⋅ 
+ 0.779364  0.293782   0.269804  0.813762   0.147221    ⋅         ⋅ 
+  ⋅        0.0341229  0.711412  0.438157   0.0312296  0.930633   ⋅ 
+  ⋅         ⋅         0.412892  0.351496   0.701733   0.335451  0.0827553
+  ⋅         ⋅          ⋅        0.394056   0.460506   0.25927   0.418861
 </pre></div>
 </div>
 </div>
@@ -1172,6 +1639,21 @@ total width of main-, sub-, and super-diagonals is called the bandwidth.  For ex
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">factorize</span><span class="p">(</span><span class="n">Symmetric</span><span class="p">(</span><span class="n">A</span><span class="p">))</span> <span class="o">|&gt;</span> <span class="n">typeof</span>
 <span class="n">A</span> <span class="o">\</span> <span class="n">rand</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>factorize(Symmetric(A)) |&gt; typeof = LDLt{Float64, Symmetric{Float64, BandedMatrix{Float64, Matrix{Float64}, Base.OneTo{Int64}}}}
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7-element Vector{Float64}:
+ -0.6345917189136551
+  1.2689275835805582
+  0.5499404721793494
+  0.24947160343942412
+ -0.45227412611006496
+  0.4973200025591808
+  1.3752489574369149
 </pre></div>
 </div>
 </div>
@@ -1237,6 +1719,24 @@ smaller matrices/vectors since it can lead to better <a class="reference externa
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  399.535 ns (1 allocation: 896 bytes)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10×10 Matrix{Float64}:
+ 3.26172  4.24569  3.37182  4.10324  …  4.03344  4.39198  2.88797  2.63934
+ 4.19687  4.58126  3.88015  5.0409      4.0105   3.56832  2.35475  3.32362
+ 2.17535  2.58069  3.08736  3.04461     2.71563  3.03535  2.62734  2.37854
+ 4.07043  4.57067  4.23989  5.24296     4.34443  4.21237  3.30526  3.82245
+ 3.16928  4.20751  3.08482  3.89843     3.81516  4.14681  2.64178  2.94961
+ 3.01031  3.08903  2.83417  3.80852  …  3.22832  3.29357  2.57282  2.60746
+ 3.88276  4.45627  3.88941  5.12798     4.11822  3.70176  2.69528  3.81814
+ 2.7023   3.10147  2.95828  3.63363     3.64397  3.40609  2.44341  3.03272
+ 3.02687  3.13864  2.78748  3.90634     3.18422  2.90128  1.99457  2.80653
+ 3.80929  3.83031  3.88255  4.8596      4.16155  3.73634  2.65279  3.07034
+</pre></div>
+</div>
+</div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">!</span></code> on the <code class="docutils literal notranslate"><span class="pre">f!</span></code> is an informal way to say that the function is mutating, and the first argument (<code class="docutils literal notranslate"><span class="pre">C</span></code> here)
 is by convention the modified variable.</p>
@@ -1257,6 +1757,27 @@ is by convention the modified variable.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  402.020 ns (1 allocation: 896 bytes)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  318.085 ns (0 allocations: 0 bytes)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10×10 Matrix{Float64}:
+ 2.42733  3.74571  2.5811   2.745    …  2.45258  3.17339  2.792    3.46213
+ 3.52188  4.16932  3.17155  3.98401     2.1202   2.85629  3.35848  3.88871
+ 3.74317  4.66988  3.3338   4.69372     2.61622  3.70894  4.06268  4.79582
+ 3.30158  4.09369  3.81428  3.65591     2.743    3.42494  3.65687  3.83879
+ 2.47181  4.33343  2.46863  2.68593     2.38238  3.6709   3.2434   4.17783
+ 3.5594   4.72281  3.71072  4.31957  …  2.83065  4.21896  4.34601  4.90251
+ 3.76742  4.85555  4.03515  4.55265     2.62424  4.19292  4.57003  4.88181
+ 3.29688  5.38813  3.4278   3.8622      2.87482  4.07336  3.89498  5.41919
+ 2.96602  3.60521  2.90236  3.2117      2.68528  2.99728  3.34362  3.47657
+ 4.73208  5.38525  4.42378  5.18235     2.91664  4.70184  5.28638  5.4401
+</pre></div>
+</div>
+</div>
 </div>
 <p>Note that in the output of the benchmarking, the <code class="docutils literal notranslate"><span class="pre">f2!</span></code> is non-allocating and is using the pre-allocated <code class="docutils literal notranslate"><span class="pre">C</span></code> variable directly.</p>
 <p>Another example of this is solutions to linear equations, where for large solutions you may pre-allocate and reuse the
@@ -1273,6 +1794,21 @@ solution vector.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10-element Vector{Float64}:
+ -0.09745394360765205
+  0.7799354221131605
+  1.1994346228906079
+  0.0913844576787099
+ -0.5083914639425638
+ -0.35091623556086154
+  0.793473061987608
+ -0.5304171009174156
+  0.4517444530913052
+ -0.8005334538688559
+</pre></div>
+</div>
+</div>
 </div>
 <p>However, if you benchmark carefully, you will see that this is sometimes slower.  Avoiding allocations is not always a good
 idea - and worrying about it prior to benchmarking is premature optimization.</p>
@@ -1286,6 +1822,21 @@ idea - and worrying about it prior to benchmarking is premature optimization.</p
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10×10 Matrix{Float64}:
+ 0.373481   0.715094  0.880197   0.219559   …  0.903144   0.0534784  0.646242
+ 0.0572854  0.437244  0.0465054  0.271735      0.0419775  0.91462    0.804396
+ 0.0722476  0.435665  0.631825   0.0804549     0.773098   0.254097   0.674881
+ 0.0341739  0.185395  0.736277   0.142816      0.687287   0.236726   0.19037
+ 0.843743   0.860459  0.709686   0.630887      0.274137   0.958363   0.948974
+ 0.918731   0.933097  0.280531   0.486534   …  0.0313851  0.479192   0.988241
+ 0.868133   0.243504  0.628518   0.954309      0.667845   0.935099   0.990551
+ 0.0636638  0.659151  0.377286   0.0453235     0.865368   0.64157    0.570134
+ 0.759633   0.389194  0.153783   0.284574      0.245533   0.516012   0.55121
+ 0.301123   0.505073  0.0402959  0.225074      0.57159    0.893165   0.374389
+</pre></div>
+</div>
+</div>
 </div>
 <p>Finally, a common source of unnecessary allocations is when taking slices or portions of
 matrices.  For example, the following allocates a new matrix <code class="docutils literal notranslate"><span class="pre">B</span></code> and copies the values.</p>
@@ -1296,6 +1847,16 @@ matrices.  For example, the following allocates a new matrix <code class="docuti
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Float64}:
+ 0.07265755245781103
+ 0.2967203620355736
+ 0.7745398448673058
+ 0.6244448536072318
+ 0.5287113274542306
+</pre></div>
+</div>
+</div>
 </div>
 <p>To see that these are different matrices, note that</p>
 <div class="cell docutils container">
@@ -1303,6 +1864,12 @@ matrices.  For example, the following allocates a new matrix <code class="docuti
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">100.0</span>
 <span class="nd">@show</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
 <span class="nd">@show</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A[2, 1] = 100.0
+B[1] = 0.07265755245781103
 </pre></div>
 </div>
 </div>
@@ -1317,6 +1884,12 @@ appropriate <code class="docutils literal notranslate"><span class="pre">Abstrac
 <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">100.0</span>
 <span class="nd">@show</span> <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
 <span class="nd">@show</span> <span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A[2, 1] = 100.0
+B[1] = 100.0
 </pre></div>
 </div>
 </div>

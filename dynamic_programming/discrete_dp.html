@@ -58,6 +58,7 @@
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/discrete_dp.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="41. Modeling COVID 19 with Differential Equations" href="../continuous_time/seir_model.html" />
@@ -672,25 +673,6 @@ the following information</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span>ArgumentError: Package BenchmarkTools [6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf] is required but does not seem to be installed:
- - Run `Pkg.instantiate()` to install all recorded dependencies.
-
-
-Stacktrace:
- [1] _require(pkg::Base.PkgId)
-   @ Base ./loading.jl:990
- [2] require(uuidkey::Base.PkgId)
-   @ Base ./loading.jl:914
- [3] require(into::Module, mod::Symbol)
-   @ Base ./loading.jl:901
- [4] eval
-   @ ./boot.jl:360 [inlined]
- [5] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)
-   @ Base ./loading.jl:1094
-</pre></div>
-</div>
-</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -722,6 +704,11 @@ Stacktrace:
 
     <span class="k">return</span> <span class="p">(</span><span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="p">)</span>
 <span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>transition_matrices (generic function with 1 method)
 </pre></div>
 </div>
 </div>
@@ -776,6 +763,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>verbose_matrices (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Instances of <code class="docutils literal notranslate"><span class="pre">DiscreteDP</span></code> are created using the signature <code class="docutils literal notranslate"><span class="pre">DiscreteDP(R,</span> <span class="pre">Q,</span> <span class="pre">β)</span></code>.</p>
 <p>Let’s create an instance using the objects stored in <code class="docutils literal notranslate"><span class="pre">g</span></code></p>
@@ -793,11 +785,23 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>QuantEcon.DPSolveResult{PFI, Float64}([19.01740221695992, 20.017402216959916, 20.431615779333015, 20.749453024528794, 21.040780991093484, 21.30873018352461, 21.544798161024403, 21.76928181079986, 21.982703576083246, 22.1882432282385, 22.384504796519916, 22.578077363861723, 22.761091269771118, 22.943767083452716, 23.115339958706524, 23.277617618874903], [19.01740221695992, 20.01740221695992, 20.431615779333015, 20.749453024528798, 21.040780991093488, 21.30873018352461, 21.5447981610244, 21.76928181079986, 21.98270357608325, 22.1882432282385, 22.38450479651991, 22.578077363861723, 22.761091269771114, 22.943767083452716, 23.115339958706524, 23.277617618874903], 3, [1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 6, 6, 6], Discrete Markov Chain
+stochastic matrix of type Adjoint{Float64, Matrix{Float64}}:
+[0.09090909090909091 0.09090909090909091 … 0.0 0.0; 0.09090909090909091 0.09090909090909091 … 0.0 0.0; … ; 0.0 0.0 … 0.09090909090909091 0.09090909090909091; 0.0 0.0 … 0.09090909090909091 0.09090909090909091])
+</pre></div>
+</div>
+</div>
 </div>
 <p>Let’s see what we’ve got here</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">fieldnames</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(:v, :Tv, :num_iter, :sigma, :mc)
 </pre></div>
 </div>
 </div>
@@ -809,10 +813,52 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>16-element Vector{Float64}:
+ 19.01740221695992
+ 20.017402216959916
+ 20.431615779333015
+ 20.749453024528794
+ 21.040780991093484
+ 21.30873018352461
+ 21.544798161024403
+ 21.76928181079986
+ 21.982703576083246
+ 22.1882432282385
+ 22.384504796519916
+ 22.578077363861723
+ 22.761091269771118
+ 22.943767083452716
+ 23.115339958706524
+ 23.277617618874903
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="o">.</span><span class="n">sigma</span> <span class="o">.-</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>16-element Vector{Int64}:
+ 0
+ 0
+ 0
+ 0
+ 1
+ 1
+ 1
+ 2
+ 2
+ 3
+ 3
+ 4
+ 5
+ 5
+ 5
+ 5
 </pre></div>
 </div>
 </div>
@@ -826,6 +872,11 @@ Stacktrace:
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3
+</pre></div>
+</div>
+</div>
 </div>
 <p>In this case we converged in only 3 iterations.</p>
 <p>Another interesting object is <code class="docutils literal notranslate"><span class="pre">results.mc</span></code>, which is the controlled chain defined by <span class="math notranslate nohighlight">\(Q_{\sigma^*}\)</span>, where <span class="math notranslate nohighlight">\(\sigma^*\)</span> is the optimal policy.</p>
@@ -835,6 +886,27 @@ can easily simulate it, compute its stationary distribution and so on</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">stationary_distributions</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">mc</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>16-element Vector{Float64}:
+ 0.01732186732186732
+ 0.041210632119723034
+ 0.05773955773955773
+ 0.07426848335939244
+ 0.08095823095823096
+ 0.09090909090909091
+ 0.0909090909090909
+ 0.0909090909090909
+ 0.09090909090909093
+ 0.09090909090909091
+ 0.09090909090909091
+ 0.0735872235872236
+ 0.049698458789367884
+ 0.033169533169533166
+ 0.016640607549698462
+ 0.009950859950859951
 </pre></div>
 </div>
 </div>
@@ -857,12 +929,36 @@ can easily simulate it, compute its stationary distribution and so on</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>16-element Vector{Float64}:
+ 0.005469129800680602
+ 0.023213417598444343
+ 0.03147788040836169
+ 0.04800680602819641
+ 0.056271268838113765
+ 0.09090909090909091
+ 0.09090909090909093
+ 0.09090909090909093
+ 0.09090909090909094
+ 0.09090909090909093
+ 0.09090909090909094
+ 0.0854399611084103
+ 0.06769567331064659
+ 0.059431210500729234
+ 0.042902284880894495
+ 0.03463782207097716
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">bar</span><span class="p">(</span><span class="n">std_2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;stationary dist&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/discrete_dp_29_0.png" src="../_images/discrete_dp_29_0.png" />
 </div>
 </div>
 <p>We can see the rightward shift in probability mass.</p>
@@ -912,6 +1008,13 @@ can easily simulate it, compute its stationary distribution and so on</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>QuantEcon.DPSolveResult{PFI, Float64}([19.01740221695992, 20.017402216959916, 20.431615779333015, 20.749453024528794, 21.040780991093484, 21.30873018352461, 21.544798161024403, 21.76928181079986, 21.982703576083246, 22.1882432282385, 22.384504796519916, 22.578077363861723, 22.761091269771118, 22.943767083452716, 23.115339958706524, 23.277617618874903], [19.01740221695992, 20.01740221695992, 20.431615779333015, 20.749453024528798, 21.040780991093488, 21.30873018352461, 21.5447981610244, 21.76928181079986, 21.98270357608325, 22.1882432282385, 22.38450479651991, 22.578077363861723, 22.761091269771114, 22.943767083452716, 23.115339958706524, 23.277617618874903], 3, [1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 6, 6, 6], Discrete Markov Chain
+stochastic matrix of type Matrix{Float64}:
+[0.09090909090909091 0.09090909090909091 … 0.0 0.0; 0.09090909090909091 0.09090909090909091 … 0.0 0.0; … ; 0.0 0.0 … 0.09090909090909091 0.09090909090909091; 0.0 0.0 … 0.09090909090909091 0.09090909090909091])
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -939,6 +1042,11 @@ we let <span class="math notranslate nohighlight">\(f(k) = k^{\alpha}\)</span> w
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.95
+</pre></div>
+</div>
+</div>
 </div>
 <p>Here we want to solve a finite state version of the continuous state
 model above. We discretize the state space into a grid of size
@@ -948,6 +1056,11 @@ model above. We discretize the state space into a grid of size
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">grid_max</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">grid_size</span> <span class="o">=</span> <span class="mi">500</span>
 <span class="n">grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">grid_max</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">grid_size</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0e-6:0.004008014028056112:2.0
 </pre></div>
 </div>
 </div>
@@ -976,6 +1089,11 @@ format.</p>
 <span class="n">s_indices</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="n">C</span> <span class="o">.&gt;</span> <span class="mi">0</span><span class="p">]</span>
 <span class="n">a_indices</span> <span class="o">=</span> <span class="n">transpose</span><span class="p">(</span><span class="n">coord</span><span class="p">)[</span><span class="n">C</span> <span class="o">.&gt;</span> <span class="mi">0</span><span class="p">]</span>
 <span class="n">L</span> <span class="o">=</span> <span class="n">length</span><span class="p">(</span><span class="n">a_indices</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>118841
 </pre></div>
 </div>
 </div>
@@ -1021,6 +1139,11 @@ corresponding to the growth model.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10
+</pre></div>
+</div>
+</div>
 </div>
 <p>Let us compare the solution of the discrete model with the exact
 solution of the original continuous model. Here’s the exact solution:</p>
@@ -1037,6 +1160,11 @@ solution of the original continuous model. Here’s the exact solution:</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c_star (generic function with 1 method)
+</pre></div>
+</div>
+</div>
 </div>
 <p>Let’s plot the value functions.</p>
 <div class="cell docutils container">
@@ -1044,6 +1172,9 @@ solution of the original continuous model. Here’s the exact solution:</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="p">[</span><span class="n">v</span> <span class="n">v_star</span><span class="o">.</span><span class="p">(</span><span class="n">grid</span><span class="p">)],</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="o">-</span><span class="mi">32</span><span class="p">),</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;discrete&quot;</span> <span class="s">&quot;continuous&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/discrete_dp_53_0.png" src="../_images/discrete_dp_53_0.png" />
 </div>
 </div>
 <p>They are barely distinguishable (although you can see the difference if
@@ -1056,12 +1187,20 @@ consumption.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/discrete_dp_55_0.png" src="../_images/discrete_dp_55_0.png" />
+</div>
 </div>
 <p>These functions are again close, although some difference is visible and
 becomes more obvious as you zoom. Here are some statistics:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">v_star</span><span class="p">(</span><span class="n">y</span><span class="p">))</span> <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">in</span> <span class="n">zip</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grid</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>121.49819147053378
 </pre></div>
 </div>
 </div>
@@ -1074,11 +1213,21 @@ gridpoint. Otherwise the fit is reasonable:</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.012681735127500815
+</pre></div>
+</div>
+</div>
 </div>
 <p>The value function is monotone, as expected:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">all</span><span class="p">(</span><span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">≥</span> <span class="mi">0</span><span class="p">,</span> <span class="n">diff</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -1111,10 +1260,20 @@ faster that value function iteration.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>294
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">σ</span> <span class="o">==</span> <span class="n">res1</span><span class="o">.</span><span class="n">sigma</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -1133,10 +1292,20 @@ faster that value function iteration.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>16
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">σ</span> <span class="o">==</span> <span class="n">res2</span><span class="o">.</span><span class="n">sigma</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -1172,6 +1341,9 @@ lecture.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/discrete_dp_76_0.png" src="../_images/discrete_dp_76_0.png" />
+</div>
 </div>
 <p>We next plot the consumption policies along the value iteration. First
 we write a function to generate the and record the policies at given
@@ -1191,6 +1363,11 @@ stages of iteration.</p>
     <span class="k">end</span>
     <span class="k">return</span> <span class="n">c_policies</span>
 <span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>compute_policies (generic function with 1 method)
 </pre></div>
 </div>
 </div>
@@ -1215,6 +1392,9 @@ stages of iteration.</p>
      <span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;2 iterations&quot;</span> <span class="s">&quot;4 iterations&quot;</span> <span class="s">&quot;6 iterations&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/discrete_dp_81_0.png" src="../_images/discrete_dp_81_0.png" />
 </div>
 </div>
 </div>
@@ -1256,6 +1436,9 @@ condition <span class="math notranslate nohighlight">\(k_0 = 0.1\)</span>.</p>
      <span class="n">label</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">labels</span><span class="p">)))</span>
 </pre></div>
 </div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/discrete_dp_84_0.png" src="../_images/discrete_dp_84_0.png" />
 </div>
 </div>
 </div>
