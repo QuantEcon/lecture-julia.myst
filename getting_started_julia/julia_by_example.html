@@ -412,8 +412,6 @@
 <div class="section" id="set-up">
 <h3><span class="section-number">3.1.3. </span>Set Up<a class="headerlink" href="#set-up" title="Permalink to this headline">¶</a></h3>
 <p>We assume that you’ve worked your way through <a class="reference internal" href="getting_started.html"><span class="doc">our getting started lecture</span></a> already.</p>
-<p>In particular, the easiest way to install and precompile all the Julia packages used in QuantEcon
-notes is to type <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">add</span> <span class="pre">InstantiateFromURL</span></code> and then work in a Jupyter notebook, as described <a class="reference internal" href="getting_started.html"><span class="doc">here</span></a>.</p>
 </div>
 <div class="section" id="other-references">
 <h3><span class="section-number">3.1.4. </span>Other References<a class="headerlink" href="#other-references" title="Permalink to this headline">¶</a></h3>
@@ -429,15 +427,19 @@ process <span class="math notranslate nohighlight">\(\epsilon_0, \epsilon_1, \ld
 <div class="section" id="introduction-to-packages">
 <h3><span class="section-number">3.2.1. </span>Introduction to Packages<a class="headerlink" href="#introduction-to-packages" title="Permalink to this headline">¶</a></h3>
 <p>The first step is to activate a project environment, which is encapsulated by <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> files.</p>
-<p>There are three ways to install packages and versions (where the first two methods are discouraged, since they may lead to package versions out-of-sync with the notes)</p>
+<p>There are two ways to install packages and versions (where the first method is discouraged, since Julia provides a state-of-the-art setup for reproducible environments)</p>
 <ol class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">add</span></code> the packages directly into your global installation (e.g. <code class="docutils literal notranslate"><span class="pre">Pkg.add(&quot;MyPackage&quot;)</span></code> or <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">add</span> <span class="pre">MyPackage</span></code>)</p></li>
-<li><p>download an <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> file in the same directory as the notebook (i.e. from the <code class="docutils literal notranslate"><span class="pre">&#64;__DIR__</span></code> argument), and then call <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">Pkg;</span> <span class="pre">Pkg.activate(&#64;__DIR__);</span></code></p></li>
-<li><p>use the <code class="docutils literal notranslate"><span class="pre">InstantiateFromURL</span></code> package</p></li>
+<li><p>using a directory with a <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> files in the notebook directory or its parents (recursively walking up the tree) you can activate and instantiate the notes.</p>
+<ul class="simple">
+<li><p>If you load a jupyter notebook, it will automatically look up the tree for the project files to activate, but will not automatically instantiate them.  To instantiate them, type <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">instantiate</span></code> in a cell</p></li>
+<li><p>Alternatively, if you followed  <a class="reference internal" href="getting_started.html"><span class="doc">our getting started lecture</span></a> you will have installed all packages required for your notebooks to run.</p></li>
+</ul>
+</li>
 </ol>
 <p>If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages.</p>
-<p>This code will download and install project files from the <a class="reference external" href="https://github.com/QuantEcon/quantecon-notebooks-julia/">lecture repo</a>.</p>
-<p>We will discuss it more in <a class="reference internal" href="../more_julia/tools_editors.html#tools-editors"><span class="std std-ref">Tools and Editors</span></a>, but these files provide a listing of packages and versions used by the code.</p>
+<p>This code will download and install project files from the <a class="reference external" href="https://github.com/QuantEcon/lecture-julia.notebooks/">lecture repo</a>.</p>
+<p>We will discuss it more in <a class="reference internal" href="../software_engineering/tools_editors.html#tools-editors"><span class="std std-ref">Tools and Editors</span></a>, but these files provide a listing of packages and versions used by the code.</p>
 <p>This ensures that an environment for running code is <strong>reproducible</strong>, so that anyone can replicate the precise set of package and versions used in construction.</p>
 <p>The careful selection of package versions is crucial for reproducibility, as otherwise your code can be broken by changes to packages out of your control.</p>
 <p>After the installation and activation, <code class="docutils literal notranslate"><span class="pre">using</span></code> provides a way to say that a particular code or notebook will use the package.</p>
@@ -459,7 +461,7 @@ process <span class="math notranslate nohighlight">\(\epsilon_0, \epsilon_1, \ld
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-1.0771080757734828
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-0.08506271733389213
 </pre></div>
 </div>
 </div>
@@ -513,11 +515,11 @@ strong support for using unicode characters.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Float64}:
- -1.48447752637036
-  0.4867152910855015
- -0.2167542812523544
- -1.2738473025084147
-  0.7179762687928986
+  2.0439579393292053
+  1.7903683484272714
+ -0.056924105568642164
+ -0.4001102858857313
+ -0.2552007465130377
 </pre></div>
 </div>
 </div>
@@ -608,7 +610,7 @@ program, for the sake of learning syntax let’s rewrite our program to use a
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.12466461398916677
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.1445991240364211
 </pre></div>
 </div>
 </div>
@@ -680,11 +682,11 @@ program, for the sake of learning syntax let’s rewrite our program to use a
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Float64}:
- 0.009892293236845906
- 4.313084083782916
- 3.413432940391385
- 1.4343032438320897
- 0.10020044196509853
+ 2.888597973911277
+ 0.4026391712663622
+ 1.7413268968855387
+ 0.2645366098227489
+ 0.03643271598744882
 </pre></div>
 </div>
 </div>
@@ -706,11 +708,11 @@ program, for the sake of learning syntax let’s rewrite our program to use a
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Float64}:
- 0.4932208522000552
- 0.48206857574516665
- 0.14427774704210553
- 0.14379732757551314
- 0.00909791577475385
+ 0.0031457808275736823
+ 4.160680102352517
+ 0.9428460938626222
+ 0.4365263201658581
+ 0.501918550746997
 </pre></div>
 </div>
 </div>
@@ -726,11 +728,11 @@ program, for the sake of learning syntax let’s rewrite our program to use a
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Float64}:
- 0.04591096051967103
- 1.7980508842439367
- 1.1296379740372737
- 0.5506581589675195
- 0.03484805712652913
+ 0.04090808807117589
+ 0.001049592828663318
+ 1.2043433002673045e-5
+ 0.019350451671964735
+ 0.7730311574511687
 </pre></div>
 </div>
 </div>
@@ -747,11 +749,11 @@ program, for the sake of learning syntax let’s rewrite our program to use a
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Float64}:
- 0.0059185694881722034
- 0.5247896544089344
- 0.5127457917997749
- 0.027505792091796807
- 0.9899643066467093
+ 2.291883394883414
+ 1.2615608554574704
+ 0.026969246279730776
+ 4.173602881750177
+ 1.7844199815301507
 </pre></div>
 </div>
 </div>
@@ -768,11 +770,11 @@ program, for the sake of learning syntax let’s rewrite our program to use a
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Float64}:
- 2.8760115477806285
- 2.828711561951428
- 5.5458827769988375
- 3.4131315468760253
- 1.4642926469079294
+ 0.6276842378471551
+ 1.0312432830950944
+ 0.5870224579746463
+ 0.001738778293264258
+ 0.11416329631388426
 </pre></div>
 </div>
 </div>
@@ -847,9 +849,9 @@ of the function <code class="docutils literal notranslate"><span class="pre">plo
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
- 0.3301120775070119
- 0.8513033236800731
- 0.32873600541801173
+ 0.6878984745350603
+ 0.13687548974243757
+ 0.8838553374749412
 </pre></div>
 </div>
 </div>
@@ -1459,7 +1461,7 @@ x^{n+1} = x^n - \frac{f(x^n)}{f'(x^n)}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0, 4, 5, 4, 4, 5, 5, 5, 6, 5, 6, 8, 5, 7, 5, 7, 6, 3, 6, 9, 4, 6, 2, 5, 3, 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8, 7, 3, 6, 2, 5, 7, 6, 4, 3, 5, 7, 5, 5, 6, 2, 7, 7, 4, 4, 6, 3, 2, 6, 8, 
 </pre></div>
 </div>
 </div>
@@ -1496,7 +1498,7 @@ fraction that fall into the unit circle.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.138848
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.142744
 </pre></div>
 </div>
 </div>
@@ -1528,8 +1530,8 @@ fraction that fall into the unit circle.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Count = 0001001230
-payoff = 1
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Count = 1201201012
+payoff = 0
 </pre></div>
 </div>
 </div>
@@ -1581,7 +1583,7 @@ some examples</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Count = 0000000123
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Count = 1.02.03.00000010
 payoff = 1
 </pre></div>
 </div>
@@ -1656,7 +1658,7 @@ payoff = 1
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1
 </pre></div>
 </div>
 </div>
@@ -1677,7 +1679,7 @@ payoff = 1
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>There were 61 below 0.5
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>There were 51 below 0.5
 </pre></div>
 </div>
 </div>
@@ -1804,22 +1806,22 @@ payoff = 1
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/tools_editors.html">
+  <a class="reference internal" href="../software_engineering/tools_editors.html">
    11. Julia Tools and Editors
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/version_control.html">
+  <a class="reference internal" href="../software_engineering/version_control.html">
    12. Git, GitHub, and Version Control
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/testing.html">
+  <a class="reference internal" href="../software_engineering/testing.html">
    13. Packages, Testing, and Continuous Integration
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/need_for_speed.html">
+  <a class="reference internal" href="../software_engineering/need_for_speed.html">
    14. The Need for Speed
   </a>
  </li>
@@ -2134,7 +2136,7 @@ payoff = 1
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Lecture Status
+   67. Execution Statistics
   </a>
  </li>
 </ul>

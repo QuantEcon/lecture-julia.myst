@@ -69,22 +69,13 @@ This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss mor
 * In the Julia REPL, hit `]` to enter package mode and then enter.
 
 ```{code-block} julia
-add IJulia InstantiateFromURL
+add IJulia
 ```
 
-This adds packages for
-
-* The  `IJulia` kernel which links Julia to Jupyter (i.e., allows your browser to run Julia code, manage Julia packages, etc.).
-* The `InstantiateFromURL` which is a tool written by the QE team to manage package dependencies for the lectures.
+This adds packages for the `IJulia` kernel which links Julia to Jupyter (i.e., allows your browser to run Julia code, manage Julia packages, etc.).
 
 Note: To set up the Julia terminal command on Mac, see [here](https://julialang.org/downloads/platform/#macos).
 
-**Note**: To obtain the full set of packages we use, at this stage you can run the following (see {ref}`the package setup section <package_setup>`.)
-
-```{code-block} julia
-using InstantiateFromURL
-github_project("QuantEcon/quantecon-notebooks-julia", version = "0.8.0", instantiate = true, precompile = true)
-```
 
 (jupyter_installation)=
 ### Installing Jupyter
@@ -97,14 +88,14 @@ Otherwise, you can let `IJulia` install its own version of Conda by following [t
 (clone_lectures)=
 ### Starting Jupyter
 
-Next, let's install the QuantEcon lecture notes to our machine and run them (for more details on the tools we'll use, see our lecture on {doc}`version control <../more_julia/version_control>`).
+Next, let's install the QuantEcon lecture notes to our machine and run them (for more details on the tools we'll use, see our lecture on {doc}`version control <../software_engineering/version_control>`).
 
 1. Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/).
 1. (**Optional, but strongly recommended**) Install the [GitHub Desktop](https://desktop.github.com/).
 
 #### GitHub Desktop Approach
 
-After installing the Git Desktop application, click [this link](x-github-client://openRepo/https://github.com/QuantEcon/quantecon-notebooks-julia) on your desktop computer to automatically install the notebooks.
+After installing the Git Desktop application, go to `x-github-client://openRepo/https://github.com/QuantEcon/lecture-julia.notebooks` on your desktop computer to automatically install the notebooks.
 
 It should open a window in the GitHub desktop app like this
 
@@ -133,7 +124,7 @@ If you do not wish to install the GitHub Desktop, you can get the notebooks usin
 Open a new terminal session and run
 
 ```{code-block} none
-git clone https://github.com/quantecon/quantecon-notebooks-julia
+git clone https://github.com/quantecon/lecture-julia.notebooks
 ```
 
 This will download the repository with the notebooks in the working directory.
@@ -141,7 +132,7 @@ This will download the repository with the notebooks in the working directory.
 Then, `cd` to that location in your Mac, Linux, or Windows PowerShell terminal
 
 ```{code-block} none
-cd quantecon-notebooks-julia
+cd lecture-julia.notebooks
 ```
 
 Then, either using the `using IJulia; jupyterlab()` or execute `jupyter lab` within your shell.
@@ -153,7 +144,7 @@ And open the {doc}`Interacting With Julia <../getting_started_julia/julia_enviro
 If you have access to an online Julia installation, it is the easiest way to get started.
 
 Eventually, you will want to do a {ref}`local installation <jl_jupyterlocal>` in order to use other
-{doc}`tools and editors <../more_julia/tools_editors>` such as [Atom/Juno](http://junolab.org/), but
+{doc}`tools and editors <../software_engineering/tools_editors>` such as [Atom/Juno](http://junolab.org/), but
 don't let the environment get in the way of learning the language.
 
 (jl_jupyterhub)=
@@ -171,34 +162,17 @@ Your first step is to get a copy of the notebooks in your JupyterHub environment
 
 While you can individually download the notebooks from the website, the easiest way to access the notebooks is usually to clone the repository with Git into your JupyterHub environment.
 
-JupyterHub installations have different methods for cloning repositories, with which you can use the url for the notebooks repository: [https://github.com/QuantEcon/quantecon-notebooks-julia](https://github.com/QuantEcon/quantecon-notebooks-julia).
+JupyterHub installations have different methods for cloning repositories, with which you can use the url for the notebooks repository: [https://github.com/QuantEcon/lecture-julia.notebooks](https://github.com/QuantEcon/lecture-julia.notebooks).
 
 (package_setup)=
 ## Installing Packages
 
-After you have some of the notebooks available, as in {ref}`above <clone_lectures>`, these lectures depend on functionality (like packages for plotting, benchmarking, and statistics) that are not installed with every Jupyter installation on the web.
+After you have the notebooks available, as in {ref}`above <clone_lectures>`, these lectures depend on functionality (like packages for plotting, benchmarking, and statistics) that are not installed with every Jupyter installation on the web.
 
-If your online Jupyter does not come with QuantEcon packages pre-installed, you can install the `InstantiateFromURL` package, which is a tool written by the QE team to manage package dependencies for the lectures.
-
-To add this package, in an online Jupyter notebook run (typically with `<Shift-Enter>`)
-
-```{code-cell} julia
----
-tags: [hide-output]
----
-] add InstantiateFromURL
+Navigate to the root of the downloaded notebooks, e.g. open in vscode, and run
+```{code-block} none
+julia --project --threads auto -e 'using Pkg; Pkg.instantiate();'
 ```
-
-Then, run
-
-```{code-block} julia
-using InstantiateFromURL
-github_project("QuantEcon/quantecon-notebooks-julia", version = "0.8.0", instantiate = true, precompile = true)
-```
-
-If your online Jupyter environment does not have the packages pre-installed, it may take 15-20 minutes for your first QuantEcon notebook to run.
+Or, alternatively, in a Julia REPL (e.g. in vscode) run `] activate; instantiate` or simply `] instantiate` if in vscode (which automatically activates projects)
 
 After this step, open the downloaded {doc}`Interacting with Julia <../getting_started_julia/julia_environment>` notebook to begin writing code.
-
-If the QuantEcon notebooks do not work after this installation step, you may need to speak to the JupyterHub administrator.
-

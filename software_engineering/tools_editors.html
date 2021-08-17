@@ -1,0 +1,1493 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>11. Julia Tools and Editors &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.9deb0a26de8466f54124a1959c24cd33.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/software_engineering/tools_editors.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="12. Git, GitHub, and Version Control" href="version_control.html" />
+    <link rel="prev" title="10. Solvers, Optimizers, and Automatic Differentiation" href="../more_julia/optimization_solver_packages.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Julia Tools and Editors"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Julia Tools and Editors" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/software_engineering/tools_editors.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=software_engineering/tools_editors>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#preliminary-setup">
+   11.1. Preliminary Setup
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-repl">
+   11.2. The REPL
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#shell-mode">
+     11.2.1. Shell Mode
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#package-mode">
+     11.2.2. Package Mode
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#help-mode">
+     11.2.3. Help Mode
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#atom">
+   11.3. Atom
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#installation-and-configuration">
+     11.3.1. Installation and Configuration
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#installing-atom">
+       11.3.1.1. Installing Atom
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#installing-juno">
+       11.3.1.2. Installing Juno
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#troubleshooting">
+       11.3.1.3. Troubleshooting
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#upgrading-julia">
+       11.3.1.4. Upgrading Julia
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#standard-layout">
+     11.3.2. Standard Layout
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#other-features">
+     11.3.3. Other Features
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#package-environments">
+   11.4. Package Environments
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#instantiatefromurl">
+     11.4.1. InstantiateFromURL
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Julia Tools and Editors</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="julia-tools-and-editors">
+<h1><a class="toc-backref" href="#id2"><span class="section-number">11. </span>Julia Tools and Editors</a><a class="headerlink" href="#julia-tools-and-editors" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#julia-tools-and-editors" id="id2">Julia Tools and Editors</a></p>
+<ul>
+<li><p><a class="reference internal" href="#preliminary-setup" id="id3">Preliminary Setup</a></p></li>
+<li><p><a class="reference internal" href="#the-repl" id="id4">The REPL</a></p></li>
+<li><p><a class="reference internal" href="#atom" id="id5">Atom</a></p></li>
+<li><p><a class="reference internal" href="#package-environments" id="id6">Package Environments</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Co-authored with Arnav Sood</p>
+<p>While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.</p>
+<p>We’ll discuss a few of them here, such as</p>
+<ul class="simple">
+<li><p>Text editors like Atom, which come with rich Julia support for debugging, documentation, git integration, plotting and inspecting data, and code execution.</p></li>
+<li><p>The Julia REPL, which has specialized modes for package management, shell commands, and help.</p></li>
+</ul>
+<p>Note that we assume you’ve already completed the <a class="reference internal" href="../getting_started_julia/getting_started.html"><span class="doc">getting started</span></a> and <a class="reference internal" href="../getting_started_julia/julia_environment.html"><span class="doc">interacting with Julia</span></a> lectures.</p>
+<div class="section" id="preliminary-setup">
+<h2><a class="toc-backref" href="#id3"><span class="section-number">11.1. </span>Preliminary Setup</a><a class="headerlink" href="#preliminary-setup" title="Permalink to this headline">¶</a></h2>
+<p>Follow the instructions for setting up Julia <a class="reference internal" href="../getting_started_julia/getting_started.html#jl-jupyterlocal"><span class="std std-ref">on your local computer</span></a>.</p>
+</div>
+<div class="section" id="the-repl">
+<span id="repl-main"></span><h2><a class="toc-backref" href="#id4"><span class="section-number">11.2. </span>The REPL</a><a class="headerlink" href="#the-repl" title="Permalink to this headline">¶</a></h2>
+<p>Previously, we discussed basic use of the Julia REPL (“Read-Evaluate-Print Loop”).</p>
+<p>Here, we’ll consider some more advanced features.</p>
+<div class="section" id="shell-mode">
+<h3><span class="section-number">11.2.1. </span>Shell Mode<a class="headerlink" href="#shell-mode" title="Permalink to this headline">¶</a></h3>
+<p>Hitting <code class="docutils literal notranslate"><span class="pre">;</span></code> brings you into shell mode, which lets you run bash commands (PowerShell on Windows)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> <span class="n">pwd</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/lecture-julia.myst/lecture-julia.myst/lectures/software_engineering
+</pre></div>
+</div>
+</div>
+</div>
+<p>You can also use Julia variables from shell mode</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> <span class="n">echo</span> <span class="o">$</span><span class="n">x</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="package-mode">
+<h3><span class="section-number">11.2.2. </span>Package Mode<a class="headerlink" href="#package-mode" title="Permalink to this headline">¶</a></h3>
+<p>Hitting <code class="docutils literal notranslate"><span class="pre">]</span></code> brings you into package mode.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">add</span> <span class="pre">Expectations</span></code> will add a package (here, <code class="docutils literal notranslate"><span class="pre">Expectations.jl</span></code>).</p></li>
+<li><p>Likewise, <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">rm</span> <span class="pre">Expectations</span></code> will remove that package.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">st</span></code> will show you a snapshot of what you have installed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">up</span></code> will (intelligently) upgrade versions of your packages.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">precompile</span></code> will precompile everything possible.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">build</span></code> will execute build scripts for all packages.</p></li>
+<li><p>Running <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">preview</span></code> before a command (i.e., <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">preview</span> <span class="pre">up</span></code>) will display the changes without executing.</p></li>
+</ul>
+<p>You can get a full list of package mode commands by running</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span> <span class="o">?</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  <span class=" -Color -Color-Bold">Welcome to the Pkg REPL-mode</span>. To return to the <span class=" -Color -Color-Cyan">julia&gt;</span> prompt, either press
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  backspace when the input line is empty or press Ctrl+C.
+
+  <span class=" -Color -Color-Bold">Synopsis</span>
+
+<span class=" -Color -Color-Cyan">  pkg&gt; cmd [opts] [args]</span>
+
+  Multiple commands can be given on the same line by interleaving a <span class=" -Color -Color-Cyan">;</span> between
+  the commands. Some commands have an alias, indicated below.
+
+  <span class=" -Color -Color-Bold">Commands</span>
+
+  <span class=" -Color -Color-Cyan">activate</span>: set the primary environment the package manager manipulates
+
+  <span class=" -Color -Color-Cyan">add</span>: add packages to project
+
+  <span class=" -Color -Color-Cyan">build</span>: run the build script for packages
+
+  <span class=" -Color -Color-Cyan">develop</span>, <span class=" -Color -Color-Cyan">dev</span>: clone the full package repo locally for development
+
+  <span class=" -Color -Color-Cyan">free</span>: undoes a <span class=" -Color -Color-Cyan">pin</span>, <span class=" -Color -Color-Cyan">develop</span>, or stops tracking a repo
+
+  <span class=" -Color -Color-Cyan">gc</span>: garbage collect packages not used for a significant time
+
+  <span class=" -Color -Color-Cyan">generate</span>: generate files for a new project
+
+  <span class=" -Color -Color-Cyan">help</span>, <span class=" -Color -Color-Cyan">?</span>: show this message
+
+  <span class=" -Color -Color-Cyan">instantiate</span>: downloads all the dependencies for the project
+
+  <span class=" -Color -Color-Cyan">pin</span>: pins the version of packages
+
+  <span class=" -Color -Color-Cyan">precompile</span>: precompile all the project dependencies
+
+  <span class=" -Color -Color-Cyan">redo</span>: redo the latest change to the active project
+
+  <span class=" -Color -Color-Cyan">remove</span>, <span class=" -Color -Color-Cyan">rm</span>: remove packages from project or manifest
+
+  <span class=" -Color -Color-Cyan">resolve</span>: resolves to update the manifest from changes in dependencies of
+  developed packages
+
+  <span class=" -Color -Color-Cyan">status</span>, <span class=" -Color -Color-Cyan">st</span>: summarize contents of and changes to environment
+
+  <span class=" -Color -Color-Cyan">test</span>: run tests for packages
+
+  <span class=" -Color -Color-Cyan">undo</span>: undo the latest change to the active project
+
+  <span class=" -Color -Color-Cyan">update</span>, <span class=" -Color -Color-Cyan">up</span>: update packages in manifest
+
+  <span class=" -Color -Color-Cyan">registry add</span>: add package registries
+
+  <span class=" -Color -Color-Cyan">registry remove</span>, <span class=" -Color -Color-Cyan">rm</span>: remove package registries
+
+  <span class=" -Color -Color-Cyan">registry status</span>, <span class=" -Color -Color-Cyan">st</span>: information about installed registries
+
+  <span class=" -Color -Color-Cyan">registry update</span>, <span class=" -Color -Color-Cyan">up</span>: update package registries
+</pre></div>
+</div>
+</div>
+</div>
+<p>On some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit <code class="docutils literal notranslate"><span class="pre">]</span></code> first and then run your commands).</p>
+</div>
+<div class="section" id="help-mode">
+<h3><span class="section-number">11.2.3. </span>Help Mode<a class="headerlink" href="#help-mode" title="Permalink to this headline">¶</a></h3>
+<p>Hitting <code class="docutils literal notranslate"><span class="pre">?</span></code> will bring you into help mode.</p>
+<p>The key use case is to find docstrings for functions and macros, e.g.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">?</span> <span class="n">print</span>
+</pre></div>
+</div>
+<p>Note that objects must be loaded for Julia to return their documentation, e.g.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">?</span> <span class="nd">@test</span>
+</pre></div>
+</div>
+<p>will fail, but</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Test</span>
+</pre></div>
+</div>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">?</span> <span class="nd">@test</span>
+</pre></div>
+</div>
+<p>will succeed.</p>
+</div>
+</div>
+<div class="section" id="atom">
+<h2><a class="toc-backref" href="#id5"><span class="section-number">11.3. </span>Atom</a><a class="headerlink" href="#atom" title="Permalink to this headline">¶</a></h2>
+<p>As discussed <a class="reference internal" href="../getting_started_julia/getting_started.html"><span class="doc">previously</span></a>, eventually you will want to use a fully fledged text editor.</p>
+<p>The most feature-rich one for Julia development is <a class="reference external" href="https://atom.io/">Atom</a>, with the <a class="reference external" href="http://junolab.org/">Juno</a> package.</p>
+<p>There are several reasons to use a text editor like Atom, including</p>
+<ul class="simple">
+<li><p>Git integration (more on this in the <a class="reference internal" href="version_control.html"><span class="doc">next lecture</span></a>).</p></li>
+<li><p>Painless inspection of variables and data.</p></li>
+<li><p>Easily run code blocks, and drop in custom snippets of code.</p></li>
+<li><p>Integration with Julia documentation and plots.</p></li>
+</ul>
+<div class="section" id="installation-and-configuration">
+<h3><span class="section-number">11.3.1. </span>Installation and Configuration<a class="headerlink" href="#installation-and-configuration" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="installing-atom">
+<h4><span class="section-number">11.3.1.1. </span>Installing Atom<a class="headerlink" href="#installing-atom" title="Permalink to this headline">¶</a></h4>
+<ol class="simple">
+<li><p>Download and Install Atom from the <a class="reference external" href="https://atom.io/">Atom website</a>.</p></li>
+<li><p>(Optional, but recommended): Change default Atom settings</p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">Ctrl-,</span></code> to get the <code class="docutils literal notranslate"><span class="pre">Settings</span></code> pane</p></li>
+<li><p>Choose the <code class="docutils literal notranslate"><span class="pre">Packages</span></code> tab</p></li>
+<li><p>Type <code class="docutils literal notranslate"><span class="pre">line-ending-selector</span></code> into the Filter and then click “Settings” for that package</p>
+<ul>
+<li><p>Change the default line ending to <code class="docutils literal notranslate"><span class="pre">LF</span></code> (only necessary on Windows)</p></li>
+</ul>
+</li>
+<li><p>Choose the Editor tab</p>
+<ul>
+<li><p>Turn on <code class="docutils literal notranslate"><span class="pre">Soft</span> <span class="pre">Wrap</span></code></p></li>
+<li><p>Set the <code class="docutils literal notranslate"><span class="pre">Tab</span> <span class="pre">Length</span></code> default to <code class="docutils literal notranslate"><span class="pre">4</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="installing-juno">
+<h4><span class="section-number">11.3.1.2. </span>Installing Juno<a class="headerlink" href="#installing-juno" title="Permalink to this headline">¶</a></h4>
+<ol class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">Ctrl-,</span></code> to get the Settings pane.</p></li>
+<li><p>Go to the <code class="docutils literal notranslate"><span class="pre">Install</span></code> tab.</p></li>
+<li><p>Type <code class="docutils literal notranslate"><span class="pre">uber-juno</span></code> into the search box and then click Install on the package that appears.</p></li>
+<li><p>Wait while Juno installs dependencies.</p></li>
+<li><p>When it asks you whether or not to use the standard layout, click <code class="docutils literal notranslate"><span class="pre">yes</span></code>.</p></li>
+</ol>
+<p>At that point, you should see a built-in REPL at the bottom of the screen and be able to start using Julia and Atom.</p>
+</div>
+<div class="section" id="troubleshooting">
+<span id="atom-troubleshooting"></span><h4><span class="section-number">11.3.1.3. </span>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h4>
+<p>Sometimes, Juno will fail to find the Julia executable (say, if it’s installed somewhere nonstandard, or you have multiple).</p>
+<p>To do this</p>
+<ol class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Ctrl-,</span></code> to get Settings pane, and select the Packages tab.</p></li>
+<li><p>Type in <code class="docutils literal notranslate"><span class="pre">julia-client</span></code> and choose Settings.</p></li>
+<li><p>Find the Julia Path, and fill it in with the location of the Julia binary.</p></li>
+</ol>
+<ul class="simple">
+<li><p>To find the binary, you could run <code class="docutils literal notranslate"><span class="pre">Sys.BINDIR</span></code> in the REPL, then add in an additional <code class="docutils literal notranslate"><span class="pre">/julia</span></code> to the end of the screen.</p></li>
+<li><p>e.g. <code class="docutils literal notranslate"><span class="pre">C:\Users\YOURUSERNAME\AppData\Local\Julia-1.0.1\bin\julia.exe</span></code> on Windows as <code class="docutils literal notranslate"><span class="pre">/Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia</span></code> on OSX.</p></li>
+</ul>
+<p>See the <a class="reference external" href="http://docs.junolab.org/latest/man/installation.html">setup instructions for Juno</a>  if you have further issues.</p>
+<p>If you upgrade Atom and it breaks Juno, run the following in a terminal.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>apm uninstall ink julia-client
+apm install ink julia-client
+</pre></div>
+</div>
+<p>If you aren’t able to install <code class="docutils literal notranslate"><span class="pre">apm</span></code> in your PATH, you can do the above by running the following in PowerShell:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd $ENV:LOCALAPPDATA/atom/bin
+</pre></div>
+</div>
+<p>Then navigating to a folder like <code class="docutils literal notranslate"><span class="pre">C:\Users\USERNAME\AppData\Local\atom\bin</span></code> (which will contain the <code class="docutils literal notranslate"><span class="pre">apm</span></code> tool), and running:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>./apm uninstall ink julia-client
+./apm install ink julia-client
+</pre></div>
+</div>
+</div>
+<div class="section" id="upgrading-julia">
+<span id="id1"></span><h4><span class="section-number">11.3.1.4. </span>Upgrading Julia<a class="headerlink" href="#upgrading-julia" title="Permalink to this headline">¶</a></h4>
+<p>To get a new release working with Jupyter, run (in the new version’s REPL)</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span> <span class="n">add</span> <span class="n">IJulia</span>
+<span class="p">]</span> <span class="n">build</span> <span class="n">IJulia</span>
+</pre></div>
+</div>
+<p>This will install (and build) the <code class="docutils literal notranslate"><span class="pre">IJulia</span></code> kernel.</p>
+<p>To get it working with Atom, open the command palette and type “Julia Client: Settings.”</p>
+<p>Then, in the box labelled “Julia Path,” enter the path to yor Julia executabe.</p>
+<p>You can find the folder by running <code class="docutils literal notranslate"><span class="pre">Sys.BINDIR</span></code> in a new REPL, and then add the <code class="docutils literal notranslate"><span class="pre">/julia</span></code> at the end to give the exact path.</p>
+<p>For example:</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/julia-path.png"><img alt="../_images/julia-path.png" src="../_images/julia-path.png" style="width: 100%;" /></a>
+</div>
+</div>
+</div>
+<div class="section" id="standard-layout">
+<h3><span class="section-number">11.3.2. </span>Standard Layout<a class="headerlink" href="#standard-layout" title="Permalink to this headline">¶</a></h3>
+<p>If you follow the instructions, you should see something like this when you open a new file.</p>
+<p>If you don’t, simply go to the command palette and type “Julia standard layout”</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/juno-standard-layout.png"><img alt="../_images/juno-standard-layout.png" src="../_images/juno-standard-layout.png" style="width: 100%;" /></a>
+</div>
+<p>The bottom pane is a standard REPL, which supports the different modes above.</p>
+<p>The “workspace” pane is a snapshot of currently-defined objects.</p>
+<p>For example, if we define an object in the REPL</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2
+</pre></div>
+</div>
+</div>
+</div>
+<p>Our workspace should read</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/juno-workspace-1.png"><img alt="../_images/juno-workspace-1.png" src="../_images/juno-workspace-1.png" style="width: 100%;" /></a>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">ans</span></code> variable simply captures the result of the last computation.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Documentation</span></code> pane simply lets us query Julia documentation</p>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/juno-docs.png"><img alt="../_images/juno-docs.png" src="../_images/juno-docs.png" style="width: 100%;" /></a>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Plots</span></code> pane captures Julia plots output (the code is as follows)</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Plots</span>
+<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="ss">:png</span><span class="p">);</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">heatmap</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="figure align-default">
+<a class="reference internal image-reference" href="../_images/juno-plots.png"><img alt="../_images/juno-plots.png" src="../_images/juno-plots.png" style="width: 100%;" /></a>
+</div>
+<p><strong>Note:</strong> The plots feature is not perfectly reliable across all plotting backends, see <a class="reference external" href="http://docs.junolab.org/latest/man/basic_usage.html">the Basic Usage</a> page.</p>
+</div>
+<div class="section" id="other-features">
+<h3><span class="section-number">11.3.3. </span>Other Features<a class="headerlink" href="#other-features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Shift</span> <span class="pre">+</span> <span class="pre">Enter</span></code> will evaluate a highlighted selection or line (as above).</p></li>
+<li><p>The run symbol in the left sidebar (or <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+Enter</span></code>) will run the whole file.</p></li>
+</ul>
+<p>See <a class="reference external" href="http://docs.junolab.org/latest/man/basic_usage.html">basic usage</a> for an exploration of features, and  the <a class="reference external" href="http://docs.junolab.org/latest/man/faq.html">FAQ</a> for more advanced steps.</p>
+</div>
+</div>
+<div class="section" id="package-environments">
+<span id="jl-packages"></span><h2><a class="toc-backref" href="#id6"><span class="section-number">11.4. </span>Package Environments</a><a class="headerlink" href="#package-environments" title="Permalink to this headline">¶</a></h2>
+<p>Julia’s package manager lets you set up Python-style “virtualenvs,” or subsets of packages that draw from an underlying pool of assets on the machine.</p>
+<p>This way, you can work with (and specify) the dependencies (i.e., required packages) for one project without worrying about impacts on other projects.</p>
+<ul class="simple">
+<li><p>An <code class="docutils literal notranslate"><span class="pre">environment</span></code> is a set of packages specified by a <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> (and optionally, a <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code>).</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">registry</span></code> is a git repository corresponding to a list of (typically) registered packages, from which Julia can pull (for more on git repositories, see <a class="reference internal" href="version_control.html"><span class="doc">version control</span></a>).</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">depot</span></code> is a directory, like <code class="docutils literal notranslate"><span class="pre">~/.julia</span></code>, which contains assets (compile caches, registries, package source directories, etc.).</p></li>
+</ul>
+<p>Essentially, an environment is a dependency tree for a project, or a “frame of mind” for Julia’s package manager.</p>
+<ul class="simple">
+<li><p>We can see the default (<code class="docutils literal notranslate"><span class="pre">v1.1</span></code>) environment as such</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span> <span class="n">st</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">      Status</span> `~/work/lecture-julia.myst/lecture-julia.myst/lectures/Project.toml`
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  [2169fc97] <span class=" -Color -Color-White">AlgebraicMultigrid v0.4.0</span>
+  [28f2ccd6] <span class=" -Color -Color-White">ApproxFun v0.12.6</span>
+  [7d9fca2a] <span class=" -Color -Color-White">Arpack v0.4.0</span>
+  [aae01518] <span class=" -Color -Color-White">BandedMatrices v0.15.25</span>
+  [6e4b80f9] <span class=" -Color -Color-White">BenchmarkTools v1.1.1</span>
+  [a134a8b2] <span class=" -Color -Color-White">BlackBoxOptim v0.5.0</span>
+  [ffab5731] <span class=" -Color -Color-White">BlockBandedMatrices v0.9.5</span>
+  [324d7699] <span class=" -Color -Color-White">CategoricalArrays v0.10.0</span>
+  [34da2185] <span class=" -Color -Color-White">Compat v3.32.0</span>
+  [a93c6f00] <span class=" -Color -Color-White">DataFrames v1.2.2</span>
+  [1313f7d8] <span class=" -Color -Color-White">DataFramesMeta v0.8.0</span>
+  [39dd38d3] <span class=" -Color -Color-White">Dierckx v0.5.1</span>
+  [c894b116] <span class=" -Color -Color-White">DiffEqJump v6.15.1</span>
+  [9fdde737] <span class=" -Color -Color-White">DiffEqOperators v4.26.0</span>
+  [31c24e10] <span class=" -Color -Color-White">Distributions v0.23.12</span>
+  [2fe49d83] <span class=" -Color -Color-White">Expectations v1.7.1</span>
+  [a1e7a1ef] <span class=" -Color -Color-White">Expokit v0.2.0</span>
+  [d4d017d3] <span class=" -Color -Color-White">ExponentialUtilities v1.8.4</span>
+  [442a2c76] <span class=" -Color -Color-White">FastGaussQuadrature v0.4.5</span>
+  [1a297f60] <span class=" -Color -Color-White">FillArrays v0.9.7</span>
+  [9d5cd8c9] <span class=" -Color -Color-White">FixedEffectModels v1.6.3</span>
+  [c8885935] <span class=" -Color -Color-White">FixedEffects v2.0.6</span>
+  [587475ba] <span class=" -Color -Color-White">Flux v0.12.1</span>
+  [f6369f11] <span class=" -Color -Color-White">ForwardDiff v0.10.19</span>
+  [38e38edf] <span class=" -Color -Color-White">GLM v1.5.1</span>
+  [28b8d3ca] <span class=" -Color -Color-White">GR v0.58.1</span>
+  [cd3eb016] <span class=" -Color -Color-White">HTTP v0.8.19</span>
+  [40713840] <span class=" -Color -Color-White">IncompleteLU v0.2.0</span>
+  [43edad99] <span class=" -Color -Color-White">InstantiateFromURL v0.6.0</span>
+  [a98d9a8b] <span class=" -Color -Color-White">Interpolations v0.13.3</span>
+  [b6b21f68] <span class=" -Color -Color-White">Ipopt v0.7.0</span>
+  [42fd0dbc] <span class=" -Color -Color-White">IterativeSolvers v0.9.1</span>
+  [4076af6c] <span class=" -Color -Color-White">JuMP v0.21.5</span>
+  [5ab0869b] <span class=" -Color -Color-White">KernelDensity v0.6.3</span>
+  [ba0b0d4f] <span class=" -Color -Color-White">Krylov v0.7.4</span>
+  [0b1a1467] <span class=" -Color -Color-White">KrylovKit v0.5.3</span>
+  [b964fa9f] <span class=" -Color -Color-White">LaTeXStrings v1.2.1</span>
+  [5078a376] <span class=" -Color -Color-White">LazyArrays v0.18.1</span>
+  [0fc2ff8b] <span class=" -Color -Color-White">LeastSquaresOptim v0.8.1</span>
+  [093fc24a] <span class=" -Color -Color-White">LightGraphs v1.3.5</span>
+  [7a12625a] <span class=" -Color -Color-White">LinearMaps v3.4.0</span>
+  [5c8ed15e] <span class=" -Color -Color-White">LinearOperators v2.1.0</span>
+  [961ee093] <span class=" -Color -Color-White">ModelingToolkit v5.17.4</span>
+  [76087f3c] <span class=" -Color -Color-White">NLopt v0.6.3</span>
+  [2774e3e8] <span class=" -Color -Color-White">NLsolve v4.5.1</span>
+  [429524aa] <span class=" -Color -Color-White">Optim v1.4.1</span>
+  [1dea7af3] <span class=" -Color -Color-White">OrdinaryDiffEq v5.60.2</span>
+  [d96e819e] <span class=" -Color -Color-White">Parameters v0.12.2</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  [14b8a8f1] <span class=" -Color -Color-White">PkgTemplates v0.7.17</span>
+  [91a5bcdd] <span class=" -Color -Color-White">Plots v1.20.0</span>
+  [f27b6e38] <span class=" -Color -Color-White">Polynomials v1.2.1</span>
+  [af69fa37] <span class=" -Color -Color-White">Preconditioners v0.3.3</span>
+  [92933f4c] <span class=" -Color -Color-White">ProgressMeter v1.7.1</span>
+  [1fd47b50] <span class=" -Color -Color-White">QuadGK v2.4.1</span>
+  [fcd29c91] <span class=" -Color -Color-White">QuantEcon v0.16.2</span>
+  [1a8c2f83] <span class=" -Color -Color-White">Query v1.0.0</span>
+  [ce6b1742] <span class=" -Color -Color-White">RDatasets v0.7.5</span>
+  [d519eb52] <span class=" -Color -Color-White">RegressionTables v0.5.1</span>
+  [295af30f] <span class=" -Color -Color-White">Revise v3.1.18</span>
+  [f2b01f46] <span class=" -Color -Color-White">Roots v1.1.0</span>
+  [47a9eef4] <span class=" -Color -Color-White">SparseDiffTools v1.13.2</span>
+  [684fba80] <span class=" -Color -Color-White">SparsityDetection v0.3.4</span>
+  [90137ffa] <span class=" -Color -Color-White">StaticArrays v0.12.5</span>
+  [2913bbd2] <span class=" -Color -Color-White">StatsBase v0.33.9</span>
+  [3eaba693] <span class=" -Color -Color-White">StatsModels v0.6.24</span>
+  [f3b207a7] <span class=" -Color -Color-White">StatsPlots v0.14.26</span>
+  [789caeaf] <span class=" -Color -Color-White">StochasticDiffEq v6.37.0</span>
+  [a759f4b9] <span class=" -Color -Color-White">TimerOutputs v0.5.12 `https://github.com/KristofferC/TimerOutputs.jl#master`</span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  [112f6efa] <span class=" -Color -Color-White">VegaLite v2.6.0</span>
+  [e88e6eb3] <span class=" -Color -Color-White">Zygote v0.6.17</span>
+  [37e2e46d] <span class=" -Color -Color-White">LinearAlgebra</span>
+  [9a3f8284] <span class=" -Color -Color-White">Random</span>
+  [2f01184e] <span class=" -Color -Color-White">SparseArrays</span>
+  [10745b16] <span class=" -Color -Color-White">Statistics</span>
+  [8dfed614] <span class=" -Color -Color-White">Test</span>
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>We can also create and activate a new environment</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span> <span class="n">generate</span> <span class="n">ExampleEnvironment</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">  Generating</span>  project ExampleEnvironment:
+    ExampleEnvironment/Project.toml
+    ExampleEnvironment/src/ExampleEnvironment.jl
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>And go to it</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> <span class="n">cd</span> <span class="n">ExampleEnvironment</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/lecture-julia.myst/lecture-julia.myst/lectures/software_engineering/ExampleEnvironment
+</pre></div>
+</div>
+</div>
+</div>
+<ul class="simple">
+<li><p>To activate the directory, simply</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span> <span class="n">activate</span> <span class="o">.</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">  Activating</span> environment at `~/work/lecture-julia.myst/lecture-julia.myst/lectures/software_engineering/ExampleEnvironment/Project.toml`
+</pre></div>
+</div>
+</div>
+</div>
+<p>where “.” stands in for the “present working directory”.</p>
+<ul class="simple">
+<li><p>Let’s make some changes to this</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span> <span class="n">add</span> <span class="n">Expectations</span> <span class="n">Parameters</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">    Updating</span> registry at `~/.julia/registries/General`
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">   Resolving</span> package versions...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> Missings ──────────── v1.0.0
+<span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> StatsFuns ─────────── v0.9.9
+<span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> SpecialFunctions ──── v1.6.1
+<span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> DataStructures ────── v0.18.10
+<span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> StaticArrays ──────── v1.2.12
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> ChainRulesCore ────── v1.3.0
+<span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> Compat ────────────── v3.33.0
+<span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> FastGaussQuadrature ─ v0.4.7
+<span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> IrrationalConstants ─ v0.1.0
+<span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> LogExpFunctions ───── v0.3.0
+<span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> FillArrays ────────── v0.11.9
+<span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> PDMats ────────────── v0.11.1
+<span class=" -Color -Color-Bold -Color-Bold-Green">   Installed</span> Distributions ─────── v0.24.18
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">    Updating</span> `~/work/lecture-julia.myst/lecture-julia.myst/lectures/software_engineering/ExampleEnvironment/Project.toml`
+  [2fe49d83] + Expectations v1.7.1
+  [d96e819e] + Parameters v0.12.2
+<span class=" -Color -Color-Bold -Color-Bold-Green">    Updating</span> `~/work/lecture-julia.myst/lecture-julia.myst/lectures/software_engineering/ExampleEnvironment/Manifest.toml`
+  [d360d2e6] + ChainRulesCore v1.3.0
+  [34da2185] + Compat v3.33.0
+  [9a962f9c] + DataAPI v1.7.0
+  [864edb3b] + DataStructures v0.18.10
+  [31c24e10] + Distributions v0.24.18
+  [ffbed154] + DocStringExtensions v0.8.5
+  [2fe49d83] + Expectations v1.7.1
+  [442a2c76] + FastGaussQuadrature v0.4.7
+  [1a297f60] + FillArrays v0.11.9
+  [92d709cd] + IrrationalConstants v0.1.0
+  [692b3bcd] + JLLWrappers v1.3.0
+  [2ab3a3ac] + LogExpFunctions v0.3.0
+  [e1d29d7a] + Missings v1.0.0
+  [bac558e1] + OrderedCollections v1.4.1
+  [90014a1f] + PDMats v0.11.1
+  [d96e819e] + Parameters v0.12.2
+  [21216c6a] + Preferences v1.2.2
+  [1fd47b50] + QuadGK v2.4.1
+  [189a3867] + Reexport v1.1.0
+  [79098fc4] + Rmath v0.7.0
+  [a2af1166] + SortingAlgorithms v1.0.1
+  [276daf66] + SpecialFunctions v1.6.1
+  [90137ffa] + StaticArrays v1.2.12
+  [82ae8749] + StatsAPI v1.0.0
+  [2913bbd2] + StatsBase v0.33.9
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  [4c63d2b9] + StatsFuns v0.9.9
+  [3a884ed6] + UnPack v1.0.2
+  [efe28fd5] + OpenSpecFun_jll v0.5.5+0
+  [f50d1b31] + Rmath_jll v0.3.0+0
+  [0dad84c5] + ArgTools
+  [56f22d72] + Artifacts
+  [2a0f44e3] + Base64
+  [ade2ca70] + Dates
+  [8bb1440f] + DelimitedFiles
+  [8ba89e20] + Distributed
+  [f43a241f] + Downloads
+  [b77e0a4c] + InteractiveUtils
+  [b27032c2] + LibCURL
+  [76f85450] + LibGit2
+  [8f399da3] + Libdl
+  [37e2e46d] + LinearAlgebra
+  [56ddb016] + Logging
+  [d6f4376e] + Markdown
+  [a63ad114] + Mmap
+  [ca575930] + NetworkOptions
+  [44cfe95a] + Pkg
+  [de0858da] + Printf
+  [3fa0cd96] + REPL
+  [9a3f8284] + Random
+  [ea8e919c] + SHA
+  [9e88b42a] + Serialization
+  [1a1011a3] + SharedArrays
+  [6462fe0b] + Sockets
+  [2f01184e] + SparseArrays
+  [10745b16] + Statistics
+  [4607b0f0] + SuiteSparse
+  [fa267f1f] + TOML
+  [a4e569a6] + Tar
+  [8dfed614] + Test
+  [cf7118a7] + UUIDs
+  [4ec0a83e] + Unicode
+  [e66e0078] + CompilerSupportLibraries_jll
+  [deac9b47] + LibCURL_jll
+  [29816b5a] + LibSSH2_jll
+  [c8ffd9c3] + MbedTLS_jll
+  [14a3606d] + MozillaCACerts_jll
+  [83775a58] + Zlib_jll
+  [8e850ede] + nghttp2_jll
+  [3f19e933] + p7zip_jll
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">Precompiling</span> project...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>PDMats
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>Compat
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>FillArrays
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>Missings
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>IrrationalConstants
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>ChainRulesCore
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>LogExpFunctions
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>DataStructures
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>QuadGK
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>SortingAlgorithms
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>StatsBase
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>SpecialFunctions
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>StaticArrays
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>StatsFuns
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>FastGaussQuadrature
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>Distributions
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>Expectations
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">  ✓ </span>ExampleEnvironment
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>18 dependencies successfully precompiled in 19 seconds (16 already precompiled)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note the lack of commas</p>
+<ul class="simple">
+<li><p>To see the changes, simply open the <code class="docutils literal notranslate"><span class="pre">ExampleEnvironment</span></code> directory in an editor like Atom.</p></li>
+</ul>
+<p>The Project TOML should look something like this</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>name = &quot;ExampleEnvironment&quot;
+uuid = &quot;14d3e79e-e2e5-11e8-28b9-19823016c34c&quot;
+authors = [&quot;QuantEcon User &lt;quanteconuser@gmail.com&gt;&quot;]
+version = &quot;0.1.0&quot;
+
+[deps]
+Expectations = &quot;2fe49d83-0758-5602-8f54-1f90ad0d522b&quot;
+Parameters = &quot;d96e819e-fc66-5662-9728-84c9c7592b0a&quot;
+</pre></div>
+</div>
+<p>We can also</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span> <span class="n">precompile</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Note</strong> The TOML files are independent of the actual assets (which live in <code class="docutils literal notranslate"><span class="pre">~/.julia/packages</span></code>, <code class="docutils literal notranslate"><span class="pre">~/.julia/dev</span></code>, and <code class="docutils literal notranslate"><span class="pre">~/.julia/compiled</span></code>).</p>
+<p>You can think of the TOML as specifying demands for resources, which are supplied by the <code class="docutils literal notranslate"><span class="pre">~/.julia</span></code> user depot.</p>
+<ul class="simple">
+<li><p>To return to the default Julia environment, simply</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span> <span class="n">activate</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">  Activating</span> environment at `~/.julia/environments/v1.6/Project.toml`
+</pre></div>
+</div>
+</div>
+</div>
+<p>without any arguments.</p>
+<ul class="simple">
+<li><p>Lastly, let’s clean up</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> <span class="n">cd</span> <span class="o">..</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/lecture-julia.myst/lecture-julia.myst/lectures/software_engineering
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">;</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="n">ExampleEnvironment</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="instantiatefromurl">
+<h3><span class="section-number">11.4.1. </span>InstantiateFromURL<a class="headerlink" href="#instantiatefromurl" title="Permalink to this headline">¶</a></h3>
+<p>With this knowledge, we can explain the operation of the setup block</p>
+<p>What this <code class="docutils literal notranslate"><span class="pre">github_project</span></code> function does is activate (and if necessary, download, instantiate and precompile) a particular Julia environment.</p>
+<span class="target" id="docker-main"></span></div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.6"
+        },
+        kernelOptions: {
+            kernelName: "julia-1.6",
+            path: "./software_engineering"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.6'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_environment.html">
+   2. Interacting with Julia
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   3. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   4. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   5. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   6. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   7. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   8. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   9. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   10. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   11. Julia Tools and Editors
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="version_control.html">
+   12. Git, GitHub, and Version Control
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/kalman.html">
+   21. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   22. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   23. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   24. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   25. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   26. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   27. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   28. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   29. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   30. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   31. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   32. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   33. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   34. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   35. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   36. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   38. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   39. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   40. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   41. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   43. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   44. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   45. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   46. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   47. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   48. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   49. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   50. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   51. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   52. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   53. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   54. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   55. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   56. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   57. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   58. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   59. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   60. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   61. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   62. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   63. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   64. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   65. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   66. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   67. Execution Statistics
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/software_engineering/tools_editors.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Launch Notebook" id="launchButton"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/software_engineering/tools_editors.ipynb" target="_blank"><i data-feather="play-circle"></i></a></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/master/lectures/software_engineering/tools_editors.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p style="color: white;">Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title">QuantEcon Notebook Launcher</p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input" onchange="onChangeListener()">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master?urlpath=tree/software_engineering/tools_editors.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <!-- <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" onchange="onChangeListener()">
+                <i class="fas fa-check-circle"></i>
+            </li> -->
+            </ul>
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

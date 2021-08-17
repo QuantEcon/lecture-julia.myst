@@ -55,9 +55,6 @@ In this lecture, we will often start with a direct MATLAB/FORTRAN approach which
 
 We assume that you've worked your way through {doc}`our getting started lecture <../getting_started_julia/getting_started>` already.
 
-In particular, the easiest way to install and precompile all the Julia packages used in QuantEcon
-notes is to type `] add InstantiateFromURL` and then work in a Jupyter notebook, as described {doc}`here <../getting_started_julia/getting_started>`.
-
 ### Other References
 
 The definitive reference is [Julia's own documentation](https://docs.julialang.org/en/v1/).
@@ -75,16 +72,17 @@ process $\epsilon_0, \epsilon_1, \ldots, \epsilon_T$, where each draw $\epsilon_
 
 The first step is to activate a project environment, which is encapsulated by `Project.toml` and `Manifest.toml` files.
 
-There are three ways to install packages and versions (where the first two methods are discouraged, since they may lead to package versions out-of-sync with the notes)
+There are two ways to install packages and versions (where the first method is discouraged, since Julia provides a state-of-the-art setup for reproducible environments)
 
 1. `add` the packages directly into your global installation (e.g. `Pkg.add("MyPackage")` or `] add MyPackage`)
-1. download an `Project.toml` and `Manifest.toml` file in the same directory as the notebook (i.e. from the `@__DIR__` argument), and then call `using Pkg; Pkg.activate(@__DIR__);`
-1. use the `InstantiateFromURL` package
+1. using a directory with a `Project.toml` and `Manifest.toml` files in the notebook directory or its parents (recursively walking up the tree) you can activate and instantiate the notes.
+   - If you load a jupyter notebook, it will automatically look up the tree for the project files to activate, but will not automatically instantiate them.  To instantiate them, type `] instantiate` in a cell
+   - Alternatively, if you followed  {doc}`our getting started lecture <../getting_started_julia/getting_started>` you will have installed all packages required for your notebooks to run.
 
 
 If you have never run this code on a particular computer, it is likely to take a long time as it downloads, installs, and compiles all dependent packages.
 
-This code will download and install project files from the [lecture repo](https://github.com/QuantEcon/quantecon-notebooks-julia/).
+This code will download and install project files from the [lecture repo](https://github.com/QuantEcon/lecture-julia.notebooks/).
 
 We will discuss it more in {ref}`Tools and Editors <tools_editors>`, but these files provide a listing of packages and versions used by the code.
 

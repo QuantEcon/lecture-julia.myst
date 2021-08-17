@@ -55,8 +55,6 @@
         const thebe_selector_output = ".output"
     </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
-    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
     <link rel="canonical" href="https://julia.quantecon.org/more_julia/general_packages.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -177,13 +175,8 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#latexstrings-jl">
-     8.5.1. LaTeXStrings.jl
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#progressmeter-jl">
-     8.5.2. ProgressMeter.jl
+     8.5.1. ProgressMeter.jl
     </a>
    </li>
   </ul>
@@ -264,8 +257,8 @@
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
-<span class="k">using</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">QuadGK</span><span class="p">,</span> <span class="n">FastGaussQuadrature</span><span class="p">,</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Expectations</span>
-<span class="k">using</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">ProgressMeter</span>
+<span class="k">using</span> <span class="n">QuadGK</span><span class="p">,</span> <span class="n">FastGaussQuadrature</span><span class="p">,</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Expectations</span>
+<span class="k">using</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span>  <span class="n">ProgressMeter</span>
 </pre></div>
 </div>
 </div>
@@ -309,28 +302,12 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>w ⋅ f.(x) = 0.6666666666666667
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>w ⋅ f.(x) = 0.6666666666666665
 </pre></div>
 </div>
 </div>
 </div>
 <p>The only problem with the <code class="docutils literal notranslate"><span class="pre">FastGaussQuadrature</span></code> package is that you will need to deal with affine transformations to the non-default domains yourself.</p>
-<p>Alternatively, <code class="docutils literal notranslate"><span class="pre">QuantEcon.jl</span></code> has routines for Gaussian quadrature that translate the domains.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">QuantEcon</span>
-
-<span class="n">x</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">qnwlege</span><span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="nb">π</span><span class="p">,</span> <span class="mi">2</span><span class="nb">π</span><span class="p">);</span>
-<span class="nd">@show</span> <span class="n">w</span> <span class="o">⋅</span> <span class="n">cos</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">);</span> <span class="c"># i.e. on [-2π, 2π] domain</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>w ⋅ cos.(x) = -3.0064051806277455e-15
-</pre></div>
-</div>
-</div>
-</div>
 </div>
 <div class="section" id="expectations">
 <h3><span class="section-number">8.2.3. </span>Expectations<a class="headerlink" href="#expectations" title="Permalink to this headline">¶</a></h3>
@@ -388,7 +365,7 @@
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/general_packages_11_0.png" src="../_images/general_packages_11_0.png" />
+<img alt="../_images/general_packages_9_0.png" src="../_images/general_packages_9_0.png" />
 </div>
 </div>
 <p>To implement linear and cubic <a class="reference external" href="https://en.wikipedia.org/wiki/Spline_%28mathematics%29">spline</a> interpolation</p>
@@ -409,7 +386,7 @@
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>li(0.3) = 0.25244129544236954
 </pre></div>
 </div>
-<img alt="../_images/general_packages_13_1.png" src="../_images/general_packages_13_1.png" />
+<img alt="../_images/general_packages_11_1.png" src="../_images/general_packages_11_1.png" />
 </div>
 </div>
 </div>
@@ -433,7 +410,7 @@ for regular grids since <code class="docutils literal notranslate"><span class="
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/general_packages_15_0.png" src="../_images/general_packages_15_0.png" />
+<img alt="../_images/general_packages_13_0.png" src="../_images/general_packages_13_0.png" />
 </div>
 </div>
 <p>At this point, <code class="docutils literal notranslate"><span class="pre">Interpolations.jl</span></code> does not have support for cubic splines with irregular grids, but there are plenty of other packages that do (e.g. <a class="reference external" href="https://github.com/kbarbary/Dierckx.jl">Dierckx.jl</a>  and <a class="reference external" href="https://github.com/sisl/GridInterpolations.jl">GridInterpolations.jl</a>).</p>
@@ -466,7 +443,10 @@ interp_linear(3.1, 2.1) = 1.6484736801441782
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>interp_cubic(3, 2) = 1.6094379124341
-interp_cubic(3.1, 2.1) = 1.6486586594237707
+interp_cubic(3.1, 2.1) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.6486586594237707
 </pre></div>
 </div>
 </div>
@@ -492,24 +472,8 @@ addition to standard functions such as <code class="docutils literal notranslate
 </div>
 <div class="section" id="general-tools">
 <h2><a class="toc-backref" href="#id6"><span class="section-number">8.5. </span>General Tools</a><a class="headerlink" href="#general-tools" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="latexstrings-jl">
-<h3><span class="section-number">8.5.1. </span>LaTeXStrings.jl<a class="headerlink" href="#latexstrings-jl" title="Permalink to this headline">¶</a></h3>
-<p>When you need to properly escape latex code (e.g. for equation labels), use <a class="reference external" href="https://github.com/stevengj/LaTeXStrings.jl">LaTeXStrings.jl</a>.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LaTeXStrings</span>
-<span class="sa">L</span><span class="s">&quot;an equation: $1 + </span><span class="se">\a</span><span class="s">lpha^2$&quot;</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_latex math notranslate nohighlight">
-\[an equation: $1 + \alpha^2$\]</div>
-</div>
-</div>
-</div>
 <div class="section" id="progressmeter-jl">
-<h3><span class="section-number">8.5.2. </span>ProgressMeter.jl<a class="headerlink" href="#progressmeter-jl" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">8.5.1. </span>ProgressMeter.jl<a class="headerlink" href="#progressmeter-jl" title="Permalink to this headline">¶</a></h3>
 <p>For long-running operations, you can use the <a class="reference external" href="https://github.com/timholy/ProgressMeter.jl">ProgressMeter.jl</a> package.</p>
 <p>To use the package, you simply put a macro in front of <code class="docutils literal notranslate"><span class="pre">for</span></code> loops, etc.</p>
 <p>From the documentation</p>
@@ -524,16 +488,16 @@ addition to standard functions such as <code class="docutils literal notranslate
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing...  4%|█▌                                     |  ETA: 0:00:47</span>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing...  4%|█▌                                     |  ETA: 0:00:56</span>
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing... 38%|██████████████▉                        |  ETA: 0:00:07</span>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing... 50%|███████████████████▌                   |  ETA: 0:00:05</span>
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing... 64%|█████████████████████████              |  ETA: 0:00:03</span>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing... 76%|█████████████████████████████▋         |  ETA: 0:00:02</span>
 </pre></div>
 </div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing... 84%|████████████████████████████████▊      |  ETA: 0:00:01</span>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing... 96%|█████████████████████████████████████▌ |  ETA: 0:00:00</span>
 </pre></div>
 </div>
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Green">Computing...100%|███████████████████████████████████████| Time: 0:00:07</span>
@@ -663,22 +627,22 @@ addition to standard functions such as <code class="docutils literal notranslate
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="tools_editors.html">
+  <a class="reference internal" href="../software_engineering/tools_editors.html">
    11. Julia Tools and Editors
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="version_control.html">
+  <a class="reference internal" href="../software_engineering/version_control.html">
    12. Git, GitHub, and Version Control
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="testing.html">
+  <a class="reference internal" href="../software_engineering/testing.html">
    13. Packages, Testing, and Continuous Integration
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="need_for_speed.html">
+  <a class="reference internal" href="../software_engineering/need_for_speed.html">
    14. The Need for Speed
   </a>
  </li>
@@ -993,7 +957,7 @@ addition to standard functions such as <code class="docutils literal notranslate
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Lecture Status
+   67. Execution Statistics
   </a>
  </li>
 </ul>
