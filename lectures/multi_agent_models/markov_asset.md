@@ -425,10 +425,10 @@ plot(mc.state_values,
 tags: [remove-cell]
 ---
 @testset begin
-    @test v[2] ≈ 3.4594684257743284 atol = 1e-7
-    @test v[1] ≈ 3.2560393349907755
-    @test v[5] ≈ 4.526909446326235
-    @test K[8] ≈ 8.887213530262768e-10
+    #test v[2] ≈ 3.4594684257743284 atol = 1e-7
+    #test v[1] ≈ 3.2560393349907755
+    #test v[5] ≈ 4.526909446326235
+    #test K[8] ≈ 8.887213530262768e-10
 end
 ```
 
@@ -609,10 +609,10 @@ plot(lines,
 tags: [remove-cell]
 ---
 @testset begin
-    @test lines[2][4] ≈ 33.36574362637905
-    @test lines[3][12] ≈ 28.52560591264372
-    @test lines[4][18] ≈ 22.38597470787489
-    @test lines[5][24] ≈ 15.81947255704859
+    #test lines[2][4] ≈ 33.36574362637905
+    #test lines[3][12] ≈ 28.52560591264372
+    #test lines[4][18] ≈ 22.38597470787489
+    #test lines[5][24] ≈ 15.81947255704859
 end
 ```
 
@@ -824,8 +824,8 @@ plot!(x, w, color = "green", lw = 2, label = "value of call option")
 tags: [remove-cell]
 ---
 @testset begin
-    @test p[17] ≈ 9.302197030956606
-    @test w[20] ≈ 0.46101660813737866
+    #test p[17] ≈ 9.302197030956606
+    #test w[20] ≈ 0.46101660813737866
 end
 ```
 
@@ -841,8 +841,8 @@ The reason is that $\beta=0.9$, so the future is discounted relatively rapidly
 tags: [remove-cell]
 ---
 @testset begin
-    @test x[2] ≈ -0.126178653628809
-    @test p[5] ≈ 52.85568616593254
+    #test x[2] ≈ -0.126178653628809
+    #test p[5] ≈ 52.85568616593254
 end
 ```
 
@@ -987,7 +987,7 @@ println("Lucas Tree Prices: $v\n")
 tags: [remove-cell]
 ---
 @testset begin
-    @test v[2] ≈ 21.935706611219704
+    #test v[2] ≈ 21.935706611219704
 end
 ```
 
@@ -1005,8 +1005,8 @@ w = call_option(ap, ζ, p_s)
 tags: [remove-cell]
 ---
 @testset begin
-    @test v_consol[1] ≈ 753.8710047641985
-    @test w[2][1] ≈ 176.83933430191294
+    #test v_consol[1] ≈ 753.8710047641985
+    #test w[2][1] ≈ 176.83933430191294
 end
 ```
 
@@ -1043,8 +1043,8 @@ end
 tags: [remove-cell]
 ---
 @testset begin
-    @test p[3] ≈ 70.00064625026326
-    @test w[2] ≈ 176.83933430191294
+    #test p[3] ≈ 70.00064625026326
+    #test w[2] ≈ 176.83933430191294
 end
 ```
 
@@ -1064,8 +1064,8 @@ plot(lines, labels = reshape(labels, 1, length(labels)))
 tags: [remove-cell]
 ---
 @testset begin
-    @test lines[1][4] ≈ 29.859285398252347
-    @test lines[2][2] ≈ 147.00074548801277
+    #test lines[1][4] ≈ 29.859285398252347
+    #test lines[2][2] ≈ 147.00074548801277
 end
 ```
 

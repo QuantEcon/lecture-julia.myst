@@ -627,7 +627,7 @@ shocks = exp.(μ .+ s * randn(shock_size))
 tags: [remove-cell]
 ---
 @testset "Shock Invariance Tests" begin
-    @test shocks[4] ≈ 0.9704956010607036 && length(shocks) == 250
+    #test shocks[4] ≈ 0.9704956010607036 && length(shocks) == 250
 end
 ```
 
@@ -678,7 +678,7 @@ plot!(plt, legend = :bottomright)
 tags: [remove-cell]
 ---
 @testset begin
-    @test v_star(grid_y[2]) ≈ -33.370496456772266
+    #test v_star(grid_y[2]) ≈ -33.370496456772266
 end
 ```
 
@@ -740,7 +740,7 @@ plot!(plt, legend = :bottomright)
 tags: [remove-cell]
 ---
 @testset begin
-    @test cstar[102] ≈ 1.2505758978894472
+    #test cstar[102] ≈ 1.2505758978894472
 end
 ```
 
@@ -785,7 +785,7 @@ shocks = exp.(μ .+ s * randn(shock_size))
 tags: [remove-cell]
 ---
 @testset begin
-    @test shocks[25] ≈ 0.8281356207080574
+    #test shocks[25] ≈ 0.8281356207080574
 end
 ```
 
@@ -849,10 +849,10 @@ Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks,
 y = simulate_og(σ_func);
 
 @testset begin
-    #@test y[5] ≈ 0.4896390574930345
-    #@test σ[3] ≈ 0.025084788719798193 atol = 1e-6
-    #@test Tw[4] ≈ -22.24681487036426
-    #@test v_star_approx[50] ≈ -17.76952387641302
+    ##test y[5] ≈ 0.4896390574930345
+    ##test σ[3] ≈ 0.025084788719798193 atol = 1e-6
+    ##test Tw[4] ≈ -22.24681487036426
+    ##test v_star_approx[50] ≈ -17.76952387641302
 end
 ```
 
