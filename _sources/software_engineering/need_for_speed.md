@@ -131,14 +131,14 @@ For example, we can't at present add an integer and a string in Julia (i.e. `100
 
 This is sensible behavior, but if you want to change it there's nothing to stop you.
 
-```{code-cell} julia
+```{code-cell} none
 import Base: +  # enables adding methods to the + function
-
 +(x::Integer, y::String) = x + parse(Int, y)
-
 @show +(100, "100")
 @show 100 + "100";  # equivalent
 ```
+
+The above code is not executed to avoid any chance of a [method invalidation](https://julialang.org/blog/2020/08/invalidations/), where are a source of compile-time latency.
 
 ### Understanding the Compilation Process
 
@@ -535,9 +535,11 @@ To illustrate, consider this code, where `b` is global
 b = 1.0
 function g(a)
     global b
-    for i ∈ 1:1_000_000
-        tmp = a + b
+    tmp = a
+    for i in 1:1_000_000
+        tmp = tmp + a + b
     end
+    return tmp
 end
 ```
 
@@ -559,23 +561,26 @@ If we eliminate the global variable like so
 
 ```{code-cell} julia
 function g(a, b)
-    for i ∈ 1:1_000_000
-        tmp = a + b
+    tmp = a
+    for i in 1:1_000_000
+        tmp = tmp + a + b
     end
+    return tmp
 end
 ```
 
-then execution speed improves dramatically
+then execution speed improves dramatically.  Furthermore, the number of allocations has dropped to zero.
 
 ```{code-cell} julia
 @btime g(1.0, 1.0)
 ```
 
-Note that the second run was dramatically faster than the first.
+Note that if you called `@time` instead, the first call would be slower as it would need to compile the function.  Conversely, `@btime` discards the first call and runs it multiple times.
 
-That's because the first call included the time for JIT compilaiton.
-
-Notice also how small the memory footprint of the execution is.
+More information is available with `@benchmark` instead,
+```{code-cell} julia
+@benchmark g(1.0, 1.0)
+```
 
 Also, the machine code is simple and clean
 
@@ -586,24 +591,24 @@ Also, the machine code is simple and clean
 Now the compiler is certain of types throughout execution of the function and
 hence can optimize accordingly.
 
-#### The `const` keyword
-
-Another way to stabilize the code above is to maintain the global variable but
-prepend it with `const`
+If global variations are strictly needed (and they almost never are) then you can declare them with a `const` to declare to Julia that the type never changes (the value can).  For example, 
 
 ```{code-cell} julia
 const b_const = 1.0
-function g(a)
+function g_const(a)
     global b_const
-    for i ∈ 1:1_000_000
-        tmp = a + b_const
+    tmp = a
+    for i in 1:1_000_000
+        tmp = tmp + a + b_const
     end
+    return tmp
 end
+@btime g_const(1)
 ```
 
 Now the compiler can again generate efficient machine code.
 
-We'll leave you to experiment with it.
+However, global variables within a function is almost always a bad idea.  Instead, the `b_const` should be passed as a parameter to the function.
 
 ### Composite Types with Abstract Field Types
 
@@ -623,7 +628,7 @@ As we'll see, the last of these options gives us the best performance, while sti
 Here's the untyped case
 
 ```{code-cell} julia
-struct Foo_generic
+struct Foo_any
     a
 end
 ```
@@ -636,7 +641,7 @@ struct Foo_abstract
 end
 ```
 
-Finally, here's the parametrically typed case
+Finally, here's the parametrically typed case (where the `{T <: Real}` is not necessary for performance, and could simply be `{T}`
 
 ```{code-cell} julia
 struct Foo_concrete{T <: Real}
@@ -647,7 +652,7 @@ end
 Now we generate instances
 
 ```{code-cell} julia
-fg = Foo_generic(1.0)
+fg = Foo_any(1.0)
 fa = Foo_abstract(1.0)
 fc = Foo_concrete(1.0)
 ```
@@ -666,13 +671,15 @@ Here's a function that uses the field `a` of our objects
 
 ```{code-cell} julia
 function f(foo)
-    for i ∈ 1:1_000_000
+    tmp = foo.a
+    for i in 1:1_000_000
         tmp = i + foo.a
     end
+    return tmp
 end
 ```
 
-Let's try timing our code, starting with the generic case:
+Let's try timing our code, starting with the case without any constraints:
 
 ```{code-cell} julia
 @btime f($fg)
@@ -686,7 +693,7 @@ Here's the nasty looking machine code
 @code_native f(fg)
 ```
 
-The abstract case is similar
+The abstract case is almost identical,
 
 ```{code-cell} julia
 @btime f($fa)
@@ -702,26 +709,38 @@ Finally, let's look at the parametrically typed version
 @btime f($fc)
 ```
 
-Some of this time is JIT compilation, and one more execution gets us down to.
+Which is improbably small - since a runtime of 1-2 nanoseconds without any allocations suggests no computations really took place.
 
-Here's the corresponding machine code
+A hint is in the simplicity of the corresponding machine code
 
 ```{code-cell} julia
 @code_native f(fc)
 ```
 
-Much nicer...
+This machine code has none of the hallmark assembly instructions associated with a loop, in particular loops (e.g. `for` in julia) end up as jumps in the machine code (e.g. `jne`).
 
-### Abstract Containers
+Here, the compiler was smart enough to realize that only the final step in the loop matters, i.e. it could generate the equivalent to `f(a) = 1_000_000 + foo.a` and then it can return that directly and skip the loop.  These sorts of code optimizations are only possible if the compiler is able to use a great deal of information about the types.
 
-Another way we can run into trouble is with abstract container types.
+
+Finally, note that if we compile a slightly different version of the function, which doesn't actually return the value
+```{code-cell} julia
+function f_no_return(foo)
+    for i in 1:1_000_000
+        tmp = i + foo.a
+    end
+end
+@code_native f_no_return(fc)
+```
+We see that the code is even simpler.  In effect, if figured out that because `tmp` wasn't returned, and the `foo.a` could have no side effects (since it knows the type of `a`), that it doesn't even need to execute any of the code in the function.
+
+### Type Inference
 
 Consider the following function, which essentially does the same job as Julia's `sum()` function but acts only on floating point data
 
 ```{code-cell} julia
 function sum_float_array(x::AbstractVector{<:Number})
     sum = 0.0
-    for i ∈ eachindex(x)
+    for i in eachindex(x)
         sum += x[i]
     end
     return sum
@@ -731,8 +750,8 @@ end
 Calls to this function run very quickly
 
 ```{code-cell} julia
-x = range(0,  1, length = Int(1e6))
-x = collect(x)
+x_range = range(0,  1, length = 100_000)
+x = collect(x_range)
 typeof(x)
 ```
 
@@ -740,13 +759,36 @@ typeof(x)
 @btime sum_float_array($x)
 ```
 
-When Julia compiles this function, it knows that the data passed in as `x` will be an array of 64 bit floats.
+When Julia compiles this function, it knows that the data passed in as `x` will be an array of 64 bit floats.  Hence it's known to the compiler that the relevant method for `+` is always addition of floating point numbers.
 
-Hence it's known to the compiler that the relevant method for `+` is always addition of floating point numbers.
+But consider a version without that type annotation
 
-Moreover, the data can be arranged into continuous 64 bit blocks of memory to simplify memory access.
+```{code-cell} julia
+function sum_array(x)
+    sum = 0.0
+    for i in eachindex(x)
+        sum += x[i]
+    end
+    return sum
+end
+@btime sum_array($x)
+```
 
-Finally, data types are stable --- for example, the local variable `sum` starts off as a float and remains a float throughout.
+Note that this has the same running time as the one with the explicit types.  In julia, there is (almost never) performance gain from declaring types, and if anything they can make things worse by limited the potential for specialized algorithms.  See {doc}`generic programming <../more_julia/generic_programming>` for more.
+
+As an example within Julia code, look at the built-in sum for array
+
+```{code-cell} julia
+@btime sum($x)
+```
+
+Versus the underlying range
+
+```{code-cell} julia
+@btime sum($x_range)
+```
+
+Note that the difference in speed is enormous---suggesting it is better to keep things in their more structured forms as long as possible.  You can check the underlying source used for this with `@which sum(x_range)` to see the specialized algorithm used.
 
 #### Type Inferences
 
@@ -755,7 +797,7 @@ Here's the same function minus the type annotation in the function signature
 ```{code-cell} julia
 function sum_array(x)
     sum = 0.0
-    for i ∈ eachindex(x)
+    for i in eachindex(x)
         sum += x[i]
     end
     return sum
@@ -782,7 +824,7 @@ Things get tougher for the interpreter when the data type within the array is im
 For example, the following snippet creates an array where the element type is `Any`
 
 ```{code-cell} julia
-x = Any[ 1/i for i ∈ 1:1e6 ];
+x = Any[ 1/i for i in 1:1e6 ];
 ```
 
 ```{code-cell} julia
@@ -798,29 +840,6 @@ Now summation is much slower and memory management is less efficient.
 ## Further Comments
 
 Here are some final comments on performance.
-
-### Explicit Typing
-
-Writing fast Julia code amounts to writing Julia from which the compiler can
-generate efficient machine code.
-
-For this, Julia needs to know about the type of data it's processing as early as possible.
-
-We could hard code the type of all variables and function arguments but this comes at a cost.
-
-Our code becomes more cumbersome and less generic.
-
-We are starting to loose the advantages that drew us to Julia in the first place.
-
-Moreover, explicitly typing everything is not necessary for optimal performance.
-
-The Julia compiler is smart and can often infer types perfectly well, without
-any performance cost.
-
-What we really want to do is
-
-* keep our code simple, elegant and generic
-* help the compiler out in situations where it's liable to get tripped up
 
 ### Summary and Tips
 

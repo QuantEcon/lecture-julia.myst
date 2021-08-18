@@ -1681,12 +1681,12 @@ p
 tags: [remove-cell]
 ---
 @testset begin
-  @test sim_seq_long_plot[50, 3] ≈ 0.3951985593686047
-  @test sim_bel_long_plot[50, 3] ≈ 0.05684753244006188 atol = 1e-2
-  @test sim_seq_long_plot[100, 4] ≈ 0.340233842670859
-  @test sim_bel_long_plot[100, 4] ≈ 0.2093423366870517 atol = 1e-3
-  @test sim_seq_long_plot[200, 2] ≈ 0.5839693539786998
-  @test sim_bel_long_plot[200, 2] ≈ 0.6324036099550768 atol = 1e-3
+  #test sim_seq_long_plot[50, 3] ≈ 0.3951985593686047
+  #test sim_bel_long_plot[50, 3] ≈ 0.05684753244006188 atol = 1e-2
+  #test sim_seq_long_plot[100, 4] ≈ 0.340233842670859
+  #test sim_bel_long_plot[100, 4] ≈ 0.2093423366870517 atol = 1e-3
+  #test sim_seq_long_plot[200, 2] ≈ 0.5839693539786998
+  #test sim_bel_long_plot[200, 2] ≈ 0.6324036099550768 atol = 1e-3
 end
 ```
 

@@ -216,19 +216,6 @@
     <a class="reference internal nav-link" href="#global-variables">
      14.5.2. Global Variables
     </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#the-const-keyword">
-       14.5.2.1. The
-       <code class="docutils literal notranslate">
-        <span class="pre">
-         const
-        </span>
-       </code>
-       keyword
-      </a>
-     </li>
-    </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#composite-types-with-abstract-field-types">
@@ -243,8 +230,8 @@
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#abstract-containers">
-     14.5.4. Abstract Containers
+    <a class="reference internal nav-link" href="#type-inference">
+     14.5.4. Type Inference
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
@@ -267,18 +254,13 @@
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#explicit-typing">
-     14.6.1. Explicit Typing
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#summary-and-tips">
-     14.6.2. Summary and Tips
+     14.6.1. Summary and Tips
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#further-reading">
-     14.6.3. Further Reading
+     14.6.2. Further Reading
     </a>
    </li>
   </ul>
@@ -459,9 +441,7 @@ responsible for handling integer values.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="n">Base</span><span class="o">:</span> <span class="o">+</span>  <span class="c"># enables adding methods to the + function</span>
-
 <span class="o">+</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Integer</span><span class="p">,</span> <span class="n">y</span><span class="o">::</span><span class="kt">String</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">parse</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-
 <span class="nd">@show</span> <span class="o">+</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="s">&quot;100&quot;</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="mi">100</span> <span class="o">+</span> <span class="s">&quot;100&quot;</span><span class="p">;</span>  <span class="c"># equivalent</span>
 </pre></div>
@@ -474,6 +454,7 @@ responsible for handling integer values.</p>
 </div>
 </div>
 </div>
+<p>The above code is not executed to avoid any chance of a <a class="reference external" href="https://julialang.org/blog/2020/08/invalidations/">method invalidation</a>, where are a source of compile-time latency.</p>
 </div>
 </div>
 <div class="section" id="understanding-the-compilation-process">
@@ -675,11 +656,11 @@ function, when called with types like <code class="docutils literal notranslate"
   #self#<span class=" -Color -Color-Cyan">::Core.Const(f)</span>
   x<span class=" -Color -Color-Cyan">::Int64</span>
 
-Body<span class=" -Color -Color-Bold -Color-Bold-Yellow">::Union{Nothing, Int64}</span>
-1 ─ %1 = (x &gt; 
+Body
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0)<span class=" -Color -Color-Cyan">::Bool</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Yellow">::Union{Nothing, Int64}</span>
+1 ─ %1 = (x &gt; 0.0)<span class=" -Color -Color-Cyan">::Bool</span>
 └──      goto #3 if not %1
 2 ─      return x
 3 ─      return Main.nothing
@@ -749,7 +730,9 @@ Body<span class=" -Color -Color-Bold">::Union{Float64, Int64}</span>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>zero(2.3) = 0.0
 zero(4) = 0
-zero(2.0 + 3im) = 0.0 + 0.0im
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>zero(2.0 + 3im) = 0.0 + 0.0im
 Variables
   #self#<span class=" -Color -Color-Cyan">::Core.Const(f)</span>
   x<span class=" -Color -Color-Cyan">::Float64</span>
@@ -758,11 +741,10 @@ Body<span class=" -Color -Color-Cyan">::Float64</span>
 1 ─ %1 = (x &gt; 0.0)<span class=" -Color -Color-Cyan">::Bool</span>
 └──      goto #3 if not %1
 2 ─      return x
-3 ─ %4 = Main
+3 ─ %4 = Main.zero(x)<span class=" -Color -Color-Cyan">::Core.Const(0.0)</span>
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.zero(x)<span class=" -Color -Color-Cyan">::Core.Const(0.0)</span>
-└──      return %4
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>└──      return %4
 </pre></div>
 </div>
 </div>
@@ -970,7 +952,7 @@ stores it in memory.</p>
 ; │┌ @ intfuncs.jl:312 within `literal_pow&#39;
 ; ││┌ @ float.jl:332 within `*&#39;
 	<span class=" -Color -Color-Bold">vmulsd</span>	%xmm0, %xmm0, %xmm0
-	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$140548750276720</span>, %rax          # imm = 0x7FD40E557870
+	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$140458568108144</span>, %rax          # imm = 0x7FBF0F0EC870
 ; │└└
 ; │ @ In[20]:3 within `f&#39;
 ; │┌ @ promotion.jl:322 within `*&#39; @ float.jl:332
@@ -1031,9 +1013,11 @@ variable, or even that the type will stay constant while a given function runs.<
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">b</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="k">function</span> <span class="n">g</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">b</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="o">∈</span> <span class="mi">1</span><span class="o">:</span><span class="mi">1_000_000</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">1_000_000</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
     <span class="k">end</span>
+    <span class="k">return</span> <span class="n">tmp</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1054,7 +1038,10 @@ variable, or even that the type will stay constant while a given function runs.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  22.036 ms (2000000 allocations: 30.52 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  37.632 ms (3000001 allocations: 45.78 MiB)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.000001e6
 </pre></div>
 </div>
 </div>
@@ -1077,54 +1064,77 @@ variable, or even that the type will stay constant while a given function runs.<
 	<span class=" -Color -Color-Bold">pushq</span>	%r12
 	<span class=" -Color -Color-Bold">pushq</span>	%rbx
 	<span class=" -Color -Color-Bold">andq</span>	<span class=" -Color -Color-Yellow">$-32</span>, %rsp
-	<span class=" -Color -Color-Bold">subq</span>	<span class=" -Color -Color-Yellow">$128</span>, %rsp
-	<span class=" -Color -Color-Bold">vmovsd</span>	%xmm0, <span class=" -Color -Color-Yellow">24(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
-	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$140548796324584</span>, %rdx          # imm = 0x7FD411141AE8
+	<span class=" -Color -Color-Bold">subq</span>	<span class=" -Color -Color-Yellow">$96</span>, %rsp
+	<span class=" -Color -Color-Bold">vmovsd</span>	%xmm0, <span class=" -Color -Color-Yellow">8(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">movabsq</span>	$jl_system_image_data, %r14
 	<span class=" -Color -Color-Bold">vxorps</span>	%xmm0, %xmm0, %xmm0
 	<span class=" -Color -Color-Bold">vmovaps</span>	%ymm0, <span class=" -Color -Color-Yellow">32(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">$0</span>, <span class=" -Color -Color-Yellow">64(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">movq</span>	%fs:<span class=" -Color -Color-Yellow">0</span>, %rax
-	<span class=" -Color -Color-Bold">leaq</span>	<span class=" -Color -Color-Yellow">-32768(</span>%rax<span class=" -Color -Color-Yellow">)</span>, %r13
-; │ @ In[23] within `g&#39;
-	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">$8</span>, <span class=" -Color -Color-Yellow">32(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">leaq</span>	<span class=" -Color -Color-Yellow">-32768(</span>%rax<span class=" -Color -Color-Yellow">)</span>, %rdi
+	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">$12</span>, <span class=" -Color -Color-Yellow">32(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">-32768(</span>%rax<span class=" -Color -Color-Yellow">)</span>, %rcx
 	<span class=" -Color -Color-Bold">movq</span>	%rcx, <span class=" -Color -Color-Yellow">40(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">leaq</span>	<span class=" -Color -Color-Yellow">32(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %rcx
 	<span class=" -Color -Color-Bold">movq</span>	%rcx, <span class=" -Color -Color-Yellow">-32768(</span>%rax<span class=" -Color -Color-Yellow">)</span>
-	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$1000000</span>, %ebx                  # imm = 0xF4240
-	<span class=" -Color -Color-Bold">leaq</span>	<span class=" -Color -Color-Yellow">76847608(</span>%rdx<span class=" -Color -Color-Yellow">)</span>, %r12
-	<span class=" -Color -Color-Bold">leaq</span>	<span class=" -Color -Color-Yellow">88(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %r15
-	<span class=" -Color -Color-Bold">nopw</span>	%cs:<span class=" -Color -Color-Yellow">(</span>%rax,%rax<span class=" -Color -Color-Yellow">)</span>
-; │ @ In[23]:5 within `g&#39;
-L128:
-	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$140548796324584</span>, %rax          # imm = 0x7FD411141AE8
-	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">(</span>%rax<span class=" -Color -Color-Yellow">)</span>, %r14
-	<span class=" -Color -Color-Bold">movq</span>	%r14, <span class=" -Color -Color-Yellow">48(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
-	<span class=" -Color -Color-Bold">movq</span>	%r13, %rdi
+	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$140458935288761</span>, %rax          # imm = 0x7FBF24F183B9
+	<span class=" -Color -Color-Bold">movq</span>	%rdi, <span class=" -Color -Color-Yellow">(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$1400</span>, %esi                     # imm = 0x578
 	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$16</span>, %edx
-	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$140549117457337</span>, %rax          # imm = 0x7FD4243833B9
 	<span class=" -Color -Color-Bold">vzeroupper</span>
 	<span class=" -Color -Color-Bold">callq</span>	*%rax
-	<span class=" -Color -Color-Bold">movq</span>	%r12, <span class=" -Color -Color-Yellow">-8(</span>%rax<span class=" -Color -Color-Yellow">)</span>
-	<span class=" -Color -Color-Bold">vmovsd</span>	<span class=" -Color -Color-Yellow">24(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %xmm0                 # xmm0 = mem[0],zero
+	<span class=" -Color -Color-Bold">movq</span>	%rax, %rbx
+	<span class=" -Color -Color-Bold">movq</span>	%r14, <span class=" -Color -Color-Yellow">-8(</span>%rax<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">vmovsd</span>	<span class=" -Color -Color-Yellow">8(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %xmm0                  # xmm0 = mem[0],zero
 	<span class=" -Color -Color-Bold">vmovsd</span>	%xmm0, <span class=" -Color -Color-Yellow">(</span>%rax<span class=" -Color -Color-Yellow">)</span>
-	<span class=" -Color -Color-Bold">movq</span>	%rax, <span class=" -Color -Color-Yellow">56(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
-	<span class=" -Color -Color-Bold">movq</span>	%rax, <span class=" -Color -Color-Yellow">88(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
-	<span class=" -Color -Color-Bold">movq</span>	%r14, <span class=" -Color -Color-Yellow">96(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
-	<span class=" -Color -Color-Bold">movabsq</span>	$jl_system_image_data, %rdi
-	<span class=" -Color -Color-Bold">movq</span>	%r15, %rsi
-	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$2</span>, %edx
-	<span class=" -Color -Color-Bold">movabsq</span>	$jl_apply_generic, %rax
+	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$1000000</span>, %r13d                 # imm = 0xF4240
+	<span class=" -Color -Color-Bold">leaq</span>	<span class=" -Color -Color-Yellow">16(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %r12
+	<span class=" -Color -Color-Bold">nopw</span>	%cs:<span class=" -Color -Color-Yellow">(</span>%rax,%rax<span class=" -Color -Color-Yellow">)</span>
+; │ @ In[23] within `g&#39;
+L176:
+	<span class=" -Color -Color-Bold">movabsq</span>	$jl_system_image_data, %r15
+; │ @ In[23]:6 within `g&#39;
+	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">-82647368(</span>%r15<span class=" -Color -Color-Yellow">)</span>, %r14
+	<span class=" -Color -Color-Bold">movq</span>	%r14, <span class=" -Color -Color-Yellow">64(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">movq</span>	%rbx, <span class=" -Color -Color-Yellow">56(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %rdi
+; │┌ @ operators.jl:560 within `+&#39;
+	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$1400</span>, %esi                     # imm = 0x578
+	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$16</span>, %edx
+	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$140458935288761</span>, %rax          # imm = 0x7FBF24F183B9
 	<span class=" -Color -Color-Bold">callq</span>	*%rax
+	<span class=" -Color -Color-Bold">movq</span>	%r15, <span class=" -Color -Color-Yellow">-8(</span>%rax<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">vmovsd</span>	<span class=" -Color -Color-Yellow">8(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %xmm0                  # xmm0 = mem[0],zero
+	<span class=" -Color -Color-Bold">vmovsd</span>	%xmm0, <span class=" -Color -Color-Yellow">(</span>%rax<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">movq</span>	%rax, <span class=" -Color -Color-Yellow">48(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">movq</span>	%rbx, <span class=" -Color -Color-Yellow">16(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">movq</span>	%rax, <span class=" -Color -Color-Yellow">24(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">movabsq</span>	$jl_system_image_data, %r15
+	<span class=" -Color -Color-Bold">movq</span>	%r15, %rdi
+	<span class=" -Color -Color-Bold">movq</span>	%r12, %rsi
+	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$2</span>, %edx
+	<span class=" -Color -Color-Bold">movabsq</span>	$jl_apply_generic, %rbx
+	<span class=" -Color -Color-Bold">callq</span>	*%rbx
+	<span class=" -Color -Color-Bold">movq</span>	%rax, <span class=" -Color -Color-Yellow">48(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">movq</span>	%rax, <span class=" -Color -Color-Yellow">16(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">movq</span>	%r14, <span class=" -Color -Color-Yellow">24(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">movq</span>	%r15, %rdi
+	<span class=" -Color -Color-Bold">movq</span>	%r12, %rsi
+	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$2</span>, %edx
+	<span class=" -Color -Color-Bold">callq</span>	*%rbx
+	<span class=" -Color -Color-Bold">movq</span>	%rax, %rbx
+; │└
 ; │┌ @ range.jl:674 within `iterate&#39;
 ; ││┌ @ promotion.jl:410 within `==&#39;
-	<span class=" -Color -Color-Bold">decq</span>	%rbx
+	<span class=" -Color -Color-Bold">decq</span>	%r13
 ; │└└
-	<span class=" -Color -Color-Bold">jne</span>	L128
+	<span class=" -Color -Color-Bold">jne</span>	L176
 ; │ @ In[23] within `g&#39;
 	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">40(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %rax
-	<span class=" -Color -Color-Bold">movq</span>	%rax, <span class=" -Color -Color-Yellow">(</span>%r13<span class=" -Color -Color-Yellow">)</span>
-; │ @ In[23]:5 within `g&#39;
+	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %rcx
+	<span class=" -Color -Color-Bold">movq</span>	%rax, <span class=" -Color -Color-Yellow">(</span>%rcx<span class=" -Color -Color-Yellow">)</span>
+; │ @ In[23]:8 within `g&#39;
+	<span class=" -Color -Color-Bold">movq</span>	%rbx, %rax
 	<span class=" -Color -Color-Bold">leaq</span>	<span class=" -Color -Color-Yellow">-40(</span>%rbp<span class=" -Color -Color-Yellow">)</span>, %rsp
 	<span class=" -Color -Color-Bold">popq</span>	%rbx
 	<span class=" -Color -Color-Bold">popq</span>	%r12
@@ -1133,7 +1143,7 @@ L128:
 	<span class=" -Color -Color-Bold">popq</span>	%r15
 	<span class=" -Color -Color-Bold">popq</span>	%rbp
 	<span class=" -Color -Color-Bold">retq</span>
-	<span class=" -Color -Color-Bold">nopw</span>	%cs:<span class=" -Color -Color-Yellow">(</span>%rax,%rax<span class=" -Color -Color-Yellow">)</span>
+	<span class=" -Color -Color-Bold">nopl</span>	<span class=" -Color -Color-Yellow">(</span>%rax<span class=" -Color -Color-Yellow">)</span>
 ; └
 </pre></div>
 </div>
@@ -1143,9 +1153,11 @@ L128:
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">g</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="o">∈</span> <span class="mi">1</span><span class="o">:</span><span class="mi">1_000_000</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">1_000_000</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
     <span class="k">end</span>
+    <span class="k">return</span> <span class="n">tmp</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1156,7 +1168,7 @@ L128:
 </div>
 </div>
 </div>
-<p>then execution speed improves dramatically</p>
+<p>then execution speed improves dramatically.  Furthermore, the number of allocations has dropped to zero.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@btime</span> <span class="n">g</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
@@ -1164,14 +1176,37 @@ L128:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.600 ns (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.671 ms (0 allocations: 0 bytes)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.000001e6
 </pre></div>
 </div>
 </div>
 </div>
-<p>Note that the second run was dramatically faster than the first.</p>
-<p>That’s because the first call included the time for JIT compilaiton.</p>
-<p>Notice also how small the memory footprint of the execution is.</p>
+<p>Note that if you called <code class="docutils literal notranslate"><span class="pre">&#64;time</span></code> instead, the first call would be slower as it would need to compile the function.  Conversely, <code class="docutils literal notranslate"><span class="pre">&#64;btime</span></code> discards the first call and runs it multiple times.</p>
+<p>More information is available with <code class="docutils literal notranslate"><span class="pre">&#64;benchmark</span></code> instead,</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@benchmark</span> <span class="n">g</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 2635 samples with 1 evaluation.
+ Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">1.671 ms</span> … <span class=" -Color -Color-Magenta">  8.241 ms</span>  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">1.816 ms               </span>┊ GC (median):    0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">1.893 ms</span> ± <span class=" -Color -Color-Green">306.391 μs</span>  ┊ GC (mean ± σ):  0.00% ± 0.00%
+
+  █▄▅▄▅▅▄<span class=" -Color -Color-Blue">▄</span>▄▄▄<span class=" -Color -Color-Green">▄</span>▃▃▃▂▂▂▁▂ ▁▁▁ ▁                                  ▁
+  ███████<span class=" -Color -Color-Blue">█</span>███<span class=" -Color -Color-Green">█</span>███████████████▇▇███▇▆▇▆▅▇▅▄▄▆▄▅▅▃▄▅▆▄▃▃▄▃▄▄▄▆▄ █
+  1.67 ms      Histogram: <span class=" -Color -Color-Bold">log(</span>frequency<span class=" -Color -Color-Bold">)</span> by time      2.88 ms <span class=" -Color -Color-Bold">&lt;</span>
+
+ Memory estimate: <span class=" -Color -Color-Yellow">0 bytes</span>, allocs estimate: <span class=" -Color -Color-Yellow">0</span>.
+</pre></div>
+</div>
+</div>
+</div>
 <p>Also, the machine code is simple and clean</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1181,7 +1216,23 @@ L128:
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
-; ┌ @ In[26]:3 within `g&#39;
+; ┌ @ In[26]:1 within `g&#39;
+	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$1000000</span>, %eax                  # imm = 0xF4240
+	<span class=" -Color -Color-Bold">vmovapd</span>	%xmm0, %xmm2
+	<span class=" -Color -Color-Bold">nopl</span>	<span class=" -Color -Color-Yellow">(</span>%rax<span class=" -Color -Color-Yellow">)</span>
+; │ @ In[26]:4 within `g&#39;
+; │┌ @ operators.jl:560 within `+&#39; @ float.jl:326
+L16:
+	<span class=" -Color -Color-Bold">vaddsd</span>	%xmm0, %xmm2, %xmm2
+	<span class=" -Color -Color-Bold">vaddsd</span>	%xmm1, %xmm2, %xmm2
+; │└
+; │┌ @ range.jl:674 within `iterate&#39;
+; ││┌ @ promotion.jl:410 within `==&#39;
+	<span class=" -Color -Color-Bold">decq</span>	%rax
+; │└└
+	<span class=" -Color -Color-Bold">jne</span>	L16
+; │ @ In[26]:6 within `g&#39;
+	<span class=" -Color -Color-Bold">vmovapd</span>	%xmm2, %xmm0
 	<span class=" -Color -Color-Bold">retq</span>
 	<span class=" -Color -Color-Bold">nopw</span>	%cs:<span class=" -Color -Color-Yellow">(</span>%rax,%rax<span class=" -Color -Color-Yellow">)</span>
 ; └
@@ -1191,31 +1242,33 @@ L128:
 </div>
 <p>Now the compiler is certain of types throughout execution of the function and
 hence can optimize accordingly.</p>
-<div class="section" id="the-const-keyword">
-<h4><span class="section-number">14.5.2.1. </span>The <code class="docutils literal notranslate"><span class="pre">const</span></code> keyword<a class="headerlink" href="#the-const-keyword" title="Permalink to this headline">¶</a></h4>
-<p>Another way to stabilize the code above is to maintain the global variable but
-prepend it with <code class="docutils literal notranslate"><span class="pre">const</span></code></p>
+<p>If global variations are strictly needed (and they almost never are) then you can declare them with a <code class="docutils literal notranslate"><span class="pre">const</span></code> to declare to Julia that the type never changes (the value can).  For example,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">const</span> <span class="n">b_const</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="k">function</span> <span class="n">g</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="k">function</span> <span class="n">g_const</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">b_const</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="o">∈</span> <span class="mi">1</span><span class="o">:</span><span class="mi">1_000_000</span>
-        <span class="n">tmp</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b_const</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">1_000_000</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span> <span class="o">+</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b_const</span>
     <span class="k">end</span>
+    <span class="k">return</span> <span class="n">tmp</span>
 <span class="k">end</span>
+<span class="nd">@btime</span> <span class="n">g_const</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>g (generic function with 2 methods)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.227 ms (0 allocations: 0 bytes)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.000001e6
 </pre></div>
 </div>
 </div>
 </div>
 <p>Now the compiler can again generate efficient machine code.</p>
-<p>We’ll leave you to experiment with it.</p>
-</div>
+<p>However, global variables within a function is almost always a bad idea.  Instead, the <code class="docutils literal notranslate"><span class="pre">b_const</span></code> should be passed as a parameter to the function.</p>
 </div>
 <div class="section" id="composite-types-with-abstract-field-types">
 <h3><span class="section-number">14.5.3. </span>Composite Types with Abstract Field Types<a class="headerlink" href="#composite-types-with-abstract-field-types" title="Permalink to this headline">¶</a></h3>
@@ -1232,7 +1285,7 @@ fields with abstract types.</p>
 <p>Here’s the untyped case</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">Foo_generic</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">Foo_any</span>
     <span class="n">a</span>
 <span class="k">end</span>
 </pre></div>
@@ -1249,7 +1302,7 @@ fields with abstract types.</p>
 </div>
 </div>
 </div>
-<p>Finally, here’s the parametrically typed case</p>
+<p>Finally, here’s the parametrically typed case (where the <code class="docutils literal notranslate"><span class="pre">{T</span> <span class="pre">&lt;:</span> <span class="pre">Real}</span></code> is not necessary for performance, and could simply be <code class="docutils literal notranslate"><span class="pre">{T}</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">Foo_concrete</span><span class="p">{</span><span class="kt">T</span> <span class="o">&lt;:</span> <span class="kt">Real</span><span class="p">}</span>
@@ -1262,7 +1315,7 @@ fields with abstract types.</p>
 <p>Now we generate instances</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">fg</span> <span class="o">=</span> <span class="n">Foo_generic</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">fg</span> <span class="o">=</span> <span class="n">Foo_any</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">fa</span> <span class="o">=</span> <span class="n">Foo_abstract</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">fc</span> <span class="o">=</span> <span class="n">Foo_concrete</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
@@ -1294,9 +1347,11 @@ fields with abstract types.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">f</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="o">∈</span> <span class="mi">1</span><span class="o">:</span><span class="mi">1_000_000</span>
+    <span class="n">tmp</span> <span class="o">=</span> <span class="n">foo</span><span class="o">.</span><span class="n">a</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">1_000_000</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">foo</span><span class="o">.</span><span class="n">a</span>
     <span class="k">end</span>
+    <span class="k">return</span> <span class="n">tmp</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -1307,7 +1362,7 @@ fields with abstract types.</p>
 </div>
 </div>
 </div>
-<p>Let’s try timing our code, starting with the generic case:</p>
+<p>Let’s try timing our code, starting with the case without any constraints:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@btime</span> <span class="n">f</span><span class="p">(</span><span class="o">$</span><span class="n">fg</span><span class="p">)</span>
@@ -1315,7 +1370,10 @@ fields with abstract types.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  23.466 ms (1999489 allocations: 30.51 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  22.885 ms (1999489 allocations: 30.51 MiB)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.000001e6
 </pre></div>
 </div>
 </div>
@@ -1330,7 +1388,7 @@ fields with abstract types.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
-; ┌ @ In[35]:1 within `f&#39;
+; ┌ @ In[36]:1 within `f&#39;
 	<span class=" -Color -Color-Bold">pushq</span>	%rbp
 	<span class=" -Color -Color-Bold">pushq</span>	%r15
 	<span class=" -Color -Color-Bold">pushq</span>	%r14
@@ -1342,7 +1400,7 @@ fields with abstract types.</p>
 	<span class=" -Color -Color-Bold">vmovaps</span>	%xmm0, <span class=" -Color -Color-Yellow">(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">$0</span>, <span class=" -Color -Color-Yellow">16(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">movq</span>	%fs:<span class=" -Color -Color-Yellow">0</span>, %rcx
-; │ @ In[35]:3 within `f&#39;
+; │ @ In[36]:4 within `f&#39;
 ; │┌ @ Base.jl within `getproperty&#39;
 	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">$4</span>, <span class=" -Color -Color-Yellow">(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">-32768(</span>%rcx<span class=" -Color -Color-Yellow">)</span>, %rax
@@ -1374,11 +1432,11 @@ L128:
 	<span class=" -Color -Color-Bold">cmpq</span>	<span class=" -Color -Color-Yellow">$1000001</span>, %rbx                  # imm = 0xF4241
 ; │└└
 	<span class=" -Color -Color-Bold">jne</span>	L128
-; │ @ In[35] within `f&#39;
-	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">8(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %rax
-	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">32(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %rcx
-	<span class=" -Color -Color-Bold">movq</span>	%rax, <span class=" -Color -Color-Yellow">-32768(</span>%rcx<span class=" -Color -Color-Yellow">)</span>
-; │ @ In[35]:3 within `f&#39;
+; │ @ In[36] within `f&#39;
+	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">8(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %rcx
+	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">32(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %rdx
+	<span class=" -Color -Color-Bold">movq</span>	%rcx, <span class=" -Color -Color-Yellow">-32768(</span>%rdx<span class=" -Color -Color-Yellow">)</span>
+; │ @ In[36]:6 within `f&#39;
 	<span class=" -Color -Color-Bold">addq</span>	<span class=" -Color -Color-Yellow">$56</span>, %rsp
 	<span class=" -Color -Color-Bold">popq</span>	%rbx
 	<span class=" -Color -Color-Bold">popq</span>	%r12
@@ -1393,7 +1451,7 @@ L128:
 </div>
 </div>
 </div>
-<p>The abstract case is similar</p>
+<p>The abstract case is almost identical,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@btime</span> <span class="n">f</span><span class="p">(</span><span class="o">$</span><span class="n">fa</span><span class="p">)</span>
@@ -1401,7 +1459,10 @@ L128:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24.492 ms (1999489 allocations: 30.51 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  26.569 ms (1999489 allocations: 30.51 MiB)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.000001e6
 </pre></div>
 </div>
 </div>
@@ -1416,13 +1477,16 @@ L128:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.400 ns (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.500 ns (0 allocations: 0 bytes)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.000001e6
 </pre></div>
 </div>
 </div>
 </div>
-<p>Some of this time is JIT compilation, and one more execution gets us down to.</p>
-<p>Here’s the corresponding machine code</p>
+<p>Which is improbably small - since a runtime of 1-2 nanoseconds without any allocations suggests no computations really took place.</p>
+<p>A hint is in the simplicity of the corresponding machine code</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@code_native</span> <span class="n">f</span><span class="p">(</span><span class="n">fc</span><span class="p">)</span>
@@ -1431,7 +1495,13 @@ L128:
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
-; ┌ @ In[35]:3 within `f&#39;
+; ┌ @ In[36]:4 within `f&#39;
+; │┌ @ promotion.jl:321 within `+&#39; @ float.jl:326
+	<span class=" -Color -Color-Bold">vmovsd</span>	<span class=" -Color -Color-Yellow">(</span>%rdi<span class=" -Color -Color-Yellow">)</span>, %xmm0                   # xmm0 = mem[0],zero
+	<span class=" -Color -Color-Bold">movabsq</span>	$.rodata.cst8, %rax
+	<span class=" -Color -Color-Bold">vaddsd</span>	<span class=" -Color -Color-Yellow">(</span>%rax<span class=" -Color -Color-Yellow">)</span>, %xmm0, %xmm0
+; │└
+; │ @ In[36]:6 within `f&#39;
 	<span class=" -Color -Color-Bold">retq</span>
 	<span class=" -Color -Color-Bold">nopw</span>	%cs:<span class=" -Color -Color-Yellow">(</span>%rax,%rax<span class=" -Color -Color-Yellow">)</span>
 ; └
@@ -1439,18 +1509,41 @@ L128:
 </div>
 </div>
 </div>
-<p>Much nicer…</p>
+<p>This machine code has none of the hallmark assembly instructions associated with a loop, in particular loops (e.g. <code class="docutils literal notranslate"><span class="pre">for</span></code> in julia) end up as jumps in the machine code (e.g. <code class="docutils literal notranslate"><span class="pre">jne</span></code>).</p>
+<p>Here, the compiler was smart enough to realize that only the final step in the loop matters, i.e. it could generate the equivalent to <code class="docutils literal notranslate"><span class="pre">f(a)</span> <span class="pre">=</span> <span class="pre">1_000_000</span> <span class="pre">+</span> <span class="pre">foo.a</span></code> and then it can return that directly and skip the loop.  These sorts of code optimizations are only possible if the compiler is able to use a great deal of information about the types.</p>
+<p>Finally, note that if we compile a slightly different version of the function, which doesn’t actually return the value</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">f_no_return</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="mi">1_000_000</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">foo</span><span class="o">.</span><span class="n">a</span>
+    <span class="k">end</span>
+<span class="k">end</span>
+<span class="nd">@code_native</span> <span class="n">f_no_return</span><span class="p">(</span><span class="n">fc</span><span class="p">)</span>
+</pre></div>
 </div>
 </div>
-<div class="section" id="abstract-containers">
-<h3><span class="section-number">14.5.4. </span>Abstract Containers<a class="headerlink" href="#abstract-containers" title="Permalink to this headline">¶</a></h3>
-<p>Another way we can run into trouble is with abstract container types.</p>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
+; ┌ @ In[42]:3 within `f_no_return&#39;
+	<span class=" -Color -Color-Bold">retq</span>
+	<span class=" -Color -Color-Bold">nopw</span>	%cs:<span class=" -Color -Color-Yellow">(</span>%rax,%rax<span class=" -Color -Color-Yellow">)</span>
+; └
+</pre></div>
+</div>
+</div>
+</div>
+<p>We see that the code is even simpler.  In effect, if figured out that because <code class="docutils literal notranslate"><span class="pre">tmp</span></code> wasn’t returned, and the <code class="docutils literal notranslate"><span class="pre">foo.a</span></code> could have no side effects (since it knows the type of <code class="docutils literal notranslate"><span class="pre">a</span></code>), that it doesn’t even need to execute any of the code in the function.</p>
+</div>
+</div>
+<div class="section" id="type-inference">
+<h3><span class="section-number">14.5.4. </span>Type Inference<a class="headerlink" href="#type-inference" title="Permalink to this headline">¶</a></h3>
 <p>Consider the following function, which essentially does the same job as Julia’s <code class="docutils literal notranslate"><span class="pre">sum()</span></code> function but acts only on floating point data</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">sum_float_array</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractVector</span><span class="p">{</span><span class="o">&lt;:</span><span class="kt">Number</span><span class="p">})</span>
     <span class="n">sum</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="o">∈</span> <span class="n">eachindex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">eachindex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">sum</span> <span class="o">+=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
     <span class="k">end</span>
     <span class="k">return</span> <span class="n">sum</span>
@@ -1467,8 +1560,8 @@ L128:
 <p>Calls to this function run very quickly</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="kt">Int</span><span class="p">(</span><span class="mf">1e6</span><span class="p">))</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x_range</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">100_000</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">collect</span><span class="p">(</span><span class="n">x_range</span><span class="p">)</span>
 <span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1486,18 +1579,72 @@ L128:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  884.506 μs (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  94.000 μs (0 allocations: 0 bytes)
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>499999.9999999796
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>50000.0
 </pre></div>
 </div>
 </div>
 </div>
-<p>When Julia compiles this function, it knows that the data passed in as <code class="docutils literal notranslate"><span class="pre">x</span></code> will be an array of 64 bit floats.</p>
-<p>Hence it’s known to the compiler that the relevant method for <code class="docutils literal notranslate"><span class="pre">+</span></code> is always addition of floating point numbers.</p>
-<p>Moreover, the data can be arranged into continuous 64 bit blocks of memory to simplify memory access.</p>
-<p>Finally, data types are stable — for example, the local variable <code class="docutils literal notranslate"><span class="pre">sum</span></code> starts off as a float and remains a float throughout.</p>
+<p>When Julia compiles this function, it knows that the data passed in as <code class="docutils literal notranslate"><span class="pre">x</span></code> will be an array of 64 bit floats.  Hence it’s known to the compiler that the relevant method for <code class="docutils literal notranslate"><span class="pre">+</span></code> is always addition of floating point numbers.</p>
+<p>But consider a version without that type annotation</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">sum_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">eachindex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">sum</span> <span class="o">+=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">end</span>
+    <span class="k">return</span> <span class="n">sum</span>
+<span class="k">end</span>
+<span class="nd">@btime</span> <span class="n">sum_array</span><span class="p">(</span><span class="o">$</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  88.500 μs (0 allocations: 0 bytes)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>50000.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that this has the same running time as the one with the explicit types.  In julia, there is (almost never) performance gain from declaring types, and if anything they can make things worse by limited the potential for specialized algorithms.  See <a class="reference internal" href="../more_julia/generic_programming.html"><span class="doc">generic programming</span></a> for more.</p>
+<p>As an example within Julia code, look at the built-in sum for array</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@btime</span> <span class="n">sum</span><span class="p">(</span><span class="o">$</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  25.100 μs (0 allocations: 0 bytes)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>50000.00000000001
+</pre></div>
+</div>
+</div>
+</div>
+<p>Versus the underlying range</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@btime</span> <span class="n">sum</span><span class="p">(</span><span class="o">$</span><span class="n">x_range</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  145.953 ns (0 allocations: 0 bytes)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>50000.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that the difference in speed is enormous—suggesting it is better to keep things in their more structured forms as long as possible.  You can check the underlying source used for this with <code class="docutils literal notranslate"><span class="pre">&#64;which</span> <span class="pre">sum(x_range)</span></code> to see the specialized algorithm used.</p>
 <div class="section" id="type-inferences">
 <h4><span class="section-number">14.5.4.1. </span>Type Inferences<a class="headerlink" href="#type-inferences" title="Permalink to this headline">¶</a></h4>
 <p>Here’s the same function minus the type annotation in the function signature</p>
@@ -1505,7 +1652,7 @@ L128:
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">sum_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">sum</span> <span class="o">=</span> <span class="mf">0.0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="o">∈</span> <span class="n">eachindex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">eachindex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">sum</span> <span class="o">+=</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
     <span class="k">end</span>
     <span class="k">return</span> <span class="n">sum</span>
@@ -1528,10 +1675,10 @@ similar speed as the function with type information.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  884.506 μs (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  88.501 μs (0 allocations: 0 bytes)
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>499999.9999999796
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>50000.0
 </pre></div>
 </div>
 </div>
@@ -1547,7 +1694,7 @@ type.</p>
 <p>For example, the following snippet creates an array where the element type is <code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="kt">Any</span><span class="p">[</span> <span class="mi">1</span><span class="o">/</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="o">∈</span> <span class="mi">1</span><span class="o">:</span><span class="mf">1e6</span> <span class="p">];</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="kt">Any</span><span class="p">[</span> <span class="mi">1</span><span class="o">/</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="mf">1e6</span> <span class="p">];</span>
 </pre></div>
 </div>
 </div>
@@ -1572,7 +1719,7 @@ type.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  16.836 ms (1000000 allocations: 15.26 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  16.290 ms (1000000 allocations: 15.26 MiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14.392726722864989
@@ -1586,32 +1733,15 @@ type.</p>
 <div class="section" id="further-comments">
 <h2><a class="toc-backref" href="#id7"><span class="section-number">14.6. </span>Further Comments</a><a class="headerlink" href="#further-comments" title="Permalink to this headline">¶</a></h2>
 <p>Here are some final comments on performance.</p>
-<div class="section" id="explicit-typing">
-<h3><span class="section-number">14.6.1. </span>Explicit Typing<a class="headerlink" href="#explicit-typing" title="Permalink to this headline">¶</a></h3>
-<p>Writing fast Julia code amounts to writing Julia from which the compiler can
-generate efficient machine code.</p>
-<p>For this, Julia needs to know about the type of data it’s processing as early as possible.</p>
-<p>We could hard code the type of all variables and function arguments but this comes at a cost.</p>
-<p>Our code becomes more cumbersome and less generic.</p>
-<p>We are starting to loose the advantages that drew us to Julia in the first place.</p>
-<p>Moreover, explicitly typing everything is not necessary for optimal performance.</p>
-<p>The Julia compiler is smart and can often infer types perfectly well, without
-any performance cost.</p>
-<p>What we really want to do is</p>
-<ul class="simple">
-<li><p>keep our code simple, elegant and generic</p></li>
-<li><p>help the compiler out in situations where it’s liable to get tripped up</p></li>
-</ul>
-</div>
 <div class="section" id="summary-and-tips">
-<h3><span class="section-number">14.6.2. </span>Summary and Tips<a class="headerlink" href="#summary-and-tips" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">14.6.1. </span>Summary and Tips<a class="headerlink" href="#summary-and-tips" title="Permalink to this headline">¶</a></h3>
 <p>Use functions to segregate operations into logically distinct blocks.</p>
 <p>Data types will be determined at function boundaries.</p>
 <p>If types are not supplied then they will be inferred.</p>
 <p>If types are stable and can be inferred effectively your functions will run fast.</p>
 </div>
 <div class="section" id="further-reading">
-<h3><span class="section-number">14.6.3. </span>Further Reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">14.6.2. </span>Further Reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h3>
 <p>A good next stop for further reading is the <a class="reference external" href="https://docs.julialang.org/en/v1/manual/performance-tips/">relevant part</a> of the Julia documentation.</p>
 </div>
 </div>
