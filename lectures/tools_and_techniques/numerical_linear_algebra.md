@@ -984,7 +984,7 @@ instead, and generally rely on it for large matrices and for contiguous chunks o
 
 When the matrices and vectors get large, it can reach a point where it is important to cache the results and reduce allocations.  In general, this should only be attempted when the vectors are large and they would otherwise need to be reallocated many times.
 
-One approach is to create a {doc}`custom type<../getting_started/introduction_to_types>` to hold the results, being very careful to ensure that the type is concrete.
+One approach is to create a {doc}`custom type<../getting_started_julia/introduction_to_types>` to hold the results, being very careful to ensure that the type is concrete.
 
 
 ```{code-cell} julia
@@ -1049,7 +1049,7 @@ A few points:
 
 
 
-This approach can be very helpful for large matrices and arrays, but should be used judiciously and only after {doc}`profiling<../more_julia/need_for_speed>`  .
+This approach can be very helpful for large matrices and arrays, but should be used judiciously and only after {doc}`profiling<../software_engineering/need_for_speed>`  .
 
 
 ## Exercises
