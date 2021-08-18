@@ -18,26 +18,72 @@ kernelspec:
 </div>
 ```
 
-# Julia Tools and Editors
+# Visual Studio Code and other Julia Tools
 
 ```{contents} Contents
 :depth: 2
 ```
 
-Co-authored with Arnav Sood
+While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.  Visual Studio Code (VS Code) in particular, is the most popular open source editor for programming, and has a huge set of extensions and strong industry support.
 
-While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.
+While you can use source code control, run terminals/REPLs, without VS Code, we will concentrate on using it as a full IDE for all of these features.
 
-We'll discuss a few of them here, such as
+## Installing VS Code
 
-* Text editors like Atom, which come with rich Julia support for debugging, documentation, git integration, plotting and inspecting data, and code execution.
-* The Julia REPL, which has specialized modes for package management, shell commands, and help.
+To install VS Code and the Julia Extension,
 
-Note that we assume you've already completed the {doc}`getting started <../getting_started_julia/getting_started>` and {doc}`interacting with Julia <../getting_started_julia/julia_environment>` lectures.
+1. Follow the instructions for setting up Julia {ref}`on your local computer <jl_jupyterlocal>`.
+2. Install [VS Code](https://code.visualstudio.com/) for your platform and open it
+3. Install the [VS Code Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) extension
+   - After installation of VS Code, you should be able to choose `Install` on the webpage of any extensions and it will open on your desktop.
+   - Otherwise, open the extensions with `<Ctrl-Shift-X>` or selecting extensions in the left-hand side of the VS Code window.  Then search for `Julia` in the Marketplace
 
-## Preliminary Setup
+See the [Julia VS Code Documentation](https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1) for more details.
 
-Follow the instructions for setting up Julia {ref}`on your local computer <jl_jupyterlocal>`.
+If you have done a typical Julia installation, then this may be all that is needed and no configuration may be necessary.  However, if you have installed Julia in a non-standard location you may need to manually set the executable path.  See [here](https://www.julia-vscode.org/docs/dev/gettingstarted/#Configuring-the-Julia-extension-1) for instructions if it errors when starting Julia terminals.
+
+### Optional Extensions
+
+While not required for these lectures, consider installing the following extensions.  As before, you can search for them on the Marketplace or choose `Install` from the webpages themselves.
+
+1. [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter): VS Code increasingly supports Jupyter notebooks directly, and this extension provides the ability to open and edit `.ipynb` notebook files wihtout running `jupyter lab`, etc.
+1. [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens): An extension that provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code)
+2. [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github): while VS Code supports the git {doc}`version control <../software_engineering/version_control>` natively, these extension provides additional features for working with repositories on GitHub itself.
+3. [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one): For editing the markdown format, such as `README.md` and similar files.
+4. Finally, VS Code is an excellent latex editor.  To install support,
+   - Install a recent version of miktex or texlive for your platform
+   - Install [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop)
+   - Optionally install [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) for spell checking
+   - See [documentation](https://github.com/James-Yu/LaTeX-Workshop#manual). The easiest use is to put the magic comment `!TEX program = pdflatex` at the top of a `.tex` file.
+   - 
+
+
+See the [VS Code documentation](https://code.visualstudio.com/docs/getstarted/userinterface) for an introduction.  
+
+A key feature is the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette), which can be accessed with `<Ctrl+Shift+P>`.
+
+```{figure} [/_static/figures/juno-standard-layout.png](https://code.visualstudio.com/assets/docs/getstarted/userinterface/commands.png)
+:width: 50%
+```
+
+With this, you can type partial strings for different commands and it helps you to find features of vscode and its extensions.  This is so common that in these notes we
+denote opening the command palette and searching for a command with things like `> Julia: Start REPL` , etc.  You will only need to type part of the string, and the command palette remembers
+your most commonly used 
+
+
+### Optional Extensions and Settings 
+
+
+Open the settings, either with `> Preferences: User Settings` (recall this can be found with the palette and `<Ctrl-Shift-P>`) or with the menu.
+
+As a few optional suggestions for working with the settings,
+
+- In the settings, search for `Tab Size` and you should find `Editor: Tab Size` which you can modify to 4.
+- Search for `quick open` and change `Workbench > Editor: Enable Preview from Quick Open` and consider setting it to false, though this is a matter of personal taste.
+- Finally, if you are on Windows, search for `eol` and change `Files: Eol` to be `\n`.
+
+
+
 
 (repl_main)=
 ## The REPL
@@ -119,72 +165,6 @@ As discussed {doc}`previously <../getting_started_julia/getting_started>`, event
 The most feature-rich one for Julia development is [Atom](https://atom.io/), with the [Juno](http://junolab.org/) package.
 
 There are several reasons to use a text editor like Atom, including
-
-* Git integration (more on this in the {doc}`next lecture <../software_engineering/version_control>`).
-* Painless inspection of variables and data.
-* Easily run code blocks, and drop in custom snippets of code.
-* Integration with Julia documentation and plots.
-
-### Installation and Configuration
-
-#### Installing Atom
-
-1. Download and Install Atom from the [Atom website](https://atom.io/).
-1. (Optional, but recommended): Change default Atom settings
-    * Use `Ctrl-,` to get the `Settings` pane
-    * Choose the `Packages` tab
-    * Type `line-ending-selector` into the Filter and then click "Settings" for that package
-        * Change the default line ending to `LF` (only necessary on Windows)
-    * Choose the Editor tab
-        * Turn on `Soft Wrap`
-        * Set the `Tab Length` default to `4`
-
-#### Installing Juno
-
-1. Use `Ctrl-,` to get the Settings pane.
-1. Go to the `Install` tab.
-1. Type `uber-juno` into the search box and then click Install on the package that appears.
-1. Wait while Juno installs dependencies.
-1. When it asks you whether or not to use the standard layout, click `yes`.
-
-At that point, you should see a built-in REPL at the bottom of the screen and be able to start using Julia and Atom.
-
-(atom_troubleshooting)=
-#### Troubleshooting
-
-Sometimes, Juno will fail to find the Julia executable (say, if it's installed somewhere nonstandard, or you have multiple).
-
-To do this
-1. `Ctrl-,` to get Settings pane, and select the Packages tab.
-2. Type in `julia-client` and choose Settings.
-3. Find the Julia Path, and fill it in with the location of the Julia binary.
-
-* To find the binary, you could run `Sys.BINDIR` in the REPL, then add in an additional `/julia` to the end of the screen.
-* e.g. `C:\Users\YOURUSERNAME\AppData\Local\Julia-1.0.1\bin\julia.exe` on Windows as `/Applications/Julia-1.0.app/Contents/Resources/julia/bin/julia` on OSX.
-
-> 
-
-See the [setup instructions for Juno](http://docs.junolab.org/latest/man/installation.html)  if you have further issues.
-
-If you upgrade Atom and it breaks Juno, run the following in a terminal.
-
-```{code-block} none
-apm uninstall ink julia-client
-apm install ink julia-client
-```
-
-If you aren't able to install `apm` in your PATH, you can do the above by running the following in PowerShell:
-
-```{code-block} none
-cd $ENV:LOCALAPPDATA/atom/bin
-```
-
-Then navigating to a folder like `C:\Users\USERNAME\AppData\Local\atom\bin` (which will contain the `apm` tool), and running:
-
-```{code-block} none
-./apm uninstall ink julia-client
-./apm install ink julia-client
-```
 
 (upgrading_julia)=
 #### Upgrading Julia
