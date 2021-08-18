@@ -990,7 +990,7 @@ println("Computed policy for Stackelberg leader: $F")
 ---
 tags: [remove-cell]
 ---
-@test F ≈ [-1.580044538772657, 0.29461312747031404, 0.6748093760774972, 6.539705936147515]'
+#test F ≈ [-1.580044538772657, 0.29461312747031404, 0.6748093760774972, 6.539705936147515]'
 ```
 
 ### Implied Time Series for Price and Quantities
@@ -1028,8 +1028,8 @@ println("v_leader_direct is $v_leader_direct")
 ---
 tags: [remove-cell]
 ---
-@test v_leader_forward ≈ 150.0316212532547
-@test v_leader_direct ≈ 150.03237147548967
+#test v_leader_forward ≈ 150.0316212532547
+#test v_leader_direct ≈ 150.03237147548967
 ```
 
 ```{code-cell} julia
@@ -1042,7 +1042,7 @@ all(P - P_next .< tol0)
 ---
 tags: [remove-cell]
 ---
-@test all(P - P_next .< tol0)
+#test all(P - P_next .< tol0)
 ```
 
 ```{code-cell} julia
@@ -1057,7 +1057,7 @@ v_expanded = -((y0' * R * y0 + ut[:, 1]' * Q * ut[:, 1] +
 ---
 tags: [remove-cell]
 ---
-@test (v_leader_direct - v_expanded < tol0)[1, 1]
+#test (v_leader_direct - v_expanded < tol0)[1, 1]
 ```
 
 ## Exhibiting Time Inconsistency of Stackelberg Plan
@@ -1132,7 +1132,7 @@ max(abs(yt_tilde[5] - yt_tilde[3]))
 ---
 tags: [remove-cell]
 ---
-@test max(abs(yt_tilde[5] - yt_tilde[3])) ≈ 0. atol = 1e-15
+#test max(abs(yt_tilde[5] - yt_tilde[3])) ≈ 0. atol = 1e-15
 ```
 
 ```{code-cell} julia
@@ -1144,7 +1144,7 @@ yt[:, 1][end] - (yt_tilde[:, 2] - yt_tilde[:, 1])[end] < tol0
 ---
 tags: [remove-cell]
 ---
-@test yt[:, 1][end] - (yt_tilde[:, 2] - yt_tilde[:, 1])[end] < tol0
+#test yt[:, 1][end] - (yt_tilde[:, 2] - yt_tilde[:, 1])[end] < tol0
 ```
 
 ### Explanation of Alignment
@@ -1179,7 +1179,7 @@ all((P  - ((R + F' * Q * F) + β * (A - B * F)' * P * (A - B * F)) .< tol0))
 ---
 tags: [remove-cell]
 ---
-@test all((P  - ((R + F' * Q * F) + β * (A - B * F)' * P * (A - B * F)) .< tol0))
+#test all((P  - ((R + F' * Q * F) + β * (A - B * F)' * P * (A - B * F)) .< tol0))
 ```
 
 ```{code-cell} julia
@@ -1274,7 +1274,7 @@ maximum(abs.(yt_tilde_star[:, 5] - yt_tilde[3, 1:end-1]))
 ---
 tags: [remove-cell]
 ---
-@test maximum(abs.(yt_tilde_star[:, 5] - yt_tilde[3, 1:end-1])) < 1e-15
+#test maximum(abs.(yt_tilde_star[:, 5] - yt_tilde[3, 1:end-1])) < 1e-15
 ```
 
 ## Markov Perfect Equilibrium
@@ -1342,8 +1342,8 @@ println("Policy for F2 is $F2")
 ---
 tags: [remove-cell]
 ---
-@test round(F1[1], digits = 4) == -0.227
-@test round(F2[2], digits = 4) == 0.0945
+#test round(F1[1], digits = 4) == -0.227
+#test round(F2[2], digits = 4) == 0.0945
 ```
 
 ```{code-cell} julia
@@ -1387,10 +1387,10 @@ println("Firm 2: Direct is $v2_direct, Forward is $(v2_forward[1])");
 ---
 tags: [remove-cell]
 ---
-@test round(v1_direct, digits = 4) == 133.3296
-@test round(v2_direct, digits = 4) == 133.3296
-@test round(v1_forward[1], digits = 4) == 133.3303
-@test round(v2_forward[1], digits = 4) == 133.3303
+#test round(v1_direct, digits = 4) == 133.3296
+#test round(v2_direct, digits = 4) == 133.3296
+#test round(v1_forward[1], digits = 4) == 133.3303
+#test round(v2_forward[1], digits = 4) == 133.3303
 ```
 
 ```{code-cell} julia
