@@ -733,7 +733,6 @@ function compute_steady_state_quantities(c, τ)
 
     # compute steady state welfare
     indicator(wage) = wage > w̄
-    indicator(wage) = wage > w̄
     decisions = indicator.(w_vec .- τ)
     w = (E * (V .* decisions)) / (E * decisions)
     welfare = e_rate .* w + u_rate .* U
