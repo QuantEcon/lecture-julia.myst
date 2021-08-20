@@ -649,7 +649,7 @@ function get_policies_time1(T::BellmanEquation,
             init[i] = lb[i]
         end
     end
-    (minf, minx, ret) = optimize(opt, init)
+    (minf, minx, ret) = NLopt.optimize(opt, init)
     T.z0[i_x, s] = vcat(minx[1], minx[1] + G[s], minx[2:end])
     return vcat(-minf, T.z0[i_x, s])
 end
@@ -687,7 +687,7 @@ function get_policies_time0(T::BellmanEquation,
             init[i] = lb[i]
         end
     end
-    (minf, minx, ret) = optimize(opt, init)
+    (minf, minx, ret) = NLopt.optimize(opt, init)
     return vcat(-minf, vcat(minx[1], minx[1]+G[s0], minx[2:end]))
 end
 ```
@@ -961,8 +961,8 @@ assets, returning any excess revenues to the household as nonnegative lump sum t
 The recursive formulation is implemented as follows
 
 ```{code-cell} julia
-using Dierckx
 
+using DataInterpolations
 
 mutable struct BellmanEquation_Recursive{TP <: Model, TI <: Integer, TR <: Real}
     model::TP
@@ -1036,9 +1036,9 @@ function solve_time1_bellman(model::Model{TR}, μgrid::AbstractArray) where {TR 
         xprimes = repeat(x, 1, S)
         xgrid[s_, :] = x
         for sprime = 1:S
-            splc = Spline1D(x[end:-1:1], c[:, sprime][end:-1:1], k=3)
-            spln = Spline1D(x[end:-1:1], n[:, sprime][end:-1:1], k=3)
-            splx = Spline1D(x[end:-1:1], xprimes[:, sprime][end:-1:1], k=3)
+            splc = CubicSpline(c[:, sprime][end:-1:1], x[end:-1:1])
+            spln = CubicSpline(n[:, sprime][end:-1:1], x[end:-1:1])
+            splx = CubicSpline(xprimes[:, sprime][end:-1:1], x[end:-1:1])
             cf[s_, sprime] = y -> splc(y)
             nf[s_, sprime] = y -> spln(y)
             xprimef[s_, sprime] = y -> splx(y)
@@ -1046,7 +1046,7 @@ function solve_time1_bellman(model::Model{TR}, μgrid::AbstractArray) where {TR 
             # nf[s_, sprime] = LinInterp(x[end:-1:1], n[:, sprime][end:-1:1])
             # xprimef[s_, sprime] = LinInterp(x[end:-1:1], xprimes[:, sprime][end:-1:1])
         end
-        splV = Spline1D(x[end:-1:1], V[end:-1:1], k=3)
+        splV = CubicSpline(V[end:-1:1], x[end:-1:1])
         Vf[s_] = y -> splV(y)
         # Vf[s_] = LinInterp(x[end:-1:1], V[end:-1:1])
     end
@@ -1094,14 +1094,14 @@ function fit_policy_function(T::BellmanEquation_Recursive,
         for (i_x, x) in enumerate(xgrid)
             PFvec[:, i_x] = PF(i_x, x, s_)
         end
-        splV = Spline1D(xgrid, PFvec[1,:], k=3)
+        splV = CubicSpline(PFvec[1,:], xgrid)
         Vf[s_] = y -> splV(y)
         # Vf[s_] = LinInterp(xgrid, PFvec[1, :])
         for sprime=1:S
-            splc = Spline1D(xgrid, PFvec[1 + sprime, :], k=3)
-            spln = Spline1D(xgrid, PFvec[1 + S + sprime, :], k=3)
-            splxprime = Spline1D(xgrid, PFvec[1 + 2S + sprime, :], k=3)
-            splTT = Spline1D(xgrid, PFvec[1 + 3S + sprime, :], k=3)
+            splc = CubicSpline(PFvec[1 + sprime, :], xgrid)
+            spln = CubicSpline(PFvec[1 + S + sprime, :], xgrid)
+            splxprime = CubicSpline(PFvec[1 + 2S + sprime, :], xgrid)
+            splTT = CubicSpline(PFvec[1 + 3S + sprime, :], xgrid)
             cf[s_, sprime] = y -> splc(y)
             nf[s_, sprime] = y -> spln(y)
             xprimef[s_, sprime] = y -> splxprime(y)
@@ -1281,7 +1281,7 @@ function get_policies_time1(T::BellmanEquation_Recursive,
     ftol_rel!(opt, 1e-8)
     ftol_abs!(opt, 1e-8)
 
-    (minf, minx, ret) = optimize(opt, init)
+    (minf, minx, ret) = NLopt.optimize(opt, init)
 
     if ret != :SUCCESS && ret != :ROUNDOFF_LIMITED && ret != :MAXEVAL_REACHED &&
         ret != :FTOL_REACHED && ret != :MAXTIME_REACHED
@@ -1356,7 +1356,7 @@ function get_policies_time0(T::BellmanEquation_Recursive,
     maxeval!(opt, 100000000)
     maxtime!(opt, 30)
 
-    (minf, minx, ret) = optimize(opt, init)
+    (minf, minx, ret) = NLopt.optimize(opt, init)
 
     if ret != :SUCCESS && ret != :ROUNDOFF_LIMITED && ret != :MAXEVAL_REACHED &&
         ret != :FTOL_REACHED
@@ -1681,12 +1681,12 @@ p
 tags: [remove-cell]
 ---
 @testset begin
-  #test sim_seq_long_plot[50, 3] ≈ 0.3951985593686047
-  #test sim_bel_long_plot[50, 3] ≈ 0.05684753244006188 atol = 1e-2
-  #test sim_seq_long_plot[100, 4] ≈ 0.340233842670859
-  #test sim_bel_long_plot[100, 4] ≈ 0.2093423366870517 atol = 1e-3
-  #test sim_seq_long_plot[200, 2] ≈ 0.5839693539786998
-  #test sim_bel_long_plot[200, 2] ≈ 0.6324036099550768 atol = 1e-3
+  @test sim_seq_long_plot[50, 3] ≈ 0.3951985593686047
+  @test sim_bel_long_plot[50, 3] ≈ 0.05684753244006188 atol = 1e-2
+  @test sim_seq_long_plot[100, 4] ≈ 0.340233842670859
+  @test sim_bel_long_plot[100, 4] ≈ 0.2093423366870517 atol = 1e-3
+  @test sim_seq_long_plot[200, 2] ≈ 0.5839693539786998
+  @test sim_bel_long_plot[200, 2] ≈ 0.6324036099550768 atol = 1e-3
 end
 ```
 
