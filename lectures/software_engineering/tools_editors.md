@@ -42,19 +42,8 @@ See the [Julia VS Code Documentation](https://www.julia-vscode.org/docs/dev/gett
 
 If you have done a typical Julia installation, then this may be all that is needed and no configuration may be necessary.  However, if you have installed Julia in a non-standard location you may need to manually set the executable path.  See [here](https://www.julia-vscode.org/docs/dev/gettingstarted/#Configuring-the-Julia-extension-1) for instructions if it errors when starting Julia terminals.
 
-### Optional Extensions
+See [here](optional_extensions) for other useful extensions when using VS Code.
 
-While not required for these lectures, consider installing the following extensions.  As before, you can search for them on the Marketplace or choose `Install` from the webpages themselves.
-
-1. [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter): VS Code increasingly supports Jupyter notebooks directly, and this extension provides the ability to open and edit `.ipynb` notebook files wihtout running `jupyter lab`, etc.
-1. [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens): An extension that provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code)
-2. [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github): while VS Code supports the git {doc}`version control <../software_engineering/version_control>` natively, these extension provides additional features for working with repositories on GitHub itself.
-3. [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one): For editing the markdown format, such as `README.md` and similar files.
-4. Finally, VS Code is an excellent latex editor.  To install support,
-   - Install a recent version of miktex or texlive for your platform
-   - Install [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop)
-   - Optionally install [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) for spell checking
-   - See [documentation](https://github.com/James-Yu/LaTeX-Workshop#manual). The easiest use is to put the magic comment `!TEX program = pdflatex` at the top of a `.tex` file and then `F5`.
 
 
 See the [VS Code documentation](https://code.visualstudio.com/docs/getstarted/userinterface) for an introduction.
@@ -64,7 +53,7 @@ See the [VS Code documentation](https://code.visualstudio.com/docs/getstarted/us
 A key feature is the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette), which can be accessed with `<Ctrl+Shift+P>`.
 
 ```{figure} https://code.visualstudio.com/assets/docs/getstarted/userinterface/commands.png
-:width: 50%
+:width: 75%
 ```
 
 With this, you can type partial strings for different commands and it helps you to find features of vscode and its extensions.  This is so common that in these notes we
@@ -80,6 +69,23 @@ As a few optional suggestions for working with the settings,
 - Search for `quick open` and change `Workbench > Editor: Enable Preview from Quick Open` and consider setting it to false, though this is a matter of personal taste.
 - Finally, if you are on Windows, search for `eol` and change `Files: Eol` to be `\n`.
 
+A key feature of VS Code is that it can synchronize your extensions and settings across all of your computers, and even when used in-browser (e.g. with [GitHub CodeSpaces](https://github.com/features/codespaces)).  To turn on,
+- Ensure you have a [GitHub account](https://github.com/), which will be useful for {doc}`further lectures <../software_engineering/version_control>`
+- Choose `Turn On Settings Sync...` in the gear icon at the bottom of the screen
+```{figure} https://code.visualstudio.com/assets/docs/editor/settings-sync/turn-on-sync.png
+:width: 40%
+```
+- You can stick with all of the defaults, and read more in the [instructions](https://code.visualstudio.com/docs/editor/settings-sync)
+
+(terminals)=
+### Integrated Terminals in VS Code
+
+A key benefit of VS Code is that you can use terminals and command-line interfaces directly within the editor, and starting in the convenient location relative to an opened project.
+
+Furthermore, in the case of julia (and other languages such as python) this will activate the project automatically.  See the [documentation](https://code.visualstudio.com/docs/editor/integrated-terminal) for more details.
+
+To start a terminal, you can use the `View > Terminal` in the menus, type ``Ctrl+` ``, or click on the bottom bar in VS Code.
+
 
 (vscode)=
 ## Using VS Code with Julia
@@ -91,9 +97,9 @@ The documentation for the VS Code extension provides many examples:
 - [Code Completion](https://www.julia-vscode.org/docs/dev/userguide/editingcode/)
 - [Code Navigation](https://www.julia-vscode.org/docs/dev/userguide/codenavigation/)
 
-In addition, there are excellent youtube videos about provide more background.  FOr example, [Package Development in VSCode](https://www.youtube.com/watch?v=F1R3ETaRQXY) shows advanced features.
+In addition, there are excellent youtube videos about provide more background.  For example, [Package Development in VSCode](https://www.youtube.com/watch?v=F1R3ETaRQXY) shows advanced features.
 
-### Simple Example
+### Hello World
 To walk through a simple, but complete example.
 
 Create a new directory on your computer, for example `hello_world` and then open VS Code in that folder  This can be done several ways,
@@ -146,13 +152,11 @@ Add code in the `.jl` file for a simple plot, and it will be shown on a separate
 :width: 100%
 ```
 
-
-
 ** Note:**  The If you use the Julia REPL within VS Code, then it will automaticallly activate that project file.  Otherwise, you will have to start your REPL with the `julia --project` from within that folder, or you will need to manually call `using Pkg; Pkg.activate()` after launching Julia.
 
 (repl_main)=
 ## The REPL
- Note that the REPL could also be started with `> Julia: Start REPL`, which should provide a prompt at the bottom of the window.
+Note that the REPL could also be started with `> Julia: Start REPL`, which should provide a prompt at the bottom of the window.
 
 Previously, we discussed basic use of the Julia REPL ("Read-Evaluate-Print Loop").
 
@@ -314,3 +318,46 @@ without any arguments.
 ```{code-cell} julia
 ; rm -rf ExampleEnvironment
 ```
+
+
+## More Options and Configuration Choices
+
+VS Code and the related ecosystem have an enormous number of features and additional options.
+
+The following are some optional choices, not all directly connected to Julia.
+
+(optional_extensions)=
+### Optional Extensions
+
+While not required for these lectures, consider installing the following extensions.  As before, you can search for them on the Marketplace or choose `Install` from the webpages themselves.
+
+1. [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter): VS Code increasingly supports Jupyter notebooks directly, and this extension provides the ability to open and edit `.ipynb` notebook files wihtout running `jupyter lab`, etc.
+1. [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens): An extension that provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code)
+2. [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github): while VS Code supports the git {doc}`version control <../software_engineering/version_control>` natively, these extension provides additional features for working with repositories on GitHub itself.
+3. [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one): For editing the markdown format, such as `README.md` and similar files.
+4. Finally, VS Code has an excellent [latex editor](https://github.com/James-Yu/LaTeX-Workshop#manual)!
+   - Install a recent version of miktex or texlive for your platform
+   - Install [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) and (optionally) the [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) for spell checking
+   - 
+   - To get started, just add magic comments at the top of the latex file (removing the `!BIB` line if there is no bibtex reference) and then `F5` or the equivalent command to compile:
+   ```{code-cell} none
+   % !TEX program = pdflatex
+   % !BIB program = bibtex
+   % !TEX enableSynctex = true
+   ```
+### Font Choices
+
+Beyond their general use, the integrated terminals will use fonts installed within VS Code.  Given that Julia code supports mathematical notation, the extra support in good fonts can be helpful.
+- [JuliaMono](https://juliamono.netlify.app/download/) and  [Cascadia Code](https://github.com/microsoft/cascadia-code) and [Fira Code](https://github.com/tonsky/FiraCode) are all good options.
+- You can adapt [these](https://juliamono.netlify.app/faq/#vs-code) or [these](https://techstacker.com/change-vscode-code-font/) instructions depending on the font choice.
+
+If on Windows, for your external terminal consider installing [Windows Terminal](https://aka.ms/terminal), which is built to support [Cascadia](https://docs.microsoft.com/en-us/windows/terminal/cascadia-code) and [Powerline](https://docs.microsoft.com/en-us/windows/terminal/tutorials/powerline-setup) fonts.
+
+### Remote and Collaborative Extensions
+
+If you ever need to use clusters or work with reproducible [containers](https://code.visualstudio.com/docs/remote/containers), VS Code has strong support for those features.  Key extensions for these are:
+- [VS LiveShare](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare-pack): Collaborative coding within VS Code.
+- [Remote Extensions Pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack): Tools to access remote servers, local containers.  Install [OpenSSH](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse) if required.
+- [SFTP](https://marketplace.visualstudio.com/iems?itemName=liximomo.sftp): Secure copying of files to supported cloud services.
+
+Windows users will find good support to access a local linux installation with the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10#simplified-installation-for-windows-insiders) and the associated [VS Code Extension](https://code.visualstudio.com/docs/remote/wsl-tutorial).
