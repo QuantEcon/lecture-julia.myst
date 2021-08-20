@@ -24,7 +24,7 @@ kernelspec:
 :depth: 2
 ```
 
-While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.  Visual Studio Code (VS Code) in particular, is the most popular open source editor for programming, and has a huge set of extensions and strong industry support.
+While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.  Visual Studio Code (VS Code) in particular, is the most popular open source editor for programming - with a huge set of extensions and strong industry support.
 
 While you can use source code control, run terminals and the REPL ("Read-Evaluate-Print Loop"), without VS Code, we will concentrate on using it as a full IDE for all of these features.
 
@@ -42,11 +42,10 @@ See the [Julia VS Code Documentation](https://www.julia-vscode.org/docs/dev/gett
 
 If you have done a typical Julia installation, then this may be all that is needed and no configuration may be necessary.  However, if you have installed Julia in a non-standard location you may need to manually set the executable path.  See [here](https://www.julia-vscode.org/docs/dev/gettingstarted/#Configuring-the-Julia-extension-1) for instructions if it errors when starting Julia terminals.
 
-See [here](optional_extensions) for other useful extensions when using VS Code.
+```{note}
+While the general [VS Code documentation](https://code.visualstudio.com/docs/getstarted/userinterface) is excellent, we will review a few of the key concepts directly.  In addition, see [here](optional_extensions) for other useful extensions when using VS Code not directly connected to these lectures.
+```
 
-
-
-See the [VS Code documentation](https://code.visualstudio.com/docs/getstarted/userinterface) for an introduction.
 
 ### Command Palette
 
@@ -217,7 +216,7 @@ The Julia Debugger runs some of the code in an interpreted mode that might be fa
 
 (repl_main)=
 ## The REPL
-Even if you are working primarily in `.jl` and/or Jupyer Notebooks in Julia, you will need to become comfortable with the REPL.  We saw some initial use of this when [adding packages](adding_packages) and exploring the code above, but the REPL has many [more features](https://docs.julialang.org/en/v1/stdlib/REPL/#The-Julia-REPL).
+Even if you are working primarily in `.jl` and/or Jupyter Notebooks in Julia, you will need to become comfortable with the REPL.  We saw some initial use of this when [adding packages](adding_packages) and exploring the code above, but the REPL has many [more features](https://docs.julialang.org/en/v1/stdlib/REPL/#The-Julia-REPL).
 
 ### Starting a REPL
 There are several ways to start the REPL.
@@ -245,12 +244,12 @@ First, with `julia --threads auto` we see that the globally installed packages a
 ```
 
 Next, with `julia --threads auto --project` the project is automatically activated
-```{figure} /_static/figures/repl_1.png
+```{figure} /_static/figures/repl_2.png
 :width: 100%
 ```
 
 
-Finally, if you choose the `--project` option in a folder which doesn't have an existing project file, it will create them as requierd.
+Finally, if you choose the `--project` option in a folder which doesn't have an existing project file, it will create them as required.
 
 A few other features of the REPL include,
 
@@ -300,14 +299,13 @@ The following are some optional choices, not all directly connected to Julia.
 
 While not required for these lectures, consider installing the following extensions.  As before, you can search for them on the Marketplace or choose `Install` from the webpages themselves.
 
-1. [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter): VS Code increasingly supports Jupyter notebooks directly, and this extension provides the ability to open and edit `.ipynb` notebook files wihtout running `jupyter lab`, etc.
+1. [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter): VS Code increasingly supports Jupyter notebooks directly, and this extension provides the ability to open and edit `.ipynb` notebook files without installing Conda and running `jupyter lab`.
 1. [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens): An extension that provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code)
 2. [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github): while VS Code supports the git {doc}`version control <../software_engineering/version_control>` natively, these extension provides additional features for working with repositories on GitHub itself.
 3. [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one): For editing the markdown format, such as `README.md` and similar files.
-4. Finally, VS Code has an excellent [latex editor](https://github.com/James-Yu/LaTeX-Workshop#manual)!
+4. Finally, VS Code has an excellent [latex editor](https://github.com/James-Yu/LaTeX-Workshop#manual)
    - Install a recent version of miktex or texlive for your platform
    - Install [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) and (optionally) the [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) for spell checking
-   - 
    - To get started, just add magic comments at the top of the latex file (removing the `!BIB` line if there is no bibtex reference) and then `F5` or the equivalent command to compile:
 
 ```{code-block} none
