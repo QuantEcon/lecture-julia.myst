@@ -18,7 +18,7 @@ kernelspec:
 </div>
 ```
 
-# Visual Studio Code and other Julia Tools
+# Visual Studio Code and Other Tools
 
 ```{contents} Contents
 :depth: 2
@@ -26,7 +26,7 @@ kernelspec:
 
 While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.  Visual Studio Code (VS Code) in particular, is the most popular open source editor for programming, and has a huge set of extensions and strong industry support.
 
-While you can use source code control, run terminals/REPLs, without VS Code, we will concentrate on using it as a full IDE for all of these features.
+While you can use source code control, run terminals and the REPL ("Read-Evaluate-Print Loop"), without VS Code, we will concentrate on using it as a full IDE for all of these features.
 
 ## Installing VS Code
 
@@ -73,7 +73,7 @@ A key feature of VS Code is that it can synchronize your extensions and settings
 - Ensure you have a [GitHub account](https://github.com/), which will be useful for {doc}`further lectures <../software_engineering/version_control>`
 - Choose `Turn On Settings Sync...` in the gear icon at the bottom of the screen
 ```{figure} https://code.visualstudio.com/assets/docs/editor/settings-sync/turn-on-sync.png
-:width: 40%
+:width: 50%
 ```
 - You can stick with all of the defaults, and read more in the [instructions](https://code.visualstudio.com/docs/editor/settings-sync)
 
@@ -134,6 +134,7 @@ That code is also accessible within the REPL.  Executing the function there,
 Because the REPL and the files are synchronized, you can modify functions and simple choose `<shift-Enter>` to update their definitions before analyzing the results in the REPL or in the file itself.
 
 
+(adding_packages)=
 ### Adding Packages
 
 Next we will go through simple use of the plotting and package management.
@@ -152,57 +153,116 @@ Add code in the `.jl` file for a simple plot, and it will be shown on a separate
 :width: 100%
 ```
 
-** Note:**  The If you use the Julia REPL within VS Code, then it will automaticallly activate that project file.  Otherwise, you will have to start your REPL with the `julia --project` from within that folder, or you will need to manually call `using Pkg; Pkg.activate()` after launching Julia.
+### Executing Files
+
+First we will reorganize our file so that it is a set of functions with a call at the end rather than a script.  Replace the code with
+```{code-block} none
+using Plots, Random
+
+f(x) = x + 1
+function plot_results()
+    x = 1:5
+    y = f.(x)
+    plot(x, y)
+    print(y)
+end
+
+# execute main function
+plot_results()
+```
+
+While it is fine to use scripts with code not organized in functions for exploration, you will want to organize any serious computations inside of a function.  While this may not matter for every problem, this will let the compiler avoid global variables and highly optimize the results.
+
+```{note}
+The behavior of global variables accessed in loops in the `REPL`, Debugger, inline code evaluations, and Jupyter notebooks is different from executed files.  See the documentation on [soft scoping](https://docs.julialang.org/en/v1/manual/variables-and-scoping/#On-Soft-Scope) for more background.  A good heuristic which will avoid these issues is to (1) never use loops outside of a function when you write `.jl` files; and (2) if you ever use the `global` keyword, assume something is wrong and you should put something in a function.
+```
+
+You can execute a `.jl` file in several ways.
+
+Within a terminal, you can provide the path to the file.  For example,
+```{code-block} none
+julia --threads --project auto hello.jl
+```
+
+See the [REPL](repl_main) section for more details on the commandline options.
+
+Alternatively, within VS Code itself you can use the `<Ctrl-F5>` to run the new file.  
+
+
+(debugger)=
+### Using the Debugger
+
+To debug your function, first click to the left of a line of code to create a breakpoint (seen as a red dot).
+
+Next, use `<Ctrl-Shift-D>` or select the bug tab on the left in Julia to see
+```{figure} /_static/figures/debugger_1.png
+:width: 100%
+```
+
+Then choose the `Run and Debug` option and it will execute `plot_results()` at the bottom of the file, and then stop inside at the breakpoint.
+
+```{figure} /_static/figures/debugger_2.png
+:width: 100%
+```
+
+You can use the toolbar at the top to step through the code, as described in the [documentation](https://www.julia-vscode.org/docs/dev/userguide/debugging/).
+
+
+As an alternative way to start the debugger, you can instead debug a call within the REPL with commands like `@run plot_results()`.
+
+```{note}
+The Julia Debugger runs some of the code in an interpreted mode that might be far slower than typical  compiled and optimized code.  For this reason, it may not be possible to use it in all the same ways you might use something like the Matlab debugger.  However, if you organize your code appropriately, you may find that the [compile mode](https://www.julia-vscode.org/docs/stable/userguide/debugging/#Compile-mode-1) enables you to concentrate on debugging only some of the functions, while letting slow functions remain compiled.
+```
+
 
 (repl_main)=
 ## The REPL
-Note that the REPL could also be started with `> Julia: Start REPL`, which should provide a prompt at the bottom of the window.
+Even if you are working primarily in `.jl` and/or Jupyer Notebooks in Julia, you will need to become comfortable with the REPL.  We saw some initial use of this when [adding packages](adding_packages) and exploring the code above, but the REPL has many [more features](https://docs.julialang.org/en/v1/stdlib/REPL/#The-Julia-REPL).
 
-Previously, we discussed basic use of the Julia REPL ("Read-Evaluate-Print Loop").
+### Starting a REPL
+There are several ways to start the REPL.
+- Within VS Code, executing code inline will start it as required.
+- In the command palette of VS Code, choose  `> Julia: Start REPL`
+- Outside of VS Code, if julia was installed on your system path, you can simply type `julia` or with other options
 
-Here, we'll consider some more advanced features.
+The command line options for starting Julia are set to decent defaults for terminals running within VS Code, but you will want to set them yourself if starting the REPL otherwise.
 
-### Shell Mode
+One common choice is to choose the number of threads that Julia should have available.  By default it is only a single thread, while `--threads auto` will tell Julia to create one for each processor on your machine.  VS Code uses `--threads auto` by default.
+
+The most important choice is the `--project` toggle which determines  whether you want to activate an existing project (or create a new one) when starting the interpreter.  Since a key feature of Julia is to have fully reproducible environments, you will want to do this whenever possible.
+
+```{note}
+A key difference between Julia and some other package managers is that it is capable of having different versions of each package for different projects - which ensures all projects are fully reproducible by you, your future self, and any other collaborators.  While there is a global set of packages available (e.g. `IJulia.jl` to ensure Jupyter support) you should try to keep the packages in different projects separated.  See the documentation on [environments](https://docs.julialang.org/en/v1/manual/code-loading/#Environments-1) and the [package manager](https://pkgdocs.julialang.org/v1/getting-started/) for more.
+```
+
+If you start the terminal without activating a project, you can activate it afterwards with `] activate .` or `using Pkg; Pkg.activate()`.
+
+To see this in action, within an external terminal we will open it using both methods, and then use `] st` to see which project is activated and which packages are available.
+
+First, with `julia --threads auto` we see that the globally installed packages are available at first, but that the existing `Project.toml` and `Manifest.toml` in that folder are chosen after we choose `] activate .`
+```{figure} /_static/figures/repl_1.png
+:width: 100%
+```
+
+Next, with `julia --threads auto --project` the project is automatically activated
+```{figure} /_static/figures/repl_1.png
+:width: 100%
+```
+
+
+Finally, if you choose the `--project` option in a folder which doesn't have an existing project file, it will create them as requierd.
+
+A few other features of the REPL include,
+
+### More Features and Modes
 
 Hitting `;` brings you into shell mode, which lets you run bash commands (PowerShell on Windows)
 
-```{code-cell} julia
+```{code-block} none
 ; pwd
 ```
 
-You can also use Julia variables from shell mode
-
-```{code-cell} julia
-x = 2
-```
-
-```{code-cell} julia
-; echo $x
-```
-
-### Package Mode
-
-Hitting `]` brings you into package mode.
-
-* `] add Expectations` will add a package (here, `Expectations.jl`).
-* Likewise, `] rm Expectations` will remove that package.
-* `] st` will show you a snapshot of what you have installed.
-* `] up` will (intelligently) upgrade versions of your packages.
-* `] precompile` will precompile everything possible.
-* `] build` will execute build scripts for all packages.
-* Running `] preview` before a command (i.e., `] preview up`) will display the changes without executing.
-
-You can get a full list of package mode commands by running
-
-```{code-cell} julia
-] ?
-```
-
-On some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit `]` first and then run your commands).
-
-### Help Mode
-
-Hitting `?` will bring you into help mode.
+In addition, `?` will bring you into help mode.
 
 The key use case is to find docstrings for functions and macros, e.g.
 
@@ -210,115 +270,24 @@ The key use case is to find docstrings for functions and macros, e.g.
 ? print
 ```
 
-Note that objects must be loaded for Julia to return their documentation, e.g.
-
-```{code-block} julia
-? @test
-```
-
-will fail, but
-
-```{code-block} julia
-using Test
-```
-
-```{code-block} julia
-? @test
-```
-
-will succeed.
-
 
 (jl_packages)=
 ## Package Environments
 
-Julia's package manager lets you set up Python-style "virtualenvs," or subsets of packages that draw from an underlying pool of assets on the machine.
+As discussed, the Julia package manager allowed you to create fully reproducible environments (in the same spirit as Python's and Conda virtual environments).
 
-This way, you can work with (and specify) the dependencies (i.e., required packages) for one project without worrying about impacts on other projects.
+As we saw before, `]` brings you into package mode.  Some of the key choices are
 
-* An `environment` is a set of packages specified by a `Project.toml` (and optionally, a `Manifest.toml`).
-* A `registry` is a git repository corresponding to a list of (typically) registered packages, from which Julia can pull (for more on git repositories, see {doc}`version control <../software_engineering/version_control>`).
-* A `depot` is a directory, like `~/.julia`, which contains assets (compile caches, registries, package source directories, etc.).
+* `] instantiate` (or `using Pkg; Pkg.instantiate()` in the normal julia mode) will check if you have all of the packages and versions mentioned in the `Project.toml` and `Manifest.toml` files, and install as required.
+  - This feature will let you reproduce the entire environment and, if a `Manifest.toml` is available, the exact package versions used for a project.  For example, these lecture notes use [Project.toml](https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Project.toml) and [Manifest.toml](https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Manifest.toml) - which you likely instantiated during installation after downloading these notebooks.
+* `] add Expectations` will add a package (here, `Expectations.jl`) from the activated project file (or the global environment if none is activated)
+* Likewise, `] rm Expectations` will remove that package.
+* `] st` will show you a snapshot of what you have installed.
+* `] up` will upgrade versions of your packages to the latest versions possible given the graph of compatibility used in each
 
-Essentially, an environment is a dependency tree for a project, or a "frame of mind" for Julia's package manager.
-
-* We can see the default (`v1.1`) environment as such
-
-```{code-cell} julia
-] st
+```{note}
+On some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit `]` first and then run your commands).
 ```
-
-* We can also create and activate a new environment
-
-```{code-cell} julia
-] generate ExampleEnvironment
-```
-
-* And go to it
-
-```{code-cell} julia
-; cd ExampleEnvironment
-```
-
-* To activate the directory, simply
-
-```{code-cell} julia
-] activate .
-```
-
-where "." stands in for the "present working directory".
-
-* Let's make some changes to this
-
-```{code-cell} julia
-] add Expectations Parameters
-```
-
-Note the lack of commas
-
-* To see the changes, simply open the `ExampleEnvironment` directory in an editor like Atom.
-
-The Project TOML should look something like this
-
-```{code-block} none
-name = "ExampleEnvironment"
-uuid = "14d3e79e-e2e5-11e8-28b9-19823016c34c"
-authors = ["QuantEcon User <quanteconuser@gmail.com>"]
-version = "0.1.0"
-
-[deps]
-Expectations = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
-Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
-```
-
-We can also
-
-```{code-cell} julia
-] precompile
-```
-
-**Note** The TOML files are independent of the actual assets (which live in `~/.julia/packages`, `~/.julia/dev`, and `~/.julia/compiled`).
-
-You can think of the TOML as specifying demands for resources, which are supplied by the `~/.julia` user depot.
-
-* To return to the default Julia environment, simply
-
-```{code-cell} julia
-] activate
-```
-
-without any arguments.
-
-* Lastly, let's clean up
-
-```{code-cell} julia
-; cd ..
-```
-
-```{code-cell} julia
-; rm -rf ExampleEnvironment
-```
-
 
 ## More Options and Configuration Choices
 
@@ -340,11 +309,12 @@ While not required for these lectures, consider installing the following extensi
    - Install [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) and (optionally) the [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) for spell checking
    - 
    - To get started, just add magic comments at the top of the latex file (removing the `!BIB` line if there is no bibtex reference) and then `F5` or the equivalent command to compile:
-   ```{code-cell} none
-   % !TEX program = pdflatex
-   % !BIB program = bibtex
-   % !TEX enableSynctex = true
-   ```
+
+```{code-block} none
+% !TEX program = pdflatex
+% !BIB program = bibtex
+% !TEX enableSynctex = true
+```
 ### Font Choices
 
 Beyond their general use, the integrated terminals will use fonts installed within VS Code.  Given that Julia code supports mathematical notation, the extra support in good fonts can be helpful.
@@ -360,4 +330,4 @@ If you ever need to use clusters or work with reproducible [containers](https://
 - [Remote Extensions Pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack): Tools to access remote servers, local containers.  Install [OpenSSH](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse) if required.
 - [SFTP](https://marketplace.visualstudio.com/iems?itemName=liximomo.sftp): Secure copying of files to supported cloud services.
 
-Windows users will find good support to access a local linux installation with the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10#simplified-installation-for-windows-insiders) and the associated [VS Code Extension](https://code.visualstudio.com/docs/remote/wsl-tutorial).
+Windows users will find good support to access a local linux installation with the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) and the associated [VS Code Extension](https://code.visualstudio.com/docs/remote/wsl-tutorial).
