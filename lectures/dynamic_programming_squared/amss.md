@@ -1042,13 +1042,9 @@ function solve_time1_bellman(model::Model{TR}, μgrid::AbstractArray) where {TR 
             cf[s_, sprime] = y -> splc(y)
             nf[s_, sprime] = y -> spln(y)
             xprimef[s_, sprime] = y -> splx(y)
-            # cf[s_, sprime] = LinInterp(x[end:-1:1], c[:, sprime][end:-1:1])
-            # nf[s_, sprime] = LinInterp(x[end:-1:1], n[:, sprime][end:-1:1])
-            # xprimef[s_, sprime] = LinInterp(x[end:-1:1], xprimes[:, sprime][end:-1:1])
         end
         splV = CubicSpline(V[end:-1:1], x[end:-1:1])
         Vf[s_] = y -> splV(y)
-        # Vf[s_] = LinInterp(x[end:-1:1], V[end:-1:1])
     end
 
     policies = [cf, nf, xprimef]
@@ -1096,7 +1092,6 @@ function fit_policy_function(T::BellmanEquation_Recursive,
         end
         splV = CubicSpline(PFvec[1,:], xgrid)
         Vf[s_] = y -> splV(y)
-        # Vf[s_] = LinInterp(xgrid, PFvec[1, :])
         for sprime=1:S
             splc = CubicSpline(PFvec[1 + sprime, :], xgrid)
             spln = CubicSpline(PFvec[1 + S + sprime, :], xgrid)
