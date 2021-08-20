@@ -54,27 +54,25 @@ While not required for these lectures, consider installing the following extensi
    - Install a recent version of miktex or texlive for your platform
    - Install [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop)
    - Optionally install [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) for spell checking
-   - See [documentation](https://github.com/James-Yu/LaTeX-Workshop#manual). The easiest use is to put the magic comment `!TEX program = pdflatex` at the top of a `.tex` file.
-   - 
+   - See [documentation](https://github.com/James-Yu/LaTeX-Workshop#manual). The easiest use is to put the magic comment `!TEX program = pdflatex` at the top of a `.tex` file and then `F5`.
 
 
-See the [VS Code documentation](https://code.visualstudio.com/docs/getstarted/userinterface) for an introduction.  
+See the [VS Code documentation](https://code.visualstudio.com/docs/getstarted/userinterface) for an introduction.
+
+### Command Palette
 
 A key feature is the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette), which can be accessed with `<Ctrl+Shift+P>`.
 
-```{figure} [/_static/figures/juno-standard-layout.png](https://code.visualstudio.com/assets/docs/getstarted/userinterface/commands.png)
+```{figure} https://code.visualstudio.com/assets/docs/getstarted/userinterface/commands.png
 :width: 50%
 ```
 
 With this, you can type partial strings for different commands and it helps you to find features of vscode and its extensions.  This is so common that in these notes we
 denote opening the command palette and searching for a command with things like `> Julia: Start REPL` , etc.  You will only need to type part of the string, and the command palette remembers
-your most commonly used 
-
-
+your most recent and common commands.
 ### Optional Extensions and Settings 
 
-
-Open the settings, either with `> Preferences: User Settings` (recall this can be found with the palette and `<Ctrl-Shift-P>`) or with the menu.
+Open the settings with `> Preferences: User Settings` (see above for opening the command palette with `<Ctrl-Shift-P>`).
 
 As a few optional suggestions for working with the settings,
 
@@ -83,10 +81,78 @@ As a few optional suggestions for working with the settings,
 - Finally, if you are on Windows, search for `eol` and change `Files: Eol` to be `\n`.
 
 
+(vscode)=
+## Using VS Code with Julia
 
+The documentation for the VS Code extension provides many examples:
+- [Creating a Hello World](https://www.julia-vscode.org/docs/dev/gettingstarted/#Creating-Your-First-Julia-Hello-World-program-1)
+- [Debugging](https://www.julia-vscode.org/docs/dev/userguide/debugging/)
+- [Integrated Plots](https://www.julia-vscode.org/docs/dev/userguide/plotgallery/)
+- [Code Completion](https://www.julia-vscode.org/docs/dev/userguide/editingcode/)
+- [Code Navigation](https://www.julia-vscode.org/docs/dev/userguide/codenavigation/)
+
+In addition, there are excellent youtube videos about provide more background.  FOr example, [Package Development in VSCode](https://www.youtube.com/watch?v=F1R3ETaRQXY) shows advanced features.
+
+### Simple Example
+To walk through a simple, but complete example.
+
+Create a new directory on your computer, for example `hello_world` and then open VS Code in that folder  This can be done several ways,
+   - Within a terminal on your operating system, navigate that directory and type `code .`
+   - On Windows, right click on the folder and choose `Open with Code` - trusting the authors as required on opening the folder.
+   - In the VS Code Menu, choose `File/Open Folder...`
+
+Next, in the left hand panel, under `HELLO_WORLD`, right click and choose `New File` and create as `hello.jl`.  The screen should look something like
+
+```{figure} /_static/figures/vscode_file_created.png
+:width: 100%
+```
+
+Type some code as such `f(x) = x + 1` into the file, into the `.jl` file, save it, and while your mouse curser is on the line of code do `<Shift-Enter>`.  If a julia REPL wasn't already started, it will be started and the code will be run within its kernel
+
+```{figure} /_static/figures/vscode_jl_function.png
+:width: 100%
+```
+
+At this point, the function is available for use within either the code or the REPL.  You can get inline results by adding more code to the file and executing each line with `<Shift=Enter>`.
+
+```{figure} /_static/figures/vscode_jl_function_2.png
+:width: 100%
+```
+
+That code is also accessible within the REPL.  Executing the function there,
+
+```{figure} /_static/figures/vscode_repl_1.png
+:width: 100%
+```
+
+Because the REPL and the files are synchronized, you can modify functions and simple choose `<shift-Enter>` to update their definitions before analyzing the results in the REPL or in the file itself.
+
+
+### Adding Packages
+
+Next we will go through simple use of the plotting and package management.
+
+To add a package, we can execute a command in the REPL.  First, type `]` to enter the package management mode, then `add Plots`.  Depending on whether you have done similar operations before, this may download a lot of dependencies.  See below for an example
+
+```{figure} /_static/figures/vscode_package_added.png
+:width: 100%
+```
+
+Crucially, you will notice that two new files are created. `Project.toml` and `Manifest.toml`.  These provide a snapshot of all of the packages used in this particular project.
+
+Add code in the `.jl` file for a simple plot, and it will be shown on a separate pane
+
+```{figure} /_static/figures/vscode_plots.png
+:width: 100%
+```
+
+
+
+** Note:**  The If you use the Julia REPL within VS Code, then it will automaticallly activate that project file.  Otherwise, you will have to start your REPL with the `julia --project` from within that folder, or you will need to manually call `using Pkg; Pkg.activate()` after launching Julia.
 
 (repl_main)=
 ## The REPL
+ Note that the REPL could also be started with `> Julia: Start REPL`, which should provide a prompt at the bottom of the window.
 
 Previously, we discussed basic use of the Julia REPL ("Read-Evaluate-Print Loop").
 
@@ -158,93 +224,6 @@ using Test
 
 will succeed.
 
-## Atom
-
-As discussed {doc}`previously <../getting_started_julia/getting_started>`, eventually you will want to use a fully fledged text editor.
-
-The most feature-rich one for Julia development is [Atom](https://atom.io/), with the [Juno](http://junolab.org/) package.
-
-There are several reasons to use a text editor like Atom, including
-
-(upgrading_julia)=
-#### Upgrading Julia
-
-To get a new release working with Jupyter, run (in the new version's REPL)
-
-```{code-block} julia
-] add IJulia
-] build IJulia
-```
-
-This will install (and build) the `IJulia` kernel.
-
-To get it working with Atom, open the command palette and type "Julia Client: Settings."
-
-Then, in the box labelled "Julia Path," enter the path to yor Julia executabe.
-
-You can find the folder by running `Sys.BINDIR` in a new REPL, and then add the `/julia` at the end to give the exact path.
-
-For example:
-
-```{figure} /_static/figures/julia-path.png
-:width: 100%
-```
-
-### Standard Layout
-
-If you follow the instructions, you should see something like this when you open a new file.
-
-If you don't, simply go to the command palette and type "Julia standard layout"
-
-```{figure} /_static/figures/juno-standard-layout.png
-:width: 100%
-```
-
-The bottom pane is a standard REPL, which supports the different modes above.
-
-The "workspace" pane is a snapshot of currently-defined objects.
-
-For example, if we define an object in the REPL
-
-```{code-cell} julia
-x = 2
-```
-
-Our workspace should read
-
-```{figure} /_static/figures/juno-workspace-1.png
-:width: 100%
-```
-
-The `ans` variable simply captures the result of the last computation.
-
-The `Documentation` pane simply lets us query Julia documentation
-
-```{figure} /_static/figures/juno-docs.png
-:width: 100%
-```
-
-The `Plots` pane captures Julia plots output (the code is as follows)
-
-```{code-block} julia
-using Plots
-gr(fmt = :png);
-data = rand(10, 10)
-h = heatmap(data)
-```
-
-```{figure} /_static/figures/juno-plots.png
-:width: 100%
-```
-
-**Note:** The plots feature is not perfectly reliable across all plotting backends, see [the Basic Usage](http://docs.junolab.org/latest/man/basic_usage.html) page.
-
-### Other Features
-
-* `` Shift + Enter `` will evaluate a highlighted selection or line (as above).
-* The run symbol in the left sidebar (or `Ctrl+Shift+Enter`) will run the whole file.
-
-See [basic usage](http://docs.junolab.org/latest/man/basic_usage.html) for an exploration of features, and  the [FAQ](http://docs.junolab.org/latest/man/faq.html) for more advanced steps.
 
 (jl_packages)=
 ## Package Environments
@@ -335,12 +314,3 @@ without any arguments.
 ```{code-cell} julia
 ; rm -rf ExampleEnvironment
 ```
-
-### InstantiateFromURL
-
-With this knowledge, we can explain the operation of the setup block
-
-
-What this `github_project` function does is activate (and if necessary, download, instantiate and precompile) a particular Julia environment.
-
-(docker_main)=
