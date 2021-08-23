@@ -1,6 +1,6 @@
 # lecture-julia.notebooks
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/master)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/main)
 
 Notebooks for https://julia.quantecon.org
 
