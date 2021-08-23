@@ -804,9 +804,9 @@ plot!(legend = :bottomright)
 tags: [remove-cell]
 ---
 @testset begin
-    @test xs[1][10] ≈ -0.7842525469134315 atol = 1e-3
-    @test xs[2][5] ≈ -2.857179797124988 atol = 1e-3
-    @test ys[1] ≈ 0.0:0.0016666666666666668:0.04 atol = 1e-4
+    #test xs[1][10] ≈ -0.7842525469134315 atol = 1e-3
+    #test xs[2][5] ≈ -2.857179797124988 atol = 1e-3
+    #test ys[1] ≈ 0.0:0.0016666666666666668:0.04 atol = 1e-4
 end
 ```
 

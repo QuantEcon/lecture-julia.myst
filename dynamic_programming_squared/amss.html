@@ -48,7 +48,7 @@
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
     <script src="../_static/quantecon-book-theme.43eb86aa48ec3aed660cb313c38068cd.js"></script>
-    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script async="async" src="https://unpkg.com/thebe@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
         const thebe_selector_input = "pre"
@@ -776,7 +776,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
             <span class="n">init</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lb</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">end</span>
     <span class="k">end</span>
-    <span class="p">(</span><span class="n">minf</span><span class="p">,</span> <span class="n">minx</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">minf</span><span class="p">,</span> <span class="n">minx</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span> <span class="o">=</span> <span class="n">NLopt</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span>
     <span class="n">T</span><span class="o">.</span><span class="n">z0</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span> <span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">minx</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">minx</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">G</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">minx</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">vcat</span><span class="p">(</span><span class="o">-</span><span class="n">minf</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span><span class="n">z0</span><span class="p">[</span><span class="n">i_x</span><span class="p">,</span> <span class="n">s</span><span class="p">])</span>
 <span class="k">end</span>
@@ -814,7 +814,7 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
             <span class="n">init</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lb</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">end</span>
     <span class="k">end</span>
-    <span class="p">(</span><span class="n">minf</span><span class="p">,</span> <span class="n">minx</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">minf</span><span class="p">,</span> <span class="n">minx</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span> <span class="o">=</span> <span class="n">NLopt</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">vcat</span><span class="p">(</span><span class="o">-</span><span class="n">minf</span><span class="p">,</span> <span class="n">vcat</span><span class="p">(</span><span class="n">minx</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">minx</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">G</span><span class="p">[</span><span class="n">s0</span><span class="p">],</span> <span class="n">minx</span><span class="p">[</span><span class="mi">2</span><span class="o">:</span><span class="k">end</span><span class="p">]))</span>
 <span class="k">end</span>
 </pre></div>
@@ -1005,8 +1005,7 @@ assets, returning any excess revenues to the household as nonnegative lump sum t
 <p>The recursive formulation is implemented as follows</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Dierckx</span>
-
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">DataInterpolations</span>
 
 <span class="k">mutable struct</span> <span class="kt">BellmanEquation_Recursive</span><span class="p">{</span><span class="kt">TP</span> <span class="o">&lt;:</span> <span class="kt">Model</span><span class="p">,</span> <span class="kt">TI</span> <span class="o">&lt;:</span> <span class="kt">Integer</span><span class="p">,</span> <span class="kt">TR</span> <span class="o">&lt;:</span> <span class="kt">Real</span><span class="p">}</span>
     <span class="n">model</span><span class="o">::</span><span class="kt">TP</span>
@@ -1080,19 +1079,15 @@ assets, returning any excess revenues to the household as nonnegative lump sum t
         <span class="n">xprimes</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">S</span><span class="p">)</span>
         <span class="n">xgrid</span><span class="p">[</span><span class="n">s_</span><span class="p">,</span> <span class="o">:</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
         <span class="k">for</span> <span class="n">sprime</span> <span class="o">=</span> <span class="mi">1</span><span class="o">:</span><span class="n">S</span>
-            <span class="n">splc</span> <span class="o">=</span> <span class="n">Spline1D</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">sprime</span><span class="p">][</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-            <span class="n">spln</span> <span class="o">=</span> <span class="n">Spline1D</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">n</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">sprime</span><span class="p">][</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-            <span class="n">splx</span> <span class="o">=</span> <span class="n">Spline1D</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">xprimes</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">sprime</span><span class="p">][</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">splc</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">sprime</span><span class="p">][</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">spln</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">sprime</span><span class="p">][</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">splx</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">xprimes</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">sprime</span><span class="p">][</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">])</span>
             <span class="n">cf</span><span class="p">[</span><span class="n">s_</span><span class="p">,</span> <span class="n">sprime</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">splc</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
             <span class="n">nf</span><span class="p">[</span><span class="n">s_</span><span class="p">,</span> <span class="n">sprime</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">spln</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
             <span class="n">xprimef</span><span class="p">[</span><span class="n">s_</span><span class="p">,</span> <span class="n">sprime</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">splx</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-            <span class="c"># cf[s_, sprime] = LinInterp(x[end:-1:1], c[:, sprime][end:-1:1])</span>
-            <span class="c"># nf[s_, sprime] = LinInterp(x[end:-1:1], n[:, sprime][end:-1:1])</span>
-            <span class="c"># xprimef[s_, sprime] = LinInterp(x[end:-1:1], xprimes[:, sprime][end:-1:1])</span>
         <span class="k">end</span>
-        <span class="n">splV</span> <span class="o">=</span> <span class="n">Spline1D</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">V</span><span class="p">[</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">splV</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">Vf</span><span class="p">[</span><span class="n">s_</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">splV</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-        <span class="c"># Vf[s_] = LinInterp(x[end:-1:1], V[end:-1:1])</span>
     <span class="k">end</span>
 
     <span class="n">policies</span> <span class="o">=</span> <span class="p">[</span><span class="n">cf</span><span class="p">,</span> <span class="n">nf</span><span class="p">,</span> <span class="n">xprimef</span><span class="p">]</span>
@@ -1138,14 +1133,13 @@ assets, returning any excess revenues to the household as nonnegative lump sum t
         <span class="k">for</span> <span class="p">(</span><span class="n">i_x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">xgrid</span><span class="p">)</span>
             <span class="n">PFvec</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="n">i_x</span><span class="p">]</span> <span class="o">=</span> <span class="n">PF</span><span class="p">(</span><span class="n">i_x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">s_</span><span class="p">)</span>
         <span class="k">end</span>
-        <span class="n">splV</span> <span class="o">=</span> <span class="n">Spline1D</span><span class="p">(</span><span class="n">xgrid</span><span class="p">,</span> <span class="n">PFvec</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">splV</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">PFvec</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="o">:</span><span class="p">],</span> <span class="n">xgrid</span><span class="p">)</span>
         <span class="n">Vf</span><span class="p">[</span><span class="n">s_</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">splV</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-        <span class="c"># Vf[s_] = LinInterp(xgrid, PFvec[1, :])</span>
         <span class="k">for</span> <span class="n">sprime</span><span class="o">=</span><span class="mi">1</span><span class="o">:</span><span class="n">S</span>
-            <span class="n">splc</span> <span class="o">=</span> <span class="n">Spline1D</span><span class="p">(</span><span class="n">xgrid</span><span class="p">,</span> <span class="n">PFvec</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="n">sprime</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-            <span class="n">spln</span> <span class="o">=</span> <span class="n">Spline1D</span><span class="p">(</span><span class="n">xgrid</span><span class="p">,</span> <span class="n">PFvec</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="n">S</span> <span class="o">+</span> <span class="n">sprime</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-            <span class="n">splxprime</span> <span class="o">=</span> <span class="n">Spline1D</span><span class="p">(</span><span class="n">xgrid</span><span class="p">,</span> <span class="n">PFvec</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span><span class="n">S</span> <span class="o">+</span> <span class="n">sprime</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-            <span class="n">splTT</span> <span class="o">=</span> <span class="n">Spline1D</span><span class="p">(</span><span class="n">xgrid</span><span class="p">,</span> <span class="n">PFvec</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">3</span><span class="n">S</span> <span class="o">+</span> <span class="n">sprime</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+            <span class="n">splc</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">PFvec</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="n">sprime</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">xgrid</span><span class="p">)</span>
+            <span class="n">spln</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">PFvec</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="n">S</span> <span class="o">+</span> <span class="n">sprime</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">xgrid</span><span class="p">)</span>
+            <span class="n">splxprime</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">PFvec</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span><span class="n">S</span> <span class="o">+</span> <span class="n">sprime</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">xgrid</span><span class="p">)</span>
+            <span class="n">splTT</span> <span class="o">=</span> <span class="n">CubicSpline</span><span class="p">(</span><span class="n">PFvec</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">3</span><span class="n">S</span> <span class="o">+</span> <span class="n">sprime</span><span class="p">,</span> <span class="o">:</span><span class="p">],</span> <span class="n">xgrid</span><span class="p">)</span>
             <span class="n">cf</span><span class="p">[</span><span class="n">s_</span><span class="p">,</span> <span class="n">sprime</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">splc</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
             <span class="n">nf</span><span class="p">[</span><span class="n">s_</span><span class="p">,</span> <span class="n">sprime</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">spln</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
             <span class="n">xprimef</span><span class="p">[</span><span class="n">s_</span><span class="p">,</span> <span class="n">sprime</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">splxprime</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
@@ -1325,7 +1319,7 @@ assets, returning any excess revenues to the household as nonnegative lump sum t
     <span class="n">ftol_rel!</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">)</span>
     <span class="n">ftol_abs!</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">)</span>
 
-    <span class="p">(</span><span class="n">minf</span><span class="p">,</span> <span class="n">minx</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">minf</span><span class="p">,</span> <span class="n">minx</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span> <span class="o">=</span> <span class="n">NLopt</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">ret</span> <span class="o">!=</span> <span class="ss">:SUCCESS</span> <span class="o">&amp;&amp;</span> <span class="n">ret</span> <span class="o">!=</span> <span class="ss">:ROUNDOFF_LIMITED</span> <span class="o">&amp;&amp;</span> <span class="n">ret</span> <span class="o">!=</span> <span class="ss">:MAXEVAL_REACHED</span> <span class="o">&amp;&amp;</span>
         <span class="n">ret</span> <span class="o">!=</span> <span class="ss">:FTOL_REACHED</span> <span class="o">&amp;&amp;</span> <span class="n">ret</span> <span class="o">!=</span> <span class="ss">:MAXTIME_REACHED</span>
@@ -1400,7 +1394,7 @@ assets, returning any excess revenues to the household as nonnegative lump sum t
     <span class="n">maxeval!</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="mi">100000000</span><span class="p">)</span>
     <span class="n">maxtime!</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
 
-    <span class="p">(</span><span class="n">minf</span><span class="p">,</span> <span class="n">minx</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">minf</span><span class="p">,</span> <span class="n">minx</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span> <span class="o">=</span> <span class="n">NLopt</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">init</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">ret</span> <span class="o">!=</span> <span class="ss">:SUCCESS</span> <span class="o">&amp;&amp;</span> <span class="n">ret</span> <span class="o">!=</span> <span class="ss">:ROUNDOFF_LIMITED</span> <span class="o">&amp;&amp;</span> <span class="n">ret</span> <span class="o">!=</span> <span class="ss">:MAXEVAL_REACHED</span> <span class="o">&amp;&amp;</span>
         <span class="n">ret</span> <span class="o">!=</span> <span class="ss">:FTOL_REACHED</span>
@@ -1581,148 +1575,73 @@ triangle denote war.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.01954181139286787
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.10221869404551655
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.020296606254018204
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.11386168126419315
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.01825290323030718
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.04017955171934201
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.017323304015686086
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.04111710898584934
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.004083971847769894
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0032403943713884362
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.001705217481377361
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0011427722674357556
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0014914525006177305
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0007033378367170737
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0008417977444446455
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00043152271929057496
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0006554046258163039
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0003882444963083722
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0005343165840907718
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00034930148574142527
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00036859486135175145
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00031427108671139867
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00029229569257841907
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0002827613386547054
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00026307091010375084
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00025442191577874684
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0002367446008942147
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00022892552961129175
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00021304318701272193
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00020599089756352643
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00020717217207370084
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00018535673981298498
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00026283141852635186
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00016679277730425373
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00032468389468892454
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.000150090107383038
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0012157308711584047
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00013505504676157245
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0015441481304957932
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00012154136683660099
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00130670254601412
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00010937556311074041
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0012422927833820431
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 9.842802716217591e-5
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0011973020072232443
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.002711494640545669
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.007244936332773949
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.006860301354934435
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.005824539768855716
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.004770001724018595
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.004495949899923956
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.003912005026197332
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0030904720344908797
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0024179193197898883
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0014397062987747714
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0011577796355762742
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.000916785685284999
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0005199905506077477
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00029417161833925396
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00025500943771368593
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00022953029187192567
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00020658604571459856
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0001859334967783877
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00016734067599867032
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0001506063582199382
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00013554666096823298
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00012198828709382233
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00010978710140551751
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 9.880652703652202e-5
-</pre></div>
-</div>
-<img alt="../_images/amss_10_47.png" src="../_images/amss_10_47.png" />
+<img alt="../_images/amss_10_22.png" src="../_images/amss_10_22.png" />
 </div>
 </div>
 <p>How a Ramsey planner responds to  war depends on the structure of the asset market.</p>
@@ -1831,118 +1750,61 @@ state contingent debt (circles) and the economy with only a risk-free bond
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0007972378476369878
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0007972383286751266
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0006423557137335174
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0006422484915088703
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0005517389581356804
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0005516705069012081
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00048553314486213126
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00048552996238424023
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00042268887285121253
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0004226306819088336
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00037549662343492745
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00037548744753981703
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0003294634615324921
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00032936417930613023
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00029340250384699923
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00029322120949922616
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00025861884277824645
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0002584441964512679
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00023049635146083798
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00023026323262991425
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00020377207616762582
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00020357801315253686
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00018165209097726422
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00018139345999882656
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00016092540271913402
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00016071029434038637
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0001434433600787467
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00014318305871041206
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.01037573201917332
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00012705862335236792
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00905210137113982
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0001131732208732688
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.006326754543873641
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00010054963968314959
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0019345994052416494
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 8.95358327452626e-5
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0010554203201344767
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0008987441193036179
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0007732957622462973
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0006783928354174915
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0005930348305346032
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0005155919850710623
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0004500503280528482
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00039241961451299504
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00034510992982119326
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0002994226166408393
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00026552122845496085
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0002296268751719235
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.000204526265224423
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.0001767912005502694
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00015772622168941594
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00013681820639953988
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00012177740118873703
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 0.00010619469083293907
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>diff = 9.412540636183311e-5
-</pre></div>
-</div>
-<img alt="../_images/amss_14_37.png" src="../_images/amss_14_37.png" />
+<img alt="../_images/amss_14_18.png" src="../_images/amss_14_18.png" />
 </div>
 </div>
 <p>When the government experiences a prolonged period of peace, it is able to reduce
@@ -2122,7 +1984,7 @@ s^{t-1}\)</span>, but where the multiplier on constraint <a class="reference int
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../software_engineering/tools_editors.html">
-   11. Julia Tools and Editors
+   11. Visual Studio Code and other Julia Tools
   </a>
  </li>
  <li class="toctree-l1">

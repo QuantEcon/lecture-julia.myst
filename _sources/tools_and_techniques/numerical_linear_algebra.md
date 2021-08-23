@@ -54,7 +54,7 @@ The theme of this lecture, and numerical linear algebra in general, comes down t
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics, BenchmarkTools, SparseArrays, Random
+using LinearAlgebra, Statistics, BenchmarkTools, SparseArrays, Random, Parameters
 Random.seed!(42);  # seed random numbers for reproducibility
 ```
 
@@ -979,6 +979,78 @@ A[2,1] = 100.0
 
 But again, you will often find that doing `@view` leads to slower code.  Benchmark
 instead, and generally rely on it for large matrices and for contiguous chunks of memory (e.g., columns rather than rows).
+
+## Patterns for Preallocated Caches of Results
+
+When the matrices and vectors get large, it can reach a point where it is important to cache the results and reduce allocations.  In general, this should only be attempted when the vectors are large and they would otherwise need to be reallocated many times.
+
+One approach is to create a {doc}`custom type<../getting_started_julia/introduction_to_types>` to hold the results, being very careful to ensure that the type is concrete.
+
+
+```{code-cell} julia
+struct MyResults{T}
+    x::Array{T,1}
+    A::Array{T,2}
+end
+MyResults(N) = MyResults(Array{Float64,1}(undef, N), Array{Float64,2}(undef, N, N))    
+
+#Support for inplace copying
+import Base.copy!
+function copy!(dst::MyResults, src::MyResults)
+    dst.x .= src.x
+    dst.A .= src.A
+end
+```
+
+The above code is an **immutable** structure for holding the `x` and `A` buffers.  The fact that it is immutable ensures that the `x` vector itself cannot be changed (even if the values within `x` can be).  This can help ensure that you do not accidentally reallocate and assign a new vector to `x`.
+
+The only other code is an implementation of the in-place `copy!` function, which will allow us to copy all of the results as required by some algorithms.
+
+To create a contrived algorithm, see the following code:
+
+```{code-cell} julia
+# By convention, name has ! to denote mutating, and mutate first argument
+function calculate_results!(results, val, params)
+    @unpack N, b, C = params
+    B = rand(N,N)  # Contrived.  Assume complicated
+    lmul!(val, B)  # val * B -> B inplace, no allocation
+    mul!(results.A, B, C) #   B * C -> results.A
+    ldiv!(results.x, factorize(results.A), b)  # x = A \ b inplace
+end
+
+# Some iterative algorithm
+function iterate_values(vals, params)    
+    @unpack N = params
+    
+    # preallocate
+    results = MyResults(N)
+    prev_results = MyResults(N)
+    norms = similar(vals)
+        
+    for (i, val) in enumerate(vals)
+        calculate_results!(results, val, params)
+        norms[i] = norm(results.x- prev_results.x)            
+        println("|x_new - x_old| = ", norms[i])
+        copy!(prev_results, results)
+    end
+    return norms
+end
+
+params = (N = 5, C = rand(5,5), b = rand(5))
+vals = range(0.0, 1.0, length = 10)
+iterate_values(vals, params)
+```
+
+A few points:
+- This creates an inplace function, `calculate_results!`, which modifies the results given a value and parameters.
+- Within the function, it attemmpts to use inplace versions of the operations where possible, which can help cut down on other allocations
+- The iteration simply goes through a list of values, calls the `calculate_results!` and then checks how the `results.x` has changed with a norm.
+- Finally, the iteration copys the new results into the previous ones.  This ensure that only a single copy is required for comparison.
+
+
+
+This approach can be very helpful for large matrices and arrays, but should be used judiciously and only after {doc}`profiling<../software_engineering/need_for_speed>`  .
+
 
 ## Exercises
 
