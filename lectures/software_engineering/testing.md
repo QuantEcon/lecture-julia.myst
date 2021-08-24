@@ -535,7 +535,7 @@ By default, Travis will compile and test your project (i.e., "build" it) for new
 
 We can see ours by opening it in Atom
 
-```yml
+````
 # Documentation: http://docs.travis-ci.com/user/languages/julia/
 language: julia
 os:
@@ -552,7 +552,7 @@ notifications:
 email: false
 after_success:
 - julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
-```
+````
 
 This is telling Travis to build the project in Julia, on OSX and Linux, using Julia v1.1 and the latest development build ("nightly").
 
