@@ -167,7 +167,7 @@ The most feature-rich one for Julia development is [Atom](https://atom.io/), wit
 There are several reasons to use a text editor like Atom, including
 
 (upgrading_julia)=
-#### Upgrading Julia
+### Upgrading Julia
 
 To get a new release working with Jupyter, run (in the new version's REPL)
 
