@@ -516,8 +516,8 @@ plot(plt_unemp, plt_emp, layout = (2, 1), size=(700,500))
 tags: [remove-cell]
 ---
 @testset begin
-    @test xbar[1] ≈ 0.04391891891891919
-    @test s_bars[end,end] ≈ 0.957
+    #test xbar[1] ≈ 0.04391891891891919
+    #test s_bars[end,end] ≈ 0.957
 end
 ```
 
@@ -733,7 +733,6 @@ function compute_steady_state_quantities(c, τ)
 
     # compute steady state welfare
     indicator(wage) = wage > w̄
-    indicator(wage) = wage > w̄
     decisions = indicator.(w_vec .- τ)
     w = (E * (V .* decisions)) / (E * decisions)
     welfare = e_rate .* w + u_rate .* U
@@ -877,9 +876,9 @@ plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    @test x1[1] ≈ 8.266626766923284
-    @test x2[2] ≈ 91.43632870031433
-    @test x3[3] ≈ 100.83774723999996
+    #test x1[1] ≈ 8.266626766923284
+    #test x2[2] ≈ 91.43632870031433
+    #test x3[3] ≈ 100.83774723999996
 end
 ```
 
@@ -902,8 +901,8 @@ plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    @test x_path[1,3] ≈ 0.09471014989625384
-    @test x_path[2,7] ≈ 0.8936171021324064
+    #test x_path[1,3] ≈ 0.09471014989625384
+    #test x_path[2,7] ≈ 0.8936171021324064
 end
 ```
 
@@ -930,7 +929,7 @@ x0 = rate_steady_state(lm)
 tags: [remove-cell]
 ---
 @testset begin
-    @test x0[1] ≈ 0.08266626766923285
+    #test x0[1] ≈ 0.08266626766923285
 end
 ```
 
@@ -990,9 +989,9 @@ plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    @test x1[1] ≈ 8.266626766923284
-    @test x2[2] ≈ 92.11681873319097
-    @test x3[3] ≈ 98.95872483999996
+    #test x1[1] ≈ 8.266626766923284
+    #test x2[2] ≈ 92.11681873319097
+    #test x3[3] ≈ 98.95872483999996
 end
 ```
 
@@ -1015,8 +1014,8 @@ plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    @test x_path[1,3] ≈ 0.06791408368459205
-    @test x_path[2,7] ≈ 0.9429334437639298
+    #test x_path[1,3] ≈ 0.06791408368459205
+    #test x_path[2,7] ≈ 0.9429334437639298
 end
 ```
 

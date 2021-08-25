@@ -328,8 +328,8 @@ vline!([LLmean_t], linestyle = :dash, color = :black, lw = 2, alpha = 0.6, label
 tags: [remove-cell]
 ---
 @testset begin
-    # @test LLT[100] ≈ 0.237835678897198 atol = 1e-3
-    @test LLmean_t ≈ 0.18834771174533427 atol = 1e-3
+    # #test LLT[100] ≈ 0.237835678897198 atol = 1e-3
+    #test LLmean_t ≈ 0.18834771174533427 atol = 1e-3
 end
 ```
 
@@ -610,9 +610,9 @@ println("\t ($(minimum(mmcT)), $(mean(mmcT)), $(maximum(mmcT)))")
 tags: [remove-cell]
 ---
 @testset begin
-    @test amcT[20] ≈ 0.48937834866761837
-    @test amc[14, 38] ≈ 0.10223016730936686
-    @test mmcT[250] ≈ 0.6101128099569552
+    #test amcT[20] ≈ 0.48937834866761837
+    #test amc[14, 38] ≈ 0.10223016730936686
+    #test mmcT[250] ≈ 0.6101128099569552
 end
 ```
 

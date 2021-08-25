@@ -853,9 +853,9 @@ tags: [remove-cell]
   @test spectral_density(arma, two_pi=false)[2][4] ≈ 0.16077100233347555
   # As before, we need to repeat the calculations, since we don't have access to the results.
   @test (autocovariance(arma))[3] ≈ -0.5886222919837174 atol = 1e-3
-  @test (impulse_response(arma))[10] == -0.004296875 
+  #test (impulse_response(arma))[10] == -0.004296875 
   Random.seed!(42)
-#   @test (simulation(arma))[20] ≈ 1.5309398262415883 atol = 1e-3
+#   #test (simulation(arma))[20] ≈ 1.5309398262415883 atol = 1e-3
 end
 ```
 
