@@ -139,7 +139,13 @@ Because the REPL and the files are synchronized, you can modify functions and si
 
 Next we will go through simple use of the plotting and package management.
 
-The REPL.  First, type `]` to enter the package management mode, then `activate .`, then `add Plots`.  Depending on whether you have done similar operations before, this may download a lot of dependencies.  See below for an example
+```{note}
+VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to `(@v1.6) pkg>` rather than `(hello_world) pkg >` then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose `] activate .`.
+
+You can always see the current package location and details with `] st`.  See [Julia Environments](jl_packages) for more details.
+```
+
+The REPL.  First, type `]` to enter the package management mode, then `add Plots`.  Depending on whether you have done similar operations before, this may download a lot of dependencies.  See below for an example
 
 ```{figure} /_static/figures/vscode_package_added.png
 :width: 100%
