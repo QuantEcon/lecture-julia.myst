@@ -268,6 +268,12 @@ Hitting `;` brings you into shell mode, which lets you run bash commands (PowerS
 ; pwd
 ```
 
+or on Windows:
+
+```{code-block} none
+; cd
+```
+
 In addition, `?` will bring you into help mode.
 
 The key use case is to find docstrings for functions and macros, e.g.
