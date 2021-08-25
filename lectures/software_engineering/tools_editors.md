@@ -139,7 +139,7 @@ Because the REPL and the files are synchronized, you can modify functions and si
 
 Next we will go through simple use of the plotting and package management.
 
-The REPL.  First, type `]` to enter the package management mode, then `add Plots`.  Depending on whether you have done similar operations before, this may download a lot of dependencies.  See below for an example
+The REPL.  First, type `]` to enter the package management mode, then `activate .`, then `add Plots`.  Depending on whether you have done similar operations before, this may download a lot of dependencies.  See below for an example
 
 ```{figure} /_static/figures/vscode_package_added.png
 :width: 100%
