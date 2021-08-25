@@ -180,7 +180,7 @@ You can execute a `.jl` file in several ways.
 
 Within a terminal, you can provide the path to the file.  For example,
 ```{code-block} none
-julia --threads --project auto hello.jl
+julia --threads auto --project hello.jl
 ```
 
 See the [REPL](repl_main) section for more details on the commandline options.
