@@ -841,7 +841,7 @@ It follows that the follower firm 1 faces law of motion
 \begin{bmatrix} \tilde y_{t+1} \\
 q_{1t+1} \end{bmatrix} = \begin{bmatrix} A - BF & 0 \\
 0  & 1 \end{bmatrix}  \begin{bmatrix} \tilde y_{t} \\
-q_{1t} \end{bmatrix} + \begin{bmatrix} 0 \cr 1 \end{bmatrix} x_t
+q_{1t} \end{bmatrix} + \begin{bmatrix} 0 \\ 1 \end{bmatrix} x_t
 ```
 
 This specfification assures that from the point of the view of a firm 1,
