@@ -36,7 +36,7 @@ To install VS Code and the Julia Extension,
 2. Install [VS Code](https://code.visualstudio.com/) for your platform and open it
 3. Install the [VS Code Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) extension
    - After installation of VS Code, you should be able to choose `Install` on the webpage of any extensions and it will open on your desktop.
-   - Otherwise, open the extensions with `<Ctrl-Shift-X>` or selecting extensions in the left-hand side of the VS Code window.  Then search for `Julia` in the Marketplace
+   - Otherwise, open the extensions with `<Ctrl-Shift-X>` or selecting extensions in the left-hand side of the VS Code window.  Then search for `Julia` in the Marketplace.
 
 See the [Julia VS Code Documentation](https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1) for more details.
 
@@ -60,7 +60,7 @@ denote opening the command palette and searching for a command with things like 
 your most recent and common commands.
 ### Optional Extensions and Settings 
 
-Open the settings with `> Preferences: User Settings` (see above for opening the command palette with `<Ctrl-Shift-P>`).
+Open the settings with `> Preferences: Open User Settings` (see above for opening the command palette with `<Ctrl-Shift-P>`).
 
 As a few optional suggestions for working with the settings,
 
