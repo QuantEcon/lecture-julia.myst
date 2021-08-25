@@ -34,6 +34,7 @@ To install VS Code and the Julia Extension,
 
 1. Follow the instructions for setting up Julia {ref}`on your local computer <jl_jupyterlocal>`.
 2. Install [VS Code](https://code.visualstudio.com/) for your platform and open it
+   - On Windows, during install under `Select Additional Tasks`, choose all options that begin with `Add "Open with Code" action`. This lets you open VS Code from inside File Explorer folders directly.
 3. Install the [VS Code Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) extension
    - After installation of VS Code, you should be able to choose `Install` on the webpage of any extensions and it will open on your desktop.
    - Otherwise, open the extensions with `<Ctrl-Shift-X>` or selecting extensions in the left-hand side of the VS Code window.  Then search for `Julia` in the Marketplace.
