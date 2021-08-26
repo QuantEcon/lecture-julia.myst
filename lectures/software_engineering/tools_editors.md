@@ -207,7 +207,7 @@ Next, use `<Ctrl-Shift-D>` or select the bug tab on the left in Julia to see
 :width: 100%
 ```
 
-Then choose the `Run and Debug` option and it will execute `plot_results()` at the bottom of the file, and then stop inside at the breakpoint.
+Then choose the `Run active Julia file` option and it will execute `plot_results()` at the bottom of the file, and then stop inside at the breakpoint.
 
 ```{figure} /_static/figures/debugger_2.png
 :width: 100%
