@@ -288,10 +288,10 @@ As we saw before, `]` brings you into package mode.  Some of the key choices are
 
 * `] instantiate` (or `using Pkg; Pkg.instantiate()` in the normal julia mode) will check if you have all of the packages and versions mentioned in the `Project.toml` and `Manifest.toml` files, and install as required.
   - This feature will let you reproduce the entire environment and, if a `Manifest.toml` is available, the exact package versions used for a project.  For example, these lecture notes use [Project.toml](https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Project.toml) and [Manifest.toml](https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Manifest.toml) - which you likely instantiated during installation after downloading these notebooks.
-* `] add Expectations` will add a package (here, `Expectations.jl`) from the activated project file (or the global environment if none is activated)
+* `] add Expectations` will add a package (here, `Expectations.jl`) to the activated project file (or the global environment if none is activated).
 * Likewise, `] rm Expectations` will remove that package.
 * `] st` will show you a snapshot of what you have installed.
-* `] up` will upgrade versions of your packages to the latest versions possible given the graph of compatibility used in each
+* `] up` will upgrade versions of your packages to the latest versions possible given the graph of compatibility used in each.
 
 ```{note}
 On some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit `]` first and then run your commands).
