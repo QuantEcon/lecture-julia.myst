@@ -26,7 +26,7 @@ kernelspec:
 
 While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.  Visual Studio Code (VS Code) in particular, is the most popular open source editor for programming - with a huge set of extensions and strong industry support.
 
-While you can use source code control, run terminals and the REPL ("Read-Evaluate-Print Loop"), without VS Code, we will concentrate on using it as a full IDE for all of these features.
+While you can use source code control, run terminals and the REPL ("Read-Evaluate-Print Loop") without VS Code, we will concentrate on using it as a full IDE for all of these features.
 
 ## Installing VS Code
 
@@ -119,7 +119,7 @@ Type some code as such `f(x) = x + 1` into the file, into the `.jl` file, save i
 :width: 100%
 ```
 
-At this point, the function is available for use within either the code or the REPL.  You can get inline results by adding more code to the file and executing each line with `<Shift=Enter>`.
+At this point, the function is available for use within either the code or the REPL.  You can get inline results by adding more code to the file and executing each line with `<Shift-Enter>`.
 
 ```{figure} /_static/figures/vscode_jl_function_2.png
 :width: 100%
