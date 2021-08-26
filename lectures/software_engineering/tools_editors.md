@@ -267,7 +267,7 @@ A few other features of the REPL include,
 Hitting `;` brings you into shell mode, which lets you run bash commands (PowerShell on Windows)
 
 ```{code-block} none
-; dir
+; pwd
 ```
 
 In addition, `?` will bring you into help mode.
