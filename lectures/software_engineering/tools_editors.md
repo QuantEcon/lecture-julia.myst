@@ -235,7 +235,7 @@ There are several ways to start the REPL.
 
 The command line options for starting Julia are set to decent defaults for terminals running within VS Code, but you will want to set them yourself if starting the REPL otherwise.
 
-One common choice is to choose the number of threads that Julia should have available.  By default it is only a single thread, while `--threads auto` will tell Julia to create one for each processor on your machine.  VS Code uses `--threads auto` by default.
+One common choice is to choose the number of threads that Julia should have available. By default, it is only a single thread, while `--threads auto` will tell Julia to create one for each processor on your machine.  VS Code uses `--threads auto` by default.
 
 The most important choice is the `--project` toggle which determines  whether you want to activate an existing project (or create a new one) when starting the interpreter.  Since a key feature of Julia is to have fully reproducible environments, you will want to do this whenever possible.
 
