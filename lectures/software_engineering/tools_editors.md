@@ -159,6 +159,8 @@ Add code in the `.jl` file for a simple plot, and it will be shown on a separate
 :width: 100%
 ```
 
+To exit package management mode and return to the REPL, type `Ctrl+C`. To then go from the REPL back to the VS Code terminal, type `Ctrl+D`.
+
 ### Executing Files
 
 First we will reorganize our file so that it is a set of functions with a call at the end rather than a script.  Replace the code with
