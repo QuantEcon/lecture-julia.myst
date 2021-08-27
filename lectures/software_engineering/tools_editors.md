@@ -84,7 +84,7 @@ A key benefit of VS Code is that you can use terminals and command-line interfac
 
 Furthermore, in the case of julia (and other languages such as python) this will activate the project automatically.  See the [documentation](https://code.visualstudio.com/docs/editor/integrated-terminal) for more details.
 
-To start a terminal, you can use the `View > Terminal` in the menus, type ``Ctrl+` ``, or click on the bottom bar in VS Code.
+You can open the terminal panel with  `> View: Toggle Terminal` , typing ``Ctrl+` ``, or by clicking on the list of warnings and errors bottom bar in VS Code.  If no existing terminal exists, it will create a new one.
 
 
 (vscode)=
@@ -235,9 +235,13 @@ There are several ways to start the REPL.
 
 The command line options for starting Julia are set to decent defaults for terminals running within VS Code, but you will want to set them yourself if starting the REPL otherwise.
 
-One common choice is to choose the number of threads that Julia should have available. By default, it is only a single thread, while `--threads auto` will tell Julia to create one for each processor on your machine.  VS Code uses `--threads auto` by default.
+As an example, the argument `--threads` determines the number of threads that Julia starts with.  If starting `julia` on the command line without specifying any arguments, it will default to 1 (or check an environment variable).  To have Julia automatically choose the number of threads based on the number of processors for your machine, pass the `--threads auto` argument.
 
-The most important choice is the `--project` toggle which determines  whether you want to activate an existing project (or create a new one) when starting the interpreter.  Since a key feature of Julia is to have fully reproducible environments, you will want to do this whenever possible.
+```{note}
+VS Code sets the number of threads automatically based on the number of cores on your machine, but the value can be modified in its `> Preferences: Open User Settings` and then search for `Julia: Num Threads`.
+```
+
+The most important choice is the `--project` toggle which determines whether you want to activate an existing project (or create a new one) when starting the interpreter.  Since a key feature of Julia is to have fully reproducible environments, you will want to do this whenever possible.
 
 ```{note}
 A key difference between Julia and some other package managers is that it is capable of having different versions of each package for different projects - which ensures all projects are fully reproducible by you, your future self, and any other collaborators.  While there is a global set of packages available (e.g. `IJulia.jl` to ensure Jupyter support) you should try to keep the packages in different projects separated.  See the documentation on [environments](https://docs.julialang.org/en/v1/manual/code-loading/#Environments-1) and the [package manager](https://pkgdocs.julialang.org/v1/getting-started/) for more.
