@@ -26,7 +26,7 @@ kernelspec:
 
 While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.  Visual Studio Code (VS Code) in particular, is the most popular open source editor for programming - with a huge set of extensions and strong industry support.
 
-While you can use source code control, run terminals and the REPL ("Read-Evaluate-Print Loop"), without VS Code, we will concentrate on using it as a full IDE for all of these features.
+While you can use source code control, run terminals and the REPL ("Read-Evaluate-Print Loop") without VS Code, we will concentrate on using it as a full IDE for all of these features.
 
 ## Installing VS Code
 
@@ -34,9 +34,10 @@ To install VS Code and the Julia Extension,
 
 1. Follow the instructions for setting up Julia {ref}`on your local computer <jl_jupyterlocal>`.
 2. Install [VS Code](https://code.visualstudio.com/) for your platform and open it
+   - On Windows, during install under `Select Additional Tasks`, choose all options that begin with `Add "Open with Code" action`. This lets you open VS Code from inside File Explorer folders directly.
 3. Install the [VS Code Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) extension
    - After installation of VS Code, you should be able to choose `Install` on the webpage of any extensions and it will open on your desktop.
-   - Otherwise, open the extensions with `<Ctrl-Shift-X>` or selecting extensions in the left-hand side of the VS Code window.  Then search for `Julia` in the Marketplace
+   - Otherwise, open the extensions with `<Ctrl-Shift-X>` or selecting extensions in the left-hand side of the VS Code window.  Then search for `Julia` in the Marketplace.
 
 See the [Julia VS Code Documentation](https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1) for more details.
 
@@ -60,7 +61,7 @@ denote opening the command palette and searching for a command with things like 
 your most recent and common commands.
 ### Optional Extensions and Settings 
 
-Open the settings with `> Preferences: User Settings` (see above for opening the command palette with `<Ctrl-Shift-P>`).
+Open the settings with `> Preferences: Open User Settings` (see above for opening the command palette with `<Ctrl-Shift-P>`).
 
 As a few optional suggestions for working with the settings,
 
@@ -83,7 +84,7 @@ A key benefit of VS Code is that you can use terminals and command-line interfac
 
 Furthermore, in the case of julia (and other languages such as python) this will activate the project automatically.  See the [documentation](https://code.visualstudio.com/docs/editor/integrated-terminal) for more details.
 
-To start a terminal, you can use the `View > Terminal` in the menus, type ``Ctrl+` ``, or click on the bottom bar in VS Code.
+You can open the terminal panel with  `> View: Toggle Terminal` , typing ``Ctrl+` ``, or by clicking on the list of warnings and errors bottom bar in VS Code.  If no existing terminal exists, it will create a new one.
 
 
 (vscode)=
@@ -118,7 +119,7 @@ Type some code as such `f(x) = x + 1` into the file, into the `.jl` file, save i
 :width: 100%
 ```
 
-At this point, the function is available for use within either the code or the REPL.  You can get inline results by adding more code to the file and executing each line with `<Shift=Enter>`.
+At this point, the function is available for use within either the code or the REPL.  You can get inline results by adding more code to the file and executing each line with `<Shift-Enter>`.
 
 ```{figure} /_static/figures/vscode_jl_function_2.png
 :width: 100%
@@ -138,6 +139,12 @@ Because the REPL and the files are synchronized, you can modify functions and si
 
 Next we will go through simple use of the plotting and package management.
 
+```{note}
+VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to `(@v1.6) pkg>` rather than `(hello_world) pkg >` then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose `] activate .`.
+
+You can always see the current package location and details with `] st`.  See [Julia Environments](jl_packages) for more details.
+```
+
 The REPL.  First, type `]` to enter the package management mode, then `add Plots`.  Depending on whether you have done similar operations before, this may download a lot of dependencies.  See below for an example
 
 ```{figure} /_static/figures/vscode_package_added.png
@@ -151,6 +158,8 @@ Add code in the `.jl` file for a simple plot, and it will be shown on a separate
 ```{figure} /_static/figures/vscode_plots.png
 :width: 100%
 ```
+
+To exit package management mode and return to the REPL, type `Ctrl+C`. To then go from the REPL back to the VS Code terminal, type `Ctrl+D`.
 
 ### Executing Files
 
@@ -180,7 +189,7 @@ You can execute a `.jl` file in several ways.
 
 Within a terminal, you can provide the path to the file.  For example,
 ```{code-block} none
-julia --threads --project auto hello.jl
+julia --threads auto --project hello.jl
 ```
 
 See the [REPL](repl_main) section for more details on the commandline options.
@@ -193,12 +202,16 @@ Alternatively, within VS Code itself you can use the `<Ctrl-F5>` to run the new 
 
 To debug your function, first click to the left of a line of code to create a breakpoint (seen as a red dot).
 
-Next, use `<Ctrl-Shift-D>` or select the bug tab on the left in Julia to see
+Next, use `<Ctrl-Shift-D>` or select the run and debug tab on the left in Julia to see
 ```{figure} /_static/figures/debugger_1.png
 :width: 100%
 ```
 
-Then choose the `Run and Debug` option and it will execute `plot_results()` at the bottom of the file, and then stop inside at the breakpoint.
+Then choose the `Run and Debug` option and it will execute `plot_results()` at the bottom of the file, and then stop inside at the breakpoint. 
+
+```{note}
+Some users may see other options like `Run active Julia file` instead of `Run and Debug` in the run and debug tab. 
+```
 
 ```{figure} /_static/figures/debugger_2.png
 :width: 100%
@@ -226,9 +239,13 @@ There are several ways to start the REPL.
 
 The command line options for starting Julia are set to decent defaults for terminals running within VS Code, but you will want to set them yourself if starting the REPL otherwise.
 
-One common choice is to choose the number of threads that Julia should have available.  By default it is only a single thread, while `--threads auto` will tell Julia to create one for each processor on your machine.  VS Code uses `--threads auto` by default.
+As an example, the argument `--threads` determines the number of threads that Julia starts with.  If starting `julia` on the command line without specifying any arguments, it will default to 1 (or check an environment variable).  To have Julia automatically choose the number of threads based on the number of processors for your machine, pass the `--threads auto` argument.
 
-The most important choice is the `--project` toggle which determines  whether you want to activate an existing project (or create a new one) when starting the interpreter.  Since a key feature of Julia is to have fully reproducible environments, you will want to do this whenever possible.
+```{note}
+VS Code sets the number of threads automatically based on the number of cores on your machine, but the value can be modified in its `> Preferences: Open User Settings` and then search for `Julia: Num Threads`.
+```
+
+The most important choice is the `--project` toggle which determines whether you want to activate an existing project (or create a new one) when starting the interpreter.  Since a key feature of Julia is to have fully reproducible environments, you will want to do this whenever possible.
 
 ```{note}
 A key difference between Julia and some other package managers is that it is capable of having different versions of each package for different projects - which ensures all projects are fully reproducible by you, your future self, and any other collaborators.  While there is a global set of packages available (e.g. `IJulia.jl` to ensure Jupyter support) you should try to keep the packages in different projects separated.  See the documentation on [environments](https://docs.julialang.org/en/v1/manual/code-loading/#Environments-1) and the [package manager](https://pkgdocs.julialang.org/v1/getting-started/) for more.
@@ -279,10 +296,10 @@ As we saw before, `]` brings you into package mode.  Some of the key choices are
 
 * `] instantiate` (or `using Pkg; Pkg.instantiate()` in the normal julia mode) will check if you have all of the packages and versions mentioned in the `Project.toml` and `Manifest.toml` files, and install as required.
   - This feature will let you reproduce the entire environment and, if a `Manifest.toml` is available, the exact package versions used for a project.  For example, these lecture notes use [Project.toml](https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Project.toml) and [Manifest.toml](https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Manifest.toml) - which you likely instantiated during installation after downloading these notebooks.
-* `] add Expectations` will add a package (here, `Expectations.jl`) from the activated project file (or the global environment if none is activated)
+* `] add Expectations` will add a package (here, `Expectations.jl`) to the activated project file (or the global environment if none is activated).
 * Likewise, `] rm Expectations` will remove that package.
 * `] st` will show you a snapshot of what you have installed.
-* `] up` will upgrade versions of your packages to the latest versions possible given the graph of compatibility used in each
+* `] up` will upgrade versions of your packages to the latest versions possible given the graph of compatibility used in each.
 
 ```{note}
 On some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit `]` first and then run your commands).
