@@ -202,12 +202,16 @@ Alternatively, within VS Code itself you can use the `<Ctrl-F5>` to run the new 
 
 To debug your function, first click to the left of a line of code to create a breakpoint (seen as a red dot).
 
-Next, use `<Ctrl-Shift-D>` or select the bug tab on the left in Julia to see
+Next, use `<Ctrl-Shift-D>` or select the run and debug tab on the left in Julia to see
 ```{figure} /_static/figures/debugger_1.png
 :width: 100%
 ```
 
-Then choose the `Run active Julia file` option and it will execute `plot_results()` at the bottom of the file, and then stop inside at the breakpoint.
+Then choose the `Run and Debug` option and it will execute `plot_results()` at the bottom of the file, and then stop inside at the breakpoint. 
+
+```{note}
+Some users may see other options like `Run active Julia file` instead of `Run and Debug` in the run and debug tab. 
+```
 
 ```{figure} /_static/figures/debugger_2.png
 :width: 100%
