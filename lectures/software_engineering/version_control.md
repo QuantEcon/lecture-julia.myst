@@ -176,9 +176,7 @@ You will see the automatically generated file for the `LICENSE, .gitignore` and 
 
 
 ```{note}
-To manually clone this to your desktop, you can start a terminal and use `git clone https://github.com/USERNAME/example_repository.git` within the directory you want to clone it to.
-
-If you do this, then you can open the folder within VS Code by either
+To manually clone this to your desktop, you can start a terminal and use `git clone https://github.com/USERNAME/example_repository.git` within the directory you want to clone it to.  After cloning, you can open the folder within VS Code by either
    - Within a terminal on your operating system, navigate that directory and type `code .`
    - On Windows if you installed VS Code with the appropriate option, right click on the folder and choose `Open with Code` - trusting the authors as required on opening the folder.
    - In the VS Code Menu, choose `File/Open Folder...`
@@ -221,13 +219,19 @@ To push these to the server, you can use the `> Git: Push` command or you can cl
 :width: 75%
 ```
 
-If you refresh your web browser with the github repository open, you will see changes and that it now says 2 commits have been made to this project, as well as the last person to modify it.
+### Exploring Commits in VS Code and on the GitHub Website
+
+If you refresh your web browser with the github repository open, you will see changes and that it now shows multiple commits have been made to this project, as well as the last person to modify it.
 
 ```{figure} /_static/figures/vs-code-edits-4.png
 :width: 75%
 ```
 
-Select the "2 Commits" and choose the most recent commit to see a summary of all of the changes
+This functionality will help you track down changes in a project, and in particular, provide tools to track down when functionality may have stopped working or parameters were changed in a project.
+
+On that page, either choose the description of the commit to display it, or choose the entire list (e.g. 2 commits link here)and select the most recent.
+
+This shows a summary of all of the changes between this commit and the last.
 
 ```{figure} /_static/figures/vs-code-edits-5.png
 :width: 100%
@@ -235,12 +239,81 @@ Select the "2 Commits" and choose the most recent commit to see a summary of all
 
 This interface lets you explore all of the lines of code that were modified between different commits to track down changes.
 
-Finally, with the GitLens extension, you can see this information within the files themselves.  Open the `README.md` file and you will see next to each line in the file a nearly transparent description of who changed the line last, when, and what the commit message was.  If you further hover over this you can access even more information on the appropriate commit
+Finally, with the [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens) extension, you can see this information within the files themselves.  Open the `README.md` file, and move your typing cursor to one of the lines within the file.
+
+You will then see a nearly transparent description of (1) who made the last modification to this line; (2) when it occurred; and (3) the message on the commit that modified it.  If you further hover over this you can access even more information on the appropriate commit
 
 ```{figure} /_static/figures/vs-code-edits-6.png
+:width: 50%
+```
+
+You can see more detail on that commit in a variety of ways - such as clicking on that popup.  One convenient approach is in the main Explorer pane (not the Git pane), which as an expandable `Timeline`.  Select this for the `README.md` to compare the current version to another in the timeline,
+
+```{figure} /_static/figures/vs-code-edits-7.png
+:width: 100%
+```
+
+
+### Pulling Changes and the Online Editor
+
+The opposite of pushing changes is to pull changes made externally and previously pushed to GitHub.
+
+To see this workflow, we will make an external modification and bring the changes locally.
+
+Start in the GitHub webpage for your repository and choose the `README.md` file.
+
+You can edit this online by choosing the pen icon, or on some platforms by just typing a `.` and it will open in an online version of VS Code on that repository (which can also be accessed by a change in the url from `github.com` to `github.dev`, e.g.  `https://github.come/USERNAME/example_repository/blob/main/README.md` to  `https://github.dev/USERNAME/example_repository/blob/main/README.md`)
+
+Here is what that UI looks like in that case after editing the text and choosing the Git pane on the webpage (just as in any other VS Code installation)
+
+```{figure} /_static/figures/vs-code-edits-9.png
+:width: 100%
+```
+
+As with the desktop VS Code, we then need to commit this with a message.  However, as it is online you will not be able to have local changes, and it commits without a manual "Push".
+
+Go back to the desktop VS Code, and you will see that the Git bar at the bottom now shows an incoming change.
+
+```{figure} /_static/figures/vs-code-edits-10.png
+:width: 100%
+```
+Notice that the direction of the arrow is the opposite of when we made local modifications.  Whereas moving local commits to the server is called a "Push", bringing external changes down to your desktop is called a "Pull".
+
+But before we pull these changes, we will show how Git can automatically merge them - often on the same file, but at different lines of code).
+
+On your local VS Code, open the `README.txt` and change the title from `# example_repository` to `# example_repository_modified`.  Then save and commit this change with a commit message such as `Local Modification`.  It is important that you modified the top line, and not the same one that you changed in the online editor.
+
+You will notice that at the bottom it now shows one commit coming from the server, and one coming back down.
+
+Now click on that icon on the bottom of the VS Code editor, which will do a Pull and Push of these changes.  Assuming that you were careful not to modify the same line of code, it will determine that these two changes do not clash, and both commits will be added locally and on the server.
+
+```{figure} /_static/figures/vs-code-edits-11.png
 :width: 75%
 ```
 
+
+### Discarding Changes
+A common scenario with Git is that you are making temporary local modifications and want to discard them prior to updating from the server.
+
+```{note}
+The `.gitignore` is very useful for ensuring that some files are always ignored.  For example, temporary files in computations or `.pdf` files which coauthors will compile themselves (or having them automatically compiled with a [GitHub Action](https://github.com/ubcecon/tutorials/blob/master/github_actions.md)).
+```
+
+To see this workflow prior to making a commit:
+1. Save a change to the `README.md`
+2. Open the Git pane, which will show the one modification.
+3. Right click on the modification you wish to discard (can be file-by-file)
+```{figure} /_static/figures/vs-code-edits-8.png
+:width: 100%
+```
+
+By selecting `Discard Changes` you can revert back to the last commit that had been made without any local modifications.
+
+## Reverting Commits
+
+On the other hand, if you have already made a commit, then there is a record of this change in the history which cannot be removed directly.  You can, however, easily revert back that particular change.
+
+For example 
 
 ### Reading and Reverting History
 
