@@ -1,7 +1,6 @@
 # lecture-julia.myst
 
 Source for julia.quantecon.org
-
 ## Local Development 
 
 ### Setup
