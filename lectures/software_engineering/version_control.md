@@ -18,7 +18,7 @@ kernelspec:
 </div>
 ```
 
-# Git, GitHub, and Version Control
+# GitHub, Version Control and Collaboration
 
 ```{contents} Contents
 :depth: 2
@@ -57,7 +57,9 @@ We assume that you have followed the {doc}`VS Code <../software_engineering/tool
        git config --global user.name "Your Name"       
        ```
 4. Ensure that {doc}`VS Code <../software_engineering/tools_editors>` is installed
-5. Optionally, but strongly recommended, is the [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens) extension.  It provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code).
+5. Install [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens) extension.
+  - Optional, but highly recommended.
+  - It provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code).
 
 ### Git vs. GitHub vs. Git Clients
 
@@ -139,7 +141,7 @@ In this case, we're making a public repo `github.com/USERNAME/example_repository
 - Leave off support for the Marketplace Apps `Codecov`, which we will discuss further in the {doc}`testing lecture <../software_engineering/testing>` lecture.
 
 ```{note}
-You can also add an existing folder as a new repository on github, but the [instructions are more involved](https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/adding-an-existing-project-to-github-using-the-command-line#adding-a-project-to-github-without-github-cli).  This can be added with the [GitHub Cli](https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/adding-an-existing-project-to-github-using-the-command-line#adding-a-project-to-github-with-github-cli), installed separately and distinct from the Git CLI.  However, you will likely find it easiest to create a repository in this way, clone it to your desktop, then copy files into the existing repository.
+You can also add an existing folder as a new repository on github, you can use the VS Code features to [initialize and publish](https://code.visualstudio.com/docs/editor/versioncontrol#_initialize-a-repository) a repository to GitHub.  Otherwise, the [instructions are more involved](https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/.
 ```
 
 ### Cloning a Repository
@@ -254,6 +256,7 @@ You can see more detail on that commit in a variety of ways - such as clicking o
 ```
 
 
+(online_editor)=
 ### Pulling Changes and the Online Editor
 
 The opposite of pushing changes is to pull changes made externally and previously pushed to GitHub.
@@ -309,44 +312,80 @@ To see this workflow prior to making a commit:
 
 By selecting `Discard Changes` you can revert back to the last commit that had been made without any local modifications.
 
-## Reverting Commits
+### Reverting Commits
 
 On the other hand, if you have already made a commit, then there is a record of this change in the history which cannot be removed directly.  You can, however, easily revert back that particular change.
 
-For example 
+For example, open `some_file.txt`, make a change, and commit/push the modification.
 
-### Reading and Reverting History
-
-As mentioned, one of the key features of GitHub is the ability to scan through history.
-
-By clicking the "commits" tab on the repo front page,
-we see [this page](https://github.com/quanteconuser/example_repository/commits/master)
-(as an example).
-
-Clicking an individual commit gives us the difference view, (e.g., [example commit](https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/)).
-
-Sometimes, however, we want to not only inspect what happened before, but reverse the commit.
-
-* If you haven't made the commit yet, just right-click the file in the "changes" tab and hit "discard changes" to reset the file to the last known commit.
-* If you have made the commit but haven't pushed to the server yet, go to the "history" tab as above, right click the commit and click "revert this commit." This will create the inverse commit, shown below.
-
-```{figure} /_static/figures/git-revert-commit.png
+To restore an older version, with GitLens installed, go to the `FILE HISTORY` in the source control pane, and right click on the older version you wish to keep.
+```{figure} /_static/figures/vs-code-edits-12.png
 :width: 100%
 ```
 
-### Working across Machines
+Choose `Restore (Checkout)`, which will add a modification into the `Staged Changes`.
 
-Generally, you want to work on the same project but across multiple machines (e.g., a home laptop and a lab workstation).
+Then provide a commit message, and push to the server.
 
-The key is to push changes from one machine, and then to pull changes from the other machine.
+This will not remove the history of the older commit, but will instead produce the opposite changes required to restore it.
 
-Pushing can be done as above.
+See the [VS Code documentation](https://code.visualstudio.com/docs/editor/versioncontrol) for more features.
 
-To pull, simply click pull under the "repository" dropdown at the top of the screen
+### Merge Conflicts
+While in the previous examples, we showed with the [online editor](online_editor) how we could make external changes and Git would automatically merge them if possible, other times it will not be possible.
 
-```{figure} /_static/figures/git-pull.png
+To demonstrate this, follow the same instructions to modify the top line in the `README.md` with the online editor, and commit the change
+```{figure} /_static/figures/vs-code-edits-13.png
+:width: 75%
+```
+
+Then in your desktop, change the same line of code and commit it, but don't push the change
+
+```{figure} /_static/figures/vs-code-edits-14.png
+:width: 75%
+```
+
+As before, at the bottom of the window, it shows a commit going to the server, and another coming down.  Click on that button to push and pull the changes.
+
+```{figure} /_static/figures/vs-code-edits-14.png
+:width: 75%
+```
+
+As expected, it was unable to automatically merge the changes, and requires manual intervention to merge.
+
+It should bring you to the editor to deal with these [merge conflicts](https://code.visualstudio.com/docs/editor/versioncontrol#_merge-conflicts)
+
+```{figure} /_static/figures/vs-code-edits-15.png
 :width: 100%
 ```
+
+Since the change on the server occured before your local change, you will need to address this conflict before pushing your change.  While you can manually modify the files, the user interface lets you navigate and choose which changes to accept.
+
+In that view, choose "Accept Current Change" within the editing screen, and right above the line of code that is highlighted.  This will use your local change and overwrite the one of the server.  Or choose "Accept Incoming Change" to use the server's version.
+
+```{figure} /_static/figures/vs-code-edits-16.png
+:width: 75%
+```
+
+An alternative workflow is to right click on the file, and choose `Accept All Current` or `Accept All Incoming` to choose one version of the file without going through individual decisions.
+
+After modifying:
+1. Save the file.  If you have resolved the 
+2. Choose the `+` next to the modified file in the source control pane, or right click on the file and choose `Stage Changes`
+3. Add a commit message, commit the file
+4. Do a Push to synchronize with the server.
+
+
+See this [youtube video](https://www.youtube.com/watch?v=QmKdodJU-js) for more details.
+
+
+```{note}
+An important "break-glass-in-emergency" feature with git is to completely revert all local changes and reset to the latest commit on the server.
+
+To do this, in a terminal within the repository execute `git reset --hard origin/main` (or `master` if the primary branch is called master rather than main). But remember, this will erase all local changes, so back files up locally if required.
+```
+
+
 
 ## Collaborative Work
 
