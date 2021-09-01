@@ -36,39 +36,42 @@ We use version control because
 * Concurrent editing on code is necessary for collaboration.
 * Version control is an essential part of creating reproducible research.
 
-In this lecture, we'll discuss how to use Git and GitHub.
+In this lecture, we'll discuss how to use Git and GitHub, largely with the built in VS Code support.
+
+We assume that you have followed the {doc}`VS Code <../software_engineering/tools_editors>` instructions.
 
 ## Setup
 
 1. Make sure you create an account on [GitHub.com](http://github.com/).
-    * If you are a student, be sure to use the GitHub [Student Developer Pack](https://education.github.com/pack/).
-    * Otherwise, see if you qualify for a free [Non-Profit/Academic Plan](https://help.github.com/articles/about-github-education-for-educators-and-researchers/).
-    * These come with things like unlimited private repositories, testing support, etc.
-1. Install `git` and the GitHub Desktop application.
-    1. Install [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/).
-    1. Install the [GitHub Desktop](https://desktop.github.com/) application.
-1. Optionally (but strongly recommended):  On Windows, change the default line-ending by:
-    1. Opening a Windows/Powershell console, or the "Git Bash" installed in the previous step.
-    1. Running the following
+    * If you are a student, consider signing up for the GitHub [Student Developer Pack](https://education.github.com/pack/) which gives you free [GitHub Pro](https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-pro)
+    * Otherwise, see if you qualify for a free [Research or Educator Plan](https://help.github.com/articles/about-github-education-for-educators-and-researchers/) which gives you free [GitHub Team](https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-team)
+2. Ensure that [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/) was installed (as it likely was in the {doc}`getting started <../getting_started_julia/getting_started>`
+3. Setup your git username, and change default line-endings if on Windows
+    1. Opening a terminal (on Windows you can use a powershell or the new "Git Bash" installed in the previous step)
+    2. Running the following, where the first two lines are not required on linux and OS/X, and you should replace the email and name in the final lines
        
        ```{code-block} none
        git config --global core.eol lf
        git config --global core.autocrlf false
+       git config --global user.email "you@example.com"
+       git config --global user.name "Your Name"       
        ```
-       
+4. Ensure that {doc}`VS Code <../software_engineering/tools_editors>` is installed
+5. Optionally, but strongly recommended, is the [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens) extension.  It provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code).
 
-### Git vs. GitHub vs. GitHub Desktop
+### Git vs. GitHub vs. Git Clients
 
 To understand the relationship
 
 * Git is an infrastructure for versioning and merging files (it is not specific to GitHub and does not even require an online server).
 * GitHub provides an online service to coordinate working with Git repositories, and adds some additional features for managing projects.
-* GitHub Desktop is just one of many GUI-based clients to make Git and GitHub easier to use.
-
-Later, you may find yourself using alternatives
-
 * GitHub is the market leader for open source projects and Julia, but there are other options, e.g. [GitLab](https://about.gitlab.com/) and [Bitbucket](https://bitbucket.org).
-* Instead of the GitHub Desktop, you may directly use the Git command line, [GitKraken](https://www.gitkraken.com/), or use the Git functionality built into editors such as [Atom](https://atom.io/) or [VS Code](https://code.visualstudio.com/).
+
+We will use the built-in VS Code Git and GitHub support in this lecture, but you may consider using alternatives
+
+* [GitHub Desktop](https://desktop.github.com/) is a clean and simple GUI for git, which is often useful in conjunction with VS Code.
+* [GitKraken](https://www.gitkraken.com/) is a superb, specialized tool which makes many advanced operations intuitive.
+* Or, you may directly use the Git command line, which can be convenient for simple operations (e.g. `git clone https://github.com/QuantEcon/lecture-julia.notebooks` would clone the notebook repository), but tends to be harder for more advanced operations.
 
 Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct products.
 
@@ -100,15 +103,13 @@ This is a key reason why git can store long and complicated histories without co
 
 ### Common Files
 
-In addition, each GitHub repository typically comes with a few standard text files
+In addition, each GitHub repository usually comes with a few standard text files
 
 * A `.gitignore` file, which lists files/extensions/directories that GitHub shouldn't try to track (e.g., LaTeX compilation byproducts).
-* A `README.md` file, which is a Markdown file which GitHub puts on the repository website.
+* A `README.md` file, which is a [Markdown](https://guides.github.com/features/mastering-markdown/) file which provides GitHub displays by default as the homepage when accessing the repository online.
 * A `LICENSE.txt` file, which describes the terms under which the repository's contents are made available.
 
 For an example of all three, see the [Expectations.jl](https://github.com/quantecon/expectations.jl/) repo.
-
-Of these, the `README.md` is the most important, as GitHub will display it as [Markdown](https://guides.github.com/features/mastering-markdown/) when accessing the repository online.
 
 (new_repo_workflow)=
 ## Individual Workflow
@@ -131,15 +132,19 @@ We can then configure repository options as such
 :width: 100%
 ```
 
-In this case, we're making a public repo `github.com/quantecon_user/example_repository`, which will come with a `README.md`, is licensed under the MIT License, and will ignore Julia compilation byproducts.
+In this case, we're making a public repo `github.com/USERNAME/example_repository` where `USERNAME` is your GitHub account name.  The options chosen are:
+- Add in a `README.md`.
+- License under the MIT open-source License.
+- Ignore Julia compilation byproducts in the `.gitignore`
+- Leave off support for the Marketplace Apps `Codecov`, which we will discuss further in the {doc}`testing lecture <../software_engineering/testing>` lecture.
 
-**Note** This workflow is for creating projects *de novo*; the process for turning existing directories into git repos is a bit more complicated.
-
-In particular, in that case we recommend that you create a new repo via this method, then copy in and commit your files (see below), and then delete the old directory.
+```{note}
+You can also add an existing folder as a new repository on github, but the [instructions are more involved](https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/adding-an-existing-project-to-github-using-the-command-line#adding-a-project-to-github-without-github-cli).  This can be added with the [GitHub Cli](https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/adding-an-existing-project-to-github-using-the-command-line#adding-a-project-to-github-with-github-cli), installed separately and distinct from the Git CLI.  However, you will likely find it easiest to create a repository in this way, clone it to your desktop, then copy files into the existing repository.
+```
 
 ### Cloning a Repository
 
-The next step is to get this to our local machine
+The next step is to get this to our local machine.  If you click on the `<> Code` button on the repositories website, you will see a dropdown such as
 
 ```{figure} /_static/figures/git-clone.png
 :width: 100%
@@ -147,39 +152,95 @@ The next step is to get this to our local machine
 
 This dropdown gives us a few options
 
-* "Open in Desktop" will call to the GitHub Desktop application that we've installed.
-* "Download Zip" will download the directory *without the .git* subdirectory (avoid this option).
-* The copy/paste button next to the link lets us use the command line, i.e. `git clone https://github.com/quanteconuser/example_repository.git`.
+* The copy button below the `Clone` with `HTTPS` can be used by either the commandline and other tools.
+* `Open in Desktop` will call to the GitHub Desktop application if you installed it
+* `Download Zip` will download the directory *without the .git* subdirectory (avoid this option, as it defeats the purpose of version control).
 
-### Making and Managing Changes
+
+
+We will download the repository using the built-in VS Code support.
+1. Copy the https URL in that dropdown (e.g. `https://github.com/USERNAME/example_repository.git`)
+2. Start VS Code
+3. Use `Ctrl+Shift+P` to open the command bar, and choose `> Git: Clone`
+4. At this point, you can paste in the copied URL or choose `Clone from GitHub` and then it will let you select your repositories after logging in.
+   ```{figure} /_static/figures/vs-code-clone.png
+   :width: 100%
+   ```
+5. Select a location (e.g. `c:\users\USERNAME\GitHub`) which will clone the repository (e.g. into `c:\users\USERNAME\GitHub\example_repository`, which holds both the files themselves and the version information for Git).  This folder then has all of the information associated with this repository, and no other inform
+6. After the repository is cloned, you can choose to `Open in a New Window`.
+   ```{figure} /_static/figures/vs-code-done-clone.png
+   :width: 100%
+   ```
+
+You will see the automatically generated file for the `LICENSE, .gitignore` and `README.md`.
+
+
+```{note}
+To manually clone this to your desktop, you can start a terminal and use `git clone https://github.com/USERNAME/example_repository.git` within the directory you want to clone it to.
+
+If you do this, then you can open the folder within VS Code by either
+   - Within a terminal on your operating system, navigate that directory and type `code .`
+   - On Windows if you installed VS Code with the appropriate option, right click on the folder and choose `Open with Code` - trusting the authors as required on opening the folder.
+   - In the VS Code Menu, choose `File/Open Folder...`
+```
+
+### Making, Committing, and Pushing Changes
 
 Now that we have the repository, we can start working with it.
 
-For example, let's say that we've amended the `README.md` (using our editor of choice), and also added a new file `economics.jl` which we're still working on.
+Within VS Code, make the following changes:
+1. Open the `README.md` and add some text.
+2. Add a new file called `some_file.txt` with some text in it.  You can do this with the menus, or by right clicking in the Files panel and selecting "New File"
+3. Another new file called `garbage_file.tmp` with some text in it.
+4. Finally, in the `.gitignore`, add `*.tmp` at the end.
 
-Returning to GitHub Desktop, we should see something like
-
-```{figure} /_static/figures/git-desktop-commit.png
-:width: 50%
-```
-
-To select individual files for commit, we can use the check boxes to the left of each file.
-
-Let's say you select only the README to commit. Going to the history tab should show you our change
-
-```{figure} /_static/figures/git-desktop-commit2.png
+Your editor should look something like
+```{figure} /_static/figures/vs-code-edits-1.png
 :width: 100%
 ```
 
-The Julia file is unchanged.
+Note that the panel on the left hand side is highlighted with 3 changes.  Select that tab to see the current modifications relative to the current version on github.
 
-### Pushing to the Server
+This shows three changes:
+1. `README.md` is modified.
+2. `.gitignore` is modified.
+3. `some_file.txt` is a new file.
 
-As of now, this commit lives only on our local machine.
+Note that `garbage_file.tmp` is not listed, as the `*.tmp` extension was ignored in the `.gitignore`.
+If you choose on a file, such as the `README.md` in this panel, it will open up the file to show all of the changes relative to the last commit.  For example,
+```{figure} /_static/figures/vs-code-edits-2.png
+:width: 100%
+```
 
-To upload it to the server, you can simply click the "Push Origin" button at the top the screen.
+Let us push these changes to github.  Add text in the "Message" in this panel, and then click on the checkmark to commit it.
 
-The small "1^" to the right of the text indicates we have one commit to upload.
+As git is a decentralized version control system, this change is now only local to your machine.  You can make a variety of changes locally and only push to GitHub when you are ready.
+
+To push these to the server, you can use the `> Git: Push` command or you can click on the bottom bar of vscode, which should show that one commit is ready to be uploaded and none are ready to be downloaded.
+```{figure} /_static/figures/vs-code-edits-3.png
+:width: 75%
+```
+
+If you refresh your web browser with the github repository open, you will see changes and that it now says 2 commits have been made to this project, as well as the last person to modify it.
+
+```{figure} /_static/figures/vs-code-edits-4.png
+:width: 75%
+```
+
+Select the "2 Commits" and choose the most recent commit to see a summary of all of the changes
+
+```{figure} /_static/figures/vs-code-edits-5.png
+:width: 100%
+```
+
+This interface lets you explore all of the lines of code that were modified between different commits to track down changes.
+
+Finally, with the GitLens extension, you can see this information within the files themselves.  Open the `README.md` file and you will see next to each line in the file a nearly transparent description of who changed the line last, when, and what the commit message was.  If you further hover over this you can access even more information on the appropriate commit
+
+```{figure} /_static/figures/vs-code-edits-6.png
+:width: 75%
+```
+
 
 ### Reading and Reverting History
 
