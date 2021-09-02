@@ -55,6 +55,7 @@ We assume that you have followed the {doc}`VS Code <../software_engineering/tool
        git config --global core.autocrlf false
        git config --global user.email "you@example.com"
        git config --global user.name "Your Name"   
+       git config --global github.user "GITHUBUSERNAME"   
        ```
 4. Ensure that {doc}`VS Code <../software_engineering/tools_editors>` is installed
 5. Install [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens) extension.
