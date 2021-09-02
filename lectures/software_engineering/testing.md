@@ -39,182 +39,195 @@ Benefits include
 * Writing tests that run locally, *and automatically on the GitHub server*.
 * Having GitHub test your project across operating systems, Julia versions, etc.
 
-(project_setup)=
-## Project Setup
+**Note:** Throughout this lecture, important points and sequential workflow steps are listed as bullets.
 
-### Account Setup
 
-#### Travis CI
+## Introduction and Setup
 
-As we'll see later, Travis is a service that automatically tests your project on the GitHub server.
+Much of the software engineering and continuous integration (CI) will be done through [GitHub Actions](https://github.com/features/actions).
 
-First, we need to make sure that your GitHub account is set up with Travis CI and Codecov.
+The GitHub actions execute as isolated and fully reproducible environments on the cloud (using containers), and are initiated through various actions on the GitHub.  In particular, these are typically initiated through:
+- Making commits on the main branch of a repository
+- Creating a PR on a repository, or pushing commits to it.
+- [Tagging a release](https://docs.github.com/en/github/administering-a-repository/releasing-projects-on-github/managing-releases-in-a-repository) of a repository, which provides a snapshot at a particular commit.
 
-As a reminder, make sure you signed up for the GitHub [Student Developer Pack](https://education.github.com/pack/) or [Academic Plan](https://help.github.com/articles/applying-for-an-academic-research-discount/) if eligible.
+For publicly available repositories, GitHub provides free minutes for executing these actions, whereas there are limits on the execution time for private repositories - though signing up for the GitHub academic plans previous discussed (i.e, the [Student Developer Pack](https://education.github.com/pack/) or [Academic/Researcher plans](https://help.github.com/articles/about-github-education-for-educators-and-researchers/)) provides additional free minutes.
 
-Navigate to the [travis-ci.com website](https://travis-ci.com/) and click "sign up with GitHub" -- supply your credentials.
+While you may think of a ``Package'' as a shared and maintained set of reusable code, with Julia it will turn out to be the most useful way to organize personal and private projects or the code associated with a particular paper.  The primary benefit of using a package workflow is **reproducibility** for yourself, your future self, and collaborators.
 
-If you get stuck, see the [Travis tutorial](https://docs.travis-ci.com/user/tutorial/).
+In addition, you will find the testing workflow as an essential element of working on even individual projects, since it will prevent you from making accidental breaking changes at points in the future - or when you come back to the code after several years.
 
-#### Codecov
+(testing_account_setup)=
+### GitHub and Codecov Account Setup
 
-Codecov is a service that tells you how comprehensive your tests are (i.e., how much of your code is actually tested).
+This lecture assumes you have completed the setup of VS Code and Git in the  {doc}`version control <../software_engineering/version_control>` and  {doc}`tools <../software_engineering/tools_editors>`  lectures.  In particular,
+- Ensure you have setup a GitHub account, and connected it to VS Code.
+- Installed and setup VS Code's Julia extension.
+- Set ` git config --global user.email "you@example.com"`, `git config --global user.name "Your Name"` and `git config --global github.user "YOURGITHUBNAME"` in your terminal.
 
-To sign up, visit the [Codecov website](http://codecov.io/), and click "sign up"
+
+The only other service that is necessary for the complete software engineering stack is a code coverage provider.
+
+For these lectures, visit [Codecov website](https://about.codecov.io/sign-up/).
+
+Installation instructions are [here](https://docs.codecov.com/docs/quick-start#getting-started)
+
+To summarize: sign up, and sign into it with `GitHub`.  You may need to provide permissions for Codecov to access GitHub, follow the provided authorization instructions.
 
 ```{figure} /_static/figures/codecov-1.png
 :width: 100%
 ```
+<!-- 
+TODO: I think this has changed and we should do it later in the workflow?
 
-Next, click "add a repository" and *enable private scope* (this allows Codecov to service your private projects).
+Next, for any private repositories you can click "add a repository" and *enable private scope* (this allows Codecov to service your private projects).
 
 The result should be
 
 ```{figure} /_static/figures/codecov-2.png
-:width: 100%
+:width: 50%
+``` 
+-->
+
+### PkgTemplates.jl
+
+While you can create your Julia package manually, using a template will ensure that you have everything in the standard format.
+
+If you have activated the notebook repositories, then `PkgTemplates.jl` will be installed.
+
+Otherwise, start a `julia` REPL outside of a particular project (or do an `] activate` to deactivate the existing project, and use the global environment) and
+* Install [PkgTemplates](https://github.com/invenia/PkgTemplates.jl/) with 
+```{code-block} none
+] add PkgTemplates
 ```
 
-This is all we need for now.
+While we typically insist on having very few packages in the global environment, and always working with a `Project.toml` file, `PkgTemplates` is primarily used without an existing project.
 
+(project_setup)=
+## Project Setup
 
-**Note:** Before these steps, make sure that you've either completed the {doc}`version control <../software_engineering/version_control>` lecture or run.
+To create a project, first choose the parent directory you wish to create the project
 
-```{code-block} julia
-git config --global user.name "Your Name"
+* In an external terminal, navigate to this parent directory.
+```{note}
+On Windows, given that you have installed Git you could right click on the folder in explorer and choose `Git Bash Here`.  Even better, install the [Windows Terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started) and choose `Open in Windows Terminal`.
 ```
 
-**Note:** Throughout this lecture, important points and sequential workflow steps are listed as bullets.
+* Start a julia terminal with `julia`
 
-To set up a project on Julia:
+* Then
 
-* Load the [PkgTemplates](https://github.com/invenia/PkgTemplates.jl/) package.
-
-```{code-block} julia
+```{code-block} none
 using PkgTemplates
 ```
 
 * Create a *template* for your project.
 
-This specifies metadata like the license we'll be using (MIT by default), the location (`~/.julia/dev` by default), etc.
+This specifies metadata like the license we'll be using (MIT by default), the location, etc.
 
-```{code-block} julia
-ourTemplate = Template(;user="quanteconuser", plugins = [TravisCI(), Codecov()], manifest = true)
+
+We will create this with a number of useful options, but see [the documentation](https://invenia.github.io/PkgTemplates.jl/stable/user/#A-More-Complicated-Example-1) for more.
+
+```{code-block} none
+t = Template(;dir = ".", julia = v"1.6",
+              plugins = [
+                Git(; manifest=true, branch = "main"),
+                Codecov(),
+                GitHubActions(),
+                !CompatHelper,
+                !TagBot
+              ])
 ```
 
-**Note**: Make sure you replace the `quanteconuser` with your GitHub ID.
+```{note}
+If you did not set the `github.user` in the setup, you may need to pass in `user = YOURUSERNAME` as an additional argument.  In addition, this turns off some important features (e.g. `CompatHelper` and `TagBot`) and leaves out others (e.g. `Documenter{GitHubActions}`) which you would want for a more formal package.
+
+Alternatively, `PkgTemplates` has an interactive mode, which you can prompt with `t = Template(;interactive = true)` to choose all of your selections within the terminal.
+```
 
 * Create a specific project based off this template
 
-```{code-block} julia
-generate("ExamplePackage.jl", ourTemplate)
+```{code-block} none
+t("MyProject")
 ```
 
-If we navigate to the package directory, we should see something like the following.
+* Open the project in VS Code by right-clicking in the explorer for the new `MyProject` folder, or exiting the Julia REPL and
+```{code-block} none
+cd MyProject
+code .
+```
 
-```{figure} /_static/figures/testing-dir.png
+The project should open in VS Code, and look something like 
+
+```{figure} /_static/figures/new_package_vscode.png
 :width: 100%
 ```
 
-As a reminder, the location of your `.julia` folder can be found by running `DEPOT_PATH[1]` in a REPL .
-
-**Note:** On Mac, this may be hidden; you can either start a terminal, `cd ~` and then `cd .julia`, or make [hidden files visible](https://ianlunn.co.uk/articles/quickly-showhide-hidden-files-mac-os-x-mavericks/) in the Finder.
-
-### Adding a Project to Git
+### Adding a Project to GitHub
 
 The next step is to add this project to Git version control.
 
-* Open the repository screen in your account as discussed previously.
+* First, we will need to create an empty GitHub Repository of the same name (but with a `.jl` extension).
 
-We'll want the following settings
-
-```{figure} /_static/figures/testing-git1.png
+```{figure} /_static/figures/new_package_vscode_2.png
 :width: 100%
 ```
 
-In particular
 
-* The repo you create should have the same name as the project we added.
+In particular, ensure that 
+
+* The repo you create should have the same name as the project we added (except with a `.jl` extension)
 * We should leave the boxes unchecked for the `README.md`, `LICENSE`, and `.gitignore`, since these are handled by `PkgTemplates`.
+* If available, Grant access to `CodeCov` for this new repository.
 
-Then,
+Then, we can now publish the generated package in VS Code to this empty repository.
 
-* Drag and drop your folder from your `~/.julia/dev` directory to GitHub Desktop.
-* Click the "publish branch" button to upload your files to GitHub.
+Choose the icon to publish the branch as we did in previous lectures
 
-If you navigate to your git repo (ours is [here](https://github.com/quanteconuser/ExamplePackage.jl/)), you should see something like
-
-```{figure} /_static/figures/testing-git2.png
+```{figure} /_static/figures/new_package_vscode_3.png
 :width: 100%
 ```
 
-**Note:** Be sure that you don't separately clone the repo you just added to another location (i.e., to your desktop).
-
-A key note is that you have some set of files on your local machine (here in `~/.julia/dev/ExamplePackage.jl`) and git is plugged into those files.
-
-For convenience, you might want to create a shortcut to that location somewhere accessible.
-
-### Adding a Project to the Julia Package Manager
-
-We also want Julia's package manager to be aware of the project.
-
-* Open a REPL in the newly created project directory, either by noting the path printed above, or by running the following in a REPL.
-
-```{code-block} julia
-cd(joinpath(DEPOT_PATH[1], "dev", "ExamplePackage"))
+At which point, if you refresh the webpage, it should be filled with the generated files
+```{figure} /_static/figures/new_package_vscode_4.png
+:width: 100%
 ```
+### (Optionally) Adding the Package to the Global Environment
 
-Note the lack of `.jl`!
+Optionally, you may wish to be able to use your package within other projects on your computer.
 
-* Run the following
+To do this, you can add it to the main environment by starting Julia in the `MyProject` folder, and without activating the project (i.e. just `julia`).
 
-```{code-block} julia
-] activate
-```
+Then
 
-to get into the main Julia environment (more on environments in the second half of this lecture).
-
-* And run
-
-```{code-block} julia
+```{code-block} none
 ] dev .
 ```
 
-to add the package.
+Given this, other julia code can use `using MyProject` and, because the global environment stacks on any project files, it will be available.
 
-You can see the change reflected in our default package list by running
+You can see the change reflected in our default package list by running `] st`
 
-```{code-block} julia
-] st
+```{code-block} none
+      Status `C:\Users\jesse\.julia\environments\v1.6\Project.toml`
+  [7073ff75] IJulia v1.23.2
+  [a361046e] MyProject v0.1.0 `..\..\..\Documents\GitHub\MyProject`
+  [14b8a8f1] PkgTemplates v0.7.18
+  [295af30f] Revise v3.1.19
 ```
 
 For more on the package mode, see the {doc}`tools and editors <../software_engineering/tools_editors>` lecture.
 
-### Using the Package Manager
-
-Now, from any Julia terminal in the future, we can run
-
-```{code-block} none
-using ExamplePackage
-```
-
-To use its exported functions.
-
-We can also get the path to this by running
-
-```{code-block} none
-using ExamplePackage
-pathof(ExamplePackage) # returns path to src/ExamplePackage.jl
-```
-
+However, this step not required if you wish to use this package as a self-contained project.
 ## Project Structure
 
 Let's unpack the structure of the generated project
 
-* The first directory, `.git`, holds the version control information.
-* The `src` directory contains the project's source code -- it should contain only one file (`ExamplePackage.jl`), which reads
+* A hidden directory, `.git`, holds the version control information.
+* The `src` directory contains the project's source code -- it should contain only one file (`MyProject.jl`), which reads
   
   ```{code-block} none
-  module ExamplePackage
+  module MyProject
   
   greet() = print("Hello World!")
   
@@ -224,10 +237,10 @@ Let's unpack the structure of the generated project
 * Likewise, the `test` directory should have only one file (`runtests.jl`), which reads
   
   ```{code-block} none
-  using ExamplePackage
+  using MyProject
   using Test
   
-  @testset "ExamplePackage.jl" begin
+  @testset "MyProject.jl" begin
       # Write your own tests here.
   end
   ```
@@ -242,6 +255,64 @@ The other important text files for now are
 In particular, the `Project.toml` contains a list of dependencies, and the `Manifest.toml` specifies their exact versions and sub-dependencies.
 
 * The `.gitignore` file (which may display as an untitled file), which contains files and paths for `git` to ignore.
+
+### GitHub Actions and CI
+
+The final file is a GitHub Actions file in the `.github/workflows` folder, called `CI.yml` with the text similar to
+```{code-block} none
+name: CI
+on:
+  - push
+  - pull_request
+jobs:
+  test:
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - '1.6'
+          - 'nightly'
+        os:
+          - ubuntu-latest
+        arch:
+          - x64          
+    steps:
+      - uses: actions/checkout@v2
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+      - uses: actions/cache@v1
+        env:
+          cache-name: cache-artifacts
+        with:
+          path: ~/.julia/artifacts
+          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-test-${{ env.cache-name }}-
+            ${{ runner.os }}-test-
+            ${{ runner.os }}-
+      - uses: julia-actions/julia-buildpkg@v1
+      - uses: julia-actions/julia-runtest@v1
+      - uses: julia-actions/julia-processcoverage@v1
+      - uses: codecov/codecov-action@v1
+        with:
+          file: lcov.info
+```
+
+This file provides the rules for continuous integration running on changes to this repository.  You will not need to modify it.
+
+To summarize some of the features, the
+
+* `push` and `pull_request` at the top says that any push to the repository or creation of a pull request will trigger this workflow.
+* `matrix` establishes the set of operating systems, architectures, and Julia versions to test
+* `actions/cache` speeds up execution by storing dependent packages and artifacts
+* `julia-runtest` will execute the `test/runtests.jl` automatically and determine whether it is successful
+* `codecov/codecov-action` analyzes which lines of code were executed by `test/runtests.jl` and uploads to Codecov
+
+TODO!!!!!!! MAKE CHANGE AND SHOW CI AND CODECOV
 
 ## Project Workflow
 

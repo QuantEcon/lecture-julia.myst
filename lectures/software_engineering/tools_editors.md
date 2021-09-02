@@ -247,8 +247,18 @@ VS Code sets the number of threads automatically based on the number of cores on
 
 The most important choice is the `--project` toggle which determines whether you want to activate an existing project (or create a new one) when starting the interpreter.  Since a key feature of Julia is to have fully reproducible environments, you will want to do this whenever possible.
 
+To emphasize this point, this is an example of the `]st ` showing the global environment has only the bare minimum of packages installed.  With this workflow, all other packages are installed only when a given project is activated.
+```{code-block} none
+(@v1.6) pkg> st
+      Status `C:\Users\jesse\.julia\environments\v1.6\Project.toml`
+[7073ff75] IJulia v1.23.2
+[14b8a8f1] PkgTemplates v0.7.18
+[295af30f] Revise v3.1.19
+```
+
 ```{note}
 A key difference between Julia and some other package managers is that it is capable of having different versions of each package for different projects - which ensures all projects are fully reproducible by you, your future self, and any other collaborators.  While there is a global set of packages available (e.g. `IJulia.jl` to ensure Jupyter support) you should try to keep the packages in different projects separated.  See the documentation on [environments](https://docs.julialang.org/en/v1/manual/code-loading/#Environments-1) and the [package manager](https://pkgdocs.julialang.org/v1/getting-started/) for more.
+
 ```
 
 If you start the terminal without activating a project, you can activate it afterwards with `] activate .` or `using Pkg; Pkg.activate()`.
