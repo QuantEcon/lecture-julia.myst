@@ -41,6 +41,12 @@ Benefits include
 
 **Note:** Throughout this lecture, important points and sequential workflow steps are listed as bullets.
 
+The goal of this style of coding is to ensure that [test driven development](test_driven) is possible, which will help ensure that your research is reproducible by yourself, your future self, and others - while avoiding accidental mistakes that can silently break old code and change results.
+
+It furthermore, it makes collaboration on code much more feasible - allowing individuals to work on different parts of the code without fear of breaking others work.
+
+Finally, since many economics projects occur over multiple years - this will help your future self to reproduce your results and make changes without remembering all of the subtle tricks required to get things operational.
+
 
 ## Introduction and Setup
 
@@ -89,19 +95,25 @@ The result should be
 ``` 
 -->
 
+(testing_pkg_installation)=
 ### PkgTemplates.jl
 
 While you can create your Julia package manually, using a template will ensure that you have everything in the standard format.
 
-If you have activated the notebook repositories, then `PkgTemplates.jl` will be installed.
+If you have activated the notebook repositories, then `PkgTemplates.jl` will already be installed.
 
 Otherwise, start a `julia` REPL outside of a particular project (or do an `] activate` to deactivate the existing project, and use the global environment) and
-* Install [PkgTemplates](https://github.com/invenia/PkgTemplates.jl/) with 
+* Install [PkgTemplates](https://github.com/invenia/PkgTemplates.jl/)  
 ```{code-block} none
 ] add PkgTemplates
 ```
 
 While we typically insist on having very few packages in the global environment, and always working with a `Project.toml` file, `PkgTemplates` is primarily used without an existing project.
+
+
+```{note}
+Another workflow is to use the [Revise.jl](https://github.com/timholy/Revise.jl) package is optional, it is strongly encouraged since it automatically compiling functions in your package as they are changed.  See [below](editing_package_code) for more.T
+
 
 (project_setup)=
 ## Project Setup
@@ -151,7 +163,7 @@ Alternatively, `PkgTemplates` has an interactive mode, which you can prompt with
 t("MyProject")
 ```
 
-* Open the project in VS Code by right-clicking in the explorer for the new `MyProject` folder, or exiting the Julia REPL and
+* Open the project in VS Code by right-clicking in the explorer for the new `MyProject` folder, or exiting the Julia REPL (via `exit()`) and then
 ```{code-block} none
 cd MyProject
 code .
@@ -167,7 +179,7 @@ The project should open in VS Code, and look something like
 
 The next step is to add this project to Git version control.
 
-* First, we will need to create an empty GitHub Repository of the same name (but with a `.jl` extension).
+* First, we will need to create an empty GitHub Repository of the same name (but with a `.jl` extension).   Choose the `+` button to "Create a new repository"
 
 ```{figure} /_static/figures/new_package_vscode_2.png
 :width: 100%
@@ -176,7 +188,7 @@ The next step is to add this project to Git version control.
 
 In particular, ensure that 
 
-* The repo you create should have the same name as the project we added (except with a `.jl` extension)
+* The repo you create should have the same name as the project we added (except with a `.jl` extension).
 * We should leave the boxes unchecked for the `README.md`, `LICENSE`, and `.gitignore`, since these are handled by `PkgTemplates`.
 * If available, Grant access to `CodeCov` for this new repository.
 
@@ -188,10 +200,18 @@ Choose the icon to publish the branch as we did in previous lectures
 :width: 100%
 ```
 
+Do not accept the request to create a `Pull Request` when you push the branch.
+
 At which point, if you refresh the webpage, it should be filled with the generated files
 ```{figure} /_static/figures/new_package_vscode_4.png
 :width: 100%
 ```
+
+Furthermore, you will see a badge either saying that `CI | passing` or `CI | unknown` next to another for `codecov | unknown`.
+
+These badges provide a summary of the current state of the `main` branch relative to the GitHub Actions, as we will see below.  If a repository has broken any tests on the main branch, it will show `CI | failed` in red.
+
+(add_to_global)=
 ### (Optionally) Adding the Package to the Global Environment
 
 Optionally, you may wish to be able to use your package within other projects on your computer.
@@ -213,7 +233,7 @@ You can see the change reflected in our default package list by running `] st`
   [7073ff75] IJulia v1.23.2
   [a361046e] MyProject v0.1.0 `..\..\..\Documents\GitHub\MyProject`
   [14b8a8f1] PkgTemplates v0.7.18
-  [295af30f] Revise v3.1.19
+  [295af30f] Revise v3.1.19  
 ```
 
 For more on the package mode, see the {doc}`tools and editors <../software_engineering/tools_editors>` lecture.
@@ -246,7 +266,7 @@ Let's unpack the structure of the generated project
   ```
   
 
-In particular, the workflow is to export objects we want to test (`using ExamplePackage`), and test them using Julia's `Test` module.
+In particular, the workflow is to export objects we want to test (`using MyProject`), and test them using Julia's `Test` module.
 
 The other important text files for now are
 
@@ -312,8 +332,6 @@ To summarize some of the features, the
 * `julia-runtest` will execute the `test/runtests.jl` automatically and determine whether it is successful
 * `codecov/codecov-action` analyzes which lines of code were executed by `test/runtests.jl` and uploads to Codecov
 
-TODO!!!!!!! MAKE CHANGE AND SHOW CI AND CODECOV
-
 ## Project Workflow
 
 ### Dependency Management
@@ -327,71 +345,97 @@ The actual files are written in the [TOML language](https://github.com/toml-lang
 This information is the name of every package we depend on, along with the exact versions of those packages.
 
 This information (in practice, the result of package operations we execute) will
-be reflected in our `ExamplePackage.jl` directory's TOML, once that environment is activated (selected).
+be reflected in our `MyProject.jl` directory's TOML, once that environment is activated (selected).
 
 This allows us to share the project with others, who can exactly reproduce the state used to build and test it.
 
-See the [Pkg3 docs](https://docs.julialang.org/en/v1/stdlib/Pkg/) for more information.
+See the [Pkg docs](https://docs.julialang.org/en/v1/stdlib/Pkg/) for more information.
 
 #### Pkg Operations
 
-For now, let's just try adding a dependency
+For now, let's just try adding a dependency.  Recall the package operations described in the {doc}`tools and editors <../software_engineering/tools_editors>` lecture.
 
-* Activate the package environment (to be run from the base, `v1.1` environment)
+* Within VS Code, start a REPL (e.g. `> Julia: Start REPL`), type `]` to enter the Pkg mode.  Verify that the cursor says `(My Project) pkg>` to ensure that it has activated your particular project.  Otherwise, if it says `(@1.6) pkg>`, then you have launched Julia outside of VSCode or through a different mechanism, and you might need to ensure you are in the correct directory and then `] activate .` to activate the project file in it.
+* Then, add in the `Expectations.jl` package
 
-```{code-block} julia
-] activate ExamplePackage
-```
-
-This tells Julia to write the results of package operations to ExampleProject's TOML,
-: and use the versions of packages specified there.
-
-Note that the base environment isn't special, except that it's what's loaded by a freshly-started REPL or Jupyter notebook.
-
-* Add a package
-
-```{code-block} julia
-] add Expectations
-```
-
-We can track changes in the TOML, as before.
-
-Here's the `Manifest.toml`
-
-```{figure} /_static/figures/testing-atom-manifest.png
+```{figure} /_static/figures/vscode_add_package.png
 :width: 100%
 ```
 
-We can also run other operations, like `] up`, `] precompile`, etc.
-
-Package operations are listed in detail in the {doc}`tools and editors <../software_engineering/tools_editors>` lecture.
-
-Recall that, to quit the active environment and return to the base `(v1.1)`, simply run
-
-```{code-block} julia
-] activate
+After installing a large web of dependencies, this tells Julia to write the results of package operations to the activated `Project.toml` file, which should now include text such as
+```{code-block} none
+[deps]
+Expectations = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
 ```
 
-### Writing Code
+From this point, anytime the project is activated, the [Expectations.jl](https://github.com/QuantEcon/Expectations.jl) package will be available with `using Expectations`.
 
-The basic idea is to work in `tests/runtests.jl`, while reproducible functions should go in the `src/ExamplePackage.jl`.
+Furthermore, different projects could use different versions of this package.   We could add additional instructions on [compatability](https://pkgdocs.julialang.org/dev/compatibility/) within the file if we choose.
 
-For example, let's say we add `Distributions.jl`
+But almost more importantly, the `Manifest.toml` file now contains a complete snapshot of the particular `Expectations` package and every other dependency used in your project.
 
-```{code-block} julia
-] activate ExamplePackage
+For example, the following is an example snippet of one manifest here:
+```{code-block} none
+[[Expectations]]
+deps = ["Compat", "Distributions", "FastGaussQuadrature", "LinearAlgebra", "SpecialFunctions"]
+git-tree-sha1 = "0f906c5edffe266acbf471734ac942d4aa9b7235"
+uuid = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
+version = "1.7.1"
+
+[[FastGaussQuadrature]]
+deps = ["LinearAlgebra", "SpecialFunctions", "StaticArrays"]
+git-tree-sha1 = "5829b25887e53fb6730a9df2ff89ed24baa6abf6"
+uuid = "442a2c76-b920-505d-bb47-c5924d526838"
+version = "0.4.7"
+```
+This shows that that the current manifest has:
+- version 1.7.1 of the `Expectations` packages
+- the `Expectations` package at this version has a variety of dependencies (i.e. `deps = `) such as the `FastGaussQuadrature`.
+- the `FastGaussQuadrature` package at version `0.4.7` which itself has `StaticArrays` as a dependency, etc.
+
+The manifest file then provides a fully reproducible environment with which someone can install not only the specific version of this package, but also a feasible network of all dependencies which all fulfill the compatability requirements of each.
+
+We have used this feature before in our setup process, where we activated a `Project.toml` and used `] instantiate`.  If there is a manifest file in the same directory as the package, then that command will install the exact set of versions listed in the manifest for all packages.  If a manifest file does not exist, then it will attempt to find a compatible set of packages that fulfill your `Project.toml` file, and generate one.
+
+```{note}
+For a typical project intended to be for reproducible research, you should always keep the `Manifest.toml` in source control so that you can reproduce every stage of the project.  This can save you when you need to roll back to an older version to track down changes.  However, when creating reusable packages largely intended for others to have as dependencies, you will typically not include the `Manifest.toml`.
 ```
 
-```{code-block} julia
-] add Distributions
+(test_driven)=
+### Test-driven Development
+
+The basic idea of test-driven development is to create a set of tests of individual functions in `test/runtests.jl` (and files it includes), while keeping the core functionality in  `src/MyProject.jl` (and files it includes).
+
+This will be part of a coherent set of strategies to ensure everything is reproducible since:
+- Writing all of the checks on your underlying functions to be called from  `test/runtests.jl` lets you can avoid accidentally breaking old functionality.  Breaking of old code is called a [test regression](https://en.wikipedia.org/wiki/Regression_testing) and is especially problematic with research code.
+- The full snapshot of all of the packages associated with a particular version of the project (i.e. a commmit) in a `Manifest.toml`, anyone can reproduce the exact environment simply from that point in the source code tree.
+- Any changes to the code automatically run in the CI (i.e. the GitHub Action) after every modification, you and any collaborators will be able to automatically track changes
+- The code coverage will give you a sense of how much of the code you have actually executed in your tests, which can give you a sense of how much faith should be given to the automatic tracking of changes.
+- The visual badges and displays on GitHub (e.g. the CI badge and the display of checks on each PR) provides an easy way to track when problems occur
+
+(editing_package_code)=
+### Writing Code in the Package
+
+First, in the REPL add support for the `Distributions.jl` package and Julia unit testing
+
+```{code-block} none
+] add Distributions Test
 ```
 
-and edit the source (paste this into the file itself ) to read as follows
+Which should provide output such as
 
-```{code-block} julia
-module ExamplePackage
+```{figure} /_static/figures/vscode_add_package_2.png
+:width: 100%
+```
 
-greet() = print("Hello World!")
+
+While it will add the package to the `Project.toml`, that unlike the previous package operation, this will not install any new packages.  The reason is that `Distributions.jl` was already in the manifest as a dependency of `Expectations.jl` - and hence the network of packages already supports it.
+
+
+Next, modify the `src/MyProject.jl` to include
+
+```{code-block} none
+module MyProject
 
 using Expectations, Distributions
 
@@ -406,22 +450,128 @@ export foo
 end # module
 ```
 
-Let's try calling this
-
-```{code-block} julia
-] activate
+```{note}
+This defines a function, `foo` in the package, and exports it so that it is available to be called directly with `foo()` after `using MyProject`.  Alternatively, you can leave off the `export foo` and instead call the function with the package name as a prefix `MyProject.foo()`.
 ```
 
-```{code-block} julia
-using ExamplePackage
-ExamplePackage.greet()
+Then, we can call this function within a REPL by first including our package
+
+```{code-block} none
+using MyProject
 ```
 
-```{code-block} julia
-foo() # exported, so don't need to qualify the namespace
+Then calling `foo()` with the default arguments in the REPL.  This should lead to something like
+
+```{figure} /_static/figures/vscode_run_package_1.png
+:width: 100%
 ```
 
-**Note:** You may need to quit your REPL and load the package again.
+Next, we will change the function in the package and call it again in the REPL:
+* Modify the `foo` function definition to add `println("Modified foo definition")` inside the function
+```{code-block} none
+function foo(μ = 1., σ = 2.)
+    println("Modified foo definition")
+    d = Normal(μ, σ)
+    E = expectation(d)
+    return E(x -> sin(x))
+end
+```
+
+And then call the `foo()` function again in the REPL, which shows that it is now using the modified function.
+
+```{figure} /_static/figures/vscode_run_package_2.png
+:width: 100%
+```
+
+
+```{note}
+This behavior, where modifying code within the package is detected and immediately compiled, relies on the [installation of Revise.jl](testing_pkg_installation).  An alternative workflow without `Revise.jl` is to make modifications to the underlying package files, and then simply use `<Shift+Enter>` in the editor to recompile them.  Both approaches are fully defensible and tastes are idiosyncratic.
+
+Regardless, if you modify functions **outside of** the package (e.g. a function in the `runtests.jl`) you will need to use the `<Shift+Enter>` to compile it, as Revise only tracks code within loaded packages.
+```
+
+Consider that when writing this function, we may be checking its behavior in the REPL.  For example, we know from theory that the symmetry of the `sin` function means the expectation of the `sin` of a mean-zero normal (i.e. `foo(0)`) should be close to zero.
+
+To check this, we can use the `Test` package built-into julia, and added to our project file above.  The `@test` macro within it verifies a condition, and fails if it is incorrect.
+
+In the REPL, use the `Test` package and then check that `foo(0)` is close to 0.
+```{code-block} none
+using Test, MyProject
+@test foo(0) < 1E-16
+```
+
+Which should show that the "Test Passed".
+```{figure} /_static/figures/vscode_run_package_3.png
+:width: 100%
+```
+
+(editing_test_code)=
+### Writing Test Code
+
+The core of test driven development is that if a value was worth checking once, then it is probalby worth checking every time the code changes.
+
+For this reason, the change to this workflow means moving much of the code you would use to explore in a Jupyter notebook into the `runtests.jl` (or files they `include`) themselves.
+
+The `@testset` are just optional ways to group the tests, and are not required for organization.
+
+- In `test/runtests.jl`, move the `@test foo(0) < 1E-16`  inside of the `@testset`, which you can rename.  The testsets are optional, but can provide easy ways to group tests and execute many at once within VS Code.
+- Then `<Shift-Enter>` through each line of the `runtests.jl` file.  As you execute each line of code, it will provide the result or a checkmark to indicate success
+
+At the end, you should have output within the REPL that the test you added passed.
+```{figure} /_static/figures/vscode_run_package_4.png
+:width: 100%
+```
+
+```{note}
+Note that for the `runtests.jl` file, we need to manually execute lines of code as we wish to explore the results, in contrast to the changes in the package where Revise automatically compiled them.  This includes function definitions inside of these files.
+```
+
+Checks on individual functions in your test suite are called [unit tests](https://en.wikipedia.org/wiki/Unit_testing).
+
+(executing_tests)=
+### Executing Tests Locally and on CI
+
+As you develop your project, you may find yourself adding in many small checks and organizing them into files included from runtests.  After modifying a large amount of code, you may want to run through the entire set of unit tests to ensure you didn't break anything.
+
+To do this, the package mode in Julia has a convenient function which will create a separate environment using your Project/Manifest and execute the entire `runtests.jl` function.
+
+If you have already activated the project, then `] test` is sufficient.  Otherwise, if you added it to the [global environment](add_to_global), you could type `] test MyProject`.
+
+Run this test to see the output.
+```{figure} /_static/figures/vscode_run_package_5.png
+:width: 100%
+```
+
+This shows that the individual test passed, but also that the entire test suite was without errors.
+
+Now that we have a functional test suite, it is a good time to upload our code to the server.  Create a commit, and push all changes to the server.
+
+If you reload the webpage, you will notice that the commit is now on the server, but also that a small orange circle is next to the commit.  
+
+```{figure} /_static/figures/ci_1.png
+:width: 100%
+```
+
+This indicates that a GitHub Action is executing based on that push to the main branch.
+
+You can see these actions in progress on the Actions tab, where the action may be complete by the time you open it.
+
+```{figure} /_static/figures/ci_2.png
+:width: 100%
+```
+
+If you further click on one of the jobs and select the `julia-runtest` you can see the output on the server.  It ran your test suite on its isolated environment and is showing a check mark because the tests passed.
+
+```{figure} /_static/figures/ci_3.png
+:width: 100%
+```
+
+```{figure} /_static/figures/ci_4.png
+:width: 100%
+```
+
+By this point, if you navigate back to the web page you will see that the commit has a checkmark (rather than an orange circle) and the badge at the bottom says "CI | passing" to indicate that the last action was successful.
+
 
 ### Jupyter Workflow
 
