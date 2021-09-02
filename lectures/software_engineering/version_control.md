@@ -143,7 +143,7 @@ In this case, we're making a public repo `github.com/USERNAME/example_repository
 ```{note}
 You can also add an existing folder as a new repository on github, you can use the VS Code features to [initialize and publish](https://code.visualstudio.com/docs/editor/versioncontrol#_initialize-a-repository) a repository to GitHub.  Otherwise, the [instructions are more involved](https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/.
 ```
-
+(clone_repo)=
 ### Cloning a Repository
 
 The next step is to get this to our local machine.  If you click on the `<> Code` button on the repositories website, you will see a dropdown such as
@@ -331,6 +331,7 @@ This will not remove the history of the older commit, but will instead produce t
 
 See the [VS Code documentation](https://code.visualstudio.com/docs/editor/versioncontrol) for more features.
 
+(merge_conflict)=
 ### Merge Conflicts
 While in the previous examples, we showed with the [online editor](online_editor) how we could make external changes and Git would automatically merge them if possible, other times it will not be possible.
 
@@ -389,21 +390,26 @@ To do this, in a terminal within the repository execute `git reset --hard origin
 
 ## Collaborative Work
 
+We have already seen how Git features (e.g. automatic merging and changes and tools to manage conflicts where it fails) provide tools for collaboration.
+
+Here we will look at further GitHub and VS Code functionality to support collaboration.
 ### Adding Collaborators
 
-First, let's add a collaborator to the `quanteconuser/example_repository` lecture we created earlier.
+First, add a collaborator to the `USERNAME/example_repository` lecture we created earlier.
 
-We can do this by clicking "settings => collaborators," as follows
+We can do this by choosing `Settings` then `Manage Access`, and finally `Invite a Collaborator`.
 
 ```{figure} /_static/figures/git-collab.png
 :width: 100%
 ```
 
+Adding someone as a collaborator is required for access to private repositories, and can allow them direct access to changing the repository for public ones.
+
 ### Project Management
 
-GitHub's website also comes with project management tools to coordinate work between people.
+In addition, having individuals as collaborators enables further project management features.
 
-The main one is an *issue*, which we can create from the issues tab.
+The main feature is an *issue*, which we can create from the issues tab.
 
 You should see something like this
 
@@ -413,11 +419,9 @@ You should see something like this
 
 Let's unpack the different components
 
-* The *assignees* dropdown lets you select people tasked to work on the issue.
+* The *assignees* dropdown optionally lets you select people tasked to work on the issue.
 * The *labels* dropdown lets you tag the issue with labels visible from the issues page, such as "high priority" or "feature request".
 * It's possible to tag other issues and collaborators (including in different repos) by linking to them in the comments -- this is part of what's called *GitHub-Flavored Markdown*.
-
-For an example of an issue, see [here](https://github.com/quanteconuser/example_repository/issues/1).
 
 You can see open issues at a glance from the general issues tab
 
@@ -429,50 +433,19 @@ The checkboxes are common in GitHub to manage project tasks.
 
 ### Reviewing Code
 
-There are a few different ways to review people's code in GitHub
+Whenever people push to a project you're working on, you'll receive an email notification.
 
-* Whenever people push to a project you're working on, you'll receive an email notification.
-* You can also review individual line items or commits by opening commits in the difference view as [above](https://github.com/quanteconuser/example_repository/commit/d0b17f5ce0f8742e88da9b604bfed418d6a16884/).
+You review individual commits by opening a commits and commenting
 
 ```{figure} /_static/figures/git-review.png
 :width: 100%
 ```
 
-(merge_conflict)=
-### Merge Conflicts
-
-Any project management tool needs to figure out how to reconcile conflicting changes between people.
-
-In GitHub, this event is called a "merge conflict," and occurs whenever people make conflicting changes to the same *line* of code.
-
-Note that this means that two people touching the same file is OK, so long as the differences are compatible.
-
-A common use case is when we try to push changes to the server, but someone else has pushed conflicting changes.
-
-GitHub will give us the following window
-
-```{figure} /_static/figures/git-merge-conflict.png
+Or by clicking on the line number in the description of the commit differences to have discussions about a specific line of code.  Throughout, if you have a collaborator, you can refer to them by `@username`   replacing `username` with their GitHub name.
+```{figure} /_static/figures/git-review-2.png
 :width: 100%
 ```
 
-* The warning symbol next to the file indicates the existence of a merge conflict.
-* The viewer tries to show us the discrepancy (I changed the word repository to repo, but someone else tried to change it to "repo" with quotes).
-
-To fix the conflict, we can go into a text editor (such as Atom)
-
-```{figure} /_static/figures/atom-merge-conflict.png
-:width: 100%
-```
-
-Let's say we click the first "use me" (to indicate that my changes should win out), and then save the file.
-
-Returning to GitHub Desktop gives us a pre-formed commit to accept
-
-```{figure} /_static/figures/git-merge-commit.png
-:width: 100%
-```
-
-Clicking "commit to master" will let us push and pull from the server as normal.
 
 ## Collaboration via Pull Request
 
@@ -497,15 +470,19 @@ There are a few different workflows for creating and handling PRs, which we'll w
 
 GitHub's website provides an online editor for quick and dirty changes, such as fixing typos in documentation.
 
-To use it, open a file in GitHub and click the small pencil to the upper right
+For example, you can navigate to the source for these lecture notes in [https://github.com/QuantEcon/lecture-julia.myst](https://github.com/QuantEcon/lecture-julia.myst) and navigate to the [README.md](https://github.com/QuantEcon/lecture-julia.myst/blob/main/README.md).
+
+From there, either click the small pencil to the upper right of the text or type `.` to launch the web editor (which launches the web editor with [https://github.dev/QuantEcon/lecture-julia.myst/blob/main/README.md](https://github.dev/QuantEcon/lecture-julia.myst/blob/main/README.md)).
+
+For example, choosing the pencil might look like
 
 ```{figure} /_static/figures/git-quick-pr.png
 :width: 100%
 ```
 
-Here, we're trying to add the QuantEcon link to the Julia project's `README` file.
+Where you can give the name for the `new branch` and provide a description of your changes for review by maintainers.
 
-After making our changes, we can then describe and propose them for review by maintainers.
+This will create a "fork" of the entire repository, make your change as a commit, and then upload this change to the repository you have forked from (i.e., the Pull Request).
 
 But what if we want to make more in-depth changes?
 
@@ -514,96 +491,76 @@ But what if we want to make more in-depth changes?
 
 A common problem is when we don't have write access (i.e. we can't directly modify)  the repo in question.
 
-In that case, click the "Fork" button that lives in the top-right of every repo's main page
-
-```{figure} /_static/figures/git-fork-button.png
-:width: 100%
-```
+In that case, click the "Fork" button that lives in the top-right of every repo's main page.
 
 This will copy the repo into your own GitHub account.
 
-For example, [this repo](https://github.com/ubcecon/example_repository) is a fork of our original [git setup](https://github.com/quanteconuser/example_repository/).
+For example, we can fork the source for these lectures from [this repo](https://github.com/QuantEcon/lecture-julia.myst) to our own account (e.g. to `https://github.com/USERNAME/lecture-julia.myst`).
 
-Clone this fork to our desktop and work with it in exactly the same way as we would a repo we own
-(as the fork is in your account, you now have write access).
+In fact, if you created a PR for a change in the web GUI, it may already be forked to your account.
 
-That is, click the "clone" button on our fork
+
+Regardless, you should have a new repository in your account with the same name but different URL, along with a special icon to indicate that it's a fork.  It will also say where it is forked from, and summarize the number of commits that are different.
 
 ```{figure} /_static/figures/git-clone-fork.png
 :width: 100%
 ```
 
-You'll see a new repo with the same name but different URL in your GitHub Desktop repo list, along with a special icon to indicate that it's a fork
+We then can clone this repository to our desktop.  [Follow the instructions](clone_repo) to clone the forked repository to your desktop (e.g. in VS Code, `> Git: Clone`, then choose `https://github.com/USERNAME/lecture-julia.myst.git` for your account, and then `Open in New Window`).
 
-```{figure} /_static/figures/git-repo-list.png
+
+In order to more easily manage changes, we need to create a new branch.  Branches are a separate sequence of commits that diverge from the `main` branch at some point (and may later be merged back in).  It allows you to manage a sequence of separate changes as a coherent unit.
+
+Click on the bottom left of the screen where it says `main` to create or select a new branch, and then choose `New Branch`  and title it `readme-mod`.
+
+```{figure} /_static/figures/new-branch.png
 :width: 100%
 ```
 
-Commit some changes by selecting the files and writing a commit message
+You will note that the bottom left hand corner now has chosen that branch rather than the `main` one.  You can use that to easily switch between them in the editor.
 
-```{figure} /_static/figures/git-fork-changes.png
-:width: 25%
-```
 
-And push by using the dropdown
-
-```{figure} /_static/figures/git-dropdown.png
-:width: 75%
-```
-
-Below, for example, we've committed and pushed some changes to the fork that we want to upstream into the main repo
-
-```{figure} /_static/figures/git-edit-fork.png
+```{figure} /_static/figures/new-branch-2.png
 :width: 100%
 ```
 
-We should make sure that these changes are on the server (which we can get to by going to the [fork](https://github.com/ubcecon/example_repository) and clicking "commits")
 
-```{figure} /_static/figures/git-fork-history.png
+Open the `README.md` file and make a change to it in the branch, then save and commit with a message.  At this point, the branch and your commit are still only local.
+
+To push onto the server, choose the arrow next to the branch name to publish changes.
+
+```{figure} /_static/figures/new-branch-3.png
 :width: 100%
 ```
 
-Next, go to the pull requests menu and click "New Pull Request".
+At this point, you can choose whether you want this branch to be related to the `origin` (i.e., your fork) or the original repository `upstream`.  Since this is intended to propose a change to the public repository, you should choose `upstream`.
 
-You'll see something like this
+After selecting, it will ask you whether you want to create a `Pull Request`.  Choose Yes, and then fill in the information for the new pull request and `Create` it.
 
-```{figure} /_static/figures/git-create-pr.png
+
+```{figure} /_static/figures/new-branch-4.png
 :width: 100%
 ```
 
-This gives us a quick overview of the commits we want to merge in, as well as the overall differences.
+You can `Exit Review Mode` after it has been created at which point it may switch to your `main` branch.
 
-Hit create and then click through the following form.
+Use the branch selection on the lower left hand of the editor to change branches as you wish.
 
-This opens a page like this on the main repo
+Finally, for the original repository you forked from, they will now see this as a proposed change, as below
 
-```{figure} /_static/figures/git-create-pr-2.png
+```{figure} /_static/figures/new-branch-5.png
 :width: 100%
 ```
 
-The key pieces are
+The maintainers of the repository can choose to accept the change, suggest modifications, comment on individual lines of code, etc.
 
-* A list of the commits we're proposing.
-* A list of reviewers, who can approve or modify our changes.
-* Labels, Markdown space, assignees, and the ability to tag other git issues and PRs, just as with issues.
+If they like the changes, they may choose to "Merge the Pull Request".  This means that all of the commits proposed from your branch will be applied on top of the main branch on that repository.
 
-Here's an [example pull request](https://github.com/quanteconuser/example_repository/pull/3).
+If there are conflicts (i.e., you are changing files which have been modified on the `main` branch since you forked) then you may need to `rebase` your branch and pull request.  This means applying all of the changes that have happened after your fork to your current branch.
 
-To edit a PR, simply push changes to the fork you cloned to your desktop.
+While rebasing can be very complicated, for simple cases you can use the `> Git: Rebase (Branch)` command and choose `upstream/main` to get any of the recent changes.  For more advanced resolution of conflicts and rebasing, GitKraken and GitLens have more elaborate features.
 
-For example, let's say we commit a new change to the README *after* we create the PR
-
-```{figure} /_static/figures/git-pr-modification.png
-:width: 100%
-```
-
-After pushing to the server, the change is reflected on the PR [page](https://github.com/quanteconuser/example_repository/pull/3)
-
-```{figure} /_static/figures/git-pr-expost.png
-:width: 100%
-```
-
-That is, creating a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged.
+Creating a pull request is not like bundling up your changes and delivering them, but rather like opening an *ongoing connection* between two repositories, that is only severed when the PR is closed or merged.
 
 ### Write Access Case
 
@@ -613,37 +570,55 @@ If you are a maintainer of the repo (e.g. you created it or are a collaborator) 
 
 Branches in git represent parallel development streams (i.e., sequences of commits) that the PR is trying to merge.
 
-First, load the repo in GitHub Desktop and use the branch dropdown
+For example, back on our `example_repository`, select the branch selection on the bottom left corner of VS Code, and make a new branch (e.g. `readme-mod`)
 
-```{figure} /_static/figures/git-pr-branch.png
+```{figure} /_static/figures/new-branch-6.png
 :width: 100%
 ```
 
-Click "New Branch" and choose an instructive name (make sure there are no spaces or special characters).
+Modify the `README.md` file, then commit the change to your branch.  As before, this only modifies your local machine, so you will need to publish the branch by clicking on the arrow next to the branch name.
 
-This will "check out" a new branch with the same history as the old one (but new commits will be added only to this branch).
+While you could directly add a PR at this point, choose not to create one so we can create it on your webpage.
 
-We can see the active branch in the top dropdown
+If we refresh the github website, it prompts us to create a PR.
 
-```{figure} /_static/figures/git-branch.png
+```{figure} /_static/figures/new-branch-7.png
 :width: 100%
 ```
 
-For example, let's say we add some stuff to the Julia code file and commit it
+We can choose `Compare and Pull Request` at this point, giving the PR a name a description, or we can create one later with the `branches` tab on the repository.  If we create the PR, we will see this in our `Pull Requests` tab at the top of the webpage
 
-```{figure} /_static/figures/git-pr-edits.png
+
+```{figure} /_static/figures/new-branch-8.png
 :width: 100%
 ```
 
-To put this branch (with changes) on the server, we simply need to click "Publish Branch".
+Typically these would be left open while a cohesive feature or bug is fixed in your code, and then merged.
 
-Navigating to the [repo page](https://github.com/quanteconuser/example_repository), we will see a suggestion about a new branch
+The `Reviewers` can look at the PR, select it on their desktops (by changing to the appropriate branch), and comment on the code.
 
-```{figure} /_static/figures/git-new-branch.png
+```{figure} /_static/figures/new-branch-9.png
 :width: 100%
 ```
 
-At which point the process of creating a PR is identical to the previous case.
+Throughout, the `main` branch may be modified through other branches and commits, so this could become out of sync.  If so, then rebasing and conflict resolution is required, as discussed above.
+
+However, if no conflicts occur, and the commits from the branch can be merged into the main branch, then you can choose to `Merge Pull Request`.
+
+
+```{figure} /_static/figures/new-branch-10.png
+:width: 100%
+```
+
+The key difference in the options is that the `Squash and Merge` will combine all of the individual commits in this branch into a single commit before merging into the `main` branch.
+
+The UI then prompts you to remove the branch.  After the PR has been merged, you will typically want to delete that branch to avoid accidentally modifying it.
+
+Finally, we see that this commit is now listed on the main branch
+
+```{figure} /_static/figures/new-branch-11.png
+:width: 100%
+```
 
 ### Julia Package Case
 
@@ -654,8 +629,6 @@ We cover that (along with package workflow in general) in the {doc}`testing lect
 ## Additional Resources and Troubleshooting
 
 You may want to go beyond the scope of this tutorial when working with GitHub.
-
-For example, perhaps you run into a bug, or you're working with a setup that doesn't have GitHub Desktop installed.
 
 Here are some resources to help
 
@@ -681,12 +654,6 @@ See [here](https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/co
 
 As above, you can clone by grabbing the repo URL (say, GitHub's [site-policy repo](https://github.com/github/site-policy/)) and running `git clone https://github.com/github/site-policy.git`.
 
-This won't be connected to your GitHub Desktop, so you'd need to use it manually (`File => Add Local Repository`) or drag-and-drop from the file explorer onto the GitHub Desktop
-
-```{figure} /_static/figures/git-add-local.png
-:width: 50%
-```
-
 From here, you can get the latest files on the server by `cd`-ing into the directory and running `git pull`.
 
 When you `pull` from the server, it will never overwrite your modified files, so it is impossible to lose local changes.
@@ -711,7 +678,7 @@ Pair-up with another student who has done Exercise 1a and find out their GitHub 
 * Add the GitHub ID as a collaborators on your repository.
 * Clone the repositories to your local desktop.
 * Assign each other an issue.
-* Submit a commit from GitHub Desktop which references the issue by number.
+* Submit a commit from VS Code which references the issue by number.
 * Comment on the commits.
 * Ensure you can run their code without any modifications.
 
