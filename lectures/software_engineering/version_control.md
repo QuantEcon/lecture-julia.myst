@@ -54,7 +54,7 @@ We assume that you have followed the {doc}`VS Code <../software_engineering/tool
        git config --global core.eol lf
        git config --global core.autocrlf false
        git config --global user.email "you@example.com"
-       git config --global user.name "Your Name"       
+       git config --global user.name "Your Name"   
        ```
 4. Ensure that {doc}`VS Code <../software_engineering/tools_editors>` is installed
 5. Install [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens) extension.
@@ -91,7 +91,7 @@ On the machine, a repo is a normal directory, along with a subdirectory called `
 
 GitHub stores history as a sequence of changes to text, called *commits*.
 
-[Here](https://github.com/QuantEcon/lecture-source-jl/commit/ba59c3ea9a0dec10def3f4f3928af5e2827f3b92) is an example of a commit, which revises the style guide in a QuantEcon repo.
+[Here](https://github.com/QuantEcon/lecture-julia.myst/commit/8a7daeecd5115a334c251c90d4455cd7921996e4) is an example of a commit, which modifies instructions on using an extension in these lecture notes.
 
 In particular, commits have the following features
 
@@ -696,15 +696,15 @@ Start by ensuring there are multiple lines in the file so that some changes may 
 
 Just using GitHub's {ref}`web interface <web_interface>`, submit a Pull Request for a simple change of documentation to a public repository.
 
-The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. `https://github.com/QuantEcon/lecture-source-jl`.
+The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. `https://github.com/QuantEcon/lecture-julia.myst`.
 
-Note: The source for that repository is in `.rst` files, but you should be able to find spelling mistakes/etc. without much effort.
+Note: The source for that repository is in `.md` files, but you should be able to find spelling mistakes/etc. without much effort.
 
 ### Exercise 2b
 
 Following the {ref}`instructions <fork_workflow>` for forking and cloning a public repository to your local desktop, submit a Pull Request to a public repository.
 
-Again, you could submit it for a typo in the source repository for these notes, i.e. `https://github.com/QuantEcon/lecture-source-jl`, but you are also encouraged to instead look for a small change that could help the documentation in another repository.
+Again, you could submit it for a typo in the source repository for these notes, i.e. `https://github.com/QuantEcon/lecture-julia.myst`, but you are also encouraged to instead look for a small change that could help the documentation in another repository.
 
 If you are ambitious, then go to the Exercise Solutions for one of the Exercises in these lecture notes and submit a PR for your own modified version (if you think it is an improvement!).
 
