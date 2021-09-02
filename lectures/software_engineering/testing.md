@@ -96,23 +96,21 @@ The result should be
 -->
 
 (testing_pkg_installation)=
-### PkgTemplates.jl
+### PkgTemplates.jl and Revise.jl
 
 While you can create your Julia package manually, using a template will ensure that you have everything in the standard format.
 
 If you have activated the notebook repositories, then `PkgTemplates.jl` will already be installed.
 
 Otherwise, start a `julia` REPL outside of a particular project (or do an `] activate` to deactivate the existing project, and use the global environment) and
-* Install [PkgTemplates](https://github.com/invenia/PkgTemplates.jl/)  
+* Install [PkgTemplates](https://github.com/invenia/PkgTemplates.jl/) and [Revise](https://github.com/timholy/Revise.jl) with 
 ```{code-block} none
-] add PkgTemplates
+] add PkgTemplates Revise
 ```
 
 While we typically insist on having very few packages in the global environment, and always working with a `Project.toml` file, `PkgTemplates` is primarily used without an existing project.
 
-
-```{note}
-Another workflow is to use the [Revise.jl](https://github.com/timholy/Revise.jl) package is optional, it is strongly encouraged since it automatically compiling functions in your package as they are changed.  See [below](editing_package_code) for more.T
+While the [Revise.jl](https://github.com/timholy/Revise.jl) package is optional, it is strongly encouraged since it automatically compiling functions in your package as they are changed.  See [below](editing_package_code) for more.
 
 
 (project_setup)=
@@ -572,10 +570,65 @@ If you further click on one of the jobs and select the `julia-runtest` you can s
 
 By this point, if you navigate back to the web page you will see that the commit has a checkmark (rather than an orange circle) and the badge at the bottom says "CI | passing" to indicate that the last action was successful.
 
+(branches_tests)=
+### "Feature" Branches and Continuous Integration
+
+The previous example showed how we the CI will automatically execution an action when you push it to the main branch.
+
+These actions will also apply, separately, to any branches and Pull Requests (PRs) that you create, as discussed in the {doc}`previous lecture <../software_engineering/version_control>`.
+
+Separate testing and CI is one of the primary motivations for creating a branch when collaborating on a project.
+
+To demonstrate this
+
+* Create a new branch on VS Code called `my-feature` (i.e., click on the `main` branch at the bottom of the screen to enter the branch selection, then choose to make a new one).
+
+* In `MyProject.jl`, change the function in `foo` from `sin(x)` to `cos(x)`.  Note that this will change the result of `foo(0)`.
+
+```{figure} /_static/figures/ci_5.png
+:width: 100%
+```
+* Commit this change to your local branch with the commit message.
+* Then, imagine that rather than running `]test` - which would have shown this error given our previous unit test, you pushed it to the server.  As always, do this by selecting the publish arrow next to `my-feature` at the bottom of the screen.  You can create a Pull Request in that GUI, or just go back to the webpage where it asked you if you wish to "Compare and Pull Request"
+
+
+After you create the pull request, you will see it in available on the web.  After a few minutes, the unit test will execute and you will see an output such as 
+
+```{figure} /_static/figures/ci_6.png
+:width: 100%
+```
+
+Unlike in the previous example, the pull request will have a red X indicating that one of the actions failed.
+
+If this were done by a collaborator, you could go to the "Files Changed" tab, see the code modifications for commits in this PR, and then add a comment on these inline for discussion (using the `@` to tag an individual so they are emailed)
+
+```{figure} /_static/figures/ci_7.png
+:width: 100%
+```
+
+At that point, you or your collaborators can easily switch to the branch associated with the PR (i.e. `my-feature` in the above screenshot), make changes, and test them.
+
+
+If you go back to VS Code and change the `cos` back to `sin` and commit with a message (e.g. `Fixed bug`) then the PR will rerun the CI.
+
+In this case, you will see that while the `Modified foo` broken the CI the `Fixed bug` commit passed, and has a green checkmark after it completes its run.
+```{figure} /_static/figures/ci_8.png
+:width: 100%
+```
+
+Furthermore, since the previous comment was made on a line of code that was changed after the comment was made, it says the comment is "Outdated".  When collaborating, the "Resolve conversation" option would let you close these sorts of issues as they are found.
 
 ### Jupyter Workflow
 
-We can also work with the package from a Jupyter notebook.
+We can also work with the package, and activated project file, from a Jupyter notebook for analysis and exploration.
+
+In general, Jupyter should be used sparingly as it does not support a tight workflow for collaboration since it does not have an equivalent for the CI, and changes to the Jupyter notebook cannot be discussed inline and analyzes using the workflow above.
+
+However, if a package is fairly stable and you are working on analysis, it is a very useful tool.
+
+Assuming that we have the `IJulia` and conda installed, as in the basic lecture note setup, if we start a terminal in VS Code we will be able to start Jupyter in the right directory.
+
+
 
 Let's create a new output directory in our project, and run `jupyter lab` from it.
 
