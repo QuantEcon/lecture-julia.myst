@@ -30,7 +30,7 @@ In this lecture we will cover how to get up and running with Julia.
 
 While there are alternative ways to access Julia (e.g. if you have a JupyterHub provided by your university), this section assumes you will install it to your {ref}`local desktop  <jl_jupyterlocal>`.
 
-It is not strictly required for running the lectures, but we will strongly encourage installing and using [Visual Studio Code (VS Code)](VS Code).
+It is not strictly required for running the lectures, but we will strongly encourage installing and using [Visual Studio Code (VS Code)](https://code.visualstudio.com/).
 
 As the most popular and best-supported open-source code editor, it provides a large number of useful features and extensions - even if we do not edit the Julia code within it directly.  Later, in the {doc}`tools lecture <../software_engineering/tools_editors>` we will use VS Code directly.
 
