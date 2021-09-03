@@ -50,7 +50,7 @@ We assume that you have followed the {doc}`VS Code <../software_engineering/tool
     1. Opening a terminal (on Windows you can use a powershell or the new "Git Bash" installed in the previous step)
     2. Running the following, where the first two lines are not required on linux and OS/X, and you should replace the email and name in the final lines
        
-       ```{code-block} none
+       ```{code-block} bash
        git config --global core.eol lf
        git config --global core.autocrlf false
        git config --global user.email "you@example.com"
