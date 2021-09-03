@@ -283,13 +283,13 @@ As you work through the notebooks, you may wish to reset these to the most recen
 
 2. Choose the highlighted "Source Control" pane, or use `<Ctrl+Shift+G>` then it will summarize all of the modified files.
 
-3. To revert back to the versions you previously downloaded, right click on the "Changes" and then choose to 
+3. To revert back to the versions you previously downloaded, right click on the "Changes" and then choose `Discard All Changes`:
 
 ```{figure} /_static/figures/vscode_intro_7.png
 :width: 100%
 ```
 
-Additionally, if the notebooks themselves are modified as the lecture notes evolve, you can first discard any changes, and then either use `> Git: Pull` command or click on the arrow next to "main" on the bottom of the screen to download the latest versions.
+Additionally, if the notebooks themselves are modified as the lecture notes evolve, you can first discard any changes, and then either use `> Git: Pull` command or click on the arrow next to "main" (it's a bit ambiguous. Maybe more clear if you mention that "main" refers to the main branch?) on the bottom left of the screen to download the latest versions. 
 
 If the `Project.toml` or `Manifest.toml` files are modified, then you may want to redo the [instantiation](install_packages) step to ensure you have the correct versions.
 
