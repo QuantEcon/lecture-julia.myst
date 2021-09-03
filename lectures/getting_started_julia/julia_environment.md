@@ -28,18 +28,26 @@ kernelspec:
 
 In this lecture we'll start examining different features of the Julia and Jupyter environments.
 
+While we emphasize a [local installation of Jupyter](jl_jupyterlocal), other alternatives exist.
+
+For example,
+- Some universities may have JupyterHub installations available - which provide a hosted Jupyter environment.  However, it would require the hub to have explicit Julia support.
+- VS Code has rapidly progressing [support for Jupyter](https://code.visualstudio.com/docs/datascience/jupyter-notebooks) using an existing Jupyter installation.
+- The combination of the new [VS Code Jupyter](optional_extensions) and [VS Code Julia](install_vscode) extensions supports Jupyter notebooks without even a fragile Conda/python installation
+- Online services such as [JuliaHub](https://juliahub.com/lp/) provide a tailored experience for Julia.  Be warned, however, that [Colab](https://colab.research.google.com/) and others might only support Python without a great deal of effort.
+
 ## Using Jupyter
 
 (ipython_notebook)=
 ### Getting Started
 
-Recall that the easiest way to get started with these notebooks is to follow the {ref}`cloning instructions <clone_lectures>` earlier.
-
-Assuming you have Jupyter installed and in your path, `cd` to the folder location in a terminal, and run
-
-```{code-block} none
-jupyter lab
+```{note}
+The easiest way to get started with these notebooks is to follow the {ref}`cloning instructions <clone_lectures>` earlier.  
 ```
+
+Launch `jupyter lab` and navigate to this notebook(i.e. `getting_started_julia/julia_environment.md` )
+
+See [here](running_jupyterlab) for the previous instructions on launching Jupyter Lab.  
 
 Your web browser should open to a page that looks something like this
 
@@ -97,31 +105,12 @@ The two modes are
 
 The modal behavior of the Jupyter notebook is a little tricky at first but very efficient when you get used to it.
 
-#### Working with Files
-
-To run an existing Julia file using the notebook you can copy and paste the contents into a cell in the notebook.
-
-If it's a long file, however, you have the alternative of
-
-1. Saving the file in your **present working directory**.
-1. Executing `include("filename")` in a cell.
-
-The present working directory can be found by executing the command `pwd()`.
-
 #### Plots
-
-Note that if you're using a JupyterHub setup, you will need to first run
-
-
-in a new cell (i.e., `Shift + Enter`).
-
-This might take 15-20 minutes depending on your setup, as it installs a large set of packages for our use.
 
 Run the following cell
 
 ```{code-cell} julia
 using Plots
-gr(fmt=:png);
 plot(sin, -2π, 2π, label="sin(x)")
 ```
 
@@ -132,7 +121,15 @@ installation)
 :width: 100%
 ```
 
-**Note**: The "time-to-first-plot" in Julia takes a while, since it needs to compile many functions - but is almost instantaneous the second time you run the cell.
+```{attention}
+If this code fails to work because the `Plots` package is missing, then one of two things has happened.  Either you
+- did not [install the packages](install_packages) in the previous lecture.
+- downloaded or moved this notebook rather than [cloning the notebook repository](clone_lectures).  In that case, it does not have the associated `Project.toml` file local to it.
+
+To remedy this, if you
+- had previously [cloning the notebook repository](clone_lectures), then you should go back and follow the [install the packages](install_packages) instructions, or just call `using Pkg; Pkg.instantiate()` in a new cell.
+- downloaded the notebook separately, or moved them, then consider [cloning the notebook repository](clone_lectures) instead.  If you would prefer not, then you can manually install packages as you need them.  For example, in this case you could type `] add Plots` into a code cell in the notebook or into your Julia REPL.
+```
 
 ### Working with the Notebook
 
@@ -222,23 +219,3 @@ The Jupyter organization has a site for sharing notebooks called [nbviewer](http
 which provides a static HTML representations of notebooks.
 
 QuantEcon also hosts the [QuantEcon Notes](http://notes.quantecon.org/) website, where you can upload and share your notebooks with other economists and the QuantEcon community.
-
-(julia_repl)=
-## Using the REPL
-
-As we saw in the {ref}`desktop installation <intro_repl>`, the REPL is a Julia specific terminal.
-
-It becomes increasingly important as you learn Julia, and you will find it to be a useful tool for interacting with Julia and installing packages.
-
-As a reminder, to open the REPL on your desktop, either
-
-1. Navigating to Julia through your menus or desktop icons (Windows, Mac), or
-1. Opening a terminal and typing `julia` (Linux)
-
-If you are using a JupyterHub installation, you can start the REPL in JupyterLab by choosing
-
-1. Choose "New Launcher"
-1. Choose a `Julia` Console
-
-We examine the REPL and its different modes in more detail in the {ref}`tools and editors <repl_main>` lecture.
-

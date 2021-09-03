@@ -202,6 +202,7 @@ Which should provide a screen such as
 Alternatively, if you are already a user of Visual Studio Code, you can clone within VS Code by using the `> Git: Clone` command from the [command palette](command_palette).  See the lectures on [tools](../software_engineering/tools_editors.md) and [source code control](../software_engineering/version_control.md) for more details.
 ```
 
+(install_packages)=
 ## Installing Packages
 
 After you have the notebooks available, as in {ref}`above <clone_lectures>`, these lectures depend on functionality (like packages for plotting, benchmarking, and statistics) that are not installed with every Jupyter installation on the web.
@@ -234,6 +235,7 @@ One benefit of using the integrated REPL is that it will set important options f
 ```
 
 
+(running_jupyterlab)=
 ## Running JupyterLab
 
 You can start Jupyter within any directory by executing the following in a terminal
@@ -272,6 +274,7 @@ If it does not start automatically, use the link at the bottom of the output in 
 
 Navigate to the {doc}`Interacting with Julia <../getting_started_julia/julia_environment>` notebook (the file `getting_started_julia/julia_environment.ipynb` in the list of notebooks in JupyterLab) to explore this interface and start writing code.
 
+(reset_notebooks)=
 ## Refreshing the Notebooks after Modification
 
 As you work through the notebooks, you may wish to reset these to the most recent version on the server.
@@ -287,5 +290,9 @@ As you work through the notebooks, you may wish to reset these to the most recen
 ```
 
 Additionally, if the notebooks themselves are modified as the lecture notes evolve, you can first discard any changes, and then either use `> Git: Pull` command or click on the arrow next to "main" on the bottom of the screen to download the latest versions.
+
+If the `Project.toml` or `Manifest.toml` files are modified, then you may want to redo the [instantiation](install_packages) step to ensure you have the correct versions.
+
+
 
 We will explore these sorts of features, and how to use them for your own projects, in the {doc}`source code control <../software_engineering/version_control>` lecture.
