@@ -618,64 +618,82 @@ In this case, you will see that while the `Modified foo` broken the CI the `Fixe
 
 Furthermore, since the previous comment was made on a line of code that was changed after the comment was made, it says the comment is "Outdated".  When collaborating, the "Resolve conversation" option would let you close these sorts of issues as they are found.
 
+Reselect your `main` branch in VS Code to make further changes there rather than on the `my-feature` branch.
+
+
+### Code Coverage
+
+At this point, the `Codecov` badge in the README likely says `codecov | unknown` since the repository has not been added there.
+
+Click on that badge, which should take you to the `Codecov` website where you can login if required, and select particular commits or PRs.
+
+For example, on our previous PR we can see that it detected the change from the `cos` back to `sin` and that the coverage is 100% (i.e., every line of code in the package is executed by a test)
+
+```{figure} /_static/figures/codecov_1.png
+:width: 100%
+```
+
+
+To see the impact of additional code in the package, go back to your `main` branch, add in a new function such as 
+```{code-block} none
+function bar()
+    return 10
+end
+```
+and then commit and push to the server.
+
+After the CI executes, you will notice that the unit tests still pass despite the additional function.
+
+However, if you click on the code coverage badge again and look at the main branch (or that particular commit) you will see that the code coverage has decreased substantially.
+
+```{figure} /_static/figures/codecov_2.png
+:width: 100%
+```
+
+Furthermore, it highlights in red the new code in this commit which led to the lowered code coverage.  In this case, the `bar` function had nothing in `runtests.jl` that was calling it.  This can help you ensure that all of the code paths (not just entire functions) are called in one test or another in your unit tests.
+
 ### Jupyter Workflow
 
 We can also work with the package, and activated project file, from a Jupyter notebook for analysis and exploration.
 
 In general, Jupyter should be used sparingly as it does not support a tight workflow for collaboration since it does not have an equivalent for the CI, and changes to the Jupyter notebook cannot be discussed inline and analyzes using the workflow above.
 
-However, if a package is fairly stable and you are working on analysis, it is a very useful tool.
+However, if a code sourcecode is fairly stable and you are working on just the analysis and visualization of results (where introducing bugs is unlikely), it is a very useful tool.
 
 Assuming that we have the `IJulia` and conda installed, as in the basic lecture note setup, if we start a terminal in VS Code we will be able to start Jupyter in the right directory.
 
+- Create a new terminal for your operating system by choosing the `+` button on the terminals pane, then type `jupyter lab` to start Jupyter, then open the webpage
 
-
-Let's create a new output directory in our project, and run `jupyter lab` from it.
-
-Create a new notebook `output.ipynb`
-
-```{figure} /_static/figures/testing-output.png
+```{figure} /_static/figures/vscode_jupyter_1.png
 :width: 100%
 ```
 
-From here, we can use our package's functions as we would functions from other packages.
+- Create a new notebook in Jupyter in the main folder (or a subfolder) and add code to use `MyProject` and call `foo`.
 
-This lets us produce neat output documents, without pasting the whole codebase.
-
-We can also run package operations inside the notebook
-
-```{figure} /_static/figures/testing-notebook.png
+```{figure} /_static/figures/vscode_jupyter_2.png
 :width: 100%
 ```
 
-The change will be reflected in the `Project.toml` file.
+Crucially, note that the `MyProject` package and anything else in the `Project.toml` file is available since Jupyter automatically activates the project file local to jupyter notebooks.
 
-Note that, as usual, we had to first activate `ExamplePackage` first before making our dependency changes
+Be sure to add `.ipynb_checkpoints/*` to your `.gitignore` file, so that's not checked in.
 
-```{code-block} julia
-name = "ExamplePackage"
-uuid = "f85830d0-e1f0-11e8-2fad-8762162ab251"
-authors = ["QuantEcon User <quanteconuser@gmail.com>"]
-version = "0.1.0"
 
-[deps]
-Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
-Expectations = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
-Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
+While you would typically modify the Jupyter notebooks after the core code is stable, with `Revise.jl` it is possible to have it automatically load changes to the package itself.
 
-[extras]
-Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+To do this
+- Execute `using Revise` prior to the `using MyProject` (note that VS Code's REPL does the `using Revise` automatically, if it is available).
+- Then run `foo(0)` to see the old code
+- Then modify the text of the package itself, such as changing the string in the `foo` function
+- Run `foo(0)` again to see the change.
 
-[targets]
-test = ["Test"]
+
+```{figure} /_static/figures/vscode_jupyter_3.png
+:width: 100%
 ```
 
-There will also be changes in the Manifest as well .
-
-Be sure to add `output/.ipynb_checkpoints` to your `.gitignore` file, so that's not checked in.
-
-Make sure you've activated the project environment (`] activate ExamplePackage`) before you try to propagate changes.
-
+<!-- TODO: Add VS Code Jupyter support when it is ready -->
+<!-- 
 ### Collaborative Work
 
 For someone else to get the package, they simply need to
@@ -711,6 +729,9 @@ to load the list of dependencies, and
 ```
 
 to make sure they are installed on the local machine.
+
+
+## ARNAV: YOU CAN ADD A LITTLE MORE OF THIS CONTENT BACK, BUT I THOUGH PERHAPS WE SHOULD KEEP IT SIMPLE.
 
 ## Unit Testing
 
@@ -787,132 +808,7 @@ There are a few different ways to run the tests for your package.
 * From a fresh (`v1.1`) REPL, run `] test ExamplePackage`.
 * From an activated (`ExamplePackage`) REPL, simply run `] test` (recall that you can activate with `] activate ExamplePackage`).
 
-## Continuous Integration with Travis
 
-### Setup
-
-By default, Travis should have access to all your repositories and deploy automatically.
-
-This includes private repos if you're on a student developer pack or an academic plan (Travis detects this automatically).
-
-To change this, go to "settings" under your GitHub profile
-
-```{figure} /_static/figures/git-settings.png
-:width: 50%
-```
-
-Click "Applications," then "Travis CI," then "Configure," and choose the repos you want to be tracked.
-
-### Build Options
-
-By default, Travis will compile and test your project (i.e., "build" it) for new commits and PRs for every tracked repo with a `.travis.yml` file.
-
-We can see ours by opening it in Atom
-
-```{code-block} none
-# Documentation: http://docs.travis-ci.com/user/languages/julia/
-language: julia
-os:
-- linux
-- osx
-julia:
-- 1.1
-- nightly
-matrix:
-allow_failures:
-    - julia: nightly
-fast_finish: true
-notifications:
-email: false
-after_success:
-- julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(process_folder())'
-```
-
-This is telling Travis to build the project in Julia, on OSX and Linux, using Julia v1.1 and the latest development build ("nightly").
-
-It also says that if the nightly version doesn't work, that shouldn't register as a failure.
-
-**Note** You won't need OSX unless you're building something Mac-specific, like iOS or Swift.
-
-You can delete those lines to speed up the build, likewise for the nightly Julia version.
-
-### Working with Builds
-
-As above, builds are triggered whenever we push changes or open a pull request.
-
-For example, if we push our changes to the server and then click the Travis badge (the one which says "build") on the README, we should see something like
-
-```{figure} /_static/figures/travis-progress.png
-:width: 100%
-```
-
-Note that you may need to wait a bit and/or refresh your browser.
-
-This gives us an overview of all the builds running for that commit.
-
-To inspect a build more closely (say, if it fails), we can click on it and expand the log options
-
-```{figure} /_static/figures/travis-log.png
-:width: 100%
-```
-
-Note that the build times here aren't informative, because we can't generally control the hardware to which our job is allocated.
-
-We can also cancel specific jobs, either from their specific pages or by clicking the grey "x" button on the dashboard.
-
-Lastly, we can trigger builds manually (without a new commit or PR) from the Travis overview
-
-```{figure} /_static/figures/travis-trigger.png
-:width: 100%
-```
-
-To commit *without* triggering a build, simply add "[ci skip]" somewhere inside the commit message.
-
-### Travis and Pull Requests
-
-One key feature of Travis is the ability to see at-a-glance whether PRs pass tests before merging them.
-
-This happens automatically when Travis is enabled on a repository.
-
-For an example of this feature, see [this PR](https://github.com/QuantEcon/Games.jl/pull/65/) in the `Games.jl` repository.
-
-## Code Coverage
-
-Beyond the success or failure of our test suite, we also want to know how much of our code the tests cover.
-
-The tool we use to do this is called [Codecov](http://codecov.io).
-
-### Setup
-
-You'll find that Codecov is automatically enabled for public repos with Travis.
-
-For private ones, you'll need to first get an access token.
-
-Add private scope in the Codecov website, just like we did for Travis.
-
-Navigate to the repo settings page (i.e., `https://codecov.io/gh/quanteconuser/ExamplePackage.jl/settings` for our repo) and copy the token.
-
-Next, go to your Travis settings and add an environment variable as below
-
-```{figure} /_static/figures/travis-settings.png
-:width: 100%
-```
-
-### Interpreting Results
-
-Click the Codecov badge to see the build page for your project.
-
-This shows us that our tests cover 50% of our functions in `src//`.
-
-**Note:** To get a more detailed view, we can click the `src//` and the resultant filename.
-
-**Note:** Codecov may take a few minutes to run for the first time
-
-```{figure} /_static/figures/codecov.png
-:width: 100%
-```
-
-This shows us precisely which methods (and parts of methods) are untested.
 
 ## Pull Requests to External Julia Projects
 
@@ -1055,7 +951,8 @@ To review the workflow for creating, versioning, and testing a new project end-t
 1. Open **the original project folder** (e.g., `~/.julia/dev/ExamplePackage.jl`) in Atom.
 1. Make changes, test, iterate on it, etc. As a rule, functions like should live in the `src/` directory once they're stable, and you should export them from that file with `export func1, func2`. This will export all methods of `func1`, `func2`, etc.
 1. Commit them in GitHub Desktop as you go (i.e., you can and should use version control to track intermediate states).
-1. Push to the server, and see the Travis and Codecov results (note that these may take a few minutes the first time).
+1. Push to the server, and see the GitHub and Codecov results (note that these may take a few minutes the first time).
+ -->
 
 ## Exercises
 
@@ -1078,7 +975,7 @@ The package should include
 * implementations of those functions in the `/src` directory
 * comprehensive set of tests
 * project and manifest files to replicate your development environment
-* automated running of the tests with Travis CI in GitHub
+* automated running of the tests with GitHub Actions
 
 For the tests, you should have at the very minimum
 
@@ -1092,9 +989,13 @@ For the tests, you should have at the very minimum
 
 And anything else you can think of.  You should be able to run `] test` for the project to check that the test-suite is running, and then ensure that it is running automatically on Travis CI.
 
-Push a commit to the repository which breaks one of the tests and see what the Travis CI reports after running the build.
+Push a commit to the repository which breaks one of the tests and see what the GitHub Actions CI reports after running the build.
+
+<!-- 
+# TODO: I think this is out of date, but mabye there aer better ones now?
 
 ### Exercise 2
 
-Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watch?v=QVmU29rCjaA) from Chris Rackauckas.  The demonstration goes through many of the same concepts as this lecture, but with more background in test-driven development and providing more details for open-source projects..
+Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watch?v=QVmU29rCjaA) from Chris Rackauckas.  The demonstration goes through many of the same concepts as this lecture, but with more background in test-driven development and providing more details for open-source projects.. 
+-->
 
