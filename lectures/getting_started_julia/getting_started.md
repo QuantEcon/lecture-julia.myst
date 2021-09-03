@@ -121,7 +121,7 @@ To set up the Julia terminal command on Mac, see [here](https://julialang.org/do
 
 A primary benefit of using [open-source](https://en.wikipedia.org/wiki/Open-source_software) languages such as Julia, Python, and R is that they can enable far better workflows for both collaboration and [reproducible research](https://en.wikipedia.org/wiki/Reproducibility#Reproducible_research).
 
-Reproducibility will ensure that you, you future self, your collaborators, and eventually the public will be able to run the exact code with the identical environment with which you provided the results - or even roll back to a snapshot in the past where the results may have been different in order to compare.
+Reproducibility will ensure that you, your future self, your collaborators, and eventually the public will be able to run the exact code with the identical environment with which you provided the results - or even roll back to a snapshot in the past where the results may have been different in order to compare.
 
 We will explore these topics in detail in the lectures on {doc}`source code control <../software_engineering/version_control>` and {doc}`continuous integration and test-driven development <../software_engineering/testing>`, but it is worth installing and beginning to use these tools immediately.
 
@@ -160,7 +160,7 @@ your most recent and common commands.
 
 [Integrated Terminals](https://code.visualstudio.com/docs/editor/integrated-terminal) within VS Code are a convenient because they are local to that project, detect hypertext links, and provide better fonts.
 
-To launch a terminal, use ``<Ctrl+`>``, `>View: Toggle Integrated Terminal` with the command palette, or `View > Terminal` in the menus.
+To launch a terminal, use ``<Ctrl+`>``, `>View: Toggle Terminal` with the command palette, or `View > Terminal` in the menus.
 
 
 (clone_lectures)=
@@ -174,7 +174,7 @@ While the lecture notes can be cloned within VS Code directly, we will use the c
    - The workflow will be easiest if you clone the repo to the default location relative to the home folder for your user.
    - For example, on Windows a good choice might be `c:\Users\YOURUSERNAME\Documents\GitHub` or simply `c:\Users\YOURUSERNAME\Documents`.  On linux and MacOS, your home directory `~` or `~/GitHub`.
 2. Open a new terminal for your machine and navigate to the parent folder of where you wish to store the notebooks.
-   - On Windows: if using the [Windows Terminal](See [here](https://aka.ms/terminal)) you can simply right-click on the directory in the File Explorer and choose to "Open in Microsoft Terminal" or, alternatively "Git Bash Here" to use the terminal provided by Git.
+   - On Windows: if using the [Windows Terminal](https://aka.ms/terminal) you can simply right-click on the directory in the File Explorer and choose to "Open in Microsoft Terminal" or, alternatively "Git Bash Here" to use the terminal provided by Git.
 3. Execute the following code in the terminal to download the entire suite of notebooks associated with these lectures.
    ```{code-block} bash
    git clone https://github.com/quantecon/lecture-julia.notebooks
