@@ -44,7 +44,7 @@ While you will eventually use other editors, there are some advantages to starti
 * Nicely formatted output including tables, figures, animation, video, etc.
 * Conversion tools to generate PDF slides, static HTML, etc.
 
-We'll discuss the workflow on these features in the {doc}`next lecture <../getting_started_julia/julia_environment>`.
+We'll discuss the workflow on these features in the [next section](julia_environment)
 
 ```{admonition} Quick installation for experience users
 If you have already installed Jupyter, Julia, and Git and have experience with these tools, you can 
@@ -272,7 +272,7 @@ The process should launch a webpage on your desktop, which may look like
 If it does not start automatically, use the link at the bottom of the output in the terminal (which should show with `Follow Link`).
 
 
-Navigate to the {doc}`Interacting with Julia <../getting_started_julia/julia_environment>` notebook (the file `getting_started_julia/julia_environment.ipynb` in the list of notebooks in JupyterLab) to explore this interface and start writing code.
+Navigate to the {doc}`Interacting with Julia <julia_environment>` section to explore this interface and start writing code.
 
 (reset_notebooks)=
 ## Refreshing the Notebooks after Modification
@@ -299,7 +299,9 @@ We will explore these sorts of features, and how to use them for your own projec
 
 
 
+(julia_environment)=
 # Interacting with Julia
+
 
 ## Overview
 
@@ -322,7 +324,7 @@ For example,
 The easiest way to get started with these notebooks is to follow the {ref}`cloning instructions <clone_lectures>` earlier.  
 ```
 
-Launch `jupyter lab` and navigate to this notebook(i.e. `getting_started_julia/julia_environment.md` )
+Launch `jupyter lab` and navigate to this notebook(i.e. `getting_started_julia/getting_started.ipynb` )
 
 See [here](running_jupyterlab) for the previous instructions on launching Jupyter Lab.  
 
