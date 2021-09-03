@@ -244,7 +244,7 @@ You can start Jupyter within any directory by executing the following in a termi
 jupyter lab
 ```
 
-This runs a process giving Jupyter permission to access the this directory, but not its parents.  This is especially convenient to do in VS Code since we have already navigated to this directory.
+This runs a process giving Jupyter permission to access this directory, but not its parents.  This is especially convenient to do in VS Code since we have already navigated to this directory.
 
 
 
@@ -253,7 +253,7 @@ This runs a process giving Jupyter permission to access the this directory, but 
    :width: 75%
    ```
 
-   - [As before](command_palette), if the terminal pane is not available, use ``<Ctrl+`>`` or `>View: Toggle Integrated Terminal` to see the pane.
+   - [As before](command_palette), if the terminal pane is not available, use ``<Ctrl+`>`` or `>View: Toggle Terminal` to see the pane.
    - You can close the Julia REPL if you wish, or create multiple temrinals in this interface
 
 2. Within the new terminal, execute `jupyter lab`.  This should run in the background in this terminal, with output such as
