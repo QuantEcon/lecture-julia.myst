@@ -231,7 +231,7 @@ This process will take several minutes to download and compile all of the files 
 ```{attention}
 If the cursor is instead `(@v1.6) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
 
-One benefit of using the integrated REPL is that it will set important options for launching Julia (e.g. the number of threads) and activate the local project files (i.e. the `Project.toml` file in the notebooks directory) automatically.  If you use an external REPL, you will need to set these manually.  Here you would want to run the REPL with `julia --project --threads auto`  to tell Julia to set the number of threads equal to your local machine's number of cores, and to activate the existing project.  See [here](starting-a-repl) for more details.
+One benefit of using the integrated REPL is that it will set important options for launching Julia (e.g. the number of threads) and activate the local project files (i.e. the `Project.toml` file in the notebooks directory) automatically.  If you use an external REPL, you will need to set these manually.  Here you would want to run the REPL with `julia --project --threads auto`  to tell Julia to set the number of threads equal to your local machine's number of cores, and to activate the existing project.  See [here](starting-a-repl -- there's no link here) for more details.
 ```
 
 
