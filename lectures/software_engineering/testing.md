@@ -104,7 +104,7 @@ If you have activated the notebook repositories, then `PkgTemplates.jl` will alr
 
 Otherwise, start a `julia` REPL outside of a particular project (or do an `] activate` to deactivate the existing project, and use the global environment) and
 * Install [PkgTemplates](https://github.com/invenia/PkgTemplates.jl/) and [Revise](https://github.com/timholy/Revise.jl) with 
-```{code-block} none
+```{code-block} julia
 ] add PkgTemplates Revise
 ```
 
@@ -127,7 +127,7 @@ On Windows, given that you have installed Git you could right click on the folde
 
 * Then
 
-```{code-block} none
+```{code-block} julia
 using PkgTemplates
 ```
 
@@ -138,7 +138,7 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 
 We will create this with a number of useful options, but see [the documentation](https://invenia.github.io/PkgTemplates.jl/stable/user/#A-More-Complicated-Example-1) for more.
 
-```{code-block} none
+```{code-block} julia
 t = Template(;dir = ".", julia = v"1.6",
               plugins = [
                 Git(; manifest=true, branch = "main"),
@@ -157,12 +157,12 @@ Alternatively, `PkgTemplates` has an interactive mode, which you can prompt with
 
 * Create a specific project based off this template
 
-```{code-block} none
+```{code-block} julia
 t("MyProject")
 ```
 
 * Open the project in VS Code by right-clicking in the explorer for the new `MyProject` folder, or exiting the Julia REPL (via `exit()`) and then
-```{code-block} none
+```{code-block} bash
 cd MyProject
 code .
 ```
@@ -218,7 +218,7 @@ To do this, you can add it to the main environment by starting Julia in the `MyP
 
 Then
 
-```{code-block} none
+```{code-block} julia
 ] dev .
 ```
 
@@ -226,7 +226,7 @@ Given this, other julia code can use `using MyProject` and, because the global e
 
 You can see the change reflected in our default package list by running `] st`
 
-```{code-block} none
+```{code-block} bash
       Status `C:\Users\jesse\.julia\environments\v1.6\Project.toml`
   [7073ff75] IJulia v1.23.2
   [a361046e] MyProject v0.1.0 `..\..\..\Documents\GitHub\MyProject`
@@ -244,7 +244,7 @@ Let's unpack the structure of the generated project
 * A hidden directory, `.git`, holds the version control information.
 * The `src` directory contains the project's source code -- it should contain only one file (`MyProject.jl`), which reads
   
-  ```{code-block} none
+  ```{code-block} julia
   module MyProject
   
   greet() = print("Hello World!")
@@ -254,7 +254,7 @@ Let's unpack the structure of the generated project
   
 * Likewise, the `test` directory should have only one file (`runtests.jl`), which reads
   
-  ```{code-block} none
+  ```{code-block} julia
   using MyProject
   using Test
   
@@ -277,7 +277,7 @@ In particular, the `Project.toml` contains a list of dependencies, and the `Mani
 ### GitHub Actions and CI
 
 The final file is a GitHub Actions file in the `.github/workflows` folder, called `CI.yml` with the text similar to
-```{code-block} none
+```{code-block} yaml
 name: CI
 on:
   - push
@@ -361,7 +361,7 @@ For now, let's just try adding a dependency.  Recall the package operations desc
 ```
 
 After installing a large web of dependencies, this tells Julia to write the results of package operations to the activated `Project.toml` file, which should now include text such as
-```{code-block} none
+```toml
 [deps]
 Expectations = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
 ```
@@ -373,7 +373,7 @@ Furthermore, different projects could use different versions of this package.   
 But almost more importantly, the `Manifest.toml` file now contains a complete snapshot of the particular `Expectations` package and every other dependency used in your project.
 
 For example, the following is an example snippet of one manifest here:
-```{code-block} none
+```toml
 [[Expectations]]
 deps = ["Compat", "Distributions", "FastGaussQuadrature", "LinearAlgebra", "SpecialFunctions"]
 git-tree-sha1 = "0f906c5edffe266acbf471734ac942d4aa9b7235"
@@ -416,7 +416,7 @@ This will be part of a coherent set of strategies to ensure everything is reprod
 
 First, in the REPL add support for the `Distributions.jl` package and Julia unit testing
 
-```{code-block} none
+```{code-block} julia
 ] add Distributions Test
 ```
 
@@ -432,7 +432,7 @@ While it will add the package to the `Project.toml`, that unlike the previous pa
 
 Next, modify the `src/MyProject.jl` to include
 
-```{code-block} none
+```{code-block} julia
 module MyProject
 
 using Expectations, Distributions
@@ -454,7 +454,7 @@ This defines a function, `foo` in the package, and exports it so that it is avai
 
 Then, we can call this function within a REPL by first including our package
 
-```{code-block} none
+```{code-block} julia
 using MyProject
 ```
 
@@ -466,7 +466,7 @@ Then calling `foo()` with the default arguments in the REPL.  This should lead t
 
 Next, we will change the function in the package and call it again in the REPL:
 * Modify the `foo` function definition to add `println("Modified foo definition")` inside the function
-```{code-block} none
+```{code-block} julia
 function foo(μ = 1., σ = 2.)
     println("Modified foo definition")
     d = Normal(μ, σ)
@@ -493,7 +493,7 @@ Consider that when writing this function, we may be checking its behavior in the
 To check this, we can use the `Test` package built-into julia, and added to our project file above.  The `@test` macro within it verifies a condition, and fails if it is incorrect.
 
 In the REPL, use the `Test` package and then check that `foo(0)` is close to 0.
-```{code-block} none
+```{code-block} julia
 using Test, MyProject
 @test foo(0) < 1E-16
 ```
@@ -635,7 +635,7 @@ For example, on our previous PR we can see that it detected the change from the 
 
 
 To see the impact of additional code in the package, go back to your `main` branch, add in a new function such as 
-```{code-block} none
+```{code-block} julia
 function bar()
     return 10
 end
@@ -692,58 +692,14 @@ To do this
 :width: 100%
 ```
 
-<!-- TODO: Add VS Code Jupyter support when it is ready -->
-<!-- 
-### Collaborative Work
+## More on Writing Tests
 
-For someone else to get the package, they simply need to
-
-* Run the following command
-
-```{code-block} julia
-] dev https://github.com/quanteconuser/ExamplePackage.jl.git
-```
-
-This will place the repository inside their `~/.julia/dev` folder.
-
-* Drag-and-drop the folder to GitHub desktop in the usual way.
-
-Recall that the path to your `~/.julia` folder is
-
-```{code-cell} julia
-DEPOT_PATH[1]
-```
-
-They can then collaborate as they would on other git repositories.
-
-In particular, they can run
-
-```{code-block} julia
-] activate ExamplePackage
-```
-
-to load the list of dependencies, and
-
-```{code-block} julia
-] instantiate
-```
-
-to make sure they are installed on the local machine.
-
-
-## ARNAV: YOU CAN ADD A LITTLE MORE OF THIS CONTENT BACK, BUT I THOUGH PERHAPS WE SHOULD KEEP IT SIMPLE.
-
-## Unit Testing
-
-It's important to make sure that your code is well-tested.
-
-There are a few different kinds of test, each with different purposes
+As discussed, there are a few different kinds of test, each with different purposes
 
 * *Unit testing* makes sure that individual pieces of a project work as expected.
 * *Integration testing* makes sure that they fit together as expected.
 * *Regression testing* makes sure that behavior is unchanged over time.
-
-In this lecture, we'll focus on unit testing.
+n unit testing.
 
 In general, well-written unit tests (which also guard against regression, for example by comparing function output to hardcoded values) are sufficient for most small projects.
 
@@ -756,203 +712,83 @@ The basic object is the macro `@test`
 ```{code-cell} julia
 using Test
 @test 1 == 1
-@test 1 ≈ 1
 ```
 
-Tests will pass if the condition is `true`, or fail otherwise.
+Since floating points can often only be compared to within machine precision, you can typically only care these approximately with either `isapprox` or `≈` (which can auto-completed in VS Code with `\approx<TAB>`)
+```{code-cell} julia
+@test 1.0 ≈ 1.0
+x = 2.0
+@test isapprox(x, 2.0)
+@test x ≈ 2.0
+```
 
-If a test is failing, we should flag it with `@test_broken` as below
+The default comparison for `isapprox` is that the relative tolerance (i.e. $\|x - y\| \leq rtol \max(\|x\|, \|y\|)$) depends on the particular type, but defaults to the sqrt rate of the machine epsilon.
+For example,
+```{code-cell} julia
+@show √eps(Float64)
+@show √eps(BigFloat);
+```
+
+For cases where you want to change the relative tolerance or add in an absolute tolerance (i.e. . $\|x - y\| \leq atol$) use the appropriate keywords
+```{code-cell} julia
+x = 100.0 + 1E-6  # within the tolerance
+@test x ≈ 100.0 rtol=1E-7  # note < the 1E-6 difference passes due to relative scaling
+y = 1E-7
+@test 0.0 ≈ y atol=1E-6  # absolute tolerance!
+```
+
+```{note}
+The relative tolerance is always preferenced for comparisons since it is dimensionless whereas the absolute tolerance is related to the norm of the objects themselves.  As the documentation for `isapprox` says: `x - y ≈ 0, atol=1e-9`is an absurdly small tolerance if `x` is the radius of the Earthin meters, but an absurdly large tolerance if `x` is the radius of a Hydrogen atom.
+
+Because of this, there is no default atol if the norms of the values are zero.  And rtol is undefined, so you will need to use judgement on the specific problem to form a threshold.
+```
+
+The `isapprox` comparison works for any datatypes that implement a `norm`, for example
+```{code-cell} julia
+x = [1.0, 2.0]
+@test x ≈ [1.0, 2.0]
+```
+
+Tests will pass if the condition is `true`, or fail otherwise.  Failing tests will be highlighted in both the CI and output within the terminal,
+
+```{code-cell} julia
+---
+tags: [raises-exception, remove-output]
+---
+@test 1 == 2
+```
+
+Finally, sometimes you will have broken tests which are known to fail, but you do not want to remove.
+
+This is good practice for code in progress that you intend to fix, but do not want to forget about, as commented out tests are easily forgotten.
+
+To do this, flag it with `@test_broken` as below
 
 ```{code-cell} julia
 @test_broken 1 == 2
 ```
 
-This way, we still have access to information about the test, instead of just deleting it or commenting it out.
+This way, we still have access to information about the test, instead of just deleting it or commenting it out, but the CI will not fail.
 
-There are other test macros, that check for things like error handling and type-stability.
-
-Advanced users can check the [Julia docs](https://docs.julialang.org/en/v1/stdlib/Test/).
-
-### Example
-
-Let's add some unit tests for the `foo()` function we defined earlier.
-
-Our `tests/runtests.jl` file should look like this.
-
-**As before, this should be pasted into the file directly**
-
-```{code-block} julia
-using ExamplePackage
-using Test
-
-@test foo() ≈ 0.11388071406436832
-@test foo(1, 1.5) ≈ 0.2731856314283442
-@test_broken foo(1, 0) # tells us this is broken
-```
-
-And run it by typing `] test` into an activated REPL (i.e., a REPL where you've run `] activate ExamplePackage`).
+There are other test macros, that check for things like error handling and type-stability.  Advanced users can check the [Julia docs](https://docs.julialang.org/en/v1/stdlib/Test/).
 
 ### Test Sets
 
 By default, the `runtests.jl` folder starts off with a `@testset`.
 
-This is useful for organizing different batches of tests, but for now we can simply ignore it.
-
-To learn more about test sets, see [the docs](https://docs.julialang.org/en/v1/stdlib/Test/index.html#Working-with-Test-Sets-1/).
-
-### Running Tests
-
-There are a few different ways to run the tests for your package.
-
-* Run the actual `runtests.jl`, say by hitting `shift-enter` on it in Atom.
-* From a fresh (`v1.1`) REPL, run `] test ExamplePackage`.
-* From an activated (`ExamplePackage`) REPL, simply run `] test` (recall that you can activate with `] activate ExamplePackage`).
-
-
-
-## Pull Requests to External Julia Projects
-
-As mentioned in {doc}`version control <../software_engineering/version_control>`, sometimes we'll want to work on external repos that are also Julia projects.
-
-* `] dev` the git URL (or package name, if the project is a registered Julia package), which will both clone the git repo to `~/.julia/dev` and sync it with the Julia package manager.
-
-For example, running
-
-```{code-block} julia
-] dev Expectations
-```
-
-will clone the repo `https://github.com/quantecon/Expectations.jl` to `~/.julia/dev/Expectations`.
-
-Make sure you do this from the base Julia environment (i.e., after running `] activate` without arguments).
-
-As a reminder, you can find the location of your `~/.julia` folder (called the "user depot"), by running
+This is useful for organizing different batches of tests, and executing them all at once.
 
 ```{code-cell} julia
-DEPOT_PATH[1]
+@testset "my tests" begin
+  @test 1 == 1
+  @test 2 == 2
+  @test_broken 1 == 2
+end;
 ```
+By using `<Shift+Enter>` in VS Code or Jupyter on the testset, you will execute them all.  You may want to execute only parts of them during development by commenting out the `@testset` and `end` and execute sequentially until the suite passes.
 
-The `] dev` command will also add the target to the package manager, so that whenever we run `using Expectations`, Julia will load our cloned copy from that location
 
-```{code-block} julia
-using Expectations
-pathof(Expectations) # points to our git clone
-```
-
-```{figure} /_static/figures/testing-fork.png
-:width: 100%
-```
-
-```{figure} /_static/figures/testing-repo-settings.png
-:width: 75%
-```
-
-* Drag that folder to GitHub Desktop.
-* The next step is to fork the original (external) package from its website (i.e., `https://github.com/quantecon/Expectations.jl`) to your account (`https://github.com/quanteconuser/Expectations.jl` in our case).
-* Edit the settings in GitHub Desktop (from the "Repository" dropdown) to reflect the new URL.
-  
-  Here, we'd change the highlighted text to read `quanteconuser`, or whatever our GitHub ID is.
-* If you make some changes in a text editor and return to GitHub Desktop, you'll see something like.
-
-**Note:** As before, we're editing the files directly in `~/.julia/dev`, as opposed to cloning the repo again.
-
-```{figure} /_static/figures/testing-commit.png
-:width: 100%
-```
-
-Here, for example, we're revising the README.
-
-* Clicking "commit to master" (recall that the checkboxes next to each file indicate whether it's to be committed) and then pushing (e.g., hitting "push" under the "Repository" dropdown) will add the committed changes to your account.
-
-To confirm this, we can check the history on our account [here](https://github.com/quanteconuser/Expectations.jl/commits/master); for more on working with git repositories, see the {doc}`version control <../software_engineering/version_control>` lecture.
-
-```{figure} /_static/figures/testing-expectations.png
-:width: 100%
-```
-
-The green check mark indicates that Travis tests passed for this commit.
-
-* Clicking "new pull request" from the pull requests tab will show us a snapshot of the changes, and let us create a pull request for project maintainers to review and approve.
-
-```{figure} /_static/figures/testing-pr2.png
-:width: 100%
-```
-
-For more on PRs, see the relevant section of the {doc}`version control <../software_engineering/version_control>` lecture.
-
-For more on forking, see the docs on [GitHub Desktop](https://help.github.com/desktop/guides/contributing-to-projects/cloning-a-repository-from-github-to-github-desktop/) and [the GitHub Website](https://guides.github.com/activities/forking/).
-
-### Case with Write Access
-
-If you have write access to the repo, we can skip the preceding steps about forking and changing the URL.
-
-You can use `] dev` on a package name or the URL of the package
-
-```{code-block} julia
-] dev Expectations
-```
-
-or `] dev https://github.com/quanteconuser/Expectations.jl.git` as an example for an unreleased package by URL.
-
-Which will again clone the repo to `~/.julia/dev`, and use it as a Julia package.
-
-```{code-block} julia
-using Expectations
-pathof(Expectations) # points to our git clone
-```
-
-Next, drag that folder to GitHub Desktop as before.
-
-Then, in order to work with the package locally, all we need to do is open the `~/.julia/dev/Expectations` in a text editor (like Atom)
-
-```{figure} /_static/figures/testing-atom-package.png
-:width: 100%
-```
-
-From here, we can edit this package just like we created it ourselves and use GitHub Desktop to track versions of our package files (say, after `] up`, or editing source code, `] add Package`, etc.).
-
-### Removing a Julia Package
-
-To "un-dev" a Julia package (say, if we want to use our old `Expectations.jl`), you can simply run
-
-```{code-block} julia
-] free Expectations
-```
-
-To delete it entirely, simply run
-
-```{code-block} julia
-] rm Expectations
-```
-
-From a REPL where that package is in the active environment.
-
-## Benchmarking
-
-Another goal of testing is to make sure that code doesn't slow down significantly from one version to the next.
-
-We can do this using tools provided by the `BenchmarkTools.jl` package.
-
-See the {doc}`need for speed <../software_engineering/need_for_speed>` lecture for more details.
-
-## Additional Notes
-
-* The [JuliaCI](https://github.com/JuliaCI/) organization provides more Julia utilities for continuous integration and testing.
-
-## Review
-
-To review the workflow for creating, versioning, and testing a new project end-to-end.
-
-1. Create the local package directory using the `PkgTemplates.jl`.
-1. Add that package to the Julia package manager, by opening a Julia REPL in the `~/.julia/dev/ExamplePackage.jl`, making sure the active environment is the default one `(v1.1)`, and hitting `] dev .`.
-1. Drag-and-drop that folder to GitHub Desktop.
-1. Create an empty repository with the same name on the GitHub server.
-1. Push from GitHub Desktop to the server.
-1. Open **the original project folder** (e.g., `~/.julia/dev/ExamplePackage.jl`) in Atom.
-1. Make changes, test, iterate on it, etc. As a rule, functions like should live in the `src/` directory once they're stable, and you should export them from that file with `export func1, func2`. This will export all methods of `func1`, `func2`, etc.
-1. Commit them in GitHub Desktop as you go (i.e., you can and should use version control to track intermediate states).
-1. Push to the server, and see the GitHub and Codecov results (note that these may take a few minutes the first time).
- -->
+To learn more about test sets, see [the docs](https://docs.julialang.org/en/v1/stdlib/Test/index.html#Working-with-Test-Sets-1/).
 
 ## Exercises
 
@@ -987,7 +823,7 @@ For the tests, you should have at the very minimum
 * test to ensure that the `maxiter` is working (e.g. what happens if you call `maxiter = 5`
 * test to ensure that `tol` is working
 
-And anything else you can think of.  You should be able to run `] test` for the project to check that the test-suite is running, and then ensure that it is running automatically on Travis CI.
+And anything else you can think of.  You should be able to run `] test` for the project to check that the test-suite is running, and then ensure that it is running automatically on GitHub Actions CI.
 
 Push a commit to the repository which breaks one of the tests and see what the GitHub Actions CI reports after running the build.
 
