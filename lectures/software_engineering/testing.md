@@ -43,7 +43,7 @@ Benefits include
 
 The goal of this style of coding is to ensure that [test driven development](test_driven) is possible, which will help ensure that your research is reproducible by yourself, your future self, and others - while avoiding accidental mistakes that can silently break old code and change results.
 
-It furthermore, it makes collaboration on code much more feasible - allowing individuals to work on different parts of the code without fear of breaking others work.
+Furthermore, it makes collaboration on code much more feasible - allowing individuals to work on different parts of the code without fear of breaking others' work.
 
 Finally, since many economics projects occur over multiple years - this will help your future self to reproduce your results and make changes without remembering all of the subtle tricks required to get things operational.
 
@@ -52,12 +52,12 @@ Finally, since many economics projects occur over multiple years - this will hel
 
 Much of the software engineering and continuous integration (CI) will be done through [GitHub Actions](https://github.com/features/actions).
 
-The GitHub actions execute as isolated and fully reproducible environments on the cloud (using containers), and are initiated through various actions on the GitHub.  In particular, these are typically initiated through:
+The GitHub actions execute as isolated and fully reproducible environments on the cloud (using containers), and are initiated through various actions on the GitHub repo.  In particular, these are typically initiated through:
 - Making commits on the main branch of a repository
 - Creating a PR on a repository, or pushing commits to it.
 - [Tagging a release](https://docs.github.com/en/github/administering-a-repository/releasing-projects-on-github/managing-releases-in-a-repository) of a repository, which provides a snapshot at a particular commit.
 
-For publicly available repositories, GitHub provides free minutes for executing these actions, whereas there are limits on the execution time for private repositories - though signing up for the GitHub academic plans previous discussed (i.e, the [Student Developer Pack](https://education.github.com/pack/) or [Academic/Researcher plans](https://help.github.com/articles/about-github-education-for-educators-and-researchers/)) provides additional free minutes.
+For publicly available repositories, GitHub provides free minutes for executing these actions, whereas there are limits on the execution time for private repositories - though signing up for the GitHub academic plans previously discussed (i.e, the [Student Developer Pack](https://education.github.com/pack/) or [Academic/Researcher plans](https://help.github.com/articles/about-github-education-for-educators-and-researchers/)) provides additional free minutes.
 
 While you may think of a ``Package'' as a shared and maintained set of reusable code, with Julia it will turn out to be the most useful way to organize personal and private projects or the code associated with a particular paper.  The primary benefit of using a package workflow is **reproducibility** for yourself, your future self, and collaborators.
 
@@ -116,7 +116,7 @@ While the [Revise.jl](https://github.com/timholy/Revise.jl) package is optional,
 (project_setup)=
 ## Project Setup
 
-To create a project, first choose the parent directory you wish to create the project
+To create a project, first choose the parent directory where you wish to create the project
 
 * In an external terminal, navigate to this parent directory.
 ```{note}
@@ -125,7 +125,7 @@ On Windows, given that you have installed Git you could right click on the folde
 
 * Start a julia terminal with `julia`
 
-* Then
+* Then run
 
 ```{code-block} julia
 using PkgTemplates
@@ -205,7 +205,7 @@ At which point, if you refresh the webpage, it should be filled with the generat
 :width: 100%
 ```
 
-Furthermore, you will see a badge either saying that `CI | passing` or `CI | unknown` next to another for `codecov | unknown`.
+Furthermore, you will see a badge either saying `CI | passing` or `CI | unknown` next to another for `codecov | unknown`.
 
 These badges provide a summary of the current state of the `main` branch relative to the GitHub Actions, as we will see below.  If a repository has broken any tests on the main branch, it will show `CI | failed` in red.
 
@@ -336,7 +336,7 @@ To summarize some of the features, the
 
 #### Environments
 
-As {ref}`before <jl_packages>`, the .toml files define an *environment* for our project, or a set of files which represent the dependency information.
+As {ref}`before <jl_packages>`, the `.toml` files define an *environment* for our project, or a set of files which represent the dependency information.
 
 The actual files are written in the [TOML language](https://github.com/toml-lang/toml), which is a lightweight format to specify configuration options.
 
@@ -406,8 +406,8 @@ The basic idea of test-driven development is to create a set of tests of individ
 
 This will be part of a coherent set of strategies to ensure everything is reproducible since:
 - Writing all of the checks on your underlying functions to be called from  `test/runtests.jl` lets you can avoid accidentally breaking old functionality.  Breaking of old code is called a [test regression](https://en.wikipedia.org/wiki/Regression_testing) and is especially problematic with research code.
-- The full snapshot of all of the packages associated with a particular version of the project (i.e. a commmit) in a `Manifest.toml`, anyone can reproduce the exact environment simply from that point in the source code tree.
-- Any changes to the code automatically run in the CI (i.e. the GitHub Action) after every modification, you and any collaborators will be able to automatically track changes
+- With the full snapshot of all of the packages associated with a particular version of the project (i.e. a commmit) in a `Manifest.toml`, anyone can reproduce the exact environment simply from that point in the source code tree.
+- Any changes to the code automatically run in the CI (i.e. the GitHub Action) after every modification, so you and any collaborators will be able to automatically track changes
 - The code coverage will give you a sense of how much of the code you have actually executed in your tests, which can give you a sense of how much faith should be given to the automatic tracking of changes.
 - The visual badges and displays on GitHub (e.g. the CI badge and the display of checks on each PR) provides an easy way to track when problems occur
 
@@ -427,7 +427,7 @@ Which should provide output such as
 ```
 
 
-While it will add the package to the `Project.toml`, that unlike the previous package operation, this will not install any new packages.  The reason is that `Distributions.jl` was already in the manifest as a dependency of `Expectations.jl` - and hence the network of packages already supports it.
+While it will add the package to the `Project.toml`, unlike the previous package operation, this will not install any new packages.  The reason is that `Distributions.jl` was already in the manifest as a dependency of `Expectations.jl` - and hence the network of packages already supports it.
 
 
 Next, modify the `src/MyProject.jl` to include
@@ -573,7 +573,7 @@ By this point, if you navigate back to the web page you will see that the commit
 (branches_tests)=
 ### "Feature" Branches and Continuous Integration
 
-The previous example showed how we the CI will automatically execution an action when you push it to the main branch.
+The previous example showed how the CI will automatically execution an action when you push it to the main branch.
 
 These actions will also apply, separately, to any branches and Pull Requests (PRs) that you create, as discussed in the {doc}`previous lecture <../software_engineering/version_control>`.
 
@@ -611,7 +611,7 @@ At that point, you or your collaborators can easily switch to the branch associa
 
 If you go back to VS Code and change the `cos` back to `sin` and commit with a message (e.g. `Fixed bug`) then the PR will rerun the CI.
 
-In this case, you will see that while the `Modified foo` broken the CI the `Fixed bug` commit passed, and has a green checkmark after it completes its run.
+In this case, you will see that while the `Modified foo` broke the CI, the `Fixed bug` commit passed, and has a green checkmark after it completes its run.
 ```{figure} /_static/figures/ci_8.png
 :width: 100%
 ```
@@ -656,11 +656,11 @@ Furthermore, it highlights in red the new code in this commit which led to the l
 
 We can also work with the package, and activated project file, from a Jupyter notebook for analysis and exploration.
 
-In general, Jupyter should be used sparingly as it does not support a tight workflow for collaboration since it does not have an equivalent for the CI, and changes to the Jupyter notebook cannot be discussed inline and analyzes using the workflow above.
+In general, Jupyter should be used sparingly as it does not support a tight workflow for collaboration since it does not have an equivalent for the CI, and changes to the Jupyter notebook cannot be discussed inline and analyzed using the workflow above.
 
-However, if a code sourcecode is fairly stable and you are working on just the analysis and visualization of results (where introducing bugs is unlikely), it is a very useful tool.
+However, if source code is fairly stable and you are working on just the analysis and visualization of results (where introducing bugs is unlikely), it is a very useful tool.
 
-Assuming that we have the `IJulia` and conda installed, as in the basic lecture note setup, if we start a terminal in VS Code we will be able to start Jupyter in the right directory.
+Assuming that we have the `IJulia` package and conda installed, as in the basic lecture note setup, if we start a terminal in VS Code we will be able to start Jupyter in the right directory.
 
 - Create a new terminal for your operating system by choosing the `+` button on the terminals pane, then type `jupyter lab` to start Jupyter, then open the webpage
 
@@ -699,7 +699,6 @@ As discussed, there are a few different kinds of test, each with different purpo
 * *Unit testing* makes sure that individual pieces of a project work as expected.
 * *Integration testing* makes sure that they fit together as expected.
 * *Regression testing* makes sure that behavior is unchanged over time.
-n unit testing.
 
 In general, well-written unit tests (which also guard against regression, for example by comparing function output to hardcoded values) are sufficient for most small projects.
 
@@ -714,7 +713,7 @@ using Test
 @test 1 == 1
 ```
 
-Since floating points can often only be compared to within machine precision, you can typically only care these approximately with either `isapprox` or `≈` (which can auto-completed in VS Code with `\approx<TAB>`)
+Since floating points can often only be compared within machine precision, you can typically only compare these approximately with either `isapprox` or `≈` (which can auto-completed in VS Code with `\approx<TAB>`)
 ```{code-cell} julia
 @test 1.0 ≈ 1.0
 x = 2.0
@@ -738,9 +737,9 @@ y = 1E-7
 ```
 
 ```{note}
-The relative tolerance is always preferenced for comparisons since it is dimensionless whereas the absolute tolerance is related to the norm of the objects themselves.  As the documentation for `isapprox` says: `x - y ≈ 0, atol=1e-9`is an absurdly small tolerance if `x` is the radius of the Earthin meters, but an absurdly large tolerance if `x` is the radius of a Hydrogen atom.
+The relative tolerance is always preferred for comparisons since it is dimensionless, whereas the absolute tolerance is related to the norm of the objects themselves.  As the documentation for `isapprox` says: `x - y ≈ 0, atol=1e-9`is an absurdly small tolerance if `x` is the radius of the Earthin meters, but an absurdly large tolerance if `x` is the radius of a Hydrogen atom.
 
-Because of this, there is no default atol if the norms of the values are zero.  And rtol is undefined, so you will need to use judgement on the specific problem to form a threshold.
+Because of this, there is no default `atol` if the norms of the values are zero.  And `rtol` is undefined, so you will need to use judgement on the specific problem to form a threshold.
 ```
 
 The `isapprox` comparison works for any datatypes that implement a `norm`, for example
@@ -818,10 +817,10 @@ For the tests, you should have at the very minimum
 * a way to handle non-convergence (e.g. return back `nothing` as discussed in {ref}`error handling <error_handling>`
 * several `@test` for the root of a known function, given the `f` and analytical `f'` derivatives
 * tests of those roots using the automatic differentiation version of the function
-* test of finding those roots with a `BigFloat` and not just a `Float64`
-* test of non-convergence for a function without a root (e.g. $f(x) = 2 + x^2$ )
-* test to ensure that the `maxiter` is working (e.g. what happens if you call `maxiter = 5`
-* test to ensure that `tol` is working
+* a test of finding those roots with a `BigFloat` and not just a `Float64`
+* a test of non-convergence for a function without a root (e.g. $f(x) = 2 + x^2$ )
+* a test to ensure that the `maxiter` is working (e.g. what happens if you call `maxiter = 5`
+* a test to ensure that `tol` is working
 
 And anything else you can think of.  You should be able to run `] test` for the project to check that the test-suite is running, and then ensure that it is running automatically on GitHub Actions CI.
 
