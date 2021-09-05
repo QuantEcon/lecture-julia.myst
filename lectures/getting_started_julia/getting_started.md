@@ -98,7 +98,7 @@ After Conda is installed, you can install Julia.
    
    This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more {ref}`later <repl_main>`.
 
-3. In the Julia REPL, hit `]` to enter package mode and then enter.
+3. In the Julia REPL, hit `]` to enter package mode and then enter:
 
    ```{code-block} julia
    add IJulia
@@ -212,7 +212,7 @@ As discussed above, you can start this directly from the [command palette](comma
 :width: 75%
 ```
 
-1. Start a REPL  it may do an initial compilation of some background packages, but will then look something like
+1. Start a REPL; it may do an initial compilation of some background packages, but will then look something like
  
    ```{figure} /_static/figures/vscode_intro_3.png
    :width: 100%
