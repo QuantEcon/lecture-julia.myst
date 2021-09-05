@@ -73,7 +73,7 @@ It provides a much more modern terminal with better font support for Julia, and 
 Conda provides an easy to install package of jupyter, python, and many data science tools.
 
 If you have not previously installed conda or Jupyter, then 
-1. Download the binary <https://www.anaconda.com/download/> and follow the [installation instructions](https://conda.io/projects/conda/en/latest/user-guide/install/index.html) for your platform.
+1. Download the binary (<https://www.anaconda.com/download/>) and follow the [installation instructions](https://conda.io/projects/conda/en/latest/user-guide/install/index.html) for your platform.
 2. If given the option for your operating system, let Conda add Python to your PATH environment variables.
 
 ```{note}
