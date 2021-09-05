@@ -248,7 +248,7 @@ This runs a process giving Jupyter permission to access this directory, but not 
 
 
 
-1. If the  Julia REPL still open, create a new terminal by clicking on the `+` button on the terminal pane and create a new terminal appropriate for your operating system.  Close the Julia REPL if you wish
+1. If the Julia REPL is still open, create a new terminal by clicking on the `+` button on the terminal pane and create a new terminal appropriate for your operating system.  Close the Julia REPL if you wish
    ```{figure} /_static/figures/vscode_intro_5.png
    :width: 75%
    ```
@@ -279,17 +279,17 @@ Navigate to the {doc}`Interacting with Julia <julia_environment>` section to exp
 
 As you work through the notebooks, you may wish to reset these to the most recent version on the server.
 
-1. To see this, modify one of the notebooks in Jupyter, and then go back to the VS Code, which should now highlight on the left hand side that one or more modified files have been modified.
+1. To see this, modify one of the notebooks in Jupyter, and then go back to VS Code, which should now highlight on the left hand side that one or more modified files have been modified.
 
-2. Choose the highlighted "Source Control" pane, or use `<Ctrl+Shift+G>` then it will summarize all of the modified files.
+2. Choose the highlighted "Source Control" pane, or use `<Ctrl+Shift+G>`; then it will summarize all of the modified files.
 
-3. To revert back to the versions you previously downloaded, right click on the "Changes" and then choose `Discard All Changes`:
+3. To revert back to the versions you previously downloaded, right click on "Changes" and then choose `Discard All Changes`:
 
 ```{figure} /_static/figures/vscode_intro_7.png
 :width: 100%
 ```
 
-Additionally, if the notebooks themselves are modified as the lecture notes evolve, you can first discard any changes, and then either use `> Git: Pull` command or click on the arrow next to "main" (it's a bit ambiguous. Maybe more clear if you mention that "main" refers to the main branch?) on the bottom left of the screen to download the latest versions. 
+Additionally, if the notebooks themselves are modified as the lecture notes evolve, you can first discard any changes, and then either use `> Git: Pull` command or click on the arrow next to "main" on the bottom left of the screen to download the latest versions. Here "main" refers to the main branch of the repo where the latest versions are hosted.
 
 If the `Project.toml` or `Manifest.toml` files are modified, then you may want to redo the [instantiation](install_packages) step to ensure you have the correct versions.
 
@@ -336,7 +336,7 @@ Your web browser should open to a page that looks something like this
 
 The page you are looking at is called the "dashboard".
 
-If you click on "Julia 1.x.x" you should have the option to start a Julia notebook.
+If you click on "Julia 1.x.x" under "Notebook" you should have the option to start a Julia notebook.
 
 Here's what your Julia notebook should look like
 
@@ -369,10 +369,10 @@ This means that the effect of typing at the keyboard **depends on which mode you
 The two modes are
 
 1. Edit mode
-    * Indicated by a green border around one cell, as in the pictures above.
+    * Indicated by a blue border around one cell, as in the pictures above.
     * Whatever you type appears as is in that cell.
 1. Command mode
-    * The green border is replaced by a blue border.
+    * The blue border disappears and turns into a plain grey border.
     * Key strokes are interpreted as commands --- for example, typing b adds a new cell below  the current one.
 
 (To learn about other commands available in command mode, go to "Keyboard Shortcuts" in the "Help" menu)
@@ -406,7 +406,7 @@ If this code fails to work because the `Plots` package is missing, then one of t
 - downloaded or moved this notebook rather than [cloning the notebook repository](clone_lectures).  In that case, it does not have the associated `Project.toml` file local to it.
 
 To remedy this, if you
-- had previously [cloning the notebook repository](clone_lectures), then you should go back and follow the [install the packages](install_packages) instructions, or just call `using Pkg; Pkg.instantiate()` in a new cell.
+- had previously [cloned the notebook repository](clone_lectures), then you should go back and follow the [install the packages](install_packages) instructions, or just call `using Pkg; Pkg.instantiate()` in a new cell.
 - downloaded the notebook separately, or moved them, then consider [cloning the notebook repository](clone_lectures) instead.  If you would prefer not, then you can manually install packages as you need them.  For example, in this case you could type `] add Plots` into a code cell in the notebook or into your Julia REPL.
 ```
 
