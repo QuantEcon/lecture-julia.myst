@@ -48,7 +48,7 @@ We'll discuss the workflow on these features in the [next section](julia_environ
 
 ```{admonition} Quick installation for experience users
 If you have already installed Jupyter, Julia, and Git and have experience with these tools, you can 
-  - Get the notebooks repositories with `git clone https://github.com/quantecon/lecture-julia.notebooks` 
+  - Get the notebooks' repositories with `git clone https://github.com/quantecon/lecture-julia.notebooks` 
   - Open a Jupyter notebook within the downloaded notebooks
   - Install the necessary packages `using Pkg; Pkg.instantiate()`
 
@@ -73,7 +73,7 @@ It provides a much more modern terminal with better font support for Julia, and 
 Conda provides an easy to install package of jupyter, python, and many data science tools.
 
 If you have not previously installed conda or Jupyter, then 
-1. Download the binary <https://www.anaconda.com/download/>) and follow the [installation instructions](https://conda.io/projects/conda/en/latest/user-guide/install/index.html) for your platform.
+1. Download the binary <https://www.anaconda.com/download/> and follow the [installation instructions](https://conda.io/projects/conda/en/latest/user-guide/install/index.html) for your platform.
 2. If given the option for your operating system, let Conda add Python to your PATH environment variables.
 
 ```{note}
