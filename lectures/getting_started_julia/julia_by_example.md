@@ -151,7 +151,7 @@ Notice from the above that
 * array indices start at 1 (like MATLAB and Fortran, but unlike Python and C)
 * array elements are referenced using square brackets (unlike MATLAB and Fortran)
 
-To get **help and examples** in Jupyter or other julia editor, use the `?` before a function name or syntax.
+To get **help and examples** in Jupyter or other julia editors, use the `?` before a function name or syntax.
 
 ```{code-block} julia
 ?typeof
