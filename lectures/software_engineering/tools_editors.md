@@ -153,7 +153,7 @@ To exit package management mode and return to the REPL, type `Ctrl+C`. To then g
 ### Executing Files
 
 First we will reorganize our file so that it is a set of functions with a call at the end rather than a script.  Replace the code with
-```{code-block} none
+```{code-block} julia
 using Plots, Random
 
 f(x) = x + 1
@@ -177,7 +177,7 @@ The behavior of global variables accessed in loops in the `REPL`, Debugger, inli
 You can execute a `.jl` file in several ways.
 
 Within a terminal, you can provide the path to the file.  For example,
-```{code-block} none
+```{code-block} bash
 julia --threads auto --project hello.jl
 ```
 
@@ -263,7 +263,7 @@ A few other features of the REPL include,
 
 Hitting `;` brings you into shell mode, which lets you run bash commands (PowerShell on Windows)
 
-```{code-block} none
+```{code-block} julia
 ; pwd
 ```
 
@@ -314,7 +314,7 @@ While not required for these lectures, consider installing the following extensi
    - Install [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) and (optionally) the [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) for spell checking
    - To get started, just add magic comments at the top of the latex file (removing the `!BIB` line if there is no bibtex reference) and then `F5` or the equivalent command to compile:
 
-```{code-block} none
+```{code-block} latex
 % !TEX program = pdflatex
 % !BIB program = bibtex
 % !TEX enableSynctex = true
