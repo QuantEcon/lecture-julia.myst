@@ -28,37 +28,25 @@ While Jupyter notebooks are a great way to get started with the language, eventu
 
 While you can use source code control, run terminals and the REPL ("Read-Evaluate-Print Loop") without VS Code, we will concentrate on using it as a full IDE for all of these features.
 
+(install_vscode)=
 ## Installing VS Code
 
 To install VS Code and the Julia Extension,
 
-1. Follow the instructions for setting up Julia {ref}`on your local computer <jl_jupyterlocal>`.
-2. Install [VS Code](https://code.visualstudio.com/) for your platform and open it
-   - On Windows, during install under `Select Additional Tasks`, choose all options that begin with `Add "Open with Code" action`. This lets you open VS Code from inside File Explorer folders directly.
-3. Install the [VS Code Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) extension
-   - After installation of VS Code, you should be able to choose `Install` on the webpage of any extensions and it will open on your desktop.
-   - Otherwise, open the extensions with `<Ctrl-Shift-X>` or selecting extensions in the left-hand side of the VS Code window.  Then search for `Julia` in the Marketplace.
+1. First, ensure you followed the instructions for setting up Julia {ref}`on your local computer <jl_jupyterlocal>`.
+2. In particular, ensure you did the initial [VS Code setup](initial_vscode_setup)
+3. Install [VS Code](https://code.visualstudio.com/) for your platform and open it
 
 See the [Julia VS Code Documentation](https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1) for more details.
 
 If you have done a typical Julia installation, then this may be all that is needed and no configuration may be necessary.  However, if you have installed Julia in a non-standard location you may need to manually set the executable path.  See [here](https://www.julia-vscode.org/docs/dev/gettingstarted/#Configuring-the-Julia-extension-1) for instructions if it errors when starting Julia terminals.
 
-```{note}
+```{tip} "Open in Code" on MacOS and Linux
+VS Code supports the "Open with Code" action in File Explorer if chosen during the installation.  This is convenient, but not necessary.  To support it on MacOS you need to install a [Automator script or separate package](https://stackoverflow.com/questions/64040393/open-a-folder-in-vscode-through-finder-in-macos).  Similarly, see [here](https://github.com/vvanloc/Nautilus-OpenInVSCode) for support on linux.
+```
+
 While the general [VS Code documentation](https://code.visualstudio.com/docs/getstarted/userinterface) is excellent, we will review a few of the key concepts directly.  In addition, see [here](optional_extensions) for other useful extensions when using VS Code not directly connected to these lectures.
-```
 
-
-### Command Palette
-
-A key feature is the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette), which can be accessed with `<Ctrl+Shift+P>`.
-
-```{figure} https://code.visualstudio.com/assets/docs/getstarted/userinterface/commands.png
-:width: 75%
-```
-
-With this, you can type partial strings for different commands and it helps you to find features of vscode and its extensions.  This is so common that in these notes we
-denote opening the command palette and searching for a command with things like `> Julia: Start REPL` , etc.  You will only need to type part of the string, and the command palette remembers
-your most recent and common commands.
 ### Optional Extensions and Settings 
 
 Open the settings with `> Preferences: Open User Settings` (see above for opening the command palette with `<Ctrl-Shift-P>`).
