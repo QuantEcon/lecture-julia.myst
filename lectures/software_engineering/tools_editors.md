@@ -55,7 +55,8 @@ As a few optional suggestions for working with the settings,
 
 - In the settings, search for `Tab Size` and you should find `Editor: Tab Size` which you can modify to 4.
 - Search for `quick open` and change `Workbench > Editor: Enable Preview from Quick Open` and consider setting it to false, though this is a matter of personal taste.
-- Finally, if you are on Windows, search for `eol` and change `Files: Eol` to be `\n`.
+- If you are on Windows, search for `eol` and change `Files: Eol` to be `\n`.
+- While it is a personal taste, consider enabling the [bracket colorizer](https://code.visualstudio.com/updates/v1_60#_high-performance-bracket-pair-colorization) by finding the `bracketPairColorization` setting.
 
 A key feature of VS Code is that it can synchronize your extensions and settings across all of your computers, and even when used in-browser (e.g. with [GitHub CodeSpaces](https://github.com/features/codespaces)).  To turn on,
 - Ensure you have a [GitHub account](https://github.com/), which will be useful for {doc}`further lectures <../software_engineering/version_control>`
