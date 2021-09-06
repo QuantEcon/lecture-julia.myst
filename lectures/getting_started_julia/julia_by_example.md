@@ -51,15 +51,9 @@ Since we are looking for simplicity the examples are a little contrived
 
 In this lecture, we will often start with a direct MATLAB/FORTRAN approach which often is **poor coding style** in Julia, but then move towards more **elegant code** which is tightly connected to the mathematics.
 
-### Set Up
-
 We assume that you've worked your way through {doc}`our getting started lecture <../getting_started_julia/getting_started>` already.
 
-### Other References
-
-The definitive reference is [Julia's own documentation](https://docs.julialang.org/en/v1/).
-
-The manual is thoughtfully written but is also quite dense (and somewhat evangelical).
+The definitive reference is [Julia's own documentation](https://docs.julialang.org/).  The manual is thoughtfully written but is also quite dense.
 
 The presentation in this and our remaining lectures is more of a tutorial style based around examples.
 
@@ -76,8 +70,10 @@ More generally, there are two ways to install packages and versions (where the f
 
 1. `add` the packages directly into your global installation (e.g. `Pkg.add("MyPackage")` or `] add MyPackage`) without any project activated.
    - We [installed](intro_repl) the `IJulia` package in this way, since it must be accessible in every project.
+   - As a reminder, the `]` enters the package mode, and with some terminals you can directly copy in the whole `] add MyPackage` string.
 2. using a directory with a `Project.toml` and `Manifest.toml` files, which provides an isolated set of packages for a particular project.
    - If you load a jupyter notebook, it will automatically look up the tree for the project files to activate, but will not automatically install them.  This can be done with `] instantiate`, as we did in our [installation](install_packages)
+   - The project files can be in parent folders relative to the notebooks and sourcecode.
 
 
 The project provides the environment for running code is **reproducible**, so that anyone can replicate the precise set of package and versions used in construction.
@@ -88,8 +84,8 @@ After the installation and activation, `using` provides a way to say that a part
 using LinearAlgebra, Statistics, Plots
 ```
 
-```{note}
-If these packages were not in your project file or global package environment, you will see an error requiring installation.  Ideally you should be using a local `Project.toml` with these in them, in which case you might simply need to `] instantiate` it.  Without a project file, you can manually add them as required (e.g. `] add Plots`).  see [here](install_packages) for more on instantiation and activation of projects.
+```{warning}
+If these packages were not in your project file or global package environment, you will see an error requiring installation.  To reinforce the point aove: Ideally you should be using a local `Project.toml` with these in them, in which case you might simply need to `] instantiate` it.  Without a project file, you can manually add them as required (e.g. `] add Plots`).  See [here](install_packages) for more on instantiation and activation of projects.
 ```
 
 (import)=
@@ -180,7 +176,7 @@ program, for the sake of learning syntax let's rewrite our program to use a
 `for` loop for generating the data.
 
 ```{note}
-In Julia v0.7 and up, the rules for variables accessed in `for` and `while` loops can be sensitive to how they are used (and variables can sometimes require a `global` as part of the declaration).  We strongly advise you to avoid top level (i.e. in the REPL or outside of functions) `for` and `while` loops outside of Jupyter notebooks.  This issue does not apply when used within functions.
+The rules for variables accessed in `for` and `while` loops can be sensitive to how they are used (and variables can sometimes require a `global` as part of the declaration).  We strongly advise you to avoid top level (i.e. outside of functions) `for` and `while` loops when working with `.jl`.  This scoping issue does not apply when used within functions, and will not be seen in the REPL or Jupyter notebooks.
 ```
 
 Starting with the most direct version, and pretending we are in a world where `randn` can only return a single value
@@ -675,7 +671,7 @@ println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.ze
         "$(sol.iterations) iterations")
 ```
 
-Note that this completes in `3` iterations vs `177` for the naive fixed point iteration algorithm.
+Note that this completes in `3` iterations vs `176` for the naive fixed point iteration algorithm.
 
 Since Anderson iteration is doing more calculations in an iteration,  whether it is faster or not would depend on the complexity of the `f` function.
 
