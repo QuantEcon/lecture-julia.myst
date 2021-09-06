@@ -512,7 +512,7 @@ We then can clone this repository to our desktop.  [Follow the instructions](clo
 
 In order to more easily manage changes, we need to create a new branch.  Branches are a separate sequence of commits that diverge from the `main` branch at some point (and may later be merged back in).  It allows you to manage a sequence of separate changes as a coherent unit.
 
-Click on the bottom left of the screen where it says `main`, click to create or select a new branch, and then choose `New Branch`  and title it `readme-mod`.
+Click on the bottom left of the screen where it says `main` to create or select a new branch, and then choose `New Branch`  and title it `readme-mod`.
 
 ```{figure} /_static/figures/new-branch.png
 :width: 100%
