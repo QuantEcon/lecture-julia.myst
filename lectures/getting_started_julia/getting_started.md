@@ -46,7 +46,7 @@ While you will eventually use other editors, there are some advantages to starti
 
 We'll discuss the workflow on these features in the [next section](julia_environment)
 
-```{admonition} Quick installation for experience users
+```{admonition} Quick installation for experienced users
 If you have already installed Jupyter, Julia, and Git and have experience with these tools, you can 
   - Get the notebooks' repositories with `git clone https://github.com/quantecon/lecture-julia.notebooks` 
   - Open a Jupyter notebook within the downloaded notebooks
