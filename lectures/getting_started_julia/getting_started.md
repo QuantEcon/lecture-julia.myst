@@ -272,7 +272,7 @@ The process should launch a webpage on your desktop, which may look like
 If it does not start automatically, use the link at the bottom of the output in the terminal (which should show with `Follow Link`).
 
 
-Navigate to the {doc}`Interacting with Julia <julia_environment>` section to explore this interface and start writing code.
+Proceed to the next section on [Jupyter](julia_environment) to explore this interface and start writing code.
 
 (reset_notebooks)=
 ## Refreshing the Notebooks after Modification
@@ -292,7 +292,6 @@ As you work through the notebooks, you may wish to reset these to the most recen
 Additionally, if the notebooks themselves are modified as the lecture notes evolve, you can first discard any changes, and then either use `> Git: Pull` command or click on the arrow next to "main" on the bottom left of the screen to download the latest versions. Here "main" refers to the main branch of the repo where the latest versions are hosted.
 
 If the `Project.toml` or `Manifest.toml` files are modified, then you may want to redo the [instantiation](install_packages) step to ensure you have the correct versions.
-
 
 
 We will explore these sorts of features, and how to use them for your own projects, in the {doc}`source code control <../software_engineering/version_control>` lecture.
