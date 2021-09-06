@@ -391,7 +391,7 @@ To do this, in a terminal within the repository execute `git reset --hard origin
 
 ## Collaborative Work
 
-We have already seen how Git features (e.g. automatic merging and changes and tools to manage conflicts where it fails) provide tools for collaboration.
+We have already seen how Git features (e.g. automatic merging of changes, and tools to manage conflicts where it fails) provide tools for collaboration.
 
 Here we will look at further GitHub and VS Code functionality to support collaboration.
 ### Adding Collaborators
