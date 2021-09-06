@@ -45,7 +45,7 @@ We assume that you have followed the {doc}`VS Code <../software_engineering/tool
 1. Make sure you create an account on [GitHub.com](http://github.com/).
     * If you are a student, consider signing up for the GitHub [Student Developer Pack](https://education.github.com/pack/) which gives you free [GitHub Pro](https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-pro)
     * Otherwise, see if you qualify for a free [Research or Educator Plan](https://help.github.com/articles/about-github-education-for-educators-and-researchers/) which gives you free [GitHub Team](https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-team)
-2. Ensure that [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/) was installed (as it likely was in the {doc}`getting started <../getting_started_julia/getting_started>`
+2. Ensure that [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/) is installed (as it likely was in the {doc}`getting started <../getting_started_julia/getting_started>`
 3. Setup your git username, and change default line-endings if on Windows
     1. Opening a terminal (on Windows you can use a powershell or the new "Git Bash" installed in the previous step)
     2. Running the following, where the first two lines are not required on linux and OS/X, and you should replace the email and name in the final lines
@@ -58,7 +58,7 @@ We assume that you have followed the {doc}`VS Code <../software_engineering/tool
        git config --global github.user "GITHUBUSERNAME"   
        ```
 4. Ensure that {doc}`VS Code <../software_engineering/tools_editors>` is installed
-5. Install [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens) extension.
+5. Install the [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens) extension.
   - Optional, but highly recommended.
   - It provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code).
 
@@ -109,7 +109,7 @@ This is a key reason why git can store long and complicated histories without co
 In addition, each GitHub repository usually comes with a few standard text files
 
 * A `.gitignore` file, which lists files/extensions/directories that GitHub shouldn't try to track (e.g., LaTeX compilation byproducts).
-* A `README.md` file, which is a [Markdown](https://guides.github.com/features/mastering-markdown/) file which provides GitHub displays by default as the homepage when accessing the repository online.
+* A `README.md` file, which is a [Markdown](https://guides.github.com/features/mastering-markdown/) file which GitHub displays by default as the homepage when accessing the repository online.
 * A `LICENSE.txt` file, which describes the terms under which the repository's contents are made available.
 
 For an example of all three, see the [Expectations.jl](https://github.com/quantecon/expectations.jl/) repo.
@@ -123,7 +123,7 @@ Much of this will carry over to the collaborative section.
 
 ### Creating a Repository
 
-In general, we will always want to repos for new projects using the following dropdown
+In general, we will always want to make repos for new projects using the following dropdown
 
 ```{figure} /_static/figures/git-makerepo.png
 :width: 75%
@@ -142,7 +142,7 @@ In this case, we're making a public repo `github.com/USERNAME/example_repository
 - Leave off support for the Marketplace Apps `Codecov`, which we will discuss further in the {doc}`testing lecture <../software_engineering/testing>` lecture.
 
 ```{note}
-You can also add an existing folder as a new repository on github, you can use the VS Code features to [initialize and publish](https://code.visualstudio.com/docs/editor/versioncontrol#_initialize-a-repository) a repository to GitHub.  Otherwise, the [instructions are more involved](https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/.
+You can also add an existing folder as a new repository on github, where you can use the VS Code features to [initialize and publish](https://code.visualstudio.com/docs/editor/versioncontrol#_initialize-a-repository) a repository to GitHub.  Otherwise, the [instructions are more involved](https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/.
 ```
 (clone_repo)=
 ### Cloning a Repository
@@ -155,7 +155,7 @@ The next step is to get this to our local machine.  If you click on the `<> Code
 
 This dropdown gives us a few options
 
-* The copy button below the `Clone` with `HTTPS` can be used by either the commandline and other tools.
+* The copy button below the `Clone` with `HTTPS` can be used by either the commandline or other tools.
 * `Open in Desktop` will call to the GitHub Desktop application if you installed it
 * `Download Zip` will download the directory *without the .git* subdirectory (avoid this option, as it defeats the purpose of version control).
 
@@ -169,18 +169,18 @@ We will download the repository using the built-in VS Code support.
    ```{figure} /_static/figures/vs-code-clone.png
    :width: 100%
    ```
-5. Select a location (e.g. `c:\users\USERNAME\GitHub`) which will clone the repository (e.g. into `c:\users\USERNAME\GitHub\example_repository`, which holds both the files themselves and the version information for Git).  This folder then has all of the information associated with this repository, and no other inform
+5. Select a location (e.g. `c:\users\USERNAME\GitHub`) which will clone the repository into a folder (e.g. into `c:\users\USERNAME\GitHub\example_repository`) which holds both the files themselves and the version information. This folder then has all of the information associated with this repository.
 6. After the repository is cloned, you can choose to `Open in a New Window`.
    ```{figure} /_static/figures/vs-code-done-clone.png
    :width: 100%
    ```
 
-You will see the automatically generated file for the `LICENSE, .gitignore` and `README.md`.
+You will see the automatically generated files for the `LICENSE, .gitignore` and `README.md`.
 
 
 ```{note}
 To manually clone this to your desktop, you can start a terminal and use `git clone https://github.com/USERNAME/example_repository.git` within the directory you want to clone it to.  After cloning, you can open the folder within VS Code by either
-   - Within a terminal on your operating system, navigate that directory and type `code .`
+   - Within a terminal on your operating system, navigate to that directory and type `code .`
    - On Windows if you installed VS Code with the appropriate option, right click on the folder and choose `Open with Code` - trusting the authors as required on opening the folder.
    - In the VS Code Menu, choose `File/Open Folder...`
 ```
@@ -192,7 +192,7 @@ Now that we have the repository, we can start working with it.
 Within VS Code, make the following changes:
 1. Open the `README.md` and add some text.
 2. Add a new file called `some_file.txt` with some text in it.  You can do this with the menus, or by right clicking in the Files panel and selecting "New File"
-3. Another new file called `garbage_file.tmp` with some text in it.
+3. Add another new file called `garbage_file.tmp` with some text in it.
 4. Finally, in the `.gitignore`, add `*.tmp` at the end.
 
 Your editor should look something like
@@ -208,12 +208,12 @@ This shows three changes:
 3. `some_file.txt` is a new file.
 
 Note that `garbage_file.tmp` is not listed, as the `*.tmp` extension was ignored in the `.gitignore`.
-If you choose on a file, such as the `README.md` in this panel, it will open up the file to show all of the changes relative to the last commit.  For example,
+If you click on a file, such as the `README.md` in this panel, it will open up the file to show all of the changes relative to the last commit.  For example,
 ```{figure} /_static/figures/vs-code-edits-2.png
 :width: 100%
 ```
 
-Let us push these changes to github.  Add text in the "Message" in this panel, and then click on the checkmark to commit it.
+Let us push these changes to GitHub.  Add text in the "Message" in this panel, and then click on the checkmark to commit it.
 
 As git is a decentralized version control system, this change is now only local to your machine.  You can make a variety of changes locally and only push to GitHub when you are ready.
 
@@ -232,7 +232,7 @@ If you refresh your web browser with the github repository open, you will see ch
 
 This functionality will help you track down changes in a project, and in particular, provide tools to track down when functionality may have stopped working or parameters were changed in a project.
 
-On that page, either choose the description of the commit to display it, or choose the entire list (e.g. 2 commits link here)and select the most recent.
+On that page, either choose the description of the commit to display it, or choose the entire list (e.g. 2 commits) and select the most recent.
 
 This shows a summary of all of the changes between this commit and the last.
 
@@ -287,7 +287,7 @@ But before we pull these changes, we will show how Git can automatically merge t
 
 On your local VS Code, open the `README.txt` and change the title from `# example_repository` to `# example_repository_modified`.  Then save and commit this change with a commit message such as `Local Modification`.  It is important that you modified the top line, and not the same one that you changed in the online editor.
 
-You will notice that at the bottom it now shows one commit coming from the server, and one coming back down.
+You will notice that at the bottom it now shows one commit coming from the server, and one going back up.
 
 Now click on that icon on the bottom of the VS Code editor, which will do a Pull and Push of these changes.  Assuming that you were careful not to modify the same line of code, it will determine that these two changes do not clash, and both commits will be added locally and on the server.
 
@@ -372,7 +372,7 @@ In that view, choose "Accept Current Change" within the editing screen, and righ
 An alternative workflow is to right click on the file, and choose `Accept All Current` or `Accept All Incoming` to choose one version of the file without going through individual decisions.
 
 After modifying:
-1. Save the file.  If you have resolved the 
+1. Save the file if you have resolved the merge conflict.
 2. Choose the `+` next to the modified file in the source control pane, or right click on the file and choose `Stage Changes`
 3. Add a commit message, commit the file
 4. Do a Push to synchronize with the server.
@@ -490,7 +490,7 @@ But what if we want to make more in-depth changes?
 (fork_workflow)=
 ### No-Access Case
 
-A common problem is when we don't have write access (i.e. we can't directly modify)  the repo in question.
+A common problem is when we don't have write access (i.e. we can't directly modify) the repo in question.
 
 In that case, click the "Fork" button that lives in the top-right of every repo's main page.
 
@@ -512,7 +512,7 @@ We then can clone this repository to our desktop.  [Follow the instructions](clo
 
 In order to more easily manage changes, we need to create a new branch.  Branches are a separate sequence of commits that diverge from the `main` branch at some point (and may later be merged back in).  It allows you to manage a sequence of separate changes as a coherent unit.
 
-Click on the bottom left of the screen where it says `main` to create or select a new branch, and then choose `New Branch`  and title it `readme-mod`.
+Click on the bottom left of the screen where it says `main`, click to create or select a new branch, and then choose `New Branch`  and title it `readme-mod`.
 
 ```{figure} /_static/figures/new-branch.png
 :width: 100%
@@ -571,7 +571,7 @@ If you are a maintainer of the repo (e.g. you created it or are a collaborator) 
 
 Branches in git represent parallel development streams (i.e., sequences of commits) that the PR is trying to merge.
 
-For example, back on our `example_repository`, select the branch selection on the bottom left corner of VS Code, and make a new branch (e.g. `readme-mod`)
+For example, back on our `example_repository`, select the branch name on the bottom left corner of VS Code, and make a new branch (e.g. `readme-mod`)
 
 ```{figure} /_static/figures/new-branch-6.png
 :width: 100%
