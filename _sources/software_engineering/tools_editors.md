@@ -28,37 +28,25 @@ While Jupyter notebooks are a great way to get started with the language, eventu
 
 While you can use source code control, run terminals and the REPL ("Read-Evaluate-Print Loop") without VS Code, we will concentrate on using it as a full IDE for all of these features.
 
+(install_vscode)=
 ## Installing VS Code
 
 To install VS Code and the Julia Extension,
 
-1. Follow the instructions for setting up Julia {ref}`on your local computer <jl_jupyterlocal>`.
-2. Install [VS Code](https://code.visualstudio.com/) for your platform and open it
-   - On Windows, during install under `Select Additional Tasks`, choose all options that begin with `Add "Open with Code" action`. This lets you open VS Code from inside File Explorer folders directly.
-3. Install the [VS Code Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) extension
-   - After installation of VS Code, you should be able to choose `Install` on the webpage of any extensions and it will open on your desktop.
-   - Otherwise, open the extensions with `<Ctrl-Shift-X>` or selecting extensions in the left-hand side of the VS Code window.  Then search for `Julia` in the Marketplace.
+1. First, ensure you followed the instructions for setting up Julia {ref}`on your local computer <jl_jupyterlocal>`.
+2. In particular, ensure you did the initial [VS Code setup](initial_vscode_setup)
+3. Install [VS Code](https://code.visualstudio.com/) for your platform and open it
 
 See the [Julia VS Code Documentation](https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1) for more details.
 
 If you have done a typical Julia installation, then this may be all that is needed and no configuration may be necessary.  However, if you have installed Julia in a non-standard location you may need to manually set the executable path.  See [here](https://www.julia-vscode.org/docs/dev/gettingstarted/#Configuring-the-Julia-extension-1) for instructions if it errors when starting Julia terminals.
 
-```{note}
+```{tip} "Open in Code" on MacOS and Linux
+VS Code supports the "Open with Code" action in File Explorer if chosen during the installation.  This is convenient, but not necessary.  To support it on MacOS you need to install a [Automator script or separate package](https://stackoverflow.com/questions/64040393/open-a-folder-in-vscode-through-finder-in-macos).  Similarly, see [here](https://github.com/vvanloc/Nautilus-OpenInVSCode) for support on linux.
+```
+
 While the general [VS Code documentation](https://code.visualstudio.com/docs/getstarted/userinterface) is excellent, we will review a few of the key concepts directly.  In addition, see [here](optional_extensions) for other useful extensions when using VS Code not directly connected to these lectures.
-```
 
-
-### Command Palette
-
-A key feature is the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette), which can be accessed with `<Ctrl+Shift+P>`.
-
-```{figure} https://code.visualstudio.com/assets/docs/getstarted/userinterface/commands.png
-:width: 75%
-```
-
-With this, you can type partial strings for different commands and it helps you to find features of vscode and its extensions.  This is so common that in these notes we
-denote opening the command palette and searching for a command with things like `> Julia: Start REPL` , etc.  You will only need to type part of the string, and the command palette remembers
-your most recent and common commands.
 ### Optional Extensions and Settings 
 
 Open the settings with `> Preferences: Open User Settings` (see above for opening the command palette with `<Ctrl-Shift-P>`).
@@ -67,7 +55,8 @@ As a few optional suggestions for working with the settings,
 
 - In the settings, search for `Tab Size` and you should find `Editor: Tab Size` which you can modify to 4.
 - Search for `quick open` and change `Workbench > Editor: Enable Preview from Quick Open` and consider setting it to false, though this is a matter of personal taste.
-- Finally, if you are on Windows, search for `eol` and change `Files: Eol` to be `\n`.
+- If you are on Windows, search for `eol` and change `Files: Eol` to be `\n`.
+- While it is a personal taste, consider enabling the [bracket colorizer](https://code.visualstudio.com/updates/v1_60#_high-performance-bracket-pair-colorization) by finding the `bracketPairColorization` setting.
 
 A key feature of VS Code is that it can synchronize your extensions and settings across all of your computers, and even when used in-browser (e.g. with [GitHub CodeSpaces](https://github.com/features/codespaces)).  To turn on,
 - Ensure you have a [GitHub account](https://github.com/), which will be useful for {doc}`further lectures <../software_engineering/version_control>`
@@ -164,7 +153,7 @@ To exit package management mode and return to the REPL, type `Ctrl+C`. To then g
 ### Executing Files
 
 First we will reorganize our file so that it is a set of functions with a call at the end rather than a script.  Replace the code with
-```{code-block} none
+```{code-block} julia
 using Plots, Random
 
 f(x) = x + 1
@@ -188,7 +177,7 @@ The behavior of global variables accessed in loops in the `REPL`, Debugger, inli
 You can execute a `.jl` file in several ways.
 
 Within a terminal, you can provide the path to the file.  For example,
-```{code-block} none
+```{code-block} bash
 julia --threads auto --project hello.jl
 ```
 
@@ -247,8 +236,18 @@ VS Code sets the number of threads automatically based on the number of cores on
 
 The most important choice is the `--project` toggle which determines whether you want to activate an existing project (or create a new one) when starting the interpreter.  Since a key feature of Julia is to have fully reproducible environments, you will want to do this whenever possible.
 
+To emphasize this point, this is an example of the `]st ` showing the global environment has only the bare minimum of packages installed.  With this workflow, all other packages are installed only when a given project is activated.
+```{code-block} none
+(@v1.6) pkg> st
+      Status `C:\Users\jesse\.julia\environments\v1.6\Project.toml`
+[7073ff75] IJulia v1.23.2
+[14b8a8f1] PkgTemplates v0.7.18
+[295af30f] Revise v3.1.19
+```
+
 ```{note}
 A key difference between Julia and some other package managers is that it is capable of having different versions of each package for different projects - which ensures all projects are fully reproducible by you, your future self, and any other collaborators.  While there is a global set of packages available (e.g. `IJulia.jl` to ensure Jupyter support) you should try to keep the packages in different projects separated.  See the documentation on [environments](https://docs.julialang.org/en/v1/manual/code-loading/#Environments-1) and the [package manager](https://pkgdocs.julialang.org/v1/getting-started/) for more.
+
 ```
 
 If you start the terminal without activating a project, you can activate it afterwards with `] activate .` or `using Pkg; Pkg.activate()`.
@@ -274,7 +273,7 @@ A few other features of the REPL include,
 
 Hitting `;` brings you into shell mode, which lets you run bash commands (PowerShell on Windows)
 
-```{code-block} none
+```{code-block} julia
 ; pwd
 ```
 
@@ -325,7 +324,7 @@ While not required for these lectures, consider installing the following extensi
    - Install [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) and (optionally) the [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) for spell checking
    - To get started, just add magic comments at the top of the latex file (removing the `!BIB` line if there is no bibtex reference) and then `F5` or the equivalent command to compile:
 
-```{code-block} none
+```{code-block} latex
 % !TEX program = pdflatex
 % !BIB program = bibtex
 % !TEX enableSynctex = true
