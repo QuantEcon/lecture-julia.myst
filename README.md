@@ -1,46 +1,25 @@
 # lecture-julia.myst
 
-Source for julia.quantecon.org
+Source for julia.quantecon.org and notebooks in https://github.com/QuantEcon/lecture-julia.notebooks
+
+To contribute, you can use GitHub's online editor for small changes, and do a full local installation for large ones.
+
+## Online Editor
+
+On this website hit `.` to enter into the web editor.  From this, you can submit suggested patches and fix typos.  This will help you create a [pull request](https://quantecon.github.io/lecture-julia.myst/software_engineering/version_control.html#collaboration-via-pull-request) for maintainers here to examine.
 
 ## Local Development 
 
+It is straightforward to install the jupyterbook and julia software necessary for more significant changes.
+
 ### Setup
 
-1. Download and install [Julia 1.6](https://julialang.org/downloads).
+1. [Install Julia, Conda, and VS Code](https://quantecon.github.io/lecture-julia.myst/getting_started_julia/getting_started.html) following the documentation for using these notes
+2. Modify [VS Code settings](https://quantecon.github.io/lecture-julia.myst/software_engineering/tools_editors.html#optional-extensions-and-settings) and consider [additional extensions](https://quantecon.github.io/lecture-julia.myst/software_engineering/tools_editors.html#optional-extensions).  Some others to consider are the [MyST-Markdown](https://github.com/executablebooks/myst-vs-code) and [Spell Checking](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) extensions
+3. Ensure that [Git](https://quantecon.github.io/lecture-julia.myst/software_engineering/version_control.html#setup) is setup correctly.  In particular this ensures that Windows users use the linux end-of-line characters.
+4. Clone this repository (in VS Code, you can use `<Ctrl+Shift+P>` then `Clone` then `Clone from GitHub` then choose the repo as `https://github.com/QuantEcon/lecture-julia.myst`).
 
-2. Install [`conda`](https://www.anaconda.com/products/individual)
-    - See [Conda Installation](https://datascience.quantecon.org/introduction/local_install.html#installation) for examples
-    - Add conda to path  
-
-3. Install [vscode](https://code.visualstudio.com/) and accept defaults if possible:
-   - Some highly recommended packages.  After installation of vscode, you should be able to click `Install` link on the webpage of any extensions
-      - [MyST-Markdown](https://github.com/executablebooks/myst-vs-code)
-      - [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia)
-   - Other optional, but recommended extensions
-      - [Live Preview](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server)
-      - [Github Support](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github)
-      - [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter)
-      - [Editing Markdown](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one)
-      - [Extra Git Tools](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens)
-      - [Spell Checking](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
-      - [YAML support](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
-
-   - Go to settings with `<Ctrl-Shift-P>` and search for the following settings to change:
-      - `files.eol` to `\n`
-      - `enablePreviewFromQuickOpen` to turn it off
-      - `Tab Size` to `4`
-
-4. If on Windows, install [git](https://git-scm.com/downloads) and run the following in a terminal
-
-    ```bash
-    git config --global core.eol lf
-    git config --global core.autocrlf false
-    ```
-
-5. Clone this repository (in vscode, you can use `<Ctrl-Shift-P>` then `Clone` then `Clone from GitHub` then choose the repo as `https://github.com/QuantEcon/lecture-julia.myst`).  Or with github desktop, choose the `<> Code` dropdown on this website
-
-6. Open this repository in vscode, either from Github Desktop  with `<Ctrl-Shift-A>` or with `code .` in the right folder in a terminal
-    - After opening this repo, any terminals start at its root.
+6. Open this repository in VS Code.  If you cloned in a separate terminal, navigate to the directory and type `code .`
 
 7. Start a vscode terminal with ``<Ctrl+`>`` or through any other method.  Create a conda environment.
 
@@ -57,22 +36,7 @@ Source for julia.quantecon.org
     - Then choose the interpeter with `lecture-julia.myst` which should now be automatically activated in the terminal.
     - If the interpreter does not show up in the drop-down, close and reopen vscode, then try again. Alternatively, you can run this step at the end of the setup process.
         - Whenever reopening vscode,  re-run `conda activate lecture-julia.myst` to ensure the environment remains active.
-
-9.  Install general julia packages if not already installed.
-
-    ```bash
-    julia -e 'using Pkg; Pkg.add("IJulia");'
-    ```
-    
-    On Windows, you should run the following instead to avoid a quoting issue:
-    
-    ```bash
-    julia -e "using Pkg; Pkg.add(\"IJulia\");"
-    ```
-    
-    If the terminal responds with `'Julia' is not recognized`, close and reopen vscode, then try again. Make sure to re-activate the environment.
-
-10.  Install Julia packages required for lecture notes.
+9.  Install Julia packages required for lecture notes.
 
      ```bash
      julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
