@@ -166,6 +166,11 @@ You can type partial strings for different commands and it helps you to find fea
 To launch a terminal, use either (1) ``<Ctrl+`>``, (2) `>View: Toggle Terminal` with the command palette, or (3) `View > Terminal` in the menus.
 
 
+```{note}
+Becoming comfortable with VS Code and tools for source code control/software engineering is an essential step towards ensuring reproducibility.  An easy way to begin that process is to start using VS Code to edit LaTeX, and practice managing your `.tex` files in GitHub rather than dropbox or similar alternatives.  While not directly connected to Julia, this familiarity will make everything easier - even for proprietary languages such as Stata and Matlab.  See [here](vscode_latex) for instructions on this setup process.
+```
+
+
 (clone_lectures)=
 ## Downloading the Notebooks
 

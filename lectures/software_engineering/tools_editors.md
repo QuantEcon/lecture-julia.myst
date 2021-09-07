@@ -319,16 +319,67 @@ While not required for these lectures, consider installing the following extensi
 1. [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens): An extension that provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code)
 2. [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github): while VS Code supports the git {doc}`version control <../software_engineering/version_control>` natively, these extension provides additional features for working with repositories on GitHub itself.
 3. [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one): For editing the markdown format, such as `README.md` and similar files.
-4. Finally, VS Code has an excellent [latex editor](https://github.com/James-Yu/LaTeX-Workshop#manual)
-   - Install a recent version of miktex or texlive for your platform
-   - Install [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) and (optionally) the [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) for spell checking
-   - To get started, just add magic comments at the top of the latex file (removing the `!BIB` line if there is no bibtex reference) and then `F5` or the equivalent command to compile:
 
-```{code-block} latex
-% !TEX program = pdflatex
-% !BIB program = bibtex
-% !TEX enableSynctex = true
+(vscode_latex)=
+### VS Code as a LaTeX Editor
+
+VS Code has an outstanding LaTeX editing extension, which provides a good way to become comfortable with the tool and managing source code online.
+1. Install a recent copy of tex
+   - Typically Windows users would want [MiKTeX](https://miktex.org/download)
+   - macOS and Linux users can also use use either [MiKTeX](https://miktex.org/download) or [TeX Live](https://www.tug.org/texlive/)
+   - If you install MiKTeX, ensure you choose the "Always install missing packages on-the-fly" option
+2. With a new VS Code session, install the following extensions
+   - [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop)
+   - (Optional) [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
+3. (Optional) If you wish to have the editor automatically compile and display the document when you save your `.tex` file: Then open the VS Code settings, and search for `autobuild` to set the option `Latex-workshop > Latex > Auto Build: Run` to `onSave`.
+
+No further configuration should be required, but see [the manual](https://github.com/James-Yu/LaTeX-Workshop/wiki/Install) if you have problems.
+
+
+While there many ways to execute a compilation workflow, one method is to use "magic comments" at the top of a latex file.  This is not specific to LaTeX Workshop, and can be used by other tools.
+1. In VS Code, create a new file, such as `rough_notes.tex` and copy in the following
+   ```{code-block} latex
+   % !TEX program = pdflatex
+   % !TEX enableSynctex = true
+
+   \documentclass{article}
+   \title{Rough Notes}
+   \begin{document}
+      \maketitle
+      Some rough notes
+   \end{document}
+   ```
+2. Save the document.  If you enabled the automatic build option in your settings, this should compile it.  Otherwise, use `F5` or the command palette `> Latex Workshop: Build Latex Project`.
+
+   If you hover over the magnifying glass icon near the top right hand corner, It should look something like, 
+   ```{figure} /_static/figures/vscode_latex_1.png
+   :width: 100%
+   ```
+
+3. Click on that link, or use `<Ctrl+Alt+V>` to get display the PDF Preview.
+   - The first time you do this, it will ask you to choose the PDF display. Choose `VSCode tab`
+   - If you modify the document and save (or manually rebuild) the view will update
+   - If you double-click on the PDF it can take you to the synced section of the latex.  Conversely, if you use the `<Ctrl+Alt+J>` or the palette `> TeX Workshop: SyncTex from Cursor` it will find the appropriate section of the PDF based on your current cursor position in the `.tex` file.
+
+4. Select the Problems pane at the bottom of the screen (which likely shows 1 warning and no error) or open it with `<Ctrl+Shift+M>`
+
+```{figure} /_static/figures/vscode_latex_2.png
+:width: 100%
 ```
+
+In that screenshot, we have also selected the `TeX` pane on the left hand side, which provides additional options for you to explore.  All of them have command-palette equivalents.
+
+If you wanted to have a bibliography, you would add it into the tex file as normal, and just add in the additional magic comment `% !BIB program = bibtex`
+
+Finally, when using source code control, you will want to make sure you add the intermediate files to your `.gitignore` (see [here](discarding_changes) for more).  Typically, you would want to ignore
+```{code-block} none
+*.aux
+*.log
+*.synctex.gz
+*.pdf
+```
+Ignoring the `*.pdf` is optional but strongly encouraged as it will ensure you don't clog the repository with the binary pdf files, and make collaboration easier by preventing clashes on this file.
+
 ### Font Choices
 
 Beyond their general use, the integrated terminals will use fonts installed within VS Code.  Given that Julia code supports mathematical notation, the extra support in good fonts can be helpful.

@@ -296,7 +296,7 @@ Now click on that icon on the bottom of the VS Code editor, which will do a Pull
 :width: 75%
 ```
 
-
+(discarding_changes)=
 ### Discarding Changes
 A common scenario with Git is that you are making temporary local modifications and want to discard them prior to updating from the server.
 
