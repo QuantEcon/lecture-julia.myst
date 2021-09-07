@@ -302,12 +302,9 @@ We will explore these sorts of features, and how to use them for your own projec
 
 
 (julia_environment)=
-# Interacting with Julia
+## Interacting with Julia
 
-
-## Overview
-
-In this lecture we'll start examining different features of the Julia and Jupyter environments.
+Next, we'll start examining different features of the Julia and Jupyter environments.
 
 While we emphasize a [local installation of Jupyter](jl_jupyterlocal), other alternatives exist.
 
