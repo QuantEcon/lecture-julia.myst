@@ -57,6 +57,8 @@ At that point, you could directly move on to the {doc}`julia by example <../gett
 However, as we strongly recommend becoming familiar with VS Code as a transition towards using more advanced tools and to support better software engineering workflows, so consider walking through the rest of these instructions.
 ```
 
+For those with little to no programming experience (e.g. you have never used a loop or "if" statement) see the list of [introductory resources](intro_resources).
+
 (jl_jupyterlocal)=
 ## Desktop Installation of Julia and Jupyter
 
@@ -69,6 +71,7 @@ On Windows, you probably want to install the new open-source [Windows Terminal](
 It provides a much more modern terminal with better font support for Julia, and with better operating system integration.  For example, you can right-click on a folder in the File Explorer and choose `Open in Microsoft Terminal` to start a terminal in that location.  Rather than providing a particular shell directly, it hosts those that are available in your setup (e.g., PowerShell, Git Bash, Ubuntu Bash in WSL).
 ```
 
+(install_jupyter)=
 ### Installing Jupyter
 [Anaconda](https://www.anaconda.com/) provides an easy to install package of jupyter, python, and many data science tools.
 
