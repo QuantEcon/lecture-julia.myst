@@ -62,6 +62,7 @@ We assume that you have followed the {doc}`VS Code <../software_engineering/tool
   - Optional, but highly recommended.
   - It provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code).
 
+(more_on_git)=
 ### Git vs. GitHub vs. Git Clients
 
 To understand the relationship
