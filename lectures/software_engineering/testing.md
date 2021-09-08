@@ -32,7 +32,7 @@ Co-authored with Arnav Sood
 
 This lecture discusses structuring a project as a Julia module, and testing it with tools from GitHub.
 
-Benefits include
+Benefits include:
 
 * Specifying dependencies (and their versions) so that your project works across Julia setups and over time.
 * Being able to load your project's functions from outside without copy/pasting.
@@ -53,13 +53,13 @@ Finally, since many economics projects occur over multiple years - this will hel
 Much of the software engineering and continuous integration (CI) will be done through [GitHub Actions](https://github.com/features/actions).
 
 The GitHub actions execute as isolated and fully reproducible environments on the cloud (using containers), and are initiated through various actions on the GitHub repo.  In particular, these are typically initiated through:
-- Making commits on the main branch of a repository
+- Making commits on the main branch of a repository.
 - Creating a PR on a repository, or pushing commits to it.
 - [Tagging a release](https://docs.github.com/en/github/administering-a-repository/releasing-projects-on-github/managing-releases-in-a-repository) of a repository, which provides a snapshot at a particular commit.
 
 For publicly available repositories, GitHub provides free minutes for executing these actions, whereas there are limits on the execution time for private repositories - though signing up for the GitHub academic plans previously discussed (i.e, the [Student Developer Pack](https://education.github.com/pack/) or [Academic/Researcher plans](https://help.github.com/articles/about-github-education-for-educators-and-researchers/)) provides additional free minutes.
 
-While you may think of a ``Package'' as a shared and maintained set of reusable code, with Julia it will turn out to be the most useful way to organize personal and private projects or the code associated with a particular paper.  The primary benefit of using a package workflow is **reproducibility** for yourself, your future self, and collaborators.
+While you may think of a ''Package'' as a shared and maintained set of reusable code, with Julia it will turn out to be the most useful way to organize personal and private projects or the code associated with a particular paper.  The primary benefit of using a package workflow is **reproducibility** for yourself, your future self, and collaborators.
 
 In addition, you will find the testing workflow as an essential element of working on even individual projects, since it will prevent you from making accidental breaking changes at points in the future - or when you come back to the code after several years.
 
@@ -76,7 +76,7 @@ The only other service that is necessary for the complete software engineering s
 
 For these lectures, visit [Codecov website](https://about.codecov.io/sign-up/).
 
-Installation instructions are [here](https://docs.codecov.com/docs/quick-start#getting-started)
+Installation instructions are [here](https://docs.codecov.com/docs/quick-start#getting-started).
 
 To summarize: sign up, and sign into it with `GitHub`.  You may need to provide permissions for Codecov to access GitHub, follow the provided authorization instructions.
 
@@ -407,9 +407,9 @@ The basic idea of test-driven development is to create a set of tests of individ
 This will be part of a coherent set of strategies to ensure everything is reproducible since:
 - Writing all of the checks on your underlying functions to be called from  `test/runtests.jl` lets you can avoid accidentally breaking old functionality.  Breaking of old code is called a [test regression](https://en.wikipedia.org/wiki/Regression_testing) and is especially problematic with research code.
 - With the full snapshot of all of the packages associated with a particular version of the project (i.e. a commmit) in a `Manifest.toml`, anyone can reproduce the exact environment simply from that point in the source code tree.
-- Any changes to the code automatically run in the CI (i.e. the GitHub Action) after every modification, so you and any collaborators will be able to automatically track changes
+- Any changes to the code automatically run in the CI (i.e. the GitHub Action) after every modification, so you and any collaborators will be able to automatically track changes.
 - The code coverage will give you a sense of how much of the code you have actually executed in your tests, which can give you a sense of how much faith should be given to the automatic tracking of changes.
-- The visual badges and displays on GitHub (e.g. the CI badge and the display of checks on each PR) provides an easy way to track when problems occur
+- The visual badges and displays on GitHub (e.g. the CI badge and the display of checks on each PR) provides an easy way to track when problems occur.
 
 (editing_package_code)=
 ### Writing Code in the Package
@@ -506,7 +506,7 @@ Which should show that the "Test Passed".
 (editing_test_code)=
 ### Writing Test Code
 
-The core of test driven development is that if a value was worth checking once, then it is probalby worth checking every time the code changes.
+The core of test driven development is that if a value was worth checking once, then it is probably worth checking every time the code changes.
 
 For this reason, the change to this workflow means moving much of the code you would use to explore in a Jupyter notebook into the `runtests.jl` (or files they `include`) themselves.
 
@@ -589,7 +589,7 @@ To demonstrate this
 :width: 100%
 ```
 * Commit this change to your local branch with the commit message.
-* Then, imagine that rather than running `]test` - which would have shown this error given our previous unit test, you pushed it to the server.  As always, do this by selecting the publish arrow next to `my-feature` at the bottom of the screen.  You can create a Pull Request in that GUI, or just go back to the webpage where it asked you if you wish to "Compare and Pull Request"
+* Then, imagine that rather than running `] test` - which would have shown this error given our previous unit test, you pushed it to the server.  As always, do this by selecting the publish arrow next to `my-feature` at the bottom of the screen.  You can create a Pull Request in that GUI, or just go back to the webpage where it asked you if you wish to "Compare and Pull Request".
 
 
 After you create the pull request, you will see it in available on the web.  After a few minutes, the unit test will execute and you will see an output such as 
@@ -728,7 +728,7 @@ For example,
 @show √eps(BigFloat);
 ```
 
-For cases where you want to change the relative tolerance or add in an absolute tolerance (i.e. . $\|x - y\| \leq atol$) use the appropriate keywords
+For cases where you want to change the relative tolerance or add in an absolute tolerance (i.e. $\|x - y\| \leq atol$) use the appropriate keywords
 ```{code-cell} julia
 x = 100.0 + 1E-6  # within the tolerance
 @test x ≈ 100.0 rtol=1E-7  # note < the 1E-6 difference passes due to relative scaling
@@ -814,12 +814,12 @@ The package should include
 
 For the tests, you should have at the very minimum
 
-* a way to handle non-convergence (e.g. return back `nothing` as discussed in {ref}`error handling <error_handling>`
+* a way to handle non-convergence (e.g. return back `nothing` as discussed in {ref}`error handling <error_handling>`)
 * several `@test` for the root of a known function, given the `f` and analytical `f'` derivatives
 * tests of those roots using the automatic differentiation version of the function
 * a test of finding those roots with a `BigFloat` and not just a `Float64`
 * a test of non-convergence for a function without a root (e.g. $f(x) = 2 + x^2$ )
-* a test to ensure that the `maxiter` is working (e.g. what happens if you call `maxiter = 5`
+* a test to ensure that the `maxiter` is working (e.g. what happens if you call `maxiter = 5`)
 * a test to ensure that `tol` is working
 
 And anything else you can think of.  You should be able to run `] test` for the project to check that the test-suite is running, and then ensure that it is running automatically on GitHub Actions CI.
