@@ -45,7 +45,7 @@ We assume that you have followed the {doc}`VS Code <../software_engineering/tool
 1. Make sure you create an account on [GitHub.com](http://github.com/).
     * If you are a student, consider signing up for the GitHub [Student Developer Pack](https://education.github.com/pack/) which gives you free [GitHub Pro](https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-pro)
     * Otherwise, see if you qualify for a free [Research or Educator Plan](https://help.github.com/articles/about-github-education-for-educators-and-researchers/) which gives you free [GitHub Team](https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-team)
-2. Ensure that [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/) is installed (as it likely was in the {doc}`getting started <../getting_started_julia/getting_started>`
+2. Ensure that [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/) is installed (as it likely was in the {doc}`getting started <../getting_started_julia/getting_started>`)
 3. Setup your git username, and change default line-endings if on Windows
     1. Opening a terminal (on Windows you can use a powershell or the new "Git Bash" installed in the previous step)
     2. Running the following, where the first two lines are not required on linux and OS/X, and you should replace the email and name in the final lines
@@ -62,6 +62,7 @@ We assume that you have followed the {doc}`VS Code <../software_engineering/tool
   - Optional, but highly recommended.
   - It provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code).
 
+(more_on_git)=
 ### Git vs. GitHub vs. Git Clients
 
 To understand the relationship
@@ -138,11 +139,11 @@ We can then configure repository options as such
 In this case, we're making a public repo `github.com/USERNAME/example_repository` where `USERNAME` is your GitHub account name.  The options chosen are:
 - Add in a `README.md`.
 - License under the MIT open-source License.
-- Ignore Julia compilation byproducts in the `.gitignore`
+- Ignore Julia compilation byproducts in the `.gitignore`.
 - Leave off support for the Marketplace Apps `Codecov`, which we will discuss further in the {doc}`testing lecture <../software_engineering/testing>` lecture.
 
 ```{note}
-You can also add an existing folder as a new repository on github, where you can use the VS Code features to [initialize and publish](https://code.visualstudio.com/docs/editor/versioncontrol#_initialize-a-repository) a repository to GitHub.  Otherwise, the [instructions are more involved](https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/.
+You can also add an existing folder as a new repository on github, where you can use the VS Code features to [initialize and publish](https://code.visualstudio.com/docs/editor/versioncontrol#_initialize-a-repository) a repository to GitHub.  Otherwise, the [instructions are more involved](https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/).
 ```
 (clone_repo)=
 ### Cloning a Repository
@@ -162,8 +163,8 @@ This dropdown gives us a few options
 
 
 We will download the repository using the built-in VS Code support.
-1. Copy the https URL in that dropdown (e.g. `https://github.com/USERNAME/example_repository.git`)
-2. Start VS Code
+1. Copy the https URL in that dropdown (e.g. `https://github.com/USERNAME/example_repository.git`).
+2. Start VS Code.
 3. Use `Ctrl+Shift+P` to open the command bar, and choose `> Git: Clone`
 4. At this point, you can paste in the copied URL or choose `Clone from GitHub` and then it will let you select your repositories after logging in.
    ```{figure} /_static/figures/vs-code-clone.png
@@ -182,7 +183,7 @@ You will see the automatically generated files for the `LICENSE, .gitignore` and
 To manually clone this to your desktop, you can start a terminal and use `git clone https://github.com/USERNAME/example_repository.git` within the directory you want to clone it to.  After cloning, you can open the folder within VS Code by either
    - Within a terminal on your operating system, navigate to that directory and type `code .`
    - On Windows if you installed VS Code with the appropriate option, right click on the folder and choose `Open with Code` - trusting the authors as required on opening the folder.
-   - In the VS Code Menu, choose `File/Open Folder...`
+   - In the VS Code Menu, choose `File/Open Folder...`.
 ```
 
 ### Making, Committing, and Pushing Changes
@@ -191,7 +192,7 @@ Now that we have the repository, we can start working with it.
 
 Within VS Code, make the following changes:
 1. Open the `README.md` and add some text.
-2. Add a new file called `some_file.txt` with some text in it.  You can do this with the menus, or by right clicking in the Files panel and selecting "New File"
+2. Add a new file called `some_file.txt` with some text in it.  You can do this with the menus, or by right clicking in the Files panel and selecting "New File".
 3. Add another new file called `garbage_file.tmp` with some text in it.
 4. Finally, in the `.gitignore`, add `*.tmp` at the end.
 
@@ -283,7 +284,7 @@ Go back to the desktop VS Code, and you will see that the Git bar at the bottom 
 ```
 Notice that the direction of the arrow is the opposite of when we made local modifications.  Whereas moving local commits to the server is called a "Push", bringing external changes down to your desktop is called a "Pull".
 
-But before we pull these changes, we will show how Git can automatically merge them - often on the same file, but at different lines of code).
+But before we pull these changes, we will show how Git can automatically merge them (often on the same file, but at different lines of code).
 
 On your local VS Code, open the `README.txt` and change the title from `# example_repository` to `# example_repository_modified`.  Then save and commit this change with a commit message such as `Local Modification`.  It is important that you modified the top line, and not the same one that you changed in the online editor.
 
@@ -295,7 +296,7 @@ Now click on that icon on the bottom of the VS Code editor, which will do a Pull
 :width: 75%
 ```
 
-
+(discarding_changes)=
 ### Discarding Changes
 A common scenario with Git is that you are making temporary local modifications and want to discard them prior to updating from the server.
 
@@ -306,7 +307,7 @@ The `.gitignore` is very useful for ensuring that some files are always ignored.
 To see this workflow prior to making a commit:
 1. Save a change to the `README.md`
 2. Open the Git pane, which will show the one modification.
-3. Right click on the modification you wish to discard (can be file-by-file)
+3. Right click on the modification you wish to discard (can be file-by-file).
 ```{figure} /_static/figures/vs-code-edits-8.png
 :width: 100%
 ```
@@ -373,7 +374,7 @@ An alternative workflow is to right click on the file, and choose `Accept All Cu
 
 After modifying:
 1. Save the file if you have resolved the merge conflict.
-2. Choose the `+` next to the modified file in the source control pane, or right click on the file and choose `Stage Changes`
+2. Choose the `+` next to the modified file in the source control pane, or right click on the file and choose `Stage Changes`.
 3. Add a commit message, commit the file
 4. Do a Push to synchronize with the server.
 
@@ -436,7 +437,7 @@ The checkboxes are common in GitHub to manage project tasks.
 
 Whenever people push to a project you're working on, you'll receive an email notification.
 
-You review individual commits by opening a commits and commenting
+You review individual commits by opening a commits and commenting.
 
 ```{figure} /_static/figures/git-review.png
 :width: 100%

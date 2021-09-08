@@ -57,6 +57,8 @@ At that point, you could directly move on to the {doc}`julia by example <../gett
 However, as we strongly recommend becoming familiar with VS Code as a transition towards using more advanced tools and to support better software engineering workflows, so consider walking through the rest of these instructions.
 ```
 
+For those with little to no programming experience (e.g. you have never used a loop or "if" statement) see the list of [introductory resources](intro_resources).
+
 (jl_jupyterlocal)=
 ## Desktop Installation of Julia and Jupyter
 
@@ -69,6 +71,7 @@ On Windows, you probably want to install the new open-source [Windows Terminal](
 It provides a much more modern terminal with better font support for Julia, and with better operating system integration.  For example, you can right-click on a folder in the File Explorer and choose `Open in Microsoft Terminal` to start a terminal in that location.  Rather than providing a particular shell directly, it hosts those that are available in your setup (e.g., PowerShell, Git Bash, Ubuntu Bash in WSL).
 ```
 
+(install_jupyter)=
 ### Installing Jupyter
 [Anaconda](https://www.anaconda.com/) provides an easy to install package of jupyter, python, and many data science tools.
 
@@ -164,6 +167,11 @@ You can type partial strings for different commands and it helps you to find fea
 [Integrated Terminals](https://code.visualstudio.com/docs/editor/integrated-terminal) within VS Code are a convenient because they are local to that project, detect hypertext links, and provide better fonts.
 
 To launch a terminal, use either (1) ``<Ctrl+`>``, (2) `>View: Toggle Terminal` with the command palette, or (3) `View > Terminal` in the menus.
+
+
+```{note}
+Becoming comfortable with VS Code and tools for source code control/software engineering is an essential step towards ensuring reproducibility.  An easy way to begin that process is to start using VS Code to edit LaTeX, and practice managing your `.tex` files in GitHub rather than dropbox or similar alternatives.  While not directly connected to Julia, this familiarity will make everything easier - even for proprietary languages such as Stata and Matlab.  See [here](vscode_latex) for instructions on this setup process.
+```
 
 
 (clone_lectures)=
@@ -302,12 +310,9 @@ We will explore these sorts of features, and how to use them for your own projec
 
 
 (julia_environment)=
-# Interacting with Julia
+## Interacting with Julia
 
-
-## Overview
-
-In this lecture we'll start examining different features of the Julia and Jupyter environments.
+Next, we'll start examining different features of the Julia and Jupyter environments.
 
 While we emphasize a [local installation of Jupyter](jl_jupyterlocal), other alternatives exist.
 

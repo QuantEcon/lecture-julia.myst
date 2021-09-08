@@ -39,6 +39,25 @@ In particular, we assume you have some familiarity with fundamental programming 
 * loops
 * conditionals (if/else)
 
+(intro_resources)=
+### (Optional) Resources for Introductory Programming
+
+If Julia is your first programming language, then you may want to examine other resources before proceeding through these chapters.
+
+First, you will want to ensure that you have [installed Conda](install_jupyter), [Julia](intro_repl) in the previous section, and are able to [launch Jupyter Lab](running_jupyterlab).  Then, even without downloading these lecture notes you can start learning Julia.
+
+Some resources for users with little to no programming experience are the:
+1. [Introduction to Julia](https://juliaacademy.com/p/intro-to-julia) which is appropriate for those with little programming experience.
+   - You will need to sign up for this course to access it, but it is free.
+   - Avoid the initial lecture on the installation of Julia and nteract.
+   - The Jupyter Notebooks for this class are available [online](https://github.com/JuliaAcademy/Introduction-to-Julia)
+2. [Julia for Beginners](https://www.youtube.com/playlist?list=PLhQ2JMBcfAsi_3g2AFJ6B84d8c5jw5kXp) from the [julia for talented amateurs](https://www.youtube.com/c/juliafortalentedamateurs) channel.
+   - If you watch these, ignore the environment.  It is using a different open-source editor (i.e. Atom, which is being slowly phased out) and the REPL.  However the content itself is independent of the environment. Skip any setup instructions and just use Jupyter.
+3. [Julia Programming for Nervous Beginners](https://www.youtube.com/playlist?list=PLP8iPy9hna6Qpx0MgGyElJ5qFlaIXYf1R) youtube tutorials.
+   - These get advanced fairly quickly, but have plenty of great content.
+   - This may be less gentle of an introduction for new users given the tooling choices.
+
+However, if you have even introductory experience with any programming language (e.g. you do not need to review what a loop, array, variable, or conditional "if" statement is), you should be able to start directly with these lectures.
 ### Approach
 
 In this lecture we will write and then pick apart small Julia programs.
