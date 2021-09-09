@@ -15,3 +15,7 @@ This website presents a set of lectures on quantitative economic modeling, desig
 
 ```{tableofcontents}
 ```
+
+```{admonition} Previous website
+While this new site will receive all future updates, you may still view the [old site here](http://rst-julia.quantecon.org) for the next month.
+```
