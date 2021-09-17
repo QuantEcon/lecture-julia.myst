@@ -334,7 +334,7 @@ First, interpolate with $N = 5$ and avoid taking the inverse.  In that case, as 
 
 ```{code-cell} julia
 using Plots
-gr(fmt=:png);
+
 
 N_display = 100
 g(x) = 1/(1 + 25x^2)

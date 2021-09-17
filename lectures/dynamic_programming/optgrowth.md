@@ -465,7 +465,7 @@ tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
 using Plots, QuantEcon, Interpolations, NLsolve, Optim, Random
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia

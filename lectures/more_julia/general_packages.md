@@ -119,7 +119,7 @@ We begin by creating some data points, using a sine function
 ```{code-cell} julia
 using Interpolations
 using Plots
-gr(fmt=:png);
+
 
 x = -7:7 # x points, coase grid
 y = sin.(x) # corresponding y points

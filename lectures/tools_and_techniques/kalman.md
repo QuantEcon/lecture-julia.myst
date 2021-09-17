@@ -112,7 +112,7 @@ using Test
 
 ```{code-cell} julia
 using Plots, Distributions
-gr(fmt = :png); # plots setup
+ # plots setup
 ```
 
 ```{code-cell} julia

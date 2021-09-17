@@ -477,7 +477,7 @@ using Test
 
 ```{code-cell} julia
 using Plots, Random
-gr(fmt=:png);
+
 
 Random.seed!(42)
 

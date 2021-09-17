@@ -222,7 +222,6 @@ using Test
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using Plots, Distributions, Random, Statistics
-gr(fmt = :png, size = (900, 500))
 ```
 
 ```{code-cell} julia

@@ -68,7 +68,7 @@ In addition, we will be exploring the [Ordinary Differential Equations](https://
 ```{code-cell} julia
 using OrdinaryDiffEq
 using Parameters, Plots
-gr(fmt=:png);
+
 ```
 
 ## The SEIR Model

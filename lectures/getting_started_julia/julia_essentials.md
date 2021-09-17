@@ -998,7 +998,7 @@ f(x) = x^2
 h = snapabove(f, 2.0)
 
 using Plots
-gr(fmt=:png);
+
 plot(h, 0.0:0.1:3.0)
 ```
 

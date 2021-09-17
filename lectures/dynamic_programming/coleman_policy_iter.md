@@ -391,7 +391,7 @@ using Test
 ```{code-cell} julia
 using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Roots
 
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia

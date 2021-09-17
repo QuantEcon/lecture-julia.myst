@@ -70,7 +70,7 @@ others covered in previous lectures
 ```{code-cell} julia
 using OrdinaryDiffEq, StochasticDiffEq
 using Parameters, Plots
-gr(fmt=:png);
+
 ```
 
 ## The Basic SIR/SIRD Model

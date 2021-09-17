@@ -1054,7 +1054,7 @@ Here's one solution
 
 ```{code-cell} julia
 using Plots
-gr(fmt=:png); # setting for easier display in jupyter notebooks
+ # setting for easier display in jupyter notebooks
 α = 0.9
 n = 200
 x = zeros(n + 1)

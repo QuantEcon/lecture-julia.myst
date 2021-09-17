@@ -149,7 +149,7 @@ using Test, Random
 
 ```{code-cell} julia
 using Parameters, Plots, LinearAlgebra, Statistics
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia
