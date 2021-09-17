@@ -112,7 +112,6 @@ using Test
 
 ```{code-cell} julia
 using Plots, Distributions
- # plots setup
 ```
 
 ```{code-cell} julia
