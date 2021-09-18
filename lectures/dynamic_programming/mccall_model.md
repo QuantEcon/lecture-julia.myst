@@ -302,7 +302,7 @@ using Test
 ```
 
 ```{code-cell} julia
-gr(fmt = :png);
+
 ```
 
 Here's the distribution of wage offers we'll work with

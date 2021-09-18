@@ -457,7 +457,7 @@ using Test
 
 ```{code-cell} julia
 using Distributions, StatsPlots, Plots, QuantEcon, Random
-gr(fmt = :png)
+
 Random.seed!(42) # For deterministic results.
 
 s = 0.2

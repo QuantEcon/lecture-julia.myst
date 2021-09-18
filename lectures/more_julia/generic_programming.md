@@ -66,7 +66,7 @@ tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
 using Distributions, Plots, QuadGK, Polynomials, Interpolations
-gr(fmt = :png);
+
 ```
 
 ## Exploring Type Trees

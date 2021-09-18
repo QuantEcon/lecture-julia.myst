@@ -46,7 +46,7 @@ tags: [hide-output]
 using LinearAlgebra, Statistics
 using Distributions, QuantEcon, Interpolations, Expectations, Parameters
 using Plots, NLsolve, Random
-gr(fmt = :png);
+
 ```
 
 ## Model

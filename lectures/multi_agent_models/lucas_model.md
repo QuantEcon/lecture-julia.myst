@@ -388,7 +388,7 @@ using Test
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using Distributions, Interpolations, Parameters, Plots, QuantEcon, Random
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia

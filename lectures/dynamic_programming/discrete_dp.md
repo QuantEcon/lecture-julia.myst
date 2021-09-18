@@ -428,7 +428,7 @@ using Test
 
 ```{code-cell} julia
 using BenchmarkTools, Plots, QuantEcon, Parameters
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia
