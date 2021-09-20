@@ -852,7 +852,7 @@ We can use auto-differentiation to compare the results.
 
 ```{code-cell} julia
 using Plots, ForwardDiff
-gr(fmt = :png);
+
 
 # operator to get the derivative of this function using AD
 D(f) = x -> ForwardDiff.derivative(f, x)

@@ -639,7 +639,7 @@ using Test, Random
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using Plots, Plots.PlotMeasures, QuantEcon
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia

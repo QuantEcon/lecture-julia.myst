@@ -220,7 +220,7 @@ using Test, Random
 
 ```{code-cell} julia
 using Distributions, Parameters, Plots, QuantEcon
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia

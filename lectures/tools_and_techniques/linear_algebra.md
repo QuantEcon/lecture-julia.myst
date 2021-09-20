@@ -100,7 +100,7 @@ using Test # Should put this near the top of every notebook.
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics, Plots
-gr(fmt=:png);
+
 ```
 
 ```{code-cell} julia

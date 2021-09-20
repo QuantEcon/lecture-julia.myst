@@ -1548,7 +1548,7 @@ sim_seq_h = simulate(PP_seq_time, 1.0, 1, 7, sHist_h)
 sim_seq_l = simulate(PP_seq_time, 1.0, 1, 7, sHist_l)
 
 using Plots
-gr(fmt=:png);
+
 titles = hcat("Consumption",
               "Labor Supply",
               "Government Debt",

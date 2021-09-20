@@ -1143,7 +1143,7 @@ using Test
 ```
 
 ```{code-cell} julia
-gr(fmt=:png);
+
 
 # set seed and generate a_t sequence
 Random.seed!(123)

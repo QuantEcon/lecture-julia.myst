@@ -300,7 +300,7 @@ McCallModel = @with_kw (α = 0.2,
 
 ```{code-cell} julia
 # plots setting
-gr(fmt=:png);
+
 
 mcm = McCallModel()
 @unpack V, U = solve_mccall_model(mcm)

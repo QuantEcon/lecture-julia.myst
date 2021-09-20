@@ -115,7 +115,7 @@ using Test, Random
 using LinearAlgebra, Statistics
 using Distributions, Parameters, Plots, QuantEcon
 import Distributions: loglikelihood
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia
