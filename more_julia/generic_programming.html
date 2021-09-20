@@ -339,7 +339,6 @@
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
 <span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuadGK</span><span class="p">,</span> <span class="n">Polynomials</span><span class="p">,</span> <span class="n">Interpolations</span>
-<span class="n">gr</span><span class="p">(</span><span class="n">fmt</span> <span class="o">=</span> <span class="ss">:png</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -685,7 +684,7 @@ Normal{Float64} &lt;: Distribution{Univariate, Continuous} &lt;: Sampleable{Univ
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>rand(d1) = 1.3902960628645546
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>rand(d1) = 3.7425501831538086
 </pre></div>
 </div>
 </div>
@@ -711,7 +710,7 @@ iid shocks, where you did not need to assume an existing pdf etc., this is a nat
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>simulateprocess(0.0, d = Normal(0.2, 2.0)) = [0.0, -1.0393948192280906, -1.1451397001868542, -0.33157360620243614, 2.7732053827215024, 3.553818513046779]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>simulateprocess(0.0, d = Normal(0.2, 2.0)) = [0.0, -3.8377209996333734, -5.920121841843503, -5.443813032032952, -4.846456268026598, -0.016384038211893603]
 </pre></div>
 </div>
 </div>
@@ -777,8 +776,7 @@ maximum(d2) = Inf
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/generic_programming_32_0.png" src="../_images/generic_programming_32_0.png" />
-</div>
+<img alt="../_images/generic_programming_32_0.svg" src="../_images/generic_programming_32_0.svg" /></div>
 </div>
 <p>Calling <code class="docutils literal notranslate"><span class="pre">plot</span></code> on any subtype of <code class="docutils literal notranslate"><span class="pre">Distributions{Univariate,</span> <span class="pre">Continuous}</span></code>
 displays the <code class="docutils literal notranslate"><span class="pre">pdf</span></code> and uses <code class="docutils literal notranslate"><span class="pre">minimum</span></code> and <code class="docutils literal notranslate"><span class="pre">maximum</span></code> to determine the range.</p>
@@ -836,8 +834,7 @@ implementation as a fallback.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/generic_programming_38_0.png" src="../_images/generic_programming_38_0.png" />
-</div>
+<img alt="../_images/generic_programming_38_0.svg" src="../_images/generic_programming_38_0.svg" /></div>
 </div>
 <p>A few things to point out</p>
 <ul class="simple">
@@ -857,8 +854,7 @@ implementation as a fallback.</p>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(d) = Truncated{Exponential{Float64}, Continuous, Float64}
 </pre></div>
 </div>
-<img alt="../_images/generic_programming_40_1.png" src="../_images/generic_programming_40_1.png" />
-</div>
+<img alt="../_images/generic_programming_40_1.svg" src="../_images/generic_programming_40_1.svg" /></div>
 </div>
 <p>This is the power of generic programming in general, and Julia in particular: you can combine and compose completely separate packages and code, as long as there is an agreement on abstract types and functions.</p>
 </div>
@@ -914,10 +910,7 @@ typeof(a) &lt;: Number = true
 a + b = 1.0 + 3.0im
 a * b = -2.0 + 2.0im
 -a = -1.0 - 1.0im
-a - b = 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.0 - 1.0im
+a - b = 1.0 - 1.0im
 zero(a) = 0.0 + 0.0im
 one(a) = 1.0 + 0.0im
 </pre></div>
@@ -944,13 +937,12 @@ one(a) = 1.0 + 0.0im
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(a) = BigInt
 typeof(a) &lt;: Number = true
-a + b = 14
-a * b = 40
--a = -10
-a - b = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>a + b = 14
+a * b = 40
+-a = -10
+a - b = 6
 zero(a) = 0
 one(a) = 1
 </pre></div>
@@ -1086,7 +1078,10 @@ typeof(a) &lt;: Number = true
 typeof(a) &lt;: Real = true
 inv(a) = 10//1
 a / b = 3//20
-a &lt; b = true
+a &lt; b = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -1182,8 +1177,7 @@ eps(BigFloat) =
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>quadgk(f, 0.0, 1.0) = (0.3333333333333333, 5.551115123125783e-17)
 </pre></div>
 </div>
-<img alt="../_images/generic_programming_63_1.png" src="../_images/generic_programming_63_1.png" />
-</div>
+<img alt="../_images/generic_programming_63_1.svg" src="../_images/generic_programming_63_1.svg" /></div>
 </div>
 <p>Of course, univariate polynomials are another type of univariate function</p>
 <div class="cell docutils container">
@@ -1202,8 +1196,7 @@ eps(BigFloat) =
 p(1.0) = -1.0
 </pre></div>
 </div>
-<img alt="../_images/generic_programming_65_1.png" src="../_images/generic_programming_65_1.png" />
-</div>
+<img alt="../_images/generic_programming_65_1.svg" src="../_images/generic_programming_65_1.svg" /></div>
 </div>
 <p>Similarly, the result of interpolating data is also a function</p>
 <div class="cell docutils container">
@@ -1222,8 +1215,7 @@ p(1.0) = -1.0
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f_int(1.0) = 1.0
 </pre></div>
 </div>
-<img alt="../_images/generic_programming_67_1.png" src="../_images/generic_programming_67_1.png" />
-</div>
+<img alt="../_images/generic_programming_67_1.svg" src="../_images/generic_programming_67_1.svg" /></div>
 </div>
 <p>Note that the same generic <code class="docutils literal notranslate"><span class="pre">plotfunctions</span></code> could use any variable passed to it that “looks” like a function, i.e., can call <code class="docutils literal notranslate"><span class="pre">f(x)</span></code>.</p>
 <p>This approach to design with types – generic, but without any specific type declarations – is called <a class="reference external" href="https://en.wikipedia.org/wiki/Duck_typing">duck typing</a>.</p>
@@ -1787,6 +1779,7 @@ implement the modified <code class="docutils literal notranslate"><span class="p
                     <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
                     <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
                     <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/more_julia/generic_programming.ipynb" download><i data-feather="download-cloud"></i></a></li>
                     <li class="settings-button" id="settingsButton"><div data-tippy-content="Launch Notebook"><i data-feather="play-circle"></i></div></li>
                         <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
                     <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/main/lectures/more_julia/generic_programming.md" download><i data-feather="github"></i></a></li>

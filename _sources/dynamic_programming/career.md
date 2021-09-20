@@ -155,7 +155,7 @@ using Test
 
 ```{code-cell} julia
 using Plots, QuantEcon, Distributions
-gr(fmt=:png);
+
 
 n = 50
 a_vals = [0.5, 1, 100]

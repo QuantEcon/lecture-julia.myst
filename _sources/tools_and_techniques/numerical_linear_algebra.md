@@ -720,7 +720,7 @@ This provides the combined Markov chain for the $(i,j)$ process.  To see the spa
 
 ```{code-cell} julia
 using Plots
-gr(fmt = :png);
+
 spy(L, markersize = 10)
 ```
 

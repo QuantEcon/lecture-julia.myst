@@ -1227,7 +1227,7 @@ using Test
 
 ```{code-cell} julia
 using QuantEcon, Plots
-gr(fmt=:png);
+
 ```
 
 ### Exercise 1

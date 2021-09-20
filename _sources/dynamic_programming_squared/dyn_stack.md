@@ -915,7 +915,7 @@ dynamic program as outlined above
 
 ```{code-cell} julia
 using QuantEcon, Plots, LinearAlgebra, Statistics, Parameters, Random
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia

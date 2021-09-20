@@ -231,7 +231,7 @@ using Test
 
 ```{code-cell} julia
 using Plots
-gr(fmt=:png);
+
 
 plt_1=plot()
 plt_2=plot()

@@ -585,7 +585,7 @@ To the extent that you can, replicate the figures shown above
 
 ```{code-cell} julia
 using DataFrames, Plots
-gr(fmt=:png);
+
 ```
 
 Compute the value function, policy and equilibrium prices

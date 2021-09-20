@@ -166,7 +166,7 @@ tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
 using Distributions, Parameters, Printf, Random, Roots, Plots
-gr(fmt = :png)
+
 ```
 
 ```{code-cell} julia

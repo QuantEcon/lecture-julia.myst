@@ -222,7 +222,6 @@ using Test
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using Plots, Distributions, Random, Statistics
-gr(fmt = :png, size = (900, 500))
 ```
 
 ```{code-cell} julia
@@ -508,7 +507,7 @@ for i in 1:size(ys, 2)
     push!(plots, p)
 end
 
-plot(plots..., legend = false)
+plot(plots..., legend = false, size = (900, 500))
 ```
 
 As expected, the distribution smooths out into a bell curve as $n$ increases.

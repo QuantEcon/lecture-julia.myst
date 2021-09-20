@@ -209,7 +209,7 @@ using Test
 ```
 
 ```{code-cell} julia
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia

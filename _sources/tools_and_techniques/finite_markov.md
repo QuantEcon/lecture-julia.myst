@@ -45,7 +45,7 @@ Prerequisite knowledge is basic probability and linear algebra.
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using Distributions, Plots, Printf, QuantEcon, Random
-gr(fmt = :png);
+
 ```
 
 ## Definitions
