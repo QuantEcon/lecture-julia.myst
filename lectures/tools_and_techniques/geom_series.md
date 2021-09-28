@@ -45,14 +45,9 @@ These and other applications prove the truth of the wise crack that
 
 Below we'll use the following packages:
 
-[//]: # Remember to check this packages that will be used. These are the standard ones that are usually called. 
-
-[//]: # Do we want to use `Symbolics.jl` or `Sympy.jl`?
-
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Plots, Printf, QuantEcon, Random, Symbolics
-
+using Distributions, Plots, Printf, QuantEcon, Random
 ```
 
 ## Key Formulas
@@ -686,7 +681,6 @@ Now that we have defined our functions, we can plot some outcomes.
 
 First we study the quality of our approximations
 
-[//]: # Will need to approach this plot with `Plots.jl`, so code will be somewhat different. 
 
 ```{code-cell} julia
 
