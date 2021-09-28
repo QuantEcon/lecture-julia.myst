@@ -4,6 +4,8 @@ Source for julia.quantecon.org and notebooks in https://github.com/QuantEcon/lec
 
 To contribute, you can use GitHub's online editor for small changes, and do a full local installation for large ones.
 
+See https://github.com/QuantEcon/lecture-julia.myst/blob/main/style.md for some basic coding standards.
+
 ## Online Editor
 
 On this website hit `.` to enter into the web editor.  From this, you can submit suggested patches and fix typos.  This will help you create a [pull request](https://quantecon.github.io/lecture-julia.myst/software_engineering/version_control.html#collaboration-via-pull-request) for maintainers here to examine.
