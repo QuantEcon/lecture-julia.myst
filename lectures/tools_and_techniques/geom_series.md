@@ -655,7 +655,7 @@ using Test
 function finite_lease_pv_true(T, g, r, x_0)
     G = (1 .+ g)
     R = (1 .+ r)
-    return (x_0 .* (1 .- G .^ (T .+ 1) .* R .^ (-T .- 1))) / (1 .- G .* R ^ (-1))
+    return (x_0 .* (1 .- G .^ (T .+ 1) .* R .^ (-T .- 1))) / (1 .- G .* R .^ (-1))
 end
 
 # First approximation for our finite lease
@@ -701,5 +701,26 @@ plot!(plt, T, y_1, label="True T-period Lease PV")
 plot!(plt, T, y_2, label="T-period Lease First-order Approx.")
 plot!(plt, T, y_3, label="T-period Lease First-order Approx. adj.")
 plot!(plt, legend = :topleft)
+```
 
+Evidently our approximations perform well for small values of $T$.
+
+However, holding $g$ and r fixed, our approximations deteriorate as $T$ increases.
+
+Next we compare the infinite and finite duration lease present values
+over different lease lengths $T$.
+
+```{code-cell} julia
+# Convergence of infinite and finite
+T_max = 1000
+T = 0:T_max
+
+plt = plot(xlim=(-50, 1050),ylim= (-4.1, 108.1), title= "Infinite and Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p0")
+
+y_1 = finite_lease_pv_true(T, g, r, x_0)
+y_2 = ones(T_max+1) .* infinite_lease(g, r, x_0)
+
+plot!(plt, T, y_1, label="T-period lease PV")
+plot!(plt, T, y_2, linestyle = :dash, label="Infinite lease PV")
+plot!(plt, legend = :bottomright)
 ```
