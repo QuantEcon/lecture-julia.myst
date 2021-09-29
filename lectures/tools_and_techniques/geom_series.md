@@ -783,9 +783,9 @@ g = 0.011:0.005:0.986
 
 # Construct meshgrid, similar to Numpy.meshgrid in Python
 function meshgrid(r, g)
-    R = [i for i in r, j in 1:length(g)]
-    G = [j for i in 1:length(r), j in g]
-    return R, G
+    rr = [i for i in r, j in 1:length(g)]
+    gg = [j for i in 1:length(r), j in g]
+    return rr, gg
 end
 
 rr, gg = meshgrid(r, g)
@@ -796,3 +796,47 @@ z[rr .== gg] .= NaN
 
 plot!(r, g, z, st = :surface, colour = :balance, camera=(20,50))
 ```
+
+We can use a little calculus to study how the present value $p_0$
+of a lease varies with $r$ and $g$.
+
+We will use a new package called [Symbolics.jl](https://github.com/JuliaSymbolics/Symbolics.jl).
+
+`Symbolics.jl` enables us to do symbolic math calculations including
+computing derivatives of algebraic equations.
+
+We will illustrate how it works by creating a symbolic expression that
+represents our present value formula for an infinite lease.
+
+After that, we'll use `Symbolics.jl` to compute derivatives
+
+```{code-cell} julia
+# Creates algebraic symbols that can be used in an algebraic expression
+@variables g, r, x0
+G = (1 + g)
+R = (1 + r)
+p0 = x0 / (1 - G * R ^ (-1))
+print("Our formula is: ", p0)
+```
+
+```{code-cell} julia
+# Partial derivative with respect to g
+dg = Differential(g)
+dp_dg = expand_derivatives(dg(p0))
+print("dp0 / dg is: ", dp_dg)
+```
+
+```{code-cell} julia
+# Partial derivative with respect to g
+dr = Differential(r)
+dp_dr = expand_derivatives(dr(p0))
+print("dp0 / dg is: ", dp_dr)
+```
+
+We can see that for $\frac{\partial p_0}{\partial r}<0$ as long as
+$r>g$, $r>0$ and $g>0$ and $x_0$ is positive,
+so $\frac{\partial p_0}{\partial r}$ will always be negative.
+
+Similarly, $\frac{\partial p_0}{\partial g}>0$ as long as $r>g$, $r>0$ and $g>0$ and $x_0$ is positive, so $\frac{\partial p_0}{\partial g}$
+will always be positive.
+
