@@ -47,7 +47,7 @@ Below we'll use the following packages:
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Plots, Printf, QuantEcon, Random
+using Distributions, Plots, Printf, QuantEcon, Random, Symbolics
 ```
 
 ## Key Formulas
@@ -638,7 +638,7 @@ $1/(rg)$ to get $x_0(T+1)$ as in the finite stream
 approximation.
 
 We will plot the true finite stream present-value and the two
-approximations, under different values of $T$, and $g$ and $r$ in Python.
+approximations, under different values of $T$, and $g$ and $r$ in Julia.
 
 First we plot the true finite stream present-value after computing it
 below
@@ -718,9 +718,81 @@ T = 0:T_max
 plt = plot(xlim=(-50, 1050),ylim= (-4.1, 108.1), title= "Infinite and Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p0")
 
 y_1 = finite_lease_pv_true(T, g, r, x_0)
-y_2 = ones(T_max+1) .* infinite_lease(g, r, x_0)
+y_2 = ones(T_max + 1) .* infinite_lease(g, r, x_0)
 
 plot!(plt, T, y_1, label="T-period lease PV")
 plot!(plt, T, y_2, linestyle = :dash, label="Infinite lease PV")
 plot!(plt, legend = :bottomright)
+```
+
+The graph above shows how as duration $T \rightarrow +\infty$,
+the value of a lease of duration $T$ approaches the value of a
+perpetual lease.
+
+Now we consider two different views of what happens as $r$ and
+$g$ covary
+
+```{code-cell} julia
+# First view
+# Changing r and g
+plt = plot(xlim=(-0.5, 10.5),ylim= (-0.26, 16.7), title= "Value of lease of length T", xlabel = "T periods ahead", ylabel = "Present Value, p0")
+
+T_max = 10
+T=0:T_max
+
+# r >> g, much bigger than g
+r = 0.9
+g = 0.4
+plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.9) >> g(=0.4)")
+
+# r > g
+r = 0.5
+g = 0.4
+plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.5) > g(=0.4)", color="green")
+
+# r ~ g, not defined when r = g, but approximately goes to straight
+# line with slope 1
+r = 0.4001
+g = 0.4
+plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.4001) ~ g(=0.4)", color="orange")
+
+# r < g
+r = 0.4
+g = 0.5
+plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.4) < g(=0.5)", color="red")
+plot!(plt, legend = :topleft)
+```
+
+This graph gives a big hint for why the condition $r > g$ is
+necessary if a lease of length $T = +\infty$ is to have finite
+value.
+
+For fans of 3-d graphs the same point comes through in the following
+graph.
+
+If you aren't enamored of 3-d graphs, feel free to skip the next
+visualization!
+
+```{code-cell} julia
+# Second view
+plt = plot(xlim = (-0.04, 1.1),ylim = (-0.04, 1.1), zlim = (0,15),  title= "Three Period Lease PV with Varying g and r", xlabel = "r", ylabel = "g", zlabel = "Present Value, p0")
+
+T = 3
+r = 0.01:0.005:0.985
+g = 0.011:0.005:0.986
+
+# Construct meshgrid, similar to Numpy.meshgrid in Python
+function meshgrid(r, g)
+    R = [i for i in r, j in 1:length(g)]
+    G = [j for i in 1:length(r), j in g]
+    return R, G
+end
+
+rr, gg = meshgrid(r, g)
+z = finite_lease_pv_true(T, gg, rr, x_0)
+
+# Removes points where undefined
+z[rr .== gg] .= NaN
+
+plot!(r, g, z, st = :surface, colour = :balance, camera=(20,50))
 ```
