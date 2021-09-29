@@ -653,27 +653,27 @@ using Test
 ```{code-cell} julia
 # True present value of a finite lease
 function finite_lease_pv_true(T, g, r, x_0)
-    G = (1 + g)
-    R = (1 + r)
-    return (x_0 * (1 - G ^ (T + 1) * R ^ (-T - 1))) / (1 - G * R ^ (-1))
+    G = (1 .+ g)
+    R = (1 .+ r)
+    return (x_0 .* (1 .- G .^ (T .+ 1) .* R .^ (-T .- 1))) / (1 .- G .* R ^ (-1))
 end
 
 # First approximation for our finite lease
 function finite_lease_pv_approx(T, g, r, x_0)
-    p = x_0 * (T + 1) + x_0 * r * g * (T + 1) / (r - g)
+    p = x_0 .* (T .+ 1) .+ x_0 .* r .* g .* (T .+ 1) / (r .- g)
     return p
 end
 
 # Second approximation for our finite lease
 function finite_lease_pv_approx_2(T, g, r, x_0)
-    return (x_0 * (T + 1))
+    return (x_0 .* (T .+ 1))
 end
 
 # Infinite lease
 function infinite_lease(g, r, x_0)
-    G = (1 + g)
-    R = (1 + r)
-    return x_0 / (1 - G * R ^ (-1))
+    G = (1 .+ g)
+    R = (1 .+ r)
+    return x_0 ./ (1 .- G .* R .^ (-1))
 end
 ```
 
@@ -683,5 +683,23 @@ First we study the quality of our approximations
 
 
 ```{code-cell} julia
+
+T_max = 50
+
+T = 0:T_max
+g = 0.02
+r = 0.03
+x_0 = 1
+
+plt = plot(xlim=(-2.5, 52.5), ylim= (-1.653, 56.713), title= "Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p0")
+
+y_1 = finite_lease_pv_true(T, g, r, x_0)
+y_2 = finite_lease_pv_approx(T, g, r, x_0)
+y_3 = finite_lease_pv_approx_2(T, g, r, x_0)
+
+plot!(plt, T, y_1, label="True T-period Lease PV")
+plot!(plt, T, y_2, label="T-period Lease First-order Approx.")
+plot!(plt, T, y_3, label="T-period Lease First-order Approx. adj.")
+plot!(plt, legend = :topleft)
 
 ```
