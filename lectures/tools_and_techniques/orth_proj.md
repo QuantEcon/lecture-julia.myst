@@ -373,7 +373,7 @@ $$
 
 Then the columns of $X$ form a basis of $S$.
 
-From the preceding theorem, $P = X (X' X)^{-1} X' y$ projects $y$ onto $S$.
+From the preceding theorem, $P = X (X' X)^{-1} X'$ projects $y$ onto $S$.
 
 In this context, $P$ is often called the **projection matrix**.
 
