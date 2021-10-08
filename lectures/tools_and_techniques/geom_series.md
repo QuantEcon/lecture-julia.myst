@@ -906,14 +906,14 @@ i_1 = 0.4
 y_1 = calculate_y(i_1, b, g_0, T, y_init)
 plt_1 = plot(x,y_0, label = "i=0.3", linestyle= :dash, title= "An Increase in Investment on Output", xlabel = "t", ylabel = "y_t")
 plot!(plt_1, x, y_1, label = "i=0.4")
-plot!(plt_1, legend = :topleft)
+plot!(plt_1, legend = :bottomright)
 
 # Changing government spending
 g_1 = 0.4
 y_1 = calculate_y(i_0, b, g_1, T, y_init)
-plt_2 = plot(x,y_0, label = "g=0.3", linestyle= :dash, title= "An Increase in Investment on Output", xlabel = "t", ylabel = "y_t")
-plot!(plt_2, x, y_1, label="g=0.4", linestyle=:dash)
-plot!(plt_2, legend = :topleft)
+plt_2 = plot(x,y_0, label = "g=0.3", linestyle= :dash, title= "An Increase in Government Spending on Output", xlabel = "t", ylabel = "y_t")
+plot!(plt_2, x, y_1, label="g=0.4")
+plot!(plt_2, legend = :bottomright)
 
 plot(plt_1, plt_2, layout = l)
 ```
