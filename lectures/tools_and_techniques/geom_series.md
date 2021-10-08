@@ -827,10 +827,10 @@ print("dp0 / dg is: ", dp_dg)
 ```
 
 ```{code-cell} julia
-# Partial derivative with respect to g
+# Partial derivative with respect to r
 dr = Differential(r)
 dp_dr = expand_derivatives(dr(p0))
-print("dp0 / dg is: ", dp_dr)
+print("dp0 / dr is: ", dp_dr)
 ```
 
 We can see that for $\frac{\partial p_0}{\partial r}<0$ as long as
@@ -839,4 +839,86 @@ so $\frac{\partial p_0}{\partial r}$ will always be negative.
 
 Similarly, $\frac{\partial p_0}{\partial g}>0$ as long as $r>g$, $r>0$ and $g>0$ and $x_0$ is positive, so $\frac{\partial p_0}{\partial g}$
 will always be positive.
+
+## Back to the Keynesian Multiplier
+
+We will now go back to the case of the Keynesian multiplier and plot the
+time path of $y_t$, given that consumption is a constant fraction
+of national income, and investment is fixed.
+
+```{code-cell} julia
+# Function that calculates a path of y
+function calculate_y(i, b, g, T, y_init)
+    
+    y = zeros(T+1)
+    y[1] = i + b * y_init + g
+    for t = 2:(T+1)
+        y[t] = b * y[t-1] + i + g
+    end
+  return y
+end
+
+# Initial values
+i_0 = 0.3
+g_0 = 0.3
+# 2/3 of income goes towards consumption
+b = 2/3
+y_init = 0
+T = 100
+
+plt = plot(xlim=(-6, 107),ylim= (0.5, 1.9), title= "Path of Aggregate Output Over Time", xlabel = "t", ylabel = "yt")
+plot!(plt, 0:T, calculate_y(i_0, b, g_0, T, y_init))
+# Output predicted by geometric series
+hline!([i_0 / (1 - b) + g_0 / (1 - b)], linestyle=:dash, seriestype="hline", legend = false)
+```
+
+In this model, income grows over time, until it gradually converges to
+the infinite geometric series sum of income.
+
+We now examine what will
+happen if we vary the so-called **marginal propensity to consume**,
+i.e., the fraction of income that is consumed
+
+```{code-cell} julia
+# Changing fraction of consumption
+bs = [1/3, 2/3, 5/6, 0.9]
+
+plt = plot(xlim=(-6, 107),ylim= (0.25, 6.5), title= "Changing Consumption as a Fraction of Income", xlabel = "t", ylabel = "yt")
+for b in bs
+    b = round(b, digits = 2)
+    plot!(plt, 0:T, calculate_y(i_0, b, g_0, T, y_init), label="b = $b")
+end
+plot!(plt, legend = :topleft)
+```
+
+Increasing the marginal propensity to consume $b$ increases the
+path of output over time.
+
+Now we will compare the effects on output of increases in investment and government spending.
+
+```{code-cell} julia
+x = 0:T
+y_0 = calculate_y(i_0, b, g_0, T, y_init)
+l = @layout [a ; b]
+
+# Changing initial investment:
+i_1 = 0.4
+y_1 = calculate_y(i_1, b, g_0, T, y_init)
+plt_1 = plot(x,y_0, label = "i=0.3", linestyle= :dash, title= "An Increase in Investment on Output", xlabel = "t", ylabel = "y_t")
+plot!(plt_1, x, y_1, label = "i=0.4")
+plot!(plt_1, legend = :topleft)
+
+# Changing government spending
+g_1 = 0.4
+y_1 = calculate_y(i_0, b, g_1, T, y_init)
+plt_2 = plot(x,y_0, label = "g=0.3", linestyle= :dash, title= "An Increase in Investment on Output", xlabel = "t", ylabel = "y_t")
+plot!(plt_2, x, y_1, label="g=0.4", linestyle=:dash)
+plot!(plt_2, legend = :topleft)
+
+plot(plt_1, plt_2, layout = l)
+```
+
+Notice here, whether government spending increases from 0.3 to 0.4 or
+investment increases from 0.3 to 0.4, the shifts in the graphs are
+identical.
 
