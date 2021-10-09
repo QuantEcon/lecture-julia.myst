@@ -47,7 +47,7 @@ Below we'll use the following packages:
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Plots, Printf, QuantEcon, Random, Symbolics
+using Distributions, Plots, Random, Symbolics
 ```
 
 ## Key Formulas
@@ -816,7 +816,7 @@ After that, we'll use `Symbolics.jl` to compute derivatives
 G = (1 + g)
 R = (1 + r)
 p0 = x0 / (1 - G * R ^ (-1))
-print("Our formula is: ", p0)
+print("Our formula is: $p0")
 ```
 
 ```{code-cell} julia
