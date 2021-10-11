@@ -830,7 +830,7 @@ print("dp0 / dg is: $dp_dg")
 # Partial derivative with respect to r
 dr = Differential(r)
 dp_dr = expand_derivatives(dr(p0))
-print("dp0 / dr is: dp_dr")
+print("dp0 / dr is: $dp_dr")
 ```
 
 We can see that for $\frac{\partial p_0}{\partial r}<0$ as long as
