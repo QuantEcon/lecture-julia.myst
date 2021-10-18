@@ -767,36 +767,6 @@ This graph gives a big hint for why the condition $r > g$ is
 necessary if a lease of length $T = +\infty$ is to have finite
 value.
 
-For fans of 3-d graphs the same point comes through in the following
-graph.
-
-If you aren't enamored of 3-d graphs, feel free to skip the next
-visualization!
-
-```{code-cell} julia
-# Second view
-plt = plot(xlim = (-0.04, 1.1),ylim = (-0.04, 1.1), zlim = (0,15),  title= "Three Period Lease PV with Varying g and r", xlabel = "r", ylabel = "g", zlabel = "Present Value, p0")
-
-T = 3
-r = 0.01:0.005:0.985
-g = 0.011:0.005:0.986
-
-# Construct meshgrid, similar to Numpy.meshgrid in Python
-function meshgrid(r, g)
-    rr = [i for i in r, j in 1:length(g)]
-    gg = [j for i in 1:length(r), j in g]
-    return rr, gg
-end
-
-rr, gg = meshgrid(r, g)
-z = finite_lease_pv_true(T, gg, rr, x_0)
-
-# Removes points where undefined
-z[rr .== gg] .= NaN
-
-plot!(r, g, z, st = :surface, colour = :balance, camera=(20,50))
-```
-
 We can use a little calculus to study how the present value $p_0$
 of a lease varies with $r$ and $g$.
 
@@ -816,21 +786,24 @@ After that, we'll use `Symbolics.jl` to compute derivatives
 G = (1 + g)
 R = (1 + r)
 p0 = x0 / (1 - G * R ^ (-1))
-print("Our formula is: $p0")
+print("Our formula is")
+p0
 ```
 
 ```{code-cell} julia
 # Partial derivative with respect to g
 dg = Differential(g)
 dp_dg = expand_derivatives(dg(p0))
-print("dp0 / dg is: ", dp_dg)
+print("dp0 / dg is")
+dp_dg
 ```
 
 ```{code-cell} julia
 # Partial derivative with respect to r
 dr = Differential(r)
 dp_dr = expand_derivatives(dr(p0))
-print("dp0 / dr is: ", dp_dr)
+print("dp0 / dr is")
+dp_dr
 ```
 
 We can see that for $\frac{\partial p_0}{\partial r}<0$ as long as
