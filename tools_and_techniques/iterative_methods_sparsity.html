@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>22. Krylov Methods and Matrix Conditioning &#8212; Quantitative Economics with Julia</title>
+    <title>23. Krylov Methods and Matrix Conditioning &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -98,8 +98,8 @@
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="23. Shortest Paths" href="../dynamic_programming/short_path.html" />
-    <link rel="prev" title="21. Numerical Linear Algebra and Factorizations" href="numerical_linear_algebra.html" />
+    <link rel="next" title="24. Shortest Paths" href="../dynamic_programming/short_path.html" />
+    <link rel="prev" title="22. Numerical Linear Algebra and Factorizations" href="numerical_linear_algebra.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -149,49 +149,49 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   22.1. Overview
+   23.1. Overview
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#applications">
-     22.1.1. Applications
+     23.1.1. Applications
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#ill-conditioned-matrices">
-   22.2. Ill-Conditioned Matrices
+   23.2. Ill-Conditioned Matrices
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#condition-number">
-     22.2.1. Condition Number
+     23.2.1. Condition Number
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#condition-numbers-and-matrix-operations">
-     22.2.2. Condition Numbers and Matrix Operations
+     23.2.2. Condition Numbers and Matrix Operations
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#why-a-monomial-basis-is-a-bad-idea">
-     22.2.3. Why a Monomial Basis Is a Bad Idea
+     23.2.3. Why a Monomial Basis Is a Bad Idea
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#aside-on-runge-s-phenomenon">
-       22.2.3.1. Aside on Runge’s Phenomenon
+       23.2.3.1. Aside on Runge’s Phenomenon
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#using-an-orthogonal-polynomial-basis">
-       22.2.3.2. Using an Orthogonal Polynomial Basis
+       23.2.3.2. Using an Orthogonal Polynomial Basis
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#lessons-for-approximation-and-interpolation">
-       22.2.3.3. Lessons for Approximation and Interpolation
+       23.2.3.3. Lessons for Approximation and Interpolation
       </a>
      </li>
     </ul>
@@ -200,76 +200,76 @@
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#stationary-iterative-algorithms-for-linear-systems">
-   22.3. Stationary Iterative Algorithms for Linear Systems
+   23.3. Stationary Iterative Algorithms for Linear Systems
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#stationary-methods">
-     22.3.1. Stationary Methods
+     23.3.1. Stationary Methods
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#jacobi-iteration">
-     22.3.2. Jacobi Iteration
+     23.3.2. Jacobi Iteration
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#other-stationary-methods">
-     22.3.3. Other Stationary Methods
+     23.3.3. Other Stationary Methods
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#krylov-methods">
-   22.4. Krylov Methods
+   23.4. Krylov Methods
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#introduction-to-preconditioning">
-     22.4.1. Introduction to Preconditioning
+     23.4.1. Introduction to Preconditioning
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#methods-for-general-matrices">
-     22.4.2. Methods for General Matrices
+     23.4.2. Methods for General Matrices
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#matrix-free-methods">
-     22.4.3. Matrix-Free Methods
+     23.4.3. Matrix-Free Methods
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#iterative-methods-for-linear-least-squares">
-   22.5. Iterative Methods for Linear Least Squares
+   23.5. Iterative Methods for Linear Least Squares
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#iterative-methods-for-eigensystems">
-   22.6. Iterative Methods for Eigensystems
+   23.6. Iterative Methods for Eigensystems
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#krylov-methods-for-markov-chain-dynamics">
-   22.7. Krylov Methods for Markov-Chain Dynamics
+   23.7. Krylov Methods for Markov-Chain Dynamics
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#matrix-free-infinitesimal-generator">
-     22.7.1. Matrix-free Infinitesimal Generator
+     23.7.1. Matrix-free Infinitesimal Generator
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#solving-a-valuation-problem">
-     22.7.2. Solving a Valuation Problem
+     23.7.2. Solving a Valuation Problem
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#markov-chain-steady-state-and-dynamics">
-     22.7.3. Markov Chain Steady State and Dynamics
+     23.7.3. Markov Chain Steady State and Dynamics
     </a>
    </li>
   </ul>
@@ -324,7 +324,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="krylov-methods-and-matrix-conditioning">
-<h1><a class="toc-backref" href="#id2"><span class="section-number">22. </span>Krylov Methods and Matrix Conditioning</a><a class="headerlink" href="#krylov-methods-and-matrix-conditioning" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id2"><span class="section-number">23. </span>Krylov Methods and Matrix Conditioning</a><a class="headerlink" href="#krylov-methods-and-matrix-conditioning" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
@@ -342,7 +342,7 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id3"><span class="section-number">22.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id3"><span class="section-number">23.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This lecture takes the structure of <a class="reference internal" href="numerical_linear_algebra.html"><span class="doc">numerical methods for linear algebra</span></a> and builds further
 toward working with large, sparse matrices.  In the process, we will examine foundational numerical analysis such as
 ill-conditioned matrices.</p>
@@ -355,7 +355,7 @@ ill-conditioned matrices.</p>
 </div>
 </div>
 <div class="section" id="applications">
-<h3><span class="section-number">22.1.1. </span>Applications<a class="headerlink" href="#applications" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.1.1. </span>Applications<a class="headerlink" href="#applications" title="Permalink to this headline">¶</a></h3>
 <p>In this section, we will consider variations on classic problems</p>
 <ol>
 <li><p>Solving a linear system for a square <span class="math notranslate nohighlight">\(A\)</span> where we will maintain throughout that there is a unique solution to</p>
@@ -386,7 +386,7 @@ ill-conditioned matrices.</p>
 </div>
 </div>
 <div class="section" id="ill-conditioned-matrices">
-<h2><a class="toc-backref" href="#id4"><span class="section-number">22.2. </span>Ill-Conditioned Matrices</a><a class="headerlink" href="#ill-conditioned-matrices" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4"><span class="section-number">23.2. </span>Ill-Conditioned Matrices</a><a class="headerlink" href="#ill-conditioned-matrices" title="Permalink to this headline">¶</a></h2>
 <p>An important consideration in numerical linear algebra, and iterative methods in general, is the <a class="reference external" href="https://en.wikipedia.org/wiki/Condition_number#Matrices">condition number</a>.</p>
 <p>An ill-conditioned matrix is one where the basis eigenvectors are close to, but not exactly, collinear.  While this poses no problem on pen and paper,
 or with infinite-precision numerical methods, it is important in practice, for two reasons:</p>
@@ -401,7 +401,7 @@ or with infinite-precision numerical methods, it is important in practice, for t
 <li><p>use a preconditioner for iterative methods, which changes the spectral properties to increase convergence speed</p></li>
 </ul>
 <div class="section" id="condition-number">
-<h3><span class="section-number">22.2.1. </span>Condition Number<a class="headerlink" href="#condition-number" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.2.1. </span>Condition Number<a class="headerlink" href="#condition-number" title="Permalink to this headline">¶</a></h3>
 <p>First, let’s define and explore the condition number <span class="math notranslate nohighlight">\(\kappa\)</span></p>
 <div class="math notranslate nohighlight">
 \[
@@ -489,7 +489,7 @@ cond(1000A) = 2.0000000000005e6
 intuition that ill-conditioned matrices typically occur when a matrix has radically different scales (e.g., contains both <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">1E-6</span></code>, or <code class="docutils literal notranslate"><span class="pre">1000</span></code> and <code class="docutils literal notranslate"><span class="pre">1E-3</span></code>).  This can occur frequently with both function approximation and linear least squares.</p>
 </div>
 <div class="section" id="condition-numbers-and-matrix-operations">
-<h3><span class="section-number">22.2.2. </span>Condition Numbers and Matrix Operations<a class="headerlink" href="#condition-numbers-and-matrix-operations" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.2.2. </span>Condition Numbers and Matrix Operations<a class="headerlink" href="#condition-numbers-and-matrix-operations" title="Permalink to this headline">¶</a></h3>
 <p>Multiplying a matrix by a constant does not change the condition number.  What about other operations?</p>
 <p>For this example, we see that the inverse has the same condition number (though this will not always be the case).</p>
 <div class="cell docutils container">
@@ -616,7 +616,7 @@ and lets us clearly distinguish from zero</p>
 </div>
 </div>
 <div class="section" id="why-a-monomial-basis-is-a-bad-idea">
-<h3><span class="section-number">22.2.3. </span>Why a Monomial Basis Is a Bad Idea<a class="headerlink" href="#why-a-monomial-basis-is-a-bad-idea" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.2.3. </span>Why a Monomial Basis Is a Bad Idea<a class="headerlink" href="#why-a-monomial-basis-is-a-bad-idea" title="Permalink to this headline">¶</a></h3>
 <p>A classic example of poorly conditioned matrices is using a monomial basis of a polynomial with interpolation.</p>
 <p>Take a grid of points, <span class="math notranslate nohighlight">\(x_0, \ldots x_N\)</span> and values <span class="math notranslate nohighlight">\(y_0, \ldots y_N\)</span> where we want to calculate the
 interpolating polynomial.</p>
@@ -764,7 +764,7 @@ then the error will become non-trivial eventually - even without taking the inve
 <p>The heart of the issue is that the monomial basis leads to a <a class="reference external" href="https://en.wikipedia.org/wiki/Vandermonde_matrix">Vandermonde matrix</a>, which
 is especially ill-conditioned.</p>
 <div class="section" id="aside-on-runge-s-phenomenon">
-<h4><span class="section-number">22.2.3.1. </span>Aside on Runge’s Phenomenon<a class="headerlink" href="#aside-on-runge-s-phenomenon" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">23.2.3.1. </span>Aside on Runge’s Phenomenon<a class="headerlink" href="#aside-on-runge-s-phenomenon" title="Permalink to this headline">¶</a></h4>
 <p>The monomial basis is also a good opportunity to look at a separate type of error due to <a class="reference external" href="https://en.wikipedia.org/wiki/Runge%27s_phenomenon">Runge’s Phenomenon</a>.    It is an important
 issue in approximation theory, albeit not one driven by numerical approximation errors.</p>
 <p>It turns out that using a uniform grid of points is, in general, the worst possible choice of interpolation nodes for a polynomial approximation.  This phenomenon can be seen with the interpolation of the seemingly innocuous Runge’s function, <span class="math notranslate nohighlight">\(g(x) = \frac{1}{1 + 25 x^2}\)</span>.</p>
@@ -829,7 +829,7 @@ of grid points and the order of the polynomial will lead to better approximation
 globally increase the quality of the approximation.</p>
 </div>
 <div class="section" id="using-an-orthogonal-polynomial-basis">
-<h4><span class="section-number">22.2.3.2. </span>Using an Orthogonal Polynomial Basis<a class="headerlink" href="#using-an-orthogonal-polynomial-basis" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">23.2.3.2. </span>Using an Orthogonal Polynomial Basis<a class="headerlink" href="#using-an-orthogonal-polynomial-basis" title="Permalink to this headline">¶</a></h4>
 <p>We can minimize the numerical problems of an ill-conditioned basis matrix by choosing a different basis for the polynomials.</p>
 <p>For example, <a class="reference external" href="https://en.wikipedia.org/wiki/Chebyshev_polynomials">Chebyshev polynomials</a> form an orthonormal basis under an appropriate inner product, and we can form precise high-order approximations, with very little numerical error</p>
 <div class="cell docutils container">
@@ -855,7 +855,7 @@ globally increase the quality of the approximation.</p>
 <p>Besides the use of a different polynomial basis, we are approximating at different nodes (i.e., <a class="reference external" href="https://en.wikipedia.org/wiki/Chebyshev_nodes">Chebyshev nodes</a>).  Interpolation with Chebyshev polynomials at the Chebyshev nodes ends up minimizing (but not eliminating) Runge’s Phenomenon.</p>
 </div>
 <div class="section" id="lessons-for-approximation-and-interpolation">
-<h4><span class="section-number">22.2.3.3. </span>Lessons for Approximation and Interpolation<a class="headerlink" href="#lessons-for-approximation-and-interpolation" title="Permalink to this headline">¶</a></h4>
+<h4><span class="section-number">23.2.3.3. </span>Lessons for Approximation and Interpolation<a class="headerlink" href="#lessons-for-approximation-and-interpolation" title="Permalink to this headline">¶</a></h4>
 <p>To summarize:</p>
 <ol class="simple">
 <li><p>Check the condition number on systems you suspect might be ill-conditioned (based on intuition of collinearity).</p></li>
@@ -868,7 +868,7 @@ globally increase the quality of the approximation.</p>
 </div>
 </div>
 <div class="section" id="stationary-iterative-algorithms-for-linear-systems">
-<h2><a class="toc-backref" href="#id5"><span class="section-number">22.3. </span>Stationary Iterative Algorithms for Linear Systems</a><a class="headerlink" href="#stationary-iterative-algorithms-for-linear-systems" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5"><span class="section-number">23.3. </span>Stationary Iterative Algorithms for Linear Systems</a><a class="headerlink" href="#stationary-iterative-algorithms-for-linear-systems" title="Permalink to this headline">¶</a></h2>
 <p>As before, consider solving the equation</p>
 <div class="math notranslate nohighlight">
 \[
@@ -898,7 +898,7 @@ discount rate <span class="math notranslate nohighlight">\(\rho\)</span>, and th
 <p>With the sizes and types of matrices here, iterative methods are inappropriate in practice, but they will help us understand
 the characteristics of convergence and how they relate to matrix conditioning.</p>
 <div class="section" id="stationary-methods">
-<h3><span class="section-number">22.3.1. </span>Stationary Methods<a class="headerlink" href="#stationary-methods" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.3.1. </span>Stationary Methods<a class="headerlink" href="#stationary-methods" title="Permalink to this headline">¶</a></h3>
 <p>First, we will solve with a direct method, which will give the solution to machine precision.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -936,7 +936,7 @@ it is weakly diagonally dominant.</p>
 <p>However, notice that when <span class="math notranslate nohighlight">\(\rho &gt; 0\)</span>, and since the diagonal of <span class="math notranslate nohighlight">\(Q\)</span> is negative,  <span class="math notranslate nohighlight">\(A = ρ I - Q\)</span> makes the matrix strictly diagonally dominant.</p>
 </div>
 <div class="section" id="jacobi-iteration">
-<h3><span class="section-number">22.3.2. </span>Jacobi Iteration<a class="headerlink" href="#jacobi-iteration" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.3.2. </span>Jacobi Iteration<a class="headerlink" href="#jacobi-iteration" title="Permalink to this headline">¶</a></h3>
 <p>For matrices that are <strong>strictly diagonally dominant</strong>, you can prove that a simple decomposition and iteration procedure
 will converge.</p>
 <p>To solve a system <span class="math notranslate nohighlight">\(A x = b\)</span>, split the matrix <span class="math notranslate nohighlight">\(A\)</span> into its diagonal and off-diagonal elements.  That is,</p>
@@ -1000,7 +1000,7 @@ x^{k+1} = D^{-1}(b - R x^k)
 <p>With this, after 40 iterations we see that the error is in the order of <code class="docutils literal notranslate"><span class="pre">1E-2</span></code></p>
 </div>
 <div class="section" id="other-stationary-methods">
-<h3><span class="section-number">22.3.3. </span>Other Stationary Methods<a class="headerlink" href="#other-stationary-methods" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.3.3. </span>Other Stationary Methods<a class="headerlink" href="#other-stationary-methods" title="Permalink to this headline">¶</a></h3>
 <p>In practice, there are many methods that are better than Jacobi iteration. For example <a class="reference external" href="https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method">Gauss-Siedel</a>., which
 splits the matrix <span class="math notranslate nohighlight">\(A = L + U\)</span> into a lower-triangular matrix <span class="math notranslate nohighlight">\(L\)</span> and an upper-triangular matrix <span class="math notranslate nohighlight">\(U\)</span> without the diagonal.</p>
 <p>The iteration becomes</p>
@@ -1051,7 +1051,7 @@ L x^{k+1} = b - U x^k
 </div>
 </div>
 <div class="section" id="krylov-methods">
-<h2><a class="toc-backref" href="#id6"><span class="section-number">22.4. </span>Krylov Methods</a><a class="headerlink" href="#krylov-methods" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6"><span class="section-number">23.4. </span>Krylov Methods</a><a class="headerlink" href="#krylov-methods" title="Permalink to this headline">¶</a></h2>
 <p>A more commonly used set of iterative methods is based on <a class="reference external" href="https://en.wikipedia.org/wiki/Krylov_subspace">Krylov subspaces</a>, which involve iterating the <span class="math notranslate nohighlight">\(A^k x\)</span> matrix-vector product, and orthogonalizing to ensure that the resulting iteration is not too collinear.</p>
 <p>The prototypical Krylov method is <a class="reference external" href="https://en.wikipedia.org/wiki/Conjugate_gradient_method">Conjugate Gradient</a>, which requires the <span class="math notranslate nohighlight">\(A\)</span> matrix to be
 symmetric and positive definite.</p>
@@ -1094,7 +1094,7 @@ symmetric and positive definite.</p>
 </div>
 </div>
 <div class="section" id="introduction-to-preconditioning">
-<h3><span class="section-number">22.4.1. </span>Introduction to Preconditioning<a class="headerlink" href="#introduction-to-preconditioning" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.4.1. </span>Introduction to Preconditioning<a class="headerlink" href="#introduction-to-preconditioning" title="Permalink to this headline">¶</a></h3>
 <p>If you tell a numerical analyst that you are using direct methods, their first question may be, “which factorization?” But if you tell them you
 are using an iterative method, they may ask “which preconditioner?”.</p>
 <p>As discussed at the beginning of the lecture, the spectral properties of matrices determine the rate of convergence
@@ -1187,7 +1187,7 @@ cond(Matrix(AP)) = 175174.59095299678
 is frequently not implemented since such methods are not often used for the complete solution.</p>
 </div>
 <div class="section" id="methods-for-general-matrices">
-<h3><span class="section-number">22.4.2. </span>Methods for General Matrices<a class="headerlink" href="#methods-for-general-matrices" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.4.2. </span>Methods for General Matrices<a class="headerlink" href="#methods-for-general-matrices" title="Permalink to this headline">¶</a></h3>
 <p>There are many algorithms which exploit matrix structure (e.g., the conjugate gradient method for positive-definite matrices, and  MINRES for matrices that are only symmetric/Hermitian).</p>
 <p>On the other hand, if there is no structure to a sparse matrix, then GMRES is a good approach.</p>
 <p>To experiment with these methods, we will use our ill-conditioned interpolation problem with a monomial basis.</p>
@@ -1237,7 +1237,7 @@ is frequently not implemented since such methods are not often used for the comp
 however, to consider the cost of the preconditioning process in your problem.</p>
 </div>
 <div class="section" id="matrix-free-methods">
-<h3><span class="section-number">22.4.3. </span>Matrix-Free Methods<a class="headerlink" href="#matrix-free-methods" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.4.3. </span>Matrix-Free Methods<a class="headerlink" href="#matrix-free-methods" title="Permalink to this headline">¶</a></h3>
 <p>First, lets use a Krylov method to solve our simple valuation problem</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1453,7 +1453,7 @@ of linearity.  The <code class="docutils literal notranslate"><span class="pre">
 </div>
 </div>
 <div class="section" id="iterative-methods-for-linear-least-squares">
-<h2><a class="toc-backref" href="#id7"><span class="section-number">22.5. </span>Iterative Methods for Linear Least Squares</a><a class="headerlink" href="#iterative-methods-for-linear-least-squares" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7"><span class="section-number">23.5. </span>Iterative Methods for Linear Least Squares</a><a class="headerlink" href="#iterative-methods-for-linear-least-squares" title="Permalink to this headline">¶</a></h2>
 <p>In theory, the solution to the least-squares problem, <span class="math notranslate nohighlight">\(\min_x \| Ax -b \|^2\)</span>, is simply the solution to the normal equations <span class="math notranslate nohighlight">\((A'A) x  = A'b\)</span>.</p>
 <p>We saw, however, that in practice, direct methods use a QR decomposition - in part because an ill-conditioned matrix <span class="math notranslate nohighlight">\(A\)</span> becomes even worse when <span class="math notranslate nohighlight">\(A' A\)</span> is formed.</p>
 <p>For large problems, we can also consider Krylov methods for solving the linear least-squares problem.  One formulation is the <a class="reference external" href="https://stanford.edu/group/SOL/software/lsmr/LSMR-SISC-2011.pdf">LSMR</a> algorithm,
@@ -1512,7 +1512,7 @@ matrix-free methods, we need to define the <code class="docutils literal notrans
 </div>
 </div>
 <div class="section" id="iterative-methods-for-eigensystems">
-<h2><a class="toc-backref" href="#id8"><span class="section-number">22.6. </span>Iterative Methods for Eigensystems</a><a class="headerlink" href="#iterative-methods-for-eigensystems" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8"><span class="section-number">23.6. </span>Iterative Methods for Eigensystems</a><a class="headerlink" href="#iterative-methods-for-eigensystems" title="Permalink to this headline">¶</a></h2>
 <p>When you use <code class="docutils literal notranslate"><span class="pre">eigen</span></code> on a dense matrix, it calculates an eigendecomposition and provides all the eigenvalues and eigenvectors.</p>
 <p>While this is sometimes necessary, a spectral decomposition of a dense, unstructured matrix is one of the costliest <span class="math notranslate nohighlight">\(O(N^3)\)</span> operations (i.e., it has
 one of the largest constants).  For large matrices, it is often infeasible.</p>
@@ -1629,7 +1629,7 @@ take the Markov chain for a simple counting process:</p>
 you do not need all of the eigenvalues.</p>
 </div>
 <div class="section" id="krylov-methods-for-markov-chain-dynamics">
-<h2><a class="toc-backref" href="#id9"><span class="section-number">22.7. </span>Krylov Methods for Markov-Chain Dynamics</a><a class="headerlink" href="#krylov-methods-for-markov-chain-dynamics" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9"><span class="section-number">23.7. </span>Krylov Methods for Markov-Chain Dynamics</a><a class="headerlink" href="#krylov-methods-for-markov-chain-dynamics" title="Permalink to this headline">¶</a></h2>
 <p>This example applies the methods in this lecture to a large continuous-time Markov chain, and provides some practice working with arrays of arbitrary dimensions.</p>
 <p>Consider a version of the Markov-chain dynamics in <span id="id1">[<a class="reference internal" href="../zreferences.html#id4">Per19</a>]</span>, where a firm has a discrete number of customers of different types.  To keep things as simple as possible, assume that there are <span class="math notranslate nohighlight">\(m=1, \ldots M\)</span> types of customers and that the firm may have <span class="math notranslate nohighlight">\(n = 1, \ldots N\)</span> customers of each type.</p>
 <p>To set the notation, let <span class="math notranslate nohighlight">\(n_m \in \{1, \ldots N\}\)</span> be the number of customers of type <span class="math notranslate nohighlight">\(m\)</span>, so that the state of a firm is <span class="math notranslate nohighlight">\(\{n_1, \ldots n_m \ldots, n_M\}\)</span>.  The cardinality of possible states is then <span class="math notranslate nohighlight">\(\mathbf{N}\equiv N^M\)</span>, which can blow up quickly as the number of types increases.</p>
@@ -1639,7 +1639,7 @@ you do not need all of the eigenvalues.</p>
 <li><p>For every <span class="math notranslate nohighlight">\(1 &lt; n_m(t) \leq N\)</span>, there is a <span class="math notranslate nohighlight">\(\zeta\)</span> intensity of losing a customer, so that <span class="math notranslate nohighlight">\(n_m(t+\Delta) = n_m(t) - 1\)</span>.</p></li>
 </ol>
 <div class="section" id="matrix-free-infinitesimal-generator">
-<h3><span class="section-number">22.7.1. </span>Matrix-free Infinitesimal Generator<a class="headerlink" href="#matrix-free-infinitesimal-generator" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.7.1. </span>Matrix-free Infinitesimal Generator<a class="headerlink" href="#matrix-free-infinitesimal-generator" title="Permalink to this headline">¶</a></h3>
 <p>In order to define an intensity matrix <span class="math notranslate nohighlight">\(Q\)</span> of size <span class="math notranslate nohighlight">\(\mathbf{N}\times \mathcal{N}\)</span>, we need to choose a consistent ordering of the states.  But
 before we enumerate them linearly, take a <span class="math notranslate nohighlight">\(v\in R^{\mathbf{N}}\)</span> interpreted as a multidimensional array and look at the left product of the linear operator <span class="math notranslate nohighlight">\(Q v \to R^{\mathbf{N}}\)</span>.</p>
 <p>For example, if we were implementing the product at the row of <span class="math notranslate nohighlight">\(Q\)</span> corresponding to the <span class="math notranslate nohighlight">\((n_1, \ldots, n_M)\)</span> state, then</p>
@@ -1792,7 +1792,7 @@ parameters in a named tuple generator</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  45.843 ms (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  49.113 ms (0 allocations: 0 bytes)
 </pre></div>
 </div>
 </div>
@@ -1800,7 +1800,7 @@ parameters in a named tuple generator</p>
 <p>From the output of the benchmarking, note that the implementation of the left-multiplication takes less than 100 milliseconds, and allocates little or no memory, even though the Markov chain has a million possible states (i.e., <span class="math notranslate nohighlight">\(N^M = 10^6\)</span>).</p>
 </div>
 <div class="section" id="solving-a-valuation-problem">
-<h3><span class="section-number">22.7.2. </span>Solving a Valuation Problem<a class="headerlink" href="#solving-a-valuation-problem" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.7.2. </span>Solving a Valuation Problem<a class="headerlink" href="#solving-a-valuation-problem" title="Permalink to this headline">¶</a></h3>
 <p>As before, we could use this Markov chain to solve a Bellman equation.  Assume that the firm discounts at rate <span class="math notranslate nohighlight">\(\rho &gt; 0\)</span> and gets a flow payoff of a different <span class="math notranslate nohighlight">\(z_m\)</span> per
 customer of type <span class="math notranslate nohighlight">\(m\)</span>.  For example, if the state of the firm is <span class="math notranslate nohighlight">\((n_1, n_2, n_3) = (2,3,2)\)</span>, then it gets <span class="math notranslate nohighlight">\(\begin{bmatrix}2 &amp; 3 &amp; 2\end{bmatrix} \cdot \begin{bmatrix}z_1&amp; z_2 &amp; z_3\end{bmatrix}\)</span> in flow profits.</p>
 <p>Given this profit function, we can write the simple Bellman equation in our standard form of <span class="math notranslate nohighlight">\(\rho v = r + Q v\)</span>, defining the appropriate payoff <span class="math notranslate nohighlight">\(r\)</span>.  For example, if <span class="math notranslate nohighlight">\(z_m = m^2\)</span>, then</p>
@@ -1852,28 +1852,28 @@ of only 10,000 possible states.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  517.748 ms (75 allocations: 181.85 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  536.183 ms (75 allocations: 181.85 MiB)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(gmres(A, r) - v_direct) = 2.3579327624516535e-5
   
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.796 ms (76 allocations: 2.53 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5.447 ms (76 allocations: 2.53 MiB)
 norm(bicgstabl(A, r) - v_direct) = 
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7.452458653681206e-6
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  11.495 ms (244 allocations: 7.95 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  12.777 ms (244 allocations: 7.95 MiB)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(idrs(A, r) - v_direct) = 0.000760562520853461
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(idrs(A, r) - v_direct) = 0.00035093224658748495
   
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6.563 ms (227 allocations: 3.30 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6.839 ms (227 allocations: 3.30 MiB)
 </pre></div>
 </div>
 </div>
@@ -1898,7 +1898,7 @@ norm(bicgstabl(A, r) - v_direct) =
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  969.169 ms (82 allocations: 274.67 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.035 s (82 allocations: 274.67 MiB)
 </pre></div>
 </div>
 </div>
@@ -1907,7 +1907,7 @@ norm(bicgstabl(A, r) - v_direct) =
 to solve an equation with a Markov chain with 100 million possible states, which can be solved in about 3-4 minutes.  Above that order of magnitude, you may need to tinker with the linear solver parameters to ensure that you are not memory limited (e.g., change the <code class="docutils literal notranslate"><span class="pre">restart</span></code> parameter of GMRES).</p>
 </div>
 <div class="section" id="markov-chain-steady-state-and-dynamics">
-<h3><span class="section-number">22.7.3. </span>Markov Chain Steady State and Dynamics<a class="headerlink" href="#markov-chain-steady-state-and-dynamics" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">23.7.3. </span>Markov Chain Steady State and Dynamics<a class="headerlink" href="#markov-chain-steady-state-and-dynamics" title="Permalink to this headline">¶</a></h3>
 <p>Recall that given an <span class="math notranslate nohighlight">\(N\)</span>-dimensional intensity matrix <span class="math notranslate nohighlight">\(Q\)</span> of a CTMC, the evolution of the pdf from an initial condition <span class="math notranslate nohighlight">\(\psi(0)\)</span> is the system of linear differential equations</p>
 <div class="math notranslate nohighlight">
 \[
@@ -2036,13 +2036,13 @@ use GMRES since we do not have any structure.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  25.015 ms (21 allocations: 2.27 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  26.922 ms (21 allocations: 2.27 MiB)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.766 ms (370 allocations: 1.21 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3.119 ms (370 allocations: 1.21 MiB)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  199.900 μs (57 allocations: 51.00 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  199.407 μs (57 allocations: 51.00 KiB)
 </pre></div>
 </div>
 </div>
@@ -2063,7 +2063,7 @@ use GMRES since we do not have any structure.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.473 s (90 allocations: 19.09 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.703 s (90 allocations: 19.09 MiB)
 </pre></div>
 </div>
 </div>
@@ -2245,48 +2245,53 @@ use GMRES since we do not have any structure.</p>
 </p>
 <ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
+  <a class="reference internal" href="geom_series.html">
+   14. Geometric Series for Elementary Economics
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="linear_algebra.html">
-   14. Linear Algebra
+   15. Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="orth_proj.html">
-   15. Orthogonal Projections and Their Applications
+   16. Orthogonal Projections and Their Applications
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lln_clt.html">
-   16. LLN and CLT
+   17. LLN and CLT
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="linear_models.html">
-   17. Linear State Space Models
+   18. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="finite_markov.html">
-   18. Finite Markov Chains
+   19. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="stationary_densities.html">
-   19. Continuous State Markov Chains
+   20. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="kalman.html">
-   20. A First Look at the Kalman Filter
+   21. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="numerical_linear_algebra.html">
-   21. Numerical Linear Algebra and Factorizations
+   22. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   22. Krylov Methods and Matrix Conditioning
+   23. Krylov Methods and Matrix Conditioning
   </a>
  </li>
 </ul>
@@ -2298,87 +2303,87 @@ use GMRES since we do not have any structure.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/short_path.html">
-   23. Shortest Paths
+   24. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   24. Job Search I: The McCall Search Model
+   25. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   25. Job Search II: Search and Separation
+   26. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   26. A Problem that Stumped Milton Friedman
+   27. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   27. Job Search III: Search with Learning
+   28. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   28. Job Search IV: Modeling Career Choice
+   29. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   29. Job Search V: On-the-Job Search
+   30. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   30. Optimal Growth I: The Stochastic Optimal Growth Model
+   31. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   31. Optimal Growth II: Time Iteration
+   32. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   32. Optimal Growth III: The Endogenous Grid Method
+   33. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   33. LQ Dynamic Programming Problems
+   34. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   34. Optimal Savings I: The Permanent Income Model
+   35. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   35. Optimal Savings II: LQ Techniques
+   36. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   36. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   37. Optimal Savings III: Occasionally Binding Constraints
+   38. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   38. Robustness
+   39. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   39. Discrete State Dynamic Programming
+   40. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -2390,12 +2395,12 @@ use GMRES since we do not have any structure.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   40. Modeling COVID 19 with Differential Equations
+   41. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   41. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -2407,57 +2412,57 @@ use GMRES since we do not have any structure.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   42. Schelling’s Segregation Model
+   43. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   43. A Lake Model of Employment and Unemployment
+   44. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   44. Rational Expectations Equilibrium
+   45. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   45. Markov Perfect Equilibrium
+   46. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   46. Asset Pricing I: Finite State Models
+   47. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   47. Asset Pricing II: The Lucas Asset Pricing Model
+   48. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   48. Asset Pricing III:  Incomplete Markets
+   49. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   49. Uncertainty Traps
+   50. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   50. The Aiyagari Model
+   51. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   51. Default Risk and Income Fluctuations
+   52. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   52. Globalization and Cycles
+   53. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -2469,32 +2474,32 @@ use GMRES since we do not have any structure.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   53. Covariance Stationary Processes
+   54. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   54. Estimation of Spectra
+   55. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   55. Additive Functionals
+   56. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   56. Multiplicative Functionals
+   57. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   57. Classical Control with Linear Algebra
+   58. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   58. Classical Filtering With Linear Algebra
+   59. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -2506,22 +2511,22 @@ use GMRES since we do not have any structure.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   59. Dynamic Stackelberg Problems
+   60. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   60. Optimal Taxation in an LQ Economy
+   61. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   61. Optimal Taxation with State-Contingent Debt
+   62. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   62. Optimal Taxation without State-Contingent Debt
+   63. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -2533,22 +2538,22 @@ use GMRES since we do not have any structure.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   63. About these Lectures
+   64. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   64. Troubleshooting
+   65. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   65. References
+   66. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   66. Execution Statistics
+   67. Execution Statistics
   </a>
  </li>
 </ul>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>54. Estimation of Spectra &#8212; Quantitative Economics with Julia</title>
+    <title>55. Estimation of Spectra &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -98,8 +98,8 @@
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="55. Additive Functionals" href="additive_functionals.html" />
-    <link rel="prev" title="53. Covariance Stationary Processes" href="arma.html" />
+    <link rel="next" title="56. Additive Functionals" href="additive_functionals.html" />
+    <link rel="prev" title="54. Covariance Stationary Processes" href="arma.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -149,78 +149,78 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   54.1. Overview
+   55.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#periodograms">
-   54.2. Periodograms
+   55.2. Periodograms
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#interpretation">
-     54.2.1. Interpretation
+     55.2.1. Interpretation
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#calculation">
-     54.2.2. Calculation
+     55.2.2. Calculation
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#smoothing">
-   54.3. Smoothing
+   55.3. Smoothing
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#estimation-with-smoothing">
-     54.3.1. Estimation with Smoothing
+     55.3.1. Estimation with Smoothing
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#pre-filtering-and-smoothing">
-     54.3.2. Pre-Filtering and Smoothing
+     55.3.2. Pre-Filtering and Smoothing
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-ar-1-setting">
-     54.3.3. The AR(1) Setting
+     55.3.3. The AR(1) Setting
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#exercises">
-   54.4. Exercises
+   55.4. Exercises
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-1">
-     54.4.1. Exercise 1
+     55.4.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-2">
-     54.4.2. Exercise 2
+     55.4.2. Exercise 2
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solutions">
-   54.5. Solutions
+   55.5. Solutions
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id4">
-     54.5.1. Exercise 1
+     55.5.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id5">
-     54.5.2. Exercise 2
+     55.5.2. Exercise 2
     </a>
    </li>
   </ul>
@@ -275,7 +275,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="section" id="estimation-of-spectra">
-<h1><a class="toc-backref" href="#id6"><span class="section-number">54. </span>Estimation of <span class="target" id="index-0"></span>Spectra</a><a class="headerlink" href="#estimation-of-spectra" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id6"><span class="section-number">55. </span>Estimation of <span class="target" id="index-0"></span>Spectra</a><a class="headerlink" href="#estimation-of-spectra" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <span id="index-1"></span><p class="topic-title">Contents</p>
 <ul class="simple">
@@ -291,7 +291,7 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id7"><span class="section-number">54.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7"><span class="section-number">55.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>In a <a class="reference internal" href="arma.html#arma"><span class="std std-ref">previous lecture</span></a> we covered some fundamental properties of covariance stationary linear stochastic processes.</p>
 <p>One objective for that lecture was to introduce spectral densities — a standard and very useful technique for analyzing such processes.</p>
 <p>In this lecture we turn to the problem of estimating spectral densities and other related quantities from data.</p>
@@ -308,7 +308,7 @@ turn is computed via the famous <a class="reference external" href="https://en.w
 </div>
 </div>
 <div class="section" id="periodograms">
-<span id="id3"></span><h2><a class="toc-backref" href="#id8"><span class="section-number">54.2. </span><span class="target" id="index-3"></span>Periodograms</a><a class="headerlink" href="#periodograms" title="Permalink to this headline">¶</a></h2>
+<span id="id3"></span><h2><a class="toc-backref" href="#id8"><span class="section-number">55.2. </span><span class="target" id="index-3"></span>Periodograms</a><a class="headerlink" href="#periodograms" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="arma.html#arma-specd"><span class="std std-ref">Recall that</span></a> the spectral density <span class="math notranslate nohighlight">\(f\)</span> of a covariance stationary process with
 autocorrelation function <span class="math notranslate nohighlight">\(\gamma\)</span> can be written</p>
 <div class="math notranslate nohighlight">
@@ -320,7 +320,7 @@ f(\omega) = \gamma(0) + 2 \sum_{k \geq 1} \gamma(k) \cos(\omega k),
 <p>In particular, let <span class="math notranslate nohighlight">\(X_0, \ldots, X_{n-1}\)</span> be <span class="math notranslate nohighlight">\(n\)</span> consecutive observations of a single time series that is assumed to be covariance stationary.</p>
 <p>The most common estimator of the spectral density of this process is the <em>periodogram</em> of <span class="math notranslate nohighlight">\(X_0, \ldots, X_{n-1}\)</span>, which is defined as</p>
 <div class="math notranslate nohighlight" id="equation-estspec-p">
-<span class="eqno">(54.1)<a class="headerlink" href="#equation-estspec-p" title="Permalink to this equation">¶</a></span>\[I(\omega)
+<span class="eqno">(55.1)<a class="headerlink" href="#equation-estspec-p" title="Permalink to this equation">¶</a></span>\[I(\omega)
 := \frac{1}{n} \left| \sum_{t=0}^{n-1} X_t e^{i t \omega} \right|^2,
 \qquad \omega \in \mathbb R\]</div>
 <p>(Recall that <span class="math notranslate nohighlight">\(|z|\)</span> denotes the modulus of complex number <span class="math notranslate nohighlight">\(z\)</span>)</p>
@@ -343,7 +343,7 @@ I(\omega)
 <span class="math notranslate nohighlight">\(\mathbb R\)</span>.</p>
 <p>The next section helps to explain the connection between the periodogram and the spectral density.</p>
 <div class="section" id="interpretation">
-<h3><span class="section-number">54.2.1. </span>Interpretation<a class="headerlink" href="#interpretation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">55.2.1. </span>Interpretation<a class="headerlink" href="#interpretation" title="Permalink to this headline">¶</a></h3>
 <p id="index-4">To interpret the periodogram, it is convenient to focus on its values at the <em>Fourier frequencies</em></p>
 <div class="math notranslate nohighlight">
 \[
@@ -394,8 +394,8 @@ I(\omega_j)
 we see that <span class="math notranslate nohighlight">\(I(\omega_j)\)</span> is just a sample analog of <span class="math notranslate nohighlight">\(f(\omega_j)\)</span>.</p>
 </div>
 <div class="section" id="calculation">
-<h3><span class="section-number">54.2.2. </span>Calculation<a class="headerlink" href="#calculation" title="Permalink to this headline">¶</a></h3>
-<p id="index-5">Let’s now consider how to compute the periodogram as defined in <a class="reference internal" href="#equation-estspec-p">(54.1)</a>.</p>
+<h3><span class="section-number">55.2.2. </span>Calculation<a class="headerlink" href="#calculation" title="Permalink to this headline">¶</a></h3>
+<p id="index-5">Let’s now consider how to compute the periodogram as defined in <a class="reference internal" href="#equation-estspec-p">(55.1)</a>.</p>
 <p>There are already functions available that will do this for us
 — an example is <code class="docutils literal notranslate"><span class="pre">periodogram</span></code> in the <code class="docutils literal notranslate"><span class="pre">DSP.jl</span></code> package.</p>
 <p>However, it is very simple to replicate their results, and this will give us a platform to make useful extensions.</p>
@@ -421,7 +421,7 @@ A_j := \sum_{t=0}^{n-1} a_t \exp \left\{ i 2 \pi \frac{tj}{n} \right\},
 <p>Let’s generate some data for this function using the <code class="docutils literal notranslate"><span class="pre">ARMA</span></code> type from <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl">QuantEcon.jl</a> (see the <a class="reference internal" href="arma.html#arma"><span class="std std-ref">lecture on linear processes</span></a> for more details).</p>
 <p>Here’s a code snippet that, once the preceding code has been run, generates data from the process</p>
 <div class="math notranslate nohighlight" id="equation-esp-arma">
-<span class="eqno">(54.2)<a class="headerlink" href="#equation-esp-arma" title="Permalink to this equation">¶</a></span>\[X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}\]</div>
+<span class="eqno">(55.2)<a class="headerlink" href="#equation-esp-arma" title="Permalink to this equation">¶</a></span>\[X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\{ \epsilon_t \}\)</span> is white noise with unit variance, and compares the periodogram to the actual spectral density</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -458,7 +458,7 @@ perhaps it’s not surprising that the estimate is poor.</p>
 </div>
 </div>
 <div class="section" id="smoothing">
-<h2><a class="toc-backref" href="#id9"><span class="section-number">54.3. </span><span class="target" id="index-6"></span>Smoothing</a><a class="headerlink" href="#smoothing" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9"><span class="section-number">55.3. </span><span class="target" id="index-6"></span>Smoothing</a><a class="headerlink" href="#smoothing" title="Permalink to this headline">¶</a></h2>
 <p id="index-7">There are two related issues here.</p>
 <p>One is that, given the way the fast Fourier transform is implemented, the
 number of points <span class="math notranslate nohighlight">\(\omega\)</span> at which <span class="math notranslate nohighlight">\(I(\omega)\)</span> is estimated
@@ -476,13 +476,13 @@ I(\omega_{j-p}), I(\omega_{j-p+1}), \ldots, I(\omega_j), \ldots, I(\omega_{j+p})
 \]</div>
 <p>This weighted average can be written as</p>
 <div class="math notranslate nohighlight" id="equation-estspec-ws">
-<span class="eqno">(54.3)<a class="headerlink" href="#equation-estspec-ws" title="Permalink to this equation">¶</a></span>\[I_S(\omega_j) := \sum_{\ell = -p}^{p} w(\ell) I(\omega_{j+\ell})\]</div>
+<span class="eqno">(55.3)<a class="headerlink" href="#equation-estspec-ws" title="Permalink to this equation">¶</a></span>\[I_S(\omega_j) := \sum_{\ell = -p}^{p} w(\ell) I(\omega_{j+\ell})\]</div>
 <p>where the weights <span class="math notranslate nohighlight">\(w(-p), \ldots, w(p)\)</span> are a sequence of <span class="math notranslate nohighlight">\(2p + 1\)</span> nonnegative
 values summing to one.</p>
 <p>In generally, larger values of <span class="math notranslate nohighlight">\(p\)</span> indicate more smoothing — more on
 this below.</p>
 <p>The next figure shows the kind of sequence typically used.</p>
-<p>Note the smaller weights towards the edges and larger weights in the center, so that more distant values from <span class="math notranslate nohighlight">\(I(\omega_j)\)</span> have less weight than closer ones in the sum <a class="reference internal" href="#equation-estspec-ws">(54.3)</a></p>
+<p>Note the smaller weights towards the edges and larger weights in the center, so that more distant values from <span class="math notranslate nohighlight">\(I(\omega_j)\)</span> have less weight than closer ones in the sum <a class="reference internal" href="#equation-estspec-ws">(55.3)</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">hanning_window</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
@@ -501,7 +501,7 @@ this below.</p>
 <img alt="../_images/estspec_7_0.svg" src="../_images/estspec_7_0.svg" /></div>
 </div>
 <div class="section" id="estimation-with-smoothing">
-<h3><span class="section-number">54.3.1. </span>Estimation with Smoothing<a class="headerlink" href="#estimation-with-smoothing" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">55.3.1. </span>Estimation with Smoothing<a class="headerlink" href="#estimation-with-smoothing" title="Permalink to this headline">¶</a></h3>
 <p id="index-9">Our next step is to provide code that will not only estimate the periodogram but also provide smoothing as required.</p>
 <p>Such functions have been written in  <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/estspec.jl">estspec.jl</a> and are available once you’ve installed <a class="reference external" href="http://quantecon.org/quantecon-jl">QuantEcon.jl</a>.</p>
 <p>The <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/estspec.jl">GitHub listing</a> displays three functions,  <code class="docutils literal notranslate"><span class="pre">smooth()</span></code>, <code class="docutils literal notranslate"><span class="pre">periodogram()</span></code>, <code class="docutils literal notranslate"><span class="pre">ar_periodogram()</span></code>. We will discuss the first two here and the third one <a class="reference internal" href="#ar-periodograms"><span class="std std-ref">below</span></a>.</p>
@@ -509,7 +509,7 @@ this below.</p>
 <p>Regarding the <code class="docutils literal notranslate"><span class="pre">smooth()</span></code> function, since smoothing adds a nontrivial amount of computation, we have applied a fairly terse array-centric method based around <code class="docutils literal notranslate"><span class="pre">conv</span></code>.</p>
 <p>Readers are left either to  explore or simply to use this code according to their interests.</p>
 <p>The next three figures each show smoothed and unsmoothed periodograms, as well as the population or “true” spectral density.</p>
-<p>(The model is the same as before — see equation <a class="reference internal" href="#equation-esp-arma">(54.2)</a> — and there are 400 observations)</p>
+<p>(The model is the same as before — see equation <a class="reference internal" href="#equation-esp-arma">(55.2)</a> — and there are 400 observations)</p>
 <p>From top figure to bottom, the window length is varied from small to large.</p>
 <div class="figure align-default" id="fig-window-smoothing">
 <img alt="../_images/window_smoothing.png" src="../_images/window_smoothing.png" />
@@ -523,7 +523,7 @@ and the choice of appropriate smoothing will have to be made based on
 judgement/priors or some other theory.</p>
 </div>
 <div class="section" id="pre-filtering-and-smoothing">
-<span id="estspec-pfas"></span><h3><span class="section-number">54.3.2. </span>Pre-Filtering and Smoothing<a class="headerlink" href="#pre-filtering-and-smoothing" title="Permalink to this headline">¶</a></h3>
+<span id="estspec-pfas"></span><h3><span class="section-number">55.3.2. </span>Pre-Filtering and Smoothing<a class="headerlink" href="#pre-filtering-and-smoothing" title="Permalink to this headline">¶</a></h3>
 <span class="target" id="index-10"></span><p id="index-11">In the <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/estspec.jl">code listing</a> we showed three functions from the file <code class="docutils literal notranslate"><span class="pre">estspec.jl</span></code>.</p>
 <p>The third function in the file (<code class="docutils literal notranslate"><span class="pre">ar_periodogram()</span></code>) adds a pre-processing step to periodogram smoothing.</p>
 <p>First we describe the basic idea, and after that we give the code.</p>
@@ -539,7 +539,7 @@ estimates the spectral density of the original process.</p></li>
 transformation is usually designed to turn the data into something closer to white noise.</p>
 <p>Why would this be desirable in terms of spectral density estimation?</p>
 <p>The reason is that we are smoothing our estimated periodogram based on
-estimated values at nearby points — recall <a class="reference internal" href="#equation-estspec-ws">(54.3)</a>.</p>
+estimated values at nearby points — recall <a class="reference internal" href="#equation-estspec-ws">(55.3)</a>.</p>
 <p>The underlying assumption that makes this a good idea is that the true
 spectral density is relatively regular — the value of <span class="math notranslate nohighlight">\(I(\omega)\)</span> is close
 to that of <span class="math notranslate nohighlight">\(I(\omega')\)</span> when <span class="math notranslate nohighlight">\(\omega\)</span> is close to <span class="math notranslate nohighlight">\(\omega'\)</span>.</p>
@@ -550,14 +550,14 @@ provided the maximum possible amount of information about the value <span class=
 <p>Another way to put this is that if <span class="math notranslate nohighlight">\(I\)</span> is relatively constant, then we can use a large amount of smoothing without introducing too much bias.</p>
 </div>
 <div class="section" id="the-ar-1-setting">
-<span id="ar-periodograms"></span><h3><span class="section-number">54.3.3. </span>The AR(1) Setting<a class="headerlink" href="#the-ar-1-setting" title="Permalink to this headline">¶</a></h3>
+<span id="ar-periodograms"></span><h3><span class="section-number">55.3.3. </span>The AR(1) Setting<a class="headerlink" href="#the-ar-1-setting" title="Permalink to this headline">¶</a></h3>
 <p id="index-12">Let’s examine this idea more carefully in a particular setting — where
 the data are assumed to be generated by an  AR(1) process.</p>
 <p>(More general ARMA settings can be handled using similar techniques to those described below)</p>
 <p>Suppose in particular that <span class="math notranslate nohighlight">\(\{X_t\}\)</span> is covariance stationary and AR(1),
 with</p>
 <div class="math notranslate nohighlight" id="equation-estspec-ar-dgp">
-<span class="eqno">(54.4)<a class="headerlink" href="#equation-estspec-ar-dgp" title="Permalink to this equation">¶</a></span>\[X_{t+1} = \mu + \phi X_t + \epsilon_{t+1}\]</div>
+<span class="eqno">(55.4)<a class="headerlink" href="#equation-estspec-ar-dgp" title="Permalink to this equation">¶</a></span>\[X_{t+1} = \mu + \phi X_t + \epsilon_{t+1}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\phi \in (-1, 1)\)</span> are unknown parameters and <span class="math notranslate nohighlight">\(\{ \epsilon_t \}\)</span> is white noise.</p>
 <p>It follows that if we regress <span class="math notranslate nohighlight">\(X_{t+1}\)</span> on <span class="math notranslate nohighlight">\(X_t\)</span> and an intercept, the residuals
 will approximate white noise.</p>
@@ -569,7 +569,7 @@ will approximate white noise.</p>
 </ul>
 <p>In view of <a class="reference internal" href="arma.html#arma-spec-den"><span class="std std-ref">an earlier result</span></a> we obtained while discussing ARMA processes, <span class="math notranslate nohighlight">\(f\)</span> and <span class="math notranslate nohighlight">\(g\)</span> are related by</p>
 <div class="math notranslate nohighlight" id="equation-ar-sdsc">
-<span class="eqno">(54.5)<a class="headerlink" href="#equation-ar-sdsc" title="Permalink to this equation">¶</a></span>\[f(\omega) = \left| \frac{1}{1 - \phi e^{i\omega}} \right|^2 g(\omega)\]</div>
+<span class="eqno">(55.5)<a class="headerlink" href="#equation-ar-sdsc" title="Permalink to this equation">¶</a></span>\[f(\omega) = \left| \frac{1}{1 - \phi e^{i\omega}} \right|^2 g(\omega)\]</div>
 <p>This suggests that the recoloring step, which constructs an estimate <span class="math notranslate nohighlight">\(I\)</span> of <span class="math notranslate nohighlight">\(f\)</span> from <span class="math notranslate nohighlight">\(I_0\)</span>, should set</p>
 <div class="math notranslate nohighlight">
 \[
@@ -582,7 +582,7 @@ I(\omega) = \left| \frac{1}{1 - \hat \phi e^{i\omega}} \right|^2 I_0(\omega)
 <li><p>“standard smoothed periodogram”, the ordinary smoothed periodogram, and</p></li>
 <li><p>“AR smoothed periodogram”, the pre-whitened and recolored one generated by <code class="docutils literal notranslate"><span class="pre">ar_periodogram()</span></code></p></li>
 </ol>
-<p>The periodograms are calculated from time series drawn from <a class="reference internal" href="#equation-estspec-ar-dgp">(54.4)</a> with <span class="math notranslate nohighlight">\(\mu = 0\)</span> and <span class="math notranslate nohighlight">\(\phi = -0.9\)</span>.</p>
+<p>The periodograms are calculated from time series drawn from <a class="reference internal" href="#equation-estspec-ar-dgp">(55.4)</a> with <span class="math notranslate nohighlight">\(\mu = 0\)</span> and <span class="math notranslate nohighlight">\(\phi = -0.9\)</span>.</p>
 <p>Each time series is of length 150.</p>
 <p>The difference between the three subfigures is just randomness — each one uses a different draw of the time series.</p>
 <div class="figure align-default" id="fig-ar-smoothed-periodogram">
@@ -594,25 +594,25 @@ of being closer to the true spectral density.</p>
 </div>
 </div>
 <div class="section" id="exercises">
-<h2><a class="toc-backref" href="#id10"><span class="section-number">54.4. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10"><span class="section-number">55.4. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exercise-1">
-<span id="estspec-ex1"></span><h3><span class="section-number">54.4.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<span id="estspec-ex1"></span><h3><span class="section-number">55.4.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
 <p>Replicate <a class="reference internal" href="#fig-window-smoothing"><span class="std std-ref">this figure</span></a> (modulo randomness).</p>
-<p>The model is as in equation <a class="reference internal" href="#equation-esp-arma">(54.2)</a> and there are 400 observations.</p>
+<p>The model is as in equation <a class="reference internal" href="#equation-esp-arma">(55.2)</a> and there are 400 observations.</p>
 <p>For the smoothed periodogram, the window type is “hamming”.</p>
 </div>
 <div class="section" id="exercise-2">
-<span id="estspec-ex2"></span><h3><span class="section-number">54.4.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+<span id="estspec-ex2"></span><h3><span class="section-number">55.4.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
 <p>Replicate <a class="reference internal" href="#fig-ar-smoothed-periodogram"><span class="std std-ref">this figure</span></a> (modulo randomness).</p>
-<p>The model is as in equation <a class="reference internal" href="#equation-estspec-ar-dgp">(54.4)</a>, with <span class="math notranslate nohighlight">\(\mu = 0\)</span>, <span class="math notranslate nohighlight">\(\phi = -0.9\)</span>
+<p>The model is as in equation <a class="reference internal" href="#equation-estspec-ar-dgp">(55.4)</a>, with <span class="math notranslate nohighlight">\(\mu = 0\)</span>, <span class="math notranslate nohighlight">\(\phi = -0.9\)</span>
 and 150 observations in each time series.</p>
 <p>All periodograms are fit with the “hamming” window and window length of 65.</p>
 </div>
 </div>
 <div class="section" id="solutions">
-<h2><a class="toc-backref" href="#id11"><span class="section-number">54.5. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11"><span class="section-number">55.5. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id4">
-<h3><span class="section-number">54.5.1. </span>Exercise 1<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">55.5.1. </span>Exercise 1<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">400</span>
@@ -667,7 +667,7 @@ and 150 observations in each time series.</p>
 </div>
 </div>
 <div class="section" id="id5">
-<h3><span class="section-number">54.5.2. </span>Exercise 2<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">55.5.2. </span>Exercise 2<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">lp2</span> <span class="o">=</span> <span class="n">ARMA</span><span class="p">(</span><span class="o">-</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
@@ -846,48 +846,53 @@ and 150 observations in each time series.</p>
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/geom_series.html">
+   14. Geometric Series for Elementary Economics
+  </a>
+ </li>
+ <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
-   14. Linear Algebra
+   15. Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
-   15. Orthogonal Projections and Their Applications
+   16. Orthogonal Projections and Their Applications
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
-   16. LLN and CLT
+   17. LLN and CLT
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   17. Linear State Space Models
+   18. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   18. Finite Markov Chains
+   19. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   19. Continuous State Markov Chains
+   20. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   20. A First Look at the Kalman Filter
+   21. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   21. Numerical Linear Algebra and Factorizations
+   22. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   22. Krylov Methods and Matrix Conditioning
+   23. Krylov Methods and Matrix Conditioning
   </a>
  </li>
 </ul>
@@ -899,87 +904,87 @@ and 150 observations in each time series.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/short_path.html">
-   23. Shortest Paths
+   24. Shortest Paths
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   24. Job Search I: The McCall Search Model
+   25. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   25. Job Search II: Search and Separation
+   26. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   26. A Problem that Stumped Milton Friedman
+   27. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   27. Job Search III: Search with Learning
+   28. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   28. Job Search IV: Modeling Career Choice
+   29. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   29. Job Search V: On-the-Job Search
+   30. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   30. Optimal Growth I: The Stochastic Optimal Growth Model
+   31. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   31. Optimal Growth II: Time Iteration
+   32. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   32. Optimal Growth III: The Endogenous Grid Method
+   33. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   33. LQ Dynamic Programming Problems
+   34. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   34. Optimal Savings I: The Permanent Income Model
+   35. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   35. Optimal Savings II: LQ Techniques
+   36. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   36. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   37. Optimal Savings III: Occasionally Binding Constraints
+   38. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   38. Robustness
+   39. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   39. Discrete State Dynamic Programming
+   40. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -991,12 +996,12 @@ and 150 observations in each time series.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   40. Modeling COVID 19 with Differential Equations
+   41. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   41. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1008,57 +1013,57 @@ and 150 observations in each time series.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   42. Schelling’s Segregation Model
+   43. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   43. A Lake Model of Employment and Unemployment
+   44. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   44. Rational Expectations Equilibrium
+   45. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   45. Markov Perfect Equilibrium
+   46. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   46. Asset Pricing I: Finite State Models
+   47. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   47. Asset Pricing II: The Lucas Asset Pricing Model
+   48. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   48. Asset Pricing III:  Incomplete Markets
+   49. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   49. Uncertainty Traps
+   50. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   50. The Aiyagari Model
+   51. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   51. Default Risk and Income Fluctuations
+   52. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   52. Globalization and Cycles
+   53. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1070,32 +1075,32 @@ and 150 observations in each time series.</p>
 <ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="arma.html">
-   53. Covariance Stationary Processes
+   54. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   54. Estimation of Spectra
+   55. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="additive_functionals.html">
-   55. Additive Functionals
+   56. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="multiplicative_functionals.html">
-   56. Multiplicative Functionals
+   57. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lu_tricks.html">
-   57. Classical Control with Linear Algebra
+   58. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="classical_filtering.html">
-   58. Classical Filtering With Linear Algebra
+   59. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1107,22 +1112,22 @@ and 150 observations in each time series.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   59. Dynamic Stackelberg Problems
+   60. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   60. Optimal Taxation in an LQ Economy
+   61. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   61. Optimal Taxation with State-Contingent Debt
+   62. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   62. Optimal Taxation without State-Contingent Debt
+   63. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1134,22 +1139,22 @@ and 150 observations in each time series.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   63. About these Lectures
+   64. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   64. Troubleshooting
+   65. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   65. References
+   66. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   66. Execution Statistics
+   67. Execution Statistics
   </a>
  </li>
 </ul>

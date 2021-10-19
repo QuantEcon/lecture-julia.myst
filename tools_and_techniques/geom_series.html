@@ -1,0 +1,1730 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>14. Geometric Series for Elementary Economics &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+        <script>
+            MathJax = {
+            loader: {load: ['[tex]/boldsymbol']},
+            tex: {
+                packages: {'[+]': ['boldsymbol']},
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true,
+                macros: {
+                    "argmax" : "arg\\,max",
+                    "argmin" : "arg\\,min",
+                    "col"    : "col",
+                    "Span"   :  "span",
+                    "epsilon": "\\varepsilon",
+                    "EE": "\\mathbb{E}",
+                    "PP": "\\mathbb{P}",
+                    "RR": "\\mathbb{R}",
+                    "NN": "\\mathbb{N}",
+                    "ZZ": "\\mathbb{Z}",
+                    "aA": "\\mathcal{A}",
+                    "bB": "\\mathcal{B}",
+                    "cC": "\\mathcal{C}",
+                    "dD": "\\mathcal{D}",
+                    "eE": "\\mathcal{E}",
+                    "fF": "\\mathcal{F}",
+                    "gG": "\\mathcal{G}",
+                    "hH": "\\mathcal{H}",
+                }
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 0.92,
+                displayAlign: "center",
+            },
+            };
+        </script>
+    
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet" />
+  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/quantecon-book-theme.857ff391aaabaeb8c161d2309c375fe6.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+
+
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/quantecon-book-theme.76bf49d7bbc59738cdb03766fad654af.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
+    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/geom_series.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="15. Linear Algebra" href="linear_algebra.html" />
+    <link rel="prev" title="13. The Need for Speed" href="../software_engineering/need_for_speed.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Geometric Series for Elementary Economics"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Geometric Series for Elementary Economics" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/tools_and_techniques/geom_series.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="wrapper">
+
+        <div class="main">
+
+            <div class="page" id=tools_and_techniques/geom_series>
+
+                <div class="page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   14.1. Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#key-formulas">
+   14.2. Key Formulas
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#infinite-geometric-series">
+     14.2.1. Infinite Geometric Series
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#finite-geometric-series">
+     14.2.2. Finite Geometric Series
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-the-money-multiplier-in-fractional-reserve-banking">
+   14.3. Example: The Money Multiplier in Fractional Reserve Banking
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#a-simple-model">
+     14.3.1. A Simple Model
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#money-multiplier">
+     14.3.2. Money Multiplier
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-the-keynesian-multiplier">
+   14.4. Example: The Keynesian Multiplier
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#static-version">
+     14.4.1. Static Version
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#dynamic-version">
+     14.4.2. Dynamic Version
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-interest-rates-and-present-values">
+   14.5. Example: Interest Rates and Present Values
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#accumulation">
+     14.5.1. Accumulation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#discounting">
+     14.5.2. Discounting
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#application-to-asset-pricing">
+     14.5.3. Application to Asset Pricing
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#back-to-the-keynesian-multiplier">
+   14.6. Back to the Keynesian Multiplier
+  </a>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="page__header">
+
+                    <div class="page__header-copy">
+
+                        <p class="page__header-heading"><a href="../intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="page__header-subheading">Geometric Series for Elementary Economics</p>
+
+                    </div>
+
+                    <p class="page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="section" id="geometric-series-for-elementary-economics">
+<h1><a class="toc-backref" href="#id1"><span class="section-number">14. </span><span class="target" id="index-0"></span>Geometric Series for Elementary Economics</a><a class="headerlink" href="#geometric-series-for-elementary-economics" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#geometric-series-for-elementary-economics" id="id1">Geometric Series for Elementary Economics</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id2">Overview</a></p></li>
+<li><p><a class="reference internal" href="#key-formulas" id="id3">Key Formulas</a></p></li>
+<li><p><a class="reference internal" href="#example-the-money-multiplier-in-fractional-reserve-banking" id="id4">Example: The Money Multiplier in Fractional Reserve Banking</a></p></li>
+<li><p><a class="reference internal" href="#example-the-keynesian-multiplier" id="id5">Example: The Keynesian Multiplier</a></p></li>
+<li><p><a class="reference internal" href="#example-interest-rates-and-present-values" id="id6">Example: Interest Rates and Present Values</a></p></li>
+<li><p><a class="reference internal" href="#back-to-the-keynesian-multiplier" id="id7">Back to the Keynesian Multiplier</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id2"><span class="section-number">14.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>The lecture describes important ideas in economics that use the mathematics of geometric series.</p>
+<p>Among these are</p>
+<ul class="simple">
+<li><p>the Keynesian <strong>multiplier</strong></p></li>
+<li><p>the money <strong>multiplier</strong> that prevails in fractional reserve banking
+systems</p></li>
+<li><p>interest rates and present values of streams of payouts from assets</p></li>
+</ul>
+<p>(As we shall see below, the term <strong>multiplier</strong> comes down to meaning <strong>sum of a convergent geometric series</strong>)</p>
+<p>These and other applications prove the truth of the wise crack that</p>
+<blockquote class="epigraph">
+<div><p>“in economics, a little knowledge of geometric series goes a long way “</p>
+</div></blockquote>
+<p>Below we’ll use the following packages:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
+<span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">Random</span><span class="p">,</span> <span class="n">Symbolics</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="key-formulas">
+<h2><a class="toc-backref" href="#id3"><span class="section-number">14.2. </span>Key Formulas</a><a class="headerlink" href="#key-formulas" title="Permalink to this headline">¶</a></h2>
+<p>To start, let <span class="math notranslate nohighlight">\(c\)</span> be a real number that lies strictly between
+<span class="math notranslate nohighlight">\(-1\)</span> and <span class="math notranslate nohighlight">\(1\)</span>.</p>
+<ul class="simple">
+<li><p>We often write this as <span class="math notranslate nohighlight">\(c \in (-1,1)\)</span>.</p></li>
+<li><p>Here <span class="math notranslate nohighlight">\((-1,1)\)</span> denotes the collection of all real numbers that
+are strictly less than <span class="math notranslate nohighlight">\(1\)</span> and strictly greater than <span class="math notranslate nohighlight">\(-1\)</span>.</p></li>
+<li><p>The symbol <span class="math notranslate nohighlight">\(\in\)</span> means <em>in</em> or <em>belongs to the set after the symbol</em>.</p></li>
+</ul>
+<p>We want to evaluate geometric series of two types – infinite and finite.</p>
+<div class="section" id="infinite-geometric-series">
+<h3><span class="section-number">14.2.1. </span>Infinite Geometric Series<a class="headerlink" href="#infinite-geometric-series" title="Permalink to this headline">¶</a></h3>
+<p>The first type of geometric that interests us is the infinite series</p>
+<div class="math notranslate nohighlight">
+\[
+1 + c + c^2 + c^3 + \cdots
+\]</div>
+<p>Where <span class="math notranslate nohighlight">\(\cdots\)</span> means that the series continues without end.</p>
+<p>The key formula is</p>
+<div class="math notranslate nohighlight" id="equation-infinite">
+<span class="eqno">(14.1)<a class="headerlink" href="#equation-infinite" title="Permalink to this equation">¶</a></span>\[1 + c + c^2 + c^3 + \cdots = \frac{1}{1 -c }\]</div>
+<p>To prove key formula <a class="reference internal" href="#equation-infinite">(14.1)</a>, multiply both sides  by <span class="math notranslate nohighlight">\((1-c)\)</span> and verify
+that if <span class="math notranslate nohighlight">\(c \in (-1,1)\)</span>, then the outcome is the
+equation <span class="math notranslate nohighlight">\(1 = 1\)</span>.</p>
+</div>
+<div class="section" id="finite-geometric-series">
+<h3><span class="section-number">14.2.2. </span>Finite Geometric Series<a class="headerlink" href="#finite-geometric-series" title="Permalink to this headline">¶</a></h3>
+<p>The second series that interests us is the finite geometric series</p>
+<div class="math notranslate nohighlight">
+\[
+1 + c + c^2 + c^3 + \cdots + c^T
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(T\)</span> is a positive integer.</p>
+<p>The key formula here is</p>
+<div class="math notranslate nohighlight">
+\[
+1 + c + c^2 + c^3 + \cdots + c^T  = \frac{1 - c^{T+1}}{1-c}
+\]</div>
+<p><strong>Remark:</strong> The above formula works for any value of the scalar
+<span class="math notranslate nohighlight">\(c\)</span>. We don’t have to restrict <span class="math notranslate nohighlight">\(c\)</span> to be in the
+set <span class="math notranslate nohighlight">\((-1,1)\)</span>.</p>
+<p>We now move on to describe some famous economic applications of
+geometric series.</p>
+</div>
+</div>
+<div class="section" id="example-the-money-multiplier-in-fractional-reserve-banking">
+<h2><a class="toc-backref" href="#id4"><span class="section-number">14.3. </span>Example: The Money Multiplier in Fractional Reserve Banking</a><a class="headerlink" href="#example-the-money-multiplier-in-fractional-reserve-banking" title="Permalink to this headline">¶</a></h2>
+<p>In a fractional reserve banking system, banks hold only a fraction
+<span class="math notranslate nohighlight">\(r \in (0,1)\)</span> of cash behind each <strong>deposit receipt</strong> that they
+issue</p>
+<ul class="simple">
+<li><p>In recent times</p>
+<ul>
+<li><p>cash consists of pieces of paper issued by the government and
+called dollars or pounds or <span class="math notranslate nohighlight">\(\ldots\)</span></p></li>
+<li><p>a <em>deposit</em> is a balance in a checking or savings account that
+entitles the owner to ask the bank for immediate payment in cash</p></li>
+</ul>
+</li>
+<li><p>When the UK and France and the US were on either a gold or silver
+standard (before 1914, for example)</p>
+<ul>
+<li><p>cash was a gold or silver coin</p></li>
+<li><p>a <em>deposit receipt</em> was a <em>bank note</em> that the bank promised to
+convert into gold or silver on demand; (sometimes it was also a
+checking or savings account balance)</p></li>
+</ul>
+</li>
+</ul>
+<p>Economists and financiers often define the <strong>supply of money</strong> as an
+economy-wide sum of <strong>cash</strong> plus <strong>deposits</strong>.</p>
+<p>In a <strong>fractional reserve banking system</strong> (one in which the reserve
+ratio <span class="math notranslate nohighlight">\(r\)</span> satisfies <span class="math notranslate nohighlight">\(0 &lt; r &lt; 1\)</span>), <strong>banks create money</strong> by issuing deposits <em>backed</em> by fractional reserves plus loans that they make to their customers.</p>
+<p>A geometric series is a key tool for understanding how banks create
+money (i.e., deposits) in a fractional reserve system.</p>
+<p>The geometric series formula <a class="reference internal" href="#equation-infinite">(14.1)</a> is at the heart of the classic model of the money creation process – one that leads us to the celebrated
+<strong>money multiplier</strong>.</p>
+<div class="section" id="a-simple-model">
+<h3><span class="section-number">14.3.1. </span>A Simple Model<a class="headerlink" href="#a-simple-model" title="Permalink to this headline">¶</a></h3>
+<p>There is a set of banks named <span class="math notranslate nohighlight">\(i = 0, 1, 2, \ldots\)</span>.</p>
+<p>Bank <span class="math notranslate nohighlight">\(i\)</span>’s loans <span class="math notranslate nohighlight">\(L_i\)</span>, deposits <span class="math notranslate nohighlight">\(D_i\)</span>, and
+reserves <span class="math notranslate nohighlight">\(R_i\)</span> must satisfy the balance sheet equation (because
+<strong>balance sheets balance</strong>):</p>
+<div class="math notranslate nohighlight" id="equation-balance">
+<span class="eqno">(14.2)<a class="headerlink" href="#equation-balance" title="Permalink to this equation">¶</a></span>\[L_i + R_i = D_i\]</div>
+<p>The left side of the above equation is the sum of the bank’s <strong>assets</strong>,
+namely, the loans <span class="math notranslate nohighlight">\(L_i\)</span> it has outstanding plus its reserves of
+cash <span class="math notranslate nohighlight">\(R_i\)</span>.</p>
+<p>The right side records bank <span class="math notranslate nohighlight">\(i\)</span>’s liabilities,
+namely, the deposits <span class="math notranslate nohighlight">\(D_i\)</span> held by its depositors; these are
+IOU’s from the bank to its depositors in the form of either checking
+accounts or savings accounts (or before 1914, bank notes issued by a
+bank stating promises to redeem note for gold or silver on demand).</p>
+<p>Each bank <span class="math notranslate nohighlight">\(i\)</span> sets its reserves to satisfy the equation</p>
+<div class="math notranslate nohighlight" id="equation-reserves">
+<span class="eqno">(14.3)<a class="headerlink" href="#equation-reserves" title="Permalink to this equation">¶</a></span>\[R_i = r D_i\]</div>
+<p>where <span class="math notranslate nohighlight">\(r \in (0,1)\)</span> is its <strong>reserve-deposit ratio</strong> or <strong>reserve
+ratio</strong> for short</p>
+<ul class="simple">
+<li><p>the reserve ratio is either set by a government or chosen by banks
+for precautionary reasons</p></li>
+</ul>
+<p>Next we add a theory stating that bank <span class="math notranslate nohighlight">\(i+1\)</span>’s deposits depend
+entirely on loans made by bank <span class="math notranslate nohighlight">\(i\)</span>, namely</p>
+<div class="math notranslate nohighlight" id="equation-deposits">
+<span class="eqno">(14.4)<a class="headerlink" href="#equation-deposits" title="Permalink to this equation">¶</a></span>\[D_{i+1} = L_i\]</div>
+<p>Thus, we can think of the banks as being arranged along a line with
+loans from bank <span class="math notranslate nohighlight">\(i\)</span> being immediately deposited in <span class="math notranslate nohighlight">\(i+1\)</span></p>
+<ul class="simple">
+<li><p>in this way, the debtors to bank <span class="math notranslate nohighlight">\(i\)</span> become creditors of
+bank <span class="math notranslate nohighlight">\(i+1\)</span></p></li>
+</ul>
+<p>Finally, we add an <em>initial condition</em> about an exogenous level of bank
+<span class="math notranslate nohighlight">\(0\)</span>’s deposits</p>
+<div class="math notranslate nohighlight">
+\[
+D_0 \ \text{ is given exogenously}
+\]</div>
+<p>We can think of <span class="math notranslate nohighlight">\(D_0\)</span> as being the amount of cash that a first
+depositor put into the first bank in the system, bank number <span class="math notranslate nohighlight">\(i=0\)</span>.</p>
+<p>Now we do a little algebra.</p>
+<p>Combining equations <a class="reference internal" href="#equation-balance">(14.2)</a> and <a class="reference internal" href="#equation-reserves">(14.3)</a> tells us that</p>
+<div class="math notranslate nohighlight" id="equation-fraction">
+<span class="eqno">(14.5)<a class="headerlink" href="#equation-fraction" title="Permalink to this equation">¶</a></span>\[L_i = (1-r) D_i\]</div>
+<p>This states that bank <span class="math notranslate nohighlight">\(i\)</span> loans a fraction <span class="math notranslate nohighlight">\((1-r)\)</span> of its
+deposits and keeps a fraction <span class="math notranslate nohighlight">\(r\)</span> as cash reserves.</p>
+<p>Combining equation <a class="reference internal" href="#equation-fraction">(14.5)</a> with equation <a class="reference internal" href="#equation-deposits">(14.4)</a> tells us that</p>
+<div class="math notranslate nohighlight">
+\[
+D_{i+1} = (1-r) D_i  \ \text{ for } i \geq 0
+\]</div>
+<p>which implies that</p>
+<div class="math notranslate nohighlight" id="equation-geomseries">
+<span class="eqno">(14.6)<a class="headerlink" href="#equation-geomseries" title="Permalink to this equation">¶</a></span>\[D_i = (1 - r)^i D_0  \ \text{ for } i \geq 0\]</div>
+<p>Equation <a class="reference internal" href="#equation-geomseries">(14.6)</a> expresses <span class="math notranslate nohighlight">\(D_i\)</span> as the <span class="math notranslate nohighlight">\(i\)</span> th term in the
+product of <span class="math notranslate nohighlight">\(D_0\)</span> and the geometric series</p>
+<div class="math notranslate nohighlight">
+\[
+1, (1-r), (1-r)^2, \cdots
+\]</div>
+<p>Therefore, the sum of all deposits in our banking system
+<span class="math notranslate nohighlight">\(i=0, 1, 2, \ldots\)</span> is</p>
+<div class="math notranslate nohighlight" id="equation-sumdeposits">
+<span class="eqno">(14.7)<a class="headerlink" href="#equation-sumdeposits" title="Permalink to this equation">¶</a></span>\[\sum_{i=0}^\infty (1-r)^i D_0 =  \frac{D_0}{1 - (1-r)} = \frac{D_0}{r}\]</div>
+</div>
+<div class="section" id="money-multiplier">
+<h3><span class="section-number">14.3.2. </span>Money Multiplier<a class="headerlink" href="#money-multiplier" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>money multiplier</strong> is a number that tells the multiplicative
+factor by which an exogenous injection of cash into bank <span class="math notranslate nohighlight">\(0\)</span> leads
+to an increase in the total deposits in the banking system.</p>
+<p>Equation <a class="reference internal" href="#equation-sumdeposits">(14.7)</a> asserts that the <strong>money multiplier</strong> is
+<span class="math notranslate nohighlight">\(\frac{1}{r}\)</span></p>
+<ul class="simple">
+<li><p>An initial deposit of cash of <span class="math notranslate nohighlight">\(D_0\)</span> in bank <span class="math notranslate nohighlight">\(0\)</span> leads
+the banking system to create total deposits of <span class="math notranslate nohighlight">\(\frac{D_0}{r}\)</span>.</p></li>
+<li><p>The initial deposit <span class="math notranslate nohighlight">\(D_0\)</span> is held as reserves, distributed
+throughout the banking system according to <span class="math notranslate nohighlight">\(D_0 = \sum_{i=0}^\infty R_i\)</span>.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="example-the-keynesian-multiplier">
+<h2><a class="toc-backref" href="#id5"><span class="section-number">14.4. </span>Example: The Keynesian Multiplier</a><a class="headerlink" href="#example-the-keynesian-multiplier" title="Permalink to this headline">¶</a></h2>
+<p>The famous economist John Maynard Keynes and his followers created a
+simple model intended to determine national income <span class="math notranslate nohighlight">\(y\)</span> in
+circumstances in which</p>
+<ul class="simple">
+<li><p>there are substantial unemployed resources, in particular <strong>excess
+supply</strong> of labor and capital</p></li>
+<li><p>prices and interest rates fail to adjust to make aggregate <strong>supply
+equal demand</strong> (e.g., prices and interest rates are frozen)</p></li>
+<li><p>national income is entirely determined by aggregate demand</p></li>
+</ul>
+<div class="section" id="static-version">
+<h3><span class="section-number">14.4.1. </span>Static Version<a class="headerlink" href="#static-version" title="Permalink to this headline">¶</a></h3>
+<p>An elementary Keynesian model of national income determination consists
+of three equations that describe aggregate demand for <span class="math notranslate nohighlight">\(y\)</span> and its
+components.</p>
+<p>The first equation is a national income identity asserting that
+consumption <span class="math notranslate nohighlight">\(c\)</span> plus investment <span class="math notranslate nohighlight">\(i\)</span> equals national income
+<span class="math notranslate nohighlight">\(y\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+c+ i = y
+\]</div>
+<p>The second equation is a Keynesian consumption function asserting that
+people consume a fraction <span class="math notranslate nohighlight">\(b \in (0,1)\)</span> of their income:</p>
+<div class="math notranslate nohighlight">
+\[
+c = b y
+\]</div>
+<p>The fraction <span class="math notranslate nohighlight">\(b \in (0,1)\)</span> is called the <strong>marginal propensity to
+consume</strong>.</p>
+<p>The fraction <span class="math notranslate nohighlight">\(1-b \in (0,1)\)</span> is called the <strong>marginal propensity
+to save</strong>.</p>
+<p>The third equation simply states that investment is exogenous at level
+<span class="math notranslate nohighlight">\(i\)</span>.</p>
+<ul class="simple">
+<li><p><em>exogenous</em> means <em>determined outside this model</em>.</p></li>
+</ul>
+<p>Substituting the second equation into the first gives <span class="math notranslate nohighlight">\((1-b) y = i\)</span>.</p>
+<p>Solving this equation for <span class="math notranslate nohighlight">\(y\)</span> gives</p>
+<div class="math notranslate nohighlight">
+\[
+y = \frac{1}{1-b} i
+\]</div>
+<p>The quantity <span class="math notranslate nohighlight">\(\frac{1}{1-b}\)</span> is called the <strong>investment
+multiplier</strong> or simply the <strong>multiplier</strong>.</p>
+<p>Applying the formula for the sum of an infinite geometric series, we can
+write the above equation as</p>
+<div class="math notranslate nohighlight">
+\[
+y = i \sum_{t=0}^\infty b^t
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(t\)</span> is a nonnegative integer.</p>
+<p>So we arrive at the following equivalent expressions for the multiplier:</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{1-b} =   \sum_{t=0}^\infty b^t
+\]</div>
+<p>The expression <span class="math notranslate nohighlight">\(\sum_{t=0}^\infty b^t\)</span> motivates an interpretation
+of the multiplier as the outcome of a dynamic process that we describe
+next.</p>
+</div>
+<div class="section" id="dynamic-version">
+<h3><span class="section-number">14.4.2. </span>Dynamic Version<a class="headerlink" href="#dynamic-version" title="Permalink to this headline">¶</a></h3>
+<p>We arrive at a dynamic version by interpreting the nonnegative integer
+<span class="math notranslate nohighlight">\(t\)</span> as indexing time and changing our specification of the
+consumption function to take time into account</p>
+<ul class="simple">
+<li><p>we add a one-period lag in how income affects consumption</p></li>
+</ul>
+<p>We let <span class="math notranslate nohighlight">\(c_t\)</span> be consumption at time <span class="math notranslate nohighlight">\(t\)</span> and <span class="math notranslate nohighlight">\(i_t\)</span> be
+investment at time <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>We modify our consumption function to assume the form</p>
+<div class="math notranslate nohighlight">
+\[
+c_t = b y_{t-1}
+\]</div>
+<p>so that <span class="math notranslate nohighlight">\(b\)</span> is the marginal propensity to consume (now) out of
+last period’s income.</p>
+<p>We begin with an initial condition stating that</p>
+<div class="math notranslate nohighlight">
+\[
+y_{-1} = 0
+\]</div>
+<p>We also assume that</p>
+<div class="math notranslate nohighlight">
+\[
+i_t = i \ \ \textrm {for all }  t \geq 0
+\]</div>
+<p>so that investment is constant over time.</p>
+<p>It follows that</p>
+<div class="math notranslate nohighlight">
+\[
+y_0 = i + c_0 = i + b y_{-1} =  i
+\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[
+y_1 = c_1 + i = b y_0 + i = (1 + b) i
+\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[
+y_2 = c_2 + i = b y_1 + i = (1 + b + b^2) i
+\]</div>
+<p>and more generally</p>
+<div class="math notranslate nohighlight">
+\[
+y_t = b y_{t-1} + i = (1+ b + b^2 + \cdots + b^t) i
+\]</div>
+<p>or</p>
+<div class="math notranslate nohighlight">
+\[
+y_t = \frac{1-b^{t+1}}{1 -b } i
+\]</div>
+<p>Evidently, as <span class="math notranslate nohighlight">\(t \rightarrow + \infty\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+y_t \rightarrow \frac{1}{1-b} i
+\]</div>
+<p><strong>Remark 1:</strong> The above formula is often applied to assert that an
+exogenous increase in investment of <span class="math notranslate nohighlight">\(\Delta i\)</span> at time <span class="math notranslate nohighlight">\(0\)</span>
+ignites a dynamic process of increases in national income by successive amounts</p>
+<div class="math notranslate nohighlight">
+\[
+\Delta i, (1 + b )\Delta i, (1+b + b^2) \Delta i , \cdots
+\]</div>
+<p>at times <span class="math notranslate nohighlight">\(0, 1, 2, \ldots\)</span>.</p>
+<p><strong>Remark 2</strong> Let <span class="math notranslate nohighlight">\(g_t\)</span> be an exogenous sequence of government
+expenditures.</p>
+<p>If we generalize the model so that the national income identity
+becomes</p>
+<div class="math notranslate nohighlight">
+\[
+c_t + i_t + g_t  = y_t
+\]</div>
+<p>then a version of the preceding argument shows that the <strong>government
+expenditures multiplier</strong> is also <span class="math notranslate nohighlight">\(\frac{1}{1-b}\)</span>, so that a
+permanent increase in government expenditures ultimately leads to an
+increase in national income equal to the multiplier times the increase
+in government expenditures.</p>
+</div>
+</div>
+<div class="section" id="example-interest-rates-and-present-values">
+<h2><a class="toc-backref" href="#id6"><span class="section-number">14.5. </span>Example: Interest Rates and Present Values</a><a class="headerlink" href="#example-interest-rates-and-present-values" title="Permalink to this headline">¶</a></h2>
+<p>We can apply our formula for geometric series to study how interest
+rates affect values of streams of dollar payments that extend over time.</p>
+<p>We work in discrete time and assume that <span class="math notranslate nohighlight">\(t = 0, 1, 2, \ldots\)</span>
+indexes time.</p>
+<p>We let <span class="math notranslate nohighlight">\(r \in (0,1)\)</span> be a one-period <strong>net nominal interest rate</strong></p>
+<ul class="simple">
+<li><p>if the nominal interest rate is <span class="math notranslate nohighlight">\(5\)</span> percent,
+then <span class="math notranslate nohighlight">\(r= .05\)</span></p></li>
+</ul>
+<p>A one-period <strong>gross nominal interest rate</strong> <span class="math notranslate nohighlight">\(R\)</span> is defined as</p>
+<div class="math notranslate nohighlight">
+\[
+R = 1 + r \in (1, 2)
+\]</div>
+<ul class="simple">
+<li><p>if <span class="math notranslate nohighlight">\(r=.05\)</span>, then <span class="math notranslate nohighlight">\(R = 1.05\)</span></p></li>
+</ul>
+<p><strong>Remark:</strong> The gross nominal interest rate <span class="math notranslate nohighlight">\(R\)</span> is an <strong>exchange
+rate</strong> or <strong>relative price</strong> of dollars at between times <span class="math notranslate nohighlight">\(t\)</span> and
+<span class="math notranslate nohighlight">\(t+1\)</span>. The units of <span class="math notranslate nohighlight">\(R\)</span> are dollars at time <span class="math notranslate nohighlight">\(t+1\)</span> per
+dollar at time <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>When people borrow and lend, they trade dollars now for dollars later or
+dollars later for dollars now.</p>
+<p>The price at which these exchanges occur is the gross nominal interest
+rate.</p>
+<ul class="simple">
+<li><p>If I sell <span class="math notranslate nohighlight">\(x\)</span> dollars to you today, you pay me <span class="math notranslate nohighlight">\(R x\)</span>
+dollars tomorrow.</p></li>
+<li><p>This means that you borrowed <span class="math notranslate nohighlight">\(x\)</span> dollars for me at a gross
+interest rate <span class="math notranslate nohighlight">\(R\)</span> and a net interest rate <span class="math notranslate nohighlight">\(r\)</span>.</p></li>
+</ul>
+<p>We assume that the net nominal interest rate <span class="math notranslate nohighlight">\(r\)</span> is fixed over
+time, so that <span class="math notranslate nohighlight">\(R\)</span> is the gross nominal interest rate at times
+<span class="math notranslate nohighlight">\(t=0, 1, 2, \ldots\)</span>.</p>
+<p>Two important geometric sequences are</p>
+<div class="math notranslate nohighlight" id="equation-geom1">
+<span class="eqno">(14.8)<a class="headerlink" href="#equation-geom1" title="Permalink to this equation">¶</a></span>\[1, R, R^2, \cdots\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight" id="equation-geom2">
+<span class="eqno">(14.9)<a class="headerlink" href="#equation-geom2" title="Permalink to this equation">¶</a></span>\[1, R^{-1}, R^{-2}, \cdots\]</div>
+<p>Sequence <a class="reference internal" href="#equation-geom1">(14.8)</a> tells us how dollar values of an investment <strong>accumulate</strong>
+through time.</p>
+<p>Sequence <a class="reference internal" href="#equation-geom2">(14.9)</a> tells us how to <strong>discount</strong> future dollars to get their
+values in terms of today’s dollars.</p>
+<div class="section" id="accumulation">
+<h3><span class="section-number">14.5.1. </span>Accumulation<a class="headerlink" href="#accumulation" title="Permalink to this headline">¶</a></h3>
+<p>Geometric sequence <a class="reference internal" href="#equation-geom1">(14.8)</a> tells us how one dollar invested and re-invested
+in a project with gross one period nominal rate of return accumulates</p>
+<ul class="simple">
+<li><p>here we assume that net interest payments are reinvested in the
+project</p></li>
+<li><p>thus, <span class="math notranslate nohighlight">\(1\)</span> dollar invested at time <span class="math notranslate nohighlight">\(0\)</span> pays interest
+<span class="math notranslate nohighlight">\(r\)</span> dollars after one period, so we have <span class="math notranslate nohighlight">\(r+1 = R\)</span>
+dollars at time<span class="math notranslate nohighlight">\(1\)</span></p></li>
+<li><p>at time <span class="math notranslate nohighlight">\(1\)</span> we reinvest <span class="math notranslate nohighlight">\(1+r =R\)</span> dollars and receive interest
+of <span class="math notranslate nohighlight">\(r R\)</span> dollars at time <span class="math notranslate nohighlight">\(2\)</span> plus the <em>principal</em>
+<span class="math notranslate nohighlight">\(R\)</span> dollars, so we receive <span class="math notranslate nohighlight">\(r R + R = (1+r)R = R^2\)</span>
+dollars at the end of period <span class="math notranslate nohighlight">\(2\)</span></p></li>
+<li><p>and so on</p></li>
+</ul>
+<p>Evidently, if we invest <span class="math notranslate nohighlight">\(x\)</span> dollars at time <span class="math notranslate nohighlight">\(0\)</span> and
+reinvest the proceeds, then the sequence</p>
+<div class="math notranslate nohighlight">
+\[
+x , xR , x R^2, \cdots
+\]</div>
+<p>tells how our account accumulates at dates <span class="math notranslate nohighlight">\(t=0, 1, 2, \ldots\)</span>.</p>
+</div>
+<div class="section" id="discounting">
+<h3><span class="section-number">14.5.2. </span>Discounting<a class="headerlink" href="#discounting" title="Permalink to this headline">¶</a></h3>
+<p>Geometric sequence <a class="reference internal" href="#equation-geom2">(14.9)</a> tells us how much future dollars are worth in terms of today’s dollars.</p>
+<p>Remember that the units of <span class="math notranslate nohighlight">\(R\)</span> are dollars at <span class="math notranslate nohighlight">\(t+1\)</span> per
+dollar at <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>It follows that</p>
+<ul class="simple">
+<li><p>the units of <span class="math notranslate nohighlight">\(R^{-1}\)</span> are dollars at <span class="math notranslate nohighlight">\(t\)</span> per dollar at <span class="math notranslate nohighlight">\(t+1\)</span></p></li>
+<li><p>the units of <span class="math notranslate nohighlight">\(R^{-2}\)</span> are dollars at <span class="math notranslate nohighlight">\(t\)</span> per dollar at <span class="math notranslate nohighlight">\(t+2\)</span></p></li>
+<li><p>and so on; the units of <span class="math notranslate nohighlight">\(R^{-j}\)</span> are dollars at <span class="math notranslate nohighlight">\(t\)</span> per
+dollar at <span class="math notranslate nohighlight">\(t+j\)</span></p></li>
+</ul>
+<p>So if someone has a claim on <span class="math notranslate nohighlight">\(x\)</span> dollars at time <span class="math notranslate nohighlight">\(t+j\)</span>, it
+is worth <span class="math notranslate nohighlight">\(x R^{-j}\)</span> dollars at time <span class="math notranslate nohighlight">\(t\)</span> (e.g., today).</p>
+</div>
+<div class="section" id="application-to-asset-pricing">
+<h3><span class="section-number">14.5.3. </span>Application to Asset Pricing<a class="headerlink" href="#application-to-asset-pricing" title="Permalink to this headline">¶</a></h3>
+<p>A <strong>lease</strong> requires a payments stream of <span class="math notranslate nohighlight">\(x_t\)</span> dollars at
+times <span class="math notranslate nohighlight">\(t = 0, 1, 2, \ldots\)</span> where</p>
+<div class="math notranslate nohighlight">
+\[
+x_t = G^t x_0
+\]</div>
+<p>where <span class="math notranslate nohighlight">\(G = (1+g)\)</span> and <span class="math notranslate nohighlight">\(g \in (0,1)\)</span>.</p>
+<p>Thus, lease payments increase at <span class="math notranslate nohighlight">\(g\)</span> percent per period.</p>
+<p>For a reason soon to be revealed, we assume that <span class="math notranslate nohighlight">\(G &lt; R\)</span>.</p>
+<p>The <strong>present value</strong> of the lease is</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned} p_0  &amp; = x_0 + x_1/R + x_2/(R^2) + \ddots \\
+                 &amp; = x_0 (1 + G R^{-1} + G^2 R^{-2} + \cdots ) \\
+                 &amp; = x_0 \frac{1}{1 - G R^{-1}} \end{aligned}
+\end{split}\]</div>
+<p>where the last line uses the formula for an infinite geometric series.</p>
+<p>Recall that <span class="math notranslate nohighlight">\(R = 1+r\)</span> and <span class="math notranslate nohighlight">\(G = 1+g\)</span> and that <span class="math notranslate nohighlight">\(R &gt; G\)</span>
+and <span class="math notranslate nohighlight">\(r &gt; g\)</span> and that <span class="math notranslate nohighlight">\(r\)</span> and <span class="math notranslate nohighlight">\(g\)</span> are typically small
+numbers, e.g., .05 or .03.</p>
+<p>Use the Taylor series of <span class="math notranslate nohighlight">\(\frac{1}{1+r}\)</span> about <span class="math notranslate nohighlight">\(r=0\)</span>,
+namely,</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{1+r} = 1 - r + r^2 - r^3 + \cdots
+\]</div>
+<p>and the fact that <span class="math notranslate nohighlight">\(r\)</span> is small to approximate
+<span class="math notranslate nohighlight">\(\frac{1}{1+r} \approx 1 - r\)</span>.</p>
+<p>Use this approximation to write <span class="math notranslate nohighlight">\(p_0\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+ p_0 &amp;= x_0 \frac{1}{1 - G R^{-1}} \\
+ &amp;= x_0 \frac{1}{1 - (1+g) (1-r) } \\
+ &amp;= x_0 \frac{1}{1 - (1+g - r - rg)} \\
+ &amp; \approx x_0 \frac{1}{r -g }
+\end{aligned}
+\end{split}\]</div>
+<p>where the last step uses the approximation <span class="math notranslate nohighlight">\(r g \approx 0\)</span>.</p>
+<p>The approximation</p>
+<div class="math notranslate nohighlight">
+\[
+p_0 = \frac{x_0 }{r -g }
+\]</div>
+<p>is known as the <strong>Gordon formula</strong> for the present value or current
+price of an infinite payment stream <span class="math notranslate nohighlight">\(x_0 G^t\)</span> when the nominal
+one-period interest rate is <span class="math notranslate nohighlight">\(r\)</span> and when <span class="math notranslate nohighlight">\(r &gt; g\)</span>.</p>
+<p>We can also extend the asset pricing formula so that it applies to finite leases.</p>
+<p>Let the payment stream on the lease now be <span class="math notranslate nohighlight">\(x_t\)</span> for <span class="math notranslate nohighlight">\(t= 1,2, \dots,T\)</span>, where again</p>
+<div class="math notranslate nohighlight">
+\[
+x_t = G^t x_0
+\]</div>
+<p>The present value of this lease is:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned} \begin{split}p_0&amp;=x_0 + x_1/R  + \dots +x_T/R^T \\ &amp;= x_0(1+GR^{-1}+\dots +G^{T}R^{-T}) \\ &amp;= \frac{x_0(1-G^{T+1}R^{-(T+1)})}{1-GR^{-1}}  \end{split}\end{aligned}
+\end{split}\]</div>
+<p>Applying the Taylor series to <span class="math notranslate nohighlight">\(R^{-(T+1)}\)</span> about <span class="math notranslate nohighlight">\(r=0\)</span> we get:</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{(1+r)^{T+1}}= 1-r(T+1)+\frac{1}{2}r^2(T+1)(T+2)+\dots \approx 1-r(T+1)
+\]</div>
+<p>Similarly, applying the Taylor series to <span class="math notranslate nohighlight">\(G^{T+1}\)</span> about <span class="math notranslate nohighlight">\(g=0\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[
+(1+g)^{T+1} = 1+(T+1)g(1+g)^T+(T+1)Tg^2(1+g)^{T-1}+\dots \approx 1+ (T+1)g
+\]</div>
+<p>Thus, we get the following approximation:</p>
+<div class="math notranslate nohighlight">
+\[
+p_0 =\frac{x_0(1-(1+(T+1)g)(1-r(T+1)))}{1-(1-r)(1+g) }
+\]</div>
+<p>Expanding:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned} p_0 &amp;=\frac{x_0(1-1+(T+1)^2 rg -r(T+1)+g(T+1))}{1-1+r-g+rg}  \\&amp;=\frac{x_0(T+1)((T+1)rg+r-g)}{r-g+rg} \\ &amp;\approx \frac{x_0(T+1)(r-g)}{r-g}+\frac{x_0rg(T+1)}{r-g}\\ &amp;= x_0(T+1) + \frac{x_0rg(T+1)}{r-g}  \end{aligned}
+\end{split}\]</div>
+<p>We could have also approximated by removing the second term
+<span class="math notranslate nohighlight">\(rgx_0(T+1)\)</span> when <span class="math notranslate nohighlight">\(T\)</span> is relatively small compared to
+<span class="math notranslate nohighlight">\(1/(rg)\)</span> to get <span class="math notranslate nohighlight">\(x_0(T+1)\)</span> as in the finite stream
+approximation.</p>
+<p>We will plot the true finite stream present-value and the two
+approximations, under different values of <span class="math notranslate nohighlight">\(T\)</span>, and <span class="math notranslate nohighlight">\(g\)</span> and <span class="math notranslate nohighlight">\(r\)</span> in Julia.</p>
+<p>First we plot the true finite stream present-value after computing it
+below</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># True present value of a finite lease</span>
+<span class="k">function</span> <span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">.+</span> <span class="n">g</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">.+</span> <span class="n">r</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x_0</span> <span class="o">.*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">.-</span> <span class="n">G</span> <span class="o">.^</span> <span class="p">(</span><span class="n">T</span> <span class="o">.+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">.*</span> <span class="n">R</span> <span class="o">.^</span> <span class="p">(</span><span class="o">-</span><span class="n">T</span> <span class="o">.-</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">.-</span> <span class="n">G</span> <span class="o">.*</span> <span class="n">R</span> <span class="o">.^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="k">end</span>
+
+<span class="c"># First approximation for our finite lease</span>
+<span class="k">function</span> <span class="n">finite_lease_pv_approx</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">x_0</span> <span class="o">.*</span> <span class="p">(</span><span class="n">T</span> <span class="o">.+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">.+</span> <span class="n">x_0</span> <span class="o">.*</span> <span class="n">r</span> <span class="o">.*</span> <span class="n">g</span> <span class="o">.*</span> <span class="p">(</span><span class="n">T</span> <span class="o">.+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">r</span> <span class="o">.-</span> <span class="n">g</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span>
+<span class="k">end</span>
+
+<span class="c"># Second approximation for our finite lease</span>
+<span class="k">function</span> <span class="n">finite_lease_pv_approx_2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x_0</span> <span class="o">.*</span> <span class="p">(</span><span class="n">T</span> <span class="o">.+</span> <span class="mi">1</span><span class="p">))</span>
+<span class="k">end</span>
+
+<span class="c"># Infinite lease</span>
+<span class="k">function</span> <span class="n">infinite_lease</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">.+</span> <span class="n">g</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">.+</span> <span class="n">r</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_0</span> <span class="o">./</span> <span class="p">(</span><span class="mi">1</span> <span class="o">.-</span> <span class="n">G</span> <span class="o">.*</span> <span class="n">R</span> <span class="o">.^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>infinite_lease (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now that we have defined our functions, we can plot some outcomes.</p>
+<p>First we study the quality of our approximations</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">T_max</span> <span class="o">=</span> <span class="mi">50</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="mi">0</span><span class="o">:</span><span class="n">T_max</span>
+<span class="n">g</span> <span class="o">=</span> <span class="mf">0.02</span>
+<span class="n">r</span> <span class="o">=</span> <span class="mf">0.03</span>
+<span class="n">x_0</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">52.5</span><span class="p">),</span> <span class="n">ylim</span><span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.653</span><span class="p">,</span> <span class="mf">56.713</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span> <span class="s">&quot;Finite Lease Present Value T Periods Ahead&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;T Periods Ahead&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;Present Value, p0&quot;</span><span class="p">)</span>
+
+<span class="n">y_1</span> <span class="o">=</span> <span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
+<span class="n">y_2</span> <span class="o">=</span> <span class="n">finite_lease_pv_approx</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
+<span class="n">y_3</span> <span class="o">=</span> <span class="n">finite_lease_pv_approx_2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
+
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">y_1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;True T-period Lease PV&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">y_2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;T-period Lease First-order Approx.&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">y_3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;T-period Lease First-order Approx. adj.&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/geom_series_6_0.svg" src="../_images/geom_series_6_0.svg" /></div>
+</div>
+<p>Evidently our approximations perform well for small values of <span class="math notranslate nohighlight">\(T\)</span>.</p>
+<p>However, holding <span class="math notranslate nohighlight">\(g\)</span> and r fixed, our approximations deteriorate as <span class="math notranslate nohighlight">\(T\)</span> increases.</p>
+<p>Next we compare the infinite and finite duration lease present values
+over different lease lengths <span class="math notranslate nohighlight">\(T\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Convergence of infinite and finite</span>
+<span class="n">T_max</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mi">0</span><span class="o">:</span><span class="n">T_max</span>
+
+<span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">1050</span><span class="p">),</span><span class="n">ylim</span><span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.1</span><span class="p">,</span> <span class="mf">108.1</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span> <span class="s">&quot;Infinite and Finite Lease Present Value T Periods Ahead&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;T Periods Ahead&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;Present Value, p0&quot;</span><span class="p">)</span>
+
+<span class="n">y_1</span> <span class="o">=</span> <span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
+<span class="n">y_2</span> <span class="o">=</span> <span class="n">ones</span><span class="p">(</span><span class="n">T_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">.*</span> <span class="n">infinite_lease</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">)</span>
+
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">y_1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;T-period lease PV&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">y_2</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="ss">:dash</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;Infinite lease PV&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomright</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/geom_series_8_0.svg" src="../_images/geom_series_8_0.svg" /></div>
+</div>
+<p>The graph above shows how as duration <span class="math notranslate nohighlight">\(T \rightarrow +\infty\)</span>,
+the value of a lease of duration <span class="math notranslate nohighlight">\(T\)</span> approaches the value of a
+perpetual lease.</p>
+<p>Now we consider two different views of what happens as <span class="math notranslate nohighlight">\(r\)</span> and
+<span class="math notranslate nohighlight">\(g\)</span> covary</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># First view</span>
+<span class="c"># Changing r and g</span>
+<span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">10.5</span><span class="p">),</span><span class="n">ylim</span><span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.26</span><span class="p">,</span> <span class="mf">16.7</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span> <span class="s">&quot;Value of lease of length T&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;T periods ahead&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;Present Value, p0&quot;</span><span class="p">)</span>
+
+<span class="n">T_max</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">T</span><span class="o">=</span><span class="mi">0</span><span class="o">:</span><span class="n">T_max</span>
+
+<span class="c"># r &gt;&gt; g, much bigger than g</span>
+<span class="n">r</span> <span class="o">=</span> <span class="mf">0.9</span>
+<span class="n">g</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;r(=0.9) &gt;&gt; g(=0.4)&quot;</span><span class="p">)</span>
+
+<span class="c"># r &gt; g</span>
+<span class="n">r</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">g</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;r(=0.5) &gt; g(=0.4)&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;green&quot;</span><span class="p">)</span>
+
+<span class="c"># r ~ g, not defined when r = g, but approximately goes to straight</span>
+<span class="c"># line with slope 1</span>
+<span class="n">r</span> <span class="o">=</span> <span class="mf">0.4001</span>
+<span class="n">g</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;r(=0.4001) ~ g(=0.4)&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;orange&quot;</span><span class="p">)</span>
+
+<span class="c"># r &lt; g</span>
+<span class="n">r</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">g</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_0</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;r(=0.4) &lt; g(=0.5)&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&quot;red&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/geom_series_10_0.svg" src="../_images/geom_series_10_0.svg" /></div>
+</div>
+<p>This graph gives a big hint for why the condition <span class="math notranslate nohighlight">\(r &gt; g\)</span> is
+necessary if a lease of length <span class="math notranslate nohighlight">\(T = +\infty\)</span> is to have finite
+value.</p>
+<p>We can use a little calculus to study how the present value <span class="math notranslate nohighlight">\(p_0\)</span>
+of a lease varies with <span class="math notranslate nohighlight">\(r\)</span> and <span class="math notranslate nohighlight">\(g\)</span>.</p>
+<p>We will use a new package called <a class="reference external" href="https://github.com/JuliaSymbolics/Symbolics.jl">Symbolics.jl</a>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Symbolics.jl</span></code> enables us to do symbolic math calculations including
+computing derivatives of algebraic equations.</p>
+<p>We will illustrate how it works by creating a symbolic expression that
+represents our present value formula for an infinite lease.</p>
+<p>After that, we’ll use <code class="docutils literal notranslate"><span class="pre">Symbolics.jl</span></code> to compute derivatives</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Creates algebraic symbols that can be used in an algebraic expression</span>
+<span class="nd">@variables</span> <span class="n">g</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x0</span>
+<span class="n">G</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">g</span><span class="p">)</span>
+<span class="n">R</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span>
+<span class="n">p0</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">G</span> <span class="o">*</span> <span class="n">R</span> <span class="o">^</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;Our formula is&quot;</span><span class="p">)</span>
+<span class="n">p0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Our formula is
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{equation}
+\frac{x0}{\left( 1 - \frac{\left( 1 + g \right)}{\left( 1 + r \right)} \right)}
+\end{equation}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Partial derivative with respect to g</span>
+<span class="n">dg</span> <span class="o">=</span> <span class="n">Differential</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="n">dp_dg</span> <span class="o">=</span> <span class="n">expand_derivatives</span><span class="p">(</span><span class="n">dg</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;dp0 / dg is&quot;</span><span class="p">)</span>
+<span class="n">dp_dg</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dp0 / dg is
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{equation}
+\frac{x0}{\left( 1 - \frac{\left( 1 + g \right)}{\left( 1 + r \right)} \right)^{2} \left( 1 + r \right)}
+\end{equation}\]</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Partial derivative with respect to r</span>
+<span class="n">dr</span> <span class="o">=</span> <span class="n">Differential</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">dp_dr</span> <span class="o">=</span> <span class="n">expand_derivatives</span><span class="p">(</span><span class="n">dr</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;dp0 / dr is&quot;</span><span class="p">)</span>
+<span class="n">dp_dr</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dp0 / dr is
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\begin{equation}
+\frac{x0 \left( -1 - g \right)}{\left( 1 - \frac{\left( 1 + g \right)}{\left( 1 + r \right)} \right)^{2} \left( 1 + r \right)^{2}}
+\end{equation}\]</div>
+</div>
+</div>
+<p>We can see that for <span class="math notranslate nohighlight">\(\frac{\partial p_0}{\partial r}&lt;0\)</span> as long as
+<span class="math notranslate nohighlight">\(r&gt;g\)</span>, <span class="math notranslate nohighlight">\(r&gt;0\)</span> and <span class="math notranslate nohighlight">\(g&gt;0\)</span> and <span class="math notranslate nohighlight">\(x_0\)</span> is positive,
+so <span class="math notranslate nohighlight">\(\frac{\partial p_0}{\partial r}\)</span> will always be negative.</p>
+<p>Similarly, <span class="math notranslate nohighlight">\(\frac{\partial p_0}{\partial g}&gt;0\)</span> as long as <span class="math notranslate nohighlight">\(r&gt;g\)</span>, <span class="math notranslate nohighlight">\(r&gt;0\)</span> and <span class="math notranslate nohighlight">\(g&gt;0\)</span> and <span class="math notranslate nohighlight">\(x_0\)</span> is positive, so <span class="math notranslate nohighlight">\(\frac{\partial p_0}{\partial g}\)</span>
+will always be positive.</p>
+</div>
+</div>
+<div class="section" id="back-to-the-keynesian-multiplier">
+<h2><a class="toc-backref" href="#id7"><span class="section-number">14.6. </span>Back to the Keynesian Multiplier</a><a class="headerlink" href="#back-to-the-keynesian-multiplier" title="Permalink to this headline">¶</a></h2>
+<p>We will now go back to the case of the Keynesian multiplier and plot the
+time path of <span class="math notranslate nohighlight">\(y_t\)</span>, given that consumption is a constant fraction
+of national income, and investment is fixed.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Function that calculates a path of y</span>
+<span class="k">function</span> <span class="n">calculate_y</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">y_init</span><span class="p">)</span>
+    
+    <span class="n">y</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">y_init</span> <span class="o">+</span> <span class="n">g</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="o">=</span> <span class="mi">2</span><span class="o">:</span><span class="p">(</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="n">g</span>
+    <span class="k">end</span>
+  <span class="k">return</span> <span class="n">y</span>
+<span class="k">end</span>
+
+<span class="c"># Initial values</span>
+<span class="n">i_0</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="n">g_0</span> <span class="o">=</span> <span class="mf">0.3</span>
+<span class="c"># 2/3 of income goes towards consumption</span>
+<span class="n">b</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span>
+<span class="n">y_init</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">T</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">107</span><span class="p">),</span><span class="n">ylim</span><span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span> <span class="s">&quot;Path of Aggregate Output Over Time&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;yt&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="mi">0</span><span class="o">:</span><span class="n">T</span><span class="p">,</span> <span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">g_0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">y_init</span><span class="p">))</span>
+<span class="c"># Output predicted by geometric series</span>
+<span class="n">hline!</span><span class="p">([</span><span class="n">i_0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="n">g_0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span><span class="p">)],</span> <span class="n">linestyle</span><span class="o">=</span><span class="ss">:dash</span><span class="p">,</span> <span class="n">seriestype</span><span class="o">=</span><span class="s">&quot;hline&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/geom_series_16_0.svg" src="../_images/geom_series_16_0.svg" /></div>
+</div>
+<p>In this model, income grows over time, until it gradually converges to
+the infinite geometric series sum of income.</p>
+<p>We now examine what will
+happen if we vary the so-called <strong>marginal propensity to consume</strong>,
+i.e., the fraction of income that is consumed</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Changing fraction of consumption</span>
+<span class="n">bs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
+
+<span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">107</span><span class="p">),</span><span class="n">ylim</span><span class="o">=</span> <span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span> <span class="s">&quot;Changing Consumption as a Fraction of Income&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;yt&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">b</span> <span class="k">in</span> <span class="n">bs</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">round</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">digits</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="mi">0</span><span class="o">:</span><span class="n">T</span><span class="p">,</span> <span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">g_0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">y_init</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;b = </span><span class="si">$b</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/geom_series_18_0.svg" src="../_images/geom_series_18_0.svg" /></div>
+</div>
+<p>Increasing the marginal propensity to consume <span class="math notranslate nohighlight">\(b\)</span> increases the
+path of output over time.</p>
+<p>Now we will compare the effects on output of increases in investment and government spending.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="o">:</span><span class="n">T</span>
+<span class="n">y_0</span> <span class="o">=</span> <span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">g_0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">y_init</span><span class="p">)</span>
+<span class="n">l</span> <span class="o">=</span> <span class="nd">@layout</span> <span class="p">[</span><span class="n">a</span> <span class="p">;</span> <span class="n">b</span><span class="p">]</span>
+
+<span class="c"># Changing initial investment:</span>
+<span class="n">i_1</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">y_1</span> <span class="o">=</span> <span class="n">calculate_y</span><span class="p">(</span><span class="n">i_1</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">g_0</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">y_init</span><span class="p">)</span>
+<span class="n">plt_1</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_0</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;i=0.3&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span> <span class="ss">:dash</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span> <span class="s">&quot;An Increase in Investment on Output&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;y_t&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y_1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;i=0.4&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomright</span><span class="p">)</span>
+
+<span class="c"># Changing government spending</span>
+<span class="n">g_1</span> <span class="o">=</span> <span class="mf">0.4</span>
+<span class="n">y_1</span> <span class="o">=</span> <span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">g_1</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">y_init</span><span class="p">)</span>
+<span class="n">plt_2</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_0</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;g=0.3&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span> <span class="ss">:dash</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span> <span class="s">&quot;An Increase in Government Spending on Output&quot;</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;y_t&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y_1</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;g=0.4&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomright</span><span class="p">)</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span> <span class="n">plt_2</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="n">l</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/geom_series_20_0.svg" src="../_images/geom_series_20_0.svg" /></div>
+</div>
+<p>Notice here, whether government spending increases from 0.3 to 0.4 or
+investment increases from 0.3 to 0.4, the shifts in the graphs are
+identical.</p>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.6"
+        },
+        kernelOptions: {
+            kernelName: "julia-1.6",
+            path: "./tools_and_techniques"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.6'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+
+            
+            <div class="sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="sidebar__nav" id="sidebar-nav" aria-label="Main navigation">
+                    <p class="caption">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   2. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   3. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   4. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   5. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   6. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   7. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   8. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   9. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/tools_editors.html">
+   10. Visual Studio Code and Other Tools
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/version_control.html">
+   11. GitHub, Version Control and Collaboration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/testing.html">
+   12. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/need_for_speed.html">
+   13. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   14. Geometric Series for Elementary Economics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_models.html">
+   18. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="finite_markov.html">
+   19. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="stationary_densities.html">
+   20. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="kalman.html">
+   21. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="numerical_linear_algebra.html">
+   22. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="iterative_methods_sparsity.html">
+   23. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/short_path.html">
+   24. Shortest Paths
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   25. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   26. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   27. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   28. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   29. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   30. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   31. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   32. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   33. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   34. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   35. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   36. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   38. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   39. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   40. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   41. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   43. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   44. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   45. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   46. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   47. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   48. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   49. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   50. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   51. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   52. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   53. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   54. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   55. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   56. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   57. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   58. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   59. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   60. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   61. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   62. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   63. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   64. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   65. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   66. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   67. Execution Statistics
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="toolbar">
+
+            <div class="toolbar__inner">
+
+                <ul class="toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="_notebooks/tools_and_techniques/geom_series.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li class="settings-button" id="settingsButton"><div data-tippy-content="Launch Notebook"><i data-feather="play-circle"></i></div></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/main/lectures/tools_and_techniques/geom_series.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p>Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title"> Notebook Launcher </p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/main?urlpath=tree/tools_and_techniques/geom_series.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" data-repourl="https://github.com/QuantEcon/lecture-julia.notebooks" data-urlpath="tree/lecture-julia.notebooks/tools_and_techniques/geom_series.ipynb" data-branch=main>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            </ul>
+            <p class="launch"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/main?urlpath=tree/tools_and_techniques/geom_series.ipynb" id="advancedLaunchButton" target="_blank">Launch Notebook</a></p>
+            <script>
+                // QuantEcon Notebook Launcher
+                const launcherTypeElements = document.querySelectorAll('#settingsModal .modal-servers li');
+                // Highlight the server type if previous selection exists
+                if (typeof localStorage.launcherType !== 'undefined') {
+                  for (var i = 0; i < launcherTypeElements.length; i++) {
+                    launcherTypeElements[i].classList.remove('active');
+                    if ( launcherTypeElements[i].classList.contains(localStorage.launcherType) ) {
+                      launcherTypeElements[i].classList.add('active');
+                    }
+                  }
+                }
+                // Highlight server type on click and set local storage value
+                for (var i = 0; i < launcherTypeElements.length; i++) {
+                  launcherTypeElements[i].addEventListener('click', function() {
+                    for (var j = 0; j < launcherTypeElements.length; j++) {
+                      launcherTypeElements[j].classList.remove('active');
+                    }
+                    this.classList.add('active');
+                    if ( this.classList.contains('launcher-private') ) {
+                      localStorage.launcherType = 'launcher-private';
+                    } else if ( this.classList.contains('launcher-public') ) {
+                      localStorage.launcherType = 'launcher-public';
+                    }
+                    setLaunchServer();
+                  })
+                }
+                const launcherPublic = document.getElementById('launcher-public-input');
+                const launcherPrivate = document.getElementById('launcher-private-input');
+                const pageName = "tools_and_techniques/geom_series";
+                const repoURL = "https://github.com/QuantEcon/lecture-julia.notebooks";
+                const urlPath = "tree/lecture-julia.notebooks/tools_and_techniques/geom_series.ipynb";
+                const branch = "main"
+                const launchNotebookLink = document.getElementById('advancedLaunchButton');
+
+                // Highlight public server option if previous selection exists
+                if (typeof localStorage.launcherPublic !== 'undefined') {
+                  launcherPublic.value = localStorage.launcherPublic;
+                }
+                // Update local storage upon public server selection
+                launcherPublic.addEventListener('change', (event) => {
+                  setLaunchServer();
+                });
+                // Populate private server input if previous entry exists
+                if (typeof localStorage.launcherPrivate !== 'undefined') {
+                  launcherPrivate.value = localStorage.launcherPrivate;
+                }
+                // Update local storage when a private server is entered
+                launcherPrivate.addEventListener('input', (event) => {
+                  setLaunchServer();
+                });
+
+                // Function to update the "Launch Notebook" link href
+                function setLaunchServer() {
+                  launchNotebookLink.removeAttribute("style")
+                  if ( localStorage.launcherType == 'launcher-private' ) {
+                    let repoPrefix = "/jupyter/hub/user-redirect/git-pull?repo=" + repoURL + "&branch=" + branch + "&urlpath=" + urlPath;
+                    launcherPrivateValue = launcherPrivate.value
+                    if (!launcherPrivateValue) {
+                        launchNotebookLink.removeAttribute("href")
+                        launchNotebookLink.style.background = "grey"
+                        return
+                    }
+                    localStorage.launcherPrivate = launcherPrivateValue;
+                    privateServer = localStorage.launcherPrivate.replace(/\/$/, "")
+                    if (!privateServer.includes("http")) {
+                        privateServer = "http://" + privateServer
+                    }
+                    launchNotebookLinkURL = privateServer + repoPrefix;
+                  } else if ( localStorage.launcherType == 'launcher-public' ) {
+                    launcherPublicValue = launcherPublic.options[launcherPublic.selectedIndex].value;
+                    localStorage.launcherPublic = launcherPublicValue;
+                    launchNotebookLinkURL = localStorage.launcherPublic;
+                  }
+                  if (launchNotebookLinkURL) launchNotebookLink.href = launchNotebookLinkURL;
+                }
+                // Check if user has previously selected a server
+                if ( (typeof localStorage.launcherPrivate !== 'undefined') || (typeof localStorage.launcherPublic !== 'undefined') ) {
+                  setLaunchServer();
+                }
+                </script>
+
+        </div>
+
+    </div> <!-- .wrapper-->
+    
+<script async="" src="https://www.google-analytics.com/analytics.js"></script>
+<script>
+                        window.ga = window.ga || function () {
+                            (ga.q = ga.q || []).push(arguments) };
+                        ga.l = +new Date;
+                        ga('create', 'UA-54984338-8', 'auto');
+                        ga('set', 'anonymizeIp', true);
+                        ga('send', 'pageview');
+                    </script>
+
+  </body>
+</html>
