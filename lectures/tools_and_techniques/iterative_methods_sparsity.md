@@ -218,7 +218,7 @@ To solve for the coefficients, we notice that this is a simple system of equatio
 
 $$
 \begin{array}
-    \,y_0 = c_0 + c_1 x_0 + \ldots c_N x_0^N\\
+    cy_0 = c_0 + c_1 x_0 + \ldots c_N x_0^N\\
     \,\ldots\\
     \,y_N = c_0 + c_1 x_N + \ldots c_N x_N^N
 \end{array}
@@ -516,10 +516,10 @@ $$
 Rearrange the $(D + R)x = b$ as
 
 $$
-\begin{align}
+\begin{aligned}
 D x &= b - R x\\
 x &= D^{-1} (b - R x)
-\end{align}
+\end{aligned}
 $$
 
 where, since $D$ is diagonal, its inverse is trivial to calculate with $O(N)$ complexity.
@@ -632,12 +632,12 @@ operations.
 To see an example of a right-preconditioner, consider a matrix $P$ which has a convenient and numerically stable inverse.  Then
 
 $$
-\begin{align}
+\begin{aligned}
 A x &= b\\
 A P^{-1} P x &= b\\
 A P^{-1} y &= b\\
 P x &= y
-\end{align}
+\end{aligned}
 $$
 
 That is, solve $(A P^{-1})y = b$ for $y$, and then solve $P x = y$ for $x$.
@@ -1014,12 +1014,12 @@ before we enumerate them linearly, take a $v\in R^{\mathbf{N}}$ interpreted as a
 For example, if we were implementing the product at the row of $Q$ corresponding to the $(n_1, \ldots, n_M)$ state, then
 
 $$
-\begin{align}
+\begin{aligned}
     Q_{(n_1, \ldots n_M)} \cdot v &=
 \theta \sum_{m=1}^M (n_m < N)  v(n_1, \ldots, n_m + 1, \ldots, n_M)\\
                                         &+ \zeta \sum_{m=1}^M (1 < n_m)  v(n_1, \ldots, n_m - 1, \ldots, n_M)\\
                                         &-\left(\theta\, \text{Count}(n_m < N) + \zeta\, \text{Count}( n_m > 1)\right)v(n_1, \ldots, n_M)
-\end{align}
+\end{aligned}
 $$
 
 Here:
@@ -1196,12 +1196,12 @@ The logic for the adjoint is that for a given $n = (n_1,\ldots, n_m, \ldots n_M)
 Implementing this logic, first in math and then in code,
 
 $$
-\begin{align}
+\begin{aligned}
     Q^T_{(n_1, \ldots, n_M)} \cdot \psi &=
 \theta \sum_{m=1}^M (n_m > 1)  \psi(n_1, \ldots, n_m - 1, \ldots, n_M)\\
                                         &+ \zeta \sum_{m=1}^M (n_m < N)  \psi(n_1, \ldots, n_m + 1, \ldots, n_M)\\
                                         &-\left(\theta\, \text{Count}(n_m < N) + \zeta\, \text{Count}( n_m > 1)\right)\psi(n_1, \ldots, n_M)
-\end{align}
+\end{aligned}
 $$
 
 ```{code-cell} julia
