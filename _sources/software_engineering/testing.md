@@ -150,7 +150,7 @@ t = Template(;dir = ".", julia = v"1.6",
 ```
 
 ```{note}
-If you did not set the `github.user` in the setup, you may need to pass in `user = YOURUSERNAME` as an additional argument.  In addition, this turns off some important features (e.g. `CompatHelper` and `TagBot`) and leaves out others (e.g. `Documenter{GitHubActions}`) which you would want for a more formal package.
+If you did not set the `github.user` in the setup, you may need to pass in `user = "YOURUSERNAME"` as an additional argument in the first line.  In addition, this turns off some important features (e.g. `CompatHelper` and `TagBot`) and leaves out others (e.g. `Documenter{GitHubActions}`) which you would want for a more formal package.
 
 Alternatively, `PkgTemplates` has an interactive mode, which you can prompt with `t = Template(;interactive = true)` to choose all of your selections within the terminal.
 ```
