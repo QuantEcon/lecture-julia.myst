@@ -500,25 +500,26 @@ Here's a function that implements the Bellman operator using linear interpolatio
 ```{code-cell} julia
 function T(w;p, tol = 1e-10)
     @unpack β, u, f, ξ, y = p # unpack parameters
-    # w_func = LinearInterpolation(y, w)
+    w_func = LinearInterpolation(y, w)
 
-    # Tw = similar(w)
-    # σ = similar(w)
-    # for (i, y_val) in enumerate(y)
-    #     # solve maximization for each point in y, using y itself as initial condition.
-    #     results = maximize(c -> u(c;p) + β * mean(w_func.(f(y_val - c;p) .* ξ)), tol, y_val) # solver result for each grid point        
-    #     Tw[i] = maximum(results)
-    #     σ[i] = maximizer(results)
-    # end
+    Tw = similar(w)
+    σ = similar(w)
+    for (i, y_val) in enumerate(y)
+        # solve maximization for each point in y, using y itself as initial condition.
+        results = maximize(c -> u(c;p) + β * mean(w_func.(f(y_val - c;p) .* ξ)), tol, y_val) # solver result for each grid point        
+        Tw[i] = maximum(results)
+        σ[i] = maximizer(results)
+    end
    
-    grid = y
-    shocks = ξ   
-    w_func = LinearInterpolation(grid, w)
-    objectives = (c -> u(c;p) + β * mean(w_func.(f(y - c;p) .* shocks)) for y in grid)
-    results = maximize.(objectives, 1e-10, grid) # solver result for each grid point
-
-    Tw = Optim.maximum.(results)
-    σ = Optim.maximizer.(results)
+    # # OLD TO COMPARE AND REMOVE
+    # grid = y
+    # shocks = ξ   
+    # w_func = LinearInterpolation(grid, w)
+    # objectives = (c -> u(c;p) + β * mean(w_func.(f(y - c;p) .* shocks)) for y in grid)
+    # results = maximize.(objectives, 1e-10, grid) # solver result for each grid point
+# 
+    # Tw = Optim.maximum.(results)
+    # σ = Optim.maximizer.(results)
     return (;w = Tw, σ) # returns named tuple of results
 end
 ```
