@@ -464,8 +464,8 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Plots, QuantEcon, Interpolations, NLsolve, Optim, Random
-
+using Plots, QuantEcon, Interpolations, NLsolve, Optim, Random, Parameters
+using Optim: maximum, maximizer
 ```
 
 ```{code-cell} julia
@@ -498,21 +498,28 @@ Another advantage of piecewise linear interpolation is that it preserves useful 
 Here's a function that implements the Bellman operator using linear interpolation
 
 ```{code-cell} julia
-using Optim
+function T(w;p, tol = 1e-10)
+    @unpack β, u, f, ξ, y = p # unpack parameters
+    # w_func = LinearInterpolation(y, w)
 
-function T(w, grid, β, u, f, shocks; compute_policy = false)
+    # Tw = similar(w)
+    # σ = similar(w)
+    # for (i, y_val) in enumerate(y)
+    #     # solve maximization for each point in y, using y itself as initial condition.
+    #     results = maximize(c -> u(c;p) + β * mean(w_func.(f(y_val - c;p) .* ξ)), tol, y_val) # solver result for each grid point        
+    #     Tw[i] = maximum(results)
+    #     σ[i] = maximizer(results)
+    # end
+   
+    grid = y
+    shocks = ξ   
     w_func = LinearInterpolation(grid, w)
-    # objective for each grid point
-    objectives = (c -> u(c) + β * mean(w_func.(f(y - c) .* shocks)) for y in grid)
+    objectives = (c -> u(c;p) + β * mean(w_func.(f(y - c;p) .* shocks)) for y in grid)
     results = maximize.(objectives, 1e-10, grid) # solver result for each grid point
 
     Tw = Optim.maximum.(results)
-    if compute_policy
-        σ = Optim.maximizer.(results)
-        return Tw, σ
-    end
-
-    return Tw
+    σ = Optim.maximizer.(results)
+    return (;w = Tw, σ) # returns named tuple of results
 end
 ```
 
@@ -561,42 +568,40 @@ $$
 
 Let's code this up now so we can test against it below
 
+In addition to the model parameters, we need a grid and some shock draws for Monte Carlo integration.
+
 ```{code-cell} julia
-α = 0.4
-β = 0.96
-μ = 0
-s = 0.1
+Random.seed!(42) # for reproducible results
+u(c;p) = log(c) # utility
+f(k;p) = k^p.α # deterministic part of production function
+model = @with_kw (α = 0.4, β = 0.96, μ = 0.0, s = 0.1,
+                  u = u, f = f, # defaults defined above
+                  y = range(1e-5, 4.0, length = 200), # grid on y
+                  ξ = exp.(μ .+ s * randn(250)) # monte carlo shocks
+) # named tuples defaults
 
-c1 = log(1 - α * β) / (1 - β)
-c2 = (μ + α * log(α * β)) / (1 - α)
-c3 = 1 / (1 - β)
-c4 = 1 / (1 - α * β)
-
-# Utility
-u(c) = log(c)
-
-∂u∂c(c) = 1 / c
-
-# Deterministic part of production function
-f(k) = k^α
-
-f′(k) = α * k^(α - 1)
-
-# True optimal policy
-c_star(y) = (1 - α * β) * y
-
-# True value function
-v_star(y) = c1 + c2 * (c3 - c4) + c4 * log(y)
+# True value and policy function
+function v_star(y;p)
+    @unpack α, μ, β = p
+    c1 = log(1 - α * β) / (1 - β)
+    c2 = (μ + α * log(α * β)) / (1 - α)
+    c3 = 1 / (1 - β)
+    c4 = 1 / (1 - α * β)
+    return c1 + c2 * (c3 - c4) + c4 * log(y)
+end
+c_star(y;p) = (1 - p.α * p.β) * y
 ```
+
 
 ```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
+# # Unused in code, can add back in as required.
+#∂u∂c(c) = 1 / c
+#f′(k;p) = p.α * k^(p.α - 1)
+
 @testset "Primitives Tests" begin
-    @test [c1, c2, c3, c4] ≈ [-12.112707886215421, -0.6380751509296068, 24.99999999999998,
-                              1.6233766233766234]
-    @test ∂u∂c(c1) ≈ -0.08255792258789846
     @test v_star(3) ≈ -25.245288867900843
 end
 ```
@@ -604,32 +609,6 @@ end
 ### A First Test
 
 To test our code, we want to see if we can replicate the analytical solution numerically, using fitted value function iteration.
-
-We need a grid and some shock draws for Monte Carlo integration.
-
-```{code-cell} julia
----
-tags: [hide-output]
----
-using Random
-Random.seed!(42) # For reproducible results.
-
-grid_max = 4         # Largest grid point
-grid_size = 200      # Number of grid points
-shock_size = 250     # Number of shock draws in Monte Carlo integral
-
-grid_y = range(1e-5,  grid_max, length = grid_size)
-shocks = exp.(μ .+ s * randn(shock_size))
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset "Shock Invariance Tests" begin
-    #test shocks[4] ≈ 0.9704956010607036 && length(shocks) == 250
-end
-```
 
 Now let's do some tests.
 
@@ -640,11 +619,14 @@ In theory, the resulting function should again be $v^*$.
 In practice we expect some small numerical error.
 
 ```{code-cell} julia
-w = T(v_star.(grid_y), grid_y, β, log, k -> k^α, shocks)
+p = model() # use all default parameters from named tuple
+w_star = v_star.(p.y; p)  # evaluate closed form value along grid
+
+w = T(w_star; p).w # evaluate operator, access Tw results
 
 plt = plot(ylim = (-35,-24))
-plot!(plt, grid_y, w, linewidth = 2, alpha = 0.6, label = "T(v_star)")
-plot!(plt, v_star, grid_y, linewidth = 2, alpha=0.6, label = "v_star")
+plot!(plt, p.y, w, linewidth = 2, alpha = 0.6, label = "T(v_star)")
+plot!(plt, p.y, w_star, linewidth = 2, alpha=0.6, label = "v_star")
 plot!(plt, legend = :bottomright)
 ```
 
@@ -656,20 +638,20 @@ from an arbitrary initial condition.
 The initial condition we'll start with is $w(y) = 5 \ln (y)$
 
 ```{code-cell} julia
-w = 5 * log.(grid_y)  # An initial condition -- fairly arbitrary
+w = 5 * log.(p.y)  # An initial condition -- fairly arbitrary
 n = 35
 
-plot(xlim = (extrema(grid_y)), ylim = (-50, 10))
+plot(xlim = (extrema(p.y)), ylim = (-50, 10))
 lb = "initial condition"
-plt = plot(grid_y, w, color = :black, linewidth = 2, alpha = 0.8, label = lb)
+plt = plot(p.y, w, color = :black, linewidth = 2, alpha = 0.8, label = lb)
 for i in 1:n
-    w = T(w, grid_y, β, log, k -> k^α, shocks)
-    plot!(grid_y, w, color = RGBA(i/n, 0, 1 - i/n, 0.8), linewidth = 2, alpha = 0.6,
+    w = T(w; p).w
+    plot!(p.y, w, color = RGBA(i/n, 0, 1 - i/n, 0.8), linewidth = 2, alpha = 0.6,
           label = "")
 end
 
 lb = "true value function"
-plot!(plt, v_star, grid_y, color = :black, linewidth = 2, alpha = 0.8, label = lb)
+plot!(plt, y -> v_star(y; p), grid_y, color = :black, linewidth = 2, alpha = 0.8, label = lb)
 plot!(plt, legend = :bottomright)
 ```
 
@@ -694,16 +676,20 @@ We are clearly getting closer.
 We can write a function that computes the exact fixed point
 
 ```{code-cell} julia
-function solve_optgrowth(initial_w; tol = 1e-6, max_iter = 500)
-    fixedpoint(w -> T(w, grid_y, β, u, f, shocks), initial_w).zero # gets returned
+function solve_optgrowth(initial_w; p, iterations = 500, m = 3, show_trace = false) 
+    results = fixedpoint(w -> T(w;p).w, initial_w; iterations, m, show_trace) # Anderson iteration
+    v_star = results.zero
+    return (;v_star, results)
 end
 ```
 
 We can check our result by plotting it against the true value
 
 ```{code-cell} julia
-initial_w = 5 * log.(grid_y)
-v_star_approx = solve_optgrowth(initial_w)
+initial_w = 5 * log.(p.y)
+sol = solve_optgrowth(initial_w;p)
+v_star_approx = sol.v_star
+println("Converged in $(sol.results.iterations) to an ||residuals||_∞ of $(sol.results.residual_norm)")
 
 plt = plot(ylim = (-35, -24))
 plot!(plt, grid_y, v_star_approx, linewidth = 2, alpha = 0.6,
@@ -712,7 +698,9 @@ plot!(plt, v_star, grid_y, linewidth = 2, alpha = 0.6, label = "true value funct
 plot!(plt, legend = :bottomright)
 ```
 
-The figure shows that we are pretty much on the money.
+The figure shows that we are pretty much on the money
+
+Note that this converges in fewer than the 36 iterations printed above because it is using Anderson iteration - where the $m=1$ parameter is naive fixed point iteration 
 
 ### The Policy Function
 
@@ -726,12 +714,8 @@ The next figure compares the result to the exact solution, which, as mentioned
 above, is $\sigma(y) = (1 - \alpha \beta) y$.
 
 ```{code-cell} julia
-Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks;
-                         compute_policy = true)
-cstar = (1 - α * β) * grid_y
-
-plt = plot(grid_y, σ, lw=2, alpha=0.6, label = "approximate policy function")
-plot!(plt, grid_y, cstar, lw = 2, alpha = 0.6, label = "true policy function")
+plt = plot(p.y, T(v_star_approx; p).σ, lw=2, alpha=0.6, label = "approximate policy function")
+plot!(plt, p.y, c_star.(p.y; p), lw = 2, alpha = 0.6, label = "true policy function")
 plot!(plt, legend = :bottomright)
 ```
 
@@ -740,7 +724,7 @@ plot!(plt, legend = :bottomright)
 tags: [remove-cell]
 ---
 @testset begin
-    #test cstar[102] ≈ 1.2505758978894472
+    #test c_star.(p.y; p)[102] ≈ 1.2505758978894472
 end
 ```
 
