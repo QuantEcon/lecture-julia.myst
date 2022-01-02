@@ -487,9 +487,9 @@ However, the other issue where constructor arguments are error-prone can be
 remedied with the `@kwdef` macro from `Base`.
 
 ```{code-cell} julia
-import Base.@kwdef
+using Base: @kwdef
 
-@kwdef  struct Foo5
+@kwdef struct Foo5
     a::Float64 = 2.0     # adds default value
     b::Int64
     c::Vector{Float64}
