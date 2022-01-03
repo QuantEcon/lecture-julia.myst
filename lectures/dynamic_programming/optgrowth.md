@@ -510,16 +510,6 @@ function T(w;p, tol = 1e-10)
         Tw[i] = maximum(results)
         σ[i] = maximizer(results)
     end
-   
-    # # OLD TO COMPARE AND REMOVE
-    # grid = y
-    # shocks = ξ   
-    # w_func = LinearInterpolation(grid, w)
-    # objectives = (c -> u(c;p) + β * mean(w_func.(f(y - c;p) .* shocks)) for y in grid)
-    # results = maximize.(objectives, 1e-10, grid) # solver result for each grid point
-# 
-    # Tw = Optim.maximum.(results)
-    # σ = Optim.maximizer.(results)
     return (;w = Tw, σ) # returns named tuple of results
 end
 ```
@@ -575,7 +565,7 @@ In addition to the model parameters, we need a grid and some shock draws for Mon
 Random.seed!(42) # for reproducible results
 u(c;p) = log(c) # utility
 f(k;p) = k^p.α # deterministic part of production function
-model = @with_kw (α = 0.4, β = 0.96, μ = 0.0, s = 0.1,
+OptimalGrowthModel = @with_kw (α = 0.4, β = 0.96, μ = 0.0, s = 0.1,
                   u = u, f = f, # defaults defined above
                   y = range(1e-5, 4.0, length = 200), # grid on y
                   ξ = exp.(μ .+ s * randn(250)) # monte carlo shocks
@@ -603,7 +593,7 @@ tags: [remove-cell]
 #f′(k;p) = p.α * k^(p.α - 1)
 
 @testset "Primitives Tests" begin
-    @test v_star(3) ≈ -25.245288867900843
+    @test v_star(3.0;p = OptimalGrowthModel()) ≈ -25.245288867900843
 end
 ```
 
@@ -620,7 +610,7 @@ In theory, the resulting function should again be $v^*$.
 In practice we expect some small numerical error.
 
 ```{code-cell} julia
-p = model() # use all default parameters from named tuple
+p = OptimalGrowthModel() # use all default parameters from named tuple
 w_star = v_star.(p.y; p)  # evaluate closed form value along grid
 
 w = T(w_star; p).w # evaluate operator, access Tw results
@@ -661,7 +651,7 @@ plot!(plt, legend = :bottomright)
 tags: [remove-cell]
 ---
 @testset begin
-    #test v_star(grid_y[2]) ≈ -33.370496456772266
+    #test v_star(grid_y[2];OptimalGrowthModel()) ≈ -33.370496456772266
 end
 ```
 
@@ -680,7 +670,8 @@ We can write a function that computes the exact fixed point
 function solve_optgrowth(initial_w; p, iterations = 500, m = 3, show_trace = false) 
     results = fixedpoint(w -> T(w;p).w, initial_w; iterations, m, show_trace) # Anderson iteration
     v_star = results.zero
-    return (;v_star, results)
+    σ = T(results.zero;p).σ
+    return (;v_star, σ, results)
 end
 ```
 
@@ -693,15 +684,15 @@ v_star_approx = sol.v_star
 println("Converged in $(sol.results.iterations) to an ||residuals||_∞ of $(sol.results.residual_norm)")
 
 plt = plot(ylim = (-35, -24))
-plot!(plt, grid_y, v_star_approx, linewidth = 2, alpha = 0.6,
+plot!(plt, p.y, v_star_approx, linewidth = 2, alpha = 0.6,
       label = "approximate value function")
-plot!(plt, v_star, grid_y, linewidth = 2, alpha = 0.6, label = "true value function")
+plot!(plt, p.y, v_star.(p.y;p), linewidth = 2, alpha = 0.6, label = "true value function")
 plot!(plt, legend = :bottomright)
 ```
 
 The figure shows that we are pretty much on the money
 
-Note that this converges in fewer than the 36 iterations printed above because it is using Anderson iteration - where the $m=1$ parameter is naive fixed point iteration 
+Note that this converges in fewer than the 36 iterations printed above because it is using Anderson iteration - where the $m=0$ parameter is naive fixed point iteration 
 
 ### The Policy Function
 
@@ -761,17 +752,8 @@ Random.seed!(42);
 ---
 tags: [hide-output]
 ---
-s = 0.05
-shocks = exp.(μ .+ s * randn(shock_size))
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    #test shocks[25] ≈ 0.8281356207080574
-end
+p = OptimalGrowthModel(s = 0.05)
+p.ξ
 ```
 
 Otherwise, the parameters and primitives are the same as the log linear model discussed earlier in the lecture.
@@ -787,57 +769,28 @@ Replicate the figure modulo randomness.
 Here's one solution (assuming as usual that you've executed everything above)
 
 ```{code-cell} julia
-function simulate_og(σ, y0 = 0.1, ts_length=100)
+function simulate_og(σ, p, y0, ts_length)
     y = zeros(ts_length)
-    ξ = randn(ts_length-1)
     y[1] = y0
     for t in 1:(ts_length-1)
-        y[t+1] = (y[t] - σ(y[t]))^α * exp(μ + s * ξ[t])
+        y[t+1] = (y[t] - σ(y[t]))^p.α * exp(p.μ + p.s * randn())
     end
     return y
 end
 
+β_vals = [0.9 0.94 0.98]
+ts_length = 100
+y0 = 0.1
 plt = plot()
 
-for β in (0.9, 0.94, 0.98)
-    Tw = similar(grid_y)
-    initial_w = 5 * log.(grid_y)
+for β in β_vals
+    p = OptimalGrowthModel(;β) # change β from default
+    initial_w = 5 * log.(p.y)
+    sol = solve_optgrowth(initial_w;p)
+    σ_func = LinearInterpolation(p.y, sol.σ)
+    y = simulate_og(σ_func, p,y0, ts_length)
 
-    v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks),
-                               initial_w).zero
-    Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks,
-                             compute_policy = true)
-    σ_func = LinearInterpolation(grid_y, σ)
-    y = simulate_og(σ_func)
-
-    plot!(plt, y, lw = 2, alpha = 0.6, label = label = "beta = $β")
+    plot!(plt, 0:(ts_length-1), y, lw = 2, alpha = 0.6, label = "beta = $β")
 end
-
-plot!(plt, legend = :bottomright)
+plt
 ```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-using Random
-Random.seed!(42)
-β = 0.94
-
-Tw = similar(grid_y)
-initial_w = 5 * log.(grid_y)
-v_star_approx = fixedpoint(w -> T(w, grid_y, β, u, f, shocks),
-                           initial_w).zero
-Tw, σ = T(v_star_approx, grid_y, β, log, k -> k^α, shocks,
-                         compute_policy = true)
-σ_func = LinearInterpolation(grid_y, σ)
-y = simulate_og(σ_func);
-
-@testset begin
-    ##test y[5] ≈ 0.4896390574930345
-    ##test σ[3] ≈ 0.025084788719798193 atol = 1e-6
-    ##test Tw[4] ≈ -22.24681487036426
-    ##test v_star_approx[50] ≈ -17.76952387641302
-end
-```
-
