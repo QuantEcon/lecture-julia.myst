@@ -506,7 +506,7 @@ function T(w;p, tol = 1e-10)
     σ = similar(w)
     for (i, y_val) in enumerate(y)
         # solve maximization for each point in y, using y itself as initial condition.
-        results = maximize(c -> u(c;p) + β * mean(w_func.(f(y_val - c;p) .* ξ)), tol, y_val) # solver result for each grid point        
+        results = maximize(c -> u(c;p) + β * mean(w_func.(f(y_val - c;p) .* ξ)), tol, y_val)
         Tw[i] = maximum(results)
         σ[i] = maximizer(results)
     end
@@ -583,20 +583,6 @@ end
 c_star(y;p) = (1 - p.α * p.β) * y
 ```
 
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-# # Unused in code, can add back in as required.
-#∂u∂c(c) = 1 / c
-#f′(k;p) = p.α * k^(p.α - 1)
-
-@testset "Primitives Tests" begin
-    @test v_star(3.0;p = OptimalGrowthModel()) ≈ -25.245288867900843
-end
-```
-
 ### A First Test
 
 To test our code, we want to see if we can replicate the analytical solution numerically, using fitted value function iteration.
@@ -642,7 +628,7 @@ for i in 1:n
 end
 
 lb = "true value function"
-plot!(plt, y -> v_star(y; p), grid_y, color = :black, linewidth = 2, alpha = 0.8, label = lb)
+plot!(plt, p.y, v_star.(p.y; p), color = :black, linewidth = 2, alpha = 0.8, label = lb)
 plot!(plt, legend = :bottomright)
 ```
 
