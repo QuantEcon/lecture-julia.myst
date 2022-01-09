@@ -48,8 +48,8 @@
     
     
     
-  <link href="../_static/css/theme.css" rel="stylesheet" />
-  <link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet" />
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
 
     
   <link rel="stylesheet"
@@ -72,7 +72,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js">
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
 
 
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
@@ -83,7 +83,7 @@
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.12a9622fbb08dcb3a2a40b2c02b83a57.js"></script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.76bf49d7bbc59738cdb03766fad654af.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"TeX": {"Macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "tex2jax": {"inlineMath": [["\\(", "\\)"]], "displayMath": [["\\[", "\\]"]], "processRefs": false, "processEnvironments": false}})</script>
@@ -563,46 +563,46 @@ code .
 <div class="section" id="github-actions-and-ci">
 <h3><span class="section-number">12.3.1. </span>GitHub Actions and CI<a class="headerlink" href="#github-actions-and-ci" title="Permalink to this headline">¶</a></h3>
 <p>The final file is a GitHub Actions file in the <code class="docutils literal notranslate"><span class="pre">.github/workflows</span></code> folder, called <code class="docutils literal notranslate"><span class="pre">CI.yml</span></code> with the text similar to</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">CI</span>
-<span class="nt">on</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">push</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">pull_request</span>
-<span class="nt">jobs</span><span class="p">:</span>
-  <span class="nt">test</span><span class="p">:</span>
-    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}</span>
-    <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span>
-    <span class="nt">strategy</span><span class="p">:</span>
-      <span class="nt">fail-fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-      <span class="nt">matrix</span><span class="p">:</span>
-        <span class="nt">version</span><span class="p">:</span>
-          <span class="p p-Indicator">-</span> <span class="s">&#39;1.6&#39;</span>
-          <span class="p p-Indicator">-</span> <span class="s">&#39;nightly&#39;</span>
-        <span class="nt">os</span><span class="p">:</span>
-          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
-        <span class="nt">arch</span><span class="p">:</span>
-          <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">x64</span>          
-    <span class="nt">steps</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span>
-      <span class="p p-Indicator">-</span> <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">julia-actions/setup-julia@v1</span>
-        <span class="nt">with</span><span class="p">:</span>
-          <span class="nt">version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ matrix.version }}</span>
-          <span class="nt">arch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ matrix.arch }}</span>
-      <span class="p p-Indicator">-</span> <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/cache@v1</span>
-        <span class="nt">env</span><span class="p">:</span>
-          <span class="nt">cache-name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cache-artifacts</span>
-        <span class="nt">with</span><span class="p">:</span>
-          <span class="nt">path</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">~/.julia/artifacts</span>
-          <span class="nt">key</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles(&#39;**/Project.toml&#39;) }}</span>
-          <span class="nt">restore-keys</span><span class="p">:</span> <span class="p p-Indicator">|</span>
-            <span class="no">${{ runner.os }}-test-${{ env.cache-name }}-</span>
-            <span class="no">${{ runner.os }}-test-</span>
-            <span class="no">${{ runner.os }}-</span>
-      <span class="p p-Indicator">-</span> <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-buildpkg@v1</span>
-      <span class="p p-Indicator">-</span> <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-runtest@v1</span>
-      <span class="p p-Indicator">-</span> <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-processcoverage@v1</span>
-      <span class="p p-Indicator">-</span> <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">codecov/codecov-action@v1</span>
-        <span class="nt">with</span><span class="p">:</span>
-          <span class="nt">file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">lcov.info</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CI</span><span class="w"></span>
+<span class="nt">on</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">push</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request</span><span class="w"></span>
+<span class="nt">jobs</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}</span><span class="w"></span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span><span class="w"></span>
+<span class="w">    </span><span class="nt">strategy</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">      </span><span class="nt">matrix</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">version</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1.6&#39;</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;nightly&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">os</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span><span class="w"></span>
+<span class="w">        </span><span class="nt">arch</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">x64</span><span class="w">          </span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/setup-julia@v1</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.version }}</span><span class="w"></span>
+<span class="w">          </span><span class="nt">arch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.arch }}</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/cache@v1</span><span class="w"></span>
+<span class="w">        </span><span class="nt">env</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">cache-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cache-artifacts</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/.julia/artifacts</span><span class="w"></span>
+<span class="w">          </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles(&#39;**/Project.toml&#39;) }}</span><span class="w"></span>
+<span class="w">          </span><span class="nt">restore-keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">            </span><span class="no">${{ runner.os }}-test-${{ env.cache-name }}-</span><span class="w"></span>
+<span class="w">            </span><span class="no">${{ runner.os }}-test-</span><span class="w"></span>
+<span class="w">            </span><span class="no">${{ runner.os }}-</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-buildpkg@v1</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-runtest@v1</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-processcoverage@v1</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codecov/codecov-action@v1</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lcov.info</span><span class="w"></span>
 </pre></div>
 </div>
 <p>This file provides the rules for continuous integration running on changes to this repository.  You will not need to modify it.</p>
@@ -641,25 +641,25 @@ be reflected in our <code class="docutils literal notranslate"><span class="pre"
 <a class="reference internal image-reference" href="../_images/vscode_add_package.png"><img alt="../_images/vscode_add_package.png" src="../_images/vscode_add_package.png" style="width: 100%;" /></a>
 </div>
 <p>After installing a large web of dependencies, this tells Julia to write the results of package operations to the activated <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> file, which should now include text such as</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[deps]</span>
-<span class="n">Expectations</span> <span class="o">=</span> <span class="s">&quot;2fe49d83-0758-5602-8f54-1f90ad0d522b&quot;</span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[deps]</span><span class="w"></span>
+<span class="n">Expectations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2fe49d83-0758-5602-8f54-1f90ad0d522b&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>From this point, anytime the project is activated, the <a class="reference external" href="https://github.com/QuantEcon/Expectations.jl">Expectations.jl</a> package will be available with <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">Expectations</span></code>.</p>
 <p>Furthermore, different projects could use different versions of this package.   We could add additional instructions on <a class="reference external" href="https://pkgdocs.julialang.org/dev/compatibility/">compatability</a> within the file if we choose.</p>
 <p>But almost more importantly, the <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> file now contains a complete snapshot of the particular <code class="docutils literal notranslate"><span class="pre">Expectations</span></code> package and every other dependency used in your project.</p>
 <p>For example, the following is an example snippet of one manifest here:</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[[Expectations]]</span>
-<span class="n">deps</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;Compat&quot;</span><span class="p">,</span> <span class="s">&quot;Distributions&quot;</span><span class="p">,</span> <span class="s">&quot;FastGaussQuadrature&quot;</span><span class="p">,</span> <span class="s">&quot;LinearAlgebra&quot;</span><span class="p">,</span> <span class="s">&quot;SpecialFunctions&quot;</span><span class="p">]</span>
-<span class="n">git-tree-sha1</span> <span class="o">=</span> <span class="s">&quot;0f906c5edffe266acbf471734ac942d4aa9b7235&quot;</span>
-<span class="n">uuid</span> <span class="o">=</span> <span class="s">&quot;2fe49d83-0758-5602-8f54-1f90ad0d522b&quot;</span>
-<span class="n">version</span> <span class="o">=</span> <span class="s">&quot;1.7.1&quot;</span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[[Expectations]]</span><span class="w"></span>
+<span class="n">deps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;Compat&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Distributions&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;FastGaussQuadrature&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LinearAlgebra&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SpecialFunctions&quot;</span><span class="p">]</span><span class="w"></span>
+<span class="n">git-tree-sha1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0f906c5edffe266acbf471734ac942d4aa9b7235&quot;</span><span class="w"></span>
+<span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2fe49d83-0758-5602-8f54-1f90ad0d522b&quot;</span><span class="w"></span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;1.7.1&quot;</span><span class="w"></span>
 
-<span class="k">[[FastGaussQuadrature]]</span>
-<span class="n">deps</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;LinearAlgebra&quot;</span><span class="p">,</span> <span class="s">&quot;SpecialFunctions&quot;</span><span class="p">,</span> <span class="s">&quot;StaticArrays&quot;</span><span class="p">]</span>
-<span class="n">git-tree-sha1</span> <span class="o">=</span> <span class="s">&quot;5829b25887e53fb6730a9df2ff89ed24baa6abf6&quot;</span>
-<span class="n">uuid</span> <span class="o">=</span> <span class="s">&quot;442a2c76-b920-505d-bb47-c5924d526838&quot;</span>
-<span class="n">version</span> <span class="o">=</span> <span class="s">&quot;0.4.7&quot;</span>
+<span class="k">[[FastGaussQuadrature]]</span><span class="w"></span>
+<span class="n">deps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;LinearAlgebra&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SpecialFunctions&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;StaticArrays&quot;</span><span class="p">]</span><span class="w"></span>
+<span class="n">git-tree-sha1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;5829b25887e53fb6730a9df2ff89ed24baa6abf6&quot;</span><span class="w"></span>
+<span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;442a2c76-b920-505d-bb47-c5924d526838&quot;</span><span class="w"></span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0.4.7&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>This shows that that the current manifest has:</p>

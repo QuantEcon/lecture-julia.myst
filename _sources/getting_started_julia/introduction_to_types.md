@@ -483,12 +483,13 @@ The code works, and is equivalent in performance to a `NamedTuple`, but is more 
 
 There is no way to avoid learning parametric types to achieve high performance code.
 
-However, the other issue where constructor arguments are error-prone, can be remedied with the `Parameters.jl` library.
+However, the other issue where constructor arguments are error-prone can be
+remedied with the `@kwdef` macro from `Base`.
 
 ```{code-cell} julia
-using Parameters
+using Base: @kwdef
 
-@with_kw  struct Foo5
+@kwdef struct Foo5
     a::Float64 = 2.0     # adds default value
     b::Int64
     c::Vector{Float64}
