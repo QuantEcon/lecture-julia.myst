@@ -338,7 +338,7 @@ using Test
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using Plots, Parameters
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia

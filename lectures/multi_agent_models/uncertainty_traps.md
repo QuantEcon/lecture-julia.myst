@@ -232,7 +232,7 @@ using Test, Random
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using DataFrames, Parameters, Plots
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia

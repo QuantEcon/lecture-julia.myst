@@ -27,29 +27,38 @@ kernelspec:
 This troubleshooting page is to help ensure you software environment is setup correctly
 to run this lecture set locally on your machine.
 
+## Resetting your Lectures
+
+Using VS Code, you can easily revert back individual lectures, all of the lectures, or get updated versions of the lecture notes.
+
+See the lecture on [setting up your environment](reset_notebooks) for more.
+
+If the `Project.toml` or `Manifest.toml` files are modified, then you may want to redo the [instantiation](install_packages) step to ensure you have the correct versions.
+
+
+(reset_julia)=
 ## Fixing Your Local Environment
 
-To set up a standard desktop environment, you can run the instructions in our [local setup lecture](https://julia.quantecon.org/getting_started_julia/getting_started.html#Desktop-Installation-of-Julia-and-Jupyter).
+If packages are misbehaving, you may want to simply [reset the lectures](reset_notebooks) or at least the `Project.toml` and `Manifest.toml` files from the lecture notes, and then redo the [instantiation](install_packages) step  This will fix nearly every problem.
 
-If you already have, make sure to try deleting your `.julia` directory (the "user depot," where packages are stored) and re-running the lectures.
+However, if you are still having issues you could delete the entire `.julia` directory for your users, and then redo the installation of packages as well as `] add IJulia`.  It is fast for recent versions of Julia.
 
-You can find this directory by running `DEPOT_PATH[1]` in a Julia REPL.
+The directory  is located in your user directory (e.g. `~/.julia` on MacOS and Linux, and `C:\Users\YOURUSERNAME\.julia` on Windows) or you can find this directory by running `DEPOT_PATH[1]` in a Julia REPL.
 
 ## Upgrading Julia
 
-See the {ref}`lecture section <upgrading_julia>` on getting vscode and Jupyter working with a new version.
+You should be able to upgrade Julia by simply
+- Installing the latest release from the [Julia website](https://julialang.org/downloads/).
+- Uninstalling your old release (so that the VS Code extension only uses the newest version)
+- And, finally, you will need to redo the `] add IJulia` [installation step](intro_repl) to ensure that Jupyter knows how to find the new version.
 
-## Resetting a JupyterHub Lecture Set
-
-The lectures are delivered to JupyterHubs using `nbgitpuller`.
-
-To reset a single notebook, simply delete it and click the relevant link again.
-
-To reset your whole lecture set, run `rm -rf lecture-julia.notebooks` in the Terminal (after `cd`-ing to where they're downloaded, which is usually the root) and click any lecture's link again.
+```{warning}
+While upgrading Julia will typically work with the notebooks, there may be upgrades where a particular lecture has problems.  Make sure that you have [updated your notebooks](reset_notebooks) in case bug fixes were made, and post an issue to the  [GitHub source for these lectures](https://github.com/QuantEcon/lecture-julia.myst/issues).
+```
 
 ## Reporting an Issue
 
-One way to give feedback is to raise an issue through our [issue tracker](https://github.com/QuantEcon/lecture-source-py/issues).
+One way to give feedback is to raise an issue through our [issue tracker](https://github.com/QuantEcon/lecture-julia.myst/issues).
 
 Please be as specific as possible.  Tell us where the problem is and as much
 detail about your local set up as you can provide.

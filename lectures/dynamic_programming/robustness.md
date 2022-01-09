@@ -934,7 +934,7 @@ using Test
 
 ```{code-cell} julia
 using QuantEcon, Plots, LinearAlgebra, Interpolations
-gr(fmt = :png);
+
 
 # model parameters
 a_0 = 100

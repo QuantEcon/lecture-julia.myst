@@ -223,7 +223,7 @@ using Test
 
 ```{code-cell} julia
 using QuantEcon, Plots, Random
-gr(fmt = :png);
+
 Random.seed!(42) # For reproducible results.
 
 n = 40              # Data size

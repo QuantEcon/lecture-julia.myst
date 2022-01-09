@@ -34,8 +34,8 @@ This is an essential sub-problem for many representative macroeconomic models
 * {cite}`Huggett1993`
 * etc.
 
-It is related to the decision problem in the {doc}`stochastic optimal growth
-model <../dynamic_programming/optgrowth>` and yet differs in important ways.
+It is related to the decision problem in the {doc}`stochastic optimal growth model <../dynamic_programming/optgrowth>` 
+and yet differs in important ways.
 
 For example, the choice problem for the agent includes an additive income term that leads to an occasionally binding constraint.
 
@@ -378,7 +378,7 @@ using Test
 using LinearAlgebra, Statistics
 using BenchmarkTools, Optim, Parameters, Plots, QuantEcon, Random
 using Optim: converged, maximum, maximizer, minimizer, iterations
-gr(fmt = :png);
+
 ```
 
 ```{code-cell} julia

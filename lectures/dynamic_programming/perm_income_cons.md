@@ -328,7 +328,7 @@ using Test
 ```{code-cell} julia
 using QuantEcon, LinearAlgebra
 using Plots
-gr(fmt=:png);
+
 
 # Set parameters
 α, β, ρ1, ρ2, σ = 10.0, 0.95, 0.9, 0.0, 1.0

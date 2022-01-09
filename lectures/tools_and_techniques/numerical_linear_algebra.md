@@ -720,7 +720,7 @@ This provides the combined Markov chain for the $(i,j)$ process.  To see the spa
 
 ```{code-cell} julia
 using Plots
-gr(fmt = :png);
+
 spy(L, markersize = 10)
 ```
 
@@ -764,7 +764,7 @@ As with the discrete-time Markov chains, a key question is whether CTMCs are red
 is isomorphic to determining whether the directed graph of the Markov chain is [strongly connected](https://en.wikipedia.org/wiki/Strongly_connected_component).
 
 ```{code-cell} julia
-using LightGraphs
+using Graphs
 α = 0.1
 N = 6
 Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
