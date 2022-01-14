@@ -1435,6 +1435,6 @@ vt_leader[1] + vt_follower[1] - 2*vt_MPE[1]
 ---
 tags: [remove-cell]
 ---
-@test round(vt_leader[1] + vt_follower[1] - 2*vt_MPE[1], digits = 4) == -3.9708
+@test round(vt_leader[1] + vt_follower[1] - 2*vt_MPE[1], digits = 4) == -3.9707
 ```
 
