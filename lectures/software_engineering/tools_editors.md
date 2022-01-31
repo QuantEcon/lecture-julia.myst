@@ -129,7 +129,7 @@ Because the REPL and the files are synchronized, you can modify functions and si
 Next we will go through simple use of the plotting and package management.
 
 ```{note}
-VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to `(@v1.6) pkg>` rather than `(hello_world) pkg >` then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose `] activate .`.
+VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to `(@v1.7) pkg>` rather than `(hello_world) pkg >` then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose `] activate .`.
 
 You can always see the current package location and details with `] st`.  See [Julia Environments](jl_packages) for more details.
 ```
@@ -238,8 +238,8 @@ The most important choice is the `--project` toggle which determines whether you
 
 To emphasize this point, this is an example of the `]st ` showing the global environment has only the bare minimum of packages installed.  With this workflow, all other packages are installed only when a given project is activated.
 ```{code-block} none
-(@v1.6) pkg> st
-      Status `C:\Users\jesse\.julia\environments\v1.6\Project.toml`
+(@v1.7) pkg> st
+      Status `C:\Users\jesse\.julia\environments\v1.7\Project.toml`
 [7073ff75] IJulia v1.23.2
 [14b8a8f1] PkgTemplates v0.7.18
 [295af30f] Revise v3.1.19

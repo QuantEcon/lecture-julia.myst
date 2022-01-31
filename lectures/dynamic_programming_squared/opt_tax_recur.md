@@ -1711,7 +1711,7 @@ taxpolicy = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 2)[4] for B_ in B_vec]...
 interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in B_vec]...)')
 
 titles = ["Tax Rate" "Gross Interest Rate"]
-labels = [["Time , t = 0", "Time , t >= 0"], ""]
+labels = [["Time , t = 0" "Time , t >= 0"], ""]
 plots = plot(layout=(2,1), size =(700,600))
 for (i, series) in enumerate((taxpolicy, interest_rate))
     plot!(plots[i], B_vec, series, linewidth=2, label=labels[i])
