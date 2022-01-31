@@ -399,6 +399,12 @@
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(1) = Int64
+typeof(1.0) = Float64
+</pre></div>
+</div>
+</div>
 </div>
 <p>The hard-coded values <code class="docutils literal notranslate"><span class="pre">1</span></code> and <code class="docutils literal notranslate"><span class="pre">1.0</span></code> are called literals in a programming
 language, and the compiler deduces their types (<code class="docutils literal notranslate"><span class="pre">Int64</span></code> and <code class="docutils literal notranslate"><span class="pre">Float64</span></code> respectively in the example above).</p>
@@ -407,6 +413,11 @@ language, and the compiler deduces their types (<code class="docutils literal no
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Int64
 </pre></div>
 </div>
 </div>
@@ -421,6 +432,12 @@ language, and the compiler deduces their types (<code class="docutils literal no
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="mi">1</span><span class="nb">im</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(1.0 + 1im) = ComplexF64
+typeof(ones(2, 2)) = Matrix{Float64}
 </pre></div>
 </div>
 </div>
@@ -447,6 +464,14 @@ language, and the compiler deduces their types (<code class="docutils literal no
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x) = Tuple{Int64, Float64, String}
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tuple{Int64, Float64, String}
+</pre></div>
+</div>
+</div>
 </div>
 <p>In this case, <code class="docutils literal notranslate"><span class="pre">Tuple</span></code> is the parametric type, and the three parameters are a list of the types of each value.</p>
 <p>For a named tuple</p>
@@ -457,12 +482,25 @@ language, and the compiler deduces their types (<code class="docutils literal no
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x) = NamedTuple{(:a, :b, :c), Tuple{Int64, Float64, String}}
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>NamedTuple{(:a, :b, :c), Tuple{Int64, Float64, String}}
+</pre></div>
+</div>
+</div>
 </div>
 <p>The parametric <code class="docutils literal notranslate"><span class="pre">NamedTuple</span></code> type contains two parameters: first a list of names for each field of the tuple, and second the underlying <code class="docutils literal notranslate"><span class="pre">Tuple</span></code> type to store the values.</p>
 <p>Anytime a value is prefixed by a colon, as in the <code class="docutils literal notranslate"><span class="pre">:a</span></code> above, the type is <code class="docutils literal notranslate"><span class="pre">Symbol</span></code> – a special kind of string used by the compiler.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">typeof</span><span class="p">(</span><span class="ss">:a</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Symbol
 </pre></div>
 </div>
 </div>
@@ -481,6 +519,11 @@ value via the name.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x) = Int64
+</pre></div>
+</div>
+</div>
 </div>
 <p>Thus, <code class="docutils literal notranslate"><span class="pre">x</span></code> is just a symbol bound to a value of type <code class="docutils literal notranslate"><span class="pre">Int64</span></code>.</p>
 <p>We can <em>rebind</em> the symbol <code class="docutils literal notranslate"><span class="pre">x</span></code> to any other value, of the same type or otherwise.</p>
@@ -490,11 +533,21 @@ value via the name.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>42.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>Now <code class="docutils literal notranslate"><span class="pre">x</span></code> “points to” another value, of type <code class="docutils literal notranslate"><span class="pre">Float64</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Float64
 </pre></div>
 </div>
 </div>
@@ -530,6 +583,14 @@ help us organize and work with related concrete types.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Float64 &lt;: Real = true
+Int64 &lt;: Real = true
+Complex{Float64} &lt;: Real = false
+Array &lt;: Real = false
+</pre></div>
+</div>
+</div>
 </div>
 <p>In the above, both <code class="docutils literal notranslate"><span class="pre">Float64</span></code> and <code class="docutils literal notranslate"><span class="pre">Int64</span></code> are <strong>subtypes</strong> of <code class="docutils literal notranslate"><span class="pre">Real</span></code>, whereas the <code class="docutils literal notranslate"><span class="pre">Complex</span></code> numbers are not.</p>
 <p>They are, however, all subtypes of <code class="docutils literal notranslate"><span class="pre">Number</span></code></p>
@@ -542,11 +603,24 @@ help us organize and work with related concrete types.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Real &lt;: Number = true
+Float64 &lt;: Number = true
+Int64 &lt;: Number = true
+Complex{Float64} &lt;: Number = true
+</pre></div>
+</div>
+</div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">Number</span></code> in turn is a subtype of <code class="docutils literal notranslate"><span class="pre">Any</span></code>, which is a parent of all types.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="kt">Number</span> <span class="o">&lt;:</span> <span class="kt">Any</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
 </pre></div>
 </div>
 </div>
@@ -563,12 +637,23 @@ help us organize and work with related concrete types.</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Int64 &lt;: Signed &lt;: Integer &lt;: Real &lt;: Number &lt;: Any
+</pre></div>
+</div>
+</div>
 </div>
 <p>And the <code class="docutils literal notranslate"><span class="pre">subtypes</span></code> which gives a list of the available subtypes for any packages or code currently loaded</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">subtypes</span><span class="p">(</span><span class="kt">Real</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">subtypes</span><span class="p">(</span><span class="kt">AbstractFloat</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>subtypes(Real) = Any[AbstractFloat, AbstractIrrational, Integer, Rational]
+subtypes(AbstractFloat) = Any[BigFloat, Float16, Float32, Float64]
 </pre></div>
 </div>
 </div>
@@ -590,6 +675,15 @@ but much of Julia’s performance gains and generality of notation comes from it
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x1) = Vector{Int64}
+typeof(x2) = Vector{Float64}
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Vector{Float64} (alias for Array{Float64, 1})
+</pre></div>
+</div>
+</div>
 </div>
 <p>These return <code class="docutils literal notranslate"><span class="pre">Array{Int64,1}</span></code> and <code class="docutils literal notranslate"><span class="pre">Array{Float64,1}</span></code> respectively, which the compiler is able to infer from the right hand side of the expressions.</p>
 <p>Given the information on the type, the compiler can work through the sequence of expressions to infer other types.</p>
@@ -603,6 +697,14 @@ but much of Julia’s performance gains and generality of notation comes from it
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Int64}:
+ 2
+ 4
+ 6
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="good-practices-for-functions-and-variable-types">
 <h3><span class="section-number">5.4.1. </span>Good Practices for Functions and Variable Types<a class="headerlink" href="#good-practices-for-functions-and-variable-types" title="Permalink to this headline">¶</a></h3>
@@ -612,6 +714,14 @@ the compiler can always deduce a single type from any function or expression.</p
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="s">&quot;test&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>  <span class="c"># typically poor style</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Any}:
+ 1.0
+  &quot;test&quot;
+ 1
 </pre></div>
 </div>
 </div>
@@ -632,6 +742,12 @@ the compiler can always deduce a single type from any function or expression.</p
 
 <span class="nd">@show</span> <span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">f</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f(1) = 1.0
+f(-1) = 0
 </pre></div>
 </div>
 </div>
@@ -659,6 +775,13 @@ the compiler can always deduce a single type from any function or expression.</p
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
+  9.1
+ 14.3
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -669,6 +792,13 @@ the compiler can always deduce a single type from any function or expression.</p
 <span class="k">end</span>
 
 <span class="n">val</span> <span class="o">=</span> <span class="n">f2</span><span class="p">([</span><span class="mf">0.1</span><span class="p">;</span> <span class="mf">2.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span> <span class="mf">2.0</span><span class="p">;</span> <span class="mf">3.0</span> <span class="mf">4.0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
+  9.1
+ 14.3
 </pre></div>
 </div>
 </div>
@@ -684,6 +814,20 @@ the compiler can always deduce a single type from any function or expression.</p
 
 <span class="c"># f2([0.1; 2.0], [1 2; 3 4]) # not a `Float64`</span>
 <span class="c"># f2([0.1; 2.0], Diagonal([1.0, 2.0])) # not a `Matrix{Float64}`</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f([0.1; 2.0], [1 2; 3 4]) = [9.1, 14.3]
+f([0.1; 2.0], Diagonal([1.0, 2.0])) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[5.1, 10.0]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
+  5.1
+ 10.0
 </pre></div>
 </div>
 </div>
@@ -744,6 +888,14 @@ but you will eventually need to be able to use code that creates its own types.<
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(foo) = Foo
+foo.a = 2.0
+foo.b = 3
+foo.c = [1.0, 2.0, 3.0]
+</pre></div>
+</div>
+</div>
 </div>
 <p>You will notice two differences above for the creation of a <code class="docutils literal notranslate"><span class="pre">struct</span></code> compared to our use of <code class="docutils literal notranslate"><span class="pre">NamedTuple</span></code>.</p>
 <ul class="simple">
@@ -792,6 +944,15 @@ be unnecessarily constraining what is allowed</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f(foo) = 11.0
+f(foo_nt) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>11.0
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="declaring-parametric-types-advanced">
@@ -816,6 +977,14 @@ be unnecessarily constraining what is allowed</p>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(foo) = Foo3{Int64, Int64, Adjoint{Float64, Vector{Float64}}}
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>11.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>Of course, this is probably too flexible, and the <code class="docutils literal notranslate"><span class="pre">f</span></code> function might not work on an arbitrary set of <code class="docutils literal notranslate"><span class="pre">a,</span> <span class="pre">b,</span> <span class="pre">c</span></code>.</p>
 <p>You could constrain the types based on the abstract parent type using the <code class="docutils literal notranslate"><span class="pre">&lt;:</span></code> operator</p>
@@ -829,6 +998,14 @@ be unnecessarily constraining what is allowed</p>
 <span class="n">foo</span> <span class="o">=</span> <span class="n">Foo4</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>  <span class="c"># no problem, and high performance</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 <span class="n">f</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(foo) = Foo4{Int64, Int64, Adjoint{Float64, Vector{Float64}}}
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>11.0
 </pre></div>
 </div>
 </div>
@@ -848,6 +1025,7 @@ remedied with the <code class="docutils literal notranslate"><span class="pre">&
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Base</span><span class="o">:</span> <span class="nd">@kwdef</span>
+<span class="k">using</span> <span class="n">Parameters</span>
 
 <span class="nd">@kwdef</span> <span class="k">struct</span> <span class="kt">Foo5</span>
     <span class="n">a</span><span class="o">::</span><span class="kt">Float64</span> <span class="o">=</span> <span class="mf">2.0</span>     <span class="c"># adds default value</span>
@@ -867,6 +1045,15 @@ remedied with the <code class="docutils literal notranslate"><span class="pre">&
 <span class="k">end</span>
 
 <span class="n">f</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>foo = Foo5(0.1, 2, [1.0, 2.0, 3.0])
+foo2 = Foo5(2.0, 2, [1.0, 2.0, 3.0])
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8.1
 </pre></div>
 </div>
 </div>
@@ -917,6 +1104,14 @@ and many more packages – including ones that have not even been written yet.</
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
+ 6.0
+ 7.0
+ 3.1
+</pre></div>
+</div>
+</div>
 </div>
 <ul class="simple">
 <li><p>Preallocate related vectors with <code class="docutils literal notranslate"><span class="pre">similar</span></code> where possible, and use <code class="docutils literal notranslate"><span class="pre">eltype</span></code> or <code class="docutils literal notranslate"><span class="pre">typeof</span></code>. This is important when using Multiple Dispatch given the different input types the function can call</p></li>
@@ -935,6 +1130,13 @@ and many more packages – including ones that have not even been written yet.</
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{BigInt}:
+ 1
+ 4
+</pre></div>
+</div>
+</div>
 </div>
 <ul class="simple">
 <li><p>Use <code class="docutils literal notranslate"><span class="pre">typeof</span></code> or <code class="docutils literal notranslate"><span class="pre">eltype</span></code> to declare a type</p></li>
@@ -943,6 +1145,12 @@ and many more packages – including ones that have not even been written yet.</
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span> <span class="n">typeof</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
 <span class="nd">@show</span> <span class="n">eltype</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof([1.0, 2.0, 3.0]) = Vector{Float64}
+eltype([1.0, 2.0, 3.0]) = Float64
 </pre></div>
 </div>
 </div>
@@ -956,6 +1164,14 @@ and many more packages – including ones that have not even been written yet.</
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="kt">Int64</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="kt">Int64</span><span class="p">,</span> <span class="mi">3</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(ones(3)) = Vector{Float64}
+typeof(ones(Int64, 3)) = Vector{Int64}
+typeof(zeros(3)) = Vector{Float64}
+typeof(zeros(Int64, 3)) = Vector{Int64}
 </pre></div>
 </div>
 </div>
@@ -978,6 +1194,17 @@ and many more packages – including ones that have not even been written yet.</
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(1) = Int64
+typeof(1.0) = Float64
+typeof(BigFloat(1.0)) = BigFloat
+typeof(one(BigFloat)) = BigFloat
+typeof(zero(BigFloat)) = BigFloat
+typeof(one(x)) = BigFloat
+typeof(zero(x)) = BigFloat
+</pre></div>
+</div>
+</div>
 </div>
 <p>This last example is a subtle, because of something called <a class="reference external" href="https://docs.julialang.org/en/v1/manual/conversion-and-promotion/#Promotion-1">type promotion</a></p>
 <ul class="simple">
@@ -993,6 +1220,11 @@ and many more packages – including ones that have not even been written yet.</
 <span class="n">x</span> <span class="o">=</span> <span class="kt">BigFloat</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>  <span class="c"># this has &quot;promoted&quot; the `1.0` to a `BigFloat`</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(g(x)) = BigFloat
 </pre></div>
 </div>
 </div>
@@ -1026,6 +1258,14 @@ and many more packages – including ones that have not even been written yet.</
 
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">g3</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">g3</span><span class="p">(</span><span class="n">x2</span><span class="p">));</span>  <span class="c"># type stable</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(g2(x)) = BigFloat
+typeof(g2(x2)) = Nothing
+typeof(g3(x)) = BigFloat
+typeof(g3(x2)) = Nothing
 </pre></div>
 </div>
 </div>
@@ -1093,6 +1333,13 @@ all variables in the code to reflect it.</p></li>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>abs(-1) = 1
+abs(-1.0) = 1.0
+abs(0.0 - 1.0im) = 1.0
+</pre></div>
+</div>
+</div>
 </div>
 <p>In all of these cases, the <code class="docutils literal notranslate"><span class="pre">abs</span></code> function has specialized code depending on the type passed in.</p>
 <p>To do this, a function specifies different <strong>methods</strong> which operate on a particular set of types.</p>
@@ -1118,6 +1365,15 @@ all variables in the code to reflect it.</p></li>
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ourabs(-1) = 1
+ourabs(-1.0) = 1.0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ourabs(1.0 - 2.0im) = 2.23606797749979
+</pre></div>
+</div>
+</div>
 </div>
 <p>Note that in the above, <code class="docutils literal notranslate"><span class="pre">x</span></code> works for any type of <code class="docutils literal notranslate"><span class="pre">Real</span></code>, including <code class="docutils literal notranslate"><span class="pre">Int64</span></code>, <code class="docutils literal notranslate"><span class="pre">Float64</span></code>, and ones you may not have realized exist</p>
 <div class="cell docutils container">
@@ -1125,6 +1381,12 @@ all variables in the code to reflect it.</p></li>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="o">//</span><span class="mi">3</span>  <span class="c"># `Rational` number, -2/3</span>
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">ourabs</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x) = Rational{Int64}
+ourabs(x) = 2//3
 </pre></div>
 </div>
 </div>
@@ -1156,6 +1418,16 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x) = StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}}
+typeof(x_2) = StepRange{Int64, Int64}
+supertype(typeof(x)) = AbstractRange{Float64}
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>AbstractRange{Float64}
+</pre></div>
+</div>
+</div>
 </div>
 <p>To see the entire tree about a particular type, use <code class="docutils literal notranslate"><span class="pre">show_supertypes</span></code>.</p>
 <div class="cell docutils container">
@@ -1164,10 +1436,23 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}} &lt;: AbstractRange{Float64} &lt;: AbstractVector{
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Float64} &lt;: Any
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">show_supertypes</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">x_2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>StepRange{Int64, Int64} &lt;: OrdinalRange{Int64, Int64} &lt;: AbstractRange{Int64} &lt;: AbstractVector{Int64} &lt;: Any
 </pre></div>
 </div>
 </div>
@@ -1180,6 +1465,12 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x) &lt;: AbstractRange = true
+typeof(x_2) &lt;: AbstractRange = true
+</pre></div>
+</div>
+</div>
 </div>
 <p>While you may not know the exact concrete type, any <code class="docutils literal notranslate"><span class="pre">AbstractRange</span></code> has an informal set of operations that are available.</p>
 <div class="cell docutils container">
@@ -1188,6 +1479,14 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 <span class="nd">@show</span> <span class="n">maximum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">step</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>minimum(x) = 0.0
+maximum(x) = 1.0
+length(x) = 20
+step(x) = 0.05263157894736842
 </pre></div>
 </div>
 </div>
@@ -1205,10 +1504,23 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(f_x) = Vector{Float64}
+supertype(typeof(f_x)) = DenseVector{Float64}
+supertype(supertype(typeof(f_x))) = AbstractVector{Float64}
+length(f_x) = 20
+</pre></div>
+</div>
+</div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">show_supertypes</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">f_x</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Vector{Float64} &lt;: DenseVector{Float64} &lt;: AbstractVector{Float64} &lt;: Any
 </pre></div>
 </div>
 </div>
@@ -1229,6 +1541,11 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">slopes</span><span class="p">(</span><span class="n">f_x</span><span class="o">::</span><span class="kt">AbstractVector</span><span class="p">,</span> <span class="n">x</span><span class="o">::</span><span class="kt">AbstractRange</span><span class="p">)</span> <span class="o">=</span> <span class="n">diff</span><span class="p">(</span><span class="n">f_x</span><span class="p">)</span> <span class="o">/</span> <span class="n">step</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>slopes (generic function with 1 method)
 </pre></div>
 </div>
 </div>
@@ -1255,6 +1572,8 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<img alt="../_images/introduction_to_types_94_0.svg" src="../_images/introduction_to_types_94_0.svg" /></div>
 </div>
 <p>Consider a variation where we pass a function instead of an <code class="docutils literal notranslate"><span class="pre">AbstractArray</span></code></p>
 <div class="cell docutils container">
@@ -1265,6 +1584,13 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;:</span> <span class="kt">AbstractRange</span>
 <span class="n">q_slopes_x</span> <span class="o">=</span> <span class="n">slopes</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>  <span class="c"># use slopes(f::Function, x)</span>
 <span class="nd">@show</span> <span class="n">q_slopes_x</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(q) &lt;: Function = true
+typeof(x) &lt;: AbstractRange = true
+q_slopes_x[1] = 0.9983341664682815
 </pre></div>
 </div>
 </div>
@@ -1280,6 +1606,15 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 <span class="nd">@show</span> <span class="n">typeof</span><span class="p">(</span><span class="n">x_array</span><span class="p">)</span> <span class="o">&lt;:</span> <span class="kt">AbstractArray</span>
 <span class="n">q_slopes_x</span> <span class="o">=</span> <span class="n">slopes</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">x_array</span><span class="p">)</span>
 <span class="nd">@show</span> <span class="n">q_slopes_x</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x_array) &lt;: AbstractArray = true
+q_slopes_x[1] = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9983341664682815
 </pre></div>
 </div>
 </div>
@@ -1311,6 +1646,20 @@ compared to the following for a dense array for <code class="docutils literal no
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  80.827 ns (1 allocation: 112 bytes)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  725.794 ns (4 allocations: 1.95 KiB)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×3 Matrix{Float64}:
+ -3.17274  -2.94685    5.08063
+ 17.0614    5.89449  -15.7807
+  0.36825   1.81679   -1.07683
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="exercise-2">
@@ -1326,6 +1675,16 @@ compared to the following for a dense array for <code class="docutils literal no
 
 <span class="n">gain</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span> <span class="n">G</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span> <span class="o">=</span> <span class="n">Σ</span> <span class="o">*</span> <span class="n">G</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="n">G</span> <span class="o">*</span> <span class="n">Σ</span> <span class="o">*</span> <span class="n">G</span><span class="o">&#39;</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span>
 <span class="nd">@btime</span> <span class="n">gain</span><span class="p">(</span><span class="o">$</span><span class="n">Σ</span><span class="p">,</span> <span class="o">$</span><span class="n">G</span><span class="p">,</span> <span class="o">$</span><span class="n">R</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  848.936 ns (9 allocations: 1.91 KiB)
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:
+ 0.666667     1.11022e-16
+ 1.11022e-16  0.666667
 </pre></div>
 </div>
 </div>
@@ -1345,6 +1704,18 @@ compared to the following for a dense array for <code class="docutils literal no
 <span class="n">p′</span> <span class="o">=</span> <span class="n">derivative</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>   <span class="c"># gives the derivative of p, another polynomial</span>
 <span class="nd">@show</span> <span class="n">p</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span> <span class="n">p′</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>  <span class="c"># call like a function</span>
 <span class="nd">@show</span> <span class="n">roots</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>   <span class="c"># find roots such that p(x) = 0</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>p = Polynomial(2 - 5*x + 2*x^2)
+(p(0.1), p′(0.1)) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1.52, -4.6)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>roots(p) = [0.5, 2.0]
 </pre></div>
 </div>
 </div>
@@ -1398,6 +1769,11 @@ library for numerical integration such as <a class="reference external" href="ht
 </pre></div>
 </div>
 </div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(0.3333333333333333, 5.551115123125783e-17)
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="exercise-6-advanced">
@@ -1425,6 +1801,15 @@ follow the <a class="reference internal" href="#generic-tips-tricks"><span class
 <span class="nd">@show</span> <span class="n">f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">)</span>
 
 <span class="n">Df</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f(0.0, 3.0) = 1.5
+f(0.0, 3.1) = 1.55
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.5
 </pre></div>
 </div>
 </div>

@@ -488,6 +488,7 @@ remedied with the `@kwdef` macro from `Base`.
 
 ```{code-cell} julia
 using Base: @kwdef
+using Parameters
 
 @kwdef struct Foo5
     a::Float64 = 2.0     # adds default value

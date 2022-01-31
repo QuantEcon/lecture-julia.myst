@@ -610,7 +610,8 @@ value <span class="math notranslate nohighlight">\(Tw(y)\)</span> for every <spa
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
-<span class="k">using</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">NLsolve</span><span class="p">,</span> <span class="n">Optim</span><span class="p">,</span> <span class="n">Random</span>
+<span class="k">using</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">NLsolve</span><span class="p">,</span> <span class="n">Optim</span><span class="p">,</span> <span class="n">Random</span><span class="p">,</span> <span class="n">Parameters</span>
+<span class="k">using</span> <span class="n">Optim</span><span class="o">:</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">maximizer</span>
 </pre></div>
 </div>
 </div>
@@ -643,21 +644,19 @@ value <span class="math notranslate nohighlight">\(Tw(y)\)</span> for every <spa
 <p>Here’s a function that implements the Bellman operator using linear interpolation</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Optim</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">;</span><span class="n">p</span><span class="p">,</span> <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span>
+    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ξ</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">p</span> <span class="c"># unpack parameters</span>
+    <span class="n">w_func</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
 
-<span class="k">function</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">shocks</span><span class="p">;</span> <span class="n">compute_policy</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
-    <span class="n">w_func</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-    <span class="c"># objective for each grid point</span>
-    <span class="n">objectives</span> <span class="o">=</span> <span class="p">(</span><span class="n">c</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">mean</span><span class="p">(</span><span class="n">w_func</span><span class="o">.</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">.*</span> <span class="n">shocks</span><span class="p">))</span> <span class="k">for</span> <span class="n">y</span> <span class="k">in</span> <span class="n">grid</span><span class="p">)</span>
-    <span class="n">results</span> <span class="o">=</span> <span class="n">maximize</span><span class="o">.</span><span class="p">(</span><span class="n">objectives</span><span class="p">,</span> <span class="mf">1e-10</span><span class="p">,</span> <span class="n">grid</span><span class="p">)</span> <span class="c"># solver result for each grid point</span>
-
-    <span class="n">Tw</span> <span class="o">=</span> <span class="n">Optim</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">compute_policy</span>
-        <span class="n">σ</span> <span class="o">=</span> <span class="n">Optim</span><span class="o">.</span><span class="n">maximizer</span><span class="o">.</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Tw</span><span class="p">,</span> <span class="n">σ</span>
+    <span class="n">Tw</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="n">σ</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">y_val</span><span class="p">)</span> <span class="k">in</span> <span class="n">enumerate</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="c"># solve maximization for each point in y, using y itself as initial condition.</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">maximize</span><span class="p">(</span><span class="n">c</span> <span class="o">-&gt;</span> <span class="n">u</span><span class="p">(</span><span class="n">c</span><span class="p">;</span><span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="n">β</span> <span class="o">*</span> <span class="n">mean</span><span class="p">(</span><span class="n">w_func</span><span class="o">.</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">y_val</span> <span class="o">-</span> <span class="n">c</span><span class="p">;</span><span class="n">p</span><span class="p">)</span> <span class="o">.*</span> <span class="n">ξ</span><span class="p">)),</span> <span class="n">tol</span><span class="p">,</span> <span class="n">y_val</span><span class="p">)</span>
+        <span class="n">Tw</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">maximum</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">σ</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">maximizer</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
     <span class="k">end</span>
-
-    <span class="k">return</span> <span class="n">Tw</span>
+    <span class="k">return</span> <span class="p">(;</span><span class="n">w</span> <span class="o">=</span> <span class="n">Tw</span><span class="p">,</span> <span class="n">σ</span><span class="p">)</span> <span class="c"># returns named tuple of results</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -702,38 +701,33 @@ value <span class="math notranslate nohighlight">\(Tw(y)\)</span> for every <spa
 \sigma^*(y) = (1 - \alpha \beta ) y
 \]</div>
 <p>Let’s code this up now so we can test against it below</p>
+<p>In addition to the model parameters, we need a grid and some shock draws for Monte Carlo integration.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">α</span> <span class="o">=</span> <span class="mf">0.4</span>
-<span class="n">β</span> <span class="o">=</span> <span class="mf">0.96</span>
-<span class="n">μ</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">s</span> <span class="o">=</span> <span class="mf">0.1</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span> <span class="c"># for reproducible results</span>
+<span class="n">u</span><span class="p">(</span><span class="n">c</span><span class="p">;</span><span class="n">p</span><span class="p">)</span> <span class="o">=</span> <span class="n">log</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="c"># utility</span>
+<span class="n">f</span><span class="p">(</span><span class="n">k</span><span class="p">;</span><span class="n">p</span><span class="p">)</span> <span class="o">=</span> <span class="n">k</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">α</span> <span class="c"># deterministic part of production function</span>
+<span class="n">OptimalGrowthModel</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">α</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">β</span> <span class="o">=</span> <span class="mf">0.96</span><span class="p">,</span> <span class="n">μ</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+                  <span class="n">u</span> <span class="o">=</span> <span class="n">u</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="p">,</span> <span class="c"># defaults defined above</span>
+                  <span class="n">y</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">200</span><span class="p">),</span> <span class="c"># grid on y</span>
+                  <span class="n">ξ</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">μ</span> <span class="o">.+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">randn</span><span class="p">(</span><span class="mi">250</span><span class="p">))</span> <span class="c"># monte carlo shocks</span>
+<span class="p">)</span> <span class="c"># named tuples defaults</span>
 
-<span class="n">c1</span> <span class="o">=</span> <span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">β</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span>
-<span class="n">c2</span> <span class="o">=</span> <span class="p">(</span><span class="n">μ</span> <span class="o">+</span> <span class="n">α</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">α</span> <span class="o">*</span> <span class="n">β</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">α</span><span class="p">)</span>
-<span class="n">c3</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span>
-<span class="n">c4</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">β</span><span class="p">)</span>
-
-<span class="c"># Utility</span>
-<span class="n">u</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">=</span> <span class="n">log</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
-
-<span class="n">∂u∂c</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">c</span>
-
-<span class="c"># Deterministic part of production function</span>
-<span class="n">f</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">=</span> <span class="n">k</span><span class="o">^</span><span class="n">α</span>
-
-<span class="n">f′</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">=</span> <span class="n">α</span> <span class="o">*</span> <span class="n">k</span><span class="o">^</span><span class="p">(</span><span class="n">α</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-
-<span class="c"># True optimal policy</span>
-<span class="n">c_star</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span>
-
-<span class="c"># True value function</span>
-<span class="n">v_star</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">c1</span> <span class="o">+</span> <span class="n">c2</span> <span class="o">*</span> <span class="p">(</span><span class="n">c3</span> <span class="o">-</span> <span class="n">c4</span><span class="p">)</span> <span class="o">+</span> <span class="n">c4</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="c"># True value and policy function</span>
+<span class="k">function</span> <span class="n">v_star</span><span class="p">(</span><span class="n">y</span><span class="p">;</span><span class="n">p</span><span class="p">)</span>
+    <span class="nd">@unpack</span> <span class="n">α</span><span class="p">,</span> <span class="n">μ</span><span class="p">,</span> <span class="n">β</span> <span class="o">=</span> <span class="n">p</span>
+    <span class="n">c1</span> <span class="o">=</span> <span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">β</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span>
+    <span class="n">c2</span> <span class="o">=</span> <span class="p">(</span><span class="n">μ</span> <span class="o">+</span> <span class="n">α</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">α</span> <span class="o">*</span> <span class="n">β</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">α</span><span class="p">)</span>
+    <span class="n">c3</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">β</span><span class="p">)</span>
+    <span class="n">c4</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">β</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">c1</span> <span class="o">+</span> <span class="n">c2</span> <span class="o">*</span> <span class="p">(</span><span class="n">c3</span> <span class="o">-</span> <span class="n">c4</span><span class="p">)</span> <span class="o">+</span> <span class="n">c4</span> <span class="o">*</span> <span class="n">log</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">c_star</span><span class="p">(</span><span class="n">y</span><span class="p">;</span><span class="n">p</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p</span><span class="o">.</span><span class="n">α</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v_star (generic function with 1 method)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>c_star (generic function with 1 method)
 </pre></div>
 </div>
 </div>
@@ -742,70 +736,26 @@ value <span class="math notranslate nohighlight">\(Tw(y)\)</span> for every <spa
 <div class="section" id="a-first-test">
 <h3><span class="section-number">31.3.4. </span>A First Test<a class="headerlink" href="#a-first-test" title="Permalink to this headline">¶</a></h3>
 <p>To test our code, we want to see if we can replicate the analytical solution numerically, using fitted value function iteration.</p>
-<p>We need a grid and some shock draws for Monte Carlo integration.</p>
-<div class="cell tag_hide-output docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Random</span>
-<span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span> <span class="c"># For reproducible results.</span>
-
-<span class="n">grid_max</span> <span class="o">=</span> <span class="mi">4</span>         <span class="c"># Largest grid point</span>
-<span class="n">grid_size</span> <span class="o">=</span> <span class="mi">200</span>      <span class="c"># Number of grid points</span>
-<span class="n">shock_size</span> <span class="o">=</span> <span class="mi">250</span>     <span class="c"># Number of shock draws in Monte Carlo integral</span>
-
-<span class="n">grid_y</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span>  <span class="n">grid_max</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">grid_size</span><span class="p">)</span>
-<span class="n">shocks</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">μ</span> <span class="o">.+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">randn</span><span class="p">(</span><span class="n">shock_size</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>250-element Vector{Float64}:
- 0.9459148849398621
- 0.9565345823000047
- 1.0027192242025453
- 0.9704956010607036
- 1.1945697871438186
- 0.8918207199793398
- 0.9542204178879119
- 1.0157368871364756
- 0.7678206507253439
- 1.10553677930401
- 1.1143130546469462
- 1.0188787833730228
- 1.0531807583673254
- ⋮
- 1.1356842079725662
- 0.9342861272767357
- 1.0738114910095522
- 1.1790891973465911
- 0.8727295180094444
- 1.178207590017872
- 0.8786717752250783
- 0.9408858224774184
- 0.9519046979380552
- 1.0076821490865555
- 1.016050068355998
- 1.045467266694226
-</pre></div>
-</div>
-</div>
-</div>
 <p>Now let’s do some tests.</p>
 <p>As one preliminary test, let’s see what happens when we apply our Bellman operator to the exact solution <span class="math notranslate nohighlight">\(v^*\)</span>.</p>
 <p>In theory, the resulting function should again be <span class="math notranslate nohighlight">\(v^*\)</span>.</p>
 <p>In practice we expect some small numerical error.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">v_star</span><span class="o">.</span><span class="p">(</span><span class="n">grid_y</span><span class="p">),</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">k</span><span class="o">^</span><span class="n">α</span><span class="p">,</span> <span class="n">shocks</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">OptimalGrowthModel</span><span class="p">()</span> <span class="c"># use all default parameters from named tuple</span>
+<span class="n">w_star</span> <span class="o">=</span> <span class="n">v_star</span><span class="o">.</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">;</span> <span class="n">p</span><span class="p">)</span>  <span class="c"># evaluate closed form value along grid</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">w_star</span><span class="p">;</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">w</span> <span class="c"># evaluate operator, access Tw results</span>
 
 <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">35</span><span class="p">,</span><span class="o">-</span><span class="mi">24</span><span class="p">))</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;T(v_star)&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">v_star</span><span class="p">,</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;v_star&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;T(v_star)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">w_star</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;v_star&quot;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomright</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/optgrowth_13_0.svg" src="../_images/optgrowth_13_0.svg" /></div>
+<img alt="../_images/optgrowth_9_0.svg" src="../_images/optgrowth_9_0.svg" /></div>
 </div>
 <p>The two functions are essentially indistinguishable, so we are off to a good start.</p>
 <p>Now let’s have a look at iterating with the Bellman operator, starting off
@@ -813,26 +763,26 @@ from an arbitrary initial condition.</p>
 <p>The initial condition we’ll start with is <span class="math notranslate nohighlight">\(w(y) = 5 \ln (y)\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">grid_y</span><span class="p">)</span>  <span class="c"># An initial condition -- fairly arbitrary</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>  <span class="c"># An initial condition -- fairly arbitrary</span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">35</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="n">extrema</span><span class="p">(</span><span class="n">grid_y</span><span class="p">)),</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">xlim</span> <span class="o">=</span> <span class="p">(</span><span class="n">extrema</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">)),</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">lb</span> <span class="o">=</span> <span class="s">&quot;initial condition&quot;</span>
-<span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">grid_y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">lb</span><span class="p">)</span>
+<span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">lb</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">k</span><span class="o">^</span><span class="n">α</span><span class="p">,</span> <span class="n">shocks</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">grid_y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">RGBA</span><span class="p">(</span><span class="n">i</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">;</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">w</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">RGBA</span><span class="p">(</span><span class="n">i</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
           <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
 <span class="k">end</span>
 
 <span class="n">lb</span> <span class="o">=</span> <span class="s">&quot;true value function&quot;</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">v_star</span><span class="p">,</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">lb</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">v_star</span><span class="o">.</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">;</span> <span class="n">p</span><span class="p">),</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">lb</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomright</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/optgrowth_15_0.svg" src="../_images/optgrowth_15_0.svg" /></div>
+<img alt="../_images/optgrowth_11_0.svg" src="../_images/optgrowth_11_0.svg" /></div>
 </div>
 <p>The figure shows</p>
 <ol class="simple">
@@ -844,8 +794,11 @@ from an arbitrary initial condition.</p>
 <p>We can write a function that computes the exact fixed point</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">solve_optgrowth</span><span class="p">(</span><span class="n">initial_w</span><span class="p">;</span> <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">500</span><span class="p">)</span>
-    <span class="n">fixedpoint</span><span class="p">(</span><span class="n">w</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">shocks</span><span class="p">),</span> <span class="n">initial_w</span><span class="p">)</span><span class="o">.</span><span class="n">zero</span> <span class="c"># gets returned</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">solve_optgrowth</span><span class="p">(</span><span class="n">initial_w</span><span class="p">;</span> <span class="n">p</span><span class="p">,</span> <span class="n">iterations</span> <span class="o">=</span> <span class="mi">500</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">show_trace</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span> 
+    <span class="n">results</span> <span class="o">=</span> <span class="n">fixedpoint</span><span class="p">(</span><span class="n">w</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">;</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">initial_w</span><span class="p">;</span> <span class="n">iterations</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">show_trace</span><span class="p">)</span> <span class="c"># Anderson iteration</span>
+    <span class="n">v_star</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">zero</span>
+    <span class="n">σ</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">zero</span><span class="p">;</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">σ</span>
+    <span class="k">return</span> <span class="p">(;</span><span class="n">v_star</span><span class="p">,</span> <span class="n">σ</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
 </div>
@@ -859,21 +812,27 @@ from an arbitrary initial condition.</p>
 <p>We can check our result by plotting it against the true value</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">initial_w</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">grid_y</span><span class="p">)</span>
-<span class="n">v_star_approx</span> <span class="o">=</span> <span class="n">solve_optgrowth</span><span class="p">(</span><span class="n">initial_w</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">initial_w</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+<span class="n">sol</span> <span class="o">=</span> <span class="n">solve_optgrowth</span><span class="p">(</span><span class="n">initial_w</span><span class="p">;</span><span class="n">p</span><span class="p">)</span>
+<span class="n">v_star_approx</span> <span class="o">=</span> <span class="n">sol</span><span class="o">.</span><span class="n">v_star</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Converged in </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> to an ||residuals||_∞ of </span><span class="si">$</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">residual_norm</span><span class="p">)</span><span class="s">&quot;</span><span class="p">)</span>
 
 <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">35</span><span class="p">,</span> <span class="o">-</span><span class="mi">24</span><span class="p">))</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">v_star_approx</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">v_star_approx</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span>
       <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;approximate value function&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">v_star</span><span class="p">,</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;true value function&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">v_star</span><span class="o">.</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">;</span><span class="n">p</span><span class="p">),</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;true value function&quot;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomright</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/optgrowth_20_0.svg" src="../_images/optgrowth_20_0.svg" /></div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged in 15 to an ||residuals||_∞ of 3.745135757071694e-9
+</pre></div>
 </div>
-<p>The figure shows that we are pretty much on the money.</p>
+<img alt="../_images/optgrowth_16_1.svg" src="../_images/optgrowth_16_1.svg" /></div>
+</div>
+<p>The figure shows that we are pretty much on the money</p>
+<p>Note that this converges in fewer than the 36 iterations printed above because it is using Anderson iteration - where the <span class="math notranslate nohighlight">\(m=0\)</span> parameter is naive fixed point iteration</p>
 </div>
 <div class="section" id="the-policy-function">
 <h3><span class="section-number">31.3.5. </span>The Policy Function<a class="headerlink" href="#the-policy-function" title="Permalink to this headline">¶</a></h3>
@@ -883,18 +842,14 @@ function we just calculated and then compute the corresponding greedy policy.</p
 above, is <span class="math notranslate nohighlight">\(\sigma(y) = (1 - \alpha \beta) y\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Tw</span><span class="p">,</span> <span class="n">σ</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">v_star_approx</span><span class="p">,</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">k</span><span class="o">^</span><span class="n">α</span><span class="p">,</span> <span class="n">shocks</span><span class="p">;</span>
-                         <span class="n">compute_policy</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
-<span class="n">cstar</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">α</span> <span class="o">*</span> <span class="n">β</span><span class="p">)</span> <span class="o">*</span> <span class="n">grid_y</span>
-
-<span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">grid_y</span><span class="p">,</span> <span class="n">σ</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;approximate policy function&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">cstar</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;true policy function&quot;</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">T</span><span class="p">(</span><span class="n">v_star_approx</span><span class="p">;</span> <span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">σ</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;approximate policy function&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">c_star</span><span class="o">.</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">;</span> <span class="n">p</span><span class="p">),</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;true policy function&quot;</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomright</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/optgrowth_22_0.svg" src="../_images/optgrowth_22_0.svg" /></div>
+<img alt="../_images/optgrowth_18_0.svg" src="../_images/optgrowth_18_0.svg" /></div>
 </div>
 <p>The figure shows that we’ve done a good job in this instance of approximating
 the true policy.</p>
@@ -914,8 +869,8 @@ the true policy.</p>
 <p>We have also dialed down the shocks a bit.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="mf">0.05</span>
-<span class="n">shocks</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">μ</span> <span class="o">.+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">randn</span><span class="p">(</span><span class="n">shock_size</span><span class="p">))</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p</span> <span class="o">=</span> <span class="n">OptimalGrowthModel</span><span class="p">(</span><span class="n">s</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span>
+<span class="n">p</span><span class="o">.</span><span class="n">ξ</span>
 </pre></div>
 </div>
 </div>
@@ -963,38 +918,35 @@ the true policy.</p>
 <p>Here’s one solution (assuming as usual that you’ve executed everything above)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">simulate_og</span><span class="p">(</span><span class="n">σ</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">ts_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">simulate_og</span><span class="p">(</span><span class="n">σ</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">ts_length</span><span class="p">)</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">ts_length</span><span class="p">)</span>
-    <span class="n">ξ</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">ts_length</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y0</span>
     <span class="k">for</span> <span class="n">t</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="p">(</span><span class="n">ts_length</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">σ</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span><span class="o">^</span><span class="n">α</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="n">μ</span> <span class="o">+</span> <span class="n">s</span> <span class="o">*</span> <span class="n">ξ</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">σ</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">]))</span><span class="o">^</span><span class="n">p</span><span class="o">.</span><span class="n">α</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">μ</span> <span class="o">+</span> <span class="n">p</span><span class="o">.</span><span class="n">s</span> <span class="o">*</span> <span class="n">randn</span><span class="p">())</span>
     <span class="k">end</span>
     <span class="k">return</span> <span class="n">y</span>
 <span class="k">end</span>
 
+<span class="n">β_vals</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span> <span class="mf">0.94</span> <span class="mf">0.98</span><span class="p">]</span>
+<span class="n">ts_length</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">y0</span> <span class="o">=</span> <span class="mf">0.1</span>
 <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">()</span>
 
-<span class="k">for</span> <span class="n">β</span> <span class="k">in</span> <span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.94</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">)</span>
-    <span class="n">Tw</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">grid_y</span><span class="p">)</span>
-    <span class="n">initial_w</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">grid_y</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">β</span> <span class="k">in</span> <span class="n">β_vals</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">OptimalGrowthModel</span><span class="p">(;</span><span class="n">β</span><span class="p">)</span> <span class="c"># change β from default</span>
+    <span class="n">initial_w</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+    <span class="n">sol</span> <span class="o">=</span> <span class="n">solve_optgrowth</span><span class="p">(</span><span class="n">initial_w</span><span class="p">;</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">σ_func</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">sol</span><span class="o">.</span><span class="n">σ</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">simulate_og</span><span class="p">(</span><span class="n">σ_func</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span><span class="n">y0</span><span class="p">,</span> <span class="n">ts_length</span><span class="p">)</span>
 
-    <span class="n">v_star_approx</span> <span class="o">=</span> <span class="n">fixedpoint</span><span class="p">(</span><span class="n">w</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">shocks</span><span class="p">),</span>
-                               <span class="n">initial_w</span><span class="p">)</span><span class="o">.</span><span class="n">zero</span>
-    <span class="n">Tw</span><span class="p">,</span> <span class="n">σ</span> <span class="o">=</span> <span class="n">T</span><span class="p">(</span><span class="n">v_star_approx</span><span class="p">,</span> <span class="n">grid_y</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">log</span><span class="p">,</span> <span class="n">k</span> <span class="o">-&gt;</span> <span class="n">k</span><span class="o">^</span><span class="n">α</span><span class="p">,</span> <span class="n">shocks</span><span class="p">,</span>
-                             <span class="n">compute_policy</span> <span class="o">=</span> <span class="nb">true</span><span class="p">)</span>
-    <span class="n">σ_func</span> <span class="o">=</span> <span class="n">LinearInterpolation</span><span class="p">(</span><span class="n">grid_y</span><span class="p">,</span> <span class="n">σ</span><span class="p">)</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">simulate_og</span><span class="p">(</span><span class="n">σ_func</span><span class="p">)</span>
-
-    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;beta = </span><span class="si">$β</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="mi">0</span><span class="o">:</span><span class="p">(</span><span class="n">ts_length</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">y</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;beta = </span><span class="si">$β</span><span class="s">&quot;</span><span class="p">)</span>
 <span class="k">end</span>
-
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomright</span><span class="p">)</span>
+<span class="n">plt</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/optgrowth_29_0.svg" src="../_images/optgrowth_29_0.svg" /></div>
+<img alt="../_images/optgrowth_24_0.svg" src="../_images/optgrowth_24_0.svg" /></div>
 </div>
 </div>
 </div>
