@@ -1414,8 +1414,8 @@ for t in 1:n
     vt_follower[t] = -yt_tilde[:, t]' * P̃ * yt_tilde[:, t];
 end
 
-plot([vt_MPE, vt_leader, vt_follower], labels = ["MPE" "Stackelberg leader"
-        "Stackelberg follower"], title = "MPE vs Stackelberg Values",
+plot([vt_MPE, vt_leader, vt_follower], labels = ["MPE" "Stackelberg leader" "Stackelberg follower"], 
+        title = "MPE vs Stackelberg Values",
         xlabel = "t")
 ```
 
