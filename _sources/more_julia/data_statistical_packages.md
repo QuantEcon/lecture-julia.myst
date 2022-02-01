@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.7
 ---
 
 (data_statistical_packages)=
@@ -150,7 +150,7 @@ One way to do an additional calculation with a `DataFrame` is to tuse the `@tran
 ```{code-cell} julia
 using DataFramesMeta
 f(x) = x^2
-df2 = @transform(df2, col2 = f.(:col1))
+df2 = @transform(df2, :col2 = f.(:col1))
 ```
 
 ### Categorical Data
