@@ -1286,7 +1286,6 @@ $$
 To evaluate the function
 
 ```{math}
-:nowrap:
 
 \begin{aligned}
 v(x) &=  -(Ax+ B u)'P(Ax+Bu) - u'Q u \\
@@ -1301,7 +1300,6 @@ For simplicity, denote by $S := (Q + B'PB)^{-1} B'PA$, then $u = -Sx$.
 Regarding the second term $- 2u'B'PAx$,
 
 ```{math}
-:nowrap:
 
 \begin{aligned}
 - 2u'B'PAx &= -2 x'S'B'PAx  \\
@@ -1315,7 +1313,6 @@ are symmetric.
 Regarding the third term $- u'(Q + B'PB) u$,
 
 ```{math}
-:nowrap:
 
 \begin{aligned}
 - u'(Q + B'PB) u &= - x'S' (Q + B'PB)Sx \\
@@ -1329,7 +1326,6 @@ $x'A'PB(Q + B'PB)^{-1}B'PAx$.
 This implies that
 
 ```{math}
-:nowrap:
 
 \begin{aligned}
  v(x) &= - x'A'PAx - 2u'B'PAx - u'(Q + B'PB) u\\
