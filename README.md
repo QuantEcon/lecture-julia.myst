@@ -18,7 +18,7 @@ It is straightforward to install the Jupyter Book and Julia software necessary f
 
 1. [Install Julia, Conda, and VS Code](https://quantecon.github.io/lecture-julia.myst/getting_started_julia/getting_started.html) following the documentation for using these notes.
 2. Modify [VS Code settings](https://quantecon.github.io/lecture-julia.myst/software_engineering/tools_editors.html#optional-extensions-and-settings) and consider [additional extensions](https://quantecon.github.io/lecture-julia.myst/software_engineering/tools_editors.html#optional-extensions).  Some others to consider are the [MyST-Markdown](https://github.com/executablebooks/myst-vs-code) and [Spell Checking](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) extensions.
-3. Ensure that [Git](https://quantecon.github.io/lecture-julia.myst/software_engineering/version_control.html#setup) is set up correctly.  In particular this ensures that Windows users use the linux end-of-line characters.
+3. Ensure that [Git](https://quantecon.github.io/lecture-julia.myst/software_engineering/version_control.html#setup) is set up correctly.  In particular, this ensures that Windows users use the Linux end-of-line characters.
 4. Clone this repository (in VS Code, you can use `<Ctrl+Shift+P>` then `Clone` then `Clone from GitHub` then choose the repo as `https://github.com/QuantEcon/lecture-julia.myst`).
 
 6. Open this repository in VS Code.  If you cloned in a separate terminal, navigate to the directory and type `code .`
@@ -35,7 +35,7 @@ It is straightforward to install the Jupyter Book and Julia software necessary f
 
 8.  Set the default interpreter for VS Code's Python extension to be the conda environment
     - Press `<Ctrl-Shift-P>` then `Python: Select Interpreter`
-    - Choose the interpeter with `lecture-julia.myst` which should now be automatically activated in the terminal.
+    - Choose the interpreter with `lecture-julia.myst` which should now be automatically activated in the terminal.
     - If the interpreter does not show up in the drop-down, close and reopen VS Code, then try again. Alternatively, you can run this step at the end of the setup process.
         - Whenever reopening VS Code, re-run `conda activate lecture-julia.myst` to ensure the environment remains active.
 9.  Install the Julia packages required for the lecture notes.
