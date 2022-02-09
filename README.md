@@ -18,7 +18,7 @@ It is straightforward to install the Jupyter Book and Julia software necessary f
 
 1. [Install Julia, Conda, and VS Code](https://quantecon.github.io/lecture-julia.myst/getting_started_julia/getting_started.html) following the documentation for using these notes.
 2. Modify [VS Code settings](https://quantecon.github.io/lecture-julia.myst/software_engineering/tools_editors.html#optional-extensions-and-settings) and consider [additional extensions](https://quantecon.github.io/lecture-julia.myst/software_engineering/tools_editors.html#optional-extensions).  Some others to consider are the [MyST-Markdown](https://github.com/executablebooks/myst-vs-code) and [Spell Checking](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) extensions.
-3. Ensure that [Git](https://quantecon.github.io/lecture-julia.myst/software_engineering/version_control.html#setup) is set up correctly.  In particular this ensures that Windows users use the linux end-of-line characters.
+3. Ensure that [Git](https://quantecon.github.io/lecture-julia.myst/software_engineering/version_control.html#setup) is set up correctly.  In particular, this ensures that Windows users use the Linux end-of-line characters.
 4. Clone this repository (in VS Code, you can use `<Ctrl+Shift+P>` then `Clone` then `Clone from GitHub` then choose the repo as `https://github.com/QuantEcon/lecture-julia.myst`).
 
 6. Open this repository in VS Code.  If you cloned in a separate terminal, navigate to the directory and type `code .`
