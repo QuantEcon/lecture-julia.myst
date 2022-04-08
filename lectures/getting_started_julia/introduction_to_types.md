@@ -624,7 +624,7 @@ x = BigFloat(1.0)
 function g2(x::AbstractFloat)
     if x > 0.0   # can't efficiently call with `x::Integer`
         return x + 1.0   # OK - assumes you can promote `Float64` to `AbstractFloat`
-    otherwise
+    else
         return 0   # BAD! Returns a `Int64`
     end
 end
@@ -639,7 +639,7 @@ x2 = BigFloat(-1.0)
 function g3(x) #
     if x > zero(x)   # any type with an additive identity
         return x + one(x)  # more general but less important of a change
-    otherwise
+    else
         return zero(x)
     end
 end
