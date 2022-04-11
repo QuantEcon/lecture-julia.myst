@@ -301,7 +301,7 @@ The code can be found below:
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Parameters, QuantEcon, DataFrames, Plots, Random
+using LaTeXStrings, Parameters, QuantEcon, DataFrames, Plots, Random
 ```
 
 ```{code-cell} julia
@@ -637,8 +637,8 @@ end
 # generate plot
 plot(x, q_low, label = "Low")
 plot!(x, q_high, label = "High")
-plot!(title = "Bond price schedule q(y, B')",
-      xlabel = "B'", ylabel = "q", legend_title = "y", legend = :topleft)
+plot!(title = L"Bond price schedule $q(y, B^\prime)$",
+      xlabel = L"B^\prime", ylabel = L"q", legend_title = L"y", legend = :topleft)
 ```
 
 ```{code-cell} julia
@@ -657,8 +657,8 @@ Draw a plot of the value functions
 ```{code-cell} julia
 plot(ae.Bgrid, ae.vf[:, iy_low], label = "Low")
 plot!(ae.Bgrid, ae.vf[:, iy_high], label = "High")
-plot!(xlabel = "B", ylabel = "V(y,B)", title = "Value functions",
-      legend_title="y", legend = :topleft)
+plot!(xlabel = L"B", ylabel = L"V(y,B)", title = "Value functions",
+      legend_title=L"y", legend = :topleft)
 ```
 
 Draw a heat map for default probability
@@ -667,7 +667,7 @@ Draw a heat map for default probability
 heatmap(ae.Bgrid[1:end-1],
     ae.ygrid[2:end],
     reshape(clamp.(vec(ae.defprob[1:end - 1, 1:end - 1]), 0, 1), 250, 20)')
-plot!(xlabel = "B'", ylabel = "y", title = "Probability of default",
+plot!(xlabel = L"B^\prime", ylabel = L"y", title = "Probability of default",
     legend = :topleft)
 ```
 

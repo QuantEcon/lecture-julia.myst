@@ -415,7 +415,7 @@ The following code sets up these objects for us.
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics, BenchmarkTools, Plots, QuantEcon
+using BenchmarkTools, LaTeXStrings, LinearAlgebra, Plots, QuantEcon, Statistics
 using SparseArrays
 ```
 
@@ -1075,7 +1075,7 @@ for β in discount_factors
     k_path_ind = simulate(res0.mc, sample_size, init=k_init_ind)
     k_path = grid[k_path_ind.+1]
     push!(k_paths, k_path)
-    push!(labels, "β = $β")
+    push!(labels, L"\beta = %$β")
 end
 
 plot(k_paths,

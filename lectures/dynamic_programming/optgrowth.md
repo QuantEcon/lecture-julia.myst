@@ -464,7 +464,7 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Plots, QuantEcon, Interpolations, NLsolve, Optim, Random, Parameters
+using LaTeXStrings, Plots, QuantEcon, Interpolations, NLsolve, Optim, Random, Parameters
 using Optim: maximum, maximizer
 ```
 
@@ -602,8 +602,8 @@ w_star = v_star.(p.y; p)  # evaluate closed form value along grid
 w = T(w_star; p).w # evaluate operator, access Tw results
 
 plt = plot(ylim = (-35,-24))
-plot!(plt, p.y, w, linewidth = 2, alpha = 0.6, label = "T(v_star)")
-plot!(plt, p.y, w_star, linewidth = 2, alpha=0.6, label = "v_star")
+plot!(plt, p.y, w, linewidth = 2, alpha = 0.6, label = L"T(v^*)")
+plot!(plt, p.y, w_star, linewidth = 2, alpha=0.6, label = L"v^*")
 plot!(plt, legend = :bottomright)
 ```
 
@@ -776,7 +776,7 @@ for β in β_vals
     σ_func = LinearInterpolation(p.y, sol.σ)
     y = simulate_og(σ_func, p,y0, ts_length)
 
-    plot!(plt, 0:(ts_length-1), y, lw = 2, alpha = 0.6, label = "beta = $β")
+    plot!(plt, 0:(ts_length-1), y, lw = 2, alpha = 0.6, label = L"\beta = %$β")
 end
 plt
 ```

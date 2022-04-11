@@ -1547,7 +1547,7 @@ sHist_l = [1, 2, 3, 5, 6, 6, 6]
 sim_seq_h = simulate(PP_seq_time, 1.0, 1, 7, sHist_h)
 sim_seq_l = simulate(PP_seq_time, 1.0, 1, 7, sHist_l)
 
-using Plots
+using LaTeXStrings, Plots
 
 titles = hcat("Consumption",
               "Labor Supply",
@@ -1711,7 +1711,7 @@ taxpolicy = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 2)[4] for B_ in B_vec]...
 interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in B_vec]...)')
 
 titles = ["Tax Rate" "Gross Interest Rate"]
-labels = [["Time , t = 0" "Time , t >= 0"], ""]
+labels = [[L"Time , $t = 0$" L"Time , $t \geq 0$"], ""]
 plots = plot(layout=(2,1), size =(700,600))
 for (i, series) in enumerate((taxpolicy, interest_rate))
     plot!(plots[i], B_vec, series, linewidth=2, label=labels[i])
@@ -1782,8 +1782,8 @@ B1_vec = hcat([simulate(PP_seq_time0, B_, 1, 2)[3][2] for B_ in B_vec]...)'
 # Compute the optimal policy if the government could reset
 tau1_reset = Matrix(hcat([simulate(PP_seq_time0, B1, 1, 1)[4] for B1 in B1_vec]...)')
 
-plot(B_vec, taxpolicy[:, 2], linewidth=2, label="tau_1")
-plot!(B_vec, tau1_reset, linewidth=2, label="tau_1^R")
+plot(B_vec, taxpolicy[:, 2], linewidth=2, label=L"\tau_1")
+plot!(B_vec, tau1_reset, linewidth=2, label=L"\tau_1^R")
 plot!(title="Tax Rate", xlabel="Initial Government Debt", legend=:topleft, grid=true)
 ```
 
