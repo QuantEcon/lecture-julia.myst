@@ -64,7 +64,7 @@ Useful references include {cite}`Whittle1963`, {cite}`HanSar1980`, {cite}`Orfani
 
 
 ```{code-cell} julia
-using Polynomials, Plots, Random, Parameters
+using LaTeXStrings, Polynomials, Plots, Random, Parameters
 using LinearAlgebra, Statistics
 ```
 
@@ -1161,9 +1161,9 @@ function plot_simulation(;γ=0.8, m=1, h=1., y_m=2.)
   # plot simulation results
   time = 1:length(y)
   plt = plot(time, a_seq / h, lw=2, color=:black, alpha=0.8, marker = :circle,
-             markersize = 2, label="a_t")
+             markersize = 2, label=L"a_t")
   plot!(plt, time, y, lw=2, color=:blue, marker = :circle,  markersize = 2, alpha=0.8,
-        label="y_t")
+        label=L"y_t")
   plot!(plt, xlabel="Time", grid=true, xlim=(0,maximum(time)), legend=:bottomleft)
 end
 
