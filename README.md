@@ -34,7 +34,7 @@ It is straightforward to install the Jupyter Book and Julia software necessary f
     This will install all the Jupyter Book packages required to edit and build the lectures.
 
 8.  Set the default interpreter for VS Code's Python extension to be the conda environment
-    - Press `<Ctrl-Shift-P>` then `Python: Select Interpreter`
+    - Press `<Ctrl-Shift-P>` then `Python: Select Interpreter`.
     - Choose the interpreter with `lecture-julia.myst` which should now be automatically activated in the terminal.
     - If the interpreter does not show up in the drop-down, close and reopen VS Code, then try again. Alternatively, you can run this step at the end of the setup process.
         - Whenever reopening VS Code, re-run `conda activate lecture-julia.myst` to ensure the environment remains active.
