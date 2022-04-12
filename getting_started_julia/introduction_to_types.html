@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -1230,7 +1233,7 @@ typeof(zero(x)) = BigFloat
 <span class="k">function</span> <span class="n">g2</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractFloat</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mf">0.0</span>   <span class="c"># can&#39;t efficiently call with `x::Integer`</span>
         <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="mf">1.0</span>   <span class="c"># OK - assumes you can promote `Float64` to `AbstractFloat`</span>
-    <span class="n">otherwise</span>
+    <span class="k">else</span>
         <span class="k">return</span> <span class="mi">0</span>   <span class="c"># BAD! Returns a `Int64`</span>
     <span class="k">end</span>
 <span class="k">end</span>
@@ -1245,7 +1248,7 @@ typeof(zero(x)) = BigFloat
 <span class="k">function</span> <span class="n">g3</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c">#</span>
     <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>   <span class="c"># any type with an additive identity</span>
         <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">one</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c"># more general but less important of a change</span>
-    <span class="n">otherwise</span>
+    <span class="k">else</span>
         <span class="k">return</span> <span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">end</span>
 <span class="k">end</span>
@@ -1257,9 +1260,9 @@ typeof(zero(x)) = BigFloat
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(g2(x)) = BigFloat
-typeof(g2(x2)) = Nothing
+typeof(g2(x2)) = Int64
 typeof(g3(x)) = BigFloat
-typeof(g3(x2)) = Nothing
+typeof(g3(x2)) = BigFloat
 </pre></div>
 </div>
 </div>
@@ -1633,14 +1636,14 @@ compared to the following for a dense array for <code class="docutils literal no
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  71.090 ns (1 allocation: 80 bytes)
-  670.454 ns (4 allocations: 1.86 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  83.301 ns (1 allocation: 80 bytes)
+  783.882 ns (4 allocations: 1.86 KiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×3 Matrix{Float64}:
- -3.13629    0.799871   4.68913
-  0.669141   1.80672   -3.42662
-  1.37298   -1.93149    1.95763
+ -0.423299  -3.20959    1.9116
+  1.21241   -0.029554  -0.282817
+ -0.278299   2.83343   -0.116177
 </pre></div>
 </div>
 </div>
@@ -1663,7 +1666,7 @@ compared to the following for a dense array for <code class="docutils literal no
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  779.097 ns (9 allocations: 1.77 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  939.130 ns (9 allocations: 1.77 KiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:

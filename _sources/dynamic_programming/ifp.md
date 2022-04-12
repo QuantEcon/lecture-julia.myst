@@ -376,7 +376,7 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using BenchmarkTools, Optim, Parameters, Plots, QuantEcon, Random
+using BenchmarkTools, LaTeXStrings, Optim, Parameters, Plots, QuantEcon, Random
 using Optim: converged, maximum, maximizer, minimizer, iterations
 
 ```
@@ -721,7 +721,7 @@ for r_val in r_vals
                             max_iter = 150,
                             verbose = false)
     traces = push!(traces, c[:, 1])
-    legends = push!(legends, "r = $(round(r_val, digits = 3))")
+    legends = push!(legends, L"r = %$(round(r_val, digits = 3))")
 end
 
 plot(traces, label = reshape(legends, 1, length(legends)))
@@ -791,7 +791,7 @@ for b in [1.0, 3.0]
     end
     xs = push!(xs, asset_mean)
     ys = push!(ys, r_vals)
-    legends = push!(legends, "b = $b")
+    legends = push!(legends, L"b = %$b")
     println("Finished iteration b = $b")
 end
 plot(xs, ys, label = reshape(legends, 1, length(legends)))

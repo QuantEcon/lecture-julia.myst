@@ -47,7 +47,7 @@ Below we'll use the following packages:
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Plots, Random, Symbolics
+using Distributions, LaTeXStrings, Plots, Random, Symbolics
 ```
 
 ## Key Formulas
@@ -691,15 +691,15 @@ g = 0.02
 r = 0.03
 x_0 = 1
 
-plt = plot(xlim=(-2.5, 52.5), ylim= (-1.653, 56.713), title= "Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p0")
+plt = plot(xlim=(-2.5, 52.5), ylim= (-1.653, 56.713), title= L"Finite Lease Present Value $T$ Periods Ahead", xlabel = L"$T$ Periods Ahead", ylabel = L"Present Value, $p_0$")
 
 y_1 = finite_lease_pv_true(T, g, r, x_0)
 y_2 = finite_lease_pv_approx(T, g, r, x_0)
 y_3 = finite_lease_pv_approx_2(T, g, r, x_0)
 
-plot!(plt, T, y_1, label="True T-period Lease PV")
-plot!(plt, T, y_2, label="T-period Lease First-order Approx.")
-plot!(plt, T, y_3, label="T-period Lease First-order Approx. adj.")
+plot!(plt, T, y_1, label=L"True $T$-period Lease PV")
+plot!(plt, T, y_2, label=L"$T$-period Lease First-order Approx.")
+plot!(plt, T, y_3, label=L"$T$-period Lease First-order Approx. adj.")
 plot!(plt, legend = :topleft)
 ```
 
@@ -715,12 +715,12 @@ over different lease lengths $T$.
 T_max = 1000
 T = 0:T_max
 
-plt = plot(xlim=(-50, 1050),ylim= (-4.1, 108.1), title= "Infinite and Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p0")
+plt = plot(xlim=(-50, 1050),ylim= (-4.1, 108.1), title= L"Infinite and Finite Lease Present Value $T$ Periods Ahead", xlabel = L"$T$ Periods Ahead", ylabel = L"Present Value, $p_0$")
 
 y_1 = finite_lease_pv_true(T, g, r, x_0)
 y_2 = ones(T_max + 1) .* infinite_lease(g, r, x_0)
 
-plot!(plt, T, y_1, label="T-period lease PV")
+plot!(plt, T, y_1, label=L"$T$-period lease PV")
 plot!(plt, T, y_2, linestyle = :dash, label="Infinite lease PV")
 plot!(plt, legend = :bottomright)
 ```
@@ -735,7 +735,7 @@ $g$ covary
 ```{code-cell} julia
 # First view
 # Changing r and g
-plt = plot(xlim=(-0.5, 10.5),ylim= (-0.26, 16.7), title= "Value of lease of length T", xlabel = "T periods ahead", ylabel = "Present Value, p0")
+plt = plot(xlim=(-0.5, 10.5),ylim= (-0.26, 16.7), title= L"Value of lease of length $T$", xlabel = L"$T$ periods ahead", ylabel = L"Present Value, $p_0$")
 
 T_max = 10
 T=0:T_max
@@ -743,23 +743,23 @@ T=0:T_max
 # r >> g, much bigger than g
 r = 0.9
 g = 0.4
-plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.9) >> g(=0.4)")
+plot!(plt, finite_lease_pv_true(T, g, r, x_0), label=L"r(=0.9) >> g(=0.4)")
 
 # r > g
 r = 0.5
 g = 0.4
-plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.5) > g(=0.4)", color="green")
+plot!(plt, finite_lease_pv_true(T, g, r, x_0), label=L"r(=0.5) > g(=0.4)", color="green")
 
 # r ~ g, not defined when r = g, but approximately goes to straight
 # line with slope 1
 r = 0.4001
 g = 0.4
-plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.4001) ~ g(=0.4)", color="orange")
+plot!(plt, finite_lease_pv_true(T, g, r, x_0), label=L"r(=0.4001) \sim g(=0.4)", color="orange")
 
 # r < g
 r = 0.4
 g = 0.5
-plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.4) < g(=0.5)", color="red")
+plot!(plt, finite_lease_pv_true(T, g, r, x_0), label=L"r(=0.4) < g(=0.5)", color="red")
 plot!(plt, legend = :topleft)
 ```
 
@@ -839,7 +839,7 @@ b = 2/3
 y_init = 0
 T = 100
 
-plt = plot(xlim=(-6, 107),ylim= (0.5, 1.9), title= "Path of Aggregate Output Over Time", xlabel = "t", ylabel = "yt")
+plt = plot(xlim=(-6, 107),ylim= (0.5, 1.9), title= "Path of Aggregate Output Over Time", xlabel = L"t", ylabel = L"y_t")
 plot!(plt, 0:T, calculate_y(i_0, b, g_0, T, y_init))
 # Output predicted by geometric series
 hline!([i_0 / (1 - b) + g_0 / (1 - b)], linestyle=:dash, seriestype="hline", legend = false)
@@ -856,10 +856,10 @@ i.e., the fraction of income that is consumed
 # Changing fraction of consumption
 bs = [1/3, 2/3, 5/6, 0.9]
 
-plt = plot(xlim=(-6, 107),ylim= (0.25, 6.5), title= "Changing Consumption as a Fraction of Income", xlabel = "t", ylabel = "yt")
+plt = plot(xlim=(-6, 107),ylim= (0.25, 6.5), title= "Changing Consumption as a Fraction of Income", xlabel = L"t", ylabel = L"y_t")
 for b in bs
     b = round(b, digits = 2)
-    plot!(plt, 0:T, calculate_y(i_0, b, g_0, T, y_init), label="b = $b")
+    plot!(plt, 0:T, calculate_y(i_0, b, g_0, T, y_init), label=L"b = %$b")
 end
 plot!(plt, legend = :topleft)
 ```
@@ -877,15 +877,15 @@ l = @layout [a ; b]
 # Changing initial investment:
 i_1 = 0.4
 y_1 = calculate_y(i_1, b, g_0, T, y_init)
-plt_1 = plot(x,y_0, label = "i=0.3", linestyle= :dash, title= "An Increase in Investment on Output", xlabel = "t", ylabel = "y_t")
-plot!(plt_1, x, y_1, label = "i=0.4")
+plt_1 = plot(x,y_0, label = L"i=0.3", linestyle= :dash, title= "An Increase in Investment on Output", xlabel = L"t", ylabel = L"y_t")
+plot!(plt_1, x, y_1, label = L"i=0.4")
 plot!(plt_1, legend = :bottomright)
 
 # Changing government spending
 g_1 = 0.4
 y_1 = calculate_y(i_0, b, g_1, T, y_init)
-plt_2 = plot(x,y_0, label = "g=0.3", linestyle= :dash, title= "An Increase in Government Spending on Output", xlabel = "t", ylabel = "y_t")
-plot!(plt_2, x, y_1, label="g=0.4")
+plt_2 = plot(x,y_0, label = L"g=0.3", linestyle= :dash, title= "An Increase in Government Spending on Output", xlabel = L"t", ylabel = L"y_t")
+plot!(plt_2, x, y_1, label=L"g=0.4")
 plot!(plt_2, legend = :bottomright)
 
 plot(plt_1, plt_2, layout = l)

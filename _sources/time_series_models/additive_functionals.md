@@ -219,7 +219,7 @@ using Test, Random
 ```
 
 ```{code-cell} julia
-using Distributions, Parameters, Plots, QuantEcon
+using Distributions, LaTeXStrings, Parameters, Plots, QuantEcon
 
 ```
 
@@ -558,7 +558,7 @@ function plot_martingales(amf, T, npaths = 25)
         push!(mart_figs,
             plot_martingale_paths(T, mpath_mult[li + 1:ui, :],
                                                     mbounds_mult[LI + 1:UI, :], horline = 1))
-        plot!(mart_figs[ii + 1], title = "Martingale components for many paths of y_(ii + 1)")
+        plot!(mart_figs[ii + 1], title = L"Martingale components for many paths of $y_{ii + 1}$")
     end
 
     return mart_figs
@@ -578,11 +578,11 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
 
     # plot all paths together
 
-    plot!(plots[1], trange, ypath[1, :], label = "y_t", color = :black)
-    plot!(plots[1], trange, mpath[1, :], label = "m_t", color = :magenta)
-    plot!(plots[1], trange, spath[1, :], label = "s_t", color = :green)
+    plot!(plots[1], trange, ypath[1, :], label = L"y_t", color = :black)
+    plot!(plots[1], trange, mpath[1, :], label = L"m_t", color = :magenta)
+    plot!(plots[1], trange, spath[1, :], label = L"s_t", color = :green)
     if show_trend
-        plot!(plots[1], trange, tpath[1, :], label = "t_t", color = :red)
+        plot!(plots[1], trange, tpath[1, :], label = L"t_t", color = :red)
     end
     plot!(plots[1], seriestype = :hline, [horline], color = :black, linestyle=:dash, label = "")
     plot!(plots[1], title = "One Path of All Variables", legend=:topleft)
@@ -672,11 +672,11 @@ plots = [plt_1, plt_2]
 # plots = plot(layout = (2, 1))
 
 plot!(plots[1], 1:T, y[amf.nx + 1, :], color = :black, lw = 2, label = "")
-plot!(plots[1], title =  "A particular path of y_t")
+plot!(plots[1], title =  L"A particular path of $y_t$")
 plot!(plots[2], 1:T, y[1, :], color = :green, lw = 2, label = "")
 plot!(plots[2], seriestype = :hline, [0], color = :black, lw = 2, linestyle=:dashdot,
       label = "")
-plot!(plots[2], title = "Associated path of x_t")
+plot!(plots[2], title = L"Associated path of $x_t$")
 # plot(plots)
 plot(plots[1], plots[2], layout=(2,1), size=(700,500))
 ```

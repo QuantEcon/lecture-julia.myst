@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -322,7 +325,7 @@
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
-<span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Expectations</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">NLsolve</span><span class="p">,</span> <span class="n">Plots</span>
+<span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Expectations</span><span class="p">,</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">NLsolve</span><span class="p">,</span> <span class="n">Plots</span>
 </pre></div>
 </div>
 </div>
@@ -523,7 +526,7 @@ the <span class="math notranslate nohighlight">\(V\)</span> and <span class="mat
 <span class="nd">@unpack</span> <span class="n">V</span><span class="p">,</span> <span class="n">U</span> <span class="o">=</span> <span class="n">solve_mccall_model</span><span class="p">(</span><span class="n">mcm</span><span class="p">)</span>
 <span class="n">U_vec</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">mcm</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">mcm</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="p">[</span><span class="n">V</span> <span class="n">U_vec</span><span class="p">],</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">α</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;V&quot;</span> <span class="s">&quot;U&quot;</span><span class="p">])</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">mcm</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="p">[</span><span class="n">V</span> <span class="n">U_vec</span><span class="p">],</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">α</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="sa">L</span><span class="s">&quot;V&quot;</span> <span class="sa">L</span><span class="s">&quot;U&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -629,7 +632,7 @@ we can create an array for reservation wages for different values of <span class
     <span class="n">α</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
     <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;unemployment compensation&quot;</span><span class="p">,</span>
     <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;reservation wage&quot;</span><span class="p">,</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;w̄ as a function of c&quot;</span><span class="p">)</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;$\overline{w}$ as a function of </span><span class="si">$c</span><span class="s">$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -658,7 +661,7 @@ we can create an array for reservation wages for different values of <span class
 <span class="n">w̄_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">sol</span><span class="o">.</span><span class="n">w̄</span> <span class="k">for</span> <span class="n">sol</span> <span class="k">in</span> <span class="n">sols</span><span class="p">]</span>
 
 <span class="n">plot</span><span class="p">(</span><span class="n">γ_vals</span><span class="p">,</span> <span class="n">w̄_vals</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">α</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;job offer rate&quot;</span><span class="p">,</span>
-     <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;reservation wage&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;w̄ as a function of gamma&quot;</span><span class="p">)</span>
+     <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;reservation wage&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;$\overline{w}$ as a function of $\gamma$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

@@ -638,7 +638,7 @@ using Test, Random
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Plots, Plots.PlotMeasures, QuantEcon
+using LaTeXStrings, Plots, Plots.PlotMeasures, QuantEcon
 
 ```
 
@@ -1496,9 +1496,9 @@ q = vec(xp[2, :])
 
 # plot simulation results
 p3 = plot(eachindex(q), [q̄ q],
-          lab = ["q bar" "q"],
+          lab = [L"\overline{q}" L"q"],
           color = [:black :blue],
-          xaxis = "Time", title = "Dynamics with γ = $γ",
+          xaxis = "Time", title = L"Dynamics with $\gamma = %$γ$",
           bottom_margin = 20mm, top_margin = 10mm,
           size = (700, 500))
 ```

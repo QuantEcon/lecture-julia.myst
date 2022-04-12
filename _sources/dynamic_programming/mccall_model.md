@@ -291,7 +291,7 @@ generates a sequence that converges to the fixed point.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Expectations, NLsolve, Roots, Random, Plots, Parameters
+using Distributions, Expectations, LaTeXStrings, NLsolve, Roots, Random, Plots, Parameters
 ```
 
 ```{code-cell} julia
@@ -472,8 +472,8 @@ end
 ```{code-cell} julia
 contour(c_vals, β_vals, R',
         title = "Reservation Wage",
-        xlabel = "c",
-        ylabel = "beta",
+        xlabel = L"c",
+        ylabel = L"\beta",
         fill = true)
 ```
 

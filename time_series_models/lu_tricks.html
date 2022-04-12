@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -350,7 +353,7 @@ class of dynamic optimization and prediction problems by applying the method of 
 <p>Useful references include <span id="id1">[<a class="reference internal" href="../zreferences.html#id34">Whi63</a>]</span>, <span id="id2">[<a class="reference internal" href="../zreferences.html#id35">HS80</a>]</span>, <span id="id3">[<a class="reference internal" href="../zreferences.html#id36">Orf88</a>]</span>, <span id="id4">[<a class="reference internal" href="../zreferences.html#id37">AP91</a>]</span>, and <span id="id5">[<a class="reference internal" href="../zreferences.html#id38">Mut60</a>]</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Polynomials</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">Random</span><span class="p">,</span> <span class="n">Parameters</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Polynomials</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">Random</span><span class="p">,</span> <span class="n">Parameters</span>
 <span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
 </pre></div>
 </div>
@@ -1221,9 +1224,9 @@ track the <span class="math notranslate nohighlight">\(\{a_t\}\)</span> process.
   <span class="c"># plot simulation results</span>
   <span class="n">time</span> <span class="o">=</span> <span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
   <span class="n">plt</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">a_seq</span> <span class="o">/</span> <span class="n">h</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:black</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">marker</span> <span class="o">=</span> <span class="ss">:circle</span><span class="p">,</span>
-             <span class="n">markersize</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;a_t&quot;</span><span class="p">)</span>
+             <span class="n">markersize</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;a_t&quot;</span><span class="p">)</span>
   <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:blue</span><span class="p">,</span> <span class="n">marker</span> <span class="o">=</span> <span class="ss">:circle</span><span class="p">,</span>  <span class="n">markersize</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
-        <span class="n">label</span><span class="o">=</span><span class="s">&quot;y_t&quot;</span><span class="p">)</span>
+        <span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;y_t&quot;</span><span class="p">)</span>
   <span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;Time&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span> <span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">maximum</span><span class="p">(</span><span class="n">time</span><span class="p">)),</span> <span class="n">legend</span><span class="o">=</span><span class="ss">:bottomleft</span><span class="p">)</span>
 <span class="k">end</span>
 

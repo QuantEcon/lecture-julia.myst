@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -377,7 +380,7 @@ f(z; a, b) = \frac{\Gamma(a+b) z^{a-1} (1-z)^{b-1}}{\Gamma(a) \Gamma(b)}
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
-<span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Printf</span><span class="p">,</span> <span class="n">Random</span><span class="p">,</span> <span class="n">Roots</span><span class="p">,</span> <span class="n">Plots</span>
+<span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Printf</span><span class="p">,</span> <span class="n">Random</span><span class="p">,</span> <span class="n">Roots</span><span class="p">,</span> <span class="n">Plots</span>
 </pre></div>
 </div>
 </div>
@@ -389,8 +392,8 @@ f(z; a, b) = \frac{\Gamma(a+b) z^{a-1} (1-z)^{b-1}}{\Gamma(a) \Gamma(b)}
 <span class="k">begin</span>
     <span class="n">base_dist</span> <span class="o">=</span> <span class="p">[</span><span class="n">Beta</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">Beta</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
     <span class="n">mixed_dist</span> <span class="o">=</span> <span class="n">MixtureModel</span><span class="o">.</span><span class="p">(</span><span class="kt">Ref</span><span class="p">(</span><span class="n">base_dist</span><span class="p">),</span> <span class="p">(</span><span class="n">p</span> <span class="o">-&gt;</span> <span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">one</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">-</span> <span class="n">p</span><span class="p">])</span><span class="o">.</span><span class="p">(</span><span class="mf">0.25</span><span class="o">:</span><span class="mf">0.25</span><span class="o">:</span><span class="mf">0.75</span><span class="p">))</span>
-    <span class="n">plot</span><span class="p">(</span><span class="n">plot</span><span class="p">(</span><span class="n">base_dist</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;f_0&quot;</span><span class="p">,</span> <span class="s">&quot;f_1&quot;</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Original Distributions&quot;</span><span class="p">),</span>
-         <span class="n">plot</span><span class="p">(</span><span class="n">mixed_dist</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;1/4-3/4&quot;</span><span class="p">,</span> <span class="s">&quot;1/2-1/2&quot;</span><span class="p">,</span> <span class="s">&quot;3/4-1/4&quot;</span><span class="p">],</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">plot</span><span class="p">(</span><span class="n">base_dist</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">L</span><span class="s">&quot;f_0&quot;</span> <span class="sa">L</span><span class="s">&quot;f_1&quot;</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Original Distributions&quot;</span><span class="p">),</span>
+         <span class="n">plot</span><span class="p">(</span><span class="n">mixed_dist</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">L</span><span class="s">&quot;1/4-3/4&quot;</span> <span class="sa">L</span><span class="s">&quot;1/2-1/2&quot;</span> <span class="sa">L</span><span class="s">&quot;3/4-1/4&quot;</span><span class="p">],</span>
               <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Distribution Mixtures&quot;</span><span class="p">),</span>
          <span class="c"># Global settings across both plots</span>
          <span class="n">ylab</span> <span class="o">=</span> <span class="s">&quot;Density&quot;</span><span class="p">,</span> <span class="n">ylim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>

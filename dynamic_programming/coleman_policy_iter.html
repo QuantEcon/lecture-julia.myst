@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -581,7 +584,7 @@ T^n = M^{-1} \circ K^n \circ M
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
-<span class="k">using</span> <span class="n">BenchmarkTools</span><span class="p">,</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Roots</span>
+<span class="k">using</span> <span class="n">BenchmarkTools</span><span class="p">,</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Roots</span>
 <span class="k">using</span> <span class="n">Optim</span><span class="p">,</span> <span class="n">Random</span>
 </pre></div>
 </div>
@@ -731,8 +734,8 @@ theory</p>
     <span class="n">c_star_new</span> <span class="o">=</span> <span class="n">K</span><span class="p">(</span><span class="n">c_star</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">∂u∂c</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">f′</span><span class="p">,</span> <span class="n">shocks</span><span class="p">)</span>
 
     <span class="c"># plot c_star and Kc_star</span>
-    <span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">c_star</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;optimal policy cc_star&quot;</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">c_star_new</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;Kc_star&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">c_star</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;optimal policy </span><span class="si">$c</span><span class="s">^*$&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">c_star_new</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;Kc^*&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
@@ -764,14 +767,14 @@ converge towards <span class="math notranslate nohighlight">\(c^*\)</span>.</p>
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">check_convergence</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">shocks</span><span class="p">,</span> <span class="n">c_star</span><span class="p">,</span> <span class="n">g_init</span><span class="p">;</span> <span class="n">n_iter</span> <span class="o">=</span> <span class="mi">15</span><span class="p">)</span>
     <span class="nd">@unpack</span> <span class="n">grid</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">∂u∂c</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">f′</span> <span class="o">=</span> <span class="n">m</span>
     <span class="n">g</span> <span class="o">=</span> <span class="n">g_init</span><span class="p">;</span>
-    <span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;intial condition c(y) = y&quot;</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;intial condition </span><span class="si">$c</span><span class="s">(y) = y$&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n_iter</span>
         <span class="n">new_g</span> <span class="o">=</span> <span class="n">K</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">β</span><span class="p">,</span> <span class="n">∂u∂c</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">f′</span><span class="p">,</span> <span class="n">shocks</span><span class="p">)</span>
         <span class="n">g</span> <span class="o">=</span> <span class="n">new_g</span>
         <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
     <span class="k">end</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">c_star</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span>
-          <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;true policy function c_star&quot;</span><span class="p">)</span>
+          <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;true policy function </span><span class="si">$c</span><span class="s">^*$&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 <span class="k">end</span>
 </pre></div>
@@ -830,7 +833,7 @@ discussed above</p>
     <span class="n">pf_error</span> <span class="o">=</span> <span class="n">c_star</span> <span class="o">-</span> <span class="n">g</span>
     <span class="n">vf_error</span> <span class="o">=</span> <span class="n">c_star</span> <span class="o">-</span> <span class="n">vf_g</span>
 
-    <span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">zero</span><span class="p">(</span><span class="n">grid</span><span class="p">),</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plot</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">zero</span><span class="p">(</span><span class="n">grid</span><span class="p">),</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">pf_error</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;policy iteration error&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">vf_error</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;value iteration error&quot;</span><span class="p">)</span>
     <span class="n">plot!</span><span class="p">(</span><span class="n">legend</span> <span class="o">=</span> <span class="ss">:bottomleft</span><span class="p">)</span>
@@ -1026,14 +1029,14 @@ satisfying <span class="math notranslate nohighlight">\(Mv = Mw\)</span>.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 16 samples with 1 evaluation.
- Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">311.361 ms</span> … <span class=" -Color -Color-Magenta">338.702 ms</span>  ┊ GC (min … max): 2.51% … 4.72%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">327.977 ms               </span>┊ GC (median):    4.80%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">327.677 ms</span> ± <span class=" -Color -Color-Green">  6.385 ms</span>  ┊ GC (mean ± σ):  4.36% ± 0.94%
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 18 samples with 1 evaluation.
+ Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">281.034 ms</span> … <span class=" -Color -Color-Magenta">290.014 ms</span>  ┊ GC (min … max): 2.81% … 5.53%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">289.185 ms               </span>┊ GC (median):    5.50%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">287.030 ms</span> ± <span class=" -Color -Color-Green">  3.545 ms</span>  ┊ GC (mean ± σ):  4.93% ± 1.16%
 
-  ▁                     ▁    █   █  ▁<span class=" -Color -Color-Blue">▁</span><span class=" -Color -Color-Green"> </span>  ▁█▁    █          ▁  ▁  
-  █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁█▁▁▁█▁▁█<span class=" -Color -Color-Blue">█</span><span class=" -Color -Color-Green">▁</span>▁▁███▁▁▁▁█▁▁▁▁▁▁▁▁▁▁█▁▁█ ▁
-  311 ms           Histogram: frequency by time          339 ms <span class=" -Color -Color-Bold">&lt;</span>
+  ▁                                        <span class=" -Color -Color-Green"> </span>            <span class=" -Color -Color-Blue"> </span>   █ ▁  
+  █▆▁▁▁▁▁▁▁▁▁▆▁▁▁▁▁▆▁▁▁▆▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁<span class=" -Color -Color-Green">▁</span>▆▁▁▁▁▁▁▁▁▁▆▁<span class=" -Color -Color-Blue">▆</span>▁▆▆█▆█ ▁
+  281 ms           Histogram: frequency by time          290 ms <span class=" -Color -Color-Bold">&lt;</span>
 
  Memory estimate: <span class=" -Color -Color-Yellow">145.24 MiB</span>, allocs estimate: <span class=" -Color -Color-Yellow">79813</span>.
 </pre></div>
@@ -1047,14 +1050,14 @@ satisfying <span class="math notranslate nohighlight">\(Mv = Mw\)</span>.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 16 samples with 1 evaluation.
- Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">314.161 ms</span> … <span class=" -Color -Color-Magenta">339.523 ms</span>  ┊ GC (min … max): 2.51% … 4.64%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">325.658 ms               </span>┊ GC (median):    4.82%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">325.980 ms</span> ± <span class=" -Color -Color-Green">  5.723 ms</span>  ┊ GC (mean ± σ):  4.21% ± 1.05%
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 18 samples with 1 evaluation.
+ Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">276.357 ms</span> … <span class=" -Color -Color-Magenta">289.902 ms</span>  ┊ GC (min … max): 2.87% … 5.62%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">288.990 ms               </span>┊ GC (median):    5.54%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">286.613 ms</span> ± <span class=" -Color -Color-Green">  4.164 ms</span>  ┊ GC (mean ± σ):  4.97% ± 1.17%
 
-  ▁                █ ▁▁ ▁▁  <span class=" -Color -Color-Blue">▁</span> <span class=" -Color -Color-Green"> </span>▁█   ▁▁      ▁ ▁               ▁  
-  █▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█▁██▁██▁▁<span class=" -Color -Color-Blue">█</span>▁<span class=" -Color -Color-Green">▁</span>██▁▁▁██▁▁▁▁▁▁█▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█ ▁
-  314 ms           Histogram: frequency by time          340 ms <span class=" -Color -Color-Bold">&lt;</span>
+                                      ▁         <span class=" -Color -Color-Green"> </span>         <span class=" -Color -Color-Blue"> </span> ▄ █  
+  ▆▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▆▁▁▆▁▆▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁<span class=" -Color -Color-Green">▁</span>▁▁▁▆▁▁▁▆▆<span class=" -Color -Color-Blue">▁</span>▆█▆█ ▁
+  276 ms           Histogram: frequency by time          290 ms <span class=" -Color -Color-Bold">&lt;</span>
 
  Memory estimate: <span class=" -Color -Color-Yellow">145.24 MiB</span>, allocs estimate: <span class=" -Color -Color-Yellow">79813</span>.
 </pre></div>

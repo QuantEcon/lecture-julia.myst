@@ -111,7 +111,7 @@ using Test
 ```
 
 ```{code-cell} julia
-using Plots, Distributions
+using LaTeXStrings, Plots, Distributions
 ```
 
 ```{code-cell} julia
@@ -170,7 +170,7 @@ location $y$
 
 ```{code-cell} julia
 # plot the figure
-annotate!(y[1], y[2], "y", color = :black)
+annotate!(y[1], y[2], L"y", color = :black)
 ```
 
 The bad news is that our sensors are imprecise.
@@ -360,7 +360,7 @@ contour!(x_grid, y_grid, two_args_to_pdf(dist),
          color = :grays, cbar = false)
 contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false, levels = 7,
          color = :grays, cbar = false)
-annotate!(y[1], y[2], "y", color = :black)
+annotate!(y[1], y[2], L"y", color = :black)
 ```
 
 ```{code-cell} julia
@@ -628,9 +628,9 @@ for i in 1:5
     update!(kalman, y)
 end
 
-labels = ["t=1", "t=2", "t=3", "t=4", "t=5"]
+labels = [L"t=1" L"t=2" L"t=3" L"t=4" L"t=5"]
 plot(xgrid, densities, label = labels, legend = :topleft, grid = false,
-     title = "First 5 densities when theta = $θ")
+     title = L"First 5 densities when $\theta = %$θ$")
 ```
 
 ```{code-cell} julia

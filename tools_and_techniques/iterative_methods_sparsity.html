@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -773,7 +776,7 @@ issue in approximation theory, albeit not one driven by numerical approximation 
 <p>First, interpolate with <span class="math notranslate nohighlight">\(N = 5\)</span> and avoid taking the inverse.  In that case, as long as we avoid taking an inverse, the numerical errors from the ill-conditioned matrix are manageable.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Plots</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Plots</span>
 
 
 <span class="n">N_display</span> <span class="o">=</span> <span class="mi">100</span>
@@ -791,8 +794,8 @@ issue in approximation theory, albeit not one driven by numerical approximation 
 <span class="c"># use the coefficients to evaluate on x_display grid</span>
 <span class="n">B_5</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="k">in</span> <span class="n">x_display</span><span class="p">,</span> <span class="n">n</span> <span class="k">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>   <span class="c"># calculate monomials for display grid</span>
 <span class="n">y_5</span> <span class="o">=</span> <span class="n">B_5</span> <span class="o">*</span> <span class="n">c_5</span>  <span class="c"># calculates for each in x_display_grid</span>
-<span class="n">plot</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_5</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;P_5(x)&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_display</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;g(x)&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_5</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;P_5(x)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_display</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;g(x)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -814,8 +817,8 @@ of grid points and the order of the polynomial will lead to better approximation
 <span class="c"># use the coefficients to evaluate on x_display grid</span>
 <span class="n">B_9</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_i</span><span class="o">^</span><span class="n">n</span> <span class="k">for</span> <span class="n">x_i</span> <span class="k">in</span> <span class="n">x_display</span><span class="p">,</span> <span class="n">n</span> <span class="k">in</span> <span class="mi">0</span><span class="o">:</span><span class="n">N</span><span class="p">]</span>   <span class="c"># calculate monomials for display grid</span>
 <span class="n">y_9</span> <span class="o">=</span> <span class="n">B_9</span> <span class="o">*</span> <span class="n">c_9</span>  <span class="c"># calculates for each in x_display_grid</span>
-<span class="n">plot</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_9</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;P_9(x)&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_display</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;g(x)&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_9</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;P_9(x)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">y_display</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;g(x)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -838,8 +841,8 @@ globally increase the quality of the approximation.</p>
 <span class="n">y</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="n">g_approx</span> <span class="o">=</span> <span class="n">Fun</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">ApproxFun</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">S</span><span class="p">,</span><span class="n">y</span><span class="p">))</span>  <span class="c"># transform fits the polynomial</span>
 <span class="nd">@show</span> <span class="n">norm</span><span class="p">(</span><span class="n">g_approx</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">Inf</span><span class="p">)</span>
-<span class="n">plot</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">g_approx</span><span class="o">.</span><span class="p">(</span><span class="n">x_display</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;P_10000(x)&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">x_display</span><span class="p">),</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;g(x)&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">g_approx</span><span class="o">.</span><span class="p">(</span><span class="n">x_display</span><span class="p">),</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;P_{10000}(x)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">x_display</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">x_display</span><span class="p">),</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;g(x)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1771,7 +1774,7 @@ parameters in a named tuple generator</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  53.051 ms (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  52.662 ms (0 allocations: 0 bytes)
 </pre></div>
 </div>
 </div>
@@ -1831,13 +1834,13 @@ of only 10,000 possible states.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  370.678 ms (75 allocations: 181.85 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  314.741 ms (75 allocations: 181.85 MiB)
 norm(gmres(A, r) - v_direct) = 2.3908379262155663e-5
-  4.026 ms (77 allocations: 2.52 MiB)
+  4.313 ms (77 allocations: 2.52 MiB)
 norm(bicgstabl(A, r) - v_direct) = 6.315509558502633e-6
-  9.776 ms (245 allocations: 7.94 MiB)
-norm(idrs(A, r) - v_direct) = 0.0004993527360034667
-  5.255 ms (227 allocations: 3.30 MiB)
+  9.962 ms (245 allocations: 7.94 MiB)
+norm(idrs(A, r) - v_direct) = 8.473624566927337e-5
+  5.482 ms (227 allocations: 3.30 MiB)
 </pre></div>
 </div>
 </div>
@@ -1862,7 +1865,7 @@ norm(idrs(A, r) - v_direct) = 0.0004993527360034667
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.028 s (82 allocations: 274.67 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  876.556 ms (82 allocations: 274.67 MiB)
 </pre></div>
 </div>
 </div>
@@ -2000,9 +2003,9 @@ use GMRES since we do not have any structure.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  17.828 ms (21 allocations: 2.27 MiB)
-  2.123 ms (373 allocations: 1.21 MiB)
-  154.015 μs (58 allocations: 50.84 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  16.663 ms (21 allocations: 2.27 MiB)
+  2.386 ms (373 allocations: 1.21 MiB)
+  179.002 μs (58 allocations: 50.84 KiB)
 </pre></div>
 </div>
 </div>
@@ -2023,7 +2026,7 @@ use GMRES since we do not have any structure.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.553 s (90 allocations: 19.08 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.349 s (90 allocations: 19.08 MiB)
 </pre></div>
 </div>
 </div>
@@ -2051,7 +2054,7 @@ use GMRES since we do not have any structure.</p>
 <span class="n">p</span> <span class="o">=</span> <span class="n">default_params</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
 <span class="n">sol</span> <span class="o">=</span> <span class="n">solve_transition_dynamics</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
 <span class="n">v</span> <span class="o">=</span> <span class="n">solve_bellman</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-<span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">dot</span><span class="p">(</span><span class="n">sol</span><span class="p">(</span><span class="n">tval</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">tval</span> <span class="k">in</span> <span class="n">t</span><span class="p">],</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;E_t(v)&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="p">[</span><span class="n">dot</span><span class="p">(</span><span class="n">sol</span><span class="p">(</span><span class="n">tval</span><span class="p">),</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">tval</span> <span class="k">in</span> <span class="n">t</span><span class="p">],</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;E_t(v)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -554,7 +557,7 @@ factor <span class="math notranslate nohighlight">\(g_t = g(X_t)\)</span> for th
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
-<span class="k">using</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span>
+<span class="k">using</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span>
 </pre></div>
 </div>
 </div>
@@ -570,7 +573,7 @@ factor <span class="math notranslate nohighlight">\(g_t = g(X_t)\)</span> for th
 <span class="n">d_series</span> <span class="o">=</span> <span class="n">cumprod</span><span class="p">(</span><span class="n">g_series</span><span class="p">)</span> <span class="c"># assumes d_0 = 1</span>
 
 <span class="n">series</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_series</span> <span class="n">g_series</span> <span class="n">d_series</span> <span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">d_series</span><span class="p">)]</span>
-<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;X_t&quot;</span> <span class="s">&quot;g_t&quot;</span> <span class="s">&quot;d_t&quot;</span> <span class="s">&quot;ln(d_t)&quot;</span><span class="p">]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">L</span><span class="s">&quot;X_t&quot;</span> <span class="sa">L</span><span class="s">&quot;g_t&quot;</span> <span class="sa">L</span><span class="s">&quot;d_t&quot;</span> <span class="sa">L</span><span class="s">&quot;ln(d_t)&quot;</span><span class="p">]</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -638,7 +641,7 @@ K(x, y) := g(y) P(x, y)\]</div>
      <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;price-dividend ratio&quot;</span><span class="p">,</span>
      <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;state&quot;</span><span class="p">,</span>
      <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
-     <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;v&quot;</span><span class="p">)</span>
+     <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;v&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -775,7 +778,7 @@ with a positively correlated Markov process and <span class="math notranslate no
 
 <span class="k">for</span> <span class="n">γ</span> <span class="k">in</span> <span class="n">γs</span>
     <span class="n">v</span> <span class="o">=</span> <span class="n">tree_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">γ</span> <span class="o">=</span> <span class="n">γ</span><span class="p">)</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;gamma = </span><span class="si">$γ</span><span class="s">&quot;</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;\gamma = %</span><span class="si">$γ</span><span class="s">&quot;</span>
     <span class="n">push!</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
     <span class="n">push!</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 <span class="k">end</span>
@@ -1200,7 +1203,7 @@ stochastic matrix of type Matrix{Float64}:
 <span class="k">for</span> <span class="n">k</span> <span class="k">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span>
     <span class="n">w</span> <span class="o">=</span> <span class="n">finite_horizon_call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">,</span> <span class="n">p_s</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
     <span class="n">push!</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-    <span class="n">push!</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="s">&quot;k = </span><span class="si">$k</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">push!</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="sa">L</span><span class="s">&quot;k = %</span><span class="si">$k</span><span class="s">&quot;</span><span class="p">)</span>
 <span class="k">end</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">labels</span><span class="p">)))</span>
 </pre></div>

@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -389,7 +392,7 @@ the equilibrium wage rate as a function of <span class="math notranslate nohighl
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span>
 </pre></div>
 </div>
 </div>
@@ -473,7 +476,7 @@ the equilibrium wage rate as a function of <span class="math notranslate nohighl
 <span class="c"># a indices with z fixed in each column</span>
 <span class="n">a_star</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">([</span><span class="n">a_vals</span><span class="p">[</span><span class="n">results</span><span class="o">.</span><span class="n">sigma</span><span class="p">[</span><span class="n">s_i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">s_i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">],</span> <span class="n">a_size</span><span class="p">,</span> <span class="n">z_size</span><span class="p">)</span>
 
-<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;z = </span><span class="si">$</span><span class="p">(</span><span class="n">z_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="s">&quot;</span> <span class="s">&quot;z = </span><span class="si">$</span><span class="p">(</span><span class="n">z_vals</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="s">&quot;</span><span class="p">]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">L</span><span class="s">&quot;z = %</span><span class="si">$</span><span class="p">(</span><span class="n">z_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="s">&quot;</span> <span class="sa">L</span><span class="s">&quot;z = %</span><span class="si">$</span><span class="p">(</span><span class="n">z_vals</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="s">&quot;</span><span class="p">]</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">a_vals</span><span class="p">,</span> <span class="n">a_star</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">a_vals</span><span class="p">,</span> <span class="n">a_vals</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:black</span><span class="p">,</span> <span class="n">linestyle</span> <span class="o">=</span> <span class="ss">:dash</span><span class="p">)</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;current assets&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;next period assets&quot;</span><span class="p">,</span> <span class="n">grid</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>

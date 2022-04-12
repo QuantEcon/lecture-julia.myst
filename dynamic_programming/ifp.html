@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -555,7 +558,7 @@ the unique optimal path from <span class="math notranslate nohighlight">\((a_0,z
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
-<span class="k">using</span> <span class="n">BenchmarkTools</span><span class="p">,</span> <span class="n">Optim</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Random</span>
+<span class="k">using</span> <span class="n">BenchmarkTools</span><span class="p">,</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Optim</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Random</span>
 <span class="k">using</span> <span class="n">Optim</span><span class="o">:</span> <span class="n">converged</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">maximizer</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">,</span> <span class="n">iterations</span>
 </pre></div>
 </div>
@@ -728,7 +731,7 @@ faster than iteration with <span class="math notranslate nohighlight">\(T\)</spa
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  400.138 μs (4351 allocations: 340.72 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  474.706 μs (4351 allocations: 340.72 KiB)
 </pre></div>
 </div>
 </div>
@@ -740,7 +743,7 @@ faster than iteration with <span class="math notranslate nohighlight">\(T\)</spa
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  579.055 μs (7824 allocations: 612.05 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  689.015 μs (7824 allocations: 612.05 KiB)
 </pre></div>
 </div>
 </div>
@@ -894,7 +897,7 @@ Starting policy function iteration
                             <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span>
                             <span class="n">verbose</span> <span class="o">=</span> <span class="nb">false</span><span class="p">)</span>
     <span class="n">traces</span> <span class="o">=</span> <span class="n">push!</span><span class="p">(</span><span class="n">traces</span><span class="p">,</span> <span class="n">c</span><span class="p">[</span><span class="o">:</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-    <span class="n">legends</span> <span class="o">=</span> <span class="n">push!</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span> <span class="s">&quot;r = </span><span class="si">$</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="n">r_val</span><span class="p">,</span> <span class="n">digits</span> <span class="o">=</span> <span class="mi">3</span><span class="p">))</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">legends</span> <span class="o">=</span> <span class="n">push!</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span> <span class="sa">L</span><span class="s">&quot;r = %</span><span class="si">$</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="n">r_val</span><span class="p">,</span> <span class="n">digits</span> <span class="o">=</span> <span class="mi">3</span><span class="p">))</span><span class="s">&quot;</span><span class="p">)</span>
 <span class="k">end</span>
 
 <span class="n">plot</span><span class="p">(</span><span class="n">traces</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">legends</span><span class="p">)))</span>
@@ -959,7 +962,7 @@ Starting policy function iteration
     <span class="k">end</span>
     <span class="n">xs</span> <span class="o">=</span> <span class="n">push!</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">asset_mean</span><span class="p">)</span>
     <span class="n">ys</span> <span class="o">=</span> <span class="n">push!</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span> <span class="n">r_vals</span><span class="p">)</span>
-    <span class="n">legends</span> <span class="o">=</span> <span class="n">push!</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span> <span class="s">&quot;b = </span><span class="si">$b</span><span class="s">&quot;</span><span class="p">)</span>
+    <span class="n">legends</span> <span class="o">=</span> <span class="n">push!</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span> <span class="sa">L</span><span class="s">&quot;b = %</span><span class="si">$b</span><span class="s">&quot;</span><span class="p">)</span>
     <span class="n">println</span><span class="p">(</span><span class="s">&quot;Finished iteration b = </span><span class="si">$b</span><span class="s">&quot;</span><span class="p">)</span>
 <span class="k">end</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">legends</span><span class="p">)))</span>

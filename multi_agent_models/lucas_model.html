@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -538,7 +541,7 @@ on the left hand side gives <a class="reference internal" href="#equation-ltbc">
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
-<span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Random</span>
+<span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Random</span>
 </pre></div>
 </div>
 </div>
@@ -628,8 +631,8 @@ on the left hand side gives <a class="reference internal" href="#equation-ltbc">
 <p>Here’s the resulting price function</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">price_vals</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;p*(y)&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;price&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">price_vals</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;p^*(y)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;price&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -665,10 +668,10 @@ utility.</p>
     <span class="n">tree</span> <span class="o">=</span> <span class="n">LucasTree</span><span class="p">(;</span><span class="n">β</span> <span class="o">=</span> <span class="n">β</span><span class="p">)</span>
     <span class="n">grid</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">grid</span>
     <span class="n">price_vals</span> <span class="o">=</span> <span class="n">solve_lucas_model</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
-    <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">price_vals</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;beta = beta_var&quot;</span><span class="p">)</span>
+    <span class="n">plot!</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">price_vals</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;</span><span class="se">\b</span><span class="s">eta = %</span><span class="si">$β</span><span class="s">&quot;</span><span class="p">)</span>
 <span class="k">end</span>
 
-<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;price&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;price&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

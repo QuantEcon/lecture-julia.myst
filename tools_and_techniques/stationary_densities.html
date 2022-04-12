@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -381,7 +384,7 @@ Markov process.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
-<span class="k">using</span> <span class="n">KernelDensity</span><span class="p">,</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Random</span>
+<span class="k">using</span> <span class="n">KernelDensity</span><span class="p">,</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Random</span>
 </pre></div>
 </div>
 </div>
@@ -684,7 +687,7 @@ converges almost surely to <span class="math notranslate nohighlight">\(\psi_t(y
 <span class="k">end</span>
 <span class="n">plot</span><span class="p">(</span><span class="n">ygrid</span><span class="p">,</span> <span class="n">laes_plot</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">colors</span><span class="p">)),</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
      <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;capital&quot;</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:none</span><span class="p">)</span>
-<span class="n">t</span> <span class="o">=</span> <span class="s">&quot;Density of k_1 (lighter) to k_T (darker) for T=</span><span class="si">$T</span><span class="s">&quot;</span>
+<span class="n">t</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;Density of </span><span class="si">$k_1</span><span class="s">$ (lighter) to </span><span class="si">$k_T</span><span class="s">$ (darker) for </span><span class="si">$T</span><span class="s">=%</span><span class="si">$T</span><span class="s">$&quot;</span>
 <span class="n">plot!</span><span class="p">(</span><span class="n">title</span> <span class="o">=</span> <span class="n">t</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -918,7 +921,7 @@ density estimator.</p>
 <span class="n">y</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">.+</span> <span class="mf">2.0</span>  <span class="c"># N(2, 1)</span>
 <span class="n">z</span> <span class="o">=</span> <span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">.+</span> <span class="mf">4.0</span>  <span class="c"># N(4, 1)</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">vcat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
-<span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;X&quot;</span> <span class="s">&quot;Y&quot;</span> <span class="s">&quot;Z&quot;</span><span class="p">]</span>
+<span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="sa">L</span><span class="s">&quot;X&quot;</span> <span class="sa">L</span><span class="s">&quot;Y&quot;</span> <span class="sa">L</span><span class="s">&quot;Z&quot;</span><span class="p">]</span>
 <span class="n">xlabels</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">repeat</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="mi">3</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
 <span class="n">boxplot</span><span class="p">(</span><span class="n">xlabels</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">ylims</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="mi">14</span><span class="p">))</span>
@@ -1102,7 +1105,7 @@ series for one boxplot all at once.</p>
 <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="n">x_labels</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">j</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">J</span>
-    <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;time series from t = </span><span class="si">$</span><span class="p">(</span><span class="n">initial_conditions</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="s">&quot;</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;time series from </span><span class="si">$t</span><span class="s"> = %</span><span class="si">$</span><span class="p">(</span><span class="n">initial_conditions</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="s">$&quot;</span>
     <span class="n">push!</span><span class="p">(</span><span class="n">titles</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
 
     <span class="n">X</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>

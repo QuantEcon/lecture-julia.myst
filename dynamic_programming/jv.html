@@ -79,9 +79,12 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
@@ -298,7 +301,7 @@
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
 <span class="k">using</span> <span class="n">Distributions</span><span class="p">,</span> <span class="n">QuantEcon</span><span class="p">,</span> <span class="n">Interpolations</span><span class="p">,</span> <span class="n">Expectations</span><span class="p">,</span> <span class="n">Parameters</span>
-<span class="k">using</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">NLsolve</span><span class="p">,</span> <span class="n">Random</span>
+<span class="k">using</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">NLsolve</span><span class="p">,</span> <span class="n">Random</span>
 </pre></div>
 </div>
 </div>
@@ -596,9 +599,9 @@ guaranteed.  Grid search is a simple way to check results.</p>
 
 <span class="c"># plot solution</span>
 <span class="n">p</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">x_grid</span><span class="p">,</span> <span class="p">[</span><span class="n">ϕ_policy</span> <span class="n">s_policy</span> <span class="n">sol_V</span><span class="p">],</span>
-         <span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;phi policy&quot;</span> <span class="s">&quot;s policy&quot;</span> <span class="s">&quot;value function&quot;</span><span class="p">],</span>
+         <span class="n">title</span> <span class="o">=</span> <span class="p">[</span><span class="sa">L</span><span class="s">&quot;$\phi$ policy&quot;</span> <span class="sa">L</span><span class="s">&quot;</span><span class="si">$s</span><span class="s">$ policy&quot;</span> <span class="s">&quot;value function&quot;</span><span class="p">],</span>
          <span class="n">color</span> <span class="o">=</span> <span class="p">[</span><span class="ss">:orange</span> <span class="ss">:blue</span> <span class="ss">:green</span><span class="p">],</span>
-         <span class="n">xaxis</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">maximum</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">x_grid</span><span class="p">))),</span>
+         <span class="n">xaxis</span> <span class="o">=</span> <span class="p">(</span><span class="sa">L</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">maximum</span><span class="p">(</span><span class="n">wp</span><span class="o">.</span><span class="n">x_grid</span><span class="p">))),</span>
          <span class="n">yaxis</span> <span class="o">=</span> <span class="p">((</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">)),</span> <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">),</span>
          <span class="n">legend</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
          <span class="n">bottom_margin</span> <span class="o">=</span> <span class="n">Plots</span><span class="o">.</span><span class="n">PlotMeasures</span><span class="o">.</span><span class="n">Length</span><span class="p">(</span><span class="ss">:mm</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
@@ -714,7 +717,7 @@ choice of <span class="math notranslate nohighlight">\(\phi\)</span>.</p>
 
 <span class="n">plot</span><span class="p">(</span><span class="n">plot_grid</span><span class="p">,</span> <span class="n">plot_grid</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:black</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="ss">:dash</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="ss">:none</span><span class="p">)</span>
 <span class="n">scatter!</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="ss">:green</span><span class="p">,</span> <span class="n">lims</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">plot_grid_max</span><span class="p">),</span> <span class="n">ticks</span><span class="o">=</span><span class="n">ticks</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;x_t&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;x_{t+1}&quot;</span><span class="p">,</span> <span class="n">guidefont</span><span class="o">=</span><span class="n">font</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;x_t&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;x_{t+1}&quot;</span><span class="p">,</span> <span class="n">guidefont</span><span class="o">=</span><span class="n">font</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -745,7 +748,7 @@ choice of <span class="math notranslate nohighlight">\(\phi\)</span>.</p>
 <span class="n">ϕ_grid</span> <span class="o">=</span> <span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
 
 <span class="n">plot</span><span class="p">(</span><span class="n">ϕ_grid</span><span class="p">,</span> <span class="p">[</span><span class="n">xbar</span><span class="p">(</span><span class="n">ϕ</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">ϕ</span><span class="p">)</span> <span class="k">for</span> <span class="n">ϕ</span> <span class="k">in</span> <span class="n">ϕ_grid</span><span class="p">],</span> <span class="n">color</span> <span class="o">=</span> <span class="ss">:blue</span><span class="p">,</span>
-     <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;w^phi&quot;</span><span class="p">,</span> <span class="n">legendfont</span> <span class="o">=</span> <span class="n">font</span><span class="p">(</span><span class="mi">12</span><span class="p">),</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;phi&quot;</span><span class="p">,</span>
+     <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;w^\phi&quot;</span><span class="p">,</span> <span class="n">legendfont</span> <span class="o">=</span> <span class="n">font</span><span class="p">(</span><span class="mi">12</span><span class="p">),</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;\phi&quot;</span><span class="p">,</span>
      <span class="n">guidefont</span> <span class="o">=</span> <span class="n">font</span><span class="p">(</span><span class="mi">16</span><span class="p">),</span> <span class="n">grid</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span> <span class="n">legend</span> <span class="o">=</span> <span class="ss">:topleft</span><span class="p">)</span>
 </pre></div>
 </div>
