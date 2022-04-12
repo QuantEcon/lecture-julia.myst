@@ -1226,7 +1226,7 @@ using Test
 ```
 
 ```{code-cell} julia
-using QuantEcon, Plots
+using LaTeXStrings, QuantEcon, Plots
 
 ```
 
@@ -1246,7 +1246,7 @@ lss = LSS(A, C, G; mu_0=μ_0)
 
 x, y = simulate(lss, 50)
 plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
-plot!(xlabel="time", ylabel = "y_t", legend = :none)
+plot!(xlabel="time", ylabel = L"y_t", legend = :none)
 ```
 
 ```{code-cell} julia
@@ -1282,7 +1282,7 @@ ar = LSS(A, C, G; mu_0 = ones(4))
 x, y = simulate(ar, 200)
 
 plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
-plot!(xlabel="time", ylabel = "y_t", legend = :none)
+plot!(xlabel="time", ylabel = L"y_t", legend = :none)
 ```
 
 ```{code-cell} julia
@@ -1333,7 +1333,7 @@ end
 
 ensemble_mean = ensemble_mean ./ I
 plot(ys, color = :blue, alpha = 0.2, linewidth = 0.8, label = "")
-plot!(ensemble_mean, color = :blue, linewidth = 2, label = "y_t_bar")
+plot!(ensemble_mean, color = :blue, linewidth = 2, label = L"\overline{y_t}")
 m = moment_sequence(ar)
 pop_means = zeros(0)
 for (i, t) ∈ enumerate(m)
@@ -1341,8 +1341,8 @@ for (i, t) ∈ enumerate(m)
     push!(pop_means, μ_y[1])
     i == 50 && break
 end
-plot!(pop_means, color = :green, linewidth = 2, label = "G mu_t")
-plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = "y_t", legendfont = font(12))
+plot!(pop_means, color = :green, linewidth = 2, label = L"G \mu_t")
+plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = L"y_t", legendfont = font(12))
 ```
 
 ```{code-cell} julia
@@ -1406,8 +1406,8 @@ end
 plot(ys, linewidth = 0.8, alpha = 0.5)
 plot!([T0 T1 T2; T0 T1 T2], [-1 -1 -1; 1 1 1], color = :black, legend = :none)
 scatter!(x_scatter, y_scatter, color = :black, alpha = 0.5)
-plot!(ylims=(ymin, ymax), ylabel = "y_t", xticks =[], yticks = ymin:0.2:ymax)
-plot!(annotations = [(T0+1, -0.55, "T");(T1+1, -0.55, "T'");(T2+1, -0.55, "T''")])
+plot!(ylims=(ymin, ymax), ylabel = L"y_t", xticks =[], yticks = ymin:0.2:ymax)
+plot!(annotations = [(T0+1, -0.55, L"T");(T1+1, -0.55, L"T^\prime");(T2+1, -0.55, L"T^{\prime\prime}")])
 ```
 
 ```{code-cell} julia

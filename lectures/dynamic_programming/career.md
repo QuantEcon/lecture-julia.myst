@@ -154,7 +154,7 @@ using Test
 ```
 
 ```{code-cell} julia
-using Plots, QuantEcon, Distributions
+using LaTeXStrings, Plots, QuantEcon, Distributions
 
 
 n = 50
@@ -163,7 +163,7 @@ b_vals = [0.5, 1, 100]
 
 plt = plot()
 for (a, b) in zip(a_vals, b_vals)
-    ab_label = "a = $a, b = $b"
+    ab_label = L"$a = %$a, b = %$b$"
     dist = BetaBinomial(n, a, b)
     plot!(plt, 0:n, pdf.(dist, support(dist)), label = ab_label)
 end
@@ -274,7 +274,7 @@ v_init = fill(100.0, wp.N, wp.N)
 func(x) = update_bellman(wp, x)
 v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
 
-plot(linetype = :surface, wp.θ, wp.ϵ, transpose(v), xlabel="theta", ylabel="epsilon",
+plot(linetype = :surface, wp.θ, wp.ϵ, transpose(v), xlabel=L"\theta", ylabel=L"\epsilon",
      seriescolor=:plasma, gridalpha = 1)
 ```
 
@@ -392,8 +392,8 @@ end
 plot_array = Any[]
 for i in 1:2
     θ_path, ϵ_path = gen_path()
-    plt = plot(ϵ_path, label="epsilon")
-    plot!(plt, θ_path, label="theta")
+    plt = plot(ϵ_path, label=L"\epsilon")
+    plot!(plt, θ_path, label=L"\theta")
     plot!(plt, legend=:bottomright)
     push!(plot_array, plt)
 end
@@ -487,7 +487,7 @@ y_grid = range(0, 5, length = 50)
 
 contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
         fillalpha=1, cbar = false)
-contour!(xlabel="theta", ylabel="epsilon")
+contour!(xlabel=L"\theta", ylabel=L"\epsilon")
 annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
 annotate!([(4.5,2.5, text("new job", 14, :center))])
 annotate!([(4.0,4.5, text("stay put", 14, :center))])
@@ -505,7 +505,7 @@ y_grid = range(0, 5, length = 50)
 
 contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
         fillalpha=1, cbar = false)
-contour!(xlabel="theta", ylabel="epsilon")
+contour!(xlabel=L"\theta", ylabel=L"\epsilon")
 annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
 annotate!([(4.5,2.5, text("new job", 14, :center))])
 annotate!([(4.0,4.5, text("stay put", 14, :center))])

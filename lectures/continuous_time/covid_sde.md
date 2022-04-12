@@ -54,7 +54,7 @@ Every other Levy Process can be represented by these building blocks (e.g. a [Di
 In this lecture, we will examine shocks driven by transformations of Brownian motion, as the prototypical Stochastic Differential Equation (SDE).
 
 ```{code-cell} julia
-using LinearAlgebra, Statistics, Random, SparseArrays
+using LaTeXStrings, LinearAlgebra, Random, SparseArrays, Statistics
 ```
 
 ```{code-cell} julia
@@ -284,25 +284,25 @@ If we take two solutions and plot the number of infections, we will see differen
 ```{code-cell} julia
 sol_2 = solve(prob, SOSRI())
 plot(sol_1, vars=[2], title = "Number of Infections", label = "Trajectory 1",
-     lm = 2, xlabel = "t", ylabel = "i(t)")
-plot!(sol_2, vars=[2], label = "Trajectory 2", lm = 2, ylabel = "i(t)")
+     lm = 2, xlabel = L"t", ylabel = L"i(t)")
+plot!(sol_2, vars=[2], label = "Trajectory 2", lm = 2, xlabel = L"t", ylabel = L"i(t)")
 ```
 
 The same holds for other variables such as the cumulative deaths, mortality, and $R_0$:
 
 ```{code-cell} julia
 plot_1 = plot(sol_1, vars=[4], title = "Cumulative Death Proportion", label = "Trajectory 1",
-              lw = 2, xlabel = "t", ylabel = "d(t)", legend = :topleft)
-plot!(plot_1, sol_2, vars=[4], label = "Trajectory 2", lw = 2)
+              lw = 2, xlabel = L"t", ylabel = L"d(t)", legend = :topleft)
+plot!(plot_1, sol_2, vars=[4], label = "Trajectory 2", lw = 2, xlabel = L"t")
 plot_2 = plot(sol_1, vars=[3], title = "Cumulative Recovered Proportion", label = "Trajectory 1",
-              lw = 2, xlabel = "t", ylabel = "d(t)", legend = :topleft)
-plot!(plot_2, sol_2, vars=[3], label = "Trajectory 2", lw = 2)
-plot_3 = plot(sol_1, vars=[5], title = "R_0 transition from lockdown", label = "Trajectory 1",
-              lw = 2, xlabel = "t", ylabel = "R_0(t)")
-plot!(plot_3, sol_2, vars=[5], label = "Trajectory 2", lw = 2)
+              lw = 2, xlabel = L"t", ylabel = L"d(t)", legend = :topleft)
+plot!(plot_2, sol_2, vars=[3], label = "Trajectory 2", lw = 2, xlabel = L"t")
+plot_3 = plot(sol_1, vars=[5], title = L"$R_0$ transition from lockdown", label = "Trajectory 1",
+              lw = 2, xlabel = L"t", ylabel = L"R_0(t)")
+plot!(plot_3, sol_2, vars=[5], label = "Trajectory 2", lw = 2, xlabel = L"t")
 plot_4 = plot(sol_1, vars=[6], title = "Mortality Rate", label = "Trajectory 1",
-              lw = 2, xlabel = "t", ylabel = "delta(t)", ylim = (0.006, 0.014))
-plot!(plot_4, sol_2, vars=[6], label = "Trajectory 2", lw = 2)
+              lw = 2, xlabel = L"t", ylabel = L"\delta(t)", ylim = (0.006, 0.014))
+plot!(plot_4, sol_2, vars=[6], label = "Trajectory 2", lw = 2, xlabel = L"t")
 plot(plot_1, plot_2, plot_3, plot_4, size = (900, 600))
 ```
 
@@ -324,7 +324,7 @@ For example:
 ```{code-cell} julia
 ensembleprob = EnsembleProblem(prob)
 sol = solve(ensembleprob, SOSRI(), EnsembleSerial(), trajectories = 10)
-plot(sol, vars = [2], title = "Infection Simulations", ylabel = "i(t)", xlabel = "t", lm = 2)
+plot(sol, vars = [2], title = "Infection Simulations", ylabel = L"i(t)", xlabel = L"t", lm = 2)
 ```
 
 Or, more frequently, you may want to run many trajectories and plot quantiles, which can be automatically run in [parallel](https://docs.sciml.ai/stable/features/ensemble/) using multiple threads, processes, or GPUs. Here we showcase `EnsembleSummary` which calculates summary information from an ensemble and plots the mean of the solution along with calculated quantiles of the simulation:
@@ -333,8 +333,8 @@ Or, more frequently, you may want to run many trajectories and plot quantiles, w
 trajectories = 100  # choose larger for smoother quantiles
 sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), trajectories = trajectories)
 summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.95 quantiles
-plot(summ, idxs = (2,), title = "Quantiles of Infections Ensemble", ylabel = "i(t)",
-     xlabel = "t", labels = "Middle 95% Quantile", legend = :topright)
+plot(summ, idxs = (2,), title = "Quantiles of Infections Ensemble", ylabel = L"i(t)",
+     xlabel = L"t", labels = "Middle 95% Quantile", legend = :topright)
 ```
 
 In addition, you can calculate more quantiles and stack graphs
@@ -345,8 +345,8 @@ summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.95 quantiles
 summ2 = EnsembleSummary(sol, quantiles = (0.25, 0.75))
 
 plot(summ, idxs = (2,4,5,6),
-    title = ["Proportion Infected" "Proportion Dead" "R_0" "delta"],
-    ylabel = ["i(t)" "d(t)" "R_0(t)" "delta(t)"], xlabel = "t",
+    title = ["Proportion Infected" "Proportion Dead" L"R_0" L"\delta"],
+    ylabel = [L"i(t)" L"d(t)" L"R_0(t)" L"\delta(t)"], xlabel = L"t",
     legend = [:topleft :topleft :bottomright :bottomright],
     labels = "Middle 95% Quantile", layout = (2, 2), size = (900, 600))
 plot!(summ2, idxs = (2,4,5,6),
@@ -385,14 +385,14 @@ end
 summ_1 = generate_η_experiment(η_1)
 summ_2 = generate_η_experiment(η_2)
 plot(summ_1, idxs = (4,5),
-    title = ["Proportion Dead" "R_0"],
-    ylabel = ["d(t)" "R_0(t)"], xlabel = "t",
+    title = ["Proportion Dead" L"R_0"],
+    ylabel = [L"d(t)" L"R_0(t)"], xlabel = L"t",
     legend = [:topleft :bottomright],
-    labels = "Middle 95% Quantile, eta = $η_1",
+    labels = L"Middle 95% Quantile, $\eta = %$η_1$",
     layout = (2, 1), size = (900, 900), fillalpha = 0.5)
 plot!(summ_2, idxs = (4,5),
     legend = [:topleft :bottomright],
-    labels = "Middle 95% Quantile, eta = $η_2", size = (900, 900), fillalpha = 0.5)
+    labels = L"Middle 95% Quantile, $\eta = %$η_2$", size = (900, 900), fillalpha = 0.5)
 ```
 
 While the the mean of the $d(t)$ increases, unsurprisingly, we see that the 95% quantile for later time periods is also much larger - even after the $R_0$ has converged.
@@ -439,14 +439,14 @@ Simulating for a single realization of the shocks, we see the results are qualit
 sol_early = solve(prob_early, SOSRI())
 sol_late = solve(prob_late, SOSRI())
 plot(sol_early, vars = [5, 1,2,4],
-    title = ["R_0" "Susceptible" "Infected" "Dead"],
+    title = [L"R_0" "Susceptible" "Infected" "Dead"],
     layout = (2, 2), size = (900, 600),
-    ylabel = ["R_0(t)" "s(t)" "i(t)" "d(t)"], xlabel = "t",
+    ylabel = [L"R_0(t)" L"s(t)" L"i(t)" L"d(t)"], xlabel = L"t",
         legend = [:bottomright :topright :topright :topleft],
         label = ["Early" "Early" "Early" "Early"])
 plot!(sol_late, vars = [5, 1,2,4],
         legend = [:bottomright :topright :topright :topleft],
-        label = ["Late" "Late" "Late" "Late"])
+        label = ["Late" "Late" "Late" "Late"], xlabel = L"t")
 ```
 
 However, note that this masks highly volatile values induced by the in $R_0$ variation, as seen in the ensemble
@@ -462,8 +462,8 @@ summ_early = EnsembleSummary(ensemble_sol_early)
 summ_late = EnsembleSummary(ensemble_sol_late)
 
 plot(summ_early, idxs = (5, 1, 2, 4),
-    title = ["R_0" "Susceptible" "Infected" "Dead"], layout = (2, 2), size = (900, 600),
-    ylabel = ["R_0(t)" "s(t)" "i(t)" "d(t)"], xlabel = "t",
+    title = [L"R_0" "Susceptible" "Infected" "Dead"], layout = (2, 2), size = (900, 600),
+    ylabel = [L"R_0(t)" L"s(t)" L"i(t)" L"d(t)"], xlabel = L"t",
     legend = [:bottomright :topright :topright :topleft],
     label = ["Early" "Early" "Early" "Early"])
 plot!(summ_late, idxs = (5, 1,2,4),
@@ -485,12 +485,12 @@ bins_2 = 30  # number rather than grid.
 hist_1 = histogram([ensemble_sol_early.u[i](t_1)[4] for i in 1:trajectories],
                    fillalpha = 0.5, normalize = :probability,
                    legend = :topleft, bins = bins_1,
-                   label = "Early", title = "Death Proportion at t = $t_1")
+                   label = "Early", title = L"Death Proportion at $t = %$t_1$")
 histogram!(hist_1, [ensemble_sol_late.u[i](t_1)[4] for i in 1:trajectories],
            label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_1)
 hist_2 = histogram([ensemble_sol_early.u[i][4, end] for i in 1:trajectories],
                    fillalpha = 0.5, normalize = :probability, bins = bins_2,
-                   label = "Early", title = "Death Proportion at t = $t_2")
+                   label = "Early", title = L"Death Proportion at $t = %$t_2$")
 histogram!(hist_2, [ensemble_sol_late.u[i][4, end] for i in 1:trajectories],
            label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_2)
 plot(hist_1, hist_2, size = (600,600), layout = (2, 1))
@@ -572,12 +572,12 @@ The ensemble simulations for the $\nu = 0$ and $\nu > 0$ can be compared to see 
 plot(summ_late, idxs = (1, 2, 3, 4),
     title = ["Susceptible" "Infected" "Recovered" "Dead"],
     layout = (2, 2), size = (900, 600),
-    ylabel = ["s(t)" "i(t)" "r(t)" "d(t)"], xlabel = "t",
+    ylabel = [L"s(t)" L"i(t)" L"r(t)" L"d(t)"], xlabel = L"t",
     legend = :topleft,
-    label = ["s(t)" "i(t)" "r(t)" "d(t)"])
+    label = [L"s(t)" L"i(t)" L"r(t)" L"d(t)"])
 plot!(summ_re_late, idxs =  (1, 2, 3, 4),
     legend = :topleft,
-    label = ["s(t); nu > 0" "i(t); nu > 0" "r(t); nu > 0" "d(t); nu > 0"])
+    label = [L"s(t); \nu > 0" L"i(t); \nu > 0" L"r(t); \nu > 0" L"d(t); \nu > 0"])
 ```
 
 Finally, we can examine the same early vs. late lockdown histogram
@@ -588,12 +588,12 @@ bins_re_2 = range(0.0085, 0.0102, length = 50)
 hist_re_1 = histogram([ensemble_sol_re_early.u[i](t_1)[4] for i in 1:trajectories],
                     fillalpha = 0.5, normalize = :probability,
                     legend = :topleft, bins = bins_re_1,
-                    label = "Early", title = "Death Proportion at t = $t_1")
+                    label = "Early", title = L"Death Proportion at $t = %$t_1$")
 histogram!(hist_re_1, [ensemble_sol_re_late.u[i](t_1)[4] for i in 1:trajectories],
         label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_re_1)
 hist_re_2 = histogram([ensemble_sol_re_early.u[i][4, end] for i in 1:trajectories],
                     fillalpha = 0.5, normalize = :probability, bins = bins_re_2,
-                    label = "Early", title = "Death Proportion at t = $t_2")
+                    label = "Early", title = L"Death Proportion at $t = %$t_2$")
 histogram!(hist_re_2, [ensemble_sol_re_late.u[i][4, end] for i in 1:trajectories],
         label = "Late", fillalpha = 0.5, normalize = :probability,
         bins =  bins = bins_re_2)

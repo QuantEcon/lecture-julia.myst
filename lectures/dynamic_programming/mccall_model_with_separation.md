@@ -47,7 +47,7 @@ Once separation enters the picture, the agent comes to view
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Expectations, Parameters, NLsolve, Plots
+using Distributions, Expectations, LaTeXStrings, Parameters, NLsolve, Plots
 ```
 
 ## The Model
@@ -306,7 +306,7 @@ mcm = McCallModel()
 @unpack V, U = solve_mccall_model(mcm)
 U_vec = fill(U, length(mcm.w))
 
-plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = ["V" "U"])
+plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = [L"V" L"U"])
 ```
 
 ```{code-cell} julia
@@ -433,7 +433,7 @@ plot(c_vals,
     α = 0.7,
     xlabel = "unemployment compensation",
     ylabel = "reservation wage",
-    label = "w̄ as a function of c")
+    label = L"$\overline{w}$ as a function of $c$")
 ```
 
 Note that we could've done the above in one pass (which would be important if, for example, the parameter space was quite large).
@@ -467,7 +467,7 @@ sols = solve_mccall_model.(models)
 w̄_vals = [sol.w̄ for sol in sols]
 
 plot(γ_vals, w̄_vals, lw = 2, α = 0.7, xlabel = "job offer rate",
-     ylabel = "reservation wage", label = "w̄ as a function of gamma")
+     ylabel = "reservation wage", label = L"$\overline{w}$ as a function of $\gamma$")
 ```
 
 ```{code-cell} julia

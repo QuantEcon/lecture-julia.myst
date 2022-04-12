@@ -113,7 +113,7 @@ using Test, Random
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Parameters, Plots, QuantEcon
+using Distributions, LaTeXStrings, Parameters, Plots, QuantEcon
 import Distributions: loglikelihood
 
 ```
@@ -264,13 +264,13 @@ Ymean_t = mean(Yit, dims = 1)
 Xmean_pop, Ymean_pop = population_means(amf, T)
 
 # Plot sample means vs population means
-plt_1 = plot(Xmean_t', color = :blue, label = "1/I sum_i x_t^i")
-plot!(plt_1, Xmean_pop, color = :black, label = "E x_t")
-plot!(plt_1, title = "x_t", xlim = (0, T), legend = :bottomleft)
+plt_1 = plot(Xmean_t', color = :blue, label = L"(1/I) \sum_i x_t^i")
+plot!(plt_1, Xmean_pop, color = :black, label = L"E x_t")
+plot!(plt_1, title = L"x_t", xlim = (0, T), legend = :bottomleft)
 
-plt_2 = plot(Ymean_t', color = :blue, label = "1/I sum_i x_t^i")
-plot!(plt_2, Ymean_pop, color = :black, label = "E y_t")
-plot!(plt_2, title = "y_t", xlim = (0, T), legend = :bottomleft)
+plt_2 = plot(Ymean_t', color = :blue, label = L"(1/I) \sum_i x_t^i")
+plot!(plt_2, Ymean_pop, color = :black, label = L"E y_t")
+plot!(plt_2, title = L"y_t", xlim = (0, T), legend = :bottomleft)
 
 plot(plt_1, plt_2, layout = (2, 1), size = (800,500))
 ```
@@ -319,7 +319,7 @@ LLT = 1 / T * LLit[:, end]
 LLmean_t = mean(LLT)
 
 plot(seriestype = :histogram, LLT, label = "")
-plot!(title = "Distribution of (I/T)log(L_T)|theta_0")
+plot!(title = L"Distribution of $(I/T)log(L_T)|\theta_0$")
 vline!([LLmean_t], linestyle = :dash, color = :black, lw = 2, alpha = 0.6, label = "")
 ```
 
@@ -373,7 +373,7 @@ Let's also plot the conditional pdf of $\Delta y_{t+1}$
 xgrid = range(-1,  1, length = 100)
 println("The pdf at +/- one sigma takes the value: $(pdf(normdist, F)) ")
 plot(xgrid, pdf.(normdist, xgrid), label = "")
-plot!(title = "Conditional pdf f(Delta y_(t+1) | x_t)")
+plot!(title = L"Conditional pdf $f(\Delta y_{t+1} | x_t)$")
 ```
 
 ### An alternative parameter vector
@@ -428,7 +428,7 @@ LLmean_t2 = mean(LLT2)
 
 plot(seriestype = :histogram, LLT2, label = "")
 vline!([LLmean_t2], color = :black, lw = 2, linestyle = :dash, alpha = 0.6, label = "")
-plot!(title = "Distribution of (1/T)log(L_T) | theta_1)")
+plot!(title = L"Distribution of $(1/T)log(L_T) | \theta_1)$")
 ```
 
 ```{code-cell} julia
@@ -457,7 +457,7 @@ Now we'll plot the histogram of the difference in log likelihood ratio
 LLT_diff = LLT - LLT2
 
 plot(seriestype = :histogram, LLT_diff, bin = 50, label = "")
-plot!(title = "(1/T)[log(L_T^i | theta_0) - log(L_T^i |theta_1)]")
+plot!(title = L"(1/T)[log(L_T^i | \theta_0) - log(L_T^i |\theta_1)]")
 ```
 
 ### Interpretation

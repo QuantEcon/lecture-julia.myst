@@ -69,7 +69,7 @@ Markov process.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using KernelDensity, Distributions, Plots, QuantEcon, Random
+using KernelDensity, Distributions, LaTeXStrings, Plots, QuantEcon, Random
 ```
 
 (statd_density_case)=
@@ -504,7 +504,7 @@ for i in 1:T
 end
 plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2,
      xlabel = "capital", legend = :none)
-t = "Density of k_1 (lighter) to k_T (darker) for T=$T"
+t = L"Density of $k_1$ (lighter) to $k_T$ (darker) for $T=%$T$"
 plot!(title = t)
 ```
 
@@ -853,7 +853,7 @@ x = exp.(x)         # Map x to lognormal
 y = randn(n) .+ 2.0  # N(2, 1)
 z = randn(n) .+ 4.0  # N(4, 1)
 data = vcat(x, y, z)
-l = ["X" "Y" "Z"]
+l = [L"X" L"Y" L"Z"]
 xlabels = reshape(repeat(l, n), 3n, 1)
 
 boxplot(xlabels, data, label = "", ylims = (-2, 14))
@@ -1068,7 +1068,7 @@ titles = []
 data = []
 x_labels = []
 for j in 1:J
-    title = "time series from t = $(initial_conditions[j])"
+    title = L"time series from $t = %$(initial_conditions[j])$"
     push!(titles, title)
 
     X = zeros(k, n)

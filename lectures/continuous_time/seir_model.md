@@ -53,7 +53,7 @@ The interest is primarily in
 
 
 ```{code-cell} julia
-using LinearAlgebra, Statistics, Random, SparseArrays
+using LaTeXStrings, LinearAlgebra, Random, SparseArrays, Statistics
 ```
 
 ```{code-cell} julia
@@ -199,7 +199,7 @@ With this, choose an ODE algorithm and solve the initial value problem.  A good 
 
 ```{code-cell} julia
 sol = solve(prob, Tsit5())
-plot(sol, labels = ["s" "e" "i" "r"], title = "SEIR Dynamics", lw = 2)
+plot(sol, labels = [L"s" L"e" L"i" L"r"], title = "SEIR Dynamics", lw = 2, xlabel = L"t")
 ```
 
 We did not provide either a set of time steps or a `dt` time step size to the `solve`.  Most accurate and high-performance ODE solvers appropriate for this problem use adaptive time-stepping, changing the step size based the degree of curvature in the derivatives.
@@ -207,7 +207,7 @@ We did not provide either a set of time steps or a `dt` time step size to the `s
 Or, as an alternative visualization, the proportions in each state over time
 
 ```{code-cell} julia
-areaplot(sol.t, sol', labels = ["s" "e" "i" "r"], title = "SEIR Proportions")
+areaplot(sol.t, sol', labels = [L"s" L"e" L"i" L"r"], title = "SEIR Proportions", xlabel = L"t")
 ```
 
 While maintaining the core system of ODEs in $(s, e, i, r)$, we will extend the basic model to enable some policy experiments and calculations of aggregate values.
@@ -354,9 +354,9 @@ While it may seem that 45 time intervals is extremely small for that range, for 
 The solution object has [built in](https://docs.sciml.ai/stable/basics/plot/) plotting support.
 
 ```{code-cell} julia
-plot(sol, vars = [6, 7], label = ["c(t)" "d(t)"], lw = 2,
+plot(sol, vars = [6, 7], label = [L"c(t)" L"d(t)"], lw = 2,
      title = ["Cumulative Infected" "Death Proportion"],
-     layout = (1,2), size = (900, 300))
+     xlabel = L"t", layout = (1,2), size = (900, 300))
 ```
 
 A few more comments:
@@ -384,10 +384,10 @@ Changing the saved points is just a question of storage/interpolation, and does 
 Let's plot current cases as a fraction of the population.
 
 ```{code-cell} julia
-labels = permutedims(["R_0 = $r" for r in R₀_n_vals])
+labels = permutedims([L"R_0 = %$r" for r in R₀_n_vals])
 infecteds = [sol[3,:] for sol in sols]
-plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = "t",
-     ylabel = "i(t)", title = "Current Cases")
+plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = L"t",
+     ylabel = L"i(t)", title = "Current Cases")
 ```
 
 As expected, lower effective transmission rates defer the peak of infections.
@@ -398,8 +398,8 @@ Here is cumulative cases, as a fraction of population:
 
 ```{code-cell} julia
 cumulative_infected = [sol[6,:] for sol in sols]
-plot(cumulative_infected, label=labels ,legend=:topleft, lw = 2, xlabel = "t",
-     ylabel = "c(t)", title = "Cumulative Cases")
+plot(cumulative_infected, label=labels ,legend=:topleft, lw = 2, xlabel = L"t",
+     ylabel = L"c(t)", title = "Cumulative Cases")
 ```
 
 ### Experiment 2: Changing Mitigation
@@ -420,7 +420,7 @@ We consider several different rates:
 
 ```{code-cell} julia
 η_vals = [1/5, 1/10, 1/20, 1/50, 1/100]
-labels = permutedims(["eta = $η" for η in η_vals]);
+labels = permutedims([L"\eta = %$η" for η in η_vals]);
 ```
 
 Let's calculate the time path of infected people, current cases, and mortality
@@ -434,8 +434,8 @@ Next, plot the $R_0$ over time:
 
 ```{code-cell} julia
 Rs = [sol[5,:] for sol in sols]
-plot(Rs, label=labels, legend=:topright, lw = 2, xlabel = "t",
-     ylabel = "R_0(t)", title = "Basic Reproduction Number")
+plot(Rs, label=labels, legend=:topright, lw = 2, xlabel = L"t",
+     ylabel = L"R_0(t)", title = "Basic Reproduction Number")
 ```
 
 Now let's plot the number of infected persons and the cumulative number
@@ -443,14 +443,14 @@ of infected persons:
 
 ```{code-cell} julia
 infecteds = [sol[3,:] for sol in sols]
-plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = "t",
-     ylabel = "i(t)", title = "Current Infected")
+plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = L"t",
+     ylabel = L"i(t)", title = "Current Infected")
 ```
 
 ```{code-cell} julia
 cumulative_infected = [sol[6,:] for sol in sols]
-plot(cumulative_infected, label=labels ,legend=:topleft, lw = 2, xlabel = "t",
-     ylabel = "c(t)", title = "Cumulative Infected")
+plot(cumulative_infected, label=labels ,legend=:topleft, lw = 2, xlabel = L"t",
+     ylabel = L"c(t)", title = "Cumulative Infected")
 ```
 
 ## Ending Lockdown
@@ -495,7 +495,7 @@ Let's calculate the paths:
 sol_early = solve(prob_early, Tsit5(), tstops = [30.0, 120.0])
 sol_late = solve(prob_late, Tsit5(), tstops = [30.0, 120.0])
 plot(sol_early, vars = [7], title = "Total Mortality", label = "Lift Early", legend = :topleft)
-plot!(sol_late, vars = [7], label = "Lift Late")
+plot!(sol_late, vars = [7], label = "Lift Late", xlabel = L"t")
 ```
 
 Next we examine the daily deaths, $\frac{d D(t)}{dt} = N \delta \gamma i(t)$.
@@ -504,7 +504,7 @@ Next we examine the daily deaths, $\frac{d D(t)}{dt} = N \delta \gamma i(t)$.
 flow_deaths(sol, p) = p.N * p.δ * p.γ * sol[3,:]
 
 plot(sol_early.t, flow_deaths(sol_early, p_early), title = "Flow Deaths", label = "Lift Early")
-plot!(sol_late.t, flow_deaths(sol_late, p_late), label = "Lift Late")
+plot!(sol_late.t, flow_deaths(sol_late, p_late), label = "Lift Late", xlabel = L"t")
 ```
 
 Pushing the peak of curve further into the future may reduce cumulative deaths

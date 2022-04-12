@@ -327,7 +327,7 @@ using Test
 
 ```{code-cell} julia
 using QuantEcon, LinearAlgebra
-using Plots
+using LaTeXStrings, Plots
 
 
 # Set parameters
@@ -575,17 +575,17 @@ function consumption_income_debt_figure(bsim, csim, ysim)
     xvals = 1:T
 
     # plot consumption and income
-    plt_1 = plot(csim[1,:], label="c", color=:blue, lw=2)
-    plot!(plt_1, ysim[1, :], label="y", color=:green, lw=2)
+    plt_1 = plot(csim[1,:], label=L"c", color=:blue, lw=2)
+    plot!(plt_1, ysim[1, :], label=L"y", color=:green, lw=2)
     plot!(plt_1, csim', alpha=0.1, color=:blue, label="")
     plot!(plt_1, ysim', alpha=0.1, color=:green, label="")
     plot!(plt_1, title="Nonfinancial Income, Consumption, and Debt",
-          xlabel="t", ylabel="y and c",legend=:bottomright)
+          xlabel=L"t", ylabel=L"$y$ and $c$",legend=:bottomright)
 
     # plot debt
-    plt_2 = plot(bsim[1,: ], label="b", color=:red, lw=2)
+    plt_2 = plot(bsim[1,: ], label=L"b", color=:red, lw=2)
     plot!(plt_2, bsim', alpha=0.1, color=:red,label="")
-    plot!(plt_2, xlabel="t", ylabel="debt",legend=:bottomright)
+    plot!(plt_2, xlabel=L"t", ylabel="debt",legend=:bottomright)
 
     plot(plt_1, plt_2, layout=(2,1), size=(800,600))
 end
@@ -624,7 +624,7 @@ function consumption_debt_fanchart(csim, cons_mean, cons_var,
     plot!(plt_2, xvals, Array(bsim'), color=:black, alpha=0.25,label="")
     plot!(xvals, fillrange=[d_perc_95m, d_perc_95p], alpha=0.25, color=:blue,label="")
     plot!(xvals, fillrange=[d_perc_90m, d_perc_90p], alpha=0.25, color=:red,label="")
-    plot!(plt_2, ylabel="debt", xlabel="t")
+    plot!(plt_2, ylabel="debt", xlabel=L"t")
 
     plot(plt_1, plt_2, layout=(2,1), size=(800,600))
 end
@@ -709,7 +709,7 @@ function cointegration_figure(bsim, csim)
     # create figure
     plot((1 - β) * bsim[1, :] + csim[1, :], color=:black,lw=2,label="")
     plot!((1 - β) * bsim' + csim', color=:black, alpha=.1,label="")
-    plot!(title="Cointegration of Assets and Consumption", xlabel="t")
+    plot!(title="Cointegration of Assets and Consumption", xlabel=L"t")
 end
 
 cointegration_figure(bsim0, csim0)

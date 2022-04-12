@@ -295,7 +295,7 @@ using Test, Random
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Parameters, Plots, QuantEcon
+using LaTeXStrings, Parameters, Plots, QuantEcon
 
 ```
 
@@ -316,7 +316,7 @@ g_series = exp.(x_series)
 d_series = cumprod(g_series) # assumes d_0 = 1
 
 series = [x_series g_series d_series log.(d_series)]
-labels = ["X_t" "g_t" "d_t" "ln(d_t)"]
+labels = [L"X_t" L"g_t" L"d_t" L"ln(d_t)"]
 plot(series, layout = 4, labels = labels)
 ```
 
@@ -417,7 +417,7 @@ plot(mc.state_values,
      ylabel = "price-dividend ratio",
      xlabel = "state",
      alpha = 0.7,
-     label = "v")
+     label = L"v")
 ```
 
 ```{code-cell} julia
@@ -592,7 +592,7 @@ labels = []
 
 for γ in γs
     v = tree_price(ap, γ = γ)
-    label = "gamma = $γ"
+    label = L"\gamma = %$γ"
     push!(labels, label)
     push!(lines, v)
 end
@@ -1054,7 +1054,7 @@ labels = []
 for k in [5, 25]
     w = finite_horizon_call_option(ap, ζ, p_s, k)
     push!(lines, w)
-    push!(labels, "k = $k")
+    push!(labels, L"k = %$k")
 end
 plot(lines, labels = reshape(labels, 1, length(labels)))
 ```

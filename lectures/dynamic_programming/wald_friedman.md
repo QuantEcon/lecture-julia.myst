@@ -165,7 +165,7 @@ The bottom panel presents mixtures of these distributions, with various mixing p
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Parameters, Printf, Random, Roots, Plots
+using Distributions, LaTeXStrings, Parameters, Printf, Random, Roots, Plots
 
 ```
 
@@ -182,8 +182,8 @@ using StatsPlots
 begin
     base_dist = [Beta(1, 1), Beta(3, 3)]
     mixed_dist = MixtureModel.(Ref(base_dist), (p -> [p, one(p) - p]).(0.25:0.25:0.75))
-    plot(plot(base_dist, labels = ["f_0", "f_1"], title = "Original Distributions"),
-         plot(mixed_dist, labels = ["1/4-3/4", "1/2-1/2", "3/4-1/4"],
+    plot(plot(base_dist, labels = [L"f_0" L"f_1"], title = "Original Distributions"),
+         plot(mixed_dist, labels = [L"1/4-3/4" L"1/2-1/2" L"3/4-1/4"],
               title = "Distribution Mixtures"),
          # Global settings across both plots
          ylab = "Density", ylim = (0, 2), layout = (2, 1)

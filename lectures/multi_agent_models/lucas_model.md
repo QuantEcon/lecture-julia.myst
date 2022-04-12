@@ -387,7 +387,7 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Interpolations, Parameters, Plots, QuantEcon, Random
+using Distributions, Interpolations, LaTeXStrings, Parameters, Plots, QuantEcon, Random
 
 ```
 
@@ -477,8 +477,8 @@ end
 Here's the resulting price function
 
 ```{code-cell} julia
-plot(tree.grid, price_vals, lw = 2, label = "p*(y)")
-plot!(xlabel = "y", ylabel = "price", legend = :topleft)
+plot(tree.grid, price_vals, lw = 2, label = L"p^*(y)")
+plot!(xlabel = L"y", ylabel = "price", legend = :topleft)
 ```
 
 The price is increasing, even if we remove all serial correlation from the endowment process.
@@ -523,10 +523,10 @@ for β in (.95, 0.98)
     tree = LucasTree(;β = β)
     grid = tree.grid
     price_vals = solve_lucas_model(tree)
-    plot!(grid, price_vals, lw = 2, label = "beta = beta_var")
+    plot!(grid, price_vals, lw = 2, label = L"\beta = %$β")
 end
 
-plot!(xlabel = "y", ylabel = "price", legend = :topleft)
+plot!(xlabel = L"y", ylabel = "price", legend = :topleft)
 ```
 
 ```{code-cell} julia

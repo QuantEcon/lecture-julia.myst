@@ -377,7 +377,7 @@ Here's some code that implements the Coleman operator.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Roots
+using BenchmarkTools, Interpolations, LaTeXStrings, Parameters, Plots, QuantEcon, Roots
 using Optim, Random
 ```
 
@@ -517,8 +517,8 @@ function verify_true_policy(m, shocks, c_star)
     c_star_new = K(c_star, grid, β, ∂u∂c, f, f′, shocks)
 
     # plot c_star and Kc_star
-    plot(grid, c_star, label = "optimal policy cc_star")
-    plot!(grid, c_star_new, label = "Kc_star")
+    plot(grid, c_star, label = L"optimal policy $c^*$")
+    plot!(grid, c_star_new, label = L"Kc^*")
     plot!(legend = :topleft)
 end
 ```
@@ -551,14 +551,14 @@ The initial condition we'll use is the one that eats the whole pie: $c(y) = y$
 function check_convergence(m, shocks, c_star, g_init; n_iter = 15)
     @unpack grid, β, ∂u∂c, f, f′ = m
     g = g_init;
-    plot(m.grid, g, lw = 2, alpha = 0.6, label = "intial condition c(y) = y")
+    plot(m.grid, g, lw = 2, alpha = 0.6, label = L"intial condition $c(y) = y$")
     for i in 1:n_iter
         new_g = K(g, grid, β, ∂u∂c, f, f′, shocks)
         g = new_g
         plot!(grid, g, lw = 2, alpha = 0.6, label = "")
     end
     plot!(grid, c_star, color = :black, lw = 2, alpha = 0.8,
-          label = "true policy function c_star")
+          label = L"true policy function $c^*$")
     plot!(legend = :topleft)
 end
 ```
@@ -609,7 +609,7 @@ function compare_error(m, shocks, g_init, w_init; sim_length = 20)
     pf_error = c_star - g
     vf_error = c_star - vf_g
 
-    plot(grid, zero(grid), color = :black, lw = 1)
+    plot(grid, zero(grid), color = :black, lw = 1, label = "")
     plot!(grid, pf_error, lw = 2, alpha = 0.6, label = "policy iteration error")
     plot!(grid, vf_error, lw = 2, alpha = 0.6, label = "value iteration error")
     plot!(legend = :bottomleft)

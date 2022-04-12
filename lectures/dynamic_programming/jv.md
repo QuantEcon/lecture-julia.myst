@@ -45,7 +45,7 @@ tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
 using Distributions, QuantEcon, Interpolations, Expectations, Parameters
-using Plots, NLsolve, Random
+using LaTeXStrings, Plots, NLsolve, Random
 
 ```
 
@@ -385,9 +385,9 @@ s_policy, ϕ_policy = T(wp, sol_V, ret_policies = true)
 
 # plot solution
 p = plot(wp.x_grid, [ϕ_policy s_policy sol_V],
-         title = ["phi policy" "s policy" "value function"],
+         title = [L"$\phi$ policy" L"$s$ policy" "value function"],
          color = [:orange :blue :green],
-         xaxis = ("x", (0.0, maximum(wp.x_grid))),
+         xaxis = (L"x", (0.0, maximum(wp.x_grid))),
          yaxis = ((-0.1, 1.1)), size = (800, 800),
          legend = false, layout = (3, 1),
          bottom_margin = Plots.PlotMeasures.Length(:mm, 20))
@@ -524,7 +524,7 @@ end
 
 plot(plot_grid, plot_grid, color=:black, linestyle=:dash, legend=:none)
 scatter!(xs, ys, alpha=0.25, color=:green, lims=(0, plot_grid_max), ticks=ticks)
-plot!(xlabel="x_t", ylabel="x_{t+1}", guidefont=font(16))
+plot!(xlabel=L"x_t", ylabel=L"x_{t+1}", guidefont=font(16))
 ```
 
 ```{code-cell} julia
@@ -564,7 +564,7 @@ xbar(ϕ) = (wp.A * ϕ^wp.α)^(1.0 / (1.0 - wp.α))
 ϕ_grid = range(0, 1, length = 100)
 
 plot(ϕ_grid, [xbar(ϕ) * (1 - ϕ) for ϕ in ϕ_grid], color = :blue,
-     label = "w^phi", legendfont = font(12), xlabel = "phi",
+     label = L"w^\phi", legendfont = font(12), xlabel = L"\phi",
      guidefont = font(16), grid = false, legend = :topleft)
 ```
 
