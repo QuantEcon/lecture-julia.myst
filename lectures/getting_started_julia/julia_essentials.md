@@ -1103,7 +1103,7 @@ Part 2: Using a comprehension, count the number of even numbers between 0 and 99
 
 * Hint: `iseven` returns `true` for even numbers and `false` for odds.
 
-Part 3: Using a comprehension, take `pairs = ((2, 5), (4, 2), (9, 8), (12, 10))` and count the number of pairs `(a, b)` such that both `a` and `b` are even.
+Part 3: Using a comprehension, take `my_pairs = ((2, 5), (4, 2), (9, 8), (12, 10))` and count the number of pairs `(a, b)` such that both `a` and `b` are even.
 
 (pyess_ex2)=
 ### Exercise 2
