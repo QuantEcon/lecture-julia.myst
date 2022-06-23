@@ -283,7 +283,7 @@ By the definition of greedy policies given above, this means that
 $$
 \sigma^*(s) \in \operatorname*{arg\,max}_{a \in A(s)}
     \left\{
-    r(s, a) + \beta \sum_{s' \in S} v^*(s') Q(s, \sigma(s), s')
+    r(s, a) + \beta \sum_{s' \in S} v^*(s') Q(s, a, s')
     \right\}
 \qquad (s \in S)
 $$
@@ -907,7 +907,7 @@ end
 
 Let's try different solution methods. The results below show that policy
 function iteration and modified policy function iteration are much
-faster that value function iteration.
+faster than value function iteration.
 
 ```{code-cell} julia
 @benchmark results = solve(ddp, PFI)
@@ -998,7 +998,7 @@ end
 ```
 
 We next plot the consumption policies along the value iteration. First
-we write a function to generate the and record the policies at given
+we write a function to generate and record the policies at given
 stages of iteration.
 
 ```{code-cell} julia
