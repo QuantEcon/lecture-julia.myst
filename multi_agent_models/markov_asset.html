@@ -556,25 +556,25 @@ factor <span class="math notranslate nohighlight">\(g_t = g(X_t)\)</span> for th
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
-<span class="k">using</span> <span class="n">LaTeXStrings</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">,</span> <span class="n">Plots</span><span class="p">,</span> <span class="n">QuantEcon</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Parameters</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">QuantEcon</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">25</span>
-<span class="n">mc</span> <span class="o">=</span> <span class="n">tauchen</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">0.96</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
-<span class="n">sim_length</span> <span class="o">=</span> <span class="mi">80</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="w"></span>
+<span class="n">mc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tauchen</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mf">0.96</span><span class="p">,</span><span class="w"> </span><span class="mf">0.25</span><span class="p">)</span><span class="w"></span>
+<span class="n">sim_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">80</span><span class="w"></span>
 
-<span class="n">x_series</span> <span class="o">=</span> <span class="n">simulate</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span> <span class="n">sim_length</span><span class="p">;</span> <span class="n">init</span> <span class="o">=</span> <span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span> <span class="n">n</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
-<span class="n">g_series</span> <span class="o">=</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">x_series</span><span class="p">)</span>
-<span class="n">d_series</span> <span class="o">=</span> <span class="n">cumprod</span><span class="p">(</span><span class="n">g_series</span><span class="p">)</span> <span class="c"># assumes d_0 = 1</span>
+<span class="n">x_series</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">simulate</span><span class="p">(</span><span class="n">mc</span><span class="p">,</span><span class="w"> </span><span class="n">sim_length</span><span class="p">;</span><span class="w"> </span><span class="n">init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">round</span><span class="p">(</span><span class="kt">Int</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"></span>
+<span class="n">g_series</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">x_series</span><span class="p">)</span><span class="w"></span>
+<span class="n">d_series</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cumprod</span><span class="p">(</span><span class="n">g_series</span><span class="p">)</span><span class="w"> </span><span class="c"># assumes d_0 = 1</span><span class="w"></span>
 
-<span class="n">series</span> <span class="o">=</span> <span class="p">[</span><span class="n">x_series</span> <span class="n">g_series</span> <span class="n">d_series</span> <span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">d_series</span><span class="p">)]</span>
-<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">L</span><span class="s">&quot;X_t&quot;</span> <span class="sa">L</span><span class="s">&quot;g_t&quot;</span> <span class="sa">L</span><span class="s">&quot;d_t&quot;</span> <span class="sa">L</span><span class="s">&quot;ln(d_t)&quot;</span><span class="p">]</span>
-<span class="n">plot</span><span class="p">(</span><span class="n">series</span><span class="p">,</span> <span class="n">layout</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">)</span>
+<span class="n">series</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">x_series</span><span class="w"> </span><span class="n">g_series</span><span class="w"> </span><span class="n">d_series</span><span class="w"> </span><span class="n">log</span><span class="o">.</span><span class="p">(</span><span class="n">d_series</span><span class="p">)]</span><span class="w"></span>
+<span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sa">L</span><span class="s">&quot;X_t&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;g_t&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;d_t&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;ln(d_t)&quot;</span><span class="p">]</span><span class="w"></span>
+<span class="n">plot</span><span class="p">(</span><span class="n">series</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">labels</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -627,21 +627,21 @@ K(x, y) := g(y) P(x, y)\]</div>
 <p>Here’s the code, including a test of the spectral radius condition</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">25</span>  <span class="c"># size of state space</span>
-<span class="n">β</span> <span class="o">=</span> <span class="mf">0.9</span>
-<span class="n">mc</span> <span class="o">=</span> <span class="n">tauchen</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">0.96</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="w">  </span><span class="c"># size of state space</span><span class="w"></span>
+<span class="n">β</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.9</span><span class="w"></span>
+<span class="n">mc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tauchen</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mf">0.96</span><span class="p">,</span><span class="w"> </span><span class="mf">0.02</span><span class="p">)</span><span class="w"></span>
 
-<span class="n">K</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">p</span> <span class="o">.*</span> <span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="p">)</span><span class="o">&#39;</span>
+<span class="n">K</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="p">)</span><span class="o">&#39;</span><span class="w"></span>
 
-<span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">K</span><span class="p">)</span> <span class="o">\</span>  <span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">K</span> <span class="o">*</span> <span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">I</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="p">)</span><span class="w"> </span><span class="o">\</span><span class="w">  </span><span class="p">(</span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">K</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="p">,</span>
-     <span class="n">v</span><span class="p">,</span>
-     <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
-     <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;price-dividend ratio&quot;</span><span class="p">,</span>
-     <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;state&quot;</span><span class="p">,</span>
-     <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
-     <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;v&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="p">,</span><span class="w"></span>
+<span class="w">     </span><span class="n">v</span><span class="p">,</span><span class="w"></span>
+<span class="w">     </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"></span>
+<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;price-dividend ratio&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">     </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;state&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">     </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span><span class="w"></span>
+<span class="w">     </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;v&quot;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -719,43 +719,43 @@ v = \beta J ({\mathbb 1} + v )
 the AssetPriceModel objects</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># A default Markov chain for the state process</span>
-<span class="n">ρ</span> <span class="o">=</span> <span class="mf">0.9</span>
-<span class="n">σ</span> <span class="o">=</span> <span class="mf">0.02</span>
-<span class="n">n</span> <span class="o">=</span> <span class="mi">25</span>
-<span class="n">default_mc</span> <span class="o">=</span> <span class="n">tauchen</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">ρ</span><span class="p">,</span> <span class="n">σ</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># A default Markov chain for the state process</span><span class="w"></span>
+<span class="n">ρ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.9</span><span class="w"></span>
+<span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.02</span><span class="w"></span>
+<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="w"></span>
+<span class="n">default_mc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tauchen</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">ρ</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span><span class="w"></span>
 
-<span class="n">AssetPriceModel</span> <span class="o">=</span> <span class="nd">@with_kw</span> <span class="p">(</span><span class="n">β</span> <span class="o">=</span> <span class="mf">0.96</span><span class="p">,</span>
-                            <span class="n">γ</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span>
-                            <span class="n">mc</span> <span class="o">=</span> <span class="n">default_mc</span><span class="p">,</span>
-                            <span class="n">n</span> <span class="o">=</span> <span class="n">size</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span>
-                            <span class="n">g</span> <span class="o">=</span> <span class="n">exp</span><span class="p">)</span>
+<span class="n">AssetPriceModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@with_kw</span><span class="w"> </span><span class="p">(</span><span class="n">β</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.96</span><span class="p">,</span><span class="w"></span>
+<span class="w">                            </span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"></span>
+<span class="w">                            </span><span class="n">mc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">default_mc</span><span class="p">,</span><span class="w"></span>
+<span class="w">                            </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span><span class="w"></span>
+<span class="w">                            </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">)</span><span class="w"></span>
 
-<span class="c"># test stability of matrix Q</span>
-<span class="k">function</span> <span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
-    <span class="n">sr</span> <span class="o">=</span> <span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="p">,</span> <span class="n">eigvals</span><span class="p">(</span><span class="n">Q</span><span class="p">))</span>
-    <span class="k">if</span> <span class="n">sr</span> <span class="o">≥</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">ap</span><span class="o">.</span><span class="n">β</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;Spectral radius condition failed with radius = </span><span class="si">$sr</span><span class="s">&quot;</span>
-        <span class="n">throw</span><span class="p">(</span><span class="kt">ArgumentError</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span>
-    <span class="k">end</span>
-<span class="k">end</span>
+<span class="c"># test stability of matrix Q</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">Q</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">sr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="p">,</span><span class="w"> </span><span class="n">eigvals</span><span class="p">(</span><span class="n">Q</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">sr</span><span class="w"> </span><span class="o">≥</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">ap</span><span class="o">.</span><span class="n">β</span><span class="w"></span>
+<span class="w">        </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Spectral radius condition failed with radius = </span><span class="si">$sr</span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="n">throw</span><span class="p">(</span><span class="kt">ArgumentError</span><span class="p">(</span><span class="n">msg</span><span class="p">))</span><span class="w"></span>
+<span class="w">    </span><span class="k">end</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 
-<span class="c"># price/dividend ratio of the Lucas tree</span>
-<span class="k">function</span> <span class="n">tree_price</span><span class="p">(</span><span class="n">ap</span><span class="p">;</span> <span class="n">γ</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">γ</span><span class="p">)</span>
-    <span class="c"># Simplify names, set up matrices</span>
-    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">mc</span> <span class="o">=</span> <span class="n">ap</span>
-    <span class="n">P</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">mc</span><span class="o">.</span><span class="n">state_values</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ap</span><span class="o">.</span><span class="n">n</span><span class="p">)</span>
-    <span class="n">J</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">ap</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">γ</span><span class="p">)</span>
+<span class="c"># price/dividend ratio of the Lucas tree</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">tree_price</span><span class="p">(</span><span class="n">ap</span><span class="p">;</span><span class="w"> </span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap</span><span class="o">.</span><span class="n">γ</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="c"># Simplify names, set up matrices</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@unpack</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">mc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap</span><span class="w"></span>
+<span class="w">    </span><span class="n">P</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="w"></span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">ap</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">J</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">ap</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">γ</span><span class="p">)</span><span class="w"></span>
 
-    <span class="c"># Make sure that a unique solution exists</span>
-    <span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">J</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># Make sure that a unique solution exists</span><span class="w"></span>
+<span class="w">    </span><span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">J</span><span class="p">)</span><span class="w"></span>
 
-    <span class="c"># Compute v</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">J</span><span class="p">)</span> <span class="o">\</span> <span class="n">sum</span><span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">J</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># Compute v</span><span class="w"></span>
+<span class="w">    </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">I</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">J</span><span class="p">)</span><span class="w"> </span><span class="o">\</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">J</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
 
-    <span class="k">return</span> <span class="n">v</span>
-<span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">v</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -769,25 +769,25 @@ the AssetPriceModel objects</p>
 with a positively correlated Markov process and <span class="math notranslate nohighlight">\(g(x) = \exp(x)\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">γs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">1.4</span><span class="p">,</span> <span class="mf">1.6</span><span class="p">,</span> <span class="mf">1.8</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
-<span class="n">ap</span> <span class="o">=</span> <span class="n">AssetPriceModel</span><span class="p">()</span>
-<span class="n">states</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">γs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.2</span><span class="p">,</span><span class="w"> </span><span class="mf">1.4</span><span class="p">,</span><span class="w"> </span><span class="mf">1.6</span><span class="p">,</span><span class="w"> </span><span class="mf">1.8</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]</span><span class="w"></span>
+<span class="n">ap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AssetPriceModel</span><span class="p">()</span><span class="w"></span>
+<span class="n">states</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap</span><span class="o">.</span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="w"></span>
 
-<span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
+<span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
 
-<span class="k">for</span> <span class="n">γ</span> <span class="k">in</span> <span class="n">γs</span>
-    <span class="n">v</span> <span class="o">=</span> <span class="n">tree_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">γ</span> <span class="o">=</span> <span class="n">γ</span><span class="p">)</span>
-    <span class="n">label</span> <span class="o">=</span> <span class="sa">L</span><span class="s">&quot;\gamma = %</span><span class="si">$γ</span><span class="s">&quot;</span>
-    <span class="n">push!</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
-    <span class="n">push!</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-<span class="k">end</span>
+<span class="k">for</span><span class="w"> </span><span class="n">γ</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">γs</span><span class="w"></span>
+<span class="w">    </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">γ</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;\gamma = %</span><span class="si">$γ</span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span>
-     <span class="n">labels</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">labels</span><span class="p">)),</span>
-     <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Price-dividend ratio as a function of the state&quot;</span><span class="p">,</span>
-     <span class="n">ylabel</span> <span class="o">=</span> <span class="s">&quot;price-dividend ratio&quot;</span><span class="p">,</span>
-     <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;state&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span><span class="w"></span>
+<span class="w">     </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">labels</span><span class="p">)),</span><span class="w"></span>
+<span class="w">     </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Price-dividend ratio as a function of the state&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;price-dividend ratio&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">     </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;state&quot;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -847,19 +847,19 @@ yields the solution</p>
 <p>The above is implemented in the function consol_price</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">)</span>
-    <span class="c"># Simplify names, set up matrices</span>
-    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">γ</span><span class="p">,</span> <span class="n">mc</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">ap</span>
-    <span class="n">P</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">mc</span><span class="o">.</span><span class="n">state_values</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span><span class="n">γ</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">ζ</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="c"># Simplify names, set up matrices</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@unpack</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">γ</span><span class="p">,</span><span class="w"> </span><span class="n">mc</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap</span><span class="w"></span>
+<span class="w">    </span><span class="n">P</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="w"></span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span><span class="n">γ</span><span class="p">)</span><span class="w"></span>
 
-    <span class="c"># Make sure that a unique solution exists</span>
-    <span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># Make sure that a unique solution exists</span><span class="w"></span>
+<span class="w">    </span><span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">)</span><span class="w"></span>
 
-    <span class="c"># Compute price</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">β</span> <span class="o">*</span> <span class="n">M</span><span class="p">)</span> <span class="o">\</span> <span class="n">sum</span><span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">ζ</span> <span class="o">*</span> <span class="n">M</span><span class="p">,</span> <span class="n">dims</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
-<span class="k">end</span>
+<span class="w">    </span><span class="c"># Compute price</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">I</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">M</span><span class="p">)</span><span class="w"> </span><span class="o">\</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ζ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -920,32 +920,32 @@ T w
 <p>We can find the solution with the following function call_option</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># price of perpetual call on consol bond</span>
-<span class="k">function</span> <span class="n">call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">,</span> <span class="n">p_s</span><span class="p">,</span> <span class="n">ϵ</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># price of perpetual call on consol bond</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">ζ</span><span class="p">,</span><span class="w"> </span><span class="n">p_s</span><span class="p">,</span><span class="w"> </span><span class="n">ϵ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e-7</span><span class="p">)</span><span class="w"></span>
 
-    <span class="c"># Simplify names, set up matrices</span>
-    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">γ</span><span class="p">,</span> <span class="n">mc</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">ap</span>
-    <span class="n">P</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">mc</span><span class="o">.</span><span class="n">state_values</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span><span class="n">γ</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># Simplify names, set up matrices</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@unpack</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">γ</span><span class="p">,</span><span class="w"> </span><span class="n">mc</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap</span><span class="w"></span>
+<span class="w">    </span><span class="n">P</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="w"></span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span><span class="n">γ</span><span class="p">)</span><span class="w"></span>
 
-    <span class="c"># Make sure that a unique console price exists</span>
-    <span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># Make sure that a unique console price exists</span><span class="w"></span>
+<span class="w">    </span><span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">)</span><span class="w"></span>
 
-    <span class="c"># Compute option price</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">)</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">error</span> <span class="o">=</span> <span class="n">ϵ</span> <span class="o">+</span> <span class="mi">1</span>
-    <span class="k">while</span> <span class="p">(</span><span class="n">error</span> <span class="o">&gt;</span> <span class="n">ϵ</span><span class="p">)</span>
-        <span class="c"># Maximize across columns</span>
-        <span class="n">w_new</span> <span class="o">=</span> <span class="n">max</span><span class="o">.</span><span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">M</span> <span class="o">*</span> <span class="n">w</span><span class="p">,</span> <span class="n">p</span> <span class="o">.-</span> <span class="n">p_s</span><span class="p">)</span>
-        <span class="c"># Find maximal difference of each component and update</span>
-        <span class="n">error</span> <span class="o">=</span> <span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="p">,</span> <span class="n">w</span> <span class="o">-</span> <span class="n">w_new</span><span class="p">)</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">w_new</span>
-    <span class="k">end</span>
+<span class="w">    </span><span class="c"># Compute option price</span><span class="w"></span>
+<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">ζ</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ϵ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">ϵ</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="c"># Maximize across columns</span><span class="w"></span>
+<span class="w">        </span><span class="n">w_new</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="o">.</span><span class="p">(</span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">p_s</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="c"># Find maximal difference of each component and update</span><span class="w"></span>
+<span class="w">        </span><span class="n">error</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximum</span><span class="p">(</span><span class="n">abs</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">w_new</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w_new</span><span class="w"></span>
+<span class="w">    </span><span class="k">end</span><span class="w"></span>
 
-    <span class="k">return</span> <span class="n">w</span>
-<span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">w</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -958,16 +958,16 @@ T w
 <p>Here’s a plot of <span class="math notranslate nohighlight">\(w\)</span> compared to the consol price when <span class="math notranslate nohighlight">\(P_S = 40\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ap</span> <span class="o">=</span> <span class="n">AssetPriceModel</span><span class="p">(</span><span class="n">β</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
-<span class="n">ζ</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="n">strike_price</span> <span class="o">=</span> <span class="mf">40.0</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AssetPriceModel</span><span class="p">(</span><span class="n">β</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span><span class="w"></span>
+<span class="n">ζ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"></span>
+<span class="n">strike_price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">40.0</span><span class="w"></span>
 
-<span class="n">x</span> <span class="o">=</span> <span class="n">ap</span><span class="o">.</span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span>
-<span class="n">p</span> <span class="o">=</span> <span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">)</span>
-<span class="n">w</span> <span class="o">=</span> <span class="n">call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">,</span> <span class="n">strike_price</span><span class="p">)</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap</span><span class="o">.</span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="w"></span>
+<span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">ζ</span><span class="p">)</span><span class="w"></span>
+<span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">ζ</span><span class="p">,</span><span class="w"> </span><span class="n">strike_price</span><span class="p">)</span><span class="w"></span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s">&quot;blue&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">xlabel</span> <span class="o">=</span> <span class="s">&quot;state&quot;</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;consol price&quot;</span><span class="p">)</span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s">&quot;green&quot;</span><span class="p">,</span> <span class="n">lw</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s">&quot;value of call option&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;blue&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;state&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;consol price&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;green&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;value of call option&quot;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1023,12 +1023,12 @@ what is the equilibrium price of a cum-dividend asset?</p>
 <p>Consider the following primitives</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">P</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.0125</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.95</span> <span class="o">-</span> <span class="mf">0.0125</span><span class="p">)</span><span class="n">I</span>
-<span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.05</span><span class="p">,</span> <span class="mf">1.025</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.975</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">]</span>
-<span class="n">γ</span> <span class="o">=</span> <span class="mf">2.0</span>
-<span class="n">β</span> <span class="o">=</span> <span class="mf">0.94</span>
-<span class="n">ζ</span> <span class="o">=</span> <span class="mf">1.0</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
+<span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fill</span><span class="p">(</span><span class="mf">0.0125</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mf">0.95</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">0.0125</span><span class="p">)</span><span class="n">I</span><span class="w"></span>
+<span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.05</span><span class="p">,</span><span class="w"> </span><span class="mf">1.025</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.975</span><span class="p">,</span><span class="w"> </span><span class="mf">0.95</span><span class="p">]</span><span class="w"></span>
+<span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"></span>
+<span class="n">β</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.94</span><span class="w"></span>
+<span class="n">ζ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1084,15 +1084,15 @@ w_k = \max \{ \beta M w_{k-1}, \; p - p_S {\mathbb 1} \}
 <h3><span class="section-number">47.6.1. </span>Exercise 2<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">P</span> <span class="o">=</span> <span class="n">fill</span><span class="p">(</span><span class="mf">0.0125</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.95</span> <span class="o">-</span> <span class="mf">0.0125</span><span class="p">)</span><span class="n">I</span>
-<span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.975</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.025</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">]</span>  <span class="c"># state values</span>
-<span class="n">mc</span> <span class="o">=</span> <span class="n">MarkovChain</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"></span>
+<span class="n">P</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fill</span><span class="p">(</span><span class="mf">0.0125</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mf">0.95</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">0.0125</span><span class="p">)</span><span class="n">I</span><span class="w"></span>
+<span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.95</span><span class="p">,</span><span class="w"> </span><span class="mf">0.975</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.025</span><span class="p">,</span><span class="w"> </span><span class="mf">1.05</span><span class="p">]</span><span class="w">  </span><span class="c"># state values</span><span class="w"></span>
+<span class="n">mc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MarkovChain</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"></span>
 
-<span class="n">γ</span> <span class="o">=</span> <span class="mf">2.0</span>
-<span class="n">β</span> <span class="o">=</span> <span class="mf">0.94</span>
-<span class="n">ζ</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="n">p_s</span> <span class="o">=</span> <span class="mf">150.0</span>
+<span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"></span>
+<span class="n">β</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.94</span><span class="w"></span>
+<span class="n">ζ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"></span>
+<span class="n">p_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">150.0</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1105,7 +1105,7 @@ w_k = \max \{ \beta M w_{k-1}, \; p - p_S {\mathbb 1} \}
 <p>Next we’ll create an instance of AssetPriceModel to feed into the functions.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ap</span> <span class="o">=</span> <span class="n">AssetPriceModel</span><span class="p">(</span><span class="n">β</span> <span class="o">=</span> <span class="n">β</span><span class="p">,</span> <span class="n">mc</span> <span class="o">=</span> <span class="n">mc</span><span class="p">,</span> <span class="n">γ</span> <span class="o">=</span> <span class="n">γ</span><span class="p">,</span> <span class="n">g</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">AssetPriceModel</span><span class="p">(</span><span class="n">β</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">mc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mc</span><span class="p">,</span><span class="w"> </span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">γ</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1119,8 +1119,8 @@ stochastic matrix of type Matrix{Float64}:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">v</span> <span class="o">=</span> <span class="n">tree_price</span><span class="p">(</span><span class="n">ap</span><span class="p">)</span>
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;Lucas Tree Prices: </span><span class="si">$v</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree_price</span><span class="p">(</span><span class="n">ap</span><span class="p">)</span><span class="w"></span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Lucas Tree Prices: </span><span class="si">$v</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1132,8 +1132,8 @@ stochastic matrix of type Matrix{Float64}:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">v_consol</span> <span class="o">=</span> <span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;Consol Bond Prices: </span><span class="si">$</span><span class="p">(</span><span class="n">v_consol</span><span class="p">)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">v_consol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"></span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Consol Bond Prices: </span><span class="si">$</span><span class="p">(</span><span class="n">v_consol</span><span class="p">)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1145,7 +1145,7 @@ stochastic matrix of type Matrix{Float64}:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">,</span> <span class="n">p_s</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">ζ</span><span class="p">,</span><span class="w"> </span><span class="n">p_s</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1166,27 +1166,27 @@ stochastic matrix of type Matrix{Float64}:
 <p>Here’s a suitable function:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">finite_horizon_call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">,</span> <span class="n">p_s</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">finite_horizon_call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">ζ</span><span class="p">,</span><span class="w"> </span><span class="n">p_s</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"></span>
 
-    <span class="c"># Simplify names, set up matrices</span>
-    <span class="nd">@unpack</span> <span class="n">β</span><span class="p">,</span> <span class="n">γ</span><span class="p">,</span> <span class="n">mc</span> <span class="o">=</span> <span class="n">ap</span>
-    <span class="n">P</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">mc</span><span class="o">.</span><span class="n">state_values</span>
-    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">&#39;</span>
-    <span class="n">M</span> <span class="o">=</span> <span class="n">P</span> <span class="o">.*</span> <span class="n">ap</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span> <span class="n">γ</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># Simplify names, set up matrices</span><span class="w"></span>
+<span class="w">    </span><span class="nd">@unpack</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">γ</span><span class="p">,</span><span class="w"> </span><span class="n">mc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ap</span><span class="w"></span>
+<span class="w">    </span><span class="n">P</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mc</span><span class="o">.</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">mc</span><span class="o">.</span><span class="n">state_values</span><span class="w"></span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="o">&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">P</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">ap</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span><span class="w"> </span><span class="n">γ</span><span class="p">)</span><span class="w"></span>
 
-    <span class="c"># Make sure that a unique console price exists</span>
-    <span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># Make sure that a unique console price exists</span><span class="w"></span>
+<span class="w">    </span><span class="n">test_stability</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">M</span><span class="p">)</span><span class="w"></span>
 
-    <span class="c"># Compute option price</span>
-    <span class="n">p</span> <span class="o">=</span> <span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">)</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">n</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">k</span>
-        <span class="c"># Maximize across columns</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">max</span><span class="o">.</span><span class="p">(</span><span class="n">β</span> <span class="o">*</span> <span class="n">M</span> <span class="o">*</span> <span class="n">w</span><span class="p">,</span> <span class="n">p</span> <span class="o">.-</span> <span class="n">p_s</span><span class="p">)</span>
-    <span class="k">end</span>
+<span class="w">    </span><span class="c"># Compute option price</span><span class="w"></span>
+<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">consol_price</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">ζ</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">ap</span><span class="o">.</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">k</span><span class="w"></span>
+<span class="w">        </span><span class="c"># Maximize across columns</span><span class="w"></span>
+<span class="w">        </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max</span><span class="o">.</span><span class="p">(</span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">p_s</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">end</span><span class="w"></span>
 
-    <span class="k">return</span> <span class="n">w</span>
-<span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">w</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1198,14 +1198,14 @@ stochastic matrix of type Matrix{Float64}:
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">labels</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">k</span> <span class="k">in</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">finite_horizon_call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">ζ</span><span class="p">,</span> <span class="n">p_s</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
-    <span class="n">push!</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-    <span class="n">push!</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="sa">L</span><span class="s">&quot;k = %</span><span class="si">$k</span><span class="s">&quot;</span><span class="p">)</span>
-<span class="k">end</span>
-<span class="n">plot</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">reshape</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">length</span><span class="p">(</span><span class="n">labels</span><span class="p">)))</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">lines</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
+<span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
+<span class="k">for</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">25</span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">finite_horizon_call_option</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span><span class="w"> </span><span class="n">ζ</span><span class="p">,</span><span class="w"> </span><span class="n">p_s</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;k = %</span><span class="si">$k</span><span class="s">&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
+<span class="n">plot</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span><span class="w"> </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">labels</span><span class="p">)))</span><span class="w"></span>
 </pre></div>
 </div>
 </div>

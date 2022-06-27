@@ -107,8 +107,8 @@ complicated combinations and compositions of intrinsic operations.  In fact, the
 
 In forward-mode AD, you first fix the variable you are interested in (called "seeding"), and then evaluate the chain rule in left-to-right order.
 
-For example, with our $f(x_1, f_2)$ example above, if we wanted to calculate the derivative with respect to $x_1$ then
-we can seed the setup accordingly.  $\frac{\partial  w_1}{\partial  x_1} = 1$ since we are taking the derivative of it, while $\frac{\partial  w_1}{\partial  x_1} = 0$.
+For example, with our $f(x_1, x_2)$ example above, if we wanted to calculate the derivative with respect to $x_1$ then
+we can seed the setup accordingly.  $\frac{\partial  w_1}{\partial  x_1} = 1$ since we are taking the derivative of it, while $\frac{\partial  w_2}{\partial  x_1} = 0$.
 
 Following through with these, redo all of the calculations for the derivative in parallel with the function itself.
 

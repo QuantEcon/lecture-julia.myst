@@ -327,9 +327,9 @@
 <p>In this lecture we introduce a few of the Julia libraries that we’ve found particularly useful for quantitative work in economics.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
-<span class="k">using</span> <span class="n">ForwardDiff</span><span class="p">,</span> <span class="n">Zygote</span><span class="p">,</span> <span class="n">Optim</span><span class="p">,</span> <span class="n">JuMP</span><span class="p">,</span> <span class="n">Ipopt</span><span class="p">,</span> <span class="n">BlackBoxOptim</span><span class="p">,</span> <span class="n">Roots</span><span class="p">,</span> <span class="n">NLsolve</span><span class="p">,</span> <span class="n">LeastSquaresOptim</span>
-<span class="k">using</span> <span class="n">Optim</span><span class="o">:</span> <span class="n">converged</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">maximizer</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">,</span> <span class="n">iterations</span> <span class="c">#some extra functions</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="p">,</span><span class="w"> </span><span class="n">Zygote</span><span class="p">,</span><span class="w"> </span><span class="n">Optim</span><span class="p">,</span><span class="w"> </span><span class="n">JuMP</span><span class="p">,</span><span class="w"> </span><span class="n">Ipopt</span><span class="p">,</span><span class="w"> </span><span class="n">BlackBoxOptim</span><span class="p">,</span><span class="w"> </span><span class="n">Roots</span><span class="p">,</span><span class="w"> </span><span class="n">NLsolve</span><span class="p">,</span><span class="w"> </span><span class="n">LeastSquaresOptim</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">Optim</span><span class="o">:</span><span class="w"> </span><span class="n">converged</span><span class="p">,</span><span class="w"> </span><span class="n">maximum</span><span class="p">,</span><span class="w"> </span><span class="n">maximizer</span><span class="p">,</span><span class="w"> </span><span class="n">minimizer</span><span class="p">,</span><span class="w"> </span><span class="n">iterations</span><span class="w"> </span><span class="c">#some extra functions</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -391,14 +391,14 @@ f(x_1, x_2) = x_1 x_2 + \sin(x_1)
 <p>And rewrite this as a function which contains a sequence of simple operations and temporaries.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">f</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">)</span>
-    <span class="n">w_1</span> <span class="o">=</span> <span class="n">x_1</span>
-    <span class="n">w_2</span> <span class="o">=</span> <span class="n">x_2</span>
-    <span class="n">w_3</span> <span class="o">=</span> <span class="n">w_1</span> <span class="o">*</span> <span class="n">w_2</span>
-    <span class="n">w_4</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">w_1</span><span class="p">)</span>
-    <span class="n">w_5</span> <span class="o">=</span> <span class="n">w_3</span> <span class="o">+</span> <span class="n">w_4</span>
-    <span class="k">return</span> <span class="n">w_5</span>
-<span class="k">end</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span><span class="w"> </span><span class="n">x_2</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">w_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_1</span><span class="w"></span>
+<span class="w">    </span><span class="n">w_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_2</span><span class="w"></span>
+<span class="w">    </span><span class="n">w_3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w_1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">w_2</span><span class="w"></span>
+<span class="w">    </span><span class="n">w_4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">w_1</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">w_5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w_3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w_4</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">w_5</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -414,8 +414,8 @@ complicated combinations and compositions of intrinsic operations.  In fact, the
 <div class="section" id="forward-mode-automatic-differentiation">
 <h3><span class="section-number">9.2.1. </span>Forward-Mode Automatic Differentiation<a class="headerlink" href="#forward-mode-automatic-differentiation" title="Permalink to this headline">¶</a></h3>
 <p>In forward-mode AD, you first fix the variable you are interested in (called “seeding”), and then evaluate the chain rule in left-to-right order.</p>
-<p>For example, with our <span class="math notranslate nohighlight">\(f(x_1, f_2)\)</span> example above, if we wanted to calculate the derivative with respect to <span class="math notranslate nohighlight">\(x_1\)</span> then
-we can seed the setup accordingly.  <span class="math notranslate nohighlight">\(\frac{\partial  w_1}{\partial  x_1} = 1\)</span> since we are taking the derivative of it, while <span class="math notranslate nohighlight">\(\frac{\partial  w_1}{\partial  x_1} = 0\)</span>.</p>
+<p>For example, with our <span class="math notranslate nohighlight">\(f(x_1, x_2)\)</span> example above, if we wanted to calculate the derivative with respect to <span class="math notranslate nohighlight">\(x_1\)</span> then
+we can seed the setup accordingly.  <span class="math notranslate nohighlight">\(\frac{\partial  w_1}{\partial  x_1} = 1\)</span> since we are taking the derivative of it, while <span class="math notranslate nohighlight">\(\frac{\partial  w_2}{\partial  x_1} = 0\)</span>.</p>
 <p>Following through with these, redo all of the calculations for the derivative in parallel with the function itself.</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
@@ -484,16 +484,16 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <p>Dual-numbers are at the heart of one of the AD packages we have already seen.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">ForwardDiff</span>
-<span class="n">h</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">sinh</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="c"># multivariate.</span>
-<span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.4</span> <span class="mf">2.2</span><span class="p">]</span>
-<span class="nd">@show</span> <span class="n">ForwardDiff</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="c"># use AD, seeds from x</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="w"></span>
+<span class="n">h</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sinh</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="w"> </span><span class="c"># multivariate.</span><span class="w"></span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.4</span><span class="w"> </span><span class="mf">2.2</span><span class="p">]</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c"># use AD, seeds from x</span><span class="w"></span>
 
-<span class="c">#Or, can use complicated functions of many variables</span>
-<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">sum</span><span class="p">(</span><span class="n">sin</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">prod</span><span class="p">(</span><span class="n">tan</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">sum</span><span class="p">(</span><span class="n">sqrt</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ForwardDiff</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span> <span class="c"># g() is now the gradient</span>
-<span class="n">g</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span> <span class="c"># gradient at a random point</span>
-<span class="c"># ForwardDiff.hessian(f,x&#39;) # or the hessian</span>
+<span class="c">#Or, can use complicated functions of many variables</span><span class="w"></span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">sin</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">prod</span><span class="p">(</span><span class="n">tan</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">sqrt</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w"> </span><span class="c"># g() is now the gradient</span><span class="w"></span>
+<span class="n">g</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"> </span><span class="c"># gradient at a random point</span><span class="w"></span>
+<span class="c"># ForwardDiff.hessian(f,x&#39;) # or the hessian</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -502,11 +502,11 @@ all of the basic operations.  Each definition then has the chain-rule built into
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Float64}:
- 0.7734469802306847
- 1.395635614731651
- 0.8742753338804997
- 2.5110044850135993
- 0.8770786314189434
+ 0.5720848701535965
+ 0.9812167450803315
+ 0.7929694931468092
+ 1.2608940643437365
+ 0.975619453207259
 </pre></div>
 </div>
 </div>
@@ -514,14 +514,14 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <p>We can even auto-differentiate complicated functions with embedded iterations.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">squareroot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c">#pretending we don&#39;t know sqrt()</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c"># Initial starting point for Newton’s method</span>
-    <span class="k">while</span> <span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="o">*</span><span class="n">z</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-13</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">z</span> <span class="o">-</span> <span class="p">(</span><span class="n">z</span><span class="o">*</span><span class="n">z</span><span class="o">-</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="n">z</span><span class="p">)</span>
-    <span class="k">end</span>
-    <span class="k">return</span> <span class="n">z</span>
-<span class="k">end</span>
-<span class="n">squareroot</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">squareroot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c">#pretending we don&#39;t know sqrt()</span><span class="w"></span>
+<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c"># Initial starting point for Newton’s method</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="o">*</span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1e-13</span><span class="w"></span>
+<span class="w">        </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">z</span><span class="o">*</span><span class="n">z</span><span class="o">-</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="n">z</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">z</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
+<span class="n">squareroot</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -533,9 +533,9 @@ all of the basic operations.  Each definition then has the chain-rule built into
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">ForwardDiff</span>
-<span class="n">dsqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">squareroot</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="n">dsqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="w"></span>
+<span class="n">dsqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">squareroot</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="n">dsqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -553,10 +553,10 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <p>One recent package is <a class="reference external" href="https://github.com/FluxML/Zygote.jl">Zygote.jl</a>, which is used in the Flux.jl framework.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Zygote</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Zygote</span><span class="w"></span>
 
-<span class="n">h</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="mi">3</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span>
-<span class="n">gradient</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">)</span>
+<span class="n">h</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="o">*</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
+<span class="n">gradient</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -570,10 +570,10 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <p>You could create this as an operator if you wanted to.,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">-&gt;</span> <span class="n">gradient</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>  <span class="c"># returns first in tuple</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">-&gt;</span><span class="w"> </span><span class="n">gradient</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="w">  </span><span class="c"># returns first in tuple</span><span class="w"></span>
 
-<span class="n">D_sin</span> <span class="o">=</span> <span class="n">D</span><span class="p">(</span><span class="n">sin</span><span class="p">)</span>
-<span class="n">D_sin</span><span class="p">(</span><span class="mf">4.0</span><span class="p">)</span>
+<span class="n">D_sin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">D</span><span class="p">(</span><span class="n">sin</span><span class="p">)</span><span class="w"></span>
+<span class="n">D_sin</span><span class="p">(</span><span class="mf">4.0</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -586,9 +586,9 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <p>For functions of one (Julia) variable, we can find the by simply using the <code class="docutils literal notranslate"><span class="pre">'</span></code> after a function name</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Statistics</span>
-<span class="n">p</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">abs</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-<span class="n">p</span><span class="o">&#39;</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">])</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
+<span class="n">p</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">abs</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="n">p</span><span class="o">&#39;</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">2.0</span><span class="p">])</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -604,7 +604,7 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <p>Or, using the complicated iterative function we defined for the squareroot,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">squareroot</span><span class="o">&#39;</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">squareroot</span><span class="o">&#39;</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -617,8 +617,8 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <p>Zygote supports combinations of vectors and scalars as the function parameters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">h</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.^</span><span class="n">n</span><span class="p">))</span><span class="o">^</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-<span class="n">gradient</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">],</span> <span class="mf">2.0</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">h</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.^</span><span class="n">n</span><span class="p">))</span><span class="o">^</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
+<span class="n">gradient</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">4.0</span><span class="p">,</span><span class="w"> </span><span class="mf">6.0</span><span class="p">],</span><span class="w"> </span><span class="mf">2.0</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -632,25 +632,25 @@ all of the basic operations.  Each definition then has the chain-rule built into
 with 1 million dimensions, solved in a few seconds.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Optim</span><span class="p">,</span> <span class="n">LinearAlgebra</span>
-<span class="n">N</span> <span class="o">=</span> <span class="mi">1000000</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="n">λ</span> <span class="o">=</span> <span class="mf">0.01</span>
-<span class="n">obj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">sum</span><span class="p">((</span><span class="n">x</span> <span class="o">.-</span> <span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">λ</span><span class="o">*</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Optim</span><span class="p">,</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="w"></span>
+<span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000000</span><span class="w"></span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="w"></span>
+<span class="n">λ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01</span><span class="w"></span>
+<span class="n">obj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="p">((</span><span class="n">x</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="o">.^</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">λ</span><span class="o">*</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
 
-<span class="n">x_iv</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
-<span class="k">function</span> <span class="n">g!</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="n">G</span> <span class="o">.=</span>  <span class="n">obj</span><span class="o">&#39;</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="k">end</span>
+<span class="n">x_iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">g!</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">G</span><span class="w"> </span><span class="o">.=</span><span class="w">  </span><span class="n">obj</span><span class="o">&#39;</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 
-<span class="n">results</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">g!</span><span class="p">,</span> <span class="n">x_iv</span><span class="p">,</span> <span class="n">LBFGS</span><span class="p">())</span> <span class="c"># or ConjugateGradient()</span>
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;minimum = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span><span class="s"> with in &quot;</span><span class="o">*</span>
-<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+<span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">optimize</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="n">g!</span><span class="p">,</span><span class="w"> </span><span class="n">x_iv</span><span class="p">,</span><span class="w"> </span><span class="n">LBFGS</span><span class="p">())</span><span class="w"> </span><span class="c"># or ConjugateGradient()</span><span class="w"></span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;minimum = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span><span class="s"> with in &quot;</span><span class="o">*</span><span class="w"></span>
+<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>minimum = 5.7760659225071596 with in 2 iterations
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>minimum = 5.7708643459529725 with in 2 iterations
 </pre></div>
 </div>
 </div>
@@ -682,10 +682,10 @@ maximization, so if a function is called <code class="docutils literal notransla
 defaults to a robust hybrid optimization routine called <a class="reference external" href="https://en.wikipedia.org/wiki/Brent%27s_method">Brent’s method</a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Optim</span>
-<span class="k">using</span> <span class="n">Optim</span><span class="o">:</span> <span class="n">converged</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">maximizer</span><span class="p">,</span> <span class="n">minimizer</span><span class="p">,</span> <span class="n">iterations</span> <span class="c">#some extra functions</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Optim</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">Optim</span><span class="o">:</span><span class="w"> </span><span class="n">converged</span><span class="p">,</span><span class="w"> </span><span class="n">maximum</span><span class="p">,</span><span class="w"> </span><span class="n">maximizer</span><span class="p">,</span><span class="w"> </span><span class="n">minimizer</span><span class="p">,</span><span class="w"> </span><span class="n">iterations</span><span class="w"> </span><span class="c">#some extra functions</span><span class="w"></span>
 
-<span class="n">result</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">x</span><span class="o">-&gt;</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">optimize</span><span class="p">(</span><span class="n">x</span><span class="o">-&gt;</span><span class="w"> </span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -705,9 +705,9 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <p>Always check if the results converged, and throw errors otherwise</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">converged</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">||</span> <span class="n">error</span><span class="p">(</span><span class="s">&quot;Failed to converge in </span><span class="si">$</span><span class="p">(</span><span class="n">iterations</span><span class="p">(</span><span class="n">result</span><span class="p">))</span><span class="s"> iterations&quot;</span><span class="p">)</span>
-<span class="n">xmin</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">minimizer</span>
-<span class="n">result</span><span class="o">.</span><span class="n">minimum</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">converged</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Failed to converge in </span><span class="si">$</span><span class="p">(</span><span class="n">iterations</span><span class="p">(</span><span class="n">result</span><span class="p">))</span><span class="s"> iterations&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">xmin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="o">.</span><span class="n">minimizer</span><span class="w"></span>
+<span class="n">result</span><span class="o">.</span><span class="n">minimum</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -722,11 +722,11 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <p>Or to maximize</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span>
-<span class="n">result</span> <span class="o">=</span> <span class="n">maximize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
-<span class="n">converged</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">||</span> <span class="n">error</span><span class="p">(</span><span class="s">&quot;Failed to converge in </span><span class="si">$</span><span class="p">(</span><span class="n">iterations</span><span class="p">(</span><span class="n">result</span><span class="p">))</span><span class="s"> iterations&quot;</span><span class="p">)</span>
-<span class="n">xmin</span> <span class="o">=</span> <span class="n">maximizer</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-<span class="n">fmax</span> <span class="o">=</span> <span class="n">maximum</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="w"></span>
+<span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"></span>
+<span class="n">converged</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Failed to converge in </span><span class="si">$</span><span class="p">(</span><span class="n">iterations</span><span class="p">(</span><span class="n">result</span><span class="p">))</span><span class="s"> iterations&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">xmin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximizer</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="w"></span>
+<span class="n">fmax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximum</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -744,9 +744,9 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <p>From the documentation, the simplest version is</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span>
-<span class="n">x_iv</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x_iv</span><span class="p">)</span> <span class="c"># i.e. optimize(f, x_iv, NelderMead())</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="w"></span>
+<span class="n">x_iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">]</span><span class="w"></span>
+<span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x_iv</span><span class="p">)</span><span class="w"> </span><span class="c"># i.e. optimize(f, x_iv, NelderMead())</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -774,9 +774,9 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <p>To change the algorithm type to <a class="reference external" href="http://julianlsolvers.github.io/Optim.jl/stable/algo/lbfgs/">L-BFGS</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x_iv</span><span class="p">,</span> <span class="n">LBFGS</span><span class="p">())</span>
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;minimum = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span><span class="s"> with argmin = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimizer</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span>
-<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x_iv</span><span class="p">,</span><span class="w"> </span><span class="n">LBFGS</span><span class="p">())</span><span class="w"></span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;minimum = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span><span class="s"> with argmin = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimizer</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span><span class="w"></span>
+<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -791,11 +791,11 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <p>However, since most of the algorithms require derivatives, you will often want to use auto differentiation or pass analytical gradients if possible.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span>
-<span class="n">x_iv</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x_iv</span><span class="p">,</span> <span class="n">LBFGS</span><span class="p">(),</span> <span class="n">autodiff</span><span class="o">=</span><span class="ss">:forward</span><span class="p">)</span> <span class="c"># i.e. use ForwardDiff.jl</span>
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;minimum = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span><span class="s"> with argmin = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimizer</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span>
-<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="w"></span>
+<span class="n">x_iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">]</span><span class="w"></span>
+<span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x_iv</span><span class="p">,</span><span class="w"> </span><span class="n">LBFGS</span><span class="p">(),</span><span class="w"> </span><span class="n">autodiff</span><span class="o">=</span><span class="ss">:forward</span><span class="p">)</span><span class="w"> </span><span class="c"># i.e. use ForwardDiff.jl</span><span class="w"></span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;minimum = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span><span class="s"> with argmin = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimizer</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span><span class="w"></span>
+<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -809,16 +809,16 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <p>Alternatively, with an analytical gradient</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span>
-<span class="n">x_iv</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-<span class="k">function</span> <span class="n">g!</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="n">G</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.0</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="mf">400.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">G</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">200.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">end</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="w"></span>
+<span class="n">x_iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">]</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">g!</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">G</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mf">2.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">400.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="n">G</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">200.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 
-<span class="n">results</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">g!</span><span class="p">,</span> <span class="n">x_iv</span><span class="p">,</span> <span class="n">LBFGS</span><span class="p">())</span> <span class="c"># or ConjugateGradient()</span>
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;minimum = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span><span class="s"> with argmin = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimizer</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span>
-<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span>
+<span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">g!</span><span class="p">,</span><span class="w"> </span><span class="n">x_iv</span><span class="p">,</span><span class="w"> </span><span class="n">LBFGS</span><span class="p">())</span><span class="w"> </span><span class="c"># or ConjugateGradient()</span><span class="w"></span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;minimum = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimum</span><span class="p">)</span><span class="s"> with argmin = </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">minimizer</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span><span class="w"></span>
+<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations&quot;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -831,9 +831,9 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <p>For derivative-free methods, you can change the algorithm – and have no need to provide a gradient</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span>
-<span class="n">x_iv</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
-<span class="n">results</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x_iv</span><span class="p">,</span> <span class="n">SimulatedAnnealing</span><span class="p">())</span> <span class="c"># or ParticleSwarm() or NelderMead()</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="w"></span>
+<span class="n">x_iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">]</span><span class="w"></span>
+<span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">optimize</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x_iv</span><span class="p">,</span><span class="w"> </span><span class="n">SimulatedAnnealing</span><span class="p">())</span><span class="w"> </span><span class="c"># or ParticleSwarm() or NelderMead()</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -841,7 +841,7 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> * Status: failure (reached maximum number of iterations)
 
  * Candidate solution
-    Final objective value:     3.331849e-02
+    Final objective value:     4.161385e-02
 
  * Found with
     Algorithm:     Simulated Annealing
@@ -878,26 +878,26 @@ language with macros, and able to use a variety of different commerical and open
 <p>Here <code class="docutils literal notranslate"><span class="pre">Ipopt</span></code> stands for <code class="docutils literal notranslate"><span class="pre">Interior</span> <span class="pre">Point</span> <span class="pre">OPTimizer</span></code>, a <a class="reference external" href="https://github.com/JuliaOpt/Ipopt.jl">nonlinear solver</a> in Julia</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">JuMP</span><span class="p">,</span> <span class="n">Ipopt</span>
-<span class="c"># solve</span>
-<span class="c"># max( x[1] + x[2] )</span>
-<span class="c"># st sqrt(x[1]^2 + x[2]^2) &lt;= 1</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">JuMP</span><span class="p">,</span><span class="w"> </span><span class="n">Ipopt</span><span class="w"></span>
+<span class="c"># solve</span><span class="w"></span>
+<span class="c"># max( x[1] + x[2] )</span><span class="w"></span>
+<span class="c"># st sqrt(x[1]^2 + x[2]^2) &lt;= 1</span><span class="w"></span>
 
-<span class="k">function</span> <span class="n">squareroot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c"># pretending we don&#39;t know sqrt()</span>
-    <span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="c"># Initial starting point for Newton’s method</span>
-    <span class="k">while</span> <span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="o">*</span><span class="n">z</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1e-13</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">z</span> <span class="o">-</span> <span class="p">(</span><span class="n">z</span><span class="o">*</span><span class="n">z</span><span class="o">-</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="n">z</span><span class="p">)</span>
-    <span class="k">end</span>
-    <span class="k">return</span> <span class="n">z</span>
-<span class="k">end</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">with_optimizer</span><span class="p">(</span><span class="n">Ipopt</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">))</span>
-<span class="c"># need to register user defined functions for AD</span>
-<span class="n">JuMP</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="ss">:squareroot</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">squareroot</span><span class="p">,</span> <span class="n">autodiff</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span>
+<span class="k">function</span><span class="w"> </span><span class="n">squareroot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c"># pretending we don&#39;t know sqrt()</span><span class="w"></span>
+<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="c"># Initial starting point for Newton’s method</span><span class="w"></span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="o">*</span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1e-13</span><span class="w"></span>
+<span class="w">        </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">z</span><span class="o">*</span><span class="n">z</span><span class="o">-</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="n">z</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">z</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
+<span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Model</span><span class="p">(</span><span class="n">with_optimizer</span><span class="p">(</span><span class="n">Ipopt</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">))</span><span class="w"></span>
+<span class="c"># need to register user defined functions for AD</span><span class="w"></span>
+<span class="n">JuMP</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="ss">:squareroot</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">squareroot</span><span class="p">,</span><span class="w"> </span><span class="n">autodiff</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span><span class="w"></span>
 
-<span class="nd">@variable</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span> <span class="c"># start is the initial condition</span>
-<span class="nd">@objective</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">Max</span><span class="p">,</span> <span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-<span class="nd">@NLconstraint</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">squareroot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
-<span class="nd">@show</span> <span class="n">JuMP</span><span class="o">.</span><span class="n">optimize!</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="nd">@variable</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="n">start</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span><span class="w"> </span><span class="c"># start is the initial condition</span><span class="w"></span>
+<span class="nd">@objective</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">Max</span><span class="p">,</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"></span>
+<span class="nd">@NLconstraint</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">squareroot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">JuMP</span><span class="o">.</span><span class="n">optimize!</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -950,7 +950,7 @@ Number of inequality constraint evaluations          = 6
 Number of equality constraint Jacobian evaluations   = 0
 Number of inequality constraint Jacobian evaluations = 6
 Number of Lagrangian Hessian evaluations             = 5
-Total seconds in IPOPT                               = 2.492
+Total seconds in IPOPT                               = 2.345
 
 EXIT: Optimal Solution Found.
 JuMP.optimize!(m) = nothing
@@ -961,24 +961,24 @@ JuMP.optimize!(m) = nothing
 <p>And this is an example of a quadratic objective</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># solve</span>
-<span class="c"># min (1-x)^2 + 100(y-x^2)^2)</span>
-<span class="c"># st x + y &gt;= 10</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># solve</span><span class="w"></span>
+<span class="c"># min (1-x)^2 + 100(y-x^2)^2)</span><span class="w"></span>
+<span class="c"># st x + y &gt;= 10</span><span class="w"></span>
 
-<span class="k">using</span> <span class="n">JuMP</span><span class="p">,</span><span class="n">Ipopt</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">with_optimizer</span><span class="p">(</span><span class="n">Ipopt</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">))</span> <span class="c"># settings for the solver</span>
-<span class="nd">@variable</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
-<span class="nd">@variable</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span>
+<span class="k">using</span><span class="w"> </span><span class="n">JuMP</span><span class="p">,</span><span class="n">Ipopt</span><span class="w"></span>
+<span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Model</span><span class="p">(</span><span class="n">with_optimizer</span><span class="p">(</span><span class="n">Ipopt</span><span class="o">.</span><span class="n">Optimizer</span><span class="p">))</span><span class="w"> </span><span class="c"># settings for the solver</span><span class="w"></span>
+<span class="nd">@variable</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"></span>
+<span class="nd">@variable</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"></span>
 
-<span class="nd">@NLobjective</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">Min</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">100</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+<span class="nd">@NLobjective</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">Min</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">100</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
 
-<span class="n">JuMP</span><span class="o">.</span><span class="n">optimize!</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;x = &quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s">&quot; y = &quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="n">JuMP</span><span class="o">.</span><span class="n">optimize!</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="w"></span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;x = &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="s">&quot; y = &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="n">y</span><span class="p">))</span><span class="w"></span>
 
-<span class="c"># adding a (linear) constraint</span>
-<span class="nd">@constraint</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">==</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">JuMP</span><span class="o">.</span><span class="n">optimize!</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;x = &quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="s">&quot; y = &quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="c"># adding a (linear) constraint</span><span class="w"></span>
+<span class="nd">@constraint</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span><span class="w"></span>
+<span class="n">JuMP</span><span class="o">.</span><span class="n">optimize!</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="w"></span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;x = &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="s">&quot; y = &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="n">y</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1035,7 +1035,7 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 0
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 14
-Total seconds in IPOPT                               = 0.067
+Total seconds in IPOPT                               = 0.061
 
 EXIT: Optimal Solution Found.
 x = 0.9999999999999899 y = 0.9999999999999792
@@ -1085,7 +1085,7 @@ Number of inequality constraint evaluations          = 0
 Number of equality constraint Jacobian evaluations   = 1
 Number of inequality constraint Jacobian evaluations = 0
 Number of Lagrangian Hessian evaluations             = 9
-Total seconds in IPOPT                               = 0.029
+Total seconds in IPOPT                               = 0.025
 
 EXIT: Optimal Solution Found.
 x = 2.701147124098218 y = 7.2988528759017814
@@ -1100,13 +1100,13 @@ x = 2.701147124098218 y = 7.2988528759017814
 <p>To see an example from the documentation</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">BlackBoxOptim</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">BlackBoxOptim</span><span class="w"></span>
 
-<span class="k">function</span> <span class="n">rosenbrock2d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="k">return</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span>
-<span class="k">end</span>
+<span class="k">function</span><span class="w"> </span><span class="n">rosenbrock2d</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 
-<span class="n">results</span> <span class="o">=</span> <span class="n">bboptimize</span><span class="p">(</span><span class="n">rosenbrock2d</span><span class="p">;</span> <span class="n">SearchRange</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">),</span> <span class="n">NumDimensions</span> <span class="o">=</span> <span class="mi">2</span><span class="p">);</span>
+<span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bboptimize</span><span class="p">(</span><span class="n">rosenbrock2d</span><span class="p">;</span><span class="w"> </span><span class="n">SearchRange</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">),</span><span class="w"> </span><span class="n">NumDimensions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1114,12 +1114,12 @@ x = 2.701147124098218 y = 7.2988528759017814
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting optimization with optimizer DiffEvoOpt{FitPopulation{Float64}, RadiusLimitedSelector, BlackBoxOptim.AdaptiveDiffEvoRandBin{3}, RandomBound{ContinuousRectSearchSpace}}
 0.00 secs, 0 evals, 0 steps
 
-Optimization stopped after 10001 steps and 0.07 seconds
+Optimization stopped after 10001 steps and 0.06 seconds
 Termination reason: Max number of steps (10000) reached
-Steps per second = 143909.22
-Function evals per second = 146384.21
-Improvements/step = 0.20960
-Total function evaluations = 10173
+Steps per second = 156375.99
+Function evals per second = 158033.41
+Improvements/step = 0.21180
+Total function evaluations = 10107
 
 
 Best candidate found: [1.0, 1.0]
@@ -1148,9 +1148,9 @@ Fitness: 0.000000000
 <p>The <a class="reference external" href="https://github.com/JuliaLang/Roots.jl">Roots.jl</a> package offers <code class="docutils literal notranslate"><span class="pre">fzero()</span></code> to find roots</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">Roots</span>
-<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">))</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="n">x</span><span class="o">^</span><span class="mi">20</span> <span class="o">-</span> <span class="mi">1</span>
-<span class="n">fzero</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Roots</span><span class="w"></span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="mi">4</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="o">^</span><span class="mi">20</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="n">fzero</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1167,12 +1167,12 @@ Fitness: 0.000000000
 <p>From the documentation, to solve for a system of equations without providing a Jacobian</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">NLsolve</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">NLsolve</span><span class="w"></span>
 
-<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">^</span><span class="mi">3</span><span class="o">-</span><span class="mi">7</span><span class="p">)</span><span class="o">+</span><span class="mi">18</span>
-        <span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="c"># returns an array</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">^</span><span class="mi">3</span><span class="o">-</span><span class="mi">7</span><span class="p">)</span><span class="o">+</span><span class="mi">18</span><span class="w"></span>
+<span class="w">        </span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span><span class="w"> </span><span class="c"># returns an array</span><span class="w"></span>
 
-<span class="n">results</span> <span class="o">=</span> <span class="n">nlsolve</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">[</span> <span class="mf">0.1</span><span class="p">;</span> <span class="mf">1.2</span><span class="p">])</span>
+<span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nlsolve</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="mf">1.2</span><span class="p">])</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1196,10 +1196,10 @@ Fitness: 0.000000000
 <p>Alternatively, if <code class="docutils literal notranslate"><span class="pre">f(x)</span></code> is written generically, you can use auto-differentiation with a single setting.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">nlsolve</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="p">[</span> <span class="mf">0.1</span><span class="p">;</span> <span class="mf">1.2</span><span class="p">],</span> <span class="n">autodiff</span><span class="o">=</span><span class="ss">:forward</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nlsolve</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="mf">1.2</span><span class="p">],</span><span class="w"> </span><span class="n">autodiff</span><span class="o">=</span><span class="ss">:forward</span><span class="p">)</span><span class="w"></span>
 
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;converged=</span><span class="si">$</span><span class="p">(</span><span class="n">NLsolve</span><span class="o">.</span><span class="n">converged</span><span class="p">(</span><span class="n">results</span><span class="p">))</span><span class="s"> at root=</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span>
-<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations and </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">f_calls</span><span class="p">)</span><span class="s"> function calls&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;converged=</span><span class="si">$</span><span class="p">(</span><span class="n">NLsolve</span><span class="o">.</span><span class="n">converged</span><span class="p">(</span><span class="n">results</span><span class="p">))</span><span class="s"> at root=</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span><span class="w"></span>
+<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations and </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">f_calls</span><span class="p">)</span><span class="s"> function calls&quot;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1212,15 +1212,15 @@ Fitness: 0.000000000
 <p>Providing a function which operates inplace (i.e., modifies an argument) may help performance for large systems of equations (and hurt it for small ones).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">f!</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="c"># modifies the first argument</span>
-    <span class="n">F</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">^</span><span class="mi">3</span><span class="o">-</span><span class="mi">7</span><span class="p">)</span><span class="o">+</span><span class="mi">18</span>
-    <span class="n">F</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-<span class="k">end</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">f!</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c"># modifies the first argument</span><span class="w"></span>
+<span class="w">    </span><span class="n">F</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">^</span><span class="mi">3</span><span class="o">-</span><span class="mi">7</span><span class="p">)</span><span class="o">+</span><span class="mi">18</span><span class="w"></span>
+<span class="w">    </span><span class="n">F</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 
-<span class="n">results</span> <span class="o">=</span> <span class="n">nlsolve</span><span class="p">(</span><span class="n">f!</span><span class="p">,</span> <span class="p">[</span> <span class="mf">0.1</span><span class="p">;</span> <span class="mf">1.2</span><span class="p">],</span> <span class="n">autodiff</span><span class="o">=</span><span class="ss">:forward</span><span class="p">)</span>
+<span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nlsolve</span><span class="p">(</span><span class="n">f!</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="mf">1.2</span><span class="p">],</span><span class="w"> </span><span class="n">autodiff</span><span class="o">=</span><span class="ss">:forward</span><span class="p">)</span><span class="w"></span>
 
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;converged=</span><span class="si">$</span><span class="p">(</span><span class="n">NLsolve</span><span class="o">.</span><span class="n">converged</span><span class="p">(</span><span class="n">results</span><span class="p">))</span><span class="s"> at root=</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span>
-<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations and </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">f_calls</span><span class="p">)</span><span class="s"> function calls&quot;</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;converged=</span><span class="si">$</span><span class="p">(</span><span class="n">NLsolve</span><span class="o">.</span><span class="n">converged</span><span class="p">(</span><span class="n">results</span><span class="p">))</span><span class="s"> at root=</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">zero</span><span class="p">)</span><span class="s"> in &quot;</span><span class="o">*</span><span class="w"></span>
+<span class="s">&quot;</span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">iterations</span><span class="p">)</span><span class="s"> iterations and </span><span class="si">$</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">f_calls</span><span class="p">)</span><span class="s"> function calls&quot;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1248,11 +1248,11 @@ Fitness: 0.000000000
 <p>From the documentation</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LeastSquaresOptim</span>
-<span class="k">function</span> <span class="n">rosenbrock</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-    <span class="p">[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)]</span>
-<span class="k">end</span>
-<span class="n">LeastSquaresOptim</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">rosenbrock</span><span class="p">,</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">Dogleg</span><span class="p">())</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LeastSquaresOptim</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">rosenbrock</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)]</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
+<span class="n">LeastSquaresOptim</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">rosenbrock</span><span class="p">,</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">Dogleg</span><span class="p">())</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1278,22 +1278,22 @@ Fitness: 0.000000000
 but you could also provide your own calculation of the Jacobian (analytical or using finite differences) and/or calculate the function inplace.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">rosenbrock_f!</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">end</span>
-<span class="n">LeastSquaresOptim</span><span class="o">.</span><span class="n">optimize!</span><span class="p">(</span><span class="n">LeastSquaresProblem</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
-                                <span class="n">f!</span> <span class="o">=</span> <span class="n">rosenbrock_f!</span><span class="p">,</span> <span class="n">output_length</span> <span class="o">=</span> <span class="mi">2</span><span class="p">))</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">rosenbrock_f!</span><span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
+<span class="n">LeastSquaresOptim</span><span class="o">.</span><span class="n">optimize!</span><span class="p">(</span><span class="n">LeastSquaresProblem</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
+<span class="w">                                </span><span class="n">f!</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rosenbrock_f!</span><span class="p">,</span><span class="w"> </span><span class="n">output_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"></span>
 
-<span class="c"># if you want to use gradient</span>
-<span class="k">function</span> <span class="n">rosenbrock_g!</span><span class="p">(</span><span class="n">J</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-    <span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-    <span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">J</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">200</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">J</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="k">end</span>
-<span class="n">LeastSquaresOptim</span><span class="o">.</span><span class="n">optimize!</span><span class="p">(</span><span class="n">LeastSquaresProblem</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
-                                <span class="n">f!</span> <span class="o">=</span> <span class="n">rosenbrock_f!</span><span class="p">,</span> <span class="n">g!</span> <span class="o">=</span> <span class="n">rosenbrock_g!</span><span class="p">,</span> <span class="n">output_length</span> <span class="o">=</span> <span class="mi">2</span><span class="p">))</span>
+<span class="c"># if you want to use gradient</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">rosenbrock_g!</span><span class="p">(</span><span class="n">J</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
+<span class="w">    </span><span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
+<span class="w">    </span><span class="n">J</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">200</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="n">J</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
+<span class="n">LeastSquaresOptim</span><span class="o">.</span><span class="n">optimize!</span><span class="p">(</span><span class="n">LeastSquaresProblem</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
+<span class="w">                                </span><span class="n">f!</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rosenbrock_f!</span><span class="p">,</span><span class="w"> </span><span class="n">g!</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rosenbrock_g!</span><span class="p">,</span><span class="w"> </span><span class="n">output_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1328,10 +1328,10 @@ will fill in a few of the operations required for a simple AD implementation.</p
 <p>First, we need to provide a type to hold the dual.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">DualNumber</span><span class="p">{</span><span class="kt">T</span><span class="p">}</span> <span class="o">&lt;:</span> <span class="kt">Real</span>
-    <span class="n">val</span><span class="o">::</span><span class="kt">T</span>
-    <span class="n">ϵ</span><span class="o">::</span><span class="kt">T</span>
-<span class="k">end</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">DualNumber</span><span class="p">{</span><span class="kt">T</span><span class="p">}</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span><span class="w"></span>
+<span class="w">    </span><span class="n">val</span><span class="o">::</span><span class="kt">T</span><span class="w"></span>
+<span class="w">    </span><span class="n">ϵ</span><span class="o">::</span><span class="kt">T</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1340,10 +1340,10 @@ will fill in a few of the operations required for a simple AD implementation.</p
 <p>We can add on a variety of chain rule definitions by importing in the appropriate functions and adding DualNumber versions.  For example</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="n">Base</span><span class="o">:</span> <span class="o">+</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="o">-</span><span class="p">,</span> <span class="o">^</span><span class="p">,</span> <span class="n">exp</span>
-<span class="o">+</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">,</span> <span class="n">y</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">)</span> <span class="o">=</span> <span class="n">DualNumber</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">val</span> <span class="o">+</span> <span class="n">y</span><span class="o">.</span><span class="n">val</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">ϵ</span> <span class="o">+</span> <span class="n">y</span><span class="o">.</span><span class="n">ϵ</span><span class="p">)</span>  <span class="c"># dual addition</span>
-<span class="o">+</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">,</span> <span class="n">a</span><span class="o">::</span><span class="kt">Number</span><span class="p">)</span> <span class="o">=</span> <span class="n">DualNumber</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">val</span> <span class="o">+</span> <span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">ϵ</span><span class="p">)</span>  <span class="c"># i.e. scalar addition, not dual</span>
-<span class="o">+</span><span class="p">(</span><span class="n">a</span><span class="o">::</span><span class="kt">Number</span><span class="p">,</span> <span class="n">x</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">)</span> <span class="o">=</span> <span class="n">DualNumber</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">val</span> <span class="o">+</span> <span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">ϵ</span><span class="p">)</span>  <span class="c"># i.e. scalar addition, not dual</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="n">Base</span><span class="o">:</span><span class="w"> </span><span class="o">+</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="p">,</span><span class="w"> </span><span class="o">^</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span><span class="w"></span>
+<span class="o">+</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DualNumber</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">.</span><span class="n">ϵ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="o">.</span><span class="n">ϵ</span><span class="p">)</span><span class="w">  </span><span class="c"># dual addition</span><span class="w"></span>
+<span class="o">+</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="o">::</span><span class="kt">Number</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DualNumber</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">.</span><span class="n">ϵ</span><span class="p">)</span><span class="w">  </span><span class="c"># i.e. scalar addition, not dual</span><span class="w"></span>
+<span class="o">+</span><span class="p">(</span><span class="n">a</span><span class="o">::</span><span class="kt">Number</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DualNumber</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">.</span><span class="n">ϵ</span><span class="p">)</span><span class="w">  </span><span class="c"># i.e. scalar addition, not dual</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1356,14 +1356,14 @@ will fill in a few of the operations required for a simple AD implementation.</p
 <p>With that, we can seed a dual number and find simple derivatives,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="mf">3.0</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
 
-<span class="n">x</span> <span class="o">=</span> <span class="n">DualNumber</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>  <span class="c"># x -&gt; 2.0 + 1.0\epsilon</span>
-<span class="n">y</span> <span class="o">=</span> <span class="n">DualNumber</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>  <span class="c"># i.e. y = 3.0, no derivative</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DualNumber</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w">  </span><span class="c"># x -&gt; 2.0 + 1.0\epsilon</span><span class="w"></span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DualNumber</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w">  </span><span class="c"># i.e. y = 3.0, no derivative</span><span class="w"></span>
 
 
-<span class="c"># seeded calculates both teh function and the d/dx gradient!</span>
-<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="c"># seeded calculates both teh function and the d/dx gradient!</span><span class="w"></span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>

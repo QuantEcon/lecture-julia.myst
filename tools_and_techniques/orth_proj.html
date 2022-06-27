@@ -980,34 +980,34 @@ already the closest point in the subspace to itself).</p>
 algorithm given in the lecture.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span> <span class="n">LinearAlgebra</span><span class="p">,</span> <span class="n">Statistics</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span> <span class="n">gram_schmidt</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">gram_schmidt</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w"></span>
 
-    <span class="n">U</span> <span class="o">=</span> <span class="n">similar</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="kt">Float64</span><span class="p">)</span> <span class="c"># for robustness</span>
+<span class="w">    </span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="kt">Float64</span><span class="p">)</span><span class="w"> </span><span class="c"># for robustness</span><span class="w"></span>
 
-    <span class="k">function</span> <span class="n">normalized_orthogonal_projection</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
-        <span class="c"># project onto the orthogonal complement of the col span of Z</span>
-        <span class="n">orthogonal</span> <span class="o">=</span> <span class="n">I</span> <span class="o">-</span> <span class="n">Z</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="n">Z</span><span class="o">&#39;</span><span class="n">Z</span><span class="p">)</span> <span class="o">*</span> <span class="n">Z</span><span class="o">&#39;</span>
-        <span class="n">projection</span> <span class="o">=</span> <span class="n">orthogonal</span> <span class="o">*</span> <span class="n">b</span>
-        <span class="c"># normalize</span>
-        <span class="k">return</span> <span class="n">projection</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">projection</span><span class="p">)</span>
-    <span class="k">end</span>
+<span class="w">    </span><span class="k">function</span><span class="w"> </span><span class="n">normalized_orthogonal_projection</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">Z</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="c"># project onto the orthogonal complement of the col span of Z</span><span class="w"></span>
+<span class="w">        </span><span class="n">orthogonal</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">I</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">inv</span><span class="p">(</span><span class="n">Z</span><span class="o">&#39;</span><span class="n">Z</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Z</span><span class="o">&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="n">projection</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orthogonal</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
+<span class="w">        </span><span class="c"># normalize</span><span class="w"></span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">projection</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">norm</span><span class="p">(</span><span class="n">projection</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">end</span><span class="w"></span>
 
-    <span class="k">for</span> <span class="n">col</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">U</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="c"># set up</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">col</span><span class="p">]</span>       <span class="c"># vector we&#39;re going to project</span>
-        <span class="n">Z</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="n">col</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="c"># first i-1 columns of X</span>
-        <span class="n">U</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalized_orthogonal_projection</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
-    <span class="k">end</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="c"># set up</span><span class="w"></span>
+<span class="w">        </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">col</span><span class="p">]</span><span class="w">       </span><span class="c"># vector we&#39;re going to project</span><span class="w"></span>
+<span class="w">        </span><span class="n">Z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="mi">1</span><span class="o">:</span><span class="n">col</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="c"># first i-1 columns of X</span><span class="w"></span>
+<span class="w">        </span><span class="n">U</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">col</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">normalized_orthogonal_projection</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">Z</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="k">end</span><span class="w"></span>
 
-    <span class="k">return</span> <span class="n">U</span>
-<span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">U</span><span class="w"></span>
+<span class="k">end</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1020,8 +1020,8 @@ algorithm given in the lecture.</p>
 <p>Here are the arrays we’ll work with</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]</span>
-<span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">0</span><span class="p">;</span> <span class="mi">0</span> <span class="o">-</span><span class="mi">6</span><span class="p">;</span> <span class="mi">2</span> <span class="mi">2</span><span class="p">];</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="w"></span>
+<span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">-</span><span class="mi">6</span><span class="p">;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="mi">2</span><span class="p">];</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1030,7 +1030,7 @@ algorithm given in the lecture.</p>
 by the columns of <span class="math notranslate nohighlight">\(X\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Py1</span> <span class="o">=</span> <span class="n">X</span> <span class="o">*</span> <span class="n">inv</span><span class="p">(</span><span class="n">X</span><span class="o">&#39;</span><span class="n">X</span><span class="p">)</span> <span class="o">*</span> <span class="n">X</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">y</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Py1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">X</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">inv</span><span class="p">(</span><span class="n">X</span><span class="o">&#39;</span><span class="n">X</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">X</span><span class="o">&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1046,7 +1046,7 @@ by the columns of <span class="math notranslate nohighlight">\(X\)</span>.</p>
 <p>Now let’s orthogonalize first, using Gram–Schmidt:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">U</span> <span class="o">=</span> <span class="n">gram_schmidt</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gram_schmidt</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1063,7 +1063,7 @@ by the columns of <span class="math notranslate nohighlight">\(X\)</span>.</p>
 same thing:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Py2</span> <span class="o">=</span> <span class="n">U</span> <span class="o">*</span> <span class="n">U</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">y</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Py2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">U</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">U</span><span class="o">&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1080,8 +1080,8 @@ same thing:</p>
 basis by QR decomposition and project once more.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="p">,</span> <span class="n">R</span> <span class="o">=</span> <span class="n">qr</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="kt">Matrix</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Q</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">qr</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w"></span>
+<span class="n">Q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">Matrix</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -1096,7 +1096,7 @@ basis by QR decomposition and project once more.</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Py3</span> <span class="o">=</span> <span class="n">Q</span> <span class="o">*</span> <span class="n">Q</span><span class="o">&#39;</span> <span class="o">*</span> <span class="n">y</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Py3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Q</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Q</span><span class="o">&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
