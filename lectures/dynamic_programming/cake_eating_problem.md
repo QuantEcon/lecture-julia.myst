@@ -95,8 +95,7 @@ In Julia this is
 
 ```{code-cell} julia
 function u(c, γ)
-
-    return c .^ (1 .- γ) / (1 .- γ)
+    return c ^ (1 - γ) / (1 - γ)
 end
 ```
 
@@ -243,12 +242,11 @@ explicitly, as a function of the state variable and the parameters.
 
 We will deal with that situation numerically when the time comes.
 
-Here is a Python representation of the value function:
+Here is a Julia representation of the value function:
 
 ```{code-cell} julia
 function v_star(x, β, γ)
-
-    return (1 .- β .^ (1 ./ γ)) .^ (-γ) .* u(x, γ)
+    return (1 - β ^ (1 / γ)) ^ (-γ) * u(x, γ)
 end
 ```
 
@@ -256,9 +254,9 @@ And here's a figure showing the function for fixed parameters:
 
 ```{code-cell} julia
 β, γ = 0.95, 1.2
-x_grid = LinRange(0.1, 5, 100) # note that we could also use range(), but directly constructing a LinRange should have less overhead (see https://docs.julialang.org/en/v1/base/collections/#Base.LinRange)
+x_grid = LinRange(0.1, 5, 100)
 
-plot(x_grid, v_star(x_grid, β, γ), label="value function", gridalpha = 0, xlabel = "x", xlabelfontsize = 12, legend_font = 12, legend_position =:topleft, linewidth = 1.5)
+plot(x_grid, v_star.(x_grid, β, γ), label="value function", gridalpha = 0, xlabel = "x", xlabelfontsize = 12, legend_font = 12, legend_position =:topleft, linewidth = 1.5)
 ```
 
 ## The Optimal Policy
@@ -302,8 +300,7 @@ Here's some plots that illustrate.
 
 ```{code-cell} julia
 function c_star(x, β, γ)
-
-    return (1 .- β .^ (1 ./ γ)) .* x
+    return (1 - β ^ (1 / γ)) * x
 end
 ```
 
@@ -311,9 +308,9 @@ Continuing with the values for $\beta$ and $\gamma$ used above, the
 plot is
 
 ```{code-cell} julia
-plot(x_grid, c_star(x_grid, β, γ), gridalpha = 0, xlabel = "x", ylabel = "σ(x)", label="default parameters", legend_position =:topleft)
-plot!(x_grid, c_star(x_grid, β + 0.02, γ), label="higher β")
-plot!(x_grid, c_star(x_grid, β, γ + 0.2), label="higher γ")
+plot(x_grid, c_star.(x_grid, β, γ), gridalpha = 0, xlabel = "x", ylabel = "σ(x)", label="default parameters", legend_position =:topleft)
+plot!(x_grid, c_star.(x_grid, β + 0.02, γ), label="higher β")
+plot!(x_grid, c_star.(x_grid, β, γ + 0.2), label="higher γ")
 ```
 
 ## The Euler Equation
