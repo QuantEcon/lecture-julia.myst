@@ -143,9 +143,13 @@ distributions $\{ \psi_t \}$.
 The parameters are
 
 ```{code-cell} julia
-a, b, c = 0.9, 0.1, 0.5
+a = 0.9
+b = 0.1
+c = 0.5
 
-mu, v = -3.0, 0.6  # initial conditions mu_0, v_0
+# initial conditions mu_0, v_0
+mu = -3.0
+v = 0.6 
 ```
 
 Here's the sequence of distributions:
@@ -154,14 +158,14 @@ Here's the sequence of distributions:
 using StatsPlots
 
 sim_length = 10
-grid = range(-5, 7, length = 120)
+x_grid = range(-5, 7, length = 120)
 
 plt = plot()
 for t in 1:sim_length
     mu = a * mu + b
     v = a^2 * v + c^2
     dist = Normal(mu, sqrt(v))
-    plot!(plt, grid, pdf.(dist, grid), label=L"\psi_{%$t}", linealpha=0.7)
+    plot!(plt, x_grid, pdf.(dist, x_grid), label=L"\psi_{%$t}", linealpha=0.7)
 end
 plt
 ```
@@ -173,14 +177,15 @@ Notice that, in the figure above, the sequence $\{ \psi_t \}$ seems to be conver
 This is even clearer if we project forward further into the future:
 
 ```{code-cell} julia
-function plot_density_seq(;mu_0=-3.0, v_0=0.6, sim_length=60)
-    mu, v = mu_0, v_0
+function plot_density_seq(mu_0=-3.0, v_0=0.6; sim_length=60)
+    mu = mu_0
+    v = v_0
     plt = plot()
     for t in 1:sim_length
         mu = a * mu + b
         v = a^2 * v + c^2
         dist = Normal(mu, sqrt(v))
-        plot!(plt, grid, pdf.(dist, grid), label=nothing, linealpha=0.5)
+        plot!(plt, x_grid, pdf.(dist, x_grid), label=nothing, linealpha=0.5)
     end
     return plt
 end
@@ -193,7 +198,7 @@ Moreover, the limit does not depend on the initial condition.
 For example, this alternative density sequence also converges to the same limit.
 
 ```{code-cell} julia
-plot_density_seq(mu_0=3.0)
+plot_density_seq(3.0)
 ```
 
 In fact it's easy to show that such convergence will occur, regardless of the initial condition, whenever $|a| < 1$.
@@ -231,7 +236,7 @@ plt = plot_density_seq(mu_0=3.0)
 mu_star = b / (1 - a)
 std_star = sqrt(c^2 / (1 - a^2))  # square root of v_star
 psi_star = Normal(mu_star, std_star)
-plot!(plt, grid, psi_star, color = :black, label=L"\psi^*", linewidth=2)
+plot!(plt, x_grid, psi_star, color = :black, label=L"\psi^*", linewidth=2)
 plt
 ```
 
@@ -307,50 +312,50 @@ important concept for statistics and simulation.
 
 ## Exercises
 
-% (ar1p_ex1)=
-% ### Exercise 1
+(ar1p_ex1)=
+### Exercise 1
 
-% Let $k$ be a natural number.
+Let $k$ be a natural number.
 
-% The $k$-th central moment of a  random variable is defined as
+The $k$-th central moment of a  random variable is defined as
 
-% $$
-% M_k := \mathbb E [ (X - \mathbb E X )^k ]
-% $$
+$$
+M_k := \mathbb E [ (X - \mathbb E X )^k ]
+$$
 
-% When that random variable is $N(\mu, \sigma^2)$, it is known that
+When that random variable is $N(\mu, \sigma^2)$, it is known that
 
-% $$
-% M_k =
-% \begin{cases}
-%     0 & \text{ if } k \text{ is odd} \\
-%     \sigma^k (k-1)!! & \text{ if } k \text{ is even}
-% \end{cases}
-% $$
+$$
+M_k =
+\begin{cases}
+    0 & \text{ if } k \text{ is odd} \\
+    \sigma^k (k-1)!! & \text{ if } k \text{ is even}
+\end{cases}
+$$
 
-% Here $n!!$ is the double factorial.
+Here $n!!$ is the double factorial.
 
-% According to {eq}`ar1_ergo`, we should have, for any $k \in \mathbb N$,
+According to {eq}`ar1_ergo`, we should have, for any $k \in \mathbb N$,
 
-% $$
-% \frac{1}{m} \sum_{t = 1}^m
-%     (X_t - \mu^* )^k
-%     \approx M_k
-% $$
+$$
+\frac{1}{m} \sum_{t = 1}^m
+    (X_t - \mu^* )^k
+    \approx M_k
+$$
 
-% when $m$ is large.
+when $m$ is large.
 
-% Confirm this by simulation at a range of $k$ using the default parameters from the lecture.
+Confirm this by simulation at a range of $k$ using the default parameters from the lecture.
 
 (ar1p_ex2)=
-### Exercise 1
+### Exercise 2
 
 Write your own version of a one dimensional [kernel density
 estimator](https://en.wikipedia.org/wiki/Kernel_density_estimation),
 which estimates a density from a sample.
 
-Write it as a class that takes the data $X$ and bandwidth
-$h$ when initialized and provides a method $f$ such that
+Write it as a function $f$ that takes the data $X$ and bandwidth
+$h$ such that
 
 $$
 f(x) = \frac{1}{hn} \sum_{i=1}^n
@@ -360,10 +365,10 @@ $$
 For $K$ use the Gaussian kernel ($K$ is the standard normal
 density).
 
-Write the class so that the bandwidth defaults to Silverman’s rule (see
+To set the bandwidth, use Silverman’s rule (see
 the “rule of thumb” discussion on [this
 page](https://en.wikipedia.org/wiki/Kernel_density_estimation)). Test
-the class you have written by going through the steps
+the function you have written by going through the steps
 
 1. simulate data $X_1, \ldots, X_n$ from distribution $\phi$
 1. plot the kernel density estimate over a suitable range
@@ -387,7 +392,7 @@ Make a comment on your results. (Do you think this is a good estimator
 of these distributions?)
 
 (ar1p_ex3)=
-### Exercise 2
+### Exercise 3
 
 In the lecture we discussed the following fact: for the $AR(1)$ process
 
@@ -429,21 +434,20 @@ theoretical distribution.
 
 ## Solutions
 
-% ### Exercise 1
+### Exercise 1
 
-% Here is one solution:
+Here is one solution:
 
 ```{code-cell} julia
----
-tags: [remove-cell]
----
 using Random
 
-a, b, c = 0.9, 0.1, 0.5
+a = 0.9
+b = 0.1
+c = 0.5
 mu_star = b / (1 - a)
 std_star = sqrt(c^2 / (1 - a^2))  # square root of v_star
 
-function sample_moments_ar1(k; m=100_000, mu_0=0.0, sigma_0=1.0, seed=1234)
+function sample_moments_ar1(k, m=100_000, mu_0=0.0, sigma_0=1.0; seed=1234)
     Random.seed!(seed)
     sample_sum = 0.0
     x = mu_0 + sigma_0 * randn()
@@ -481,22 +485,15 @@ plot!(plt, k_vals, sample_moments, label="sample moments")
 plt
 ```
 
-### Exercise 1
+### Exercise 2
 
 Here is one solution:
 
 ```{code-cell} julia
 K(x) = pdf.(Normal(), x)
 
-function f(x, x_data)
-    c = std(x_data)
-    n = length(x_data)
-    h = 1.06 * c * n^(-1/5)
-    y = similar(x)
-    for (i, x_val) in enumerate(x)
-        y[i] = (1 / h) * mean(K((x_val .- x_data) / h))
-    end
-    return y
+function f(x_val, x_data, h)
+    return (1 / h) * mean(K((x_val .- x_data) / h))
 end
 ```
 
@@ -504,7 +501,9 @@ end
 function plot_kde(ϕ, n, plt, idx; x_min=-0.2, x_max=1.2)
     x_data = rand(ϕ, n)
     x_grid = range(-0.2, 1.2, length = 100)
-    plot!(plt[idx], x_grid, f(x_grid, x_data), label="estimate")
+    c = std(x_data)
+    h = 1.06 * c * n^(-1/5)
+    plot!(plt[idx], x_grid, f.(x_grid, x_data, h), label="estimate")
     plot!(plt[idx], x_grid, pdf.(ϕ, x_grid), label="true density")
     return plt
 end
@@ -512,7 +511,7 @@ end
 
 ```{code-cell} julia
 n = 500
-parameter_pairs = (2, 2), (2, 5), (0.5, 0.5)
+parameter_pairs = [(2, 2), (2, 5), (0.5, 0.5)]
 plt = plot(layout = (3, 1))
 for (idx, (α, β)) in enumerate(parameter_pairs)
     plot_kde(Beta(α, β), n, plt, idx)
@@ -523,7 +522,7 @@ plt
 We see that the kernel density estimator is effective when the underlying
 distribution is smooth but less so otherwise.
 
-### Exercise 2
+### Exercise 3
 
 Here is our solution:
 
@@ -544,15 +543,8 @@ s_next = sqrt(a^2 * s^2 + c^2)
 ```{code-cell} julia
 K(x) = pdf.(Normal(), x)
 
-function f(x, x_data)
-    c = std(x_data)
-    n = length(x_data)
-    h = 1.06 * c * n^(-1/5)
-    y = similar(x)
-    for (i, x_val) in enumerate(x)
-        y[i] = (1 / h) * mean(K((x_val .- x_data) / h))
-    end
-    return y
+function f(x, x_data, h)
+    return (1 / h) * mean(K((x_val .- x_data) / h))
 end
 ```
 
@@ -560,13 +552,15 @@ end
 n = 2000
 x_draws = rand(ψ, n)
 x_draws_next = a * x_draws .+ b + c * randn(n)
+c = std(x_draws_next)
+h = 1.06 * c * n^(-1/5)
 
 x_grid = range(μ - 1, μ + 1, length = 100)
 plt = plot()
 
 plot!(plt, x_grid, pdf.(ψ, x_grid), label=L"$\psi_t$")
 plot!(plt, x_grid, pdf.(ψ_next, x_grid), label=L"$\psi_{t+1}$")
-plot!(plt, x_grid, f(x_grid, x_draws_next), label=L"estimate of $\psi_{t+1}$")
+plot!(plt, x_grid, f.(x_grid, x_draws_next, h), label=L"estimate of $\psi_{t+1}$")
 
 plt
 ```
