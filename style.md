@@ -82,7 +82,7 @@ x = 1  # comment2
 # GOOD!
 b = a * x^2 # (14)
 ```
-  - The exception to this rule is if it is immediately clear that a line of code represents a formula due to immediate proximity in the document.  Always err on the side of extra equation numbers, and add it to the `rst` as required.
+  - The exception to this rule is if it is immediately clear that a line of code represents a formula due to immediate proximity in the document.  Always err on the side of extra equation numbers, and add it to the `myst` as required.
 
 ## Type Annotations, Parameters, and Generic Programming
 
