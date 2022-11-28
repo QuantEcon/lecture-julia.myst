@@ -26,7 +26,7 @@ It is straightforward to install the Jupyter Book and Julia software necessary f
 7. Start a VS Code terminal with ``<Ctrl+`>`` or through any other method.  Create a conda environment.
 
     ```bash
-    conda create -n lecture-julia.myst python=3.8
+    conda create -n lecture-julia.myst python=3.9
     conda activate lecture-julia.myst
     pip install -r requirements.txt
     ```
