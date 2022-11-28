@@ -492,12 +492,8 @@ Here is one solution:
 ```{code-cell} julia
 K(x) = pdf.(Normal(), x)
 
-function f(x, x_data, h)
-    y = similar(x)
-    for (i, x_val) in enumerate(x)
-        y[i] = (1 / h) * mean(K((x_val .- x_data) / h))
-    end
-    return y
+function f(x_val, x_data, h)
+    return (1 / h) * mean(K((x_val .- x_data) / h))
 end
 ```
 
@@ -507,7 +503,7 @@ function plot_kde(ϕ, n, plt, idx; x_min=-0.2, x_max=1.2)
     x_grid = range(-0.2, 1.2, length = 100)
     c = std(x_data)
     h = 1.06 * c * n^(-1/5)
-    plot!(plt[idx], x_grid, f(x_grid, x_data, h), label="estimate")
+    plot!(plt[idx], x_grid, f.(x_grid, Ref(x_data), h), label="estimate")
     plot!(plt[idx], x_grid, pdf.(ϕ, x_grid), label="true density")
     return plt
 end
@@ -548,11 +544,7 @@ s_next = sqrt(a^2 * s^2 + c^2)
 K(x) = pdf.(Normal(), x)
 
 function f(x, x_data, h)
-    y = similar(x)
-    for (i, x_val) in enumerate(x)
-        y[i] = (1 / h) * mean(K((x_val .- x_data) / h))
-    end
-    return y
+    return (1 / h) * mean(K((x_val .- x_data) / h))
 end
 ```
 
@@ -568,7 +560,7 @@ plt = plot()
 
 plot!(plt, x_grid, pdf.(ψ, x_grid), label=L"$\psi_t$")
 plot!(plt, x_grid, pdf.(ψ_next, x_grid), label=L"$\psi_{t+1}$")
-plot!(plt, x_grid, f(x_grid, x_draws_next, h), label=L"estimate of $\psi_{t+1}$")
+plot!(plt, x_grid, f.(x_grid, Ref(x_draws_next), h), label=L"estimate of $\psi_{t+1}$")
 
 plt
 ```
