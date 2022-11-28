@@ -93,7 +93,7 @@ function lorenz(v)  # assumed sorted vector
     S = cumsum(v)  # cumulative sums: [v[1], v[1] + v[2], ... ]
     F = (1:length(v)) / length(v)
     L = S ./ S[end]
-    return F, L
+    return (; F, L)
 end
 ```
 
@@ -114,11 +114,11 @@ $$
 We can then plot the curve:
 
 ```{code-cell} julia
-f_vals, l_vals = lorenz(w)
+(; F, L) = lorenz(w)
 
 plt = plot()
-plot!(plt, f_vals, l_vals, label = "Lorenz curve, lognormal sample")
-plot!(plt, f_vals, f_vals, label = "Lorenz curve, equality", legend = :topleft)
+plot!(plt, F, L, label = "Lorenz curve, lognormal sample")
+plot!(plt, F, F, label = "Lorenz curve, equality", legend = :topleft)
 plt
 ```
 
@@ -147,10 +147,10 @@ plt = plot()
 for a in a_vals
     u = rand(n)
     y = sort(u.^(-1/a))  # distributed as Pareto with tail index a
-    f_vals, l_vals = lorenz(y)
-    plot!(plt, f_vals, l_vals, label = L"a = %$a")
+    (; F, L) = lorenz(y)
+    plot!(plt, F, L, label = L"a = %$a")
 end
-plot!(plt, f_vals, f_vals, label = "equality", legend = :topleft)
+plot!(plt, F, F, label = "equality", legend = :topleft)
 plt
 ```
 
