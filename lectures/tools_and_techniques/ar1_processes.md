@@ -543,7 +543,7 @@ s_next = sqrt(a^2 * s^2 + c^2)
 ```{code-cell} julia
 K(x) = pdf.(Normal(), x)
 
-function f(x, x_data, h)
+function f(x_val, x_data, h)
     return (1 / h) * mean(K((x_val .- x_data) / h))
 end
 ```
