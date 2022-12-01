@@ -2,11 +2,17 @@
 
 The following guidelines are used for code in the lecture notes (i.e., not to the `QuantEcon.jl` package).  See [Julia Style Guide](https://docs.julialang.org/en/v1/manual/style-guide/) for the baseline guidelines, which this supplements.
 
-We will be moving towards the [YAS Style](https://github.com/jrevels/YASGuide) as soon as possible.
+For the most part, we will try to follow the formatting with the [SciMLStyle](https://github.com/SciML/SciMLStyle).  Some of the details suggestions in that are for more advanced usage intended for generic package code will be avoided.
 
+## Code Formatting
+The repo now has a [JuliaFormatter.jl](https://github.com/domluna/JuliaFormatter.jl) file (i.e., the `.JuliaFormatter.toml`) which will help impose code-formatting style.  This is built into the VS Code extension.  All new code should be run through the formatter, which require some manual steps:
+1. **TODO**: Somehow tell it to use Julia as formatter? Maybe start built-in terminal?
+2. Select the block of code (e.g. within the `{code-cell} julia` block)
+3. In VS Code choose `> Format Selection` which may be bound  `Ctrl-K, Ctrl-F` 
+  - Repeat for each code block in the file
 ## Basic Principles
 
-Keep in mind that these lectures are targeted at students with (at most!) some self-taught Matlab or Python experience.  Consequently, we want to ensure that the code is clear and simple to focus on the Economics/Math and only expect them to write code using a simplified subset of Julia features.  Some guiding principles:
+Keep in mind that these lectures are targeted at students with (at most!) some self-taught Matlab or Python experience.  Consequently, we want to ensure that the code is clear and simple to focus on the Economics/Math and only expect them to write code using a simplified subset of Julia features.  Outside of standard rules such as those in [SciMLStyle Rules](https://github.com/SciML/SciMLStyle#specific-rules) a few guiding principles.
 
 1. Assume this may be the **first programming language** students learn
 2. Use **compact, script-style** code, organized into functions only when it is natural.  Best practices for writing packages and expository/exploratory/interactive code can be different.
@@ -24,48 +30,17 @@ Keep in mind that these lectures are targeted at students with (at most!) some s
 We want users to be able to say _"the code is clearer than Matlab, and even closer to the math"_.
 
 ## Naming Conventions
-
+See [here](https://github.com/SciML/SciMLStyle#general-naming-principles) and a few additional points.
 - **Use unicode for math, ascii for control flow** where possible in names so that symbols match the math in the document
 - **Use ascii for control flow** That is,
     - Use `in` instead of `∈`, `!=` instead of `≠`, and `<=` instead of `≤` when writing code.
     - Use `∈` and `∉` when implementing math for sets
 - **Be careful** about unicode glyphs and symbols which may not be available in the default REPL, Jupyter, etc. for all platforms.
-- **Do not** use extra whitespace, use comment headers, or redundant comments.  For example, **do not**
-```julia
-# BAD!
-foo(a) #Calls the foo function
-
-# == Parameters == #
-
-bar = 2.0
-
-# GOOD!
-foo(a)
-
-# parameters
-bar = 2.0
-```
-- **Do not** align the `=` sign for construction of variables (though acceptable for matrices).  i.e.
-```julia
-# BAD!
-var1       =  1.0
-variable2  =  2.0
-
-# GOOD!
-var1 = 1.0
-variable2 = 2.0
-
-# ACCEPTABLE BUT OFTEN UNNECESSARY
-A = [1 2;
-     3 4]
-```
 - **Do not** use docstrings in any lecture code - except when explaining packages and the `?` environment.
-- **Feel free** to use the `⋅` unicode symbol, i.e. `\cdot<TAB>` instead of `dot( , )`
-- **Careful with the use of LaTeX** as it does not work fully in the graphics backends, but is getting better.
-  - But if you do, *use `LaTeXStrings.jl`** for all latex literals, i.e. `L"\hat{\alpha}"` instead of `""\$\\hat{\\alpha}\$""`
-- **Prefer** `in` to `∈`
 
 ## Comment Spacing
+The Code Formatter will impose much of these, but a few points:
+
 - Comments on their own lines, which are generally prefered, and without capitalization unless intending emphasis
 ```julia
 x = 1
@@ -106,7 +81,8 @@ myparams = @with_kw (a = 10.0, b = [1 2 3]) # generates new named tuples with de
 params = myparams(a = 2.0) # -> (a=2.0, b=[1.0 2.0 3.0])
 myparamsdefaults = myparams() # -> (a = 10.0, b = [1.0 2.0 3.0])
 ```
-- **Use `@unpack`** instead of manually unpacking variables from structures and/or named tuples.
+- **Unpack structs** instead of manually unpacking variables from structures and/or named tuples.
+Prefer the new unpacking notation `(;a, b)` to the `@unpack` macro.
 ```julia
 param = (a=2, b=1.0, c = [1, 2, 3])
 
@@ -119,7 +95,7 @@ f2(param)
 
 # GOOD!
 function f(p)
-    @unpack a, b, c = p
+    (;a, b, c) = p
     return a + b
 end
 f(param)
@@ -134,20 +110,19 @@ f(param)
 function foo(x, y, z)
     return (x, y, z) # Julia does this anyway
 end
-
 ~, ~, z = foo(x, y, z) # when we want z
 
 # GOOD
 function foo(x, y, z)
-    return (x = x, y = y, z = z)
+    return (;x, y, z)
 end
 
 # when we want z
-@unpack z = foo(x, y, z)
+(; z) = foo(x, y, z)
 z = foo(x, y, z).z
 ```
 
-- **Avoid inplace functions if possible** unless the library requires it, or the vectors are enormous.  That is,
+- **Avoid inplace functions if possible** unless the library requires it, the vectors are enormous, or you are demonstrating code optimization.  That is,
 ```julia
 # BAD! (unless out is a preallocated and very large vector)
 function f!(out, x)
