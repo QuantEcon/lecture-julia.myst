@@ -549,7 +549,7 @@ g(x)
 function g2(x)  # or `x::AbstractVector`
     y = similar(x)
     z = I
-    q = ones(eltype(x), length(x))  # or `fill(one(x), length(x))`
+    q = ones(x)  # or `ones(eltype(x), length(x))`
     y .= z * x + q
     return y
 end
