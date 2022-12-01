@@ -80,16 +80,23 @@ If you have not previously installed Conda or Jupyter, then
 2. If given the option for your operating system, let Conda add Python to your PATH environment variables.
 
 ```{note}
-While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.  Alternatively you can let `IJulia` install its own version of Conda by following [these instructions](https://julialang.github.io/IJulia.jl/dev/manual/running/), or use the experimental support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) - which does no Python installation at all.
+While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.  Alternatively you can let `IJulia` install its own version of Conda by following [these instructions](https://julialang.github.io/IJulia.jl/dev/manual/running/), or use the direct support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) - which does no Python installation at all.
 ```
 
 (intro_repl)=
 ### Install Julia
 After Conda is installed, you can install Julia.
 
-1. Download and install Julia, from [download page](http://julialang.org/downloads/), accepting all default options.
+```{note}
+The semi-official installation method for Windows and Mac is to use [Juliaup](https://github.com/JuliaLang/juliaup), which makes it easier to upgrade and manage concurrent Julia versions.  Support on Linux is prerelease.  See [here](https://github.com/JuliaLang/juliaup#using-juliaup) for a list of commands, such as `juliaup update` to upgrade to the latest available Julia version after installation, or ways to switch to newer Julia versions after they are released.
+```
 
-2. Open Julia, by either
+1. Download and install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation) or manually installing from [download page](http://julialang.org/downloads/), accepting all default options.  That is,
+    - Easiest method may be executing `winget install julia -s msstore` in a Windows terminal, or
+    - `curl -fsSL https://install.julialang.org | sh` on a Mac/Linux terminal.  Using Homebrew is not recommended.
+    - If you have previously installed Julia manually, you will need to uninstall previous versions before switching to Juliaup.
+
+3. Open Julia, by either
     - Navigating to Julia through your menus or desktop icons (Windows, Mac), or
     - Opening a terminal and type `julia` (Linux; to set this up on macOS, see [here](https://julialang.org/downloads/platform/#macos)).
 
@@ -101,7 +108,7 @@ After Conda is installed, you can install Julia.
    
    This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more {ref}`later <repl_main>`.
 
-3. In the Julia REPL, hit `]` to enter package mode and then enter:
+4. In the Julia REPL, hit `]` to enter package mode and then enter:
 
    ```{code-block} julia
    add IJulia
@@ -109,7 +116,7 @@ After Conda is installed, you can install Julia.
 
    This adds packages for the `IJulia` kernel which links Julia to Jupyter you previously installed with Anaconda (i.e., allows your browser to run Julia code, manage Julia packages, etc.).
 
-4. You can exit the julia REPL by hitting backspace to exit the package mode, and then 
+5. You can exit the julia REPL by hitting backspace to exit the package mode, and then 
 
    ```{code-block} julia
    exit()
