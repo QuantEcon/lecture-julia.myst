@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (numerical_linear_algebra)=
@@ -980,6 +980,7 @@ A[2,1] = 100.0
 But again, you will often find that doing `@view` leads to slower code.  Benchmark
 instead, and generally rely on it for large matrices and for contiguous chunks of memory (e.g., columns rather than rows).
 
+<!-- Commenting out.  Worried this will be misused.  We can move this sort of pattern to a performance section later
 ## Patterns for Preallocated Caches of Results
 
 When the matrices and vectors get large, it can reach a point where it is important to cache the results and reduce allocations.  In general, this should only be attempted when the vectors are large and they would otherwise need to be reallocated many times.
@@ -1043,13 +1044,14 @@ iterate_values(vals, params)
 
 A few points:
 - This creates an inplace function, `calculate_results!`, which modifies the results given a value and parameters.
-- Within the function, it attemmpts to use inplace versions of the operations where possible, which can help cut down on other allocations
+- Within the function, it attempts to use inplace versions of the operations where possible, which can help cut down on other allocations
 - The iteration simply goes through a list of values, calls the `calculate_results!` and then checks how the `results.x` has changed with a norm.
-- Finally, the iteration copys the new results into the previous ones.  This ensure that only a single copy is required for comparison.
+- Finally, the iteration copies the new results into the previous ones.  This ensure that only a single copy is required for comparison.
 
 
 
 This approach can be very helpful for large matrices and arrays, but should be used judiciously and only after {doc}`profiling<../software_engineering/need_for_speed>`  .
+-->
 
 
 ## Exercises
