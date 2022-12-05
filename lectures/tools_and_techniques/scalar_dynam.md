@@ -214,57 +214,40 @@ The function of the code is to produce 45 degree diagrams and time series
 plots.
 
 ```{code-cell} julia
-function plot45(g, xmin, xmax, x0, num_arrows = 6)
-
-    xgrid = LinRange(xmin, xmax, 200)
-    
-    plt = plot(xgrid, xgrid, xlim = (xmin, xmax), ylim = (xmin, xmax), linecolor = :black, lw = 2)
-    plot!(plt, xgrid, g.(xgrid), linecolor = :blue, lw = 2)
-    
+function plot45(f, xmin, xmax, x0; num_arrows=6)
     x = x0
-
+    xgrid = LinRange(xmin, xmax, 200)
+    xticks = zeros(num_arrows)
+    arrow_kwargs = (arrow=:closed, linecolor=:black, alpha=0.5)
+    dash_kwargs = (linestyle=:dash, linecolor=:black, alpha=0.5)
+    plt = plot(xgrid, xgrid, xlim=(xmin, xmax), ylim=(xmin, xmax), linecolor=:black, lw=2)
+    plot!(plt, xgrid, f.(xgrid), linecolor=:blue, lw=2)
     arrow_iterator = 0:(num_arrows-1)
-
-    arrow_kwargs = (arrow = :closed, linecolor = :black, alpha = 0.5)
-    dash_kwargs = (linestyle = :dash, linecolor = :black, alpha = 0.5)
-
-    xticks = zeros(num_arrows) # Is there a better style than this?
- 
     for (i, j) in enumerate(arrow_iterator)
-
         xticks[i] = x
-
         if i == 1
-            plot!([x, x], [0, g.(x)]; arrow_kwargs...)
-            plot!([x, g.(x)], [g.(x), g.(x)]; arrow_kwargs...)
+            plot!([x, x], [0, f.(x)]; arrow_kwargs...)
+            plot!([x, f.(x)], [f.(x), f.(x)]; arrow_kwargs...)
         else
-            plot!([x, x], [x, g.(x)]; arrow_kwargs...)
+            plot!([x, x], [x, f.(x)]; arrow_kwargs...)
             plot!([x, x], [0, x]; dash_kwargs...)
-            plot!([x, g.(x)], [g.(x), g.(x)]; arrow_kwargs...)
-
+            plot!([x, f.(x)], [f.(x), f.(x)]; arrow_kwargs...)
         end
-
-        x = g.(x)
-        
-        plot!([x, x], [0, x], xticks = (xticks, [L"k_%$j" for j in arrow_iterator]), yticks = (xticks, [L"k_%$j" for j in arrow_iterator]); dash_kwargs...)
+        x = f.(x)
+        plot!([x, x], [0, x], xticks=(xticks, [L"k_%$j" for j in arrow_iterator]), yticks=(xticks, [L"k_%$j" for j in arrow_iterator]); dash_kwargs...)
     end
+    plot!([x, x], [0, x], legend=false; dash_kwargs...)
+    hline!([0], color=:black)
+end
 
-    plot!([x, x], [0, x], legend = false; dash_kwargs...) # superfluous line of code, trying to add the final xtick
-end    
-
-function ts_plot(g, xmin, xmax, x0; ts_length=6)
-
+function ts_plot(f, p.xmin, p.xmax, x0; ts_length=6)
     x = zeros(ts_length)
-
     x[1] = x0
-
     for t in 1:(ts_length-1)
-        x[t+1] = g.(x[t])
+        x[t+1] = f.(x[t])
     end
-
-    plot(1:ts_length, x, ylim = (xmin, xmax), linecolor = :blue, lw = 2, alpha = 0.7)
-    scatter!(x, mc = :blue, alpha = 0.7, legend = false)
-
+    plot(1:ts_length, x, ylim=(xmin, xmax), linecolor=:blue, lw=2, alpha=0.7)
+    scatter!(x, mc=:blue, alpha=0.7, legend=false)
 end
 ```
 
@@ -272,19 +255,19 @@ Let's create a 45 degree diagram for the Solow model with a fixed set of
 parameters
 
 ```{code-cell} julia
-p = (A = 2, s = 0.3, alpha = 0.3, delta = 0.4, xmin = 0, xmax = 4)
+p = (A=2, s=0.3, α=0.3, δ=0.4, xmin=0, xmax=4)
 ```
 
 Here's the update function corresponding to the model.
 
 ```{code-cell} julia
-g = k -> p.A * p.s * k ^ p.alpha + (1 - p.delta) * k
+g(k; p) = p.A * p.s * k^p.α + (1 - p.δ) * k
 ```
 
 Here is the 45 degree plot.
 
 ```{code-cell} julia
-plot45(g, p.xmin, p.xmax, 0, num_arrows=0)
+plot45(k -> g(k; p), p.xmin, p.xmax, 0, num_arrows=0)
 ```
 
 The plot shows the function $g$ and the 45 degree line.
@@ -323,20 +306,20 @@ The initial condition is $k_0 = 0.25$.
 ```{code-cell} julia
 k0 = 0.25
 
-plot45(g, p.xmin, p.xmax, k0, num_arrows=5)
+plot45(k -> g(k; p), p.xmin, p.xmax, k0, num_arrows=5)
 ```
 
 We can plot the time series of capital corresponding to the figure above as
 follows:
 
 ```{code-cell} julia
-ts_plot(g, p.xmin, p.xmax, k0)
+ts_plot(k -> g(k; p), p.xmin, p.xmax, k0)
 ```
 
 Here's a somewhat longer view:
 
 ```{code-cell} julia
-ts_plot(g, p.xmin, p.xmax, k0, ts_length=20)
+ts_plot(k -> g(k; p), p.xmin, p.xmax, k0, ts_length=20)
 ```
 
 When capital stock is higher than the unique positive steady state, we see that
@@ -345,12 +328,12 @@ it declines:
 ```{code-cell} julia
 k0 = 2.95
 
-plot45(g, p.xmin, p.xmax, k0, num_arrows=5)
+plot45(k -> g(k; p), p.xmin, p.xmax, 0.25, num_arrows=5)
 ```
 
 Here is the time series:
 
 ```{code-cell} julia
-ts_plot(g, p.xmin, p.xmax, k0)
+ts_plot(k -> g(k; p), p.xmin, p.xmax, 0.25)
 ```
 
