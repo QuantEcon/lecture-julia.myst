@@ -226,14 +226,14 @@ function plot45(f, xmin, xmax, x0; num_arrows=6)
     for (i, j) in enumerate(arrow_iterator)
         xticks[i] = x
         if i == 1
-            plot!([x, x], [0, f.(x)]; arrow_kwargs...)
-            plot!([x, f.(x)], [f.(x), f.(x)]; arrow_kwargs...)
+            plot!([x, x], [0, f(x)]; arrow_kwargs...)
+            plot!([x, f(x)], [f(x), f(x)]; arrow_kwargs...)
         else
-            plot!([x, x], [x, f.(x)]; arrow_kwargs...)
+            plot!([x, x], [x, f(x)]; arrow_kwargs...)
             plot!([x, x], [0, x]; dash_kwargs...)
-            plot!([x, f.(x)], [f.(x), f.(x)]; arrow_kwargs...)
+            plot!([x, f(x)], [f(x), f(x)]; arrow_kwargs...)
         end
-        x = f.(x)
+        x = f(x)
         plot!([x, x], [0, x], xticks=(xticks, [L"k_%$j" for j in arrow_iterator]), yticks=(xticks, [L"k_%$j" for j in arrow_iterator]); dash_kwargs...)
     end
     plot!([x, x], [0, x], legend=false; dash_kwargs...)
@@ -244,7 +244,7 @@ function ts_plot(f, p.xmin, p.xmax, x0; ts_length=6)
     x = zeros(ts_length)
     x[1] = x0
     for t in 1:(ts_length-1)
-        x[t+1] = f.(x[t])
+        x[t+1] = f(x[t])
     end
     plot(1:ts_length, x, ylim=(xmin, xmax), linecolor=:blue, lw=2, alpha=0.7)
     scatter!(x, mc=:blue, alpha=0.7, legend=false)
@@ -305,7 +305,6 @@ The initial condition is $k_0 = 0.25$.
 
 ```{code-cell} julia
 k0 = 0.25
-
 plot45(k -> g(k; p), p.xmin, p.xmax, k0, num_arrows=5)
 ```
 
@@ -327,13 +326,135 @@ it declines:
 
 ```{code-cell} julia
 k0 = 2.95
-
-plot45(k -> g(k; p), p.xmin, p.xmax, 0.25, num_arrows=5)
+plot45(k -> g(k; p), p.xmin, p.xmax, k0, num_arrows=5)
 ```
 
 Here is the time series:
 
 ```{code-cell} julia
-ts_plot(k -> g(k; p), p.xmin, p.xmax, 0.25)
+ts_plot(k -> g(k; p), p.xmin, p.xmax, k0)
 ```
 
+### Complex Dynamics
+
+The Solow model is nonlinear but still generates very regular dynamics.
+
+One model that generates irregular dynamics is the **quadratic map**
+
+$$
+g(x) = 4 x (1 - x),
+\qquad x \in [0, 1]
+$$
+
+Let's have a look at the 45 degree diagram.
+
+```{code-cell} julia
+xmin, xmax = 0, 1
+g(k) = 4 * k * (1 - k)
+
+x0 = 0.3
+plot45(k -> g(k), xmin, xmax, x0, num_arrows=0)
+```
+
+Now let's look at a typical trajectory.
+
+```{code-cell} julia
+plot45(k -> g(k), xmin, xmax, x0, num_arrows=6)
+```
+
+Notice how irregular it is.
+
+Here is the corresponding time series plot.
+
+```{code-cell} julia
+ts_plot(k -> g(k), xmin, xmax, x0)
+```
+
+The irregularity is even clearer over a longer time horizon:
+
+```{code-cell} julia
+ts_plot(k -> g(k), xmin, xmax, x0, ts_length=20)
+```
+
+## Exercises
+
+```{exercise}
+:label: sd_ex1
+
+Consider again the linear model $x_{t+1} = a x_t + b$ with $a
+\not=1$.
+
+The unique steady state is $b / (1 - a)$.
+
+The steady state is globally stable if $|a| < 1$.
+
+Try to illustrate this graphically by looking at a range of initial conditions.
+
+What differences do you notice in the cases $a \in (-1, 0)$ and $a
+\in (0, 1)$?
+
+Use $a=0.5$ and then $a=-0.5$ and study the trajectories
+
+Set $b=1$ throughout.
+```
+
+```{solution-start} sd_ex1
+:class: dropdown
+```
+
+We will start with the case $a=0.5$.
+
+Let's set up the model and plotting region:
+
+```{code-cell} julia
+q = (a = 0.5, b = 1, xmin = -1, xmax = 3)
+g(k; q) = q.a * k + q.b
+```
+
+Now let's plot a trajectory:
+
+```{code-cell} julia
+x0 = -0.5
+plot45(k -> g(k; q), q.xmin, q.xmax, x0, num_arrows=5)
+```
+
+Here is the corresponding time series, which converges towards the steady
+state.
+
+```{code-cell} julia
+ts_plot(k -> g(k; q), q.xmin, q.xmax, x0, ts_length=10)
+```
+
+Now let's try $a=-0.5$ and see what differences we observe.
+
+Let's set up the model and plotting region:
+
+```{code-cell} julia
+r = (a = -0.5, b = 1, xmin = -1, xmax = 3)
+g(k; r) = r.a * k + r.b
+```
+
+Now let's plot a trajectory:
+
+```{code-cell} julia
+x0 = -0.5
+plot45(k -> g(k; r), r.xmin, r.xmax, x0, num_arrows=5)
+```
+
+Here is the corresponding time series, which converges towards the steady
+state.
+
+```{code-cell} julia
+ts_plot(k -> g(k; r), r.xmin, r.xmax, x0, ts_length=10)
+```
+
+Once again, we have convergence to the steady state but the nature of
+convergence differs.
+
+In particular, the time series jumps from above the steady state to below it
+and back again.
+
+In the current context, the series is said to exhibit **damped oscillations**.
+
+```{solution-end}
+```
