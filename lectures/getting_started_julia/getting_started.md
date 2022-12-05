@@ -98,7 +98,7 @@ The semi-official installation method for Windows is to use [Juliaup](https://gi
 
 2. Open Julia, by either
     - Navigating to Julia through your menus or desktop icons (Windows, Mac), or
-    - Opening a terminal and type `julia` (Linux; to set this up on macOS, see [here](https://julialang.org/downloads/platform/#macos)).
+    - Opening a terminal and type `julia` (Windows; to set this up on macOS, see [here](https://julialang.org/downloads/platform/#macos); to set this up on Linux, see [here](https://julialang.org/downloads/platform/#linux_and_freebsd)).
 
    You should now be looking at something like this
    
