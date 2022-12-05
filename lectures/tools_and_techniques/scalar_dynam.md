@@ -236,10 +236,10 @@ function plot45(f, xmin, xmax, x0; num_arrows=6)
         x = f(x)
         plot!([x, x], [0, x], xticks=(xticks, [L"k_%$j" for j in arrow_iterator]), yticks=(xticks, [L"k_%$j" for j in arrow_iterator]); dash_kwargs...)
     end
-    plot!([x, x], [0, x], legend=false; dash_kwargs...)
-    hline!([0], color=:black)
-    vline!([0], color=:black)
-end
+    plot!([x, x], [0, x], showaxis=false, legend=false; dash_kwargs...)
+    hline!([0], color=:green, lw=2)
+    vline!([0], color=:green, lw=2)
+end  
 
 function ts_plot(f, p.xmin, p.xmax, x0; ts_length=6)
     x = zeros(ts_length)
@@ -353,7 +353,7 @@ Let's have a look at the 45 degree diagram.
 xmin, xmax = 0, 1
 g(k) = 4 * k * (1 - k)
 x0 = 0.3
-plot45(k -> g(k), xmin, xmax, x0, num_arrows=0)
+plot45(k -> g(k), xmin, xmax, 0, num_arrows=0)
 ```
 
 Now let's look at a typical trajectory.
