@@ -301,10 +301,6 @@ tags: [remove-cell]
 using Test
 ```
 
-```{code-cell} julia
-
-```
-
 Here's the distribution of wage offers we'll work with
 
 ```{code-cell} julia
@@ -411,8 +407,7 @@ function compute_reservation_wage(params; v_iv = collect(w ./(1-β)), iterations
     @unpack c, β, w = params
     T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
 
-    v_star = fixedpoint(T, v_iv, iterations = iterations, ftol = ftol,
-                        m = 0).zero # (5)
+    v_star = fixedpoint(T, v_iv; iterations, ftol , m).zero # (5)
     return (1 - β) * (c + β * E*v_star) # (3)
 end
 ```
