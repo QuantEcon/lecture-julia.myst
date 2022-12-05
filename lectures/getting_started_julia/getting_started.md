@@ -94,7 +94,7 @@ The semi-official installation method for Windows is to use [Juliaup](https://gi
 1. Download and install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation) or manually installing from [download page](http://julialang.org/downloads/), accepting all default options.  That is,
     - Easiest method may be executing `winget install julia -s msstore` in a Windows terminal, or
     - `curl -fsSL https://install.julialang.org | sh` on a Mac terminal.
-    - We recommend installing [manually](https://julialang.org/downloads/platform/#linux_and_freebsd) on Linux. Using Homebrew is not recommended.
+    - We recommend installing [manually](https://julialang.org/downloads/platform/#linux_and_freebsd) on Linux.
     - If you have previously installed Julia manually, you will need to uninstall previous versions before switching to Juliaup.
 
 2. Open Julia, by either
