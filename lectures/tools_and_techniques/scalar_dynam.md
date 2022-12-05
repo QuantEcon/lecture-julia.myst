@@ -351,7 +351,6 @@ Let's have a look at the 45 degree diagram.
 ```{code-cell} julia
 xmin, xmax = 0, 1
 g(k) = 4 * k * (1 - k)
-
 x0 = 0.3
 plot45(k -> g(k), xmin, xmax, x0, num_arrows=0)
 ```
