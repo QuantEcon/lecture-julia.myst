@@ -238,6 +238,7 @@ function plot45(f, xmin, xmax, x0; num_arrows=6)
     end
     plot!([x, x], [0, x], legend=false; dash_kwargs...)
     hline!([0], color=:black)
+    vline!([0], color=:black)
 end
 
 function ts_plot(f, p.xmin, p.xmax, x0; ts_length=6)
