@@ -403,26 +403,53 @@ Such spikes are similar to what is observed in a time series with a Kesten proce
 
 The code above could be used to simulate a number of different households, but it would be relatively slow if the number of households becomes large.
 
-To show higher-performance code, the following code calculates a panel of individuals with in-place operations and vectorized operations.  Pre-allocated arrays where possible.
+First, lets write an out-of-place function which simulates a single time-step for a cross section of households.
 
-These sorts of optimizations are frequently overkill, but it is useful to have them in your toolbox when required.
-
-First, lets write an out-of-place function which simulates a cross section of households forward in time.
-
-The following is out of place and easier to read
 ```{code-cell} julia
-using LinearAlgebrafunction step_wealth_optimized(params, w, z)
+function step_wealth(params, w, z)
     N = length(w) # panel size    
     (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = params
-    zp = a*z + b + σ_z * randn(N) # vectorized
-    y = c_y*exp(zp) + exp(μ_y + σ_y*randn(N))
+    zp = a*z .+ b .+ σ_z * randn(N) # vectorized
+    y = c_y*exp.(zp) .+ exp.(μ_y .+ σ_y*randn(N))
 
     # return set to zero if no savings, simplifies vectorization
-    R = (w > w_hat)*(c_r*exp(zp) + exp(μ_r + σ_r*randn(N))
-    wp = y + R*s_0*w # note R = 0 if not saving since w < w_hat
+    R = (w .> w_hat).*(c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N)))
+    wp = y .+ s_0*R.*w # note R = 0 if not saving since w < w_hat
     return wp, zp
 end
+w = rand(10)
+z = rand(10)
+step_wealth(params, w, z)
 ```
+
+Using this function, we can iterate forward from a distribution of wealth and income
+
+```{code-cell} julia
+function simulate_panel(params, w_0, z_0, T)
+    w = w_0
+    z = z_0
+    for t in 1:T
+        w, z = step_wealth(params, w, z) # steps forward, discarding results
+    end
+    sort!(w) # sorts the wealth so we can calculate gini/lorenz        
+    L, Z = lorenz(w)
+    return (;w, L, Z, gini = gini(w))
+end
+N = 100_000
+y_0 = params.y_mean * ones(N) # start at the mean
+z_0 = rand(params.z_stationary_dist, N)
+T = 200
+res = simulate_panel(params, y_0, z_0, T)
+plot(res.L, res.Z, label="Lorenz curve")
+```
+
+
+
+
+### In-place optimizations
+To show higher-performance code, the following code calculates a panel of individuals with in-place operations, vectorized operations, and pre-allocated arrays.
+
+These sorts of optimizations are frequently overkill, but it is useful to have them in your toolbox when required.
 
 The following is heavily optimized with mostly in-place operations and fewer allocations.  To completely eliminate allocations, more effort and temporary variables would be required.
 
