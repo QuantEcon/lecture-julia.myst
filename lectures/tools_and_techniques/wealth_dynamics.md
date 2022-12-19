@@ -39,6 +39,7 @@ tails.
 The wealth distribution in many countries exhibits a Pareto tail
 
 * The [Pareto Distribution](https://en.wikipedia.org/wiki/Pareto_distribution) is a canonical example of a [heavy-tailed distribution](https://en.wikipedia.org/wiki/Heavy-tailed_distribution).  
+* See [here](https://python.quantecon.org/heavy_tails.html) for a lecture on heavy-tailed distributions using Python.
 * For a review of the empirical evidence on the wealth distribution, see, for example, {cite}`benhabib2018skewed`.
 * See {cite}`Gabaix2009` for a review of the theory and empirics of power-laws and Kesten Processes.
 
@@ -87,14 +88,14 @@ w = sort(exp.(randn(n)));  # lognormal draws
 
 is data representing the wealth of 10,000 households.
 
-We can compute the Lorenz curve as follows:
+We can compute the Lorenz curve using the [simple, unweighted definition](https://en.wikipedia.org/wiki/Lorenz_curve#Definition_and_calculation):
 
 ```{code-cell} julia
 function lorenz(v)  # assumed sorted vector
     S = cumsum(v)  # cumulative sums: [v[1], v[1] + v[2], ... ]
     F = (1:length(v)) / length(v)
     L = S ./ S[end]
-    return (; F, L)
+    return (; F, L) # returns named tuple
 end
 ```
 
@@ -158,6 +159,67 @@ plt
 You can see that, as the tail parameter of the Pareto distribution increases, inequality decreases.
 
 This is to be expected, because a higher tail index implies less weight in the tail of the Pareto distribution.
+
+### In-place Functions and Performance
+
+When working with large vectors and matrices, a key performance advantage of Julia is its ability to manage allocations and perform in-place operations.
+
+As always, don't prematurely optimize your code - but in cases where the datastructures are large and the code is of equivalent complexity, don't be afraid to use in-place operations.
+
+To demonstrate this, we will compare an inplace Lorenz calculation with the one above. 
+
+The convention in Julia is to use `!` to denote a function which mutates its arguments and to put any arguments that will be modified first.
+
+In the following case, the `L` is pre-allocated and will be overwritten.
+
+```{code-cell} julia
+function lorenz!(L, v)
+   # cumulative sum but inplace: [v[1], v[1] + v[2], ... ]
+    cumsum!(L, v)    
+    L ./= L[end]  # inplace division to normalize
+    F = (1:length(v)) / length(v)  # this doesn't allocate anything so no need to be inplace
+    return F, L # using inplace we can still return the L vector
+end
+```
+
+To compare the performance, we should use the `BenchmarkTools` package.  To test performance, pass in large structures with the `$` (e.g., `$v` and `$L`) or else it copies the values with each sample, confusing performance results.
+
+```{code-cell} julia
+n = 1_000_000
+a = 2
+u = rand(n)
+v = sort(u.^(-1/a))
+@btime lorenz($v) # performance with out-of-place
+```
+
+Note the speed and allocations.  Next use the inplace version
+
+```{code-cell} julia
+L = similar(v) # preallocate of same type, size
+@btime lorenz!($L, $v)
+```
+
+Depending on your system, this should be perhaps twice as fast but have no allocations.
+
+On the other hand, if we use a smaller vector such as `n=1000` above, then the performance difference is much smaller - perhaps only 30% improvement.
+
+<!--
+```{code-cell} julia
+n = 1000
+a = 2
+u = rand(n)
+v = sort(u.^(-1/a))
+L = similar(v) # preallocate of same type, size
+@btime lorenz($v)
+@btime lorenz!($L, $v)
+```
+--> 
+
+This provides a common and cautionary lesson: for some algorithms, avoiding allocations does not have a significant difference and may not be worth the trouble.
+
+This all depends on the steps of the underlying algorithm.  In the case above, the `cumsum` is significantly more expensive than the data allocation.
+
+In other cases, such as those in large-scale difference or differential equations, in-place operations can have an enormous impact.
 
 ### The Gini Coefficient
 
@@ -436,7 +498,7 @@ plt.show()
 
 Notice the large spikes in wealth over time.
 
-Such spikes are similar to what we observed in time series when {doc}`we studied Kesten processes <kesten_processes>`.
+Such spikes are similar to what is observed in a time series with a Kesten process.  See [here](https://python.quantecon.org/kesten_processes.html) for a Python implementation.
 
 ### Inequality Measures
 
