@@ -63,7 +63,7 @@ We do this to more easily explore the implications of different specifications o
 At the same time, all of the techniques discussed here can be plugged into models that use optimization to obtain savings rules.
 
 ```{code-cell} julia
-using Distributions, Plots, LaTeXStrings
+using Distributions, Plots, LaTeXStrings, LinearAlgebra
 ```
 
 ## Lorenz Curves and the Gini Coefficient
@@ -324,124 +324,130 @@ acknowledging that low wealth households tend to save very little.
 
 ## Implementation
 
-Here's some type information to help Numba.
+First, we will write a function which collects all of the parameters into a named tuple.  While we could also use a Julia `struct` (see {doc}`creating new types <../getting_started_julia/introduction_to_types>`) they tend to be more difficult to use properly.
 
-```{code-cell} ipython3
-wealth_dynamics_data = [
-    ('w_hat',  float64),    # savings parameter
-    ('s_0',    float64),    # savings parameter
-    ('c_y',    float64),    # labor income parameter
-    ('μ_y',    float64),    # labor income paraemter
-    ('σ_y',    float64),    # labor income parameter
-    ('c_r',    float64),    # rate of return parameter
-    ('μ_r',    float64),    # rate of return parameter
-    ('σ_r',    float64),    # rate of return parameter
-    ('a',      float64),    # aggregate shock parameter
-    ('b',      float64),    # aggregate shock parameter
-    ('σ_z',    float64),    # aggregate shock parameter
-    ('z_mean', float64),    # mean of z process
-    ('z_var', float64),     # variance of z process
-    ('y_mean', float64),    # mean of y process
-    ('R_mean', float64)     # mean of R process
-]
+```{code-cell} julia
+function wealth_dynamics_model(
+                 w_hat=1.0, # savings parameter
+                 s_0=0.75, # savings parameter
+                 c_y=1.0, # labor income parameter
+                 μ_y=1.0, # labor income parameter
+                 σ_y=0.2, # labor income parameter
+                 c_r=0.05, # rate of return parameter
+                 μ_r=0.1, # rate of return parameter
+                 σ_r=0.5, # rate of return parameter
+                 a=0.5, # aggregate shock parameter
+                 b=0.0, # aggregate shock parameter
+                 σ_z=0.1 # aggregate shock parameter
+                 )
+    z_mean = b / (1 - a)
+    z_var = σ_z^2 / (1 - a^2)
+    exp_z_mean = exp(z_mean + z_var / 2)
+    R_mean = c_r * exp_z_mean + exp(μ_r + σ_r^2 / 2)
+    y_mean = c_y * exp_z_mean + exp(μ_y + σ_y^2 / 2)
+    α = R_mean * s_0
+    z_stationary_dist = Normal(z_mean, sqrt(z_var))
+
+    @assert α <= 1 # check stability condition that wealth does not diverge
+    return (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z, z_mean, z_var, z_stationary_dist, exp_z_mean, R_mean, y_mean, α)
+end            
+
+# example of model with all default values
+wealth_dynamics_model()    
 ```
 
-Here's a class that stores instance data and implements methods that update
-the aggregate state and household wealth.
+## Simulating Wealth Dynamics
 
-```{code-cell} ipython3
-@jitclass(wealth_dynamics_data)
-class WealthDynamics:
+To implement this process, first we can write a simple example a loop to simulate an individuals wealth dynamics, then we will write a higher-performance version for an entire distribution.
 
-    def __init__(self,
-                 w_hat=1.0,
-                 s_0=0.75,
-                 c_y=1.0,
-                 μ_y=1.0,
-                 σ_y=0.2,
-                 c_r=0.05,
-                 μ_r=0.1,
-                 σ_r=0.5,
-                 a=0.5,
-                 b=0.0,
-                 σ_z=0.1):
+The `params` argument is a named-tuple or struct consist with the `wealth_dynamics_model` function above.
 
-        self.w_hat, self.s_0 = w_hat, s_0
-        self.c_y, self.μ_y, self.σ_y = c_y, μ_y, σ_y
-        self.c_r, self.μ_r, self.σ_r = c_r, μ_r, σ_r
-        self.a, self.b, self.σ_z = a, b, σ_z
+```{code-cell} julia
+function simulate_wealth_dynamics(params, w_0, z_0, T)
+    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = params # unpack
+    w = zeros(T+1)
+    z = zeros(T+1)
+    w[1] = w_0
+    z[1] = z_0
 
-        # Record stationary moments
-        self.z_mean = b / (1 - a)
-        self.z_var = σ_z**2 / (1 - a**2)
-        exp_z_mean = np.exp(self.z_mean + self.z_var / 2)
-        self.R_mean = c_r * exp_z_mean + np.exp(μ_r + σ_r**2 / 2)
-        self.y_mean = c_y * exp_z_mean + np.exp(μ_y + σ_y**2 / 2)
+    for t = 2:T+1
+        z[t] = a*z[t-1] + b + σ_z * randn()
+        y = c_y*exp(z[t]) + exp(μ_y + σ_y*randn())
+        w[t] = y
+        if w[t-1] >= w_hat # if above minimum wealth level, add savings
+            R = c_r * exp(z[t]) + exp(μ_r + σ_r*randn())
+            w[t] += R * s_0 * w[t-1]
+        end
+    end    
+    return w, z
+end
+```
+Let's look at the wealth dynamics of an individual household.
 
-        # Test a stability condition that ensures wealth does not diverge
-        # to infinity.
-        α = self.R_mean * self.s_0
-        if α >= 1:
-            raise ValueError("Stability condition failed.")
+```{code-cell} julia
+params = wealth_dynamics_model()  # all defaults
+y_0 = params.y_mean
+z_0 = rand(params.z_stationary_dist)
+T = 200
+w, z = simulate_wealth_dynamics(params, y_0, z_0, T)
 
-    def parameters(self):
-        """
-        Collect and return parameters.
-        """
-        parameters = (self.w_hat, self.s_0,
-                      self.c_y, self.μ_y, self.σ_y,
-                      self.c_r, self.μ_r, self.σ_r,
-                      self.a, self.b, self.σ_z)
-        return parameters
-
-    def update_states(self, w, z):
-        """
-        Update one period, given current wealth w and persistent
-        state z.
-        """
-
-        # Simplify names
-        params = self.parameters()
-        w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z = params
-        zp = a * z + b + σ_z * np.random.randn()
-
-        # Update wealth
-        y = c_y * np.exp(zp) + np.exp(μ_y + σ_y * np.random.randn())
-        wp = y
-        if w >= w_hat:
-            R = c_r * np.exp(zp) + np.exp(μ_r + σ_r * np.random.randn())
-            wp += R * s_0 * w
-        return wp, zp
+plot(w, caption = "Wealth simulation", xlabel="t", label=L"w(t)")
 ```
 
-Here's function to simulate the time series of wealth for in individual households.
+Notice the large spikes in wealth over time.
 
-```{code-cell} ipython3
-@njit
-def wealth_time_series(wdy, w_0, n):
-    """
-    Generate a single time series of length n for wealth given
-    initial value w_0.
-
-    The initial persistent state z_0 for each household is drawn from
-    the stationary distribution of the AR(1) process.
-
-        * wdy: an instance of WealthDynamics
-        * w_0: scalar
-        * n: int
+Such spikes are similar to what is observed in a time series with a Kesten process.  See [here](https://python.quantecon.org/kesten_processes.html) for a Python implementation.
 
 
-    """
-    z = wdy.z_mean + np.sqrt(wdy.z_var) * np.random.randn()
-    w = np.empty(n)
-    w[0] = w_0
-    for t in range(n-1):
-        w[t+1], z = wdy.update_states(w[t], z)
-    return w
+## Wealth Dynamics of a Distribution
+
+The code above could be used to simulate a number of different households, but it would be relatively slow if the number of households becomes large.
+
+To show higher-performance code, the following code calculates a panel of individuals with in-place operations and vectorized operations.  Pre-allocated arrays where possible.
+
+These sorts of optimizations are frequently overkill, but it is useful to have them in your toolbox when required.
+
+First, lets write an out-of-place function which simulates a cross section of households forward in time.
+
+The following is out of place and easier to read
+```{code-cell} julia
+using LinearAlgebrafunction step_wealth_optimized(params, w, z)
+    N = length(w) # panel size    
+    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = params
+    zp = a*z + b + σ_z * randn(N) # vectorized
+    y = c_y*exp(zp) + exp(μ_y + σ_y*randn(N))
+
+    # return set to zero if no savings, simplifies vectorization
+    R = (w > w_hat)*(c_r*exp(zp) + exp(μ_r + σ_r*randn(N))
+    wp = y + R*s_0*w # note R = 0 if not saving since w < w_hat
+    return wp, zp
+end
 ```
 
-Now here's function to simulate a cross section of households forward in time.
+The following is heavily optimized with mostly in-place operations and fewer allocations.  To completely eliminate allocations, more effort and temporary variables would be required.
 
+The key operations to do in-place operations are `lmul!(v, 2.0)` which does a scalar multiplication inplace, etc.
+
+```{code-cell} julia
+
+function step_wealth_optimized!(w, z, y, R)
+    z .= a*z + b + σ_z * randn() # requires temporaries.
+    y = c_y*exp(z[t]) + exp(μ_y + σ_y*randn())
+
+    R .= c_r * exp(z[t]) + exp(μ_r + σ_r*randn())
+    R .*= (w > w_hat) # set to zero if no savings.
+    w .*= R * s_0
+w .+= y
+end
+```
+
+As you can see, the approach is to go through the calculations and build it step by step, avoiding all hidden temporary values.  Typically this is best done by starting with a functioning code and modifying it one step at a time - verifying as you go.
+
+And, as an example to see the impact of these performance steps, we can compare...
+
+As always, note that this may not be worthwhile!
+
+############################
 Note the use of parallelization to speed up computation.
 
 ```{code-cell} ipython3
@@ -481,24 +487,7 @@ aggregate state is known.
 Let's try simulating the model at different parameter values and investigate
 the implications for the wealth distribution.
 
-### Time Series
 
-Let's look at the wealth dynamics of an individual household.
-
-```{code-cell} ipython3
-wdy = WealthDynamics()
-
-ts_length = 200
-w = wealth_time_series(wdy, wdy.y_mean, ts_length)
-
-fig, ax = plt.subplots()
-ax.plot(w)
-plt.show()
-```
-
-Notice the large spikes in wealth over time.
-
-Such spikes are similar to what is observed in a time series with a Kesten process.  See [here](https://python.quantecon.org/kesten_processes.html) for a Python implementation.
 
 ### Inequality Measures
 
