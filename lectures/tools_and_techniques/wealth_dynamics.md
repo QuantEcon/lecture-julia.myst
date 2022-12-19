@@ -327,7 +327,7 @@ acknowledging that low wealth households tend to save very little.
 First, we will write a function which collects all of the parameters into a named tuple.  While we could also use a Julia `struct` (see {doc}`creating new types <../getting_started_julia/introduction_to_types>`) they tend to be more difficult to use properly.
 
 ```{code-cell} julia
-function wealth_dynamics_model(
+function wealth_dynamics_model(; # all named arguments
                  w_hat=1.0, # savings parameter
                  s_0=0.75, # savings parameter
                  c_y=1.0, # labor income parameter
@@ -425,7 +425,11 @@ step_wealth(params, w, z)
 Using this function, we can iterate forward from a distribution of wealth and income
 
 ```{code-cell} julia
-function simulate_panel(params, w_0, z_0, T)
+function simulate_panel(params, N, T)
+    y_0 = params.y_mean * ones(N) # start at the mean
+    z_0 = rand(params.z_stationary_dist, N)
+
+    # iterate forward from initial condition
     w = w_0
     z = z_0
     for t in 1:T
@@ -435,16 +439,9 @@ function simulate_panel(params, w_0, z_0, T)
     L, Z = lorenz(w)
     return (;w, L, Z, gini = gini(w))
 end
-N = 100_000
-y_0 = params.y_mean * ones(N) # start at the mean
-z_0 = rand(params.z_stationary_dist, N)
-T = 200
-res = simulate_panel(params, y_0, z_0, T)
+res = simulate_panel(wealth_dynamics_model(), 100_000, 200)
 plot(res.L, res.Z, label="Lorenz curve")
 ```
-
-
-
 
 ### In-place optimizations
 To show higher-performance code, the following code calculates a panel of individuals with in-place operations, vectorized operations, and pre-allocated arrays.
