@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (scalar_dynam)=
@@ -353,13 +353,13 @@ Let's have a look at the 45 degree diagram.
 xmin, xmax = 0, 1
 g(k) = 4 * k * (1 - k)
 x0 = 0.3
-plot45(k -> g(k), xmin, xmax, 0, num_arrows=0)
+plot45(g, xmin, xmax, 0, num_arrows=0)
 ```
 
 Now let's look at a typical trajectory.
 
 ```{code-cell} julia
-plot45(k -> g(k), xmin, xmax, x0, num_arrows=6)
+plot45(g, xmin, xmax, x0, num_arrows=6)
 ```
 
 Notice how irregular it is.
@@ -367,19 +367,17 @@ Notice how irregular it is.
 Here is the corresponding time series plot.
 
 ```{code-cell} julia
-ts_plot(k -> g(k), xmin, xmax, x0)
+ts_plot(g, xmin, xmax, x0)
 ```
 
 The irregularity is even clearer over a longer time horizon:
 
 ```{code-cell} julia
-ts_plot(k -> g(k), xmin, xmax, x0, ts_length=20)
+ts_plot(g, xmin, xmax, x0, ts_length=20)
 ```
 
 ## Exercises
-
-```{exercise}
-:label: sd_ex1
+### Exercise 1
 
 Consider again the linear model $x_{t+1} = a x_t + b$ with $a
 \not=1$.
@@ -396,12 +394,10 @@ What differences do you notice in the cases $a \in (-1, 0)$ and $a
 Use $a=0.5$ and then $a=-0.5$ and study the trajectories
 
 Set $b=1$ throughout.
-```
 
-```{solution-start} sd_ex1
-:class: dropdown
-```
+## Solutions
 
+### Exercise 1
 We will start with the case $a=0.5$.
 
 Let's set up the model and plotting region:
@@ -455,6 +451,3 @@ In particular, the time series jumps from above the steady state to below it
 and back again.
 
 In the current context, the series is said to exhibit **damped oscillations**.
-
-```{solution-end}
-```
