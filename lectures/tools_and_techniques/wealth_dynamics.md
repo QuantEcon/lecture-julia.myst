@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (wd)=
@@ -38,8 +38,9 @@ tails.
 
 The wealth distribution in many countries exhibits a Pareto tail
 
-* See {doc}`this lecture <heavy_tails>` for a definition. **TODO: This lecture links to the Python notes and has no Julia equivalent, need to fix**
-* For a review of the empirical evidence, see, for example, {cite}`benhabib2018skewed`.
+* The [Pareto Distribution](https://en.wikipedia.org/wiki/Pareto_distribution) is a canonical example of a [heavy-tailed distribution](https://en.wikipedia.org/wiki/Heavy-tailed_distribution).  
+* For a review of the empirical evidence on the wealth distribution, see, for example, {cite}`benhabib2018skewed`.
+* See {cite}`Gabaix2009` for a review of the theory and empirics of power-laws and Kesten Processes.
 
 This is consistent with high concentration of wealth amongst the richest households.
 
