@@ -707,7 +707,7 @@ plots = plot(layout = (3,2), size = (600,800))
 for (it, dens_t) in enumerate(dens_to_plot)
     x, pdf = dens_t
     plot!(plots[it], title = "Density for time (time_to_plot[it])")
-    plot!(plots[it], pdf, fillrange = [[0], pdf], label = "")
+    plot!(plots[it], pdf, fillrange = 0, label = "")
 end
 plot(plots)
 ```
