@@ -626,7 +626,7 @@ function plot_martingale_paths(T, mpath, mbounds;
     # plot martingale component
     ub = mbounds[2, :]
     lb = mbounds[1, :]
-    #plot!(plt, trange, lb, fillrange = ub, alpha = 0.25, color = :magenta, label = "")
+    #plot!(plt, lb, fillrange = ub, alpha = 0.25, color = :magenta, label = "")
     plot!(plt, seriestype = :hline, [horline], color = :black, linestyle =:dash, label = "")
     plot!(plt, trange, Matrix(mpath'), linewidth=0.25, color = :black, label = "")
 
