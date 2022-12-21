@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (additive_functionals)=
@@ -592,7 +592,7 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
     plot!(plots[2], trange, mpathᵀ, alpha = 0.45, color = :magenta, label = "")
     ub = mbounds[2, :]
     lb = mbounds[1, :]
-    plot!(plots[2], ub, fillrange = [lb, ub], alpha = 0.25, color = :magenta, label = "")
+    plot!(plots[2], ub, fillrange = lb, alpha = 0.25, color = :magenta, label = "")
     plot!(plots[2], seriestype = :hline, [horline], color = :black, linestyle =:dash, label = "")
     plot!(plots[2], title = "Martingale Components for Many Paths")
 
@@ -601,7 +601,7 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
     plot!(plots[3], Matrix(spath'), alpha = 0.25, color = :green, label = "")
     ub = sbounds[2, :]
     lb = sbounds[1, :]
-    plot!(plots[3], ub, fillrange = [lb, ub], alpha = 0.25, color = :green, label = "")
+    plot!(plots[3], ub, fillrange = lb, alpha = 0.25, color = :green, label = "")
     plot!(plots[3], seriestype = :hline, [horline], color = :black, linestyle=:dash, label = "")
     plot!(plots[3], title = "Stationary Components for Many Paths")
 
@@ -626,7 +626,7 @@ function plot_martingale_paths(T, mpath, mbounds;
     # plot martingale component
     ub = mbounds[2, :]
     lb = mbounds[1, :]
-    plot!(plt, lb, fillrange = [lb, ub], alpha = 0.25, color = :magenta, label = "")
+    #plot!(plt, lb, fillrange = ub, alpha = 0.25, color = :magenta, label = "")
     plot!(plt, seriestype = :hline, [horline], color = :black, linestyle =:dash, label = "")
     plot!(plt, trange, Matrix(mpath'), linewidth=0.25, color = :black, label = "")
 
