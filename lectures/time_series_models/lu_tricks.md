@@ -37,7 +37,7 @@ class of dynamic optimization and prediction problems by applying the method of 
 
 In this lecture and a companion lecture {doc}`Classical Filtering with Linear Algebra <../time_series_models/classical_filtering>`, we study the classical theory of linear-quadratic (LQ) optimal control problems.
 
-The classical approach does not use the two closely related methods -- dynamic programming and  Kalman filtering -- that we describe in other lectures, namely, {doc}`Linear Quadratic Dynamic Programming Problems <../dynamic_programming/lqcontrol>` and {doc}`A First Look at the Kalman Filter <../tools_and_techniques/kalman>`.
+The classical approach does not use the two closely related methods -- dynamic programming and  Kalman filtering -- that we describe in other lectures, namely, {doc}`Linear Quadratic Dynamic Programming Problems <../dynamic_programming/lqcontrol>` and {doc}`A First Look at the Kalman Filter <../introduction_dynamics/kalman>`.
 
 Instead they use either.
 

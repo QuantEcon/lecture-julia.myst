@@ -798,7 +798,7 @@ Now we'll use a setting like that in  {doc}`first lecture on the permanent incom
 In that model, there were
 
 * incomplete markets: the consumer could trade only a single risk-free one-period bond bearing gross one-period risk-free interest rate equal to $\beta^{-1}$
-* the consumer's exogenous nonfinancial income was governed by a linear state space model driven by Gaussian shocks, the kind of model studied in an earlier lecture about {doc}`linear state space models <../tools_and_techniques/linear_models>`
+* the consumer's exogenous nonfinancial income was governed by a linear state space model driven by Gaussian shocks, the kind of model studied in an earlier lecture about {doc}`linear state space models <../introduction_dynamics/linear_models>`
 
 We'll write down a complete markets counterpart of that model.
 

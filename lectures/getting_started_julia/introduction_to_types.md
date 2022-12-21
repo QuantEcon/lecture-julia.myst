@@ -923,7 +923,7 @@ x = rand(N)
 
 ### Exercise 2
 
-A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from {doc}`the Kalman lecture <../tools_and_techniques/kalman>`.
+A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from {doc}`the Kalman lecture <../introduction_dynamics/kalman>`.
 
 Using what you learned from Exercise 1, benchmark this using Static Arrays
 

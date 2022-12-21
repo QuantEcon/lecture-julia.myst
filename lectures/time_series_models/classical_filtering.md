@@ -43,7 +43,7 @@ Nevertheless,  essentially the same mathematics  solves both type of problem.
 
 This connection, which is often termed "duality," is present whether one uses "classical" or "recursive" solution procedures.
 
-In fact we saw duality at work earlier when we formulated control and prediction problems recursively in lectures {doc}`LQ dynamic programming problems <../dynamic_programming/lqcontrol>`, {doc}`A first look at the Kalman filter <../tools_and_techniques/kalman>`, and {doc}`The permanent income model <../dynamic_programming/perm_income>`.
+In fact we saw duality at work earlier when we formulated control and prediction problems recursively in lectures {doc}`LQ dynamic programming problems <../dynamic_programming/lqcontrol>`, {doc}`A first look at the Kalman filter <../introduction_dynamics/kalman>`, and {doc}`The permanent income model <../dynamic_programming/perm_income>`.
 
 A useful consequence of duality is that
 

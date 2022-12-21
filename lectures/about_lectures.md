@@ -195,6 +195,6 @@ skills, and the many others who have contributed suggestions, bug fixes or
 improvements. They include but are not limited to Anmol Bhandari, Long Bui,
 Jeong-Hun Choi, David Evans, Xiaojun Guan, Shunsuke Hori, Chenghan Hou, Doc-Jin Jang, Adam Jozefiak,
 Qingyin Ma, Akira Matsushita, Tomohito Okabe, Daisuke Oyama, David Pugh, Alex
-Olssen, Nathan Palmer, Pooya Rashidi Ravari, Arnav Sood, Bill Tubbs, Natasha Watkins, Pablo Winant, Kaan Yolsever and Yixiao
+Olssen, Nathan Palmer, Pooya Rashidi Ravari, Arnav Sood, Bill Tubbs, Natasha Watkins, Pablo Winant, Kaan Yolsever, James Yu, and Yixiao
 Zhou.
 
