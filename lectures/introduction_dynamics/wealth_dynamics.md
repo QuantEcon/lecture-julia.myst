@@ -117,11 +117,8 @@ We can then plot the curve:
 
 ```{code-cell} julia
 (; F, L) = lorenz(w)
-
-plt = plot()
-plot!(plt, F, L, label = "Lorenz curve, lognormal sample")
-plot!(plt, F, F, label = "Lorenz curve, equality", legend = :topleft)
-plt
+plot(F, L, label = "Lorenz curve, lognormal sample", legend = :topleft)
+plot!(F, F, label = "Lorenz curve, equality")
 ```
 
 This curve can be understood as follows: if point $(x,y)$ lies on the curve, it means that, collectively, the bottom $(100x)\%$ of the population holds $(100y)\%$ of the wealth.
@@ -182,9 +179,14 @@ function lorenz!(L, v)
 end
 ```
 
-To compare the performance, we should use the `BenchmarkTools` package.  To test performance, pass in large structures with the `$` (e.g., `$v` and `$L`) or else it copies the values with each sample, confusing performance results.
+```{admonition} Performance benchmarking
+For performance comparisons, always use the [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl).  Whenever passing in arguments that are not scalars, you typically want to [interpolate](https://juliaci.github.io/BenchmarkTools.jl/stable/manual/#Interpolating-values-into-benchmark-expressions) by prepending with the `$` (e.g., `@btime lorenz($v)` rather than `@btime lorenz(v)`) or else it may treat the value as a global variable and gives distorted performance results.
+
+For more detailed results, replace `@btime` with `@benchmark`.
+```
 
 ```{code-cell} julia
+using BenchmarkTools
 n = 1_000_000
 a = 2
 u = rand(n)
@@ -250,12 +252,8 @@ n = 100
 ginis = [gini(sort(rand(Weibull(a), n))) for a in a_vals]
 ginis_theoretical = [1 - 2^(-1/a) for a in a_vals]
 
-plt = plot()
-plot!(plt, a_vals, ginis, label = "estimated gini coefficient")
-plot!(plt, a_vals, ginis_theoretical, label = "theoretical gini coefficient")
-xlabel!(plt, L"Weibull parameter $a$")
-ylabel!(plt, "Gini coefficient")
-plt
+plot(a_vals, ginis, label = "estimated gini coefficient", xlabel = L"Weibull parameter $a$", ylabel = "Gini coefficient")
+plot!(a_vals, ginis_theoretical, label = "theoretical gini coefficient")
 ```
 
 The simulation shows that the fit is good.
@@ -430,7 +428,7 @@ function simulate_panel(params, N, T)
     z_0 = rand(params.z_stationary_dist, N)
 
     # iterate forward from initial condition
-    w = w_0
+    w = y_0 # start at mean of income process
     z = z_0
     for t in 1:T
         w, z = step_wealth(params, w, z) # steps forward, discarding results
