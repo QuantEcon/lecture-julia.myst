@@ -56,7 +56,7 @@ This lecture covers
 
 We use dynamic programming many applied lectures, such as
 
-* The {doc}`shortest path lecture <../dynamic_programming/short_path>`
+* The {doc}`shortest path lecture <../introduction_dynamics/short_path>`
 * The {doc}`McCall search model lecture <../dynamic_programming/mccall_model>`
 * The {doc}`optimal growth lecture <../dynamic_programming/optgrowth>`
 

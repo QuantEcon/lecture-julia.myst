@@ -241,7 +241,7 @@ function plot45(f, xmin, xmax, x0; num_arrows=6)
     vline!([0], color=:green, lw=2)
 end  
 
-function ts_plot(f, p.xmin, p.xmax, x0; ts_length=6)
+function ts_plot(f, xmin, xmax, x0; ts_length=6)
     x = zeros(ts_length)
     x[1] = x0
     for t in 1:(ts_length-1)

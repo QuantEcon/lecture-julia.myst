@@ -48,7 +48,7 @@ In reading what follows, it will be useful to have some familiarity with
 
 * matrix manipulations
 * vectors of random variables
-* dynamic programming and the Bellman equation (see for example {doc}`this lecture <../dynamic_programming/short_path>` and {doc}`this lecture <../dynamic_programming/optgrowth>`)
+* dynamic programming and the Bellman equation (see for example {doc}`this lecture <../introduction_dynamics/short_path>` and {doc}`this lecture <../dynamic_programming/optgrowth>`)
 
 For additional reading on LQ control, see, for example,
 
@@ -350,7 +350,7 @@ What's special about the LQ case is that -- as we shall soon see ---  the optima
 ### Solution
 
 To solve the finite horizon LQ problem we can use a dynamic programming
-strategy based on backwards induction that is conceptually similar to the approach adopted in {doc}`this lecture <../dynamic_programming/short_path>`.
+strategy based on backwards induction that is conceptually similar to the approach adopted in {doc}`this lecture <../introduction_dynamics/short_path>`.
 
 For reasons that will soon become clear, we first introduce the notation $J_T(x) = x' R_f x$.
 
