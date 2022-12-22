@@ -332,7 +332,7 @@ plot(w, caption = "Wealth simulation", xlabel="t", label=L"w(t)")
 
 Notice the large spikes in wealth over time.
 
-Such spikes are similar to what is observed in a time series with a Kesten process.  See [here](https://python.quantecon.org/kesten_processes.html) for a related lecture using Python.
+Such spikes are similar to what is observed in a time series with a Kesten process.  See [Kesten Processes and Firm Dynamics](https://python.quantecon.org/kesten_processes.html) for a lecture introducing these with Python.
 
 
 ## Inequality Measures
@@ -427,7 +427,8 @@ volatility term $\sigma_r$ in financial returns.
 σ_r_vals = LinRange(0.35, 0.53, 5)
 results = map(σ_r -> simulate_panel(N, T, wealth_dynamics_model(;σ_r)), σ_r_vals);
 plt = plot(F, F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
-[plot!(plt, res.F, res.L, label = L"\psi^*, \sigma_r = %$(round(σ_r; sigdigits=2))") for (σ_r, res) in zip(σ_r_vals, results)]
+[plot!(plt, res.F, res.L, label = L"\psi^*, \sigma_r = %$(round(σ_r; sigdigits=2))")
+ for (σ_r, res) in zip(σ_r_vals, results)]
 plt
 ```
 
@@ -459,7 +460,7 @@ function lorenz!(L, v)
    # cumulative sum but inplace: [v[1], v[1] + v[2], ... ]
     cumsum!(L, v)    
     L ./= L[end]  # inplace division to normalize
-    F = (1:length(v)) / length(v)  # this doesn't allocate anything so no need to be inplace
+    F = (1:length(v)) / length(v) # doesn't allocate since F is a range
     return F, L # using inplace we can still return the L vector
 end
 ```
@@ -598,6 +599,6 @@ All of that work led to only a modest speedup of less than a factor of 50% on mo
 
 The allocations decrease more substantially (e.g., a factor of 4) but that does not seem to be the key bottleneck.
 
-This is a common result of micro-optimizations - a lot of work with very little gain.  Don't optimize code unless you can justify the benefits in hours of work leading to only modest speedups.
+This is a common of with a lot of performance tweaking of code - a lot of work with very little gain.  Don't optimize code unless you can justify the risk that hours of work leading to only modest speedups.
 
 As discussed above, cases with more significant linear algebra can be much more amenable to in-place operations and lead to more significant speedups as discussed in {doc}`iterative methods  <../tools_and_techniques/iterative_methods_sparsity>` and related lectures.
