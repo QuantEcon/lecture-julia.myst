@@ -142,14 +142,13 @@ observations.
 ```{code-cell} julia
 a_vals = (1, 2, 5)
 n = 10_000
-plt = plot()
+plt = plot(F, F, label = "equality", legend = :topleft)
 for a in a_vals
     u = rand(n)
     y = sort(u.^(-1/a))  # distributed as Pareto with tail index a
     (; F, L) = lorenz(y)
     plot!(plt, F, L, label = L"a = %$a")
 end
-plot!(plt, F, F, label = "equality", legend = :topleft)
 plt
 ```
 
@@ -333,11 +332,13 @@ Notice the large spikes in wealth over time.
 Such spikes are similar to what is observed in a time series with a Kesten process.  See [here](https://python.quantecon.org/kesten_processes.html) for a Python implementation.
 
 
-## Wealth Dynamics of a Distribution
+## Inequality Measures
+
+Let's look at how inequality varies with returns on financial assets
 
 The code above could be used to simulate a number of different households, but it would be relatively slow if the number of households becomes large.
 
-First, lets write an out-of-place function which simulates a single time-step for a cross section of households.
+First, lets write a function which simulates a single time-step for a cross section of households.
 
 ```{code-cell} julia
 function step_wealth(w, z, params)
@@ -358,6 +359,7 @@ w = rand(10)
 z = rand(10)
 step_wealth(w, z, params)
 -->
+
 Using this function, we can iterate forward from a distribution of wealth and income
 
 ```{code-cell} julia
@@ -372,15 +374,60 @@ function simulate_panel(N, T, params)
         w, z = step_wealth(w, z, params) # steps forward, discarding results
     end
     sort!(w) # sorts the wealth so we can calculate gini/lorenz        
-    L, Z = lorenz(w)
-    return (;w, L, Z, gini = gini(w))
+    F, L = lorenz(w)
+    return (;w, F, L, gini = gini(w))
 end
-p = wealth_dynamics_model()
-res = simulate_panel(100_000, 200, p)
-plot(res.L, res.Z, label="Lorenz curve")
 ```
 
+To use this function, we pass in parameters and can access the resulting wealth distribution and inequality measures.
 
+```{code-cell} julia
+p = wealth_dynamics_model()
+res = simulate_panel(100_000, 200, p)
+@show median(res.w), mean(res.w), res.gini;
+```
+
+Now we investigate how the Lorenz curves associated with the wealth distribution change as return to savings varies.
+
+The code below simulates the wealth distribution, Lorenz curve, and gini for multiple values of $\mu_r$.
+
+```{code-cell} julia
+N = 100_000
+T = 500
+μ_r_vals = [0.0, 0.025, 0.05]
+results = map(μ_r -> simulate_panel(N, T, wealth_dynamics_model(;μ_r)), μ_r_vals);
+```
+
+Using these results, we can plot the Lorenz curves for each value of $\mu_r$ and compare to perfect equality.
+
+```{code-cell} julia
+plt = plot(F, F, label = "equality", legend = :topleft, xlabel=L"\mu_r", ylabel="Lorenz Curve")
+[plot!(plt, res.F, res.L, label = L"\psi^*, \mu_r = %$(μ_r)") for (μ_r, res) in zip(μ_r_vals, results)]
+plt
+```
+
+The Lorenz curve shifts downwards as returns on financial income rise, indicating a rise in inequality.
+
+
+Now let’s check the Gini coefficient.
+```{code-cell} julia
+ginis = [res.gini for res in results]
+plot(μ_r_vals, ginis, label = "Gini coefficient", xlabel = L"\mu_r")
+```
+Once again, we see that inequality increases as returns on financial income rise.
+
+Let's finish this section by investigating what happens when we change the
+volatility term $\sigma_r$ in financial returns.
+
+```{code-cell} julia
+σ_r_vals = [0.35, 0.45, 0.52]
+results = map(σ_r -> simulate_panel(N, T, wealth_dynamics_model(;σ_r)), σ_r_vals);
+plt = plot(F, F, label = "equality", legend = :topleft, xlabel=L"\sigma_r", ylabel="Lorenz Curve")
+[plot!(plt, res.F, res.L, label = L"\psi^*, \sigma_r = %$(σ_r)") for (σ_r, res) in zip(σ_r_vals, results)]
+plt
+```
+
+We see that greater volatility has the effect of increasing inequality in this model.
 
 ## In-place Functions and Performance
 
@@ -449,7 +496,7 @@ This all depends on the steps of the underlying algorithm.  In the case above, t
 
 In other cases, such as those in large-scale difference or differential equations, in-place operations can have an enormous impact.
 
-### (Premature) Optimizations of the Simulation
+### (Premature) Performance Optimizations of the Simulation
 Before asking how we can make our simulations faster, we should ask whether it is already fast enough for our needs - which it seems to be in this case for the above figures.
 
 That said, lets consider if we had a compelling need to handle much larger panels or variations on simulating for many more parameters.
@@ -511,8 +558,8 @@ function simulate_panel!(N, T, params)
         step_wealth!(w, z, y, R, params) # steps forward in-place
     end
     sort!(w) # sorts the wealth so we can calculate gini/lorenz        
-    L, Z = lorenz(w)
-    return (;w, L, Z, gini = gini(w))
+    F, L = lorenz(w)
+    return (;w, F, L, gini = gini(w))
 end
 ```
 As you can see, this was a lot of work, most of which was attempting to eliminate temporary values.
@@ -534,9 +581,9 @@ Then compare,
 @btime simulate_panel!(N, T, $p);
 ```
 
-All of that work led to only a modest speedup of less than a factor of 2.  
+All of that work led to only a modest speedup of less than a factor of 50% on most systems.
 
-The allocations decrease more substantially (e.g., a factor of 4) but that does not seem to be the key bottleneck for these functions.
+The allocations decrease more substantially (e.g., a factor of 4) but that does not seem to be the key bottleneck.
 
 This is a common result of micro-optimizations - a lot of work with very little gain.  Don't optimize code unless you can justify the benefits in hours of work leading to only modest speedups.
 
