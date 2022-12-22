@@ -33,7 +33,7 @@ You cannot learn too much linear algebra. -- Benedict Gross
 In this lecture, we examine the structure of matrices and linear operators (e.g., dense, sparse, symmetric, tridiagonal, banded) and
 discuss how the structure can be exploited to radically increase the performance of solving large problems.
 
-We build on applications discussed in previous lectures: {doc}`linear algebra <linear_algebra>`, {doc}`orthogonal projections <orth_proj>`, and {doc}`Markov chains <finite_markov>`.
+We build on applications discussed in previous lectures: {doc}`linear algebra <linear_algebra>`, {doc}`orthogonal projections <orth_proj>`, and {doc}`Markov chains <../introduction_dynamics/finite_markov>`.
 
 The methods in this section are called direct methods, and they are qualitatively similar to performing Gaussian elimination to factor matrices and solve systems of equations.  In {doc}`iterative methods and sparsity <iterative_methods_sparsity>` we examine a different approach, using iterative algorithms, where we can think of more general linear operators.
 
@@ -567,7 +567,7 @@ Keep in mind that a real matrix may have complex eigenvalues and eigenvectors, s
 
 ## Continuous-Time Markov Chains (CTMCs)
 
-In the previous lecture on {doc}`discrete-time Markov chains <finite_markov>`, we saw that the transition probability
+In the lecture on {doc}`discrete-time Markov chains <../introduction_dynamics/finite_markov>`, we saw that the transition probability
 between state $x$ and state $y$ was summarized by the matrix $P(x, y) := \mathbb P \{ X_{t+1} = y \,|\, X_t = x \}$.
 
 As a brief introduction to continuous time processes, consider the same state space as in the discrete

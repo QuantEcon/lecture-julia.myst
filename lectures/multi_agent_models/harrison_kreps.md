@@ -44,7 +44,7 @@ The model features
 
 Prior to reading the following you might like to review our lectures on
 
-* {doc}`Markov chains <../tools_and_techniques/finite_markov>`
+* {doc}`Markov chains <../introduction_dynamics/finite_markov>`
 * {doc}`Asset pricing with finite state space <../multi_agent_models/markov_asset>`
 
 ### Bubbles

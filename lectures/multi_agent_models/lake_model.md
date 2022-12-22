@@ -59,7 +59,7 @@ These concepts will help us build an equilibrium model of ex ante homogeneous wo
 ### Prerequisites
 
 Before working through what follows, we recommend you read the {doc}`lecture
-on finite Markov chains <../tools_and_techniques/finite_markov>`.
+on finite Markov chains <../introduction_dynamics/finite_markov>`.
 
 You will also need some basic {doc}`linear algebra <../tools_and_techniques/linear_algebra>` and probability.
 
@@ -391,7 +391,7 @@ end
 
 ## Dynamics of an Individual Worker
 
-An individual worker's employment dynamics are governed by a {doc}`finite state Markov process <../tools_and_techniques/finite_markov>`.
+An individual worker's employment dynamics are governed by a {doc}`finite state Markov process <../introduction_dynamics/finite_markov>`.
 
 The worker can be in one of two states:
 
@@ -421,7 +421,7 @@ $$
 \psi_{t+1} = \psi_t P
 $$
 
-We also know from the {doc}`lecture on finite Markov chains <../tools_and_techniques/finite_markov>`
+We also know from the {doc}`lecture on finite Markov chains <../introduction_dynamics/finite_markov>`
 that if $\alpha \in (0, 1)$ and $\lambda \in (0, 1)$, then
 $P$ has a unique stationary distribution, denoted here by $\psi^*$.
 

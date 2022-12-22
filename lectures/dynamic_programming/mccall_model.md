@@ -403,7 +403,7 @@ To understand why, first recall that `v_iv` is a function argument -- either def
 
 As usual, we are better off using a package, which may give a better algorithm and is likely to less error prone.
 
-In this case, we can use the `fixedpoint` algorithm discussed in {doc}`our Julia by Example lecture <../getting_started_julia/julia_by_example>`  to find the fixed point of the $T$ operator.
+In this case, we can use the `fixedpoint` algorithm discussed in {doc}`our Julia by Example lecture <../getting_started_julia/julia_by_example>`  to find the fixed point of the $T$ operator.  Note that below we set the parameter `m=1` for Anderson iteration rather than leaving as the default value - which fails to converge in this case.  This is still almost 10x faster than the `m=0` case, which corresponds to naive fixed-point iteration.
 
 ```{code-cell} julia
 function compute_reservation_wage(params; v_iv = collect(w ./(1-β)), iterations = 500,
@@ -412,7 +412,7 @@ function compute_reservation_wage(params; v_iv = collect(w ./(1-β)), iterations
     T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
 
     v_star = fixedpoint(T, v_iv, iterations = iterations, ftol = ftol,
-                        m = 0).zero # (5)
+                        m = 1).zero # (5)
     return (1 - β) * (c + β * E*v_star) # (3)
 end
 ```

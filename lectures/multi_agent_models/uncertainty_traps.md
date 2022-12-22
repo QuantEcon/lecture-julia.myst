@@ -38,7 +38,7 @@ In the model,
 * Greater uncertainty means greater dispersions of these distributions.
 * Entrepreneurs are risk averse and hence less inclined to be active  when uncertainty is high.
 * The output of active entrepreneurs is observable, supplying a noisy signal that helps everyone inside the model infer fundamentals.
-* Entrepreneurs update their beliefs about fundamentals using Bayes' Law, implemented via {doc}`Kalman filtering <../tools_and_techniques/kalman>`.
+* Entrepreneurs update their beliefs about fundamentals using Bayes' Law, implemented via {doc}`Kalman filtering <../introduction_dynamics/kalman>`.
 
 Uncertainty traps emerge because:
 

@@ -51,7 +51,7 @@ It is just a matter of appropriately relabeling the variables in Hall's model.
 In this lecture, we'll
 
 * show how the solution to the LQ permanent income model can be obtained using LQ control methods
-* represent the model as a linear state space system as in {doc}`this lecture <../tools_and_techniques/linear_models>`
+* represent the model as a linear state space system as in {doc}`this lecture <../introduction_dynamics/linear_models>`
 * apply [QuantEcon](http://quantecon.org/quantecon-jl)'s [LSS](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl) type to characterize statistical features of the consumer's optimal consumption and borrowing plans
 
 We'll then use these characterizations to construct a simple model of cross-section wealth and
@@ -159,7 +159,7 @@ y_{t+1} = \alpha + \rho_1 y_t + \rho_2 y_{t-1} + \sigma w_{t+1}
 $$
 
 We can map this into the linear state space framework in {eq}`sprob15ab2`, as
-discussed in our lecture on  {doc}`linear models <../tools_and_techniques/linear_models>`.
+discussed in our lecture on  {doc}`linear models <../introduction_dynamics/linear_models>`.
 
 To do so we take
 

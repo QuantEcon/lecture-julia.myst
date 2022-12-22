@@ -56,7 +56,7 @@ This lecture covers
 
 We use dynamic programming many applied lectures, such as
 
-* The {doc}`shortest path lecture <../dynamic_programming/short_path>`
+* The {doc}`shortest path lecture <../introduction_dynamics/short_path>`
 * The {doc}`McCall search model lecture <../dynamic_programming/mccall_model>`
 * The {doc}`optimal growth lecture <../dynamic_programming/optgrowth>`
 
@@ -579,7 +579,7 @@ Another interesting object is `results.mc`, which is the controlled chain define
 
 In other words, it gives the dynamics of the state when the agent follows the optimal policy.
 
-Since this object is an instance of MarkovChain from  [QuantEcon.jl](http://quantecon.org/quantecon-jl) (see {doc}`this lecture <../tools_and_techniques/finite_markov>` for more discussion), we
+Since this object is an instance of MarkovChain from  [QuantEcon.jl](http://quantecon.org/quantecon-jl) (see {doc}`this lecture <../introduction_dynamics/finite_markov>` for more discussion), we
 can easily simulate it, compute its stationary distribution and so on
 
 ```{code-cell} julia
