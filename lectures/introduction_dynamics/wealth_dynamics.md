@@ -178,14 +178,16 @@ Let's see if the Gini coefficient computed from a simulated sample matches
 this at each fixed value of $a$.
 
 ```{code-cell} julia
-gini(v) = (2 * sum(i * y for (i,y) in enumerate(v))/sum(v) - (length(v) + 1))/length(v)
+gini(v) = (2 * sum(i * y for (i,y) in enumerate(v))/sum(v)
+           - (length(v) + 1))/length(v)
 
 a_vals = 1:19
 n = 100
 ginis = [gini(sort(rand(Weibull(a), n))) for a in a_vals]
 ginis_theoretical = [1 - 2^(-1/a) for a in a_vals]
 
-plot(a_vals, ginis, label = "estimated gini coefficient", xlabel = L"Weibull parameter $a$", ylabel = "Gini coefficient")
+plot(a_vals, ginis, label = "estimated gini coefficient",
+     xlabel = L"Weibull parameter $a$", ylabel = "Gini coefficient")
 plot!(a_vals, ginis_theoretical, label = "theoretical gini coefficient")
 ```
 
@@ -282,7 +284,8 @@ function wealth_dynamics_model(; # all named arguments
     z_stationary_dist = Normal(z_mean, sqrt(z_var))
 
     @assert α <= 1 # check stability condition that wealth does not diverge
-    return (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z, z_mean, z_var, z_stationary_dist, exp_z_mean, R_mean, y_mean, α)
+    return (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z, z_mean, z_var,
+             z_stationary_dist, exp_z_mean, R_mean, y_mean, α)
 end            
 
 # example of model with all default values
@@ -329,7 +332,7 @@ plot(w, caption = "Wealth simulation", xlabel="t", label=L"w(t)")
 
 Notice the large spikes in wealth over time.
 
-Such spikes are similar to what is observed in a time series with a Kesten process.  See [here](https://python.quantecon.org/kesten_processes.html) for a Python implementation.
+Such spikes are similar to what is observed in a time series with a Kesten process.  See [here](https://python.quantecon.org/kesten_processes.html) for a related lecture using Python.
 
 
 ## Inequality Measures
@@ -394,15 +397,16 @@ The code below simulates the wealth distribution, Lorenz curve, and gini for mul
 ```{code-cell} julia
 N = 100_000
 T = 500
-μ_r_vals = [0.0, 0.025, 0.05]
+μ_r_vals = LinRange(0.0, 0.075, 5)
 results = map(μ_r -> simulate_panel(N, T, wealth_dynamics_model(;μ_r)), μ_r_vals);
 ```
 
 Using these results, we can plot the Lorenz curves for each value of $\mu_r$ and compare to perfect equality.
 
 ```{code-cell} julia
-plt = plot(F, F, label = "equality", legend = :topleft, xlabel=L"\mu_r", ylabel="Lorenz Curve")
-[plot!(plt, res.F, res.L, label = L"\psi^*, \mu_r = %$(μ_r)") for (μ_r, res) in zip(μ_r_vals, results)]
+plt = plot(F, F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
+[plot!(plt, res.F, res.L, label = L"\psi^*, \mu_r = %$(round(μ_r; sigdigits=1))") 
+ for (μ_r, res) in zip(μ_r_vals, results)]
 plt
 ```
 
@@ -414,20 +418,29 @@ Now let’s check the Gini coefficient.
 ginis = [res.gini for res in results]
 plot(μ_r_vals, ginis, label = "Gini coefficient", xlabel = L"\mu_r")
 ```
-Once again, we see that inequality increases as returns on financial income rise.
+Once again, we see that inequality increases as returns on financial income rise, and the relationship is roughly linear.
 
 Let's finish this section by investigating what happens when we change the
 volatility term $\sigma_r$ in financial returns.
 
 ```{code-cell} julia
-σ_r_vals = [0.35, 0.45, 0.52]
+σ_r_vals = LinRange(0.35, 0.53, 5)
 results = map(σ_r -> simulate_panel(N, T, wealth_dynamics_model(;σ_r)), σ_r_vals);
-plt = plot(F, F, label = "equality", legend = :topleft, xlabel=L"\sigma_r", ylabel="Lorenz Curve")
-[plot!(plt, res.F, res.L, label = L"\psi^*, \sigma_r = %$(σ_r)") for (σ_r, res) in zip(σ_r_vals, results)]
+plt = plot(F, F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
+[plot!(plt, res.F, res.L, label = L"\psi^*, \sigma_r = %$(round(σ_r; sigdigits=2))") for (σ_r, res) in zip(σ_r_vals, results)]
 plt
 ```
 
 We see that greater volatility has the effect of increasing inequality in this model.
+
+```{code-cell} julia
+ginis = [res.gini for res in results]
+plot(σ_r_vals, ginis, label = "Gini coefficient", xlabel = L"\sigma_r")
+```
+
+Similarly, the Gini coefficient shows that greater volatility increases inequality and approaches a Gini of 1 (i.e., perfect inequality) as the volatility increases where a $\sigma_r \approx 0.53$ is close to the maximum value fixing the other parameters at their default values.
+
+In this case, the divergence occurs as the $\alpha < 1$ condition begins to fail because high volatility increases mean rate of return, leading to explosive savings behavior.
 
 ## In-place Functions and Performance
 
