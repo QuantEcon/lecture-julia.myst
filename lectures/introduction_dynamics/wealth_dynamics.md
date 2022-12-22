@@ -319,11 +319,11 @@ end
 Let's look at the wealth dynamics of an individual household.
 
 ```{code-cell} julia
-params = wealth_dynamics_model()  # all defaults
-y_0 = params.y_mean
-z_0 = rand(params.z_stationary_dist)
+p = wealth_dynamics_model()  # all defaults
+y_0 = p.y_mean
+z_0 = rand(p.z_stationary_dist)
 T = 200
-w, z = simulate_wealth_dynamics(y_0, z_0, T, params)
+w, z = simulate_wealth_dynamics(y_0, z_0, T, p)
 
 plot(w, caption = "Wealth simulation", xlabel="t", label=L"w(t)")
 ```
@@ -375,8 +375,8 @@ function simulate_panel(N, T, params)
     L, Z = lorenz(w)
     return (;w, L, Z, gini = gini(w))
 end
-params = wealth_dynamics_model()
-res = simulate_panel(100_000, 200, params)
+p = wealth_dynamics_model()
+res = simulate_panel(100_000, 200, p)
 plot(res.L, res.Z, label="Lorenz curve")
 ```
 
@@ -522,16 +522,16 @@ We can identify those temporaries because of the assignment (i.e., `wp = ` typic
 Was all of this trouble worthwhile?  Let's first benchmark the old version
 
 ```{code-cell} julia
-params = wealth_dynamics_model()
+p = wealth_dynamics_model()
 N = 100_000
 T = 200
-@btime simulate_panel(N, T, $params);
+@btime simulate_panel(N, T, $p);
 ```
 
 Then compare,
 
 ```{code-cell} julia
-@btime simulate_panel!(N, T, $params);
+@btime simulate_panel!(N, T, $p);
 ```
 
 All of that work led to only a modest speedup of less than a factor of 2.  
