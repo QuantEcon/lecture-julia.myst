@@ -63,7 +63,7 @@ We do this to more easily explore the implications of different specifications o
 At the same time, all of the techniques discussed here can be plugged into models that use optimization to obtain savings rules.
 
 ```{code-cell} julia
-using Distributions, Plots, LaTeXStrings, LinearAlgebra
+using Distributions, Plots, LaTeXStrings, LinearAlgebra, BenchmarkTools, LoopVectorization
 ```
 
 ## Lorenz Curves and the Gini Coefficient
@@ -193,6 +193,73 @@ plot!(a_vals, ginis_theoretical, label = "theoretical gini coefficient")
 
 The simulation shows that the fit is good.
 
+### In-place Functions, Preallocation, and Performance
+
+When working with large vectors and matrices, a performance advantage of Julia is its ability to manage allocations and perform in-place operations.
+
+As always, don't prematurely optimize your code - but in cases where the datastructures are large and the code is of equivalent complexity, don't be afraid to use in-place operations.
+
+To demonstrate this, we will compare an inplace Lorenz calculation with the one above. 
+
+The convention in Julia is to use `!` to denote a function which mutates its arguments and to put any arguments that will be modified first.
+
+In the following case, the `L` is pre-allocated and will be overwritten.
+
+```{code-cell} julia
+function lorenz!(L, v)
+   # cumulative sum but inplace: [v[1], v[1] + v[2], ... ]
+    cumsum!(L, v)    
+    L ./= L[end]  # inplace division to normalize
+    F = (1:length(v)) / length(v) # doesn't allocate since F is a range
+    return F, L # using inplace we can still return the L vector
+end
+```
+
+```{admonition} Performance benchmarking
+For performance comparisons, always use the [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl).  Whenever passing in arguments that are not scalars, you typically want to [interpolate](https://juliaci.github.io/BenchmarkTools.jl/stable/manual/#Interpolating-values-into-benchmark-expressions) by prepending with the `$` (e.g., `@btime lorenz($v)` rather than `@btime lorenz(v)`) or else it may treat the value as a global variable and gives distorted performance results.
+
+For more detailed results, replace `@btime` with `@benchmark`.
+```
+
+```{code-cell} julia
+using BenchmarkTools
+n = 1_000_000
+a = 2
+u = rand(n)
+v = sort(u.^(-1/a))
+@btime lorenz($v); # performance with out-of-place
+```
+
+Note the speed and allocations.  Next use the inplace version
+
+```{code-cell} julia
+L = similar(v) # preallocate of same type, size
+@btime lorenz!($L, $v);
+```
+
+Depending on your system, this should be perhaps twice as fast but have no allocations.
+
+On the other hand, if we use a smaller vector such as `n=1000` above, then the performance difference is much smaller - perhaps only 30% improvement.
+
+Furthermore, this benefit is only felt if we are reusing the same `L` in repeated calls.  If we need to allocate (e.g. a `L = similar(v)`) each time, then there is no benefit.
+<!--
+```{code-cell} julia
+n = 1000
+a = 2
+u = rand(n)
+v = sort(u.^(-1/a))
+L = similar(v) # preallocate of same type, size
+@btime lorenz($v)
+@btime lorenz!($L, $v)
+```
+--> 
+
+This provides a common and cautionary lesson: for some algorithms, avoiding allocations does not have a significant difference and may not be worth the trouble.
+
+This all depends on the steps of the underlying algorithm.  In the case above, the `cumsum` is significantly more expensive than the data allocation.
+
+In other cases, such as those in large-scale difference or differential equations, in-place operations can have an enormous impact.
+
 ## A Model of Wealth Dynamics
 
 Having discussed inequality measures, let us now turn to wealth dynamics.
@@ -294,9 +361,9 @@ wealth_dynamics_model()
 
 ## Simulating Wealth Dynamics
 
-To implement this process, first we can write a simple example a loop to simulate an individuals wealth dynamics, then we will write a higher-performance version for an entire distribution.
+To implement this process, we will write a funciton which simulates an entire path for an agent or the wealth distribution.
 
-The `params` argument is a named-tuple or struct consist with the `wealth_dynamics_model` function above.
+The `p` argument is a named-tuple or struct consist with the `wealth_dynamics_model` function above.
 
 ```{code-cell} julia
 function simulate_wealth_dynamics(w_0, z_0, T, params)
@@ -309,7 +376,7 @@ function simulate_wealth_dynamics(w_0, z_0, T, params)
     for t = 2:T+1
         z[t] = a*z[t-1] + b + σ_z * randn()
         y = c_y*exp(z[t]) + exp(μ_y + σ_y*randn())
-        w[t] = y
+        w[t] = y # income goes to next periods wealth
         if w[t-1] >= w_hat # if above minimum wealth level, add savings
             R = c_r * exp(z[t]) + exp(μ_r + σ_r*randn())
             w[t] += R * s_0 * w[t-1]
@@ -318,6 +385,7 @@ function simulate_wealth_dynamics(w_0, z_0, T, params)
     return w, z
 end
 ```
+
 Let's look at the wealth dynamics of an individual household.
 
 ```{code-cell} julia
@@ -334,59 +402,81 @@ Notice the large spikes in wealth over time.
 
 Such spikes are similar to what is observed in a time series with a Kesten process.  See [Kesten Processes and Firm Dynamics](https://python.quantecon.org/kesten_processes.html) for a lecture introducing these with Python.
 
-
 ## Inequality Measures
 
 Let's look at how inequality varies with returns on financial assets
 
 The code above could be used to simulate a number of different households, but it would be relatively slow if the number of households becomes large.
 
-First, lets write a function which simulates a single time-step for a cross section of households.
+One change which will help with efficiency is to replace the check on `w >= w_hat` with the [ternary operator](https://docs.julialang.org/en/v1/manual/control-flow/#man-conditional-evaluation).
+
+The syntax is `a ? b : c` where if the expression `a` is true it returns the evaluation of expression `b`, and it returns `c` if false.
+
+To see this in practice, note the following three are equivalent.
 
 ```{code-cell} julia
-function step_wealth(w, z, params)
-    N = length(w) # panel size    
-    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = params
-    zp = a*z .+ b .+ σ_z * randn(N) # vectorized
-    y = c_y*exp.(zp) .+ exp.(μ_y .+ σ_y*randn(N))
-
-    # return set to zero if no savings, simplifies vectorization
-    R = (w .> w_hat).*(c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N)))
-    wp = y .+ s_0*R.*w # note R = 0 if not saving since w < w_hat
-    return wp, zp
-end
-```
-<!--
-Testing code
-w = rand(10)
-z = rand(10)
-step_wealth(w, z, params)
--->
-
-Using this function, we can iterate forward from a distribution of wealth and income
-
-```{code-cell} julia
-function simulate_panel(N, T, params)
-    y_0 = params.y_mean * ones(N) # start at the mean
-    z_0 = rand(params.z_stationary_dist, N)
-
-    # iterate forward from initial condition
-    w = y_0 # start at mean of income process
-    z = z_0
-    for t in 1:T
-        w, z = step_wealth(w, z, params) # steps forward, discarding results
+function f1(x)
+    val = 2.0
+    if x >= 0.0
+        val += x
+    else
+        val -= x
     end
+    return val
+end
+function f2(x)
+    val = 2.0
+    temp = (x >= 0.0) ? x : -x
+    return val + temp
+end
+f3(x) = 2.0 + ( (x >= 0.0) ? x : -x) # needs parathesis for order of operations here
+@show f1(0.8), f2(0.8), f3(0.8)
+@show f1(1.8), f2(1.8), f3(1.8);
+```
+
+Using this, lets rewrite our code to simplify the conditional and otherwise simulate multiple agents.
+
+```{code-cell} julia
+function simulate_panel(N, T, p)
+    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = p
+    w = p.y_mean * ones(N) # start at the mean of y
+    z = rand(p.z_stationary_dist, N)
+    
+    # Preallocate next period states and R intermediate
+    zp = similar(z)
+    wp = similar(w)
+    R = similar(w)
+
+    for t in 1:T
+        @turbo for i in 1:N
+            zp[i] = a*z[i] + b + σ_z * randn()
+            # Use ternary operator.  R = 0 if w < w_hat, i.e. no savings
+            R[i] = (w[i] >= w_hat) ? c_r * exp(zp[i]) + exp(μ_r + σ_r*randn()) : 0.0
+            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*randn()) + R[i]*s_0*w[i]
+        end
+        # Step forward
+        w .= wp
+        z .= zp
+    end    
     sort!(w) # sorts the wealth so we can calculate gini/lorenz        
     F, L = lorenz(w)
     return (;w, F, L, gini = gini(w))
 end
 ```
 
+Besides the ternary operator, the major difference is that this preallocating then swapping the `w, z` and `wp, zp` each period rather than savings all of the simulation paths.  This is sufficient since we will only plot statistics of the terminal distribution rather than in the transition.
+
+Finally, the `@turbo` macro uses a package to speed up the inner loop.  This is discussed in more detail below.
+
+Using this function, we can iterate forward from a distribution of wealth and income
+
 To use this function, we pass in parameters and can access the resulting wealth distribution and inequality measures.
 
 ```{code-cell} julia
 p = wealth_dynamics_model()
-res = simulate_panel(100_000, 200, p)
+N = 100_000
+T = 500
+res = simulate_panel(N, T, p)
 @show median(res.w), mean(res.w), res.gini;
 ```
 
@@ -395,16 +485,15 @@ Now we investigate how the Lorenz curves associated with the wealth distribution
 The code below simulates the wealth distribution, Lorenz curve, and gini for multiple values of $\mu_r$.
 
 ```{code-cell} julia
-N = 100_000
-T = 500
-μ_r_vals = LinRange(0.0, 0.075, 5)
-results = map(μ_r -> simulate_panel(N, T, wealth_dynamics_model(;μ_r)), μ_r_vals);
+
+μ_r_vals = LinRange(0.0, 0.075, 7)
+res = map(μ_r -> simulate_panel(N, T, wealth_dynamics_model(;μ_r)), μ_r_vals);
 ```
 
 Using these results, we can plot the Lorenz curves for each value of $\mu_r$ and compare to perfect equality.
 
 ```{code-cell} julia
-plt = plot(F, F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
+plt = plot(res[1].F, res[1].F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
 [plot!(plt, res.F, res.L, label = L"\psi^*, \mu_r = %$(round(μ_r; sigdigits=1))") 
  for (μ_r, res) in zip(μ_r_vals, results)]
 plt
@@ -424,9 +513,9 @@ Let's finish this section by investigating what happens when we change the
 volatility term $\sigma_r$ in financial returns.
 
 ```{code-cell} julia
-σ_r_vals = LinRange(0.35, 0.53, 5)
+σ_r_vals = LinRange(0.35, 0.53, 7)
 results = map(σ_r -> simulate_panel(N, T, wealth_dynamics_model(;σ_r)), σ_r_vals);
-plt = plot(F, F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
+plt = plot(res[1].F, res[1].F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
 [plot!(plt, res.F, res.L, label = L"\psi^*, \sigma_r = %$(round(σ_r; sigdigits=2))")
  for (σ_r, res) in zip(σ_r_vals, results)]
 plt
@@ -443,77 +532,133 @@ Similarly, the Gini coefficient shows that greater volatility increases inequali
 
 In this case, the divergence occurs as the $\alpha < 1$ condition begins to fail because high volatility increases mean rate of return, leading to explosive savings behavior.
 
-## In-place Functions and Performance
+### Parallelization and Vectorization
 
-When working with large vectors and matrices, a performance advantage of Julia is its ability to manage allocations and perform in-place operations.
+Note that the simulation above is written in a loop rather than vectorized in a Matlab or Python style.  This is not necessary in Julia.
 
-As always, don't prematurely optimize your code - but in cases where the datastructures are large and the code is of equivalent complexity, don't be afraid to use in-place operations.
+If you were to write the simulation with vector operations, it would be roughly the same speed as the loop version above.
 
-To demonstrate this, we will compare an inplace Lorenz calculation with the one above. 
+One advantage of loops in these cases is that it can exploit different sorts of parallelization and is amenable to compiler optimizations.
 
-The convention in Julia is to use `!` to denote a function which mutates its arguments and to put any arguments that will be modified first.
+A common approach to this is to use macros which transform the code into a form more amenable to parallelization before handing the code off to the compiler.  One of the most standard packages for this is [LoopVectorization.jl](https://github.com/JuliaSIMD/LoopVectorization.jl) - a dependency in already included in many high-performance libraries in Julia.
 
-In the following case, the `L` is pre-allocated and will be overwritten.
+Lets write a version without the macro.
 
 ```{code-cell} julia
-function lorenz!(L, v)
-   # cumulative sum but inplace: [v[1], v[1] + v[2], ... ]
-    cumsum!(L, v)    
-    L ./= L[end]  # inplace division to normalize
-    F = (1:length(v)) / length(v) # doesn't allocate since F is a range
-    return F, L # using inplace we can still return the L vector
+function simulate_panel_raw(N, T, p)
+    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = p
+    w = p.y_mean * ones(N) # start at the mean of y
+    z = rand(p.z_stationary_dist, N)
+    
+    # Preallocate next period states and R intermediate
+    zp = similar(z)
+    wp = similar(w)
+    R = similar(w)
+
+    for t in 1:T
+        for i in 1:N
+            zp[i] = a*z[i] + b + σ_z * randn()
+            # Use ternary operator.  R = 0 if w < w_hat, i.e. no savings
+            R[i] = (w[i] >= w_hat) ? c_r * exp(zp[i]) + exp(μ_r + σ_r*randn()) : 0.0
+            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*randn()) + R[i]*s_0*w[i]
+        end
+        # Step forward
+        w .= wp
+        z .= zp
+    end    
+    sort!(w) # sorts the wealth so we can calculate gini/lorenz        
+    F, L = lorenz(w)
+    return (;w, F, L, gini = gini(w))
+end
+```
+We could have used the `@inbounds` to tell the compiler to ignore bounds checking, but it makes little difference in this case.
+
+In addition, `LoopVectorization.jl` can parallelize threads - in addition to the standard SIMD/AVX - by replacing with the `@tturbo` macro.
+
+```{code-cell} julia
+function simulate_panel_tturbo(N, T, p)
+    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = p
+    w = p.y_mean * ones(N) # start at the mean of y
+    z = rand(p.z_stationary_dist, N)
+    
+    # Preallocate next period states and R intermediate
+    zp = similar(z)
+    wp = similar(w)
+    R = similar(w)
+
+    for t in 1:T
+        @tturbo for i in 1:N
+            zp[i] = a*z[i] + b + σ_z * randn()
+            # Use ternary operator.  R = 0 if w < w_hat, i.e. no savings
+            R[i] = (w[i] >= w_hat) ? c_r * exp(zp[i]) + exp(μ_r + σ_r*randn()) : 0.0
+            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*randn()) + R[i]*s_0*w[i]
+        end
+        # Step forward
+        w .= wp
+        z .= zp
+    end    
+    sort!(w) # sorts the wealth so we can calculate gini/lorenz        
+    F, L = lorenz(w)
+    return (;w, F, L, gini = gini(w))
 end
 ```
 
-```{admonition} Performance benchmarking
-For performance comparisons, always use the [BenchmarkTools.jl](https://github.com/JuliaCI/BenchmarkTools.jl).  Whenever passing in arguments that are not scalars, you typically want to [interpolate](https://juliaci.github.io/BenchmarkTools.jl/stable/manual/#Interpolating-values-into-benchmark-expressions) by prepending with the `$` (e.g., `@btime lorenz($v)` rather than `@btime lorenz(v)`) or else it may treat the value as a global variable and gives distorted performance results.
-
-For more detailed results, replace `@btime` with `@benchmark`.
-```
+We can then compare the performance of these versions.
 
 ```{code-cell} julia
-using BenchmarkTools
-n = 1_000_000
-a = 2
-u = rand(n)
-v = sort(u.^(-1/a))
-@btime lorenz($v); # performance with out-of-place
+@btime simulate_panel(N, T, $p)
+@btime simulate_panel_raw(N, T, $p)
+@show Threads.nthreads()
+@btime simulate_panel_tturbo(N, T, $p);
 ```
 
-Note the speed and allocations.  Next use the inplace version
+The performance will depend on the availability of SIMD and AVX512 on your processor and your number of threads for the `tturbo` version.  The results above are associated with the server compiling these notes, and is likely not representative.
 
-```{code-cell} julia
-L = similar(v) # preallocate of same type, size
-@btime lorenz!($L, $v);
+For example, on one of our machines:
+
+If your machine is showing that only 1 thread is being used on Jupyter, you will want to ensure more are available following [these instructions](https://stackoverflow.com/questions/71114803/how-to-start-multiple-threads-in-julia/71115199#71115199) or set the `JULIA_ENV_NUM_THREADS` environment variable.
+
+```{admonition} Caution with loop optimizations
+The `@turbo`, `@inbounds` and other macros can be useful but can lead to subtle bugs - so only use after ensuring correctness of your methods without the accelerations.  See [the warnings](https://github.com/JuliaSIMD/LoopVectorization.jl#warning) associated with the package.  In addition, by skipping bounds checking you may corrupt memory and crash Julia if there are bugs in your code - whereas otherwise it would simply report back an error to help with debugging. 
 ```
 
-Depending on your system, this should be perhaps twice as fast but have no allocations.
-
-On the other hand, if we use a smaller vector such as `n=1000` above, then the performance difference is much smaller - perhaps only 30% improvement.
-
-Furthermore, this benefit is only felt if we are reusing the same `L` in repeated calls.  If we need to allocate (e.g. a `L = similar(v)`) each time, then there is no benefit.
 <!--
-```{code-cell} julia
-n = 1000
-a = 2
-u = rand(n)
-v = sort(u.^(-1/a))
-L = similar(v) # preallocate of same type, size
-@btime lorenz($v)
-@btime lorenz!($L, $v)
-```
---> 
-
-This provides a common and cautionary lesson: for some algorithms, avoiding allocations does not have a significant difference and may not be worth the trouble.
-
-This all depends on the steps of the underlying algorithm.  In the case above, the `cumsum` is significantly more expensive than the data allocation.
-
-In other cases, such as those in large-scale difference or differential equations, in-place operations can have an enormous impact.
+# DECIDED AGAINST INCLUSION AFTER SEEING PERFORMANCE OF LOOPVECTORIZATION VERSION
 
 ### (Premature) Performance Optimizations of the Simulation
 Before asking how we can make our simulations faster, we should ask whether it is already fast enough for our needs - which it seems to be in this case for the above figures.
 
 That said, lets consider if we had a compelling need to handle much larger panels or variations on simulating for many more parameters.
+
+First, a vectorized version of our original code is
+
+```{code-cell} julia
+function step_wealth(w, z, params)
+    N = length(w) # panel size    
+    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = params
+    zp = a*z .+ b .+ σ_z * randn(N) # vectorized
+    y = c_y*exp.(zp) .+ exp.(μ_y .+ σ_y*randn(N))
+
+    # return set to zero if no savings, simplifies vectorization
+    R = (w .> w_hat).*(c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N)))
+    wp = y .+ s_0*R.*w # note R = 0 if not saving since w < w_hat
+    return wp, zp
+end
+function simulate_panel(N, T, params)
+    y_0 = params.y_mean * ones(N) # start at the mean
+    z_0 = rand(params.z_stationary_dist, N)
+
+    # iterate forward from initial condition
+    w = y_0 # start at mean of income process
+    z = z_0
+    for t in 1:T
+        w, z = step_wealth(w, z, params) # steps forward, discarding results
+    end
+    sort!(w) # sorts the wealth so we can calculate gini/lorenz        
+    F, L = lorenz(w)
+    return (;w, F, L, gini = gini(w))
+end
+```
 
 Minimizing allocations and doing calculations in-place can lead to faster code - though usually in the case of {doc}`numerical methods for linear algebra <../tools_and_techniques/numerical_linear_algebra>` and  In {doc}`iterative methods  <../tools_and_techniques/iterative_methods_sparsity>`.
 
@@ -602,3 +747,4 @@ The allocations decrease more substantially (e.g., a factor of 4) but that does 
 This is a common of with a lot of performance tweaking of code - a lot of work with very little gain.  Don't optimize code unless you can justify the risk that hours of work leading to only modest speedups.
 
 As discussed above, cases with more significant linear algebra can be much more amenable to in-place operations and lead to more significant speedups as discussed in {doc}`iterative methods  <../tools_and_techniques/iterative_methods_sparsity>` and related lectures.
+-->
