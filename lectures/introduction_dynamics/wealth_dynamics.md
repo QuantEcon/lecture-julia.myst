@@ -487,13 +487,13 @@ The code below simulates the wealth distribution, Lorenz curve, and gini for mul
 ```{code-cell} julia
 
 μ_r_vals = LinRange(0.0, 0.075, 7)
-res = map(μ_r -> simulate_panel(N, T, wealth_dynamics_model(;μ_r)), μ_r_vals);
+results = map(μ_r -> simulate_panel(N, T, wealth_dynamics_model(;μ_r)), μ_r_vals);
 ```
 
 Using these results, we can plot the Lorenz curves for each value of $\mu_r$ and compare to perfect equality.
 
 ```{code-cell} julia
-plt = plot(res[1].F, res[1].F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
+plt = plot(results[1].F, results[1].F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
 [plot!(plt, res.F, res.L, label = L"\psi^*, \mu_r = %$(round(μ_r; sigdigits=1))") 
  for (μ_r, res) in zip(μ_r_vals, results)]
 plt
@@ -515,7 +515,7 @@ volatility term $\sigma_r$ in financial returns.
 ```{code-cell} julia
 σ_r_vals = LinRange(0.35, 0.53, 7)
 results = map(σ_r -> simulate_panel(N, T, wealth_dynamics_model(;σ_r)), σ_r_vals);
-plt = plot(res[1].F, res[1].F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
+plt = plot(results[1].F, results[1].F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
 [plot!(plt, res.F, res.L, label = L"\psi^*, \sigma_r = %$(round(σ_r; sigdigits=2))")
  for (σ_r, res) in zip(σ_r_vals, results)]
 plt
@@ -616,7 +616,7 @@ The performance will depend on the availability of SIMD and AVX512 on your proce
 
 For example, on one of our machines:
 
-If your machine is showing that only 1 thread is being used on Jupyter, you will want to ensure more are available following [these instructions](https://stackoverflow.com/questions/71114803/how-to-start-multiple-threads-in-julia/71115199#71115199) or set the `JULIA_ENV_NUM_THREADS` environment variable.
+If your machine is showing that only 1 thread is being used on Jupyter, you will want to ensure more are available following [these instructions](https://stackoverflow.com/questions/71114803/how-to-start-multiple-threads-in-julia/71115199#71115199) or set the `JULIA_NUM_THREADS` environment variable.
 
 ```{admonition} Caution with loop optimizations
 The `@turbo`, `@inbounds` and other macros can be useful but can lead to subtle bugs - so only use after ensuring correctness of your methods without the accelerations.  See [the warnings](https://github.com/JuliaSIMD/LoopVectorization.jl#warning) associated with the package.  In addition, by skipping bounds checking you may corrupt memory and crash Julia if there are bugs in your code - whereas otherwise it would simply report back an error to help with debugging. 
