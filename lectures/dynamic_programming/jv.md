@@ -218,7 +218,7 @@ function T!(jv,
                            new_V::AbstractVector)
 
     # simplify notation
-    @unpack G, π_func, F, β, E, ϵ = jv
+    (;G, π_func, F, β, E, ϵ) = jv
 
     # prepare interpoland of value function
     Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
@@ -259,7 +259,7 @@ function T!(jv,
                            out::Tuple{AbstractVector, AbstractVector})
 
     # simplify notation
-    @unpack G, π_func, F, β, E, ϵ = jv
+    (;G, π_func, F, β, E, ϵ) = jv
 
     # prepare interpoland of value function
     Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
@@ -476,7 +476,7 @@ Here's code to produce the 45 degree diagram
 ```{code-cell} julia
 wp = JvWorker(grid_size=25)
 # simplify notation
-@unpack G, π_func, F = wp
+(;G, π_func, F) = wp
 
 v_init = collect(wp.x_grid) * 0.5
 f2(x) = T(wp, x)

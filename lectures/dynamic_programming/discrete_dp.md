@@ -435,7 +435,7 @@ using BenchmarkTools, Plots, QuantEcon, Parameters
 SimpleOG = @with_kw (B = 10, M = 5, α = 0.5, β = 0.9)
 
 function transition_matrices(g)
-    @unpack B, M, α, β = g
+    (;B, M, α, β) = g
     u(c) = c^α
     n = B + M + 1
     m = M + 1
@@ -468,7 +468,7 @@ In case the preceding code was too concise, we can see a more verbose form
 tags: [output_scroll]
 ---
 function verbose_matrices(g)
-    @unpack B, M, α, β = g
+    (;B, M, α, β) = g
     u(c) = c^α
 
     #Matrix dimensions. The +1 is due to the 0 state.

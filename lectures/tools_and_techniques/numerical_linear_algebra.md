@@ -1012,7 +1012,7 @@ To create a contrived algorithm, see the following code:
 ```{code-cell} julia
 # By convention, name has ! to denote mutating, and mutate first argument
 function calculate_results!(results, val, params)
-    @unpack N, b, C = params
+    (;N, b, C) = params
     B = rand(N,N)  # Contrived.  Assume complicated
     lmul!(val, B)  # val * B -> B inplace, no allocation
     mul!(results.A, B, C) #   B * C -> results.A
@@ -1021,7 +1021,7 @@ end
 
 # Some iterative algorithm
 function iterate_values(vals, params)    
-    @unpack N = params
+    (;N) = params
     
     # preallocate
     results = MyResults(N)

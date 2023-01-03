@@ -1069,7 +1069,7 @@ Next, implement the in-place matrix-free product
 
 ```{code-cell} julia
 function Q_mul!(dv, v, p)
-    @unpack θ, ζ, N, M, shape, e_m = p
+    (;θ, ζ, N, M, shape, e_m) = p
     v = reshape(v, shape)  # now can access v, dv as M-dim arrays
     dv = reshape(dv, shape)
 
@@ -1148,7 +1148,7 @@ Putting everything together to solving much larger systems with GMRES as our lin
 
 ```{code-cell} julia
 function solve_bellman(p; iv = zeros(p.N^p.M))
-    @unpack ρ, N, M = p
+    (;ρ, N, M) = p
     Q = LinearMap((df, f) -> Q_mul!(df, f, p), N^M, ismutating = true)
     A = ρ * I - Q
     r = r_vec(p)
@@ -1192,7 +1192,7 @@ $$
 
 ```{code-cell} julia
 function Q_T_mul!(dψ, ψ, p)
-    @unpack θ, ζ, N, M, shape, e_m = p
+    (;θ, ζ, N, M, shape, e_m) = p
     ψ = reshape(ψ, shape)
     dψ = reshape(dψ, shape)
 
@@ -1295,7 +1295,7 @@ For this, we can set up a `MatrixFreeOperator` for our `Q_T_mul!` function (equi
 using OrdinaryDiffEq, DiffEqOperators
 
 function solve_transition_dynamics(p, t)
-    @unpack N, M = p
+    (;N, M) = p
 
     ψ_0 = [1.0; fill(0.0, N^M - 1)]
     O! = MatrixFreeOperator((dψ, ψ, p, t) -> Q_T_mul!(dψ, ψ, p), (p, 0.0),

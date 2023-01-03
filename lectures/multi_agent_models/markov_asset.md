@@ -564,7 +564,7 @@ end
 # price/dividend ratio of the Lucas tree
 function tree_price(ap; γ = ap.γ)
     # Simplify names, set up matrices
-    @unpack β, mc = ap
+    (;β, mc) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, ap.n)
     J = P .* ap.g.(y).^(1 - γ)
@@ -692,7 +692,7 @@ The above is implemented in the function consol_price
 ```{code-cell} julia
 function consol_price(ap, ζ)
     # Simplify names, set up matrices
-    @unpack β, γ, mc, g, n = ap
+    (;β, γ, mc, g, n) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, n)
     M = P .* g.(y).^(-γ)
@@ -780,7 +780,7 @@ We can find the solution with the following function call_option
 function call_option(ap, ζ, p_s, ϵ = 1e-7)
 
     # Simplify names, set up matrices
-    @unpack β, γ, mc, g, n = ap
+    (;β, γ, mc, g, n) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, n)
     M = P .* g.(y).^(-γ)
@@ -1018,7 +1018,7 @@ Here's a suitable function:
 function finite_horizon_call_option(ap, ζ, p_s, k)
 
     # Simplify names, set up matrices
-    @unpack β, γ, mc = ap
+    (;β, γ, mc) = ap
     P, y = mc.p, mc.state_values
     y = y'
     M = P .* ap.g.(y).^(- γ)

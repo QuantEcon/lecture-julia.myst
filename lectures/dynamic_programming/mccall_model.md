@@ -369,7 +369,7 @@ between successive iterates is below tol
 ```{code-cell} julia
 function compute_reservation_wage_direct(params; v_iv = collect(w ./(1-β)), max_iter = 500,
                                          tol = 1e-6)
-    @unpack c, β, w = params
+    (;c, β, w) = params
 
     # create a closure for the T operator
     T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
@@ -408,7 +408,7 @@ In this case, we can use the `fixedpoint` algorithm discussed in {doc}`our Julia
 ```{code-cell} julia
 function compute_reservation_wage(params; v_iv = collect(w ./(1-β)), iterations = 500,
                                   ftol = 1e-6, m = 6)
-    @unpack c, β, w = params
+    (;c, β, w) = params
     T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
 
     v_star = fixedpoint(T, v_iv, iterations = iterations, ftol = ftol,

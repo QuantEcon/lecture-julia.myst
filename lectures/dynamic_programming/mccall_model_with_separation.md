@@ -237,8 +237,7 @@ using Distributions, LinearAlgebra, Expectations, Parameters, NLsolve, Plots
 
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
                             iter = 2_000)
-    # α, β, σ, c, γ, w = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ, mcm.w
-    @unpack α, β, σ, c, γ, w, dist, u = mcm
+    (; α, β, σ, c, γ, w, dist, u) = mcm
 
     # parameter validation
     @assert c > 0.0
@@ -303,7 +302,7 @@ McCallModel = @with_kw (α = 0.2,
 
 
 mcm = McCallModel()
-@unpack V, U = solve_mccall_model(mcm)
+(; V, U) = solve_mccall_model(mcm)
 U_vec = fill(U, length(mcm.w))
 
 plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = [L"V" L"U"])

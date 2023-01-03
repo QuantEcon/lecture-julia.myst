@@ -513,7 +513,7 @@ end
 ```{code-cell} julia
 function verify_true_policy(m, shocks, c_star)
     # compute (Kc_star)
-    @unpack grid, β, ∂u∂c, f, f′ = m
+    (;grid, β, ∂u∂c, f, f′) = m
     c_star_new = K(c_star, grid, β, ∂u∂c, f, f′, shocks)
 
     # plot c_star and Kc_star
@@ -549,7 +549,7 @@ The initial condition we'll use is the one that eats the whole pie: $c(y) = y$
 
 ```{code-cell} julia
 function check_convergence(m, shocks, c_star, g_init; n_iter = 15)
-    @unpack grid, β, ∂u∂c, f, f′ = m
+    (;grid, β, ∂u∂c, f, f′) = m
     g = g_init;
     plot(m.grid, g, lw = 2, alpha = 0.6, label = L"intial condition $c(y) = y$")
     for i in 1:n_iter
@@ -595,7 +595,7 @@ function iterate_updating(func, arg_init; sim_length = 20)
 end
 
 function compare_error(m, shocks, g_init, w_init; sim_length = 20)
-    @unpack grid, β, u, ∂u∂c, f, f′ = m
+    (;grid, β, u, ∂u∂c, f, f′) = m
     g, w = g_init, w_init
 
     # two functions for simplification
@@ -742,7 +742,7 @@ m_ex = Model(γ = 1.5);
 ```{code-cell} julia
 function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid); sim_length = 20)
 
-    @unpack grid, β, u, ∂u∂c, f, f′ = m
+    (;grid, β, u, ∂u∂c, f, f′) = m
     # initial policy and value
     g, w = g_init, w_init
     # iteration
@@ -773,12 +773,12 @@ It assumes that you've just run the code from the previous exercise
 
 ```{code-cell} julia
 function bellman(m, shocks)
-    @unpack grid, β, u, ∂u∂c, f, f′ = m
+    (;grid, β, u, ∂u∂c, f, f′) = m
     bellman_single_arg(w) = T(w, grid, β, u, f, shocks)
     iterate_updating(bellman_single_arg, u.(grid), sim_length = 20)
 end
 function coleman(m, shocks)
-    @unpack grid, β, ∂u∂c, f, f′ = m
+    (;grid, β, ∂u∂c, f, f′) = m
     coleman_single_arg(g) = K(g, grid, β, ∂u∂c, f, f′, shocks)
     iterate_updating(coleman_single_arg, grid, sim_length = 20)
 end
