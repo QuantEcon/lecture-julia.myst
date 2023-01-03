@@ -63,7 +63,8 @@ We do this to more easily explore the implications of different specifications o
 At the same time, all of the techniques discussed here can be plugged into models that use optimization to obtain savings rules.
 
 ```{code-cell} julia
-using Distributions, Plots, LaTeXStrings, LinearAlgebra, BenchmarkTools, LoopVectorization
+using Distributions, Plots, LaTeXStrings, LinearAlgebra, BenchmarkTools
+using LoopVectorization
 ```
 
 ## Lorenz Curves and the Gini Coefficient
@@ -351,17 +352,14 @@ function wealth_dynamics_model(; # all named arguments
     z_stationary_dist = Normal(z_mean, sqrt(z_var))
 
     @assert α <= 1 # check stability condition that wealth does not diverge
-    return (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z, z_mean, z_var,
-             z_stationary_dist, exp_z_mean, R_mean, y_mean, α)
-end            
-
-# example of model with all default values
-wealth_dynamics_model()    
+    return (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z, z_mean,
+             z_var,z_stationary_dist, exp_z_mean, R_mean, y_mean, α)
+end
 ```
 
 ## Simulating Wealth Dynamics
 
-To implement this process, we will write a funciton which simulates an entire path for an agent or the wealth distribution.
+To implement this process, we will write a function which simulates an entire path for an agent or the wealth distribution.
 
 The `p` argument is a named-tuple or struct consist with the `wealth_dynamics_model` function above.
 
@@ -429,7 +427,7 @@ function f2(x)
     temp = (x >= 0.0) ? x : -x
     return val + temp
 end
-f3(x) = 2.0 + ( (x >= 0.0) ? x : -x) # needs parenthesis for order of operations
+f3(x) = 2.0 + ( (x >= 0.0) ? x : -x)
 @show f1(0.8), f2(0.8), f3(0.8)
 @show f1(1.8), f2(1.8), f3(1.8);
 ```
@@ -452,9 +450,9 @@ function simulate_panel(N, T, p)
         R_shock = randn(N)
         w_shock = randn(N)
         @turbo for i in 1:N
-            zp[i] = a*z[i] + b + σ_z * z_shock[i]
-            R[i] = (w[i] >= w_hat) ? c_r * exp(zp[i]) + exp(μ_r + σ_r*R_shock[i]) : 0.0
-            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*w_shock[i]) + R[i] * s_0*w[i]            
+            zp[i] = a*z[i] + b + σ_z*z_shock[i]
+            R[i] = (w[i] >= w_hat) ? c_r*exp(zp[i]) + exp(μ_r + σ_r*R_shock[i]) : 0.0
+            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*w_shock[i]) + R[i]*s_0*w[i]            
         end
         # Step forward
         w .= wp
@@ -470,10 +468,8 @@ We have used a look with a few modifications to help with efficiency.  To summar
   - replaced the `if` with the ternary interface
   - preallocated a `zp, wp, R` to store intermediate values for the calculations.
   - swapped the `w, z` and `wp, zp` to step forward each period rather than savings all of the simulation paths.  This is sufficient since we will only plot statistics of the terminal distribution rather than in the transition.
-  - replaced the `randn()` at each simulation step with a draw of random values for all agents, i.e. `randn(N)`.  This will make parallelization possible.
   - annotated with the `@turbo` macro  uses a package to speed up the inner loop.  This is discussed in more detail below.
-
-Using this function, we can iterate forward from a distribution of wealth and income
+  - replaced the `randn()` at each simulation step with a draw of random values for all agents, i.e. `z_shock, R_shock, w_shock`.  This will make parallelization with `@turbo` possible.
 
 To use this function, we pass in parameters and can access the resulting wealth distribution and inequality measures.
 
@@ -482,7 +478,8 @@ p = wealth_dynamics_model()
 N = 100_000
 T = 500
 res = simulate_panel(N, T, p)
-@show median(res.w), mean(res.w), res.gini;
+@show median(res.w)
+@show res.gini;
 ```
 
 Now we investigate how the Lorenz curves associated with the wealth distribution change as return to savings varies.
@@ -491,15 +488,18 @@ The code below simulates the wealth distribution, Lorenz curve, and gini for mul
 
 ```{code-cell} julia
 
-μ_r_vals = LinRange(0.0, 0.075, 7)
-results = map(μ_r -> simulate_panel(N, T, wealth_dynamics_model(;μ_r)), μ_r_vals);
+μ_r_vals = LinRange(0.0, 0.075, 5)
+results = map(μ_r -> simulate_panel(N, T, wealth_dynamics_model(;μ_r)),
+              μ_r_vals);
 ```
 
 Using these results, we can plot the Lorenz curves for each value of $\mu_r$ and compare to perfect equality.
 
 ```{code-cell} julia
-plt = plot(results[1].F, results[1].F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
-[plot!(plt, res.F, res.L, label = L"\psi^*, \mu_r = %$(round(μ_r; sigdigits=1))") 
+plt = plot(results[1].F, results[1].F, label = "equality", legend = :topleft,
+           ylabel="Lorenz Curve")
+[plot!(plt, res.F, res.L,
+       label = L"\psi^*, \mu_r = %$(round(μ_r;sigdigits=1))") 
  for (μ_r, res) in zip(μ_r_vals, results)]
 plt
 ```
@@ -518,10 +518,13 @@ Let's finish this section by investigating what happens when we change the
 volatility term $\sigma_r$ in financial returns.
 
 ```{code-cell} julia
-σ_r_vals = LinRange(0.35, 0.53, 7)
-results = map(σ_r -> simulate_panel(N, T, wealth_dynamics_model(;σ_r)), σ_r_vals);
-plt = plot(results[1].F, results[1].F, label = "equality", legend = :topleft, ylabel="Lorenz Curve")
-[plot!(plt, res.F, res.L, label = L"\psi^*, \sigma_r = %$(round(σ_r; sigdigits=2))")
+σ_r_vals = LinRange(0.35, 0.53, 5)
+results = map(σ_r -> simulate_panel(N, T, wealth_dynamics_model(;σ_r)),
+              σ_r_vals);
+plt = plot(results[1].F, results[1].F, label = "equality", legend = :topleft,
+           ylabel="Lorenz Curve")
+[plot!(plt, res.F, res.L,
+         label = L"\psi^*, \sigma_r = %$(round(σ_r; sigdigits=2))")
  for (σ_r, res) in zip(σ_r_vals, results)]
 plt
 ```
@@ -570,7 +573,7 @@ function simulate_panel_no_turbo(N, T, p)
 
     for t in 1:T
         @inbounds for i in 1:N
-            zp[i] = a*z[i] + b + σ_z * randn() # no need to preallocate the randn(N) if avoiding @turbo
+            zp[i] = a*z[i] + b + σ_z * randn()
             R[i] = (w[i] >= w_hat) ? c_r * exp(zp[i]) + exp(μ_r + σ_r*randn()) : 0.0
             wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*randn()) + R[i] * s_0*w[i]            
         end
@@ -607,7 +610,7 @@ function simulate_panel_vectorized(N, T, p)
     w = y_0 # start at mean of income process
     z = z_0
     for t in 1:T
-        w, z = step_wealth_vectorized(w, z, p) # steps forward, discarding results
+        w, z = step_wealth_vectorized(w, z, p) # steps forward
     end
     sort!(w) # sorts the wealth so we can calculate gini/lorenz        
     F, L = lorenz(w)
@@ -628,12 +631,12 @@ T = 200
 The results displayed above are done with the server compiling these notes, and is likely not representative.  For example, on one of our machines the results are
     
 ```{code-block} none
-192.621 ms (1218 allocations: 463.90 MiB)
-592.451 ms (18 allocations: 6.10 MiB)
-589.632 ms (6412 allocations: 2.39 GiB)
+282.244 ms (1218 allocations: 463.90 MiB)
+576.120 ms (18 allocations: 6.10 MiB)
+836.909 ms (6412 allocations: 2.39 GiB)
 ```
 
-The performance will depend on the availability of SIMD and AVX512 on your processor and your number of threads for the `tturbo` version.   `LoopVectorization.jl` can also parallelize over threads and multiple processes by replacing with the `@tturbo` macro, but this does not seem to significantly improve performance in this case.
+The performance will depend on the availability of [SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) and [AVX512](https://en.wikipedia.org/wiki/AVX-512) on your processor.   `LoopVectorization.jl` can also parallelize over threads and multiple processes by replacing with the `@tturbo` macro, but this does not seem to significantly improve performance in this case.
 <!--
 # DECIDED AGAINST INCLUSION AFTER SEEING PERFORMANCE OF LOOPVECTORIZATION VERSION
 
