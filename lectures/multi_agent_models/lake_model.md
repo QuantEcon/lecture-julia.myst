@@ -216,7 +216,7 @@ using Test
 LakeModel = @with_kw (λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
 
 function transition_matrices(lm)
-    @unpack λ, α, b, d = lm
+    (;λ, α, b, d) = lm
     g = b - d
     A = [(1 - λ) * (1 - d) + b      (1 - d) * α + b
         (1 - d) * λ                 (1 - d) * (1 - α)]
@@ -225,14 +225,14 @@ function transition_matrices(lm)
 end
 
 function rate_steady_state(lm)
-    @unpack Â = transition_matrices(lm)
+    (;Â) = transition_matrices(lm)
     sol = fixedpoint(x -> Â * x, fill(0.5, 2))
     converged(sol) || error("Failed to converge in $(result.iterations) iterations")
     return sol.zero
 end
 
 function simulate_stock_path(lm, X0, T)
-    @unpack A = transition_matrices(lm)
+    (;A) = transition_matrices(lm)
     X_path = zeros(eltype(X0), 2, T)
     X = copy(X0)
     for t in 1:T
@@ -243,7 +243,7 @@ function simulate_stock_path(lm, X0, T)
 end
 
 function simulate_rate_path(lm, x0, T)
-    @unpack Â = transition_matrices(lm)
+    (;Â) = transition_matrices(lm)
     x_path = zeros(eltype(x0), 2, T)
     x = copy(x0)
     for t in 1:T
@@ -487,7 +487,7 @@ using QuantEcon, Roots, Random
 lm = LakeModel(d = 0, b = 0)
 T = 5000                        # Simulation length
 
-@unpack α, λ = lm
+(;α, λ) = lm
 P = [(1 - λ)     λ
      α      (1 - α)]
 ```
@@ -632,7 +632,7 @@ We will make use of (with some tweaks) the code we wrote in the {doc}`McCall mod
 ```{code-cell} julia
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
                             iter = 2_000)
-    @unpack α, β, σ, c, γ, w, E, u = mcm
+    (;α, β, σ, c, γ, w, E, u) = mcm
 
     # necessary objects
     u_w = u.(w, σ)
@@ -716,7 +716,7 @@ function compute_optimal_quantities(c, τ)
                       w = w_vec .- τ, # post-tax wages
                       E = E) # expectation operator
 
-    @unpack V, U, w̄ = solve_mccall_model(mcm)
+    (;V, U, w̄) = solve_mccall_model(mcm)
     indicator = wage -> wage > w̄
     λ = γ * E * indicator.(w_vec .- τ)
 

@@ -369,7 +369,7 @@ ConsumptionProblem = @with_kw (β = 0.96,
 
 function consumption_complete(cp)
 
-    @unpack β, P, y, b0 = cp   # Unpack
+    (;β, P, y, b0) = cp
 
     y1, y2 = y                              # extract income levels
     b1 = b0                                 # b1 is known to be equal to b0
@@ -386,7 +386,7 @@ end
 
 function consumption_incomplete(cp; N_simul = 150)
 
-    @unpack β, P, y, b0 = cp  # unpack
+    (;β, P, y, b0) = cp
 
     # for the simulation use the MarkovChain type
     mc = MarkovChain(P)

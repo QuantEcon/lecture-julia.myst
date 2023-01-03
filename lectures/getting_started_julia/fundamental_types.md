@@ -952,7 +952,7 @@ As well as **named tuples**, which extend tuples with names for each argument.
 ```{code-cell} julia
 t = (val1 = 1.0, val2 = "test")
 t.val1      # access by index
-# a, b = t  # bad style, better to unpack by name with @unpack
+# a, b = t  # bad style, better to unpack by name
 println("val1 = $(t.val1) and val1 = $(t.val1)") # access by name
 ```
 
@@ -975,13 +975,11 @@ parameters = (α = 0.1, β = 0.2)
 f(parameters)
 ```
 
-This functionality is aided by the `Parameters.jl` package and the `@unpack` macro
+This functionality is aided by the unpacking notation
 
 ```{code-cell} julia
-using Parameters
-
 function f(parameters)
-    @unpack α, β = parameters  # good style, less sensitive to errors
+    (;α, β) = parameters  # good style, less sensitive to errors
     return α + β
 end
 
@@ -989,7 +987,7 @@ parameters = (α = 0.1, β = 0.2)
 f(parameters)
 ```
 
-In order to manage default values, use the `@with_kw` macro
+In order to manage default values, use the `@with_kw` from the `Parameters.jl` package
 
 ```{code-cell} julia
 using Parameters

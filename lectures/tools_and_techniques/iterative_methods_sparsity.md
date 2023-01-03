@@ -378,25 +378,11 @@ plot!(x_display, y_display, w = 3, label = L"g(x)")
 While the approximation is better near `x=0`, the oscillations near the boundaries have become worse.  Adding on extra polynomial terms will not
 globally increase the quality of the approximation.
 
-#### Using an Orthogonal Polynomial Basis
-
+```{admonition} Using an Orthogonal Polynomial Basis
 We can minimize the numerical problems of an ill-conditioned basis matrix by choosing a different basis for the polynomials.
 
-For example, [Chebyshev polynomials](https://en.wikipedia.org/wiki/Chebyshev_polynomials) form an orthonormal basis under an appropriate inner product, and we can form precise high-order approximations, with very little numerical error
-
-```{code-cell} julia
-using ApproxFun
-N = 10000
-S = Chebyshev(-1.0..1.0)  # form Chebyshev basis
-x = points(S, N)  # chooses Chebyshev nodes
-y = g.(x)
-g_approx = Fun(S,ApproxFun.transform(S,y))  # transform fits the polynomial
-@show norm(g_approx.(x) - g.(x), Inf)
-plot(x_display, g_approx.(x_display), label = L"P_{10000}(x)")
-plot!(x_display, g.(x_display), w = 3, label = L"g(x)")
+For example, [Chebyshev polynomials](https://en.wikipedia.org/wiki/Chebyshev_polynomials) form an orthonormal basis under an appropriate inner product, and we can form precise high-order approximations, with very little numerical error.  Besides the use of a different polynomial basis, we are approximating at different nodes (i.e., [Chebyshev nodes](https://en.wikipedia.org/wiki/Chebyshev_nodes)).  Interpolation with Chebyshev polynomials at the Chebyshev nodes ends up minimizing (but not eliminating) Runge's Phenomenon.
 ```
-
-Besides the use of a different polynomial basis, we are approximating at different nodes (i.e., [Chebyshev nodes](https://en.wikipedia.org/wiki/Chebyshev_nodes)).  Interpolation with Chebyshev polynomials at the Chebyshev nodes ends up minimizing (but not eliminating) Runge's Phenomenon.
 
 #### Lessons for Approximation and Interpolation
 
@@ -1083,7 +1069,7 @@ Next, implement the in-place matrix-free product
 
 ```{code-cell} julia
 function Q_mul!(dv, v, p)
-    @unpack θ, ζ, N, M, shape, e_m = p
+    (;θ, ζ, N, M, shape, e_m) = p
     v = reshape(v, shape)  # now can access v, dv as M-dim arrays
     dv = reshape(dv, shape)
 
@@ -1162,7 +1148,7 @@ Putting everything together to solving much larger systems with GMRES as our lin
 
 ```{code-cell} julia
 function solve_bellman(p; iv = zeros(p.N^p.M))
-    @unpack ρ, N, M = p
+    (;ρ, N, M) = p
     Q = LinearMap((df, f) -> Q_mul!(df, f, p), N^M, ismutating = true)
     A = ρ * I - Q
     r = r_vec(p)
@@ -1206,7 +1192,7 @@ $$
 
 ```{code-cell} julia
 function Q_T_mul!(dψ, ψ, p)
-    @unpack θ, ζ, N, M, shape, e_m = p
+    (;θ, ζ, N, M, shape, e_m) = p
     ψ = reshape(ψ, shape)
     dψ = reshape(dψ, shape)
 
@@ -1309,7 +1295,7 @@ For this, we can set up a `MatrixFreeOperator` for our `Q_T_mul!` function (equi
 using OrdinaryDiffEq, DiffEqOperators
 
 function solve_transition_dynamics(p, t)
-    @unpack N, M = p
+    (;N, M) = p
 
     ψ_0 = [1.0; fill(0.0, N^M - 1)]
     O! = MatrixFreeOperator((dψ, ψ, p, t) -> Q_T_mul!(dψ, ψ, p), (p, 0.0),

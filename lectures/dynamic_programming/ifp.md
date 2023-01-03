@@ -403,7 +403,7 @@ end
 function T!(cp, V, out; ret_policy = false)
 
     # unpack input, set up arrays
-    @unpack R, Π, β, b, asset_grid, z_vals = cp
+    (;R, Π, β, b, asset_grid, z_vals) = cp
     z_idx = 1:length(z_vals)
 
     # value function when the shock index is z_i
@@ -444,7 +444,7 @@ get_greedy(cp, V) =
 
 function K!(cp, c, out)
     # simplify names, set up arrays
-    @unpack R, Π, β, b, asset_grid, z_vals = cp
+    (;R, Π, β, b, asset_grid, z_vals) = cp
     z_idx = 1:length(z_vals)
     gam = R * β
 
@@ -474,7 +474,7 @@ K(cp, c) = K!(cp, c, similar(c))
 
 function initialize(cp)
     # simplify names, set up arrays
-    @unpack R, β, b, asset_grid, z_vals = cp
+    (;R, β, b, asset_grid, z_vals) = cp
     shape = length(asset_grid), length(z_vals)
     V, c = zeros(shape...), zeros(shape...)
 
@@ -743,7 +743,7 @@ end
 
 ```{code-cell} julia
 function compute_asset_series(cp, T = 500_000; verbose = false)
-    @unpack Π, z_vals, R = cp  # simplify names
+    (;Π, z_vals, R) = cp  # simplify names
     z_idx = 1:length(z_vals)
     v_init, c_init = initialize(cp)
     c = compute_fixed_point(x -> K(cp, x), c_init,

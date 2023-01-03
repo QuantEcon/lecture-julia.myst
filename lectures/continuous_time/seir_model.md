@@ -290,7 +290,7 @@ First, construct our $F$ from {eq}`dfcv`
 ```{code-cell} julia
 function F(x, p, t)
     s, e, i, r, R₀, c, d = x
-    @unpack σ, γ, R̄₀, η, δ = p
+    (;σ, γ, R̄₀, η, δ) = p
 
     return [-γ*R₀*s*i;        # ds/dt
             γ*R₀*s*i -  σ*e;  # de/dt

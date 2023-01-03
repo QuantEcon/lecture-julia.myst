@@ -488,7 +488,6 @@ remedied with the `@kwdef` macro from `Base`.
 
 ```{code-cell} julia
 using Base: @kwdef
-using Parameters
 
 @kwdef struct Foo5
     a::Float64 = 2.0     # adds default value
@@ -503,7 +502,7 @@ foo2 = Foo5(c = [1.0, 2.0, 3.0], b = 2)  # rearrange order, uses default values
 @show foo2
 
 function f(x)
-    @unpack a, b, c = x     # can use `@unpack` on any struct
+    (;a, b, c) = x # unpacks any struct or named tuple
     return a + b + sum(c)
 end
 
