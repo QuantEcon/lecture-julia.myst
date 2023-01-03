@@ -429,7 +429,7 @@ function f2(x)
     temp = (x >= 0.0) ? x : -x
     return val + temp
 end
-f3(x) = 2.0 + ( (x >= 0.0) ? x : -x) # needs parathesis for order of operations here
+f3(x) = 2.0 + ( (x >= 0.0) ? x : -x) # needs parenthesis for order of operations
 @show f1(0.8), f2(0.8), f3(0.8)
 @show f1(1.8), f2(1.8), f3(1.8);
 ```
@@ -448,11 +448,13 @@ function simulate_panel(N, T, p)
     R = similar(w)
 
     for t in 1:T
+        z_shock = randn(N)
+        R_shock = randn(N)
+        w_shock = randn(N)
         @turbo for i in 1:N
-            zp[i] = a*z[i] + b + σ_z * randn()
-            # Use ternary operator.  R = 0 if w < w_hat, i.e. no savings
-            R[i] = (w[i] >= w_hat) ? c_r * exp(zp[i]) + exp(μ_r + σ_r*randn()) : 0.0
-            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*randn()) + R[i]*s_0*w[i]
+            zp[i] = a*z[i] + b + σ_z * z_shock[i]
+            R[i] = (w[i] >= w_hat) ? c_r * exp(zp[i]) + exp(μ_r + σ_r*R_shock[i]) : 0.0
+            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*w_shock[i]) + R[i] * s_0*w[i]            
         end
         # Step forward
         w .= wp
@@ -464,9 +466,12 @@ function simulate_panel(N, T, p)
 end
 ```
 
-Besides the ternary operator, the major difference is that this preallocating then swapping the `w, z` and `wp, zp` each period rather than savings all of the simulation paths.  This is sufficient since we will only plot statistics of the terminal distribution rather than in the transition.
-
-Finally, the `@turbo` macro uses a package to speed up the inner loop.  This is discussed in more detail below.
+We have used a look with a few modifications to help with efficiency.  To summarize, we have
+  - replaced the `if` with the ternary interface
+  - preallocated a `zp, wp, R` to store intermediate values for the calculations.
+  - swapped the `w, z` and `wp, zp` to step forward each period rather than savings all of the simulation paths.  This is sufficient since we will only plot statistics of the terminal distribution rather than in the transition.
+  - replaced the `randn()` at each simulation step with a draw of random values for all agents, i.e. `randn(N)`.  This will make parallelization possible.
+  - annotated with the `@turbo` macro  uses a package to speed up the inner loop.  This is discussed in more detail below.
 
 Using this function, we can iterate forward from a distribution of wealth and income
 
@@ -534,18 +539,26 @@ In this case, the divergence occurs as the $\alpha < 1$ condition begins to fail
 
 ### Parallelization and Vectorization
 
-Note that the simulation above is written in a loop rather than vectorized in a Matlab or Python style.  This is not necessary in Julia.
-
-If you were to write the simulation with vector operations, it would be roughly the same speed as the loop version above.
+Note that the simulation above is written in a loop rather than vectorized in a Matlab or Python style.  Loops are perfectly fine, and often have higher-performance, in Julia and other compiled languages.
 
 One advantage of loops in these cases is that it can exploit different sorts of parallelization and is amenable to compiler optimizations.
 
 A common approach to this is to use macros which transform the code into a form more amenable to parallelization before handing the code off to the compiler.  One of the most standard packages for this is [LoopVectorization.jl](https://github.com/JuliaSIMD/LoopVectorization.jl) - a dependency in already included in many high-performance libraries in Julia.
 
-Lets write a version without the macro.
+
+Note that in the above version with `@turbo` if we instead of using `randn(N)` to preallocate the shocks before the loop, we left in the `randn()`, the code gives the wrong answer.  The details are subtle, but in all likelihood it is because the macro assumes all functions are pure (i.e., that `randn()` would return the same value within the loop and can then be cached and reused).
+
+
+This is part of a broader caution of using fancy macros to speed up code.
+
+```{admonition} Caution with loop optimizations
+The `@turbo`, `@inbounds` and other macros can be useful but can lead to subtle bugs - so only use after ensuring correctness of your methods without the accelerations.  See [the warnings](https://github.com/JuliaSIMD/LoopVectorization.jl#warning) associated with the package.  In addition, by skipping bounds checking you may corrupt memory and crash Julia if there are bugs in your code - whereas otherwise it would simply report back an error to help with debugging. 
+```
+
+Lets write a version without the macro.  In that case, we do not need to allocate the entire sequences of shocks beforehand
 
 ```{code-cell} julia
-function simulate_panel_raw(N, T, p)
+function simulate_panel_no_turbo(N, T, p)
     (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = p
     w = p.y_mean * ones(N) # start at the mean of y
     z = rand(p.z_stationary_dist, N)
@@ -556,11 +569,10 @@ function simulate_panel_raw(N, T, p)
     R = similar(w)
 
     for t in 1:T
-        for i in 1:N
-            zp[i] = a*z[i] + b + σ_z * randn()
-            # Use ternary operator.  R = 0 if w < w_hat, i.e. no savings
+        @inbounds for i in 1:N
+            zp[i] = a*z[i] + b + σ_z * randn() # no need to preallocate the randn(N) if avoiding @turbo
             R[i] = (w[i] >= w_hat) ? c_r * exp(zp[i]) + exp(μ_r + σ_r*randn()) : 0.0
-            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*randn()) + R[i]*s_0*w[i]
+            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*randn()) + R[i] * s_0*w[i]            
         end
         # Step forward
         w .= wp
@@ -571,32 +583,32 @@ function simulate_panel_raw(N, T, p)
     return (;w, F, L, gini = gini(w))
 end
 ```
-We could have used the `@inbounds` to tell the compiler to ignore bounds checking, but it makes little difference in this case.
+The `@inbounds` macro ignore bounds checking to gain a few percent increase in speed but is not essential otherwise.
 
-In addition, `LoopVectorization.jl` can parallelize threads - in addition to the standard SIMD/AVX - by replacing with the `@tturbo` macro.
-
-```{code-cell} julia
-function simulate_panel_tturbo(N, T, p)
-    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = p
-    w = p.y_mean * ones(N) # start at the mean of y
-    z = rand(p.z_stationary_dist, N)
+Finally, to see the comparison to a vectorized approach in the style of matlab or numpy,
     
-    # Preallocate next period states and R intermediate
-    zp = similar(z)
-    wp = similar(w)
-    R = similar(w)
+```{code-cell} julia
+function step_wealth_vectorized(w, z, p)
+    N = length(w) # panel size    
+    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = p
+    zp = a*z .+ b .+ σ_z * randn(N) # vectorized
+    y = c_y*exp.(zp) .+ exp.(μ_y .+ σ_y*randn(N))
 
+    # return set to zero if no savings, simplifies vectorization
+    R = (w .> w_hat).*(c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N)))
+    wp = y .+ s_0*R.*w # note R = 0 if not saving since w < w_hat
+    return wp, zp
+end
+function simulate_panel_vectorized(N, T, p)
+    y_0 = p.y_mean * ones(N) # start at the mean
+    z_0 = rand(p.z_stationary_dist, N)
+
+    # iterate forward from initial condition
+    w = y_0 # start at mean of income process
+    z = z_0
     for t in 1:T
-        @tturbo for i in 1:N
-            zp[i] = a*z[i] + b + σ_z * randn()
-            # Use ternary operator.  R = 0 if w < w_hat, i.e. no savings
-            R[i] = (w[i] >= w_hat) ? c_r * exp(zp[i]) + exp(μ_r + σ_r*randn()) : 0.0
-            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*randn()) + R[i]*s_0*w[i]
-        end
-        # Step forward
-        w .= wp
-        z .= zp
-    end    
+        w, z = step_wealth_vectorized(w, z, p) # steps forward, discarding results
+    end
     sort!(w) # sorts the wealth so we can calculate gini/lorenz        
     F, L = lorenz(w)
     return (;w, F, L, gini = gini(w))
@@ -606,22 +618,22 @@ end
 We can then compare the performance of these versions.
 
 ```{code-cell} julia
+N = 100_000
+T = 200
 @btime simulate_panel(N, T, $p)
-@btime simulate_panel_raw(N, T, $p)
-@show Threads.nthreads()
-@btime simulate_panel_tturbo(N, T, $p);
+@btime simulate_panel_no_turbo(N, T, $p);
+@btime simulate_panel_vectorized(N, T, $p);
 ```
 
-The performance will depend on the availability of SIMD and AVX512 on your processor and your number of threads for the `tturbo` version.  The results above are associated with the server compiling these notes, and is likely not representative.
-
-For example, on one of our machines:
-
-If your machine is showing that only 1 thread is being used on Jupyter, you will want to ensure more are available following [these instructions](https://stackoverflow.com/questions/71114803/how-to-start-multiple-threads-in-julia/71115199#71115199) or set the `JULIA_NUM_THREADS` environment variable.
-
-```{admonition} Caution with loop optimizations
-The `@turbo`, `@inbounds` and other macros can be useful but can lead to subtle bugs - so only use after ensuring correctness of your methods without the accelerations.  See [the warnings](https://github.com/JuliaSIMD/LoopVectorization.jl#warning) associated with the package.  In addition, by skipping bounds checking you may corrupt memory and crash Julia if there are bugs in your code - whereas otherwise it would simply report back an error to help with debugging. 
+The results displayed above are done with the server compiling these notes, and is likely not representative.  For example, on one of our machines the results are
+    
+```{code-block} none
+192.621 ms (1218 allocations: 463.90 MiB)
+592.451 ms (18 allocations: 6.10 MiB)
+589.632 ms (6412 allocations: 2.39 GiB)
 ```
 
+The performance will depend on the availability of SIMD and AVX512 on your processor and your number of threads for the `tturbo` version.   `LoopVectorization.jl` can also parallelize over threads and multiple processes by replacing with the `@tturbo` macro, but this does not seem to significantly improve performance in this case.
 <!--
 # DECIDED AGAINST INCLUSION AFTER SEEING PERFORMANCE OF LOOPVECTORIZATION VERSION
 
