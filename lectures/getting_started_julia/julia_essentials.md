@@ -686,6 +686,13 @@ While it may seem terse at first, this pattern is common across Julia and is wor
 If you see an argument in in julia to the right of the `;` assume it is a keyword argument with the name matching the value.
 
 
+The automatic naming of keyword arguments is also picked up automatically when they are fields in named tuples or structs.
+
+```{code-cell} julia
+nt = (;a = 2, b = 10)
+f(pi; nt.a) # equivalent to f(pi; a = nt.a)
+```
+
 
 ## Broadcasting
 
