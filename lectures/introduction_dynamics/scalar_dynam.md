@@ -222,7 +222,7 @@ function plot45(f, xmin, xmax, x0; num_arrows=6)
     dash_kwargs = (linestyle=:dash, linecolor=:black, alpha=0.5)
     plt = plot(xgrid, xgrid, xlim=(xmin, xmax), ylim=(xmin, xmax), linecolor=:black, lw=2)
     plot!(plt, xgrid, f.(xgrid), linecolor=:blue, lw=2)
-    arrow_iterator = 0:num_arrows
+    arrow_iterator = 0:(num_arrows-1)
     for (i, j) in enumerate(arrow_iterator)
         xticks[i] = x
         if i == 1
@@ -234,7 +234,7 @@ function plot45(f, xmin, xmax, x0; num_arrows=6)
             plot!([x, f(x)], [f(x), f(x)]; arrow_kwargs...)
         end
         x = f(x)
-        plot!([x, x], [0, x], xticks=(xticks, [L"k_%$j" for j in arrow_iterator]), yticks=(xticks, [L"k_%$j" for j in arrow_iterator]); dash_kwargs...)
+        plot!([x, x], [0, x], xticks=(xticks, [L"k_%$j" for j in 0:num_arrows]), yticks=(xticks, [L"k_%$j" for j in 0:num_arrows]); dash_kwargs...)
     end
     plot!([x, x], [0, x], legend=false; dash_kwargs...)
     hline!([0], color=:green, lw=2)
