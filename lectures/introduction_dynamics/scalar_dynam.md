@@ -217,7 +217,7 @@ plots.
 function plot45(f, xmin, xmax, x0; num_arrows=6)
     x = x0
     xgrid = LinRange(xmin, xmax, 200)
-    xticks = zeros(num_arrows)
+    xticks = zeros(num_arrows+1)
     arrow_kwargs = (arrow=:closed, linecolor=:black, alpha=0.5)
     dash_kwargs = (linestyle=:dash, linecolor=:black, alpha=0.5)
     plt = plot(xgrid, xgrid, xlim=(xmin, xmax), ylim=(xmin, xmax), linecolor=:black, lw=2)
@@ -236,6 +236,7 @@ function plot45(f, xmin, xmax, x0; num_arrows=6)
         x = f(x)
         plot!([x, x], [0, x], xticks=(xticks, [L"k_%$j" for j in 0:num_arrows]), yticks=(xticks, [L"k_%$j" for j in 0:num_arrows]); dash_kwargs...)
     end
+    xticks[num_arrows+1] = x
     plot!([x, x], [0, x], legend=false; dash_kwargs...)
     hline!([0], color=:green, lw=2)
     vline!([0], color=:green, lw=2)
