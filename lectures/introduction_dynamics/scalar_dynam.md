@@ -216,7 +216,7 @@ plots.
 ```{code-cell} julia
 function plot45(f, xmin, xmax, x0; num_arrows=6)
     x = x0
-    xgrid = LinRange(xmin, xmax, 200)
+    xgrid = range(xmin, xmax, 200)
     xticks = zeros(num_arrows+1)
     arrow_kwargs = (arrow=:closed, linecolor=:black, alpha=0.5)
     dash_kwargs = (linestyle=:dash, linecolor=:black, alpha=0.5)

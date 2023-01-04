@@ -488,7 +488,7 @@ The code below simulates the wealth distribution, Lorenz curve, and gini for mul
 
 ```{code-cell} julia
 
-μ_r_vals = LinRange(0.0, 0.075, 5)
+μ_r_vals = range(0.0, 0.075, 5)
 results = map(μ_r -> simulate_panel(N, T, wealth_dynamics_model(;μ_r)),
               μ_r_vals);
 ```
@@ -498,8 +498,7 @@ Using these results, we can plot the Lorenz curves for each value of $\mu_r$ and
 ```{code-cell} julia
 plt = plot(results[1].F, results[1].F, label = "equality", legend = :topleft,
            ylabel="Lorenz Curve")
-[plot!(plt, res.F, res.L,
-       label = L"\psi^*, \mu_r = %$(round(μ_r;sigdigits=1))") 
+[plot!(plt, res.F, res.L, label = L"\psi^*, \mu_r = %$μ_r") 
  for (μ_r, res) in zip(μ_r_vals, results)]
 plt
 ```
@@ -518,13 +517,12 @@ Let's finish this section by investigating what happens when we change the
 volatility term $\sigma_r$ in financial returns.
 
 ```{code-cell} julia
-σ_r_vals = LinRange(0.35, 0.53, 5)
+σ_r_vals = range(0.35, 0.53, 5)
 results = map(σ_r -> simulate_panel(N, T, wealth_dynamics_model(;σ_r)),
               σ_r_vals);
 plt = plot(results[1].F, results[1].F, label = "equality", legend = :topleft,
            ylabel="Lorenz Curve")
-[plot!(plt, res.F, res.L,
-         label = L"\psi^*, \sigma_r = %$(round(σ_r; sigdigits=2))")
+[plot!(plt, res.F, res.L, label = L"\psi^*, \sigma_r = %$σ_r")
  for (σ_r, res) in zip(σ_r_vals, results)]
 plt
 ```
@@ -624,19 +622,13 @@ We can then compare the performance of these versions.
 N = 100_000
 T = 200
 @btime simulate_panel(N, T, $p)
-@btime simulate_panel_no_turbo(N, T, $p);
+@btime simulate_panel_no_turbo(N, T, $p)
 @btime simulate_panel_vectorized(N, T, $p);
 ```
 
-The results displayed above are done with the server compiling these notes, and is likely not representative.  For example, on one of our machines the results are
-    
-```{code-block} none
-282.244 ms (1218 allocations: 463.90 MiB)
-576.120 ms (18 allocations: 6.10 MiB)
-836.909 ms (6412 allocations: 2.39 GiB)
-```
+The results displayed above are done with the server compiling these notes, and may not be representative.  The performance will depend on the availability of [SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) and [AVX512](https://en.wikipedia.org/wiki/AVX-512) on your processor.
 
-The performance will depend on the availability of [SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) and [AVX512](https://en.wikipedia.org/wiki/AVX-512) on your processor.   `LoopVectorization.jl` can also parallelize over threads and multiple processes by replacing with the `@tturbo` macro, but this does not seem to significantly improve performance in this case.
+[LoopVectorization.jl](https://github.com/JuliaSIMD/LoopVectorization.jl) can also parallelize over threads and multiple processes by replacing with the [`@tturbo`](https://juliasimd.github.io/LoopVectorization.jl/latest/examples/multithreading/) macro, but this does not seem to significantly improve performance in this case.
 <!--
 # DECIDED AGAINST INCLUSION AFTER SEEING PERFORMANCE OF LOOPVECTORIZATION VERSION
 
