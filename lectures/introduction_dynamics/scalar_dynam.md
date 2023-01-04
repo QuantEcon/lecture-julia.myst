@@ -236,7 +236,7 @@ function plot45(f, xmin, xmax, x0; num_arrows=6)
         x = f(x)
         plot!([x, x], [0, x], xticks=(xticks, [L"k_%$j" for j in arrow_iterator]), yticks=(xticks, [L"k_%$j" for j in arrow_iterator]); dash_kwargs...)
     end
-    plot!([x, x], [0, x], showaxis=false, legend=false; dash_kwargs...)
+    plot!([x, x], [0, x], legend=false; dash_kwargs...)
     hline!([0], color=:green, lw=2)
     vline!([0], color=:green, lw=2)
 end  
