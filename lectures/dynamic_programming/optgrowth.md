@@ -464,7 +464,7 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using LaTeXStrings, Plots, QuantEcon, Interpolations, NLsolve, Optim, Random, Parameters
+using LaTeXStrings, Plots, Interpolations, NLsolve, Optim, Random, Parameters
 using Optim: maximum, maximizer
 ```
 

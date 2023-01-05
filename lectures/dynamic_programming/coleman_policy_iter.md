@@ -377,7 +377,7 @@ Here's some code that implements the Coleman operator.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using BenchmarkTools, Interpolations, LaTeXStrings, Parameters, Plots, QuantEcon, Roots
+using BenchmarkTools, Interpolations, LaTeXStrings, Parameters, Plots, Roots
 using Optim, Random
 ```
 
@@ -389,8 +389,7 @@ using Test
 ```
 
 ```{code-cell} julia
-using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Roots
-
+using BenchmarkTools, Interpolations, Parameters, Plots, Roots
 
 ```
 
