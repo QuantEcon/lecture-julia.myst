@@ -291,7 +291,8 @@ generates a sequence that converges to the fixed point.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Expectations, LaTeXStrings, NLsolve, Roots, Random, Plots, Parameters
+using Distributions, Expectations, LaTeXStrings
+using NLsolve, Roots, Random, Plots, Parameters
 ```
 
 ```{code-cell} julia
@@ -314,7 +315,8 @@ dist = BetaBinomial(n, 200, 100) # probability distribution
 w = range(10.0, 60.0, length = n+1) # linearly space wages
 
 using StatsPlots
-plt = plot(w, pdf.(dist, support(dist)), xlabel = "wages", ylabel = "probabilities", legend = false)
+plt = plot(w, pdf.(dist, support(dist)), xlabel = "wages",
+           ylabel = "probabilities", legend = false)
 ```
 
 We can explore taking expectations over this distribution
@@ -367,14 +369,14 @@ One approach to solving the model is to directly implement this sort of iteratio
 between successive iterates is below tol
 
 ```{code-cell} julia
-function compute_reservation_wage_direct(params; v_iv = collect(w ./(1-β)), max_iter = 500,
-                                         tol = 1e-6)
+function compute_reservation_wage_direct(params; v_iv = collect(w ./(1-β)),
+                                         max_iter = 500, tol = 1e-6)
     (;c, β, w) = params
 
     # create a closure for the T operator
     T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
 
-    v = copy(v_iv) # start at initial value.  copy to prevent v_iv modification
+    v = copy(v_iv) # copy to prevent v_iv modification
     v_next = similar(v)
     i = 0
     error = Inf
@@ -382,7 +384,7 @@ function compute_reservation_wage_direct(params; v_iv = collect(w ./(1-β)), max
         v_next .= T(v) # (4)
         error = norm(v_next - v)
         i += 1
-        v .= v_next  # copy contents into v.  Also could have used v[:] = v_next
+        v .= v_next  # copy contents into v
     end
     # now compute the reservation wage
     return (1 - β) * (c + β * E*v) # (2)
@@ -406,16 +408,21 @@ As usual, we are better off using a package, which may give a better algorithm a
 In this case, we can use the `fixedpoint` algorithm discussed in {doc}`our Julia by Example lecture <../getting_started_julia/julia_by_example>`  to find the fixed point of the $T$ operator.  Note that below we set the parameter `m=1` for Anderson iteration rather than leaving as the default value - which fails to converge in this case.  This is still almost 10x faster than the `m=0` case, which corresponds to naive fixed-point iteration.
 
 ```{code-cell} julia
-function compute_reservation_wage(params; v_iv = collect(w ./(1-β)), iterations = 500,
-                                  ftol = 1e-6, m = 6)
+function compute_reservation_wage(params; v_iv = collect(w ./(1-β)),
+                                  iterations = 500, ftol = 1e-6, m = 1)
     (;c, β, w) = params
     T(v) = max.(w/(1 - β), c + β * E*v) # (5) fixing the parameter values
 
-    v_star = fixedpoint(T, v_iv, iterations = iterations, ftol = ftol,
-                        m = 1).zero # (5)
+    sol = fixedpoint(T, v_iv; iterations, ftol, m) # (5)
+    sol.f_converged || error("Failed to converge")
+    v_star = sol.zero
     return (1 - β) * (c + β * E*v_star) # (3)
 end
 ```
+
+Note that this checks the convergence (i.e, the `sol.f_converged`) from the fixedpoint iteration and throws an error if it fails.
+
+This coding pattern, where `expression || error("failure)` first checks the expression is true and then moves to the right hand side of the `||` or operator if it is false, is a common pattern in Julia.
 
 Let's compute the reservation wage at the default parameters
 
@@ -430,8 +437,8 @@ compute_reservation_wage(mcm()) # call with default parameters
 tags: [remove-cell]
 ---
 @testset "Reservation Wage Tests" begin
-    #test compute_reservation_wage(mcm()) ≈ 47.316499766546215
-    #test compute_reservation_wage_direct(mcm()) ≈ 47.31649975736077
+    @test compute_reservation_wage(mcm()) ≈ 47.316499766546215
+    @test compute_reservation_wage_direct(mcm()) ≈ 47.31649975736077
 end
 ```
 
@@ -445,24 +452,32 @@ $c$.
 
 ```{code-cell} julia
 grid_size = 25
-R = rand(grid_size, grid_size)
+R = zeros(grid_size, grid_size)
 
 c_vals = range(10.0, 30.0, length = grid_size)
 β_vals = range(0.9, 0.99, length = grid_size)
 
 for (i, c) in enumerate(c_vals)
     for (j, β) in enumerate(β_vals)
-        R[i, j] = compute_reservation_wage(mcm(c=c, β=β)) # change from defaults
+        R[i, j] = compute_reservation_wage(mcm(;c, β);m=0)
     end
 end
 ```
+
+Note the above is setting the `m` parameter to `0` to use naive fixed-point iteration.  This is because the Anderson iteration fails to converge in a 2 of the 25^2 cases.
+
+This demonstrates care must be used with advanced algorithms, and checking the return type (i.e., the `sol.f_converged` field) is important.
+
+
 
 ```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 @testset "Comparative Statics Tests" begin
-    #test R[4, 4] ≈ 41.15851842606614 # arbitrary reservation wage.
+    @test minimum(R) ≈ 40.39579058732559
+    @test maximum(R) ≈ 47.69960582438523
+    @test R[4, 4] ≈ 41.15851842606614 # arbitrary reservation wage.
     @test grid_size == 25 # grid invariance.
     @test length(c_vals) == grid_size && c_vals[1] ≈ 10.0 && c_vals[end] ≈ 30.0
     @test length(β_vals) == grid_size && β_vals[1] ≈ 0.9 && β_vals[end] ≈ 0.99
@@ -559,11 +574,13 @@ The big difference here, however, is that we're iterating on a single number, ra
 Here's an implementation:
 
 ```{code-cell} julia
-function compute_reservation_wage_ψ(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500,
-                                    tol = 1e-5)
+function compute_reservation_wage_ψ(c, β; ψ_iv = E * w ./ (1 - β),
+                                    iterations = 500, ftol = 1e-5, m = 1)
     T_ψ(ψ) = [c + β * E*max.((w ./ (1 - β)), ψ[1])] # (7)
     # using vectors since fixedpoint doesn't support scalar
-    ψ_star = fixedpoint(T_ψ, [ψ_iv]).zero[1]
+    sol = fixedpoint(T_ψ, [ψ_iv]; iterations, ftol, m)
+    sol.f_converged || error("Failed to converge")    
+    ψ_star = sol.zero[1]
     return (1 - β) * ψ_star # (2)
 end
 compute_reservation_wage_ψ(c, β)
@@ -574,10 +591,10 @@ You can use this code to solve the exercise below.
 Another option is to solve for the root of the  $T_{\psi}(\psi) - \psi$ equation
 
 ```{code-cell} julia
-function compute_reservation_wage_ψ2(c, β; ψ_iv = E * w ./ (1 - β), max_iter = 500,
-                                     tol = 1e-5)
+function compute_reservation_wage_ψ2(c, β; ψ_iv = E * w ./ (1 - β),
+                                     maxiters = 500, rtol = 1e-5)
     root_ψ(ψ) = c + β * E*max.((w ./ (1 - β)), ψ) - ψ # (7)
-    ψ_star = find_zero(root_ψ, ψ_iv)
+    ψ_star = find_zero(root_ψ, ψ_iv;maxiters, rtol)
     return (1 - β) * ψ_star # (2)
 end
 compute_reservation_wage_ψ2(c, β)
@@ -589,9 +606,9 @@ tags: [remove-cell]
 ---
 @testset begin
     mcmp = mcm()
-    #test compute_reservation_wage(mcmp) ≈ 47.316499766546215
-    #test compute_reservation_wage_ψ(mcmp.c, mcmp.β) ≈ 47.31649976654623
-    #test compute_reservation_wage_ψ2(mcmp.c, mcmp.β) ≈ 47.31649976654623
+    @test compute_reservation_wage(mcmp) ≈ 47.316499766546215
+    @test compute_reservation_wage_ψ(mcmp.c, mcmp.β) ≈ 47.31649976654623
+    @test compute_reservation_wage_ψ2(mcmp.c, mcmp.β) ≈ 47.31649976654623
 end
 ```
 

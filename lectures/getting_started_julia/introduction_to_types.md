@@ -669,10 +669,9 @@ This is just one of many decisions and patterns to ensure that your code is cons
 
 The best resource is to carefully read other peoples code, but a few sources to review are
 
-* [Julia Style Guide](https://docs.julialang.org/en/v1/manual/style-guide/).
-* [Invenia Blue Style Guide](https://github.com/invenia/BlueStyle).
-* [Julia Praxis Naming Guides](https://github.com/JuliaPraxis/Naming/tree/master/guides).
-* [QuantEcon Style Guide](https://github.com/QuantEcon/lecture-source-jl/blob/master/style.md) used in these lectures.
+* [Julia Style Guide](https://docs.julialang.org/en/v1/manual/style-guide/)
+* [SciML Style Guide](https://github.com/SciML/SciMLStyle)
+* [Blue Style Guide](https://github.com/invenia/BlueStyle)
 
 Now why would we emphasize naming and style as a crucial part of the lectures?
 
@@ -692,6 +691,9 @@ Some helpful ways to think about this are
 * **Maintain the correspondence between the whiteboard math and the code**:
   For example, if you change notation in your model, then immediately update
   all variables in the code to reflect it.
+
+
+While variable naming takes discipline, code formatting for a specific style guide can be automated using [JuliaFormatter.jl](https://github.com/domluna/JuliaFormatter.jl) which is built into the Julia VS Code extension.
 
 #### Commenting Code
 
