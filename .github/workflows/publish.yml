@@ -88,15 +88,18 @@ jobs:
           cp lectures/Project.toml _build/lecture-julia.notebooks
           cp lectures/Manifest.toml _build/lecture-julia.notebooks
           ls -a _build/lecture-julia.notebooks
-      - name: Commit latest notebooks to lecture-julia.notebooks
-        uses: cpina/github-action-push-to-another-repository@v1.3
+      - name: Commit notebooks to lecture-julia.notebooks
+        shell: bash -l {0}
         env:
-          API_TOKEN_GITHUB: ${{ secrets.QUANTECON_SERVICES_PAT }}
-        with:
-          source-directory: '_build/lecture-julia.notebooks/'
-          destination-repository-username: 'QuantEcon'
-          destination-repository-name: 'lecture-julia.notebooks'
-          target-branch: main
-          commit-message: 'auto publishing updates to notebooks'
-          destination-github-username: 'quantecon-services'
-          user-email: services@quantecon.org
+          QE_SERVICES_PAT: ${{ secrets.QUANTECON_SERVICES_PAT }}
+        run: |
+          git clone https://quantecon-services:$QE_SERVICES_PAT@github.com/quantecon/lecture-julia.notebooks
+
+          cp _build/lecture-julia.notebooks/*.ipynb lecture-julia.notebooks
+
+          cd lecture-julia.notebooks
+          git config user.name "QuantEcon Services"
+          git config user.email "admin@quantecon.org"
+          git add *.ipynb
+          git commit -m "auto publishing updates to notebooks"
+          git push origin main
