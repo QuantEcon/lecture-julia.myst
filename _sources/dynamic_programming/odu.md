@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (odu)=
@@ -248,7 +248,7 @@ end
 function T!(sp, v, out;
                            ret_policy = false)
     # simplify names
-    @unpack f, g, β, c = sp
+    (;f, g, β, c) = sp
     nodes, weights = sp.quad_nodes, sp.quad_weights
 
     vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v,
@@ -290,7 +290,7 @@ get_greedy(sp, v) = T(sp, v, ret_policy = true)
 
 function res_wage_operator!(sp, ϕ, out)
     # simplify name
-    @unpack f, g, β, c = sp
+    (;f, g, β, c) = sp
 
     # Construct interpolator over π_grid, given ϕ
     ϕ_f = LinearInterpolation(sp.π_grid, ϕ, extrapolation_bc = Line())

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (mass)=
@@ -278,7 +278,7 @@ You can think of
   factor $g_t = g(X_t)$ for the endowment
 * $\ln g_t = \ln (d_{t+1} / d_t)$ is the growth rate of dividends
 
-(For a refresher on notation and theory for finite Markov chains see {doc}`this lecture <../tools_and_techniques/finite_markov>`)
+(For a refresher on notation and theory for finite Markov chains see {doc}`this lecture <../introduction_dynamics/finite_markov>`)
 
 The next figure shows a simulation, where
 
@@ -564,7 +564,7 @@ end
 # price/dividend ratio of the Lucas tree
 function tree_price(ap; γ = ap.γ)
     # Simplify names, set up matrices
-    @unpack β, mc = ap
+    (;β, mc) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, ap.n)
     J = P .* ap.g.(y).^(1 - γ)
@@ -692,7 +692,7 @@ The above is implemented in the function consol_price
 ```{code-cell} julia
 function consol_price(ap, ζ)
     # Simplify names, set up matrices
-    @unpack β, γ, mc, g, n = ap
+    (;β, γ, mc, g, n) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, n)
     M = P .* g.(y).^(-γ)
@@ -780,7 +780,7 @@ We can find the solution with the following function call_option
 function call_option(ap, ζ, p_s, ϵ = 1e-7)
 
     # Simplify names, set up matrices
-    @unpack β, γ, mc, g, n = ap
+    (;β, γ, mc, g, n) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, n)
     M = P .* g.(y).^(-γ)
@@ -1018,7 +1018,7 @@ Here's a suitable function:
 function finite_horizon_call_option(ap, ζ, p_s, k)
 
     # Simplify names, set up matrices
-    @unpack β, γ, mc = ap
+    (;β, γ, mc) = ap
     P, y = mc.p, mc.state_values
     y = y'
     M = P .* ap.g.(y).^(- γ)

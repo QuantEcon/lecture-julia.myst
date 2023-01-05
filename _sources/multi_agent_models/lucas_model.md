@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (lucas_asset)=
@@ -420,7 +420,7 @@ end
 function lucas_operator(lt, f)
 
     # unpack input
-    @unpack grid, α, β, h = lt
+    (;grid, α, β, h) = lt
     z = lt.shocks
 
     Af = LinearInterpolation(grid, f, extrapolation_bc=Line())
@@ -434,7 +434,7 @@ function solve_lucas_model(lt;
                            tol = 1e-6,
                            max_iter = 500)
 
-    @unpack grid, γ = lt
+    (;grid, γ) = lt
 
     i = 0
     f = zero(grid)  # Initial guess of f

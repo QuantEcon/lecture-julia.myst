@@ -88,20 +88,19 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/lln_clt.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="18. Linear State Space Models" href="linear_models.html" />
+    <link rel="next" title="18. Continuous State Markov Chains" href="stationary_densities.html" />
     <link rel="prev" title="16. Orthogonal Projections and Their Applications" href="orth_proj.html" />
 
 <!-- Normal Meta Tags -->
@@ -374,7 +373,7 @@ is zero.</p>
 </div>
 <div class="section" id="proof">
 <h3><span class="section-number">17.3.2. </span>Proof<a class="headerlink" href="#proof" title="Permalink to this headline">¶</a></h3>
-<p id="index-5">The proof of Kolmogorov’s strong law is nontrivial – see, for example, theorem 8.3.5 of <span id="id1">[<a class="reference internal" href="../zreferences.html#id75">Dud02</a>]</span>.</p>
+<p id="index-5">The proof of Kolmogorov’s strong law is nontrivial – see, for example, theorem 8.3.5 of <span id="id1">[<a class="reference internal" href="../zreferences.html#id77" title="R M Dudley. Real Analysis and Probability. Cambridge Studies in Advanced Mathematics. Cambridge University Press, 2002.">Dud02</a>]</span>.</p>
 <p>On the other hand, we can prove a weaker version of the LLN very easily and
 still get most of the intuition.</p>
 <p>The version we prove is as follows: If <span class="math notranslate nohighlight">\(X_1, \ldots, X_n\)</span> is IID with <span class="math notranslate nohighlight">\(\mathbb E X_i^2 &lt; \infty\)</span>,
@@ -436,31 +435,31 @@ of <span class="math notranslate nohighlight">\(\bar X_n\)</span> as <span class
 <p>In each of the three cases, convergence of <span class="math notranslate nohighlight">\(\bar X_n\)</span> to <span class="math notranslate nohighlight">\(\mu\)</span> occurs as predicted.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
-<span class="k">using</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">ksl</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nameof</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">distribution</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="n">observations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">sample_means</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cumsum</span><span class="p">(</span><span class="n">observations</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">μ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">plot</span><span class="p">(</span><span class="n">repeat</span><span class="p">((</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">)</span><span class="o">&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"></span>
-<span class="w">         </span><span class="p">[</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">);</span><span class="w"> </span><span class="n">observations</span><span class="o">&#39;</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:grey</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">plot!</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">observations</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:grey</span><span class="p">,</span><span class="w"> </span><span class="n">markershape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:circle</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="n">isnan</span><span class="p">(</span><span class="n">μ</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">hline!</span><span class="p">([</span><span class="n">μ</span><span class="p">],</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"></span>
-<span class="w">               </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mean&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="n">plot!</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">sample_means</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:green</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Sample mean&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">plot!</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">title</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">ksl</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nameof</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">distribution</span><span class="p">))</span>
+<span class="w">    </span><span class="n">observations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+<span class="w">    </span><span class="n">sample_means</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cumsum</span><span class="p">(</span><span class="n">observations</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">)</span>
+<span class="w">    </span><span class="n">μ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
+<span class="w">    </span><span class="n">plot</span><span class="p">(</span><span class="n">repeat</span><span class="p">((</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">)</span><span class="o">&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span>
+<span class="w">         </span><span class="p">[</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">);</span><span class="w"> </span><span class="n">observations</span><span class="o">&#39;</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:grey</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="p">)</span>
+<span class="w">    </span><span class="n">plot!</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">observations</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:grey</span><span class="p">,</span><span class="w"> </span><span class="n">markershape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:circle</span><span class="p">,</span>
+<span class="w">          </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">!</span><span class="n">isnan</span><span class="p">(</span><span class="n">μ</span><span class="p">)</span>
+<span class="w">        </span><span class="n">hline!</span><span class="p">([</span><span class="n">μ</span><span class="p">],</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span>
+<span class="w">               </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Mean&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">plot!</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">sample_means</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:green</span><span class="p">,</span>
+<span class="w">          </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Sample mean&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">plot!</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">title</span><span class="p">)</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </div>
@@ -472,8 +471,8 @@ of <span class="math notranslate nohighlight">\(\bar X_n\)</span> as <span class
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">distributions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">TDist</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="w"> </span><span class="n">Beta</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">Gamma</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">Poisson</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="n">LogNormal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span><span class="w"></span>
-<span class="w">                 </span><span class="n">Exponential</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">distributions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">TDist</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="w"> </span><span class="n">Beta</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">Gamma</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">Poisson</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="n">LogNormal</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span>
+<span class="w">                 </span><span class="n">Exponential</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span>
 </pre></div>
 </div>
 </div>
@@ -492,7 +491,7 @@ of <span class="math notranslate nohighlight">\(\bar X_n\)</span> as <span class
 <p>Here is in an example for the standard normal distribution</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ksl</span><span class="p">(</span><span class="n">Normal</span><span class="p">())</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ksl</span><span class="p">(</span><span class="n">Normal</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -501,14 +500,14 @@ of <span class="math notranslate nohighlight">\(\bar X_n\)</span> as <span class
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="c"># reproducible results</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="c"># reproducible results</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">ksl</span><span class="o">.</span><span class="p">(</span><span class="n">sample</span><span class="p">(</span><span class="n">distributions</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">))</span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">ksl</span><span class="o">.</span><span class="p">(</span><span class="n">sample</span><span class="p">(</span><span class="n">distributions</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">replace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">))</span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -529,14 +528,14 @@ f(x) = \frac{1}{\pi (1 + x^2)} \qquad (x \in \mathbb R)
 <p>The next figure shows 100 independent draws from this distribution</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="c"># reproducible results</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="c"># reproducible results</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ksl</span><span class="p">(</span><span class="n">Cauchy</span><span class="p">())</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ksl</span><span class="p">(</span><span class="n">Cauchy</span><span class="p">())</span>
 </pre></div>
 </div>
 </div>
@@ -547,20 +546,20 @@ f(x) = \frac{1}{\pi (1 + x^2)} \qquad (x \in \mathbb R)
 <p>Let’s now have a look at the behavior of the sample mean</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="c"># reproducible results</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"> </span><span class="c"># reproducible results</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">plot_means</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">sample_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cumsum</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">Cauchy</span><span class="p">(),</span><span class="w"> </span><span class="n">n</span><span class="p">))</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">sample_mean</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:red</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Sample Mean&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">hline!</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">plot_means</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="p">)</span>
+<span class="w">    </span><span class="n">sample_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cumsum</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">Cauchy</span><span class="p">(),</span><span class="w"> </span><span class="n">n</span><span class="p">))</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">)</span>
+<span class="w">    </span><span class="n">plot</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">sample_mean</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:red</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Sample Mean&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">hline!</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
+<span class="k">end</span>
 
-<span class="n">plot_means</span><span class="p">()</span><span class="w"></span>
+<span class="n">plot_means</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -612,7 +611,7 @@ n \to \infty\]</div>
 finite second moment, the simple operation of adding independent
 copies <strong>always</strong> leads to a Gaussian curve.</p>
 <p>A relatively simple proof of the central limit theorem can be obtained by
-working with characteristic functions (see, e.g., theorem 9.5.6 of <span id="id2">[<a class="reference internal" href="../zreferences.html#id75">Dud02</a>]</span>).</p>
+working with characteristic functions (see, e.g., theorem 9.5.6 of <span id="id2">[<a class="reference internal" href="../zreferences.html#id77" title="R M Dudley. Real Analysis and Probability. Cambridge Studies in Advanced Mathematics. Cambridge University Press, 2002.">Dud02</a>]</span>).</p>
 <p>The proof is elegant but almost anticlimactic, and it provides surprisingly little intuition.</p>
 <p>In fact all of the proofs of the CLT that we know are similar in this respect.</p>
 <p>Why does adding independent copies produce a bell-shaped distribution?</p>
@@ -624,10 +623,10 @@ random variables.</p>
 <p>The next figure plots the probability mass function of <span class="math notranslate nohighlight">\(Y_n\)</span> for <span class="math notranslate nohighlight">\(n = 1, 2, 4, 8\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">binomial_pdf</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
-<span class="w">    </span><span class="n">bar</span><span class="p">(</span><span class="mi">0</span><span class="o">:</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">Binomial</span><span class="p">(</span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="n">n</span><span class="p">),</span><span class="w"></span>
-<span class="w">        </span><span class="n">xticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">ylim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">yticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="mf">0.1</span><span class="o">:</span><span class="mi">1</span><span class="p">,</span><span class="w"></span>
-<span class="w">        </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Binomial(%</span><span class="si">$n</span><span class="s">, 0.5)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">binomial_pdf</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">bar</span><span class="p">(</span><span class="mi">0</span><span class="o">:</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">Binomial</span><span class="p">(</span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="n">n</span><span class="p">),</span>
+<span class="w">        </span><span class="n">xticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">ylim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">yticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="mf">0.1</span><span class="o">:</span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Binomial(%</span><span class="si">$n</span><span class="s">, 0.5)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -639,7 +638,7 @@ random variables.</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">binomial_pdf</span><span class="o">.</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span><span class="o">...</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">binomial_pdf</span><span class="o">.</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -676,18 +675,18 @@ fail” are just as likely as the outcomes “fail then fail” and “succeed t
 <p>(Please experiment with other choices of <span class="math notranslate nohighlight">\(F\)</span>, but remember that, to conform with the conditions of the CLT, the distribution must have finite second moment)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">StatsPlots</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">StatsPlots</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">simulation1</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10_000</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">.-=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">√</span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">vec</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">density</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Empirical Distribution&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">plot!</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">),</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">,</span><span class="w"></span>
-<span class="w">                 </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Normal(0.00, %</span><span class="si">$</span><span class="p">(</span><span class="n">σ</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="s">)&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">simulation1</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10_000</span><span class="p">)</span>
+<span class="w">    </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">.-=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">√</span><span class="n">n</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">vec</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="w">    </span><span class="n">density</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Empirical Distribution&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">plot!</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">),</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Normal(0.00, %</span><span class="si">$</span><span class="p">(</span><span class="n">σ</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="s">)&quot;</span><span class="p">)</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </div>
@@ -699,7 +698,7 @@ fail” are just as likely as the outcomes “fail then fail” and “succeed t
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">simulation1</span><span class="p">(</span><span class="n">Exponential</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">simulation1</span><span class="p">(</span><span class="n">Exponential</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -724,14 +723,14 @@ specified as the convex combination of three different beta densities.</p>
 <p>(Taking a convex combination is an easy way to produce an irregular shape for <span class="math notranslate nohighlight">\(f\)</span>)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">simulation2</span><span class="p">(</span><span class="n">distribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Beta</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10_000</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="w"></span>
-<span class="w">        </span><span class="n">y</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">col</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">rand</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1.1</span><span class="p">],</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">distribution</span><span class="p">))</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">std</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cumsum</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">sqrt</span><span class="o">.</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span><span class="o">&#39;</span><span class="w"> </span><span class="c"># return grid of data</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">simulation2</span><span class="p">(</span><span class="n">distribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Beta</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10_000</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+<span class="w">        </span><span class="n">y</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="n">col</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">rand</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mf">1.1</span><span class="p">],</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">distribution</span><span class="p">))</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">std</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cumsum</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">sqrt</span><span class="o">.</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="p">)</span><span class="o">&#39;</span><span class="w"> </span><span class="c"># return grid of data</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </div>
@@ -743,14 +742,14 @@ specified as the convex combination of three different beta densities.</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">simulation2</span><span class="p">()</span><span class="w"></span>
-<span class="n">plots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="c"># would preallocate in optimized code</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">density</span><span class="p">(</span><span class="n">ys</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">linealpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;n = %</span><span class="si">$i</span><span class="s">&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">simulation2</span><span class="p">()</span>
+<span class="n">plots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"> </span><span class="c"># would preallocate in optimized code</span>
+<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">density</span><span class="p">(</span><span class="n">ys</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">linealpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;n = %</span><span class="si">$i</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span>
+<span class="k">end</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">plots</span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">900</span><span class="p">,</span><span class="w"> </span><span class="mi">500</span><span class="p">))</span><span class="w"></span>
+<span class="n">plot</span><span class="p">(</span><span class="n">plots</span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">900</span><span class="p">,</span><span class="w"> </span><span class="mi">500</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -961,17 +960,17 @@ of freedom.</p>
 <p>Here is one solution</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">exercise1</span><span class="p">(</span><span class="n">distribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">π</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10_000</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">,</span><span class="w"> </span><span class="n">g′</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cos</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">μ</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">distribution</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">error_obs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">μ</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="n">density</span><span class="p">(</span><span class="n">error_obs</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Empirical Density&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">plot!</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">g′</span><span class="p">(</span><span class="n">μ</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">σ</span><span class="p">),</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Asymptotic&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">                 </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="n">exercise1</span><span class="p">()</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">exercise1</span><span class="p">(</span><span class="n">distribution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">π</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10_000</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">,</span><span class="w"> </span><span class="n">g′</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cos</span><span class="p">)</span>
+<span class="w">    </span><span class="n">μ</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">distribution</span><span class="p">),</span><span class="w"> </span><span class="n">std</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="w">    </span><span class="n">error_obs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">g</span><span class="o">.</span><span class="p">(</span><span class="n">μ</span><span class="p">))</span>
+<span class="w">    </span><span class="n">density</span><span class="p">(</span><span class="n">error_obs</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Empirical Density&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">plot!</span><span class="p">(</span><span class="n">Normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">g′</span><span class="p">(</span><span class="n">μ</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">σ</span><span class="p">),</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Asymptotic&quot;</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">exercise1</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1026,26 +1025,26 @@ which is what we aimed to show.</p>
 <p>Our solution is as follows</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">exercise2</span><span class="p">(;</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50_000</span><span class="p">,</span><span class="w"> </span><span class="n">dw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">du</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="n">vw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">var</span><span class="p">(</span><span class="n">dw</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">vu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">var</span><span class="p">(</span><span class="n">du</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">Σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">vw</span><span class="w">    </span><span class="n">vw</span><span class="w"></span>
-<span class="w">         </span><span class="n">vw</span><span class="w"> </span><span class="n">vw</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">vu</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="n">Q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inv</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Σ</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="k">function</span><span class="w"> </span><span class="n">generate_data</span><span class="p">(</span><span class="n">dw</span><span class="p">,</span><span class="w"> </span><span class="n">du</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">dw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">dw</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">dw</span><span class="w"> </span><span class="n">dw</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">du</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)]</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mapreduce</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">generate_data</span><span class="p">(</span><span class="n">dw</span><span class="p">,</span><span class="w"> </span><span class="n">du</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="n">vcat</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">k</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Q</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">X</span><span class="o">&#39;</span><span class="w"></span>
-<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">abs2</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">density</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">plot!</span><span class="p">(</span><span class="n">Chisq</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"></span>
-<span class="w">                 </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Chi-squared with 2 degrees of freedom&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="n">exercise2</span><span class="p">()</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">exercise2</span><span class="p">(;</span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50_000</span><span class="p">,</span><span class="w"> </span><span class="n">dw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">du</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span>
+<span class="w">    </span><span class="n">vw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">var</span><span class="p">(</span><span class="n">dw</span><span class="p">)</span>
+<span class="w">    </span><span class="n">vu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">var</span><span class="p">(</span><span class="n">du</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">vw</span><span class="w">    </span><span class="n">vw</span>
+<span class="w">         </span><span class="n">vw</span><span class="w"> </span><span class="n">vw</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">vu</span><span class="p">]</span>
+<span class="w">    </span><span class="n">Q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inv</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Σ</span><span class="p">))</span>
+<span class="w">    </span><span class="k">function</span><span class="w"> </span><span class="n">generate_data</span><span class="p">(</span><span class="n">dw</span><span class="p">,</span><span class="w"> </span><span class="n">du</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+<span class="w">        </span><span class="n">dw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">dw</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+<span class="w">        </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">dw</span><span class="w"> </span><span class="n">dw</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">du</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)]</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mapreduce</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">generate_data</span><span class="p">(</span><span class="n">dw</span><span class="p">,</span><span class="w"> </span><span class="n">du</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="n">vcat</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">k</span><span class="p">)</span>
+<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Q</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">X</span><span class="o">&#39;</span>
+<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">abs2</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">dims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vec</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="w">    </span><span class="n">density</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">))</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">plot!</span><span class="p">(</span><span class="n">Chisq</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span>
+<span class="w">                 </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Chi-squared with 2 degrees of freedom&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">exercise2</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -1065,16 +1064,16 @@ which is what we aimed to show.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.7"
+            mode: "julia-1.8"
         },
         kernelOptions: {
-            kernelName: "julia-1.7",
+            kernelName: "julia-1.8",
             path: "./tools_and_techniques"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.7'</script>
+    <script>kernelName = 'julia-1.8'</script>
 
                     </div>
                     
@@ -1218,33 +1217,60 @@ which is what we aimed to show.</p>
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="linear_models.html">
-   18. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="finite_markov.html">
-   19. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="stationary_densities.html">
-   20. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="kalman.html">
-   21. A First Look at the Kalman Filter
+   18. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="numerical_linear_algebra.html">
-   22. Numerical Linear Algebra and Factorizations
+   19. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="iterative_methods_sparsity.html">
-   23. Krylov Methods and Matrix Conditioning
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
   </a>
  </li>
 </ul>
@@ -1255,88 +1281,83 @@ which is what we aimed to show.</p>
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/short_path.html">
-   24. Shortest Paths
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   25. Job Search I: The McCall Search Model
+   28. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   26. Job Search II: Search and Separation
+   29. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   27. A Problem that Stumped Milton Friedman
+   30. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   28. Job Search III: Search with Learning
+   31. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   29. Job Search IV: Modeling Career Choice
+   32. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   30. Job Search V: On-the-Job Search
+   33. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   31. Optimal Growth I: The Stochastic Optimal Growth Model
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   32. Optimal Growth II: Time Iteration
+   35. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   33. Optimal Growth III: The Endogenous Grid Method
+   36. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   34. LQ Dynamic Programming Problems
+   37. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   35. Optimal Savings I: The Permanent Income Model
+   38. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   36. Optimal Savings II: LQ Techniques
+   39. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   38. Optimal Savings III: Occasionally Binding Constraints
+   41. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   39. Robustness
+   42. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   40. Discrete State Dynamic Programming
+   43. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -1348,12 +1369,12 @@ which is what we aimed to show.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   41. Modeling COVID 19 with Differential Equations
+   44. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1365,57 +1386,57 @@ which is what we aimed to show.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   43. Schelling’s Segregation Model
+   46. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   44. A Lake Model of Employment and Unemployment
+   47. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   45. Rational Expectations Equilibrium
+   48. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   46. Markov Perfect Equilibrium
+   49. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   47. Asset Pricing I: Finite State Models
+   50. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   48. Asset Pricing II: The Lucas Asset Pricing Model
+   51. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   49. Asset Pricing III:  Incomplete Markets
+   52. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   50. Uncertainty Traps
+   53. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   51. The Aiyagari Model
+   54. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   52. Default Risk and Income Fluctuations
+   55. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   53. Globalization and Cycles
+   56. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1427,32 +1448,32 @@ which is what we aimed to show.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   54. Covariance Stationary Processes
+   57. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   55. Estimation of Spectra
+   58. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   56. Additive Functionals
+   59. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   57. Multiplicative Functionals
+   60. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   58. Classical Control with Linear Algebra
+   61. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   59. Classical Filtering With Linear Algebra
+   62. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1464,22 +1485,22 @@ which is what we aimed to show.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   60. Dynamic Stackelberg Problems
+   63. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   61. Optimal Taxation in an LQ Economy
+   64. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   62. Optimal Taxation with State-Contingent Debt
+   65. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   63. Optimal Taxation without State-Contingent Debt
+   66. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1491,22 +1512,22 @@ which is what we aimed to show.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   64. About these Lectures
+   67. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   65. Troubleshooting
+   68. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   66. References
+   69. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Execution Statistics
+   70. Execution Statistics
   </a>
  </li>
 </ul>

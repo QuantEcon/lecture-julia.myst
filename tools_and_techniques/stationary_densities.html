@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>20. Continuous State Markov Chains &#8212; Quantitative Economics with Julia</title>
+    <title>18. Continuous State Markov Chains &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -88,21 +88,20 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/stationary_densities.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="21. A First Look at the Kalman Filter" href="kalman.html" />
-    <link rel="prev" title="19. Finite Markov Chains" href="finite_markov.html" />
+    <link rel="next" title="19. Numerical Linear Algebra and Factorizations" href="numerical_linear_algebra.html" />
+    <link rel="prev" title="17. LLN and CLT" href="lln_clt.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -152,132 +151,132 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   20.1. Overview
+   18.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#the-density-case">
-   20.2. The Density Case
+   18.2. The Density Case
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#definitions-and-basic-properties">
-     20.2.1. Definitions and Basic Properties
+     18.2.1. Definitions and Basic Properties
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#connection-to-stochastic-difference-equations">
-     20.2.2. Connection to Stochastic Difference Equations
+     18.2.2. Connection to Stochastic Difference Equations
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#distribution-dynamics">
-     20.2.3. Distribution Dynamics
+     18.2.3. Distribution Dynamics
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#computation">
-     20.2.4. Computation
+     18.2.4. Computation
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#implementation">
-     20.2.5. Implementation
+     18.2.5. Implementation
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#example">
-     20.2.6. Example
+     18.2.6. Example
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#beyond-densities">
-   20.3. Beyond Densities
+   18.3. Beyond Densities
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#example-and-definitions">
-     20.3.1. Example and Definitions
+     18.3.1. Example and Definitions
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id4">
-     20.3.2. Computation
+     18.3.2. Computation
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#stability">
-   20.4. Stability
+   18.4. Stability
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#theoretical-results">
-     20.4.1. Theoretical Results
+     18.4.1. Theoretical Results
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#an-example-of-stability">
-     20.4.2. An Example of Stability
+     18.4.2. An Example of Stability
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#computing-stationary-densities">
-     20.4.3. Computing Stationary Densities
+     18.4.3. Computing Stationary Densities
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#exercises">
-   20.5. Exercises
+   18.5. Exercises
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-1">
-     20.5.1. Exercise 1
+     18.5.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-2">
-     20.5.2. Exercise 2
+     18.5.2. Exercise 2
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-3">
-     20.5.3. Exercise 3
+     18.5.3. Exercise 3
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solutions">
-   20.6. Solutions
+   18.6. Solutions
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id8">
-     20.6.1. Exercise 1
+     18.6.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id9">
-     20.6.2. Exercise 2
+     18.6.2. Exercise 2
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id10">
-     20.6.3. Exercise 3
+     18.6.3. Exercise 3
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#appendix">
-   20.7. Appendix
+   18.7. Appendix
   </a>
  </li>
 </ul>
@@ -330,7 +329,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="tex2jax_ignore mathjax_ignore section" id="continuous-state-markov-chains">
-<h1><a class="toc-backref" href="#id11"><span class="section-number">20. </span><span class="target" id="index-0"></span>Continuous State Markov Chains</a><a class="headerlink" href="#continuous-state-markov-chains" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id11"><span class="section-number">18. </span><span class="target" id="index-0"></span>Continuous State Markov Chains</a><a class="headerlink" href="#continuous-state-markov-chains" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <span id="index-1"></span><p class="topic-title">Contents</p>
 <ul class="simple">
@@ -348,8 +347,8 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id12"><span class="section-number">20.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>In a <a class="reference internal" href="finite_markov.html"><span class="doc">previous lecture</span></a> we learned about finite Markov chains, a relatively elementary class of stochastic dynamic models.</p>
+<h2><a class="toc-backref" href="#id12"><span class="section-number">18.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>In a <a class="reference internal" href="../introduction_dynamics/finite_markov.html"><span class="doc">previous lecture</span></a> we learned about finite Markov chains, a relatively elementary class of stochastic dynamic models.</p>
 <p>The present lecture extends this analysis to continuous (i.e., uncountable) state Markov chains.</p>
 <p>Most stochastic dynamic models studied by economists either fit directly into this class or can be represented as continuous state Markov chains after minor modifications.</p>
 <p>In this lecture, our focus will be on continuous Markov models that</p>
@@ -378,20 +377,20 @@ such as simulation, distribution dynamics, stability, ergodicity, etc.</p>
 <p class="admonition-title">Note</p>
 <p>For some people, the term “Markov chain” always refers to a process with a
 finite or discrete state space.  We follow the mainstream
-mathematical literature (e.g., <span id="id1">[<a class="reference internal" href="../zreferences.html#id109">MT09</a>]</span>) in using the term to refer to any discrete <strong>time</strong>
+mathematical literature (e.g., <span id="id1">[<a class="reference internal" href="../zreferences.html#id111" title="S P Meyn and R L Tweedie. Markov Chains and Stochastic Stability. Cambridge University Press, 2009.">MT09</a>]</span>) in using the term to refer to any discrete <strong>time</strong>
 Markov process.</p>
 </div>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
-<span class="k">using</span><span class="w"> </span><span class="n">KernelDensity</span><span class="p">,</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">QuantEcon</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">KernelDensity</span><span class="p">,</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">QuantEcon</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="the-density-case">
-<span id="statd-density-case"></span><h2><a class="toc-backref" href="#id13"><span class="section-number">20.2. </span>The Density Case</a><a class="headerlink" href="#the-density-case" title="Permalink to this headline">¶</a></h2>
+<span id="statd-density-case"></span><h2><a class="toc-backref" href="#id13"><span class="section-number">18.2. </span>The Density Case</a><a class="headerlink" href="#the-density-case" title="Permalink to this headline">¶</a></h2>
 <p>You are probably aware that some distributions can be represented by densities
 and some cannot.</p>
 <p>(For example, distributions on the real numbers <span class="math notranslate nohighlight">\(\mathbb R\)</span> that put positive probability
@@ -400,8 +399,8 @@ on individual points have no density representation)</p>
 <p>The benefit is that the density case offers a very direct parallel to the finite case in terms of notation and intuition.</p>
 <p>Once we’ve built some intuition we’ll cover the general case.</p>
 <div class="section" id="definitions-and-basic-properties">
-<h3><span class="section-number">20.2.1. </span>Definitions and Basic Properties<a class="headerlink" href="#definitions-and-basic-properties" title="Permalink to this headline">¶</a></h3>
-<p>In our <a class="reference internal" href="finite_markov.html"><span class="doc">lecture on finite Markov chains</span></a>, we studied discrete time Markov chains that evolve on a finite state space <span class="math notranslate nohighlight">\(S\)</span>.</p>
+<h3><span class="section-number">18.2.1. </span>Definitions and Basic Properties<a class="headerlink" href="#definitions-and-basic-properties" title="Permalink to this headline">¶</a></h3>
+<p>In our <a class="reference internal" href="../introduction_dynamics/finite_markov.html"><span class="doc">lecture on finite Markov chains</span></a>, we studied discrete time Markov chains that evolve on a finite state space <span class="math notranslate nohighlight">\(S\)</span>.</p>
 <p>In this setting, the dynamics of the model are described by a stochastic matrix — a nonnegative square matrix <span class="math notranslate nohighlight">\(P = P[i, j]\)</span> such that each row <span class="math notranslate nohighlight">\(P[i, \cdot]\)</span> sums to one.</p>
 <p>The interpretation of <span class="math notranslate nohighlight">\(P\)</span> is that <span class="math notranslate nohighlight">\(P[i, j]\)</span> represents the
 probability of transitioning from state <span class="math notranslate nohighlight">\(i\)</span> to state <span class="math notranslate nohighlight">\(j\)</span> in one
@@ -434,33 +433,33 @@ unit of time.</p>
 <p>For example, let <span class="math notranslate nohighlight">\(S = \mathbb R\)</span> and consider the particular stochastic
 kernel <span class="math notranslate nohighlight">\(p_w\)</span> defined by</p>
 <div class="math notranslate nohighlight" id="equation-statd-rwsk">
-<span class="eqno">(20.1)<a class="headerlink" href="#equation-statd-rwsk" title="Permalink to this equation">¶</a></span>\[p_w(x, y) := \frac{1}{\sqrt{2 \pi}} \exp \left\{ - \frac{(y - x)^2}{2} \right\}\]</div>
+<span class="eqno">(18.1)<a class="headerlink" href="#equation-statd-rwsk" title="Permalink to this equation">¶</a></span>\[p_w(x, y) := \frac{1}{\sqrt{2 \pi}} \exp \left\{ - \frac{(y - x)^2}{2} \right\}\]</div>
 <p>What kind of model does <span class="math notranslate nohighlight">\(p_w\)</span> represent?</p>
 <p>The answer is, the (normally distributed) random walk</p>
 <div class="math notranslate nohighlight" id="equation-statd-rw">
-<span class="eqno">(20.2)<a class="headerlink" href="#equation-statd-rw" title="Permalink to this equation">¶</a></span>\[X_{t+1} = X_t + \xi_{t+1}
+<span class="eqno">(18.2)<a class="headerlink" href="#equation-statd-rw" title="Permalink to this equation">¶</a></span>\[X_{t+1} = X_t + \xi_{t+1}
 \quad \text{where} \quad
 \{ \xi_t \} \stackrel {\textrm{ IID }} {\sim} N(0, 1)\]</div>
-<p>To see this, let’s find the stochastic kernel <span class="math notranslate nohighlight">\(p\)</span> corresponding to <a class="reference internal" href="#equation-statd-rw">(20.2)</a>.</p>
+<p>To see this, let’s find the stochastic kernel <span class="math notranslate nohighlight">\(p\)</span> corresponding to <a class="reference internal" href="#equation-statd-rw">(18.2)</a>.</p>
 <p>Recall that <span class="math notranslate nohighlight">\(p(x, \cdot)\)</span> represents the distribution of <span class="math notranslate nohighlight">\(X_{t+1}\)</span> given <span class="math notranslate nohighlight">\(X_t = x\)</span>.</p>
-<p>Letting <span class="math notranslate nohighlight">\(X_t = x\)</span> in <a class="reference internal" href="#equation-statd-rw">(20.2)</a> and considering the distribution of <span class="math notranslate nohighlight">\(X_{t+1}\)</span>, we see that <span class="math notranslate nohighlight">\(p(x, \cdot) = N(x, 1)\)</span>.</p>
-<p>In other words, <span class="math notranslate nohighlight">\(p\)</span> is exactly <span class="math notranslate nohighlight">\(p_w\)</span>, as defined in <a class="reference internal" href="#equation-statd-rwsk">(20.1)</a>.</p>
+<p>Letting <span class="math notranslate nohighlight">\(X_t = x\)</span> in <a class="reference internal" href="#equation-statd-rw">(18.2)</a> and considering the distribution of <span class="math notranslate nohighlight">\(X_{t+1}\)</span>, we see that <span class="math notranslate nohighlight">\(p(x, \cdot) = N(x, 1)\)</span>.</p>
+<p>In other words, <span class="math notranslate nohighlight">\(p\)</span> is exactly <span class="math notranslate nohighlight">\(p_w\)</span>, as defined in <a class="reference internal" href="#equation-statd-rwsk">(18.1)</a>.</p>
 </div>
 <div class="section" id="connection-to-stochastic-difference-equations">
-<h3><span class="section-number">20.2.2. </span>Connection to Stochastic Difference Equations<a class="headerlink" href="#connection-to-stochastic-difference-equations" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">18.2.2. </span>Connection to Stochastic Difference Equations<a class="headerlink" href="#connection-to-stochastic-difference-equations" title="Permalink to this headline">¶</a></h3>
 <p>In the previous section, we made the connection between stochastic difference
-equation <a class="reference internal" href="#equation-statd-rw">(20.2)</a> and stochastic kernel <a class="reference internal" href="#equation-statd-rwsk">(20.1)</a>.</p>
+equation <a class="reference internal" href="#equation-statd-rw">(18.2)</a> and stochastic kernel <a class="reference internal" href="#equation-statd-rwsk">(18.1)</a>.</p>
 <p>In economics and time series analysis we meet stochastic difference equations of all different shapes and sizes.</p>
 <p>It will be useful for us if we have some systematic methods for converting stochastic difference equations into stochastic kernels.</p>
 <p>To this end, consider the generic (scalar) stochastic difference equation given by</p>
 <div class="math notranslate nohighlight" id="equation-statd-srs">
-<span class="eqno">(20.3)<a class="headerlink" href="#equation-statd-srs" title="Permalink to this equation">¶</a></span>\[X_{t+1} = \mu(X_t) + \sigma(X_t) \, \xi_{t+1}\]</div>
+<span class="eqno">(18.3)<a class="headerlink" href="#equation-statd-srs" title="Permalink to this equation">¶</a></span>\[X_{t+1} = \mu(X_t) + \sigma(X_t) \, \xi_{t+1}\]</div>
 <p>Here we assume that</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\{ \xi_t \} \stackrel {\textrm{ IID }} {\sim} \phi\)</span>, where <span class="math notranslate nohighlight">\(\phi\)</span> is a given density on <span class="math notranslate nohighlight">\(\mathbb R\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(\mu\)</span> and <span class="math notranslate nohighlight">\(\sigma\)</span> are given functions on <span class="math notranslate nohighlight">\(S\)</span>, with <span class="math notranslate nohighlight">\(\sigma(x) &gt; 0\)</span> for all <span class="math notranslate nohighlight">\(x\)</span></p></li>
 </ul>
-<p><strong>Example 1:</strong> The random walk <a class="reference internal" href="#equation-statd-rw">(20.2)</a> is a special case of <a class="reference internal" href="#equation-statd-srs">(20.3)</a>, with <span class="math notranslate nohighlight">\(\mu(x) = x\)</span> and <span class="math notranslate nohighlight">\(\sigma(x) = 1\)</span>.</p>
+<p><strong>Example 1:</strong> The random walk <a class="reference internal" href="#equation-statd-rw">(18.2)</a> is a special case of <a class="reference internal" href="#equation-statd-srs">(18.3)</a>, with <span class="math notranslate nohighlight">\(\mu(x) = x\)</span> and <span class="math notranslate nohighlight">\(\sigma(x) = 1\)</span>.</p>
 <p><strong>Example 2:</strong> Consider the <a class="reference external" href="https://en.wikipedia.org/wiki/Autoregressive_conditional_heteroskedasticity">ARCH model</a></p>
 <div class="math notranslate nohighlight">
 \[
@@ -470,11 +469,11 @@ X_{t+1} = \alpha X_t + \sigma_t \,  \xi_{t+1},
 \]</div>
 <p>Alternatively, we can write the model as</p>
 <div class="math notranslate nohighlight" id="equation-statd-arch">
-<span class="eqno">(20.4)<a class="headerlink" href="#equation-statd-arch" title="Permalink to this equation">¶</a></span>\[X_{t+1} = \alpha X_t + (\beta + \gamma X_t^2)^{1/2} \xi_{t+1}\]</div>
-<p>This is a special case of <a class="reference internal" href="#equation-statd-srs">(20.3)</a> with <span class="math notranslate nohighlight">\(\mu(x) = \alpha x\)</span> and <span class="math notranslate nohighlight">\(\sigma(x) = (\beta + \gamma x^2)^{1/2}\)</span>.</p>
+<span class="eqno">(18.4)<a class="headerlink" href="#equation-statd-arch" title="Permalink to this equation">¶</a></span>\[X_{t+1} = \alpha X_t + (\beta + \gamma X_t^2)^{1/2} \xi_{t+1}\]</div>
+<p>This is a special case of <a class="reference internal" href="#equation-statd-srs">(18.3)</a> with <span class="math notranslate nohighlight">\(\mu(x) = \alpha x\)</span> and <span class="math notranslate nohighlight">\(\sigma(x) = (\beta + \gamma x^2)^{1/2}\)</span>.</p>
 <p id="solow-swan"><strong>Example 3:</strong> With stochastic production and a constant savings rate, the one-sector neoclassical growth model leads to a law of motion for capital per worker such as</p>
 <div class="math notranslate nohighlight" id="equation-statd-ss">
-<span class="eqno">(20.5)<a class="headerlink" href="#equation-statd-ss" title="Permalink to this equation">¶</a></span>\[k_{t+1} = s  A_{t+1} f(k_t) + (1 - \delta) k_t\]</div>
+<span class="eqno">(18.5)<a class="headerlink" href="#equation-statd-ss" title="Permalink to this equation">¶</a></span>\[k_{t+1} = s  A_{t+1} f(k_t) + (1 - \delta) k_t\]</div>
 <p>Here</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(s\)</span> is the rate of savings</p></li>
@@ -486,32 +485,32 @@ X_{t+1} = \alpha X_t + \sigma_t \,  \xi_{t+1},
 <li><p><span class="math notranslate nohighlight">\(\delta\)</span> is a depreciation rate</p></li>
 <li><p><span class="math notranslate nohighlight">\(f \colon \mathbb R_+ \to \mathbb R_+\)</span> is a production function satisfying <span class="math notranslate nohighlight">\(f(k) &gt; 0\)</span> whenever <span class="math notranslate nohighlight">\(k &gt; 0\)</span></p></li>
 </ul>
-<p>(The fixed savings rate can be rationalized as the optimal policy for a particular set of technologies and preferences (see <span id="id2">[<a class="reference internal" href="../zreferences.html#id99">LS18</a>]</span>, section
+<p>(The fixed savings rate can be rationalized as the optimal policy for a particular set of technologies and preferences (see <span id="id2">[<a class="reference internal" href="../zreferences.html#id101" title="L Ljungqvist and T J Sargent. Recursive Macroeconomic Theory. MIT Press, 4 edition, 2018.">LS18</a>]</span>, section
 3.1.2), although we omit the details here)</p>
-<p>Equation <a class="reference internal" href="#equation-statd-ss">(20.5)</a> is a special case of <a class="reference internal" href="#equation-statd-srs">(20.3)</a> with <span class="math notranslate nohighlight">\(\mu(x) = (1 - \delta)x\)</span> and <span class="math notranslate nohighlight">\(\sigma(x) = s f(x)\)</span>.</p>
-<p>Now let’s obtain the stochastic kernel corresponding to the generic model <a class="reference internal" href="#equation-statd-srs">(20.3)</a>.</p>
+<p>Equation <a class="reference internal" href="#equation-statd-ss">(18.5)</a> is a special case of <a class="reference internal" href="#equation-statd-srs">(18.3)</a> with <span class="math notranslate nohighlight">\(\mu(x) = (1 - \delta)x\)</span> and <span class="math notranslate nohighlight">\(\sigma(x) = s f(x)\)</span>.</p>
+<p>Now let’s obtain the stochastic kernel corresponding to the generic model <a class="reference internal" href="#equation-statd-srs">(18.3)</a>.</p>
 <p>To find it, note first that if <span class="math notranslate nohighlight">\(U\)</span> is a random variable with
 density <span class="math notranslate nohighlight">\(f_U\)</span>, and <span class="math notranslate nohighlight">\(V = a + b U\)</span> for some constants <span class="math notranslate nohighlight">\(a,b\)</span>
 with <span class="math notranslate nohighlight">\(b &gt; 0\)</span>, then the density of <span class="math notranslate nohighlight">\(V\)</span> is given by</p>
 <div class="math notranslate nohighlight" id="equation-statd-dv">
-<span class="eqno">(20.6)<a class="headerlink" href="#equation-statd-dv" title="Permalink to this equation">¶</a></span>\[f_V(v)
+<span class="eqno">(18.6)<a class="headerlink" href="#equation-statd-dv" title="Permalink to this equation">¶</a></span>\[f_V(v)
 = \frac{1}{b}
 f_U \left( \frac{v - a}{b} \right)\]</div>
 <p>(The proof is <a class="reference internal" href="#statd-appendix"><span class="std std-ref">below</span></a>.  For a multidimensional version
 see <a class="reference external" href="http://johnstachurski.net/edtc.html">EDTC</a>, theorem 8.1.3)</p>
-<p>Taking <a class="reference internal" href="#equation-statd-dv">(20.6)</a> as given for the moment, we can
-obtain the stochastic kernel <span class="math notranslate nohighlight">\(p\)</span> for <a class="reference internal" href="#equation-statd-srs">(20.3)</a> by recalling that
+<p>Taking <a class="reference internal" href="#equation-statd-dv">(18.6)</a> as given for the moment, we can
+obtain the stochastic kernel <span class="math notranslate nohighlight">\(p\)</span> for <a class="reference internal" href="#equation-statd-srs">(18.3)</a> by recalling that
 <span class="math notranslate nohighlight">\(p(x, \cdot)\)</span> is the conditional density of <span class="math notranslate nohighlight">\(X_{t+1}\)</span> given
 <span class="math notranslate nohighlight">\(X_t = x\)</span>.</p>
 <p>In the present case, this is equivalent to stating that <span class="math notranslate nohighlight">\(p(x, \cdot)\)</span> is the density of <span class="math notranslate nohighlight">\(Y := \mu(x) + \sigma(x) \, \xi_{t+1}\)</span> when <span class="math notranslate nohighlight">\(\xi_{t+1} \sim \phi\)</span>.</p>
-<p>Hence, by <a class="reference internal" href="#equation-statd-dv">(20.6)</a>,</p>
+<p>Hence, by <a class="reference internal" href="#equation-statd-dv">(18.6)</a>,</p>
 <div class="math notranslate nohighlight" id="equation-statd-srssk">
-<span class="eqno">(20.7)<a class="headerlink" href="#equation-statd-srssk" title="Permalink to this equation">¶</a></span>\[p(x, y)
+<span class="eqno">(18.7)<a class="headerlink" href="#equation-statd-srssk" title="Permalink to this equation">¶</a></span>\[p(x, y)
 = \frac{1}{\sigma(x)}
 \phi \left( \frac{y - \mu(x)}{\sigma(x)} \right)\]</div>
-<p>For example, the growth model in <a class="reference internal" href="#equation-statd-ss">(20.5)</a> has stochastic kernel</p>
+<p>For example, the growth model in <a class="reference internal" href="#equation-statd-ss">(18.5)</a> has stochastic kernel</p>
 <div class="math notranslate nohighlight" id="equation-statd-sssk">
-<span class="eqno">(20.8)<a class="headerlink" href="#equation-statd-sssk" title="Permalink to this equation">¶</a></span>\[p(x, y)
+<span class="eqno">(18.8)<a class="headerlink" href="#equation-statd-sssk" title="Permalink to this equation">¶</a></span>\[p(x, y)
 = \frac{1}{sf(x)}
 \phi \left( \frac{y - (1 - \delta) x}{s f(x)} \right)\]</div>
 <p>where <span class="math notranslate nohighlight">\(\phi\)</span> is the density of <span class="math notranslate nohighlight">\(A_{t+1}\)</span>.</p>
@@ -519,8 +518,8 @@ obtain the stochastic kernel <span class="math notranslate nohighlight">\(p\)</s
 <span class="math notranslate nohighlight">\(\sigma(x) = s f(x)\)</span> is strictly positive for all <span class="math notranslate nohighlight">\(s\)</span> as required)</p>
 </div>
 <div class="section" id="distribution-dynamics">
-<h3><span class="section-number">20.2.3. </span>Distribution Dynamics<a class="headerlink" href="#distribution-dynamics" title="Permalink to this headline">¶</a></h3>
-<p>In <a class="reference internal" href="finite_markov.html#mc-md"><span class="std std-ref">this section</span></a> of our lecture on <strong>finite</strong> Markov chains, we
+<h3><span class="section-number">18.2.3. </span>Distribution Dynamics<a class="headerlink" href="#distribution-dynamics" title="Permalink to this headline">¶</a></h3>
+<p>In <a class="reference internal" href="../introduction_dynamics/finite_markov.html#mc-md"><span class="std std-ref">this section</span></a> of our lecture on <strong>finite</strong> Markov chains, we
 asked the following question: If</p>
 <ol class="simple">
 <li><p><span class="math notranslate nohighlight">\(\{X_t\}\)</span> is a Markov chain with stochastic matrix <span class="math notranslate nohighlight">\(P\)</span></p></li>
@@ -528,7 +527,7 @@ asked the following question: If</p>
 </ol>
 <p>then what is the distribution of <span class="math notranslate nohighlight">\(X_{t+1}\)</span>?</p>
 <p>Letting <span class="math notranslate nohighlight">\(\psi_{t+1}\)</span> denote the distribution of <span class="math notranslate nohighlight">\(X_{t+1}\)</span>, the
-answer <a class="reference internal" href="finite_markov.html#mc-fdd"><span class="std std-ref">we gave</span></a> was that</p>
+answer <a class="reference internal" href="../introduction_dynamics/finite_markov.html#mc-fdd"><span class="std std-ref">we gave</span></a> was that</p>
 <div class="math notranslate nohighlight">
 \[
 \psi_{t+1}[j] = \sum_{i \in S} P[i,j] \psi_t[i]
@@ -539,7 +538,7 @@ tomorrow is the probability of visiting <span class="math notranslate nohighligh
 <p>In the density case, we just replace the sum with an integral and probability
 mass functions with densities, yielding</p>
 <div class="math notranslate nohighlight" id="equation-statd-fdd">
-<span class="eqno">(20.9)<a class="headerlink" href="#equation-statd-fdd" title="Permalink to this equation">¶</a></span>\[\psi_{t+1}(y) = \int p(x,y) \psi_t(x) \, dx,
+<span class="eqno">(18.9)<a class="headerlink" href="#equation-statd-fdd" title="Permalink to this equation">¶</a></span>\[\psi_{t+1}(y) = \int p(x,y) \psi_t(x) \, dx,
 \qquad \forall y \in S\]</div>
 <p>It is convenient to think of this updating process in terms of an operator.</p>
 <p>(An operator is just a function, but the term is usually reserved for a function that sends functions into functions)</p>
@@ -548,23 +547,23 @@ mass functions with densities, yielding</p>
 <span class="math notranslate nohighlight">\(\psi\)</span> and sends it into new density <span class="math notranslate nohighlight">\(\psi P\)</span>, where the latter is
 defined by</p>
 <div class="math notranslate nohighlight" id="equation-def-dmo">
-<span class="eqno">(20.10)<a class="headerlink" href="#equation-def-dmo" title="Permalink to this equation">¶</a></span>\[(\psi P)(y) = \int p(x,y) \psi(x) dx\]</div>
+<span class="eqno">(18.10)<a class="headerlink" href="#equation-def-dmo" title="Permalink to this equation">¶</a></span>\[(\psi P)(y) = \int p(x,y) \psi(x) dx\]</div>
 <p>This operator is usually called the <em>Markov operator</em> corresponding to <span class="math notranslate nohighlight">\(p\)</span></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Unlike most operators, we write <span class="math notranslate nohighlight">\(P\)</span> to the right of its argument,
 instead of to the left (i.e., <span class="math notranslate nohighlight">\(\psi P\)</span> instead of <span class="math notranslate nohighlight">\(P \psi\)</span>).
 This is a common convention, with the intention being to maintain the
-parallel with the finite case — see <a class="reference internal" href="finite_markov.html#mc-fddv"><span class="std std-ref">here</span></a>.</p>
+parallel with the finite case — see <a class="reference internal" href="../introduction_dynamics/finite_markov.html#mc-fddv"><span class="std std-ref">here</span></a>.</p>
 </div>
-<p>With this notation, we can write <a class="reference internal" href="#equation-statd-fdd">(20.9)</a> more succinctly as <span class="math notranslate nohighlight">\(\psi_{t+1}(y) = (\psi_t P)(y)\)</span> for all <span class="math notranslate nohighlight">\(y\)</span>, or, dropping the <span class="math notranslate nohighlight">\(y\)</span> and letting “<span class="math notranslate nohighlight">\(=\)</span>” indicate equality of functions,</p>
+<p>With this notation, we can write <a class="reference internal" href="#equation-statd-fdd">(18.9)</a> more succinctly as <span class="math notranslate nohighlight">\(\psi_{t+1}(y) = (\psi_t P)(y)\)</span> for all <span class="math notranslate nohighlight">\(y\)</span>, or, dropping the <span class="math notranslate nohighlight">\(y\)</span> and letting “<span class="math notranslate nohighlight">\(=\)</span>” indicate equality of functions,</p>
 <div class="math notranslate nohighlight" id="equation-statd-p">
-<span class="eqno">(20.11)<a class="headerlink" href="#equation-statd-p" title="Permalink to this equation">¶</a></span>\[\psi_{t+1} = \psi_t P\]</div>
-<p>Equation <a class="reference internal" href="#equation-statd-p">(20.11)</a> tells us that if we specify a distribution for <span class="math notranslate nohighlight">\(\psi_0\)</span>, then the entire sequence
+<span class="eqno">(18.11)<a class="headerlink" href="#equation-statd-p" title="Permalink to this equation">¶</a></span>\[\psi_{t+1} = \psi_t P\]</div>
+<p>Equation <a class="reference internal" href="#equation-statd-p">(18.11)</a> tells us that if we specify a distribution for <span class="math notranslate nohighlight">\(\psi_0\)</span>, then the entire sequence
 of future distributions can be obtained by iterating with <span class="math notranslate nohighlight">\(P\)</span>.</p>
-<p>It’s interesting to note that <a class="reference internal" href="#equation-statd-p">(20.11)</a> is a deterministic difference equation.</p>
+<p>It’s interesting to note that <a class="reference internal" href="#equation-statd-p">(18.11)</a> is a deterministic difference equation.</p>
 <p>Thus, by converting a stochastic difference equation such as
-<a class="reference internal" href="#equation-statd-srs">(20.3)</a> into a stochastic kernel <span class="math notranslate nohighlight">\(p\)</span> and hence an operator
+<a class="reference internal" href="#equation-statd-srs">(18.3)</a> into a stochastic kernel <span class="math notranslate nohighlight">\(p\)</span> and hence an operator
 <span class="math notranslate nohighlight">\(P\)</span>, we convert a stochastic difference equation into a deterministic
 one (albeit in a much higher dimensional space).</p>
 <div class="admonition note">
@@ -576,24 +575,24 @@ the <a class="reference external" href="https://en.wikipedia.org/wiki/Counting_m
 </div>
 </div>
 <div class="section" id="computation">
-<h3><span class="section-number">20.2.4. </span>Computation<a class="headerlink" href="#computation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">18.2.4. </span>Computation<a class="headerlink" href="#computation" title="Permalink to this headline">¶</a></h3>
 <p>To learn about the dynamics of a given process, it’s useful to compute and study the sequences of densities generated by the model.</p>
-<p>One way to do this is to try to implement the iteration described by <a class="reference internal" href="#equation-def-dmo">(20.10)</a> and <a class="reference internal" href="#equation-statd-p">(20.11)</a> using numerical integration.</p>
-<p>However, to produce <span class="math notranslate nohighlight">\(\psi P\)</span> from <span class="math notranslate nohighlight">\(\psi\)</span> via <a class="reference internal" href="#equation-def-dmo">(20.10)</a>, you
+<p>One way to do this is to try to implement the iteration described by <a class="reference internal" href="#equation-def-dmo">(18.10)</a> and <a class="reference internal" href="#equation-statd-p">(18.11)</a> using numerical integration.</p>
+<p>However, to produce <span class="math notranslate nohighlight">\(\psi P\)</span> from <span class="math notranslate nohighlight">\(\psi\)</span> via <a class="reference internal" href="#equation-def-dmo">(18.10)</a>, you
 would need to integrate at every <span class="math notranslate nohighlight">\(y\)</span>, and there is a continuum of such
 <span class="math notranslate nohighlight">\(y\)</span>.</p>
 <p>Another possibility is to discretize the model, but this introduces errors of unknown size.</p>
 <p>A nicer alternative in the present setting is to combine simulation with an elegant estimator called the <em>look ahead</em> estimator.</p>
 <p>Let’s go over the ideas with reference to the growth model <a class="reference internal" href="#solow-swan"><span class="std std-ref">discussed above</span></a>, the dynamics of which we repeat here for convenience:</p>
 <div class="math notranslate nohighlight" id="equation-statd-ss2">
-<span class="eqno">(20.12)<a class="headerlink" href="#equation-statd-ss2" title="Permalink to this equation">¶</a></span>\[k_{t+1} = s  A_{t+1} f(k_t) + (1 - \delta) k_t\]</div>
+<span class="eqno">(18.12)<a class="headerlink" href="#equation-statd-ss2" title="Permalink to this equation">¶</a></span>\[k_{t+1} = s  A_{t+1} f(k_t) + (1 - \delta) k_t\]</div>
 <p>Our aim is to compute the sequence <span class="math notranslate nohighlight">\(\{ \psi_t \}\)</span> associated with this model and fixed initial condition <span class="math notranslate nohighlight">\(\psi_0\)</span>.</p>
 <p>To approximate <span class="math notranslate nohighlight">\(\psi_t\)</span> by simulation, recall that, by definition, <span class="math notranslate nohighlight">\(\psi_t\)</span> is the density of <span class="math notranslate nohighlight">\(k_t\)</span> given <span class="math notranslate nohighlight">\(k_0 \sim \psi_0\)</span>.</p>
 <p>If we wish to generate observations of this random variable,  all we need to do is</p>
 <ol class="simple">
 <li><p>draw <span class="math notranslate nohighlight">\(k_0\)</span> from the specified initial condition <span class="math notranslate nohighlight">\(\psi_0\)</span></p></li>
 <li><p>draw the shocks <span class="math notranslate nohighlight">\(A_1, \ldots, A_t\)</span> from their specified density <span class="math notranslate nohighlight">\(\phi\)</span></p></li>
-<li><p>compute <span class="math notranslate nohighlight">\(k_t\)</span> iteratively via <a class="reference internal" href="#equation-statd-ss2">(20.12)</a></p></li>
+<li><p>compute <span class="math notranslate nohighlight">\(k_t\)</span> iteratively via <a class="reference internal" href="#equation-statd-ss2">(18.12)</a></p></li>
 </ol>
 <p>If we repeat this <span class="math notranslate nohighlight">\(n\)</span> times, we get <span class="math notranslate nohighlight">\(n\)</span> independent observations <span class="math notranslate nohighlight">\(k_t^1, \ldots, k_t^n\)</span>.</p>
 <p>With these draws in hand, the next step is to generate some kind of representation of their distribution <span class="math notranslate nohighlight">\(\psi_t\)</span>.</p>
@@ -604,8 +603,8 @@ actually generate <span class="math notranslate nohighlight">\(n\)</span> observ
 <p>Now we take these <span class="math notranslate nohighlight">\(n\)</span> observations <span class="math notranslate nohighlight">\(k_{t-1}^1, \ldots,
 k_{t-1}^n\)</span> and form the estimate</p>
 <div class="math notranslate nohighlight" id="equation-statd-lae1">
-<span class="eqno">(20.13)<a class="headerlink" href="#equation-statd-lae1" title="Permalink to this equation">¶</a></span>\[\psi_t^n(y) = \frac{1}{n} \sum_{i=1}^n p(k_{t-1}^i, y)\]</div>
-<p>where <span class="math notranslate nohighlight">\(p\)</span> is the growth model stochastic kernel in <a class="reference internal" href="#equation-statd-sssk">(20.8)</a>.</p>
+<span class="eqno">(18.13)<a class="headerlink" href="#equation-statd-lae1" title="Permalink to this equation">¶</a></span>\[\psi_t^n(y) = \frac{1}{n} \sum_{i=1}^n p(k_{t-1}^i, y)\]</div>
+<p>where <span class="math notranslate nohighlight">\(p\)</span> is the growth model stochastic kernel in <a class="reference internal" href="#equation-statd-sssk">(18.8)</a>.</p>
 <p>What is the justification for this slightly surprising estimator?</p>
 <p>The idea is that, by the strong <a class="reference internal" href="lln_clt.html#lln-ksl"><span class="std std-ref">law of large numbers</span></a>,</p>
 <div class="math notranslate nohighlight">
@@ -618,15 +617,15 @@ k_{t-1}^n\)</span> and form the estimate</p>
 \]</div>
 <p>with probability one as <span class="math notranslate nohighlight">\(n \to \infty\)</span>.</p>
 <p>Here the first equality is by the definition of <span class="math notranslate nohighlight">\(\psi_{t-1}\)</span>, and the
-second is by <a class="reference internal" href="#equation-statd-fdd">(20.9)</a>.</p>
-<p>We have just shown that our estimator <span class="math notranslate nohighlight">\(\psi_t^n(y)\)</span> in <a class="reference internal" href="#equation-statd-lae1">(20.13)</a>
+second is by <a class="reference internal" href="#equation-statd-fdd">(18.9)</a>.</p>
+<p>We have just shown that our estimator <span class="math notranslate nohighlight">\(\psi_t^n(y)\)</span> in <a class="reference internal" href="#equation-statd-lae1">(18.13)</a>
 converges almost surely to <span class="math notranslate nohighlight">\(\psi_t(y)\)</span>, which is just what we want to compute.</p>
 <p>In fact much stronger convergence results are true (see, for example, <a href=/_static/pdfs/ECTA6180.pdf download>this paper</a>).</p>
 </div>
 <div class="section" id="implementation">
-<h3><span class="section-number">20.2.5. </span>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">18.2.5. </span>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
 <p>A function which calls an <code class="docutils literal notranslate"><span class="pre">LAE</span></code> type for estimating densities by this technique can be found in <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lae.jl">lae.jl</a>.</p>
-<p>This function returns the right-hand side of <a class="reference internal" href="#equation-statd-lae1">(20.13)</a> using</p>
+<p>This function returns the right-hand side of <a class="reference internal" href="#equation-statd-lae1">(18.13)</a> using</p>
 <ul class="simple">
 <li><p>an object of type <code class="docutils literal notranslate"><span class="pre">LAE</span></code> that stores the stochastic kernel and the observations</p></li>
 <li><p>the value <span class="math notranslate nohighlight">\(y\)</span> as its second argument</p></li>
@@ -635,60 +634,60 @@ converges almost surely to <span class="math notranslate nohighlight">\(\psi_t(y
 <p>(This is the reason that we reshaped <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> inside the type — to make vectorization work)</p>
 </div>
 <div class="section" id="example">
-<h3><span class="section-number">20.2.6. </span>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">18.2.6. </span>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
 <p>The following code is example of usage for the stochastic growth model <a class="reference internal" href="#solow-swan"><span class="std std-ref">described above</span></a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">StatsPlots</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">QuantEcon</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">StatsPlots</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">QuantEcon</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span>
 
-<span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="w"> </span><span class="c"># For deterministic results.</span><span class="w"></span>
+<span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="w"> </span><span class="c"># For deterministic results.</span>
 
-<span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.2</span><span class="w"></span>
-<span class="n">δ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="w"></span>
-<span class="n">a_σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w">                    </span><span class="c"># A = exp(B) where B ~ N(0, a_σ)</span><span class="w"></span>
-<span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w">                      </span><span class="c"># We set f(k) = k**α</span><span class="w"></span>
-<span class="n">ψ_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Beta</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">)</span><span class="w">         </span><span class="c"># Initial distribution</span><span class="w"></span>
-<span class="n">ϕ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LogNormal</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">a_σ</span><span class="p">)</span><span class="w"></span>
+<span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.2</span>
+<span class="n">δ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span>
+<span class="n">a_σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w">                    </span><span class="c"># A = exp(B) where B ~ N(0, a_σ)</span>
+<span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w">                      </span><span class="c"># We set f(k) = k**α</span>
+<span class="n">ψ_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Beta</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">)</span><span class="w">         </span><span class="c"># Initial distribution</span>
+<span class="n">ϕ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LogNormal</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">a_σ</span><span class="p">)</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c"># Stochastic kernel for the growth model with Cobb-Douglas production.</span><span class="w"></span>
-<span class="w">    </span><span class="c"># Both x and y must be strictly positive.</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># Stochastic kernel for the growth model with Cobb-Douglas production.</span>
+<span class="w">    </span><span class="c"># Both x and y must be strictly positive.</span>
 
-<span class="w">    </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="o">.^</span><span class="n">α</span><span class="w"></span>
+<span class="w">    </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="o">.^</span><span class="n">α</span>
 
-<span class="w">    </span><span class="n">pdf_arg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clamp</span><span class="o">.</span><span class="p">((</span><span class="n">y</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">eps</span><span class="p">(),</span><span class="w"> </span><span class="nb">Inf</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">pdf_arg</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="n">pdf_arg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clamp</span><span class="o">.</span><span class="p">((</span><span class="n">y</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">eps</span><span class="p">(),</span><span class="w"> </span><span class="nb">Inf</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">pdf_arg</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span>
+<span class="k">end</span>
 
-<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10000</span><span class="w">  </span><span class="c"># Number of observations at each date t</span><span class="w"></span>
-<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="w">     </span><span class="c"># Compute density of k_t at 1,...,T+1</span><span class="w"></span>
+<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10000</span><span class="w">  </span><span class="c"># Number of observations at each date t</span>
+<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">30</span><span class="w">     </span><span class="c"># Compute density of k_t at 1,...,T+1</span>
 
-<span class="c"># Generate matrix s.t. t-th column is n observations of k_t</span><span class="w"></span>
-<span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">)</span><span class="w"></span>
-<span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand!</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">))</span><span class="w"></span>
+<span class="c"># Generate matrix s.t. t-th column is n observations of k_t</span>
+<span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">)</span>
+<span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand!</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">))</span>
 
-<span class="c"># Draw first column from initial distribution</span><span class="w"></span>
-<span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">ψ_0</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="mi">2</span><span class="w">  </span><span class="c"># divide by 2 to match scale = 0.5 in py version</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">    </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="o">*</span><span class="n">A</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="o">.^</span><span class="n">α</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="c"># Draw first column from initial distribution</span>
+<span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">ψ_0</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="mi">2</span><span class="w">  </span><span class="c"># divide by 2 to match scale = 0.5 in py version</span>
+<span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="o">-</span><span class="mi">1</span>
+<span class="w">    </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="o">*</span><span class="n">A</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="o">.^</span><span class="n">α</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span>
+<span class="k">end</span>
 
-<span class="c"># Generate T instances of LAE using this data, one for each date t</span><span class="w"></span>
-<span class="n">laes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">LAE</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">])</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">T</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">]</span><span class="w"></span>
+<span class="c"># Generate T instances of LAE using this data, one for each date t</span>
+<span class="n">laes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">LAE</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">])</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">T</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">]</span>
 
-<span class="c"># Plot</span><span class="w"></span>
-<span class="n">ygrid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="p">)</span><span class="w"></span>
-<span class="n">laes_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="n">colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="w"></span>
-<span class="w">    </span><span class="n">ψ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">laes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">laes_plot</span><span class="p">,</span><span class="w"> </span><span class="n">lae_est</span><span class="p">(</span><span class="n">ψ</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ygrid</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span><span class="w">  </span><span class="n">RGBA</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">T</span><span class="p">))</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">ygrid</span><span class="p">,</span><span class="w"> </span><span class="n">laes_plot</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">colors</span><span class="p">)),</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"></span>
-<span class="w">     </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;capital&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:none</span><span class="p">)</span><span class="w"></span>
-<span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Density of </span><span class="si">$k_1</span><span class="s">$ (lighter) to </span><span class="si">$k_T</span><span class="s">$ (darker) for </span><span class="si">$T</span><span class="s">=%</span><span class="si">$T</span><span class="s">$&quot;</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"></span>
+<span class="c"># Plot</span>
+<span class="n">ygrid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="p">)</span>
+<span class="n">laes_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="n">colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span>
+<span class="w">    </span><span class="n">ψ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">laes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">laes_plot</span><span class="p">,</span><span class="w"> </span><span class="n">lae_est</span><span class="p">(</span><span class="n">ψ</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">ygrid</span><span class="p">))</span>
+<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span><span class="w">  </span><span class="n">RGBA</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">T</span><span class="p">))</span>
+<span class="k">end</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">ygrid</span><span class="p">,</span><span class="w"> </span><span class="n">laes_plot</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">colors</span><span class="p">)),</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">     </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;capital&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:none</span><span class="p">)</span>
+<span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Density of </span><span class="si">$k_1</span><span class="s">$ (lighter) to </span><span class="si">$k_T</span><span class="s">$ (darker) for </span><span class="si">$T</span><span class="s">=%</span><span class="si">$T</span><span class="s">$&quot;</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -700,11 +699,11 @@ density computed via the look ahead estimator.</p>
 <p>Notice that the sequence of densities shown in the figure seems to be
 converging — more on this in just a moment.</p>
 <p>Another quick comment is that each of these distributions could be interpreted
-as a cross sectional distribution (recall <a class="reference internal" href="finite_markov.html#mc-eg1-1"><span class="std std-ref">this discussion</span></a>).</p>
+as a cross sectional distribution (recall <a class="reference internal" href="../introduction_dynamics/finite_markov.html#mc-eg1-1"><span class="std std-ref">this discussion</span></a>).</p>
 </div>
 </div>
 <div class="section" id="beyond-densities">
-<h2><a class="toc-backref" href="#id14"><span class="section-number">20.3. </span>Beyond Densities</a><a class="headerlink" href="#beyond-densities" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id14"><span class="section-number">18.3. </span>Beyond Densities</a><a class="headerlink" href="#beyond-densities" title="Permalink to this headline">¶</a></h2>
 <p>Up until now, we have focused exclusively on continuous state Markov chains
 where all conditional distributions <span class="math notranslate nohighlight">\(p(x, \cdot)\)</span> are densities.</p>
 <p>As discussed above, not all distributions can be represented as densities.</p>
@@ -715,8 +714,8 @@ different theory.</p>
 be familiar with measure theory.</p>
 <p>We can, however, construct a fairly general theory using distribution functions.</p>
 <div class="section" id="example-and-definitions">
-<h3><span class="section-number">20.3.1. </span>Example and Definitions<a class="headerlink" href="#example-and-definitions" title="Permalink to this headline">¶</a></h3>
-<p>To illustrate the issues, recall that Hopenhayn and Rogerson <span id="id3">[<a class="reference internal" href="../zreferences.html#id88">HR93</a>]</span> study a model of firm dynamics where individual firm productivity follows the exogenous process</p>
+<h3><span class="section-number">18.3.1. </span>Example and Definitions<a class="headerlink" href="#example-and-definitions" title="Permalink to this headline">¶</a></h3>
+<p>To illustrate the issues, recall that Hopenhayn and Rogerson <span id="id3">[<a class="reference internal" href="../zreferences.html#id90" title="Hugo A Hopenhayn and Richard Rogerson. Job Turnover and Policy Evaluation: A General Equilibrium Analysis. Journal of Political Economy, 101(5):915–938, 1993.">HR93</a>]</span> study a model of firm dynamics where individual firm productivity follows the exogenous process</p>
 <div class="math notranslate nohighlight">
 \[
 X_{t+1} = a + \rho X_t + \xi_{t+1},
@@ -744,14 +743,14 @@ G(x, y) := \mathbb P \{ h(a + \rho x + \xi_{t+1}) \leq y \}
 \qquad (0 \leq x, y \leq 1)
 \]</div>
 <p>This family of cdfs <span class="math notranslate nohighlight">\(G(x, \cdot)\)</span> plays a role analogous to the stochastic kernel in the density case.</p>
-<p>The distribution dynamics in <a class="reference internal" href="#equation-statd-fdd">(20.9)</a> are then replaced by</p>
+<p>The distribution dynamics in <a class="reference internal" href="#equation-statd-fdd">(18.9)</a> are then replaced by</p>
 <div class="math notranslate nohighlight" id="equation-statd-fddc">
-<span class="eqno">(20.14)<a class="headerlink" href="#equation-statd-fddc" title="Permalink to this equation">¶</a></span>\[F_{t+1}(y) = \int G(x,y) F_t(dx)\]</div>
+<span class="eqno">(18.14)<a class="headerlink" href="#equation-statd-fddc" title="Permalink to this equation">¶</a></span>\[F_{t+1}(y) = \int G(x,y) F_t(dx)\]</div>
 <p>Here <span class="math notranslate nohighlight">\(F_t\)</span> and <span class="math notranslate nohighlight">\(F_{t+1}\)</span> are cdfs representing the distribution of the current state and next period state.</p>
-<p>The intuition behind <a class="reference internal" href="#equation-statd-fddc">(20.14)</a> is essentially the same as for <a class="reference internal" href="#equation-statd-fdd">(20.9)</a>.</p>
+<p>The intuition behind <a class="reference internal" href="#equation-statd-fddc">(18.14)</a> is essentially the same as for <a class="reference internal" href="#equation-statd-fdd">(18.9)</a>.</p>
 </div>
 <div class="section" id="id4">
-<h3><span class="section-number">20.3.2. </span>Computation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">18.3.2. </span>Computation<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>If you wish to compute these cdfs, you cannot use the look-ahead estimator as before.</p>
 <p>Indeed, you should not use any density estimator, since the objects you are
 estimating/computing are not densities.</p>
@@ -759,23 +758,23 @@ estimating/computing are not densities.</p>
 </div>
 </div>
 <div class="section" id="stability">
-<h2><a class="toc-backref" href="#id15"><span class="section-number">20.4. </span>Stability</a><a class="headerlink" href="#stability" title="Permalink to this headline">¶</a></h2>
-<p>In our <a class="reference internal" href="finite_markov.html"><span class="doc">lecture</span></a> on finite Markov chains we also studied stationarity, stability and ergodicity.</p>
+<h2><a class="toc-backref" href="#id15"><span class="section-number">18.4. </span>Stability</a><a class="headerlink" href="#stability" title="Permalink to this headline">¶</a></h2>
+<p>In our <a class="reference internal" href="../introduction_dynamics/finite_markov.html"><span class="doc">lecture</span></a> on finite Markov chains we also studied stationarity, stability and ergodicity.</p>
 <p>Here we will cover the same topics for the continuous case.</p>
 <p>We will, however, treat only the density case (as in <a class="reference internal" href="#statd-density-case"><span class="std std-ref">this section</span></a>), where the stochastic kernel is a family of densities.</p>
 <p>The general case is relatively similar — references are given below.</p>
 <div class="section" id="theoretical-results">
-<h3><span class="section-number">20.4.1. </span>Theoretical Results<a class="headerlink" href="#theoretical-results" title="Permalink to this headline">¶</a></h3>
-<p>Analogous to <a class="reference internal" href="finite_markov.html#mc-stat-dd"><span class="std std-ref">the finite case</span></a>, given a stochastic kernel <span class="math notranslate nohighlight">\(p\)</span> and corresponding Markov operator as
-defined in <a class="reference internal" href="#equation-def-dmo">(20.10)</a>, a density <span class="math notranslate nohighlight">\(\psi^*\)</span> on <span class="math notranslate nohighlight">\(S\)</span> is called
+<h3><span class="section-number">18.4.1. </span>Theoretical Results<a class="headerlink" href="#theoretical-results" title="Permalink to this headline">¶</a></h3>
+<p>Analogous to <a class="reference internal" href="../introduction_dynamics/finite_markov.html#mc-stat-dd"><span class="std std-ref">the finite case</span></a>, given a stochastic kernel <span class="math notranslate nohighlight">\(p\)</span> and corresponding Markov operator as
+defined in <a class="reference internal" href="#equation-def-dmo">(18.10)</a>, a density <span class="math notranslate nohighlight">\(\psi^*\)</span> on <span class="math notranslate nohighlight">\(S\)</span> is called
 <em>stationary</em> for <span class="math notranslate nohighlight">\(P\)</span> if it is a fixed point of the operator <span class="math notranslate nohighlight">\(P\)</span>.</p>
 <p>In other words,</p>
 <div class="math notranslate nohighlight" id="equation-statd-dsd">
-<span class="eqno">(20.15)<a class="headerlink" href="#equation-statd-dsd" title="Permalink to this equation">¶</a></span>\[\psi^*(y) = \int p(x,y) \psi^*(x) \, dx,
+<span class="eqno">(18.15)<a class="headerlink" href="#equation-statd-dsd" title="Permalink to this equation">¶</a></span>\[\psi^*(y) = \int p(x,y) \psi^*(x) \, dx,
 \qquad \forall y \in S\]</div>
 <p>As with the finite case, if <span class="math notranslate nohighlight">\(\psi^*\)</span> is stationary for <span class="math notranslate nohighlight">\(P\)</span>, and
 the distribution of <span class="math notranslate nohighlight">\(X_0\)</span> is <span class="math notranslate nohighlight">\(\psi^*\)</span>, then, in view of
-<a class="reference internal" href="#equation-statd-p">(20.11)</a>, <span class="math notranslate nohighlight">\(X_t\)</span> will have this same distribution for all <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<a class="reference internal" href="#equation-statd-p">(18.11)</a>, <span class="math notranslate nohighlight">\(X_t\)</span> will have this same distribution for all <span class="math notranslate nohighlight">\(t\)</span>.</p>
 <p>Hence <span class="math notranslate nohighlight">\(\psi^*\)</span> is the stochastic equivalent of a steady state.</p>
 <p>In the finite case, we learned that at least one stationary distribution exists, although there may be many.</p>
 <p>When the state space is infinite, the situation is more complicated.</p>
@@ -784,17 +783,17 @@ the distribution of <span class="math notranslate nohighlight">\(X_0\)</span> is
 <p>However, there are well-known conditions under which a stationary density <span class="math notranslate nohighlight">\(\psi^*\)</span> exists.</p>
 <p>With additional conditions, we can also get a unique stationary density (<span class="math notranslate nohighlight">\(\psi \in \mathscr D \text{ and } \psi = \psi P \implies \psi = \psi^*\)</span>),  and also global convergence in the sense that</p>
 <div class="math notranslate nohighlight" id="equation-statd-dca">
-<span class="eqno">(20.16)<a class="headerlink" href="#equation-statd-dca" title="Permalink to this equation">¶</a></span>\[\forall \, \psi \in \mathscr D, \quad \psi P^t \to \psi^*
+<span class="eqno">(18.16)<a class="headerlink" href="#equation-statd-dca" title="Permalink to this equation">¶</a></span>\[\forall \, \psi \in \mathscr D, \quad \psi P^t \to \psi^*
     \quad \text{as} \quad t \to \infty\]</div>
 <p>This combination of existence, uniqueness and global convergence in the sense
-of <a class="reference internal" href="#equation-statd-dca">(20.16)</a> is often referred to as <em>global stability</em>.</p>
+of <a class="reference internal" href="#equation-statd-dca">(18.16)</a> is often referred to as <em>global stability</em>.</p>
 <p>Under very similar conditions, we get <em>ergodicity</em>, which means that</p>
 <div class="math notranslate nohighlight" id="equation-statd-lln">
-<span class="eqno">(20.17)<a class="headerlink" href="#equation-statd-lln" title="Permalink to this equation">¶</a></span>\[\frac{1}{n} \sum_{t = 1}^n h(X_t)  \to \int h(x) \psi^*(x) dx
+<span class="eqno">(18.17)<a class="headerlink" href="#equation-statd-lln" title="Permalink to this equation">¶</a></span>\[\frac{1}{n} \sum_{t = 1}^n h(X_t)  \to \int h(x) \psi^*(x) dx
     \quad \text{as } n \to \infty\]</div>
 <p>for any (<a class="reference external" href="https://en.wikipedia.org/wiki/Measurable_function">measurable</a>) function <span class="math notranslate nohighlight">\(h \colon S \to \mathbb R\)</span>  such that the right-hand side is finite.</p>
-<p>Note that the convergence in <a class="reference internal" href="#equation-statd-lln">(20.17)</a> does not depend on the distribution (or value) of <span class="math notranslate nohighlight">\(X_0\)</span>.</p>
-<p>This is actually very important for simulation — it means we can learn about <span class="math notranslate nohighlight">\(\psi^*\)</span> (i.e., approximate the right hand side of <a class="reference internal" href="#equation-statd-lln">(20.17)</a> via the left hand side) without requiring any special knowledge about what to do with <span class="math notranslate nohighlight">\(X_0\)</span>.</p>
+<p>Note that the convergence in <a class="reference internal" href="#equation-statd-lln">(18.17)</a> does not depend on the distribution (or value) of <span class="math notranslate nohighlight">\(X_0\)</span>.</p>
+<p>This is actually very important for simulation — it means we can learn about <span class="math notranslate nohighlight">\(\psi^*\)</span> (i.e., approximate the right hand side of <a class="reference internal" href="#equation-statd-lln">(18.17)</a> via the left hand side) without requiring any special knowledge about what to do with <span class="math notranslate nohighlight">\(X_0\)</span>.</p>
 <p>So what are these conditions we require to get global stability and ergodicity?</p>
 <p>In essence, it must be the case that</p>
 <ol class="simple">
@@ -804,8 +803,8 @@ of <a class="reference internal" href="#equation-statd-dca">(20.16)</a> is often
 <p>For one such set of conditions see theorem 8.2.14 of <a class="reference external" href="http://johnstachurski.net/edtc.html">EDTC</a>.</p>
 <p>In addition</p>
 <ul class="simple">
-<li><p><span id="id5">[<a class="reference internal" href="../zreferences.html#id130">SLP89</a>]</span>  contains a classic (but slightly outdated) treatment of these topics.</p></li>
-<li><p>From the mathematical literature, <span id="id6">[<a class="reference internal" href="../zreferences.html#id98">LM94</a>]</span>  and <span id="id7">[<a class="reference internal" href="../zreferences.html#id109">MT09</a>]</span> give outstanding in depth treatments.</p></li>
+<li><p><span id="id5">[<a class="reference internal" href="../zreferences.html#id132" title="N L Stokey, R E Lucas, and E C Prescott. Recursive Methods in Economic Dynamics. Harvard University Press, 1989.">SLP89</a>]</span>  contains a classic (but slightly outdated) treatment of these topics.</p></li>
+<li><p>From the mathematical literature, <span id="id6">[<a class="reference internal" href="../zreferences.html#id100" title="A Lasota and M C MacKey. Chaos, Fractals, and Noise: Stochastic Aspects of Dynamics. Applied Mathematical Sciences. Springer-Verlag, 1994.">LM94</a>]</span>  and <span id="id7">[<a class="reference internal" href="../zreferences.html#id111" title="S P Meyn and R L Tweedie. Markov Chains and Stochastic Stability. Cambridge University Press, 2009.">MT09</a>]</span> give outstanding in depth treatments.</p></li>
 <li><p>Section 8.1.2 of <a class="reference external" href="http://johnstachurski.net/edtc.html">EDTC</a> provides detailed intuition, and section 8.3 gives additional references.</p></li>
 <li><p><a class="reference external" href="http://johnstachurski.net/edtc.html">EDTC</a>, section 11.3.4
 provides a specific treatment for the growth model we considered in this
@@ -813,13 +812,13 @@ lecture.</p></li>
 </ul>
 </div>
 <div class="section" id="an-example-of-stability">
-<h3><span class="section-number">20.4.2. </span>An Example of Stability<a class="headerlink" href="#an-example-of-stability" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">18.4.2. </span>An Example of Stability<a class="headerlink" href="#an-example-of-stability" title="Permalink to this headline">¶</a></h3>
 <p>As stated above, the <a class="reference internal" href="#solow-swan"><span class="std std-ref">growth model treated here</span></a> is stable under mild conditions
 on the primitives.</p>
 <ul class="simple">
 <li><p>See <a class="reference external" href="http://johnstachurski.net/edtc.html">EDTC</a>, section 11.3.4 for more details.</p></li>
 </ul>
-<p>We can see this stability in action — in particular, the convergence in <a class="reference internal" href="#equation-statd-dca">(20.16)</a> — by simulating the path of densities from various initial conditions.</p>
+<p>We can see this stability in action — in particular, the convergence in <a class="reference internal" href="#equation-statd-dca">(18.16)</a> — by simulating the path of densities from various initial conditions.</p>
 <p>Here is such a figure</p>
 <div class="figure align-default" id="statd-egs">
 <a class="reference internal image-reference" href="../_images/solution_statd_ex2.png"><img alt="../_images/solution_statd_ex2.png" src="../_images/solution_statd_ex2.png" style="width: 85%;" /></a>
@@ -828,22 +827,22 @@ on the primitives.</p>
 <p>The details regarding initial conditions and so on are given in <a class="reference internal" href="#statd-ex2"><span class="std std-ref">this exercise</span></a>, where you are asked to replicate the figure.</p>
 </div>
 <div class="section" id="computing-stationary-densities">
-<h3><span class="section-number">20.4.3. </span>Computing Stationary Densities<a class="headerlink" href="#computing-stationary-densities" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">18.4.3. </span>Computing Stationary Densities<a class="headerlink" href="#computing-stationary-densities" title="Permalink to this headline">¶</a></h3>
 <p>In the preceding figure, each sequence of densities is converging towards the unique stationary density <span class="math notranslate nohighlight">\(\psi^*\)</span>.</p>
 <p>Even from this figure we can get a fair idea what <span class="math notranslate nohighlight">\(\psi^*\)</span> looks like, and where its mass is located.</p>
 <p>However, there is a much more direct way to estimate the stationary density,
 and it involves only a slight modification of the look ahead estimator.</p>
-<p>Let’s say that we have a model of the form <a class="reference internal" href="#equation-statd-srs">(20.3)</a> that is stable and
+<p>Let’s say that we have a model of the form <a class="reference internal" href="#equation-statd-srs">(18.3)</a> that is stable and
 ergodic.</p>
-<p>Let <span class="math notranslate nohighlight">\(p\)</span> be the corresponding stochastic kernel, as given in <a class="reference internal" href="#equation-statd-srssk">(20.7)</a>.</p>
+<p>Let <span class="math notranslate nohighlight">\(p\)</span> be the corresponding stochastic kernel, as given in <a class="reference internal" href="#equation-statd-srssk">(18.7)</a>.</p>
 <p>To approximate the stationary density <span class="math notranslate nohighlight">\(\psi^*\)</span>, we can simply generate a
 long time series <span class="math notranslate nohighlight">\(X_0, X_1, \ldots, X_n\)</span> and estimate <span class="math notranslate nohighlight">\(\psi^*\)</span> via</p>
 <div class="math notranslate nohighlight" id="equation-statd-lae2">
-<span class="eqno">(20.18)<a class="headerlink" href="#equation-statd-lae2" title="Permalink to this equation">¶</a></span>\[\psi_n^*(y) = \frac{1}{n} \sum_{t=1}^n p(X_t, y)\]</div>
-<p>This is essentially the same as the look ahead estimator <a class="reference internal" href="#equation-statd-lae1">(20.13)</a>,
+<span class="eqno">(18.18)<a class="headerlink" href="#equation-statd-lae2" title="Permalink to this equation">¶</a></span>\[\psi_n^*(y) = \frac{1}{n} \sum_{t=1}^n p(X_t, y)\]</div>
+<p>This is essentially the same as the look ahead estimator <a class="reference internal" href="#equation-statd-lae1">(18.13)</a>,
 except that now the observations we generate are a single time series, rather
 than a cross section.</p>
-<p>The justification for <a class="reference internal" href="#equation-statd-lae2">(20.18)</a> is that, with probability one as <span class="math notranslate nohighlight">\(n \to \infty\)</span>,</p>
+<p>The justification for <a class="reference internal" href="#equation-statd-lae2">(18.18)</a> is that, with probability one as <span class="math notranslate nohighlight">\(n \to \infty\)</span>,</p>
 <div class="math notranslate nohighlight">
 \[
 \frac{1}{n} \sum_{t=1}^n p(X_t, y)
@@ -851,8 +850,8 @@ than a cross section.</p>
 \int p(x, y) \psi^*(x) \, dx
 = \psi^*(y)
 \]</div>
-<p>where the convergence is by <a class="reference internal" href="#equation-statd-lln">(20.17)</a> and the equality on the right is by
-<a class="reference internal" href="#equation-statd-dsd">(20.15)</a>.</p>
+<p>where the convergence is by <a class="reference internal" href="#equation-statd-lln">(18.17)</a> and the equality on the right is by
+<a class="reference internal" href="#equation-statd-dsd">(18.15)</a>.</p>
 <p>The right hand side is exactly what we want to compute.</p>
 <p>On top of this asymptotic result, it turns out that the rate of convergence
 for the look ahead estimator is very good.</p>
@@ -860,12 +859,12 @@ for the look ahead estimator is very good.</p>
 </div>
 </div>
 <div class="section" id="exercises">
-<h2><a class="toc-backref" href="#id16"><span class="section-number">20.5. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id16"><span class="section-number">18.5. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exercise-1">
-<span id="statd-ex1"></span><h3><span class="section-number">20.5.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<span id="statd-ex1"></span><h3><span class="section-number">18.5.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
 <p>Consider the simple threshold autoregressive model</p>
 <div class="math notranslate nohighlight" id="equation-statd-tar">
-<span class="eqno">(20.19)<a class="headerlink" href="#equation-statd-tar" title="Permalink to this equation">¶</a></span>\[X_{t+1} = \theta |X_t| + (1- \theta^2)^{1/2} \xi_{t+1}
+<span class="eqno">(18.19)<a class="headerlink" href="#equation-statd-tar" title="Permalink to this equation">¶</a></span>\[X_{t+1} = \theta |X_t| + (1- \theta^2)^{1/2} \xi_{t+1}
 \qquad \text{where} \quad
 \{ \xi_t \} \stackrel {\textrm{ IID }} {\sim} N(0, 1)\]</div>
 <p>This is one of those rare nonlinear stochastic models where an analytical
@@ -873,13 +872,13 @@ expression for the stationary density is available.</p>
 <p>In particular, provided that <span class="math notranslate nohighlight">\(|\theta| &lt; 1\)</span>, there is a unique
 stationary density <span class="math notranslate nohighlight">\(\psi^*\)</span> given by</p>
 <div class="math notranslate nohighlight" id="equation-statd-tar-ts">
-<span class="eqno">(20.20)<a class="headerlink" href="#equation-statd-tar-ts" title="Permalink to this equation">¶</a></span>\[\psi^*(y) = 2 \, \phi(y) \, \Phi
+<span class="eqno">(18.20)<a class="headerlink" href="#equation-statd-tar-ts" title="Permalink to this equation">¶</a></span>\[\psi^*(y) = 2 \, \phi(y) \, \Phi
 \left[
     \frac{\theta y}{(1 - \theta^2)^{1/2}}
 \right]\]</div>
 <p>Here <span class="math notranslate nohighlight">\(\phi\)</span> is the standard normal density and <span class="math notranslate nohighlight">\(\Phi\)</span> is the standard normal cdf.</p>
 <p>As an exercise, compute the look ahead estimate of <span class="math notranslate nohighlight">\(\psi^*\)</span>, as defined
-in <a class="reference internal" href="#equation-statd-lae2">(20.18)</a>, and compare it with <span class="math notranslate nohighlight">\(\psi^*\)</span>  in <a class="reference internal" href="#equation-statd-tar-ts">(20.20)</a> to see whether they
+in <a class="reference internal" href="#equation-statd-lae2">(18.18)</a>, and compare it with <span class="math notranslate nohighlight">\(\psi^*\)</span>  in <a class="reference internal" href="#equation-statd-tar-ts">(18.20)</a> to see whether they
 are indeed close for large <span class="math notranslate nohighlight">\(n\)</span>.</p>
 <p>In doing so, set <span class="math notranslate nohighlight">\(\theta = 0.8\)</span> and <span class="math notranslate nohighlight">\(n = 500\)</span>.</p>
 <p>The next figure shows the result of such a computation</p>
@@ -893,47 +892,43 @@ density estimator.</p>
 <p>If you repeat the simulation you will see that this is consistently the case.</p>
 </div>
 <div class="section" id="exercise-2">
-<span id="statd-ex2"></span><h3><span class="section-number">20.5.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+<span id="statd-ex2"></span><h3><span class="section-number">18.5.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
 <p>Replicate the figure on global convergence <a class="reference internal" href="#statd-egs"><span class="std std-ref">shown above</span></a>.</p>
 <p>The densities come from the stochastic growth model treated <a class="reference internal" href="#solow-swan"><span class="std std-ref">at the start of the lecture</span></a>.</p>
 <p>Begin with the code found in <a class="reference external" href="https://github.com/QuantEcon/QuantEcon.lectures.code/blob/master/stationary_densities/stochasticgrowth.jl">stochasticgrowth.py</a>.</p>
 <p>Use the same parameters.</p>
 <p>For the four initial distributions, use the beta distribution and shift the random draws as shown below</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ψ_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Beta</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">)</span><span class="w">  </span><span class="c"># Initial distribution</span><span class="w"></span>
-<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="w"></span>
-<span class="c"># .... more setup</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ψ_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Beta</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">)</span><span class="w">  </span><span class="c"># Initial distribution</span>
+<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span>
+<span class="c"># .... more setup</span>
 
-<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">4</span><span class="w"></span>
-<span class="w">    </span><span class="c"># .... some code</span><span class="w"></span>
-<span class="w">    </span><span class="n">rand_draws</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">ψ_0</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mf">2.5</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">4</span>
+<span class="w">    </span><span class="c"># .... some code</span>
+<span class="w">    </span><span class="n">rand_draws</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">ψ_0</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mf">2.5</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="mi">2</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="exercise-3">
-<span id="statd-ex3"></span><h3><span class="section-number">20.5.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
+<span id="statd-ex3"></span><h3><span class="section-number">18.5.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
 <p>A common way to compare distributions visually is with <a class="reference external" href="https://en.wikipedia.org/wiki/Box_plot">boxplots</a>.</p>
 <p>To illustrate, let’s generate three artificial data sets and compare them with a boxplot</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span><span class="w"></span>
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w">        </span><span class="c"># N(0, 1)</span><span class="w"></span>
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">         </span><span class="c"># Map x to lognormal</span><span class="w"></span>
-<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mf">2.0</span><span class="w">  </span><span class="c"># N(2, 1)</span><span class="w"></span>
-<span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mf">4.0</span><span class="w">  </span><span class="c"># N(4, 1)</span><span class="w"></span>
-<span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vcat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"></span>
-<span class="n">l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sa">L</span><span class="s">&quot;X&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Y&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Z&quot;</span><span class="p">]</span><span class="w"></span>
-<span class="n">xlabels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">repeat</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="mi">3</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w">        </span><span class="c"># N(0, 1)</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">         </span><span class="c"># Map x to lognormal</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mf">2.0</span><span class="w">  </span><span class="c"># N(2, 1)</span>
+<span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mf">4.0</span><span class="w">  </span><span class="c"># N(4, 1)</span>
+<span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vcat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span>
+<span class="n">l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sa">L</span><span class="s">&quot;X&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Y&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Z&quot;</span><span class="p">]</span>
+<span class="n">xlabels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">repeat</span><span class="p">(</span><span class="n">l</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">),</span><span class="w"> </span><span class="mi">3</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">boxplot</span><span class="p">(</span><span class="n">xlabels</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">))</span><span class="w"></span>
+<span class="n">boxplot</span><span class="p">(</span><span class="n">xlabels</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">14</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>┌ Warning: Keyword argument hover not supported with Plots.GRBackend().  Choose from: Set([:top_margin, :group, :inset_subplots, :background_color, :ytickfontsize, :yforeground_color_text, :yguidefontcolor, :tickfontfamily, :show_empty_bins, :seriesalpha, :seriescolor, :ztick_direction, :xgrid, :ygridalpha, :zlims, :xtick_direction, :colorbar, :legend_font_family, :zflip, :ticks, :linealpha, :overwrite_figure, :arrow, :xguidefonthalign, :normalize, :linestyle, :xtickfontvalign, :xflip, :zgrid, :fillcolor, :ygrid, :bar_width, :colorbar_scale, :background_color_inside, :zguidefonthalign, :bins, :zguide, :zforeground_color_text, :legend_font_valign, :yscale, :legend_font_color, :weights, :xgridalpha, :ygridstyle, :clims, :xtickfontcolor, :fill_z, :xguide, :markershape, :background_color_subplot, :ztickfontfamily, :fillalpha, :markerstrokewidth, :tick_direction, :xguidefontvalign, :xguidefontfamily, :gridlinewidth, :foreground_color_subplot, :xgridlinewidth, :yguidefontsize, :foreground_color, :foreground_color_text, :titlefonthalign, :yerror, :x, :xtickfonthalign, :zgridlinewidth, :ytickfontrotation, :discrete_values, :ytick_direction, :grid, :xguidefontrotation, :ribbon, :xguidefontsize, :tickfontrotation, :xforeground_color_axis, :xdiscrete_values, :background_color_outside, :titlefontcolor, :xgridstyle, :line_z, :size, :orientation, :gridstyle, :projection, :markersize, :legend_foreground_color, :camera, :zguidefontrotation, :ydiscrete_values, :xforeground_color_grid, :seriestype, :yflip, :quiver, :zticks, :markerstrokecolor, :ztickfontrotation, :ztickfonthalign, :fillrange, :ztickfontvalign, :xlims, :xforeground_color_border, :markercolor, :xtickfontsize, :ylink, :levels, :color_palette, :connections, :yforeground_color_grid, :lims, :zgridstyle, :foreground_color_border, :zguidefontvalign, :xscale, :marker_z, :markerstrokealpha, :left_margin, :markeralpha, :legend_font_halign, :annotations, :window_title, :tickfontvalign, :foreground_color_axis, :zguidefontcolor, :ygridlinewidth, :zlink, :zscale, :smooth, :yguidefontrotation, :xticks, :guidefontsize, :zguidefontsize, :y, :margin, :ytickfontcolor, :zdiscrete_values, :tickfonthalign, :bottom_margin, :yforeground_color_border, :zguidefontfamily, :framestyle, :yguidefontvalign, :yguidefonthalign, :zerror, :zgridalpha, :ztickfontcolor, :scale, :legend_position, :linecolor, :html_output_format, :legend_title, :zforeground_color_border, :legend_font_pointsize, :title, :tickfontcolor, :subplot_index, :flip, :titlefontrotation, :legend_background_color, :tickfontsize, :titlefontvalign, :z, :yforeground_color_axis, :foreground_color_grid, :xtickfontrotation, :linewidth, :ztickfontsize, :gridalpha, :xerror, :guidefontfamily, :ylims, :contour_labels, :xguidefontcolor, :primary, :xtickfontfamily, :ytickfontvalign, :guidefonthalign, :ytickfontfamily, :aspect_ratio, :xforeground_color_text, :show, :link, :colorbar_title, :guidefontrotation, :subplot, :label, :ytickfonthalign, :guide, :guidefontcolor, :yguide, :titlefontsize, :titlefontfamily, :guidefontvalign, :zforeground_color_axis, :zforeground_color_grid, :layout, :legend_font_rotation, :colorbar_entry, :yguidefontfamily, :polar, :right_margin, :xlink, :series_annotations, :yticks])
-└ @ Plots /home/runner/.julia/packages/Plots/Xv2qA/src/args.jl:1607
-</pre></div>
-</div>
-<img alt="../_images/stationary_densities_8_1.svg" src="../_images/stationary_densities_8_1.svg" /></div>
+<img alt="../_images/stationary_densities_8_0.svg" src="../_images/stationary_densities_8_0.svg" /></div>
 </div>
 <p>The three data sets are</p>
 <div class="math notranslate nohighlight">
@@ -951,33 +946,33 @@ density estimator.</p>
 <li><p>whether the distribution is right-skewed (as is the lognormal distribution), etc</p></li>
 </ul>
 <p>Now let’s put these ideas to use in a simulation.</p>
-<p>Consider the threshold autoregressive model in <a class="reference internal" href="#equation-statd-tar">(20.19)</a>.</p>
-<p>We know that the distribution of <span class="math notranslate nohighlight">\(X_t\)</span> will converge to <a class="reference internal" href="#equation-statd-tar-ts">(20.20)</a> whenever <span class="math notranslate nohighlight">\(|\theta| &lt; 1\)</span>.</p>
+<p>Consider the threshold autoregressive model in <a class="reference internal" href="#equation-statd-tar">(18.19)</a>.</p>
+<p>We know that the distribution of <span class="math notranslate nohighlight">\(X_t\)</span> will converge to <a class="reference internal" href="#equation-statd-tar-ts">(18.20)</a> whenever <span class="math notranslate nohighlight">\(|\theta| &lt; 1\)</span>.</p>
 <p>Let’s observe this convergence from different initial conditions using
 boxplots.</p>
 <p>In particular, the exercise is to generate J boxplot figures, one for each initial condition <span class="math notranslate nohighlight">\(X_0\)</span> in</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">initial_conditions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">J</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">initial_conditions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">J</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For each <span class="math notranslate nohighlight">\(X_0\)</span> in this set,</p>
 <ol class="simple">
-<li><p>Generate <span class="math notranslate nohighlight">\(k\)</span> time series of length <span class="math notranslate nohighlight">\(n\)</span>, each starting at <span class="math notranslate nohighlight">\(X_0\)</span> and obeying <a class="reference internal" href="#equation-statd-tar">(20.19)</a>.</p></li>
+<li><p>Generate <span class="math notranslate nohighlight">\(k\)</span> time series of length <span class="math notranslate nohighlight">\(n\)</span>, each starting at <span class="math notranslate nohighlight">\(X_0\)</span> and obeying <a class="reference internal" href="#equation-statd-tar">(18.19)</a>.</p></li>
 <li><p>Create a boxplot representing <span class="math notranslate nohighlight">\(n\)</span> distributions, where the <span class="math notranslate nohighlight">\(t\)</span>-th distribution shows the <span class="math notranslate nohighlight">\(k\)</span> observations of <span class="math notranslate nohighlight">\(X_t\)</span>.</p></li>
 </ol>
 <p>Use <span class="math notranslate nohighlight">\(\theta = 0.9, n = 20, k = 5000, J = 8\)</span>.</p>
 </div>
 </div>
 <div class="section" id="solutions">
-<h2><a class="toc-backref" href="#id17"><span class="section-number">20.6. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id17"><span class="section-number">18.6. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">KernelDensity</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">KernelDensity</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="id8">
-<h3><span class="section-number">20.6.1. </span>Exercise 1<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">18.6.1. </span>Exercise 1<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
 <p>Look ahead estimation of a TAR stationary density, where the TAR model
 is</p>
 <div class="math notranslate nohighlight">
@@ -988,32 +983,32 @@ X_{t+1} = \theta |X_t| + (1 - \theta^2)^{1/2} \xi_{t+1}
 to get an idea of the speed of convergence.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ϕ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">()</span><span class="w"></span>
-<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span><span class="w"></span>
-<span class="n">θ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.8</span><span class="w"></span>
-<span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">θ</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="n">δ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">θ</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">d</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ϕ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">()</span>
+<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span>
+<span class="n">θ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.8</span>
+<span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">θ</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">δ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">θ</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">d</span>
 
-<span class="c"># true density of TAR model</span><span class="w"></span>
-<span class="n">ψ_star</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">cdf</span><span class="o">.</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">δ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
+<span class="c"># true density of TAR model</span>
+<span class="n">ψ_star</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">cdf</span><span class="o">.</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">δ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
 
-<span class="c"># Stochastic kernel for the TAR model.</span><span class="w"></span>
-<span class="n">p_TAR</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">θ</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span><span class="w"></span>
+<span class="c"># Stochastic kernel for the TAR model.</span>
+<span class="n">p_TAR</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">θ</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span>
 
-<span class="n">Z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">    </span><span class="n">X</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">θ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">t</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Z</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="n">Z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+<span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span>
+<span class="w">    </span><span class="n">X</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">θ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">t</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Z</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+<span class="k">end</span>
 
-<span class="n">ψ_est</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lae_est</span><span class="p">(</span><span class="n">LAE</span><span class="p">(</span><span class="n">p_TAR</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">),</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"></span>
-<span class="n">k_est</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kde</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="w"></span>
+<span class="n">ψ_est</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lae_est</span><span class="p">(</span><span class="n">LAE</span><span class="p">(</span><span class="n">p_TAR</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">),</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
+<span class="n">k_est</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kde</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 
-<span class="n">ys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="w"> </span><span class="n">ψ_star</span><span class="p">(</span><span class="n">ys</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="ss">:blue</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="w"> </span><span class="n">ψ_est</span><span class="p">(</span><span class="n">ys</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="ss">:green</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;look ahead estimate&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">k_est</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">k_est</span><span class="o">.</span><span class="n">density</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"></span>
-<span class="w">      </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;kernel based estimate&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">ys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="w"> </span><span class="n">ψ_star</span><span class="p">(</span><span class="n">ys</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="ss">:blue</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;true&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="w"> </span><span class="n">ψ_est</span><span class="p">(</span><span class="n">ys</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="ss">:green</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;look ahead estimate&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">k_est</span><span class="o">.</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">k_est</span><span class="o">.</span><span class="n">density</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="p">,</span>
+<span class="w">      </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;kernel based estimate&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1022,60 +1017,60 @@ to get an idea of the speed of convergence.</p>
 </div>
 </div>
 <div class="section" id="id9">
-<h3><span class="section-number">20.6.2. </span>Exercise 2<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">18.6.2. </span>Exercise 2<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <p>Here’s one program that does the job.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.2</span><span class="w"></span>
-<span class="n">δ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="w"></span>
-<span class="n">a_σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w">  </span><span class="c"># A = exp(B) where B ~ N(0, a_σ)</span><span class="w"></span>
-<span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w">    </span><span class="c"># We set f(k) = k**α</span><span class="w"></span>
-<span class="n">ψ_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Beta</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">)</span><span class="w">  </span><span class="c"># Initial distribution</span><span class="w"></span>
-<span class="n">ϕ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LogNormal</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">a_σ</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.2</span>
+<span class="n">δ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span>
+<span class="n">a_σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w">  </span><span class="c"># A = exp(B) where B ~ N(0, a_σ)</span>
+<span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w">    </span><span class="c"># We set f(k) = k**α</span>
+<span class="n">ψ_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Beta</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">5.0</span><span class="p">)</span><span class="w">  </span><span class="c"># Initial distribution</span>
+<span class="n">ϕ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LogNormal</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">a_σ</span><span class="p">)</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">p_growth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c"># Stochastic kernel for the growth model with Cobb-Douglas production.</span><span class="w"></span>
-<span class="w">    </span><span class="c"># Both x and y must be strictly positive.</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">p_growth</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># Stochastic kernel for the growth model with Cobb-Douglas production.</span>
+<span class="w">    </span><span class="c"># Both x and y must be strictly positive.</span>
 
-<span class="w">        </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="o">.^</span><span class="n">α</span><span class="w"></span>
+<span class="w">        </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="o">.^</span><span class="n">α</span>
 
-<span class="w">    </span><span class="n">pdf_arg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clamp</span><span class="o">.</span><span class="p">((</span><span class="n">y</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">eps</span><span class="p">(),</span><span class="w"> </span><span class="nb">Inf</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">pdf_arg</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="n">pdf_arg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">clamp</span><span class="o">.</span><span class="p">((</span><span class="n">y</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">δ</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="n">eps</span><span class="p">(),</span><span class="w"> </span><span class="nb">Inf</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">pdf_arg</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">d</span>
+<span class="k">end</span>
 
-<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="w">  </span><span class="c"># Number of observations at each date t</span><span class="w"></span>
-<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40</span><span class="w">    </span><span class="c"># Compute density of k_t at 1,...,T+1</span><span class="w"></span>
+<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="w">  </span><span class="c"># Number of observations at each date t</span>
+<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">40</span><span class="w">    </span><span class="c"># Compute density of k_t at 1,...,T+1</span>
 
-<span class="n">xmax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">6.5</span><span class="w"></span>
-<span class="n">ygrid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="n">xmax</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">150</span><span class="p">)</span><span class="w"></span>
-<span class="n">laes_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">ygrid</span><span class="p">),</span><span class="w"> </span><span class="mi">4</span><span class="n">T</span><span class="p">)</span><span class="w"></span>
-<span class="n">colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">4</span><span class="w"></span>
-<span class="w">    </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand!</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">))</span><span class="w"></span>
+<span class="n">xmax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">6.5</span>
+<span class="n">ygrid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="n">xmax</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">150</span><span class="p">)</span>
+<span class="n">laes_plot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">ygrid</span><span class="p">),</span><span class="w"> </span><span class="mi">4</span><span class="n">T</span><span class="p">)</span>
+<span class="n">colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">4</span>
+<span class="w">    </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">)</span>
+<span class="w">    </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand!</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">))</span>
 
-<span class="w">    </span><span class="c"># Draw first column from initial distribution</span><span class="w"></span>
-<span class="w">    </span><span class="c"># match scale = 0.5 and loc = 2i in julia version</span><span class="w"></span>
-<span class="w">    </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">ψ_0</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mf">2.5</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="w"></span>
-<span class="w">        </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="o">.^</span><span class="n">α</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">δ</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="c"># Draw first column from initial distribution</span>
+<span class="w">    </span><span class="c"># match scale = 0.5 and loc = 2i in julia version</span>
+<span class="w">    </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">ψ_0</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mf">2.5</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="o">-</span><span class="mi">1</span>
+<span class="w">        </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">A</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="o">.^</span><span class="n">α</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">δ</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span>
+<span class="w">    </span><span class="k">end</span>
 
-<span class="w">    </span><span class="c"># Generate T instances of LAE using this data, one for each date t</span><span class="w"></span>
-<span class="w">    </span><span class="n">laes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">LAE</span><span class="p">(</span><span class="n">p_growth</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">])</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">T</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="n">ind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="w"></span>
-<span class="w">        </span><span class="n">ψ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">laes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="w"></span>
-<span class="w">        </span><span class="n">laes_plot</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">ind</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lae_est</span><span class="p">(</span><span class="n">ψ</span><span class="p">,</span><span class="w"> </span><span class="n">ygrid</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">ind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ind</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="w"></span>
-<span class="w">        </span><span class="n">push!</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span><span class="w">  </span><span class="n">RGBA</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">T</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="c"># Generate T instances of LAE using this data, one for each date t</span>
+<span class="w">    </span><span class="n">laes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">LAE</span><span class="p">(</span><span class="n">p_growth</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">])</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">T</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="p">]</span>
+<span class="w">    </span><span class="n">ind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span>
+<span class="w">        </span><span class="n">ψ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">laes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+<span class="w">        </span><span class="n">laes_plot</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">ind</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lae_est</span><span class="p">(</span><span class="n">ψ</span><span class="p">,</span><span class="w"> </span><span class="n">ygrid</span><span class="p">)</span>
+<span class="w">        </span><span class="n">ind</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ind</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span>
+<span class="w">        </span><span class="n">push!</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span><span class="w">  </span><span class="n">RGBA</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">T</span><span class="p">))</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
 
-<span class="c">#colors = reshape(reshape(colors, T, 4)&#39;, 4*T, 1)</span><span class="w"></span>
-<span class="n">colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">colors</span><span class="p">))</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">ygrid</span><span class="p">,</span><span class="w"> </span><span class="n">laes_plot</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colors</span><span class="p">,</span><span class="w"></span>
-<span class="w">     </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:none</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;capital&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">xmax</span><span class="p">))</span><span class="w"></span>
+<span class="c">#colors = reshape(reshape(colors, T, 4)&#39;, 4*T, 1)</span>
+<span class="n">colors</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">colors</span><span class="p">))</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">ygrid</span><span class="p">,</span><span class="w"> </span><span class="n">laes_plot</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">colors</span><span class="p">,</span>
+<span class="w">     </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:none</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;capital&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlims</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">xmax</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1084,53 +1079,53 @@ to get an idea of the speed of convergence.</p>
 </div>
 </div>
 <div class="section" id="id10">
-<h3><span class="section-number">20.6.3. </span>Exercise 3<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">18.6.3. </span>Exercise 3<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
 <p>Here’s a possible solution.</p>
 <p>Note the way we use vectorized code to simulate the <span class="math notranslate nohighlight">\(k\)</span> time
 series for one boxplot all at once.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="w"></span>
-<span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5000</span><span class="w"></span>
-<span class="n">J</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span>
+<span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5000</span>
+<span class="n">J</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span>
 
-<span class="n">θ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.9</span><span class="w"></span>
-<span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">θ</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="n">δ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">θ</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">d</span><span class="w"></span>
+<span class="n">θ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.9</span>
+<span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">θ</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">δ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">θ</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">d</span>
 
-<span class="n">initial_conditions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">J</span><span class="p">)</span><span class="w"></span>
+<span class="n">initial_conditions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">J</span><span class="p">)</span>
 
-<span class="n">Z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">J</span><span class="p">)</span><span class="w"></span>
-<span class="n">titles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="n">x_labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">J</span><span class="w"></span>
-<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;time series from </span><span class="si">$t</span><span class="s"> = %</span><span class="si">$</span><span class="p">(</span><span class="n">initial_conditions</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="s">$&quot;</span><span class="w"></span>
-<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">titles</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">)</span><span class="w"></span>
+<span class="n">Z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">J</span><span class="p">)</span>
+<span class="n">titles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="n">x_labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="k">for</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">J</span>
+<span class="w">    </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;time series from </span><span class="si">$t</span><span class="s"> = %</span><span class="si">$</span><span class="p">(</span><span class="n">initial_conditions</span><span class="p">[</span><span class="n">j</span><span class="p">])</span><span class="s">$&quot;</span>
+<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">titles</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="p">)</span>
 
-<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">.=</span><span class="w"> </span><span class="n">initial_conditions</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="w">    </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vcat</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="n">n</span><span class="w"></span>
-<span class="w">        </span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">θ</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">Z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">]</span><span class="w"></span>
-<span class="w">        </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vcat</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="o">*</span><span class="n">ones</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="o">*</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">x_labels</span><span class="p">,</span><span class="w"> </span><span class="n">labels</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+<span class="w">    </span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">.=</span><span class="w"> </span><span class="n">initial_conditions</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+<span class="w">    </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="w">    </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vcat</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="n">n</span>
+<span class="w">        </span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">θ</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">abs</span><span class="o">.</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">Z</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">]</span>
+<span class="w">        </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vcat</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="o">*</span><span class="n">ones</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">X</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="o">*</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">X</span><span class="p">)</span>
+<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">x_labels</span><span class="p">,</span><span class="w"> </span><span class="n">labels</span><span class="p">)</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">J</span><span class="w"></span>
-<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span><span class="w"> </span><span class="n">boxplot</span><span class="p">(</span><span class="n">vec</span><span class="p">(</span><span class="n">x_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span><span class="w"> </span><span class="n">vec</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">titles</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">plots</span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">J</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:none</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="w"> </span><span class="mi">2000</span><span class="p">))</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">J</span>
+<span class="w">    </span><span class="n">push!</span><span class="p">(</span><span class="n">plots</span><span class="p">,</span><span class="w"> </span><span class="n">boxplot</span><span class="p">(</span><span class="n">vec</span><span class="p">(</span><span class="n">x_labels</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span><span class="w"> </span><span class="n">vec</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">titles</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+<span class="k">end</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">plots</span><span class="o">...</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">J</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:none</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">800</span><span class="p">,</span><span class="w"> </span><span class="mi">2000</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1140,12 +1135,12 @@ series for one boxplot all at once.</p>
 </div>
 </div>
 <div class="section" id="appendix">
-<h2><a class="toc-backref" href="#id18"><span class="section-number">20.7. </span>Appendix</a><a class="headerlink" href="#appendix" title="Permalink to this headline">¶</a></h2>
-<p id="statd-appendix">Here’s the proof of <a class="reference internal" href="#equation-statd-dv">(20.6)</a>.</p>
+<h2><a class="toc-backref" href="#id18"><span class="section-number">18.7. </span>Appendix</a><a class="headerlink" href="#appendix" title="Permalink to this headline">¶</a></h2>
+<p id="statd-appendix">Here’s the proof of <a class="reference internal" href="#equation-statd-dv">(18.6)</a>.</p>
 <p>Let <span class="math notranslate nohighlight">\(F_U\)</span> and <span class="math notranslate nohighlight">\(F_V\)</span> be the cumulative distributions of <span class="math notranslate nohighlight">\(U\)</span> and <span class="math notranslate nohighlight">\(V\)</span> respectively.</p>
 <p>By the definition of <span class="math notranslate nohighlight">\(V\)</span>, we have <span class="math notranslate nohighlight">\(F_V(v) = \mathbb P \{ a + b U \leq v \} = \mathbb P \{ U \leq (v - a) / b \}\)</span>.</p>
 <p>In other words, <span class="math notranslate nohighlight">\(F_V(v) = F_U ( (v - a)/b )\)</span>.</p>
-<p>Differentiating with respect to <span class="math notranslate nohighlight">\(v\)</span> yields <a class="reference internal" href="#equation-statd-dv">(20.6)</a>.</p>
+<p>Differentiating with respect to <span class="math notranslate nohighlight">\(v\)</span> yields <a class="reference internal" href="#equation-statd-dv">(18.6)</a>.</p>
 </div>
 </div>
 
@@ -1158,16 +1153,16 @@ series for one boxplot all at once.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.7"
+            mode: "julia-1.8"
         },
         kernelOptions: {
-            kernelName: "julia-1.7",
+            kernelName: "julia-1.8",
             path: "./tools_and_techniques"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.7'</script>
+    <script>kernelName = 'julia-1.8'</script>
 
                     </div>
                     
@@ -1310,34 +1305,61 @@ series for one boxplot all at once.</p>
    17. LLN and CLT
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="linear_models.html">
-   18. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="finite_markov.html">
-   19. Finite Markov Chains
-  </a>
- </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   20. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="kalman.html">
-   21. A First Look at the Kalman Filter
+   18. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="numerical_linear_algebra.html">
-   22. Numerical Linear Algebra and Factorizations
+   19. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="iterative_methods_sparsity.html">
-   23. Krylov Methods and Matrix Conditioning
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
   </a>
  </li>
 </ul>
@@ -1348,88 +1370,83 @@ series for one boxplot all at once.</p>
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/short_path.html">
-   24. Shortest Paths
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   25. Job Search I: The McCall Search Model
+   28. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   26. Job Search II: Search and Separation
+   29. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   27. A Problem that Stumped Milton Friedman
+   30. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   28. Job Search III: Search with Learning
+   31. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   29. Job Search IV: Modeling Career Choice
+   32. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   30. Job Search V: On-the-Job Search
+   33. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   31. Optimal Growth I: The Stochastic Optimal Growth Model
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   32. Optimal Growth II: Time Iteration
+   35. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   33. Optimal Growth III: The Endogenous Grid Method
+   36. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   34. LQ Dynamic Programming Problems
+   37. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   35. Optimal Savings I: The Permanent Income Model
+   38. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   36. Optimal Savings II: LQ Techniques
+   39. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   38. Optimal Savings III: Occasionally Binding Constraints
+   41. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   39. Robustness
+   42. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   40. Discrete State Dynamic Programming
+   43. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -1441,12 +1458,12 @@ series for one boxplot all at once.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   41. Modeling COVID 19 with Differential Equations
+   44. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1458,57 +1475,57 @@ series for one boxplot all at once.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   43. Schelling’s Segregation Model
+   46. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   44. A Lake Model of Employment and Unemployment
+   47. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   45. Rational Expectations Equilibrium
+   48. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   46. Markov Perfect Equilibrium
+   49. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   47. Asset Pricing I: Finite State Models
+   50. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   48. Asset Pricing II: The Lucas Asset Pricing Model
+   51. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   49. Asset Pricing III:  Incomplete Markets
+   52. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   50. Uncertainty Traps
+   53. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   51. The Aiyagari Model
+   54. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   52. Default Risk and Income Fluctuations
+   55. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   53. Globalization and Cycles
+   56. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1520,32 +1537,32 @@ series for one boxplot all at once.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   54. Covariance Stationary Processes
+   57. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   55. Estimation of Spectra
+   58. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   56. Additive Functionals
+   59. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   57. Multiplicative Functionals
+   60. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   58. Classical Control with Linear Algebra
+   61. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   59. Classical Filtering With Linear Algebra
+   62. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1557,22 +1574,22 @@ series for one boxplot all at once.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   60. Dynamic Stackelberg Problems
+   63. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   61. Optimal Taxation in an LQ Economy
+   64. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   62. Optimal Taxation with State-Contingent Debt
+   65. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   63. Optimal Taxation without State-Contingent Debt
+   66. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1584,22 +1601,22 @@ series for one boxplot all at once.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   64. About these Lectures
+   67. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   65. Troubleshooting
+   68. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   66. References
+   69. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Execution Statistics
+   70. Execution Statistics
   </a>
  </li>
 </ul>

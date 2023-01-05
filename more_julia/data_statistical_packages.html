@@ -88,12 +88,11 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/more_julia/data_statistical_packages.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
@@ -273,9 +272,9 @@
 <p>This list is not exhaustive, and others can be found in organizations such as <a class="reference external" href="https://github.com/JuliaStats">JuliaStats</a>, <a class="reference external" href="https://github.com/JuliaData/">JuliaData</a>, and  <a class="reference external" href="https://github.com/queryverse">QueryVerse</a>.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
-<span class="k">using</span><span class="w"> </span><span class="n">DataFrames</span><span class="p">,</span><span class="w"> </span><span class="n">RDatasets</span><span class="p">,</span><span class="w"> </span><span class="n">DataFramesMeta</span><span class="p">,</span><span class="w"> </span><span class="n">CategoricalArrays</span><span class="p">,</span><span class="w"> </span><span class="n">Query</span><span class="p">,</span><span class="w"> </span><span class="n">VegaLite</span><span class="w"></span>
-<span class="k">using</span><span class="w"> </span><span class="n">GLM</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">DataFrames</span><span class="p">,</span><span class="w"> </span><span class="n">RDatasets</span><span class="p">,</span><span class="w"> </span><span class="n">DataFramesMeta</span><span class="p">,</span><span class="w"> </span><span class="n">CategoricalArrays</span><span class="p">,</span><span class="w"> </span><span class="n">Query</span>
+<span class="k">using</span><span class="w"> </span><span class="n">GLM</span>
 </pre></div>
 </div>
 </div>
@@ -294,12 +293,12 @@
 <p>The first is to set up columns and construct a dataframe by assigning names</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">DataFrames</span><span class="p">,</span><span class="w"> </span><span class="n">RDatasets</span><span class="w">  </span><span class="c"># RDatasets provides good standard data examples from R</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">DataFrames</span><span class="p">,</span><span class="w"> </span><span class="n">RDatasets</span><span class="w">  </span><span class="c"># RDatasets provides good standard data examples from R</span>
 
-<span class="c"># note use of missing</span><span class="w"></span>
-<span class="n">commodities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;crude&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gas&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gold&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;silver&quot;</span><span class="p">]</span><span class="w"></span>
-<span class="n">last_price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">4.2</span><span class="p">,</span><span class="w"> </span><span class="mf">11.3</span><span class="p">,</span><span class="w"> </span><span class="mf">12.1</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">]</span><span class="w"></span>
-<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">commod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">commodities</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">last_price</span><span class="p">)</span><span class="w"></span>
+<span class="c"># note use of missing</span>
+<span class="n">commodities</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;crude&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gas&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;gold&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;silver&quot;</span><span class="p">]</span>
+<span class="n">last_price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">4.2</span><span class="p">,</span><span class="w"> </span><span class="mf">11.3</span><span class="p">,</span><span class="w"> </span><span class="mf">12.1</span><span class="p">,</span><span class="w"> </span><span class="nb">missing</span><span class="p">]</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">commod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">commodities</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">last_price</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -309,7 +308,7 @@
 <p>Columns of the <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> can be accessed by name using <code class="docutils literal notranslate"><span class="pre">df.col</span></code>, as below</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">price</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">price</span>
 </pre></div>
 </div>
 </div>
@@ -326,7 +325,7 @@
 <p>Note that the type of this array has values <code class="docutils literal notranslate"><span class="pre">Union{Missing,</span> <span class="pre">Float64}</span></code> since it was created with a <code class="docutils literal notranslate"><span class="pre">missing</span></code> value.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">commod</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">commod</span>
 </pre></div>
 </div>
 </div>
@@ -343,7 +342,7 @@
 <p>The <code class="docutils literal notranslate"><span class="pre">DataFrames.jl</span></code> package provides a number of methods for acting on <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>’s, such as <code class="docutils literal notranslate"><span class="pre">describe</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">DataFrames</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">DataFrames</span><span class="o">.</span><span class="n">describe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -353,8 +352,8 @@
 <p>While often data will be generated all at once, or read from a file, you can add to a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> by providing the key parameters.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">nt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">commod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;nickel&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="o">=</span><span class="w"> </span><span class="mf">5.1</span><span class="p">)</span><span class="w"></span>
-<span class="n">push!</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">nt</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">nt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">commod</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;nickel&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="o">=</span><span class="w"> </span><span class="mf">5.1</span><span class="p">)</span>
+<span class="n">push!</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="n">nt</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -364,9 +363,9 @@
 <p>Named tuples can also be used to construct a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>, and have it properly deduce all types.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">nt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">col1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.0</span><span class="p">)</span><span class="w"></span>
-<span class="n">df2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">([</span><span class="n">nt</span><span class="p">])</span><span class="w"></span>
-<span class="n">push!</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">col1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="p">))</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">nt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">col1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.0</span><span class="p">)</span>
+<span class="n">df2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">([</span><span class="n">nt</span><span class="p">])</span>
+<span class="n">push!</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">col1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -376,7 +375,7 @@
 <p>In order to modify a column, access the mutating version by the symbol <code class="docutils literal notranslate"><span class="pre">df[!,</span> <span class="pre">:col]</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="o">!</span><span class="p">,</span><span class="w"> </span><span class="ss">:price</span><span class="p">]</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="o">!</span><span class="p">,</span><span class="w"> </span><span class="ss">:price</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -394,7 +393,7 @@
 <p>Which allows modifications, like other mutating <code class="docutils literal notranslate"><span class="pre">!</span></code> functions in julia.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="o">!</span><span class="p">,</span><span class="w"> </span><span class="ss">:price</span><span class="p">]</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mf">2.0</span><span class="w">  </span><span class="c"># double prices</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="o">!</span><span class="p">,</span><span class="w"> </span><span class="ss">:price</span><span class="p">]</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mf">2.0</span><span class="w">  </span><span class="c"># double prices</span>
 </pre></div>
 </div>
 </div>
@@ -418,9 +417,9 @@
 from a source with <code class="docutils literal notranslate"><span class="pre">missing</span></code>’s, or call <code class="docutils literal notranslate"><span class="pre">allowmissing!</span></code> on a column.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">allowmissing!</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="ss">:col1</span><span class="p">)</span><span class="w"> </span><span class="c"># necessary to add in a for col1</span><span class="w"></span>
-<span class="n">push!</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">col1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">missing</span><span class="p">))</span><span class="w"></span>
-<span class="n">push!</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">col1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">5.1</span><span class="p">))</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">allowmissing!</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="ss">:col1</span><span class="p">)</span><span class="w"> </span><span class="c"># necessary to add in a for col1</span>
+<span class="n">push!</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="n">col1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">missing</span><span class="p">))</span>
+<span class="n">push!</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">col1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">5.1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -430,8 +429,8 @@ from a source with <code class="docutils literal notranslate"><span class="pre">
 <p>We can see the propagation of <code class="docutils literal notranslate"><span class="pre">missing</span></code> to caller functions, as well as a way to efficiently calculate with non-missing data.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">col1</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">skipmissing</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">col1</span><span class="p">))</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">col1</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">skipmissing</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">col1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -448,7 +447,7 @@ mean(skipmissing(df2.col1)) = 4.033333333333333
 <p>And to replace the <code class="docutils literal notranslate"><span class="pre">missing</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df2</span><span class="o">.</span><span class="n">col1</span><span class="w">  </span><span class="o">.=</span><span class="w"> </span><span class="n">coalesce</span><span class="o">.</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">col1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="c"># replace all missing with 0.0</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">df2</span><span class="o">.</span><span class="n">col1</span><span class="w">  </span><span class="o">.=</span><span class="w"> </span><span class="n">coalesce</span><span class="o">.</span><span class="p">(</span><span class="n">df2</span><span class="o">.</span><span class="n">col1</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="c"># replace all missing with 0.0</span>
 </pre></div>
 </div>
 </div>
@@ -468,9 +467,9 @@ mean(skipmissing(df2.col1)) = 4.033333333333333
 <p>One way to do an additional calculation with a <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> is to tuse the <code class="docutils literal notranslate"><span class="pre">&#64;transform</span></code> macro from <code class="docutils literal notranslate"><span class="pre">DataFramesMeta.jl</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">DataFramesMeta</span><span class="w"></span>
-<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="w"></span>
-<span class="n">df2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@transform</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="ss">:col2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="ss">:col1</span><span class="p">))</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">DataFramesMeta</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">^</span><span class="mi">2</span>
+<span class="n">df2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@transform</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span><span class="w"> </span><span class="ss">:col2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="ss">:col1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -483,11 +482,11 @@ mean(skipmissing(df2.col1)) = 4.033333333333333
 <p>For data that is <a class="reference external" href="https://juliadata.github.io/DataFrames.jl/stable/man/categorical/">categorical</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">CategoricalArrays</span><span class="w"></span>
-<span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">]</span><span class="w"></span>
-<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;old&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;young&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;young&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;old&quot;</span><span class="p">]</span><span class="w"></span>
-<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CategoricalArray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">id</span><span class="o">=</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">CategoricalArrays</span>
+<span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">]</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;old&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;young&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;young&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;old&quot;</span><span class="p">]</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CategoricalArray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">id</span><span class="o">=</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -496,7 +495,7 @@ mean(skipmissing(df2.col1)) = 4.033333333333333
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">levels</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">levels</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -516,12 +515,12 @@ mean(skipmissing(df2.col1)) = 4.033333333333333
 <p><strong>Note:</strong> The QueryVerse, in the same spirit as R’s tidyverse, makes heavy use of the pipeline syntax <code class="docutils literal notranslate"><span class="pre">|&gt;</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.0</span><span class="w"></span>
-<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="w"></span>
-<span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.0</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">^</span><span class="mi">2</span>
+<span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">g</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">g</span><span class="p">;</span><span class="w"> </span><span class="c"># pipes nest function calls</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">g</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">f</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">g</span><span class="p">;</span><span class="w"> </span><span class="c"># pipes nest function calls</span>
 </pre></div>
 </div>
 </div>
@@ -535,39 +534,35 @@ mean(skipmissing(df2.col1)) = 4.033333333333333
 <p>To give an example directly from the source of the LINQ inspired <a class="reference external" href="http://www.queryverse.org/Query.jl/stable/">Query.jl</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Query</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Query</span>
 
-<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;John&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Sally&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Kirk&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">age</span><span class="o">=</span><span class="p">[</span><span class="mf">23.</span><span class="p">,</span><span class="w"> </span><span class="mf">42.</span><span class="p">,</span><span class="w"> </span><span class="mf">59.</span><span class="p">],</span><span class="w"> </span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span><span class="w"></span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;John&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Sally&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Kirk&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">age</span><span class="o">=</span><span class="p">[</span><span class="mf">23.</span><span class="p">,</span><span class="w"> </span><span class="mf">42.</span><span class="p">,</span><span class="w"> </span><span class="mf">59.</span><span class="p">],</span><span class="w"> </span><span class="n">children</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span>
 
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@from</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@where</span><span class="w"> </span><span class="n">i</span><span class="o">.</span><span class="n">age</span><span class="o">&gt;</span><span class="mi">50</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@select</span><span class="w"> </span><span class="p">{</span><span class="kt">i</span><span class="o">.</span><span class="kt">name</span><span class="p">,</span><span class="w"> </span><span class="kt">i</span><span class="o">.</span><span class="kt">children</span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@collect</span><span class="w"> </span><span class="n">DataFrame</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@from</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">df</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="nd">@where</span><span class="w"> </span><span class="n">i</span><span class="o">.</span><span class="n">age</span><span class="o">&gt;</span><span class="mi">50</span>
+<span class="w">    </span><span class="nd">@select</span><span class="w"> </span><span class="p">{</span><span class="kt">i</span><span class="o">.</span><span class="kt">name</span><span class="p">,</span><span class="w"> </span><span class="kt">i</span><span class="o">.</span><span class="kt">children</span><span class="p">}</span>
+<span class="w">    </span><span class="nd">@collect</span><span class="w"> </span><span class="n">DataFrame</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_html"><div class="data-frame"><p>1 rows × 2 columns</p><table class="data-frame"><thead><tr><th></th><th>name</th><th>children</th></tr><tr><th></th><th title="String">String</th><th title="Int64">Int64</th></tr></thead><tbody><tr><th>1</th><td>Kirk</td><td>2</td></tr></tbody></table></div></div></div>
 </div>
-<p>While it is possible to just use the <code class="docutils literal notranslate"><span class="pre">Plots.jl</span></code> library, there may be better options for displaying tabular data – such as <a class="reference external" href="https://github.com/queryverse/VegaLite.jl">VegaLite.jl</a>.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">RDatasets</span><span class="p">,</span><span class="w"> </span><span class="n">VegaLite</span><span class="w"></span>
-<span class="n">iris</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataset</span><span class="p">(</span><span class="s">&quot;datasets&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;iris&quot;</span><span class="p">)</span><span class="w"></span>
+<p>While it is possible to just use the <code class="docutils literal notranslate"><span class="pre">Plots.jl</span></code> library, there are other options for displaying tabular data – such as <a class="reference external" href="https://github.com/queryverse/VegaLite.jl">VegaLite.jl</a>.</p>
+<!--
+```{code-cell} julia
+using RDatasets, VegaLite
+iris = dataset("datasets", "iris")
 
-<span class="n">iris</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="nd">@vlplot</span><span class="p">(</span><span class="w"></span>
-<span class="w">    </span><span class="ss">:point</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">x</span><span class="o">=</span><span class="ss">:PetalLength</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="o">=</span><span class="ss">:PetalWidth</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">color</span><span class="o">=</span><span class="ss">:Species</span><span class="w"></span>
-<span class="p">)</span><span class="w"></span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/data_statistical_packages_34_0.svg" src="../_images/data_statistical_packages_34_0.svg" /></div>
-</div>
+iris |> @vlplot(
+    :point,
+    x=:PetalLength,
+    y=:PetalWidth,
+    color=:Species
+)
+```
+-->
 </div>
 </div>
 <div class="section" id="statistics-and-econometrics">
@@ -584,17 +579,17 @@ mean(skipmissing(df2.col1)) = 4.033333333333333
 <p>To run linear regressions and similar statistics, use the <a class="reference external" href="http://juliastats.github.io/GLM.jl/latest/">GLM</a> package.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">GLM</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">GLM</span>
 
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="w"></span>
-<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.9</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="w"></span>
-<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-<span class="n">ols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lm</span><span class="p">(</span><span class="nd">@formula</span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="c"># R-style notation</span><span class="w"></span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.9</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DataFrame</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+<span class="n">ols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lm</span><span class="p">(</span><span class="nd">@formula</span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">df</span><span class="p">)</span><span class="w"> </span><span class="c"># R-style notation</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>StatsModels.TableRegressionModel{LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}}}}, Matrix{Float64}}
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>StatsModels.TableRegressionModel{LinearModel{GLM.LmResp{Vector{Float64}}, GLM.DensePredChol{Float64, CholeskyPivoted{Float64, Matrix{Float64}, Vector{Int64}}}}, Matrix{Float64}}
 
 y ~ 1 + x
 
@@ -602,8 +597,8 @@ Coefficients:
 ────────────────────────────────────────────────────────────────────────
                 Coef.  Std. Error      t  Pr(&gt;|t|)  Lower 95%  Upper 95%
 ────────────────────────────────────────────────────────────────────────
-(Intercept)  0.242353   0.01461    16.59    &lt;1e-29   0.21336    0.271347
-x            0.889341   0.0164947  53.92    &lt;1e-73   0.856608   0.922074
+(Intercept)  0.229569   0.0143861  15.96    &lt;1e-28   0.201021   0.258118
+x            0.912036   0.0138277  65.96    &lt;1e-82   0.884595   0.939476
 ────────────────────────────────────────────────────────────────────────
 </pre></div>
 </div>
@@ -614,9 +609,9 @@ x            0.889341   0.0164947  53.92    &lt;1e-73   0.856608   0.922074
 similar to the Stata package esttab and the R package stargazer.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">RegressionTables</span><span class="w"></span>
-<span class="n">regtable</span><span class="p">(</span><span class="n">ols</span><span class="p">)</span><span class="w"></span>
-<span class="c"># regtable(ols,  renderSettings = latexOutput()) # for LaTex output</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">RegressionTables</span>
+<span class="n">regtable</span><span class="p">(</span><span class="n">ols</span><span class="p">)</span>
+<span class="c"># regtable(ols,  renderSettings = latexOutput()) # for LaTex output</span>
 </pre></div>
 </div>
 </div>
@@ -626,15 +621,15 @@ similar to the Stata package esttab and the R package stargazer.</p>
               --------
                    (1)
 ----------------------
-(Intercept)   0.242***
-               (0.015)
-x             0.889***
-               (0.016)
+(Intercept)   0.230***
+               (0.014)
+x             0.912***
+               (0.014)
 ----------------------
 Estimator          OLS
 ----------------------
 N                  100
-R2               0.967
+R2               0.978
 ----------------------
 </pre></div>
 </div>
@@ -648,13 +643,13 @@ fixed-effects estimation with dummies for multiple variables are much more compu
 <p>For a 2-way fixed-effect, taking the example directly from the documentation using <a class="reference external" href="https://github.com/johnmyleswhite/RDatasets.jl/blob/master/doc/plm/rst/Cigar.rst">cigarette consumption data</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">FixedEffectModels</span><span class="w"></span>
-<span class="n">cigar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataset</span><span class="p">(</span><span class="s">&quot;plm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Cigar&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">cigar</span><span class="o">.</span><span class="n">StateCategorical</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">categorical</span><span class="p">(</span><span class="n">cigar</span><span class="o">.</span><span class="n">State</span><span class="p">)</span><span class="w"></span>
-<span class="n">cigar</span><span class="o">.</span><span class="n">YearCategorical</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">categorical</span><span class="p">(</span><span class="n">cigar</span><span class="o">.</span><span class="n">Year</span><span class="p">)</span><span class="w"></span>
-<span class="n">fixedeffectresults</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reg</span><span class="p">(</span><span class="n">cigar</span><span class="p">,</span><span class="w"> </span><span class="nd">@formula</span><span class="p">(</span><span class="n">Sales</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">NDI</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fe</span><span class="p">(</span><span class="n">StateCategorical</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fe</span><span class="p">(</span><span class="n">YearCategorical</span><span class="p">)),</span><span class="w"></span>
-<span class="w">                            </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:Pop</span><span class="p">,</span><span class="w"> </span><span class="n">Vcov</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="ss">:State</span><span class="p">))</span><span class="w"></span>
-<span class="n">regtable</span><span class="p">(</span><span class="n">fixedeffectresults</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">FixedEffectModels</span>
+<span class="n">cigar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dataset</span><span class="p">(</span><span class="s">&quot;plm&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Cigar&quot;</span><span class="p">)</span>
+<span class="n">cigar</span><span class="o">.</span><span class="n">StateCategorical</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">categorical</span><span class="p">(</span><span class="n">cigar</span><span class="o">.</span><span class="n">State</span><span class="p">)</span>
+<span class="n">cigar</span><span class="o">.</span><span class="n">YearCategorical</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">categorical</span><span class="p">(</span><span class="n">cigar</span><span class="o">.</span><span class="n">Year</span><span class="p">)</span>
+<span class="n">fixedeffectresults</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reg</span><span class="p">(</span><span class="n">cigar</span><span class="p">,</span><span class="w"> </span><span class="nd">@formula</span><span class="p">(</span><span class="n">Sales</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">NDI</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fe</span><span class="p">(</span><span class="n">StateCategorical</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">fe</span><span class="p">(</span><span class="n">YearCategorical</span><span class="p">)),</span>
+<span class="w">                            </span><span class="n">weights</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:Pop</span><span class="p">,</span><span class="w"> </span><span class="n">Vcov</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="ss">:State</span><span class="p">))</span>
+<span class="n">regtable</span><span class="p">(</span><span class="n">fixedeffectresults</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -680,6 +675,9 @@ R2                     0.803
 ----------------------------
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -695,16 +693,16 @@ R2                     0.803
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.7"
+            mode: "julia-1.8"
         },
         kernelOptions: {
-            kernelName: "julia-1.7",
+            kernelName: "julia-1.8",
             path: "./more_julia"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.7'</script>
+    <script>kernelName = 'julia-1.8'</script>
 
                     </div>
                     
@@ -848,33 +846,60 @@ R2                     0.803
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   18. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   19. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   20. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   21. A First Look at the Kalman Filter
+   18. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   22. Numerical Linear Algebra and Factorizations
+   19. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   23. Krylov Methods and Matrix Conditioning
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
   </a>
  </li>
 </ul>
@@ -885,88 +910,83 @@ R2                     0.803
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/short_path.html">
-   24. Shortest Paths
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   25. Job Search I: The McCall Search Model
+   28. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   26. Job Search II: Search and Separation
+   29. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   27. A Problem that Stumped Milton Friedman
+   30. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   28. Job Search III: Search with Learning
+   31. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   29. Job Search IV: Modeling Career Choice
+   32. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   30. Job Search V: On-the-Job Search
+   33. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   31. Optimal Growth I: The Stochastic Optimal Growth Model
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   32. Optimal Growth II: Time Iteration
+   35. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   33. Optimal Growth III: The Endogenous Grid Method
+   36. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   34. LQ Dynamic Programming Problems
+   37. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   35. Optimal Savings I: The Permanent Income Model
+   38. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   36. Optimal Savings II: LQ Techniques
+   39. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   38. Optimal Savings III: Occasionally Binding Constraints
+   41. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   39. Robustness
+   42. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   40. Discrete State Dynamic Programming
+   43. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -978,12 +998,12 @@ R2                     0.803
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   41. Modeling COVID 19 with Differential Equations
+   44. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -995,57 +1015,57 @@ R2                     0.803
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   43. Schelling’s Segregation Model
+   46. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   44. A Lake Model of Employment and Unemployment
+   47. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   45. Rational Expectations Equilibrium
+   48. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   46. Markov Perfect Equilibrium
+   49. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   47. Asset Pricing I: Finite State Models
+   50. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   48. Asset Pricing II: The Lucas Asset Pricing Model
+   51. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   49. Asset Pricing III:  Incomplete Markets
+   52. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   50. Uncertainty Traps
+   53. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   51. The Aiyagari Model
+   54. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   52. Default Risk and Income Fluctuations
+   55. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   53. Globalization and Cycles
+   56. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1057,32 +1077,32 @@ R2                     0.803
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   54. Covariance Stationary Processes
+   57. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   55. Estimation of Spectra
+   58. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   56. Additive Functionals
+   59. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   57. Multiplicative Functionals
+   60. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   58. Classical Control with Linear Algebra
+   61. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   59. Classical Filtering With Linear Algebra
+   62. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1094,22 +1114,22 @@ R2                     0.803
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   60. Dynamic Stackelberg Problems
+   63. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   61. Optimal Taxation in an LQ Economy
+   64. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   62. Optimal Taxation with State-Contingent Debt
+   65. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   63. Optimal Taxation without State-Contingent Debt
+   66. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1121,22 +1141,22 @@ R2                     0.803
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   64. About these Lectures
+   67. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   65. Troubleshooting
+   68. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   66. References
+   69. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Execution Statistics
+   70. Execution Statistics
   </a>
  </li>
 </ul>

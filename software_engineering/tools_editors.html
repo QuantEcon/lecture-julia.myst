@@ -88,12 +88,11 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/software_engineering/tools_editors.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
@@ -396,7 +395,7 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
 <p>Next we will go through simple use of the plotting and package management.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to <code class="docutils literal notranslate"><span class="pre">(&#64;v1.7)</span> <span class="pre">pkg&gt;</span></code> rather than <code class="docutils literal notranslate"><span class="pre">(hello_world)</span> <span class="pre">pkg</span> <span class="pre">&gt;</span></code> then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">activate</span> <span class="pre">.</span></code>.</p>
+<p>VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to <code class="docutils literal notranslate"><span class="pre">(&#64;v1.8)</span> <span class="pre">pkg&gt;</span></code> rather than <code class="docutils literal notranslate"><span class="pre">(hello_world)</span> <span class="pre">pkg</span> <span class="pre">&gt;</span></code> then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">activate</span> <span class="pre">.</span></code>.</p>
 <p>You can always see the current package location and details with <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">st</span></code>.  See <a class="reference internal" href="#jl-packages"><span class="std std-ref">Julia Environments</span></a> for more details.</p>
 </div>
 <p>The REPL.  First, type <code class="docutils literal notranslate"><span class="pre">]</span></code> to enter the package management mode, then <code class="docutils literal notranslate"><span class="pre">add</span> <span class="pre">Plots</span></code>.  Depending on whether you have done similar operations before, this may download a lot of dependencies.  See below for an example</p>
@@ -413,18 +412,18 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
 <div class="section" id="executing-files">
 <h3><span class="section-number">10.2.3. </span>Executing Files<a class="headerlink" href="#executing-files" title="Permalink to this headline">¶</a></h3>
 <p>First we will reorganize our file so that it is a set of functions with a call at the end rather than a script.  Replace the code with</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span>
 
-<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span><span class="n">plot_results</span><span class="p">()</span><span class="w"></span>
-<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="k">function</span><span class="w"> </span><span class="n">plot_results</span><span class="p">()</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+<span class="w">    </span><span class="n">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="k">end</span>
 
-<span class="c"># execute main function</span><span class="w"></span>
-<span class="n">plot_results</span><span class="p">()</span><span class="w"></span>
+<span class="c"># execute main function</span>
+<span class="n">plot_results</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>While it is fine to use scripts with code not organized in functions for exploration, you will want to organize any serious computations inside of a function.  While this may not matter for every problem, this will let the compiler avoid global variables and highly optimize the results.</p>
@@ -434,7 +433,7 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
 </div>
 <p>You can execute a <code class="docutils literal notranslate"><span class="pre">.jl</span></code> file in several ways.</p>
 <p>Within a terminal, you can provide the path to the file.  For example,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia --threads auto --project hello.jl
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia<span class="w"> </span>--threads<span class="w"> </span>auto<span class="w"> </span>--project<span class="w"> </span>hello.jl
 </pre></div>
 </div>
 <p>See the <a class="reference internal" href="#repl-main"><span class="std std-ref">REPL</span></a> section for more details on the commandline options.</p>
@@ -482,8 +481,8 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
 </div>
 <p>The most important choice is the <code class="docutils literal notranslate"><span class="pre">--project</span></code> toggle which determines whether you want to activate an existing project (or create a new one) when starting the interpreter.  Since a key feature of Julia is to have fully reproducible environments, you will want to do this whenever possible.</p>
 <p>To emphasize this point, this is an example of the <code class="docutils literal notranslate"><span class="pre">]st</span> </code> showing the global environment has only the bare minimum of packages installed.  With this workflow, all other packages are installed only when a given project is activated.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(@v1.7) pkg&gt; st
-      Status `C:\Users\jesse\.julia\environments\v1.7\Project.toml`
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(@v1.8) pkg&gt; st
+      Status `C:\Users\jesse\.julia\environments\v1.8\Project.toml`
 [7073ff75] IJulia v1.23.2
 [14b8a8f1] PkgTemplates v0.7.18
 [295af30f] Revise v3.1.19
@@ -509,12 +508,12 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
 <div class="section" id="more-features-and-modes">
 <h3><span class="section-number">10.3.2. </span>More Features and Modes<a class="headerlink" href="#more-features-and-modes" title="Permalink to this headline">¶</a></h3>
 <p>Hitting <code class="docutils literal notranslate"><span class="pre">;</span></code> brings you into shell mode, which lets you run bash commands (PowerShell on Windows)</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">;</span><span class="w"> </span><span class="n">pwd</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">;</span><span class="w"> </span><span class="n">pwd</span>
 </pre></div>
 </div>
 <p>In addition, <code class="docutils literal notranslate"><span class="pre">?</span></code> will bring you into help mode.</p>
 <p>The key use case is to find docstrings for functions and macros, e.g.</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="w"> </span><span class="n">print</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="w"> </span><span class="n">print</span>
 </pre></div>
 </div>
 </div>
@@ -648,16 +647,16 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.7"
+            mode: "julia-1.8"
         },
         kernelOptions: {
-            kernelName: "julia-1.7",
+            kernelName: "julia-1.8",
             path: "./software_engineering"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.7'</script>
+    <script>kernelName = 'julia-1.8'</script>
 
                     </div>
                     
@@ -801,33 +800,60 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   18. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   19. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   20. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   21. A First Look at the Kalman Filter
+   18. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   22. Numerical Linear Algebra and Factorizations
+   19. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   23. Krylov Methods and Matrix Conditioning
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
   </a>
  </li>
 </ul>
@@ -838,88 +864,83 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/short_path.html">
-   24. Shortest Paths
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   25. Job Search I: The McCall Search Model
+   28. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   26. Job Search II: Search and Separation
+   29. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   27. A Problem that Stumped Milton Friedman
+   30. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   28. Job Search III: Search with Learning
+   31. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   29. Job Search IV: Modeling Career Choice
+   32. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   30. Job Search V: On-the-Job Search
+   33. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   31. Optimal Growth I: The Stochastic Optimal Growth Model
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   32. Optimal Growth II: Time Iteration
+   35. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   33. Optimal Growth III: The Endogenous Grid Method
+   36. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   34. LQ Dynamic Programming Problems
+   37. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   35. Optimal Savings I: The Permanent Income Model
+   38. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   36. Optimal Savings II: LQ Techniques
+   39. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   38. Optimal Savings III: Occasionally Binding Constraints
+   41. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   39. Robustness
+   42. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   40. Discrete State Dynamic Programming
+   43. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -931,12 +952,12 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   41. Modeling COVID 19 with Differential Equations
+   44. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -948,57 +969,57 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   43. Schelling’s Segregation Model
+   46. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   44. A Lake Model of Employment and Unemployment
+   47. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   45. Rational Expectations Equilibrium
+   48. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   46. Markov Perfect Equilibrium
+   49. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   47. Asset Pricing I: Finite State Models
+   50. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   48. Asset Pricing II: The Lucas Asset Pricing Model
+   51. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   49. Asset Pricing III:  Incomplete Markets
+   52. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   50. Uncertainty Traps
+   53. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   51. The Aiyagari Model
+   54. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   52. Default Risk and Income Fluctuations
+   55. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   53. Globalization and Cycles
+   56. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1010,32 +1031,32 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   54. Covariance Stationary Processes
+   57. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   55. Estimation of Spectra
+   58. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   56. Additive Functionals
+   59. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   57. Multiplicative Functionals
+   60. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   58. Classical Control with Linear Algebra
+   61. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   59. Classical Filtering With Linear Algebra
+   62. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1047,22 +1068,22 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   60. Dynamic Stackelberg Problems
+   63. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   61. Optimal Taxation in an LQ Economy
+   64. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   62. Optimal Taxation with State-Contingent Debt
+   65. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   63. Optimal Taxation without State-Contingent Debt
+   66. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1074,22 +1095,22 @@ VS Code supports the “Open with Code” action in File Explorer if chosen duri
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   64. About these Lectures
+   67. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   65. Troubleshooting
+   68. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   66. References
+   69. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Execution Statistics
+   70. Execution Statistics
   </a>
  </li>
 </ul>

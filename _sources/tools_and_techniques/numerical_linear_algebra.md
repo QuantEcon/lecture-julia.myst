@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (numerical_linear_algebra)=
@@ -33,7 +33,7 @@ You cannot learn too much linear algebra. -- Benedict Gross
 In this lecture, we examine the structure of matrices and linear operators (e.g., dense, sparse, symmetric, tridiagonal, banded) and
 discuss how the structure can be exploited to radically increase the performance of solving large problems.
 
-We build on applications discussed in previous lectures: {doc}`linear algebra <linear_algebra>`, {doc}`orthogonal projections <orth_proj>`, and {doc}`Markov chains <finite_markov>`.
+We build on applications discussed in previous lectures: {doc}`linear algebra <linear_algebra>`, {doc}`orthogonal projections <orth_proj>`, and {doc}`Markov chains <../introduction_dynamics/finite_markov>`.
 
 The methods in this section are called direct methods, and they are qualitatively similar to performing Gaussian elimination to factor matrices and solve systems of equations.  In {doc}`iterative methods and sparsity <iterative_methods_sparsity>` we examine a different approach, using iterative algorithms, where we can think of more general linear operators.
 
@@ -567,7 +567,7 @@ Keep in mind that a real matrix may have complex eigenvalues and eigenvectors, s
 
 ## Continuous-Time Markov Chains (CTMCs)
 
-In the previous lecture on {doc}`discrete-time Markov chains <finite_markov>`, we saw that the transition probability
+In the lecture on {doc}`discrete-time Markov chains <../introduction_dynamics/finite_markov>`, we saw that the transition probability
 between state $x$ and state $y$ was summarized by the matrix $P(x, y) := \mathbb P \{ X_{t+1} = y \,|\, X_t = x \}$.
 
 As a brief introduction to continuous time processes, consider the same state space as in the discrete
@@ -980,6 +980,7 @@ A[2,1] = 100.0
 But again, you will often find that doing `@view` leads to slower code.  Benchmark
 instead, and generally rely on it for large matrices and for contiguous chunks of memory (e.g., columns rather than rows).
 
+<!-- Commenting out.  Worried this will be misused.  We can move this sort of pattern to a performance section later
 ## Patterns for Preallocated Caches of Results
 
 When the matrices and vectors get large, it can reach a point where it is important to cache the results and reduce allocations.  In general, this should only be attempted when the vectors are large and they would otherwise need to be reallocated many times.
@@ -1011,7 +1012,7 @@ To create a contrived algorithm, see the following code:
 ```{code-cell} julia
 # By convention, name has ! to denote mutating, and mutate first argument
 function calculate_results!(results, val, params)
-    @unpack N, b, C = params
+    (;N, b, C) = params
     B = rand(N,N)  # Contrived.  Assume complicated
     lmul!(val, B)  # val * B -> B inplace, no allocation
     mul!(results.A, B, C) #   B * C -> results.A
@@ -1020,7 +1021,7 @@ end
 
 # Some iterative algorithm
 function iterate_values(vals, params)    
-    @unpack N = params
+    (;N) = params
     
     # preallocate
     results = MyResults(N)
@@ -1043,13 +1044,14 @@ iterate_values(vals, params)
 
 A few points:
 - This creates an inplace function, `calculate_results!`, which modifies the results given a value and parameters.
-- Within the function, it attemmpts to use inplace versions of the operations where possible, which can help cut down on other allocations
+- Within the function, it attempts to use inplace versions of the operations where possible, which can help cut down on other allocations
 - The iteration simply goes through a list of values, calls the `calculate_results!` and then checks how the `results.x` has changed with a norm.
-- Finally, the iteration copys the new results into the previous ones.  This ensure that only a single copy is required for comparison.
+- Finally, the iteration copies the new results into the previous ones.  This ensure that only a single copy is required for comparison.
 
 
 
 This approach can be very helpful for large matrices and arrays, but should be used judiciously and only after {doc}`profiling<../software_engineering/need_for_speed>`  .
+-->
 
 
 ## Exercises

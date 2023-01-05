@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (julia_by_example)=
@@ -100,7 +100,7 @@ The project provides the environment for running code is **reproducible**, so th
 After the installation and activation, `using` provides a way to say that a particular code or notebook will use the package.
 
 ```{code-cell} julia
-using LinearAlgebra, Statistics, Plots
+using LinearAlgebra, Statistics, Plots, LaTeXStrings
 ```
 
 ```{warning}
@@ -119,8 +119,6 @@ randn()
 Other functions require importing all of the names from an external library
 
 ```{code-cell} julia
-using Plots
-
 n = 100
 ϵ = randn(n)
 plot(1:n, ϵ)
@@ -335,15 +333,14 @@ Finally, we can broadcast any function, where squaring is only a special case.
 ```{code-cell} julia
 # good style
 f(x) = x^2 # simple square function
-generatedata(n) = f.(randn(n)) # uses broadcast for some function `f`
+generatedata(n) = f.(randn(n)) # broadcasts on f
 data = generatedata(5)
 ```
 
 As a final -- abstract -- approach, we can make the `generatedata` function able to generically apply to a function.
 
 ```{code-cell} julia
-generatedata(n, gen) = gen.(randn(n)) # uses broadcast for some function `gen`
-
+generatedata(n, gen) = gen.(randn(n)) # broadcasts on gen
 f(x) = x^2 # simple square function
 data = generatedata(5, f) # applies f
 ```
@@ -360,8 +357,8 @@ n = 100
 f(x) = x^2
 
 x = randn(n)
-plot(f.(x), label="x^2")
-plot!(x, label="x") # layer on the same plot
+plot(f.(x), label=L"x^2")
+plot!(x, label=L"x") # layer on the same plot
 ```
 
 While broadcasting above superficially looks like vectorizing functions in MATLAB, or Python ufuncs, it is much richer and built on core foundations of the language.
@@ -369,6 +366,8 @@ While broadcasting above superficially looks like vectorizing functions in MATLA
 The other additional function `plot!` adds a graph to the existing plot.
 
 This follows a general convention in Julia, where a function that modifies the arguments or a global state has a `!` at the end of its name.
+
+The `L` in front of the labels is using the LaTeXStrings package, which will try to interpret the text as latex for display.
 
 #### A Slightly More Useful Function
 
@@ -509,7 +508,8 @@ while normdiff > tolerance && iter <= maxiter
     v_old = v_new
     iter = iter + 1
 end
-println("Fixed point = $v_old, and |f(x) - x| = $normdiff in $iter iterations")
+println("Fixed point = $v_old
+  |f(x) - x| = $normdiff in $iter iterations")
 ```
 
 The `while` loop, like the `for` loop should only be used directly in Jupyter or the inside of a function.
@@ -535,7 +535,8 @@ for i in 1:maxiter
     # replace and continue
     v_old = v_new
 end
-println("Fixed point = $v_old, and |f(x) - x| = $normdiff in $iter iterations")
+println("Fixed point = $v_old
+  |f(x) - x| = $normdiff in $iter iterations")
 ```
 
 The new feature there is `break` , which leaves a `for` or `while` loop.
@@ -570,7 +571,8 @@ tolerance = 1.0E-7
 v_initial = 0.8 # initial condition
 
 v_star, normdiff, iter = v_fp(β, p, v_initial, tolerance, maxiter)
-println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
+println("Fixed point = $v_star
+  |f(x) - x| = $normdiff in $iter iterations")
 ```
 
 While better, there could still be improvements.
@@ -607,7 +609,8 @@ tolerance = 1.0E-7
 v_initial = 0.8 # initial condition
 
 v_star, normdiff, iter = fixedpointmap(f, v_initial, tolerance, maxiter)
-println("Fixed point = $v_star, and |f(x) - x| = $normdiff in $iter iterations")
+println("Fixed point = $v_star
+  |f(x) - x| = $normdiff in $iter iterations")
 ```
 
 Much closer, but there are still hidden bugs if the user orders the settings or returns types wrong.
@@ -618,7 +621,7 @@ To enable this, Julia has two features:  named function parameters, and named tu
 
 ```{code-cell} julia
 # good style
-function fixedpointmap(f; iv, tolerance=1E-7, maxiter=1000)
+function fixedpointmap(f, iv; tolerance=1E-7, maxiter=1000)
     # setup the algorithm
     x_old = iv
     normdiff = Inf
@@ -629,7 +632,7 @@ function fixedpointmap(f; iv, tolerance=1E-7, maxiter=1000)
         x_old = x_new
         iter = iter + 1
     end
-    return (value = x_old, normdiff=normdiff, iter=iter) # A named tuple
+    return (;value = x_old, normdiff, iter) # A named tuple
 end
 
 # define a map and parameters
@@ -637,9 +640,9 @@ p = 1.0
 β = 0.9
 f(v) = p + β * v # note that p and β are used in the function!
 
-sol = fixedpointmap(f, iv=0.8, tolerance=1.0E-8) # don't need to pass
-println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
-        " iterations")
+sol = fixedpointmap(f, 0.8; tolerance=1.0E-8) # don't need to pass
+println("Fixed point = $(sol.value)
+  |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
 ```
 
 In this example, all function parameters after the `;` in the list, must be called by name.
@@ -648,14 +651,26 @@ Furthermore, a default value may be enabled -- so the named parameter `iv` is re
 
 The return type of the function also has named fields, `value, normdiff,` and `iter` -- all accessed intuitively using `.`.
 
-To show the flexibilty of this code, we can use it to find a fixed point of the non-linear logistic equation, $x = f(x)$ where $f(x) := r x (1-x)$.
+Finally, this shows how named tuples and keyword arguments are constructed from local variable names.  In particular, ` (;value = x_old, normdiff, iter)` is identical to `(value = x_old, normdiff = normdiff, iter = iter)` where anything after the `;` is assumed to be a keyword with the name identical to the local variable.
+
+The named tuple notation is also used for unpacking values.  In particular we could have written the execution of this with
+```{code-cell} julia
+(;value, normdiff, iter) = fixedpointmap(f, 0.8; tolerance=1.0E-8)
+println("Fixed point = $value
+  |f(x) - x| = $normdiff in $iter iterations")
+```
+
+That is, `(; value, normdiff, iter) = expression` is the same as `exp = expression(); value = exp.value, normdiff = exp.normdiff, iter = exp.iter`.
+
+To show the flexibility of this code, we can use it to find a fixed point of the non-linear logistic equation, $x = f(x)$ where $f(x) := r x (1-x)$.
 
 ```{code-cell} julia
 r = 2.0
 f(x) = r * x * (1 - x)
 
-sol = fixedpointmap(f, iv=0.8)
-println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
+sol = fixedpointmap(f, 0.8) # the ; is optional but generally good style
+println("Fixed point = $(sol.value)
+  |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
 ```
 
 ### Using a Package
@@ -670,8 +685,9 @@ p = 1.0
 β = 0.9
 f(v) = p .+ β * v # broadcast the +
 sol = fixedpoint(f, [0.8]; m = 0)
-println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
-        "$(sol.iterations) iterations")
+normdiff = norm(f(sol.zero) - sol.zero)
+println("Fixed point = $(sol.zero)
+  |f(x) - x| = $normdiff in $(sol.iterations) iterations")
 ```
 
 The `fixedpoint` function from the `NLsolve.jl` library implements the simple fixed point iteration scheme above.
@@ -686,8 +702,10 @@ p = 1.0
 β = 0.9
 iv = [0.8]
 sol = fixedpoint(v -> p .+ β * v, iv)
-println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
-        "$(sol.iterations) iterations")
+fnorm = norm(f(sol.zero) - sol.zero)
+println("Fixed point = $(sol.zero)
+  |f(x) - x| = $fnorm  in $(sol.iterations) iterations
+  converged = $(sol.f_converged)")
 ```
 
 Note that this completes in `3` iterations vs `176` for the naive fixed point iteration algorithm.
@@ -726,8 +744,9 @@ iv = [BigFloat(0.8)] # higher precision
 
 # otherwise identical
 sol = fixedpoint(v -> p .+ β * v, iv)
-println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
-        "$(sol.iterations) iterations")
+normdiff = norm(f(sol.zero) - sol.zero)
+println("Fixed point = $(sol.zero)
+  |f(x) - x| = $normdiff in $(sol.iterations) iterations")
 ```
 
 Here, the literal `BigFloat(0.8)` takes the number `0.8` and changes it to an arbitrary precision number.
@@ -746,9 +765,9 @@ p = [1.0, 2.0]
 iv = [0.8, 2.0]
 f(v) = p .+ β * v # note that p and β are used in the function!
 
-sol = fixedpointmap(f, iv = iv, tolerance = 1.0E-8)
-println("Fixed point = $(sol.value), and |f(x) - x| = $(sol.normdiff) in $(sol.iter)"*
-"iterations")
+sol = fixedpointmap(f, iv; tolerance = 1.0E-8)
+println("Fixed point = $(sol.value)
+  |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
 ```
 
 This also works without any modifications with the `fixedpoint` library function.
@@ -762,8 +781,9 @@ iv =[0.8, 2.0, 51.0]
 f(v) = p .+ β * v
 
 sol = fixedpoint(v -> p .+ β * v, iv)
-println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
-        "$(sol.iterations) iterations")
+normdiff = norm(f(sol.zero) - sol.zero)
+println("Fixed point = $(sol.zero)
+  |f(x) - x| = $normdiff in $(sol.iterations) iterations")
 ```
 
 Finally, to demonstrate the importance of composing different libraries, use a `StaticArrays.jl` type, which provides an efficient implementation for small arrays and matrices.
@@ -776,8 +796,9 @@ iv = [0.8, 2.0, 51.0]
 f(v) = p .+ β * v
 
 sol = fixedpoint(v -> p .+ β * v, iv)
-println("Fixed point = $(sol.zero), and |f(x) - x| = $(norm(f(sol.zero) - sol.zero)) in " *
-        "$(sol.iterations) iterations")
+normdiff = norm(f(sol.zero) - sol.zero)
+println("Fixed point = $(sol.zero)
+  |f(x) - x| = $normdiff in $(sol.iterations) iterations")
 ```
 
 The `@SVector` in front of the `[1.0, 2.0, 0.1]` is a macro for turning a vector literal into a static vector.
@@ -1097,7 +1118,7 @@ function drawsuntilthreshold(threshold; maxdraws=100)
     return Inf # if here, reached maxdraws
 end
 
-draws = drawsuntilthreshold(0.2, maxdraws=100)
+draws = drawsuntilthreshold(0.1; maxdraws=100)
 ```
 
 Additionally, it is sometimes convenient to add to just push numbers onto an array without indexing it directly

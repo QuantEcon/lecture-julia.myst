@@ -88,15 +88,14 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/software_engineering/testing.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -359,7 +358,6 @@
 <blockquote class="epigraph">
 <div><p>A complex system that works is invariably found to have evolved from a simple system that worked. The inverse proposition also appears to be true: A complex system designed from scratch never works and cannot be made to work. You have to start over, beginning with a working simple system – <a class="reference external" href="https://en.wikipedia.org/wiki/John_Gall_%28author%29#Gall%27s_law">Gall’s Law</a>.</p>
 </div></blockquote>
-<p>Co-authored with Arnav Sood</p>
 <p>This lecture discusses structuring a project as a Julia module, and testing it with tools from GitHub.</p>
 <p>Benefits include:</p>
 <ul class="simple">
@@ -419,7 +417,7 @@ The result should be
 <ul class="simple">
 <li><p>Install <a class="reference external" href="https://github.com/invenia/PkgTemplates.jl/">PkgTemplates</a> and <a class="reference external" href="https://github.com/timholy/Revise.jl">Revise</a> with</p></li>
 </ul>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">PkgTemplates</span><span class="w"> </span><span class="n">Revise</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">PkgTemplates</span><span class="w"> </span><span class="n">Revise</span>
 </pre></div>
 </div>
 <p>While we typically insist on having very few packages in the global environment, and always working with a <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> file, <code class="docutils literal notranslate"><span class="pre">PkgTemplates</span></code> is primarily used without an existing project.</p>
@@ -440,7 +438,7 @@ The result should be
 <li><p>Start a julia terminal with <code class="docutils literal notranslate"><span class="pre">julia</span></code></p></li>
 <li><p>Then run</p></li>
 </ul>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">PkgTemplates</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">PkgTemplates</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -448,14 +446,14 @@ The result should be
 </ul>
 <p>This specifies metadata like the license we’ll be using (MIT by default), the location, etc.</p>
 <p>We will create this with a number of useful options, but see <a class="reference external" href="https://invenia.github.io/PkgTemplates.jl/stable/user/#A-More-Complicated-Example-1">the documentation</a> for more.</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Template</span><span class="p">(;</span><span class="n">dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">julia</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">v</span><span class="s">&quot;1.7&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="n">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">                </span><span class="n">Git</span><span class="p">(;</span><span class="w"> </span><span class="n">manifest</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;main&quot;</span><span class="p">),</span><span class="w"></span>
-<span class="w">                </span><span class="n">Codecov</span><span class="p">(),</span><span class="w"></span>
-<span class="w">                </span><span class="n">GitHubActions</span><span class="p">(),</span><span class="w"></span>
-<span class="w">                </span><span class="o">!</span><span class="n">CompatHelper</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="o">!</span><span class="n">TagBot</span><span class="w"></span>
-<span class="w">              </span><span class="p">])</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Template</span><span class="p">(;</span><span class="n">dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;.&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">julia</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">v</span><span class="s">&quot;1.8&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="n">plugins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">                </span><span class="n">Git</span><span class="p">(;</span><span class="w"> </span><span class="n">manifest</span><span class="o">=</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">branch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;main&quot;</span><span class="p">),</span>
+<span class="w">                </span><span class="n">Codecov</span><span class="p">(),</span>
+<span class="w">                </span><span class="n">GitHubActions</span><span class="p">(),</span>
+<span class="w">                </span><span class="o">!</span><span class="n">CompatHelper</span><span class="p">,</span>
+<span class="w">                </span><span class="o">!</span><span class="n">TagBot</span>
+<span class="w">              </span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -466,14 +464,14 @@ The result should be
 <ul class="simple">
 <li><p>Create a specific project based off this template</p></li>
 </ul>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="p">(</span><span class="s">&quot;MyProject&quot;</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">t</span><span class="p">(</span><span class="s">&quot;MyProject&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
 <li><p>Open the project in VS Code by right-clicking in the explorer for the new <code class="docutils literal notranslate"><span class="pre">MyProject</span></code> folder, or exiting the Julia REPL (via <code class="docutils literal notranslate"><span class="pre">exit()</span></code>) and then</p></li>
 </ul>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> MyProject
-code .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>MyProject
+code<span class="w"> </span>.
 </pre></div>
 </div>
 <p>The project should open in VS Code, and look something like</p>
@@ -513,16 +511,16 @@ code .
 <p>Optionally, you may wish to be able to use your package within other projects on your computer.</p>
 <p>To do this, you can add it to the main environment by starting Julia in the <code class="docutils literal notranslate"><span class="pre">MyProject</span></code> folder, and without activating the project (i.e. just <code class="docutils literal notranslate"><span class="pre">julia</span></code>).</p>
 <p>Then</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="o">.</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span><span class="w"> </span><span class="n">dev</span><span class="w"> </span><span class="o">.</span>
 </pre></div>
 </div>
 <p>Given this, other julia code can use <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">MyProject</span></code> and, because the global environment stacks on any project files, it will be available.</p>
 <p>You can see the change reflected in our default package list by running <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">st</span></code></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>      Status <span class="sb">`</span>C:<span class="se">\U</span>sers<span class="se">\j</span>esse<span class="se">\.</span>julia<span class="se">\e</span>nvironments<span class="se">\v</span><span class="m">1</span>.7<span class="se">\P</span>roject.toml<span class="sb">`</span>
-  <span class="o">[</span>7073ff75<span class="o">]</span> IJulia v1.23.2
-  <span class="o">[</span>a361046e<span class="o">]</span> MyProject v0.1.0 <span class="sb">`</span>..<span class="se">\.</span>.<span class="se">\.</span>.<span class="se">\D</span>ocuments<span class="se">\G</span>itHub<span class="se">\M</span>yProject<span class="sb">`</span>
-  <span class="o">[</span>14b8a8f1<span class="o">]</span> PkgTemplates v0.7.18
-  <span class="o">[</span>295af30f<span class="o">]</span> Revise v3.1.19  
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w">      </span>Status<span class="w"> </span><span class="sb">`</span>C:<span class="se">\U</span>sers<span class="se">\j</span>esse<span class="se">\.</span>julia<span class="se">\e</span>nvironments<span class="se">\v</span><span class="m">1</span>.8<span class="se">\P</span>roject.toml<span class="sb">`</span>
+<span class="w">  </span><span class="o">[</span>7073ff75<span class="o">]</span><span class="w"> </span>IJulia<span class="w"> </span>v1.23.2
+<span class="w">  </span><span class="o">[</span>a361046e<span class="o">]</span><span class="w"> </span>MyProject<span class="w"> </span>v0.1.0<span class="w"> </span><span class="sb">`</span>..<span class="se">\.</span>.<span class="se">\.</span>.<span class="se">\D</span>ocuments<span class="se">\G</span>itHub<span class="se">\M</span>yProject<span class="sb">`</span>
+<span class="w">  </span><span class="o">[</span>14b8a8f1<span class="o">]</span><span class="w"> </span>PkgTemplates<span class="w"> </span>v0.7.18
+<span class="w">  </span><span class="o">[</span>295af30f<span class="o">]</span><span class="w"> </span>Revise<span class="w"> </span>v3.1.19<span class="w">  </span>
 </pre></div>
 </div>
 <p>For more on the package mode, see the <a class="reference internal" href="tools_editors.html"><span class="doc">tools and editors</span></a> lecture.</p>
@@ -535,21 +533,21 @@ code .
 <ul>
 <li><p>A hidden directory, <code class="docutils literal notranslate"><span class="pre">.git</span></code>, holds the version control information.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">src</span></code> directory contains the project’s source code – it should contain only one file (<code class="docutils literal notranslate"><span class="pre">MyProject.jl</span></code>), which reads</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">MyProject</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">MyProject</span>
 
-<span class="n">greet</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Hello World!&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">greet</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">print</span><span class="p">(</span><span class="s">&quot;Hello World!&quot;</span><span class="p">)</span>
 
-<span class="k">end</span><span class="w"> </span><span class="c"># module</span><span class="w"></span>
+<span class="k">end</span><span class="w"> </span><span class="c"># module</span>
 </pre></div>
 </div>
 </li>
 <li><p>Likewise, the <code class="docutils literal notranslate"><span class="pre">test</span></code> directory should have only one file (<code class="docutils literal notranslate"><span class="pre">runtests.jl</span></code>), which reads</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">MyProject</span><span class="w"></span>
-<span class="k">using</span><span class="w"> </span><span class="n">Test</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">MyProject</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Test</span>
 
-<span class="nd">@testset</span><span class="w"> </span><span class="s">&quot;MyProject.jl&quot;</span><span class="w"> </span><span class="k">begin</span><span class="w"></span>
-<span class="w">    </span><span class="c"># Write your own tests here.</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="nd">@testset</span><span class="w"> </span><span class="s">&quot;MyProject.jl&quot;</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">    </span><span class="c"># Write your own tests here.</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </li>
@@ -566,46 +564,46 @@ code .
 <div class="section" id="github-actions-and-ci">
 <h3><span class="section-number">12.3.1. </span>GitHub Actions and CI<a class="headerlink" href="#github-actions-and-ci" title="Permalink to this headline">¶</a></h3>
 <p>The final file is a GitHub Actions file in the <code class="docutils literal notranslate"><span class="pre">.github/workflows</span></code> folder, called <code class="docutils literal notranslate"><span class="pre">CI.yml</span></code> with the text similar to</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CI</span><span class="w"></span>
-<span class="nt">on</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">push</span><span class="w"></span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request</span><span class="w"></span>
-<span class="nt">jobs</span><span class="p">:</span><span class="w"></span>
-<span class="w">  </span><span class="nt">test</span><span class="p">:</span><span class="w"></span>
-<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}</span><span class="w"></span>
-<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span><span class="w"></span>
-<span class="w">    </span><span class="nt">strategy</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
-<span class="w">      </span><span class="nt">matrix</span><span class="p">:</span><span class="w"></span>
-<span class="w">        </span><span class="nt">version</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1.7&#39;</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;nightly&#39;</span><span class="w"></span>
-<span class="w">        </span><span class="nt">os</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span><span class="w"></span>
-<span class="w">        </span><span class="nt">arch</span><span class="p">:</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">CI</span>
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">push</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pull_request</span>
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.os }}</span>
+<span class="w">    </span><span class="nt">strategy</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">fail-fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">      </span><span class="nt">matrix</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">version</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;1.8&#39;</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;nightly&#39;</span>
+<span class="w">        </span><span class="nt">os</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">        </span><span class="nt">arch</span><span class="p">:</span>
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">x64</span><span class="w">          </span>
-<span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/setup-julia@v1</span><span class="w"></span>
-<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.version }}</span><span class="w"></span>
-<span class="w">          </span><span class="nt">arch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.arch }}</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/cache@v1</span><span class="w"></span>
-<span class="w">        </span><span class="nt">env</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">cache-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cache-artifacts</span><span class="w"></span>
-<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/.julia/artifacts</span><span class="w"></span>
-<span class="w">          </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles(&#39;**/Project.toml&#39;) }}</span><span class="w"></span>
-<span class="w">          </span><span class="nt">restore-keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
-<span class="w">            </span><span class="no">${{ runner.os }}-test-${{ env.cache-name }}-</span><span class="w"></span>
-<span class="w">            </span><span class="no">${{ runner.os }}-test-</span><span class="w"></span>
-<span class="w">            </span><span class="no">${{ runner.os }}-</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-buildpkg@v1</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-runtest@v1</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-processcoverage@v1</span><span class="w"></span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codecov/codecov-action@v1</span><span class="w"></span>
-<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
-<span class="w">          </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lcov.info</span><span class="w"></span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/setup-julia@v1</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.version }}</span>
+<span class="w">          </span><span class="nt">arch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ matrix.arch }}</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/cache@v1</span>
+<span class="w">        </span><span class="nt">env</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">cache-name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cache-artifacts</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">~/.julia/artifacts</span>
+<span class="w">          </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles(&#39;**/Project.toml&#39;) }}</span>
+<span class="w">          </span><span class="nt">restore-keys</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<span class="w">            </span><span class="no">${{ runner.os }}-test-${{ env.cache-name }}-</span>
+<span class="w">            </span><span class="no">${{ runner.os }}-test-</span>
+<span class="w">            </span><span class="no">${{ runner.os }}-</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-buildpkg@v1</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-runtest@v1</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">julia-actions/julia-processcoverage@v1</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">codecov/codecov-action@v1</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">lcov.info</span>
 </pre></div>
 </div>
 <p>This file provides the rules for continuous integration running on changes to this repository.  You will not need to modify it.</p>
@@ -637,32 +635,32 @@ be reflected in our <code class="docutils literal notranslate"><span class="pre"
 <h4><span class="section-number">12.4.1.2. </span>Pkg Operations<a class="headerlink" href="#pkg-operations" title="Permalink to this headline">¶</a></h4>
 <p>For now, let’s just try adding a dependency.  Recall the package operations described in the <a class="reference internal" href="tools_editors.html"><span class="doc">tools and editors</span></a> lecture.</p>
 <ul class="simple">
-<li><p>Within VS Code, start a REPL (e.g. <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Julia:</span> <span class="pre">Start</span> <span class="pre">REPL</span></code>), type <code class="docutils literal notranslate"><span class="pre">]</span></code> to enter the Pkg mode.  Verify that the cursor says <code class="docutils literal notranslate"><span class="pre">(My</span> <span class="pre">Project)</span> <span class="pre">pkg&gt;</span></code> to ensure that it has activated your particular project.  Otherwise, if it says <code class="docutils literal notranslate"><span class="pre">(&#64;1.7)</span> <span class="pre">pkg&gt;</span></code>, then you have launched Julia outside of VSCode or through a different mechanism, and you might need to ensure you are in the correct directory and then <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">activate</span> <span class="pre">.</span></code> to activate the project file in it.</p></li>
+<li><p>Within VS Code, start a REPL (e.g. <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Julia:</span> <span class="pre">Start</span> <span class="pre">REPL</span></code>), type <code class="docutils literal notranslate"><span class="pre">]</span></code> to enter the Pkg mode.  Verify that the cursor says <code class="docutils literal notranslate"><span class="pre">(My</span> <span class="pre">Project)</span> <span class="pre">pkg&gt;</span></code> to ensure that it has activated your particular project.  Otherwise, if it says <code class="docutils literal notranslate"><span class="pre">(&#64;1.8)</span> <span class="pre">pkg&gt;</span></code>, then you have launched Julia outside of VSCode or through a different mechanism, and you might need to ensure you are in the correct directory and then <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">activate</span> <span class="pre">.</span></code> to activate the project file in it.</p></li>
 <li><p>Then, add in the <code class="docutils literal notranslate"><span class="pre">Expectations.jl</span></code> package</p></li>
 </ul>
 <div class="figure align-default">
 <a class="reference internal image-reference" href="../_images/vscode_add_package.png"><img alt="../_images/vscode_add_package.png" src="../_images/vscode_add_package.png" style="width: 100%;" /></a>
 </div>
 <p>After installing a large web of dependencies, this tells Julia to write the results of package operations to the activated <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> file, which should now include text such as</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[deps]</span><span class="w"></span>
-<span class="n">Expectations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2fe49d83-0758-5602-8f54-1f90ad0d522b&quot;</span><span class="w"></span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[deps]</span>
+<span class="n">Expectations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2fe49d83-0758-5602-8f54-1f90ad0d522b&quot;</span>
 </pre></div>
 </div>
 <p>From this point, anytime the project is activated, the <a class="reference external" href="https://github.com/QuantEcon/Expectations.jl">Expectations.jl</a> package will be available with <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">Expectations</span></code>.</p>
 <p>Furthermore, different projects could use different versions of this package.   We could add additional instructions on <a class="reference external" href="https://pkgdocs.julialang.org/dev/compatibility/">compatability</a> within the file if we choose.</p>
 <p>But almost more importantly, the <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> file now contains a complete snapshot of the particular <code class="docutils literal notranslate"><span class="pre">Expectations</span></code> package and every other dependency used in your project.</p>
 <p>For example, the following is an example snippet of one manifest here:</p>
-<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[[Expectations]]</span><span class="w"></span>
-<span class="n">deps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;Compat&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Distributions&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;FastGaussQuadrature&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LinearAlgebra&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SpecialFunctions&quot;</span><span class="p">]</span><span class="w"></span>
-<span class="n">git-tree-sha1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0f906c5edffe266acbf471734ac942d4aa9b7235&quot;</span><span class="w"></span>
-<span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2fe49d83-0758-5602-8f54-1f90ad0d522b&quot;</span><span class="w"></span>
-<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;1.7.1&quot;</span><span class="w"></span>
+<div class="highlight-toml notranslate"><div class="highlight"><pre><span></span><span class="k">[[Expectations]]</span>
+<span class="n">deps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;Compat&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Distributions&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;FastGaussQuadrature&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;LinearAlgebra&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SpecialFunctions&quot;</span><span class="p">]</span>
+<span class="n">git-tree-sha1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0f906c5edffe266acbf471734ac942d4aa9b7235&quot;</span>
+<span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;2fe49d83-0758-5602-8f54-1f90ad0d522b&quot;</span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;1.7.1&quot;</span>
 
-<span class="k">[[FastGaussQuadrature]]</span><span class="w"></span>
-<span class="n">deps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;LinearAlgebra&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SpecialFunctions&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;StaticArrays&quot;</span><span class="p">]</span><span class="w"></span>
-<span class="n">git-tree-sha1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;5829b25887e53fb6730a9df2ff89ed24baa6abf6&quot;</span><span class="w"></span>
-<span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;442a2c76-b920-505d-bb47-c5924d526838&quot;</span><span class="w"></span>
-<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0.4.7&quot;</span><span class="w"></span>
+<span class="k">[[FastGaussQuadrature]]</span>
+<span class="n">deps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;LinearAlgebra&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SpecialFunctions&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;StaticArrays&quot;</span><span class="p">]</span>
+<span class="n">git-tree-sha1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;5829b25887e53fb6730a9df2ff89ed24baa6abf6&quot;</span>
+<span class="n">uuid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;442a2c76-b920-505d-bb47-c5924d526838&quot;</span>
+<span class="n">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;0.4.7&quot;</span>
 </pre></div>
 </div>
 <p>This shows that that the current manifest has:</p>
@@ -694,7 +692,7 @@ be reflected in our <code class="docutils literal notranslate"><span class="pre"
 <div class="section" id="writing-code-in-the-package">
 <span id="editing-package-code"></span><h3><span class="section-number">12.4.3. </span>Writing Code in the Package<a class="headerlink" href="#writing-code-in-the-package" title="Permalink to this headline">¶</a></h3>
 <p>First, in the REPL add support for the <code class="docutils literal notranslate"><span class="pre">Distributions.jl</span></code> package and Julia unit testing</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">Distributions</span><span class="w"> </span><span class="n">Test</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">]</span><span class="w"> </span><span class="n">add</span><span class="w"> </span><span class="n">Distributions</span><span class="w"> </span><span class="n">Test</span>
 </pre></div>
 </div>
 <p>Which should provide output such as</p>
@@ -703,19 +701,19 @@ be reflected in our <code class="docutils literal notranslate"><span class="pre"
 </div>
 <p>While it will add the package to the <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code>, unlike the previous package operation, this will not install any new packages.  The reason is that <code class="docutils literal notranslate"><span class="pre">Distributions.jl</span></code> was already in the manifest as a dependency of <code class="docutils literal notranslate"><span class="pre">Expectations.jl</span></code> - and hence the network of packages already supports it.</p>
 <p>Next, modify the <code class="docutils literal notranslate"><span class="pre">src/MyProject.jl</span></code> to include</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">MyProject</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">module</span><span class="w"> </span><span class="n">MyProject</span>
 
-<span class="k">using</span><span class="w"> </span><span class="n">Expectations</span><span class="p">,</span><span class="w"> </span><span class="n">Distributions</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="n">Expectations</span><span class="p">,</span><span class="w"> </span><span class="n">Distributions</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">foo</span><span class="p">(</span><span class="n">μ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">(</span><span class="n">μ</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expectation</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">E</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">foo</span><span class="p">(</span><span class="n">μ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="p">)</span>
+<span class="w">    </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">(</span><span class="n">μ</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span>
+<span class="w">    </span><span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expectation</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">E</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="k">end</span>
 
-<span class="k">export</span><span class="w"> </span><span class="n">foo</span><span class="w"></span>
+<span class="k">export</span><span class="w"> </span><span class="n">foo</span>
 
-<span class="k">end</span><span class="w"> </span><span class="c"># module</span><span class="w"></span>
+<span class="k">end</span><span class="w"> </span><span class="c"># module</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -723,7 +721,7 @@ be reflected in our <code class="docutils literal notranslate"><span class="pre"
 <p>This defines a function, <code class="docutils literal notranslate"><span class="pre">foo</span></code> in the package, and exports it so that it is available to be called directly with <code class="docutils literal notranslate"><span class="pre">foo()</span></code> after <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">MyProject</span></code>.  Alternatively, you can leave off the <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">foo</span></code> and instead call the function with the package name as a prefix <code class="docutils literal notranslate"><span class="pre">MyProject.foo()</span></code>.</p>
 </div>
 <p>Then, we can call this function within a REPL by first including our package</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">MyProject</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">MyProject</span>
 </pre></div>
 </div>
 <p>Then calling <code class="docutils literal notranslate"><span class="pre">foo()</span></code> with the default arguments in the REPL.  This should lead to something like</p>
@@ -734,12 +732,12 @@ be reflected in our <code class="docutils literal notranslate"><span class="pre"
 <ul class="simple">
 <li><p>Modify the <code class="docutils literal notranslate"><span class="pre">foo</span></code> function definition to add <code class="docutils literal notranslate"><span class="pre">println(&quot;Modified</span> <span class="pre">foo</span> <span class="pre">definition&quot;)</span></code> inside the function</p></li>
 </ul>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">foo</span><span class="p">(</span><span class="n">μ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Modified foo definition&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">(</span><span class="n">μ</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expectation</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">E</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">foo</span><span class="p">(</span><span class="n">μ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="p">)</span>
+<span class="w">    </span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Modified foo definition&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">(</span><span class="n">μ</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span>
+<span class="w">    </span><span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expectation</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">E</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 <p>And then call the <code class="docutils literal notranslate"><span class="pre">foo()</span></code> function again in the REPL, which shows that it is now using the modified function.</p>
@@ -754,8 +752,8 @@ be reflected in our <code class="docutils literal notranslate"><span class="pre"
 <p>Consider that when writing this function, we may be checking its behavior in the REPL.  For example, we know from theory that the symmetry of the <code class="docutils literal notranslate"><span class="pre">sin</span></code> function means the expectation of the <code class="docutils literal notranslate"><span class="pre">sin</span></code> of a mean-zero normal (i.e. <code class="docutils literal notranslate"><span class="pre">foo(0)</span></code>) should be close to zero.</p>
 <p>To check this, we can use the <code class="docutils literal notranslate"><span class="pre">Test</span></code> package built-into julia, and added to our project file above.  The <code class="docutils literal notranslate"><span class="pre">&#64;test</span></code> macro within it verifies a condition, and fails if it is incorrect.</p>
 <p>In the REPL, use the <code class="docutils literal notranslate"><span class="pre">Test</span></code> package and then check that <code class="docutils literal notranslate"><span class="pre">foo(0)</span></code> is close to 0.</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Test</span><span class="p">,</span><span class="w"> </span><span class="n">MyProject</span><span class="w"></span>
-<span class="nd">@test</span><span class="w"> </span><span class="n">foo</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1E-16</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Test</span><span class="p">,</span><span class="w"> </span><span class="n">MyProject</span>
+<span class="nd">@test</span><span class="w"> </span><span class="n">foo</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">1E-16</span>
 </pre></div>
 </div>
 <p>Which should show that the “Test Passed”.</p>
@@ -855,9 +853,9 @@ be reflected in our <code class="docutils literal notranslate"><span class="pre"
 <a class="reference internal image-reference" href="../_images/codecov_1.png"><img alt="../_images/codecov_1.png" src="../_images/codecov_1.png" style="width: 100%;" /></a>
 </div>
 <p>To see the impact of additional code in the package, go back to your <code class="docutils literal notranslate"><span class="pre">main</span></code> branch, add in a new function such as</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">bar</span><span class="p">()</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">10</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">bar</span><span class="p">()</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">10</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 <p>and then commit and push to the server.</p>
@@ -916,15 +914,13 @@ be reflected in our <code class="docutils literal notranslate"><span class="pre"
 <p>The basic object is the macro <code class="docutils literal notranslate"><span class="pre">&#64;test</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Test</span><span class="w"></span>
-<span class="nd">@test</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Test</span>
+<span class="nd">@test</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">Test Passed</span>
-  Expression: 1 == 1
-   Evaluated: 1 == 1
 </pre></div>
 </div>
 </div>
@@ -932,17 +928,15 @@ be reflected in our <code class="docutils literal notranslate"><span class="pre"
 <p>Since floating points can often only be compared within machine precision, you can typically only compare these approximately with either <code class="docutils literal notranslate"><span class="pre">isapprox</span></code> or <code class="docutils literal notranslate"><span class="pre">≈</span></code> (which can auto-completed in VS Code with <code class="docutils literal notranslate"><span class="pre">\approx&lt;TAB&gt;</span></code>)</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@test</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">≈</span><span class="w"> </span><span class="mf">1.0</span><span class="w"></span>
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"></span>
-<span class="nd">@test</span><span class="w"> </span><span class="n">isapprox</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@test</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">≈</span><span class="w"> </span><span class="mf">2.0</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@test</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">≈</span><span class="w"> </span><span class="mf">1.0</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span>
+<span class="nd">@test</span><span class="w"> </span><span class="n">isapprox</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">)</span>
+<span class="nd">@test</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">≈</span><span class="w"> </span><span class="mf">2.0</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">Test Passed</span>
-  Expression: x ≈ 2.0
-   Evaluated: 2.0 ≈ 2.0
 </pre></div>
 </div>
 </div>
@@ -951,14 +945,17 @@ be reflected in our <code class="docutils literal notranslate"><span class="pre"
 For example,</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="o">√</span><span class="n">eps</span><span class="p">(</span><span class="kt">Float64</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="o">√</span><span class="n">eps</span><span class="p">(</span><span class="kt">BigFloat</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="o">√</span><span class="n">eps</span><span class="p">(</span><span class="kt">Float64</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="o">√</span><span class="n">eps</span><span class="p">(</span><span class="kt">BigFloat</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>√(eps(Float64)) = 1.4901161193847656e-8
-√(eps(BigFloat)) = 4.156000133564589919546802616566101790707151631732974255008686036787230203508115e-39
+√(eps(BigFloat)) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.156000133564589919546802616566101790707151631732974255008686036787230203508115e-39
 </pre></div>
 </div>
 </div>
@@ -966,17 +963,15 @@ For example,</p>
 <p>For cases where you want to change the relative tolerance or add in an absolute tolerance (i.e. <span class="math notranslate nohighlight">\(\|x - y\| \leq atol\)</span>) use the appropriate keywords</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1E-6</span><span class="w">  </span><span class="c"># within the tolerance</span><span class="w"></span>
-<span class="nd">@test</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">≈</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-7</span><span class="w">  </span><span class="c"># note &lt; the 1E-6 difference passes due to relative scaling</span><span class="w"></span>
-<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1E-7</span><span class="w"></span>
-<span class="nd">@test</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="o">≈</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-6</span><span class="w">  </span><span class="c"># absolute tolerance!</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1E-6</span><span class="w">  </span><span class="c"># within the tolerance</span>
+<span class="nd">@test</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">≈</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-7</span><span class="w">  </span><span class="c"># note &lt; the 1E-6 difference passes due to relative scaling</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1E-7</span>
+<span class="nd">@test</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="o">≈</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-6</span><span class="w">  </span><span class="c"># absolute tolerance!</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">Test Passed</span>
-  Expression: ≈(0.0, y, atol = 1.0e-6)
-   Evaluated: ≈(0.0, 1.0e-7; atol = 1.0e-6)
 </pre></div>
 </div>
 </div>
@@ -989,15 +984,13 @@ For example,</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">isapprox</span></code> comparison works for any datatypes that implement a <code class="docutils literal notranslate"><span class="pre">norm</span></code>, for example</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]</span><span class="w"></span>
-<span class="nd">@test</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">≈</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]</span>
+<span class="nd">@test</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">≈</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">Test Passed</span>
-  Expression: x ≈ [1.0, 2.0]
-   Evaluated: [1.0, 2.0] ≈ [1.0, 2.0]
 </pre></div>
 </div>
 </div>
@@ -1005,7 +998,7 @@ For example,</p>
 <p>Tests will pass if the condition is <code class="docutils literal notranslate"><span class="pre">true</span></code>, or fail otherwise.  Failing tests will be highlighted in both the CI and output within the terminal,</p>
 <div class="cell tag_raises-exception tag_remove-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@test</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@test</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span>
 </pre></div>
 </div>
 </div>
@@ -1015,7 +1008,7 @@ For example,</p>
 <p>To do this, flag it with <code class="docutils literal notranslate"><span class="pre">&#64;test_broken</span></code> as below</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@test_broken</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@test_broken</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span>
 </pre></div>
 </div>
 </div>
@@ -1035,17 +1028,17 @@ For example,</p>
 <p>This is useful for organizing different batches of tests, and executing them all at once.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@testset</span><span class="w"> </span><span class="s">&quot;my tests&quot;</span><span class="w"> </span><span class="k">begin</span><span class="w"></span>
-<span class="w">  </span><span class="nd">@test</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">  </span><span class="nd">@test</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
-<span class="w">  </span><span class="nd">@test_broken</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
-<span class="k">end</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@testset</span><span class="w"> </span><span class="s">&quot;my tests&quot;</span><span class="w"> </span><span class="k">begin</span>
+<span class="w">  </span><span class="nd">@test</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">  </span><span class="nd">@test</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">  </span><span class="nd">@test_broken</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span>
+<span class="k">end</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">Test Summary: | </span><span class=" -Color -Color-Bold -Color-Bold-Green">Pass  </span><span class=" -Color -Color-Bold -Color-Bold-Yellow">Broken  </span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total</span>
-my tests      | <span class=" -Color -Color-Green">   2  </span><span class=" -Color -Color-Yellow">     1  </span><span class=" -Color -Color-Cyan">    3</span>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">Test Summary: | </span><span class=" -Color -Color-Bold -Color-Bold-Green">Pass  </span><span class=" -Color -Color-Bold -Color-Bold-Yellow">Broken  </span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
+my tests      | <span class=" -Color -Color-Green">   2  </span><span class=" -Color -Color-Yellow">     1  </span><span class=" -Color -Color-Cyan">    3  </span>0.2s
 </pre></div>
 </div>
 </div>
@@ -1105,16 +1098,16 @@ Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watc
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.7"
+            mode: "julia-1.8"
         },
         kernelOptions: {
-            kernelName: "julia-1.7",
+            kernelName: "julia-1.8",
             path: "./software_engineering"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.7'</script>
+    <script>kernelName = 'julia-1.8'</script>
 
                     </div>
                     
@@ -1258,33 +1251,60 @@ Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watc
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   18. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   19. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   20. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   21. A First Look at the Kalman Filter
+   18. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   22. Numerical Linear Algebra and Factorizations
+   19. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   23. Krylov Methods and Matrix Conditioning
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
   </a>
  </li>
 </ul>
@@ -1295,88 +1315,83 @@ Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watc
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/short_path.html">
-   24. Shortest Paths
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   25. Job Search I: The McCall Search Model
+   28. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   26. Job Search II: Search and Separation
+   29. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   27. A Problem that Stumped Milton Friedman
+   30. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   28. Job Search III: Search with Learning
+   31. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   29. Job Search IV: Modeling Career Choice
+   32. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   30. Job Search V: On-the-Job Search
+   33. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   31. Optimal Growth I: The Stochastic Optimal Growth Model
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   32. Optimal Growth II: Time Iteration
+   35. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   33. Optimal Growth III: The Endogenous Grid Method
+   36. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   34. LQ Dynamic Programming Problems
+   37. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   35. Optimal Savings I: The Permanent Income Model
+   38. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   36. Optimal Savings II: LQ Techniques
+   39. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   38. Optimal Savings III: Occasionally Binding Constraints
+   41. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   39. Robustness
+   42. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   40. Discrete State Dynamic Programming
+   43. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -1388,12 +1403,12 @@ Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watc
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   41. Modeling COVID 19 with Differential Equations
+   44. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1405,57 +1420,57 @@ Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watc
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   43. Schelling’s Segregation Model
+   46. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   44. A Lake Model of Employment and Unemployment
+   47. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   45. Rational Expectations Equilibrium
+   48. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   46. Markov Perfect Equilibrium
+   49. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   47. Asset Pricing I: Finite State Models
+   50. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   48. Asset Pricing II: The Lucas Asset Pricing Model
+   51. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   49. Asset Pricing III:  Incomplete Markets
+   52. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   50. Uncertainty Traps
+   53. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   51. The Aiyagari Model
+   54. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   52. Default Risk and Income Fluctuations
+   55. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   53. Globalization and Cycles
+   56. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1467,32 +1482,32 @@ Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watc
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   54. Covariance Stationary Processes
+   57. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   55. Estimation of Spectra
+   58. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   56. Additive Functionals
+   59. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   57. Multiplicative Functionals
+   60. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   58. Classical Control with Linear Algebra
+   61. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   59. Classical Filtering With Linear Algebra
+   62. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1504,22 +1519,22 @@ Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watc
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   60. Dynamic Stackelberg Problems
+   63. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   61. Optimal Taxation in an LQ Economy
+   64. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   62. Optimal Taxation with State-Contingent Debt
+   65. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   63. Optimal Taxation without State-Contingent Debt
+   66. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1531,22 +1546,22 @@ Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watc
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   64. About these Lectures
+   67. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   65. Troubleshooting
+   68. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   66. References
+   69. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Execution Statistics
+   70. Execution Statistics
   </a>
  </li>
 </ul>

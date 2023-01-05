@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (perm_income_cons)=
@@ -51,7 +51,7 @@ It is just a matter of appropriately relabeling the variables in Hall's model.
 In this lecture, we'll
 
 * show how the solution to the LQ permanent income model can be obtained using LQ control methods
-* represent the model as a linear state space system as in {doc}`this lecture <../tools_and_techniques/linear_models>`
+* represent the model as a linear state space system as in {doc}`this lecture <../introduction_dynamics/linear_models>`
 * apply [QuantEcon](http://quantecon.org/quantecon-jl)'s [LSS](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl) type to characterize statistical features of the consumer's optimal consumption and borrowing plans
 
 We'll then use these characterizations to construct a simple model of cross-section wealth and
@@ -159,7 +159,7 @@ y_{t+1} = \alpha + \rho_1 y_t + \rho_2 y_{t-1} + \sigma w_{t+1}
 $$
 
 We can map this into the linear state space framework in {eq}`sprob15ab2`, as
-discussed in our lecture on  {doc}`linear models <../tools_and_techniques/linear_models>`.
+discussed in our lecture on  {doc}`linear models <../introduction_dynamics/linear_models>`.
 
 To do so we take
 
@@ -599,31 +599,27 @@ function consumption_debt_fanchart(csim, cons_mean, cons_var,
     cmean = mean(cons_mean)
     c90 = 1.65 * sqrt.(cons_var)
     c95 = 1.96 * sqrt.(cons_var)
-    c_perc_95p, c_perc_95m = cons_mean + c95, cons_mean - c95
-    c_perc_90p, c_perc_90m = cons_mean + c90, cons_mean - c90
 
     # create percentiles of cross-section distributions
     dmean = mean(debt_mean)
     d90 = 1.65 * sqrt.(debt_var)
     d95 = 1.96 * sqrt.(debt_var)
-    d_perc_95p, d_perc_95m = debt_mean + d95, debt_mean - d95
-    d_perc_90p, d_perc_90m = debt_mean + d90, debt_mean - d90
 
     xvals = 1:T
 
     # first fanchart
     plt_1=plot(xvals, cons_mean, color=:black, lw=2, label="")
     plot!(plt_1, xvals, Array(csim'), color=:black, alpha=0.25, label="")
-    plot!(xvals, fillrange=[c_perc_95m, c_perc_95p], alpha=0.25, color=:blue, label="")
-    plot!(xvals, fillrange=[c_perc_90m, c_perc_90p], alpha=0.25, color=:red, label="")
+    plot!(plt_1, xvals, cons_mean, ribbon=c95, alpha=0.25, fillalpha=0.25, color=:blue, label="")
+    plot!(plt_1, xvals, cons_mean, ribbon=c90, alpha=0.25, fillalpha=0.25, color=:red, label="")
     plot!(plt_1, title="Consumption/Debt over time",
           ylim=(cmean-15, cmean+15), ylabel="consumption")
 
     # second fanchart
-    plt_2=plot(xvals, debt_mean, color=:black, lw=2,label="")
-    plot!(plt_2, xvals, Array(bsim'), color=:black, alpha=0.25,label="")
-    plot!(xvals, fillrange=[d_perc_95m, d_perc_95p], alpha=0.25, color=:blue,label="")
-    plot!(xvals, fillrange=[d_perc_90m, d_perc_90p], alpha=0.25, color=:red,label="")
+    plt_2=plot(xvals, debt_mean, color=:black, lw=2, label="")
+    plot!(plt_2, xvals, Array(bsim'), color=:black, alpha=0.25, label="")
+    plot!(plt_2, xvals, debt_mean, ribbon=d95, alpha=0.25, fillalpha=0.25, color=:blue, label="")
+    plot!(plt_2, xvals, debt_mean, ribbon=d90, alpha=0.25, fillalpha=0.25, color=:red, label="")
     plot!(plt_2, ylabel="debt", xlabel=L"t")
 
     plot(plt_1, plt_2, layout=(2,1), size=(800,600))

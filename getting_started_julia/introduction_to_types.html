@@ -88,15 +88,14 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/getting_started_julia/introduction_to_types.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -384,7 +383,7 @@
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
 </pre></div>
 </div>
 </div>
@@ -397,8 +396,8 @@
 <p>As we have seen in the previous lectures, in Julia all values have a type, which can be queried using the <code class="docutils literal notranslate"><span class="pre">typeof</span></code> function</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="mf">1.0</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -414,8 +413,8 @@ language, and the compiler deduces their types (<code class="docutils literal no
 <p>You can also query the type of a value</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -433,8 +432,8 @@ language, and the compiler deduces their types (<code class="docutils literal no
 <p>The next two types use curly bracket notation to express the fact that they are <em>parametric</em></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="nb">im</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">));</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="nb">im</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">));</span>
 </pre></div>
 </div>
 </div>
@@ -462,8 +461,8 @@ typeof(ones(2, 2)) = Matrix{Float64}
 <p>Another type to consider is the <code class="docutils literal notranslate"><span class="pre">Tuple</span></code> and <code class="docutils literal notranslate"><span class="pre">NamedTuple</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test&quot;</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -480,8 +479,8 @@ typeof(ones(2, 2)) = Matrix{Float64}
 <p>For a named tuple</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;test&quot;</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -498,7 +497,7 @@ typeof(ones(2, 2)) = Matrix{Float64}
 <p>Anytime a value is prefixed by a colon, as in the <code class="docutils literal notranslate"><span class="pre">:a</span></code> above, the type is <code class="docutils literal notranslate"><span class="pre">Symbol</span></code> – a special kind of string used by the compiler.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">typeof</span><span class="p">(</span><span class="ss">:a</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">typeof</span><span class="p">(</span><span class="ss">:a</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -517,8 +516,8 @@ typeof(ones(2, 2)) = Matrix{Float64}
 value via the name.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -532,7 +531,7 @@ value via the name.</p>
 <p>We can <em>rebind</em> the symbol <code class="docutils literal notranslate"><span class="pre">x</span></code> to any other value, of the same type or otherwise.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">42.0</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">42.0</span>
 </pre></div>
 </div>
 </div>
@@ -545,7 +544,7 @@ value via the name.</p>
 <p>Now <code class="docutils literal notranslate"><span class="pre">x</span></code> “points to” another value, of type <code class="docutils literal notranslate"><span class="pre">Float64</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -579,10 +578,10 @@ help us organize and work with related concrete types.</p>
 <p>You can check if a type is a subtype of another with the <code class="docutils literal notranslate"><span class="pre">&lt;:</span></code> operator.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="kt">Float64</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="kt">Int64</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="kt">Complex</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="kt">Array</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="kt">Float64</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span>
+<span class="nd">@show</span><span class="w"> </span><span class="kt">Int64</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span>
+<span class="nd">@show</span><span class="w"> </span><span class="kt">Complex</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span>
+<span class="nd">@show</span><span class="w"> </span><span class="kt">Array</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -599,10 +598,10 @@ Array &lt;: Real = false
 <p>They are, however, all subtypes of <code class="docutils literal notranslate"><span class="pre">Number</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="kt">Real</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Number</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="kt">Float64</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Number</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="kt">Int64</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Number</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="kt">Complex</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Number</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="kt">Real</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Number</span>
+<span class="nd">@show</span><span class="w"> </span><span class="kt">Float64</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Number</span>
+<span class="nd">@show</span><span class="w"> </span><span class="kt">Int64</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Number</span>
+<span class="nd">@show</span><span class="w"> </span><span class="kt">Complex</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Number</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -618,7 +617,7 @@ Complex{Float64} &lt;: Number = true
 <p><code class="docutils literal notranslate"><span class="pre">Number</span></code> in turn is a subtype of <code class="docutils literal notranslate"><span class="pre">Any</span></code>, which is a parent of all types.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="kt">Number</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Any</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="kt">Number</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Any</span>
 </pre></div>
 </div>
 </div>
@@ -634,9 +633,9 @@ Complex{Float64} &lt;: Number = true
 <p>There are some further functions to help you explore the type hierarchy, such as <code class="docutils literal notranslate"><span class="pre">show_supertypes</span></code> which walks up the tree of types to <code class="docutils literal notranslate"><span class="pre">Any</span></code> for a given type.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Base</span><span class="o">:</span><span class="w"> </span><span class="n">show_supertypes</span><span class="w">  </span><span class="c"># import the function from the `Base` package</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Base</span><span class="o">:</span><span class="w"> </span><span class="n">show_supertypes</span><span class="w">  </span><span class="c"># import the function from the `Base` package</span>
 
-<span class="n">show_supertypes</span><span class="p">(</span><span class="kt">Int64</span><span class="p">)</span><span class="w"></span>
+<span class="n">show_supertypes</span><span class="p">(</span><span class="kt">Int64</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -649,8 +648,8 @@ Complex{Float64} &lt;: Number = true
 <p>And the <code class="docutils literal notranslate"><span class="pre">subtypes</span></code> which gives a list of the available subtypes for any packages or code currently loaded</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">subtypes</span><span class="p">(</span><span class="kt">Real</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">subtypes</span><span class="p">(</span><span class="kt">AbstractFloat</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">subtypes</span><span class="p">(</span><span class="kt">Real</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">subtypes</span><span class="p">(</span><span class="kt">AbstractFloat</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -670,11 +669,11 @@ but much of Julia’s performance gains and generality of notation comes from it
 <p>For example</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span><span class="w"></span>
-<span class="n">x2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span>
+<span class="n">x2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -692,11 +691,11 @@ typeof(x2) = Vector{Float64}
 <p>Given the information on the type, the compiler can work through the sequence of expressions to infer other types.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="n">y</span><span class="w"> </span><span class="c"># define some function</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="n">y</span><span class="w"> </span><span class="c"># define some function</span>
 
 
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span><span class="w"></span>
-<span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c"># call with an integer array - compiler deduces type</span><span class="w"></span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">]</span>
+<span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c"># call with an integer array - compiler deduces type</span>
 </pre></div>
 </div>
 </div>
@@ -716,7 +715,7 @@ the compiler can always deduce a single type from any function or expression.</p
 <p>An example of bad practice is to use an array to hold unrelated types</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w">  </span><span class="c"># typically poor style</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w">  </span><span class="c"># typically poor style</span>
 </pre></div>
 </div>
 </div>
@@ -735,16 +734,16 @@ the compiler can always deduce a single type from any function or expression.</p
 <p>As an example, consider a function which returns different types depending on the arguments.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mf">1.0</span><span class="w"></span>
-<span class="w">    </span><span class="k">else</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="c"># probably meant `0.0`</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mf">1.0</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">  </span><span class="c"># probably meant `0.0`</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -769,12 +768,12 @@ f(-1) = 0
 <p>To give an example of the declaration of types, the following are equivalent</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">6.0</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">)</span>
+<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">6.0</span><span class="p">]</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">b</span>
+<span class="k">end</span>
 
-<span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span><span class="w"> </span><span class="mf">3.0</span><span class="w"> </span><span class="mf">4.0</span><span class="p">])</span><span class="w"></span>
+<span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span><span class="w"> </span><span class="mf">3.0</span><span class="w"> </span><span class="mf">4.0</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -788,13 +787,13 @@ f(-1) = 0
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">f2</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">},</span><span class="w"> </span><span class="n">A</span><span class="o">::</span><span class="kt">Matrix</span><span class="p">{</span><span class="kt">Float64</span><span class="p">})</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="c"># argument and return types</span><span class="w"></span>
-<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">6.0</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">f2</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">},</span><span class="w"> </span><span class="n">A</span><span class="o">::</span><span class="kt">Matrix</span><span class="p">{</span><span class="kt">Float64</span><span class="p">})</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span>
+<span class="w">    </span><span class="c"># argument and return types</span>
+<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">6.0</span><span class="p">]</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">b</span>
+<span class="k">end</span>
 
-<span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f2</span><span class="p">([</span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="mf">2.0</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span><span class="w"> </span><span class="mf">3.0</span><span class="w"> </span><span class="mf">4.0</span><span class="p">])</span><span class="w"></span>
+<span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f2</span><span class="p">([</span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="mf">2.0</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="w"> </span><span class="mf">2.0</span><span class="p">;</span><span class="w"> </span><span class="mf">3.0</span><span class="w"> </span><span class="mf">4.0</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -812,17 +811,20 @@ f(-1) = 0
 <p>Here, the first line works and the second line fails</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">([</span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="mf">2.0</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">4</span><span class="p">])</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">([</span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="mf">2.0</span><span class="p">],</span><span class="w"> </span><span class="n">Diagonal</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]))</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">([</span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="mf">2.0</span><span class="p">],</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">4</span><span class="p">])</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">([</span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="mf">2.0</span><span class="p">],</span><span class="w"> </span><span class="n">Diagonal</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]))</span>
 
-<span class="c"># f2([0.1; 2.0], [1 2; 3 4]) # not a `Float64`</span><span class="w"></span>
-<span class="c"># f2([0.1; 2.0], Diagonal([1.0, 2.0])) # not a `Matrix{Float64}`</span><span class="w"></span>
+<span class="c"># f2([0.1; 2.0], [1 2; 3 4]) # not a `Float64`</span>
+<span class="c"># f2([0.1; 2.0], Diagonal([1.0, 2.0])) # not a `Matrix{Float64}`</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f([0.1; 2.0], [1 2; 3 4]) = [9.1, 14.3]
-f([0.1; 2.0], Diagonal([1.0, 2.0])) = [5.1, 10.0]
+f([0.1; 2.0], Diagonal([1.0, 2.0])) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[5.1, 10.0]
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
@@ -851,11 +853,11 @@ but you will eventually need to be able to use code that creates its own types.<
 <p>Let’s start with a trivial example where the <code class="docutils literal notranslate"><span class="pre">struct</span></code> we build has fields named <code class="docutils literal notranslate"><span class="pre">a,</span> <span class="pre">b,</span> <span class="pre">c</span></code>, are not typed</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">FooNotTyped</span><span class="w">  </span><span class="c"># immutable by default, use `mutable struct` otherwise</span><span class="w"></span>
-<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="c"># BAD! not typed</span><span class="w"></span>
-<span class="w">    </span><span class="n">b</span><span class="w"></span>
-<span class="w">    </span><span class="n">c</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">FooNotTyped</span><span class="w">  </span><span class="c"># immutable by default, use `mutable struct` otherwise</span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="c"># BAD! not typed</span>
+<span class="w">    </span><span class="n">b</span>
+<span class="w">    </span><span class="n">c</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </div>
@@ -863,11 +865,11 @@ but you will eventually need to be able to use code that creates its own types.<
 <p>And another where the types of the fields are chosen</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">Foo</span><span class="w"></span>
-<span class="w">    </span><span class="n">a</span><span class="o">::</span><span class="kt">Float64</span><span class="w"></span>
-<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">Int64</span><span class="w"></span>
-<span class="w">    </span><span class="n">c</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">Foo</span>
+<span class="w">    </span><span class="n">a</span><span class="o">::</span><span class="kt">Float64</span>
+<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">Int64</span>
+<span class="w">    </span><span class="n">c</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </div>
@@ -876,15 +878,15 @@ but you will eventually need to be able to use code that creates its own types.<
 <p>It has the same name as the data type but uses function call notion</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">foo_nt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FooNotTyped</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">])</span><span class="w">  </span><span class="c"># new `FooNotTyped`</span><span class="w"></span>
-<span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">])</span><span class="w"> </span><span class="c"># creates a new `Foo`</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">foo_nt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FooNotTyped</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">])</span><span class="w">  </span><span class="c"># new `FooNotTyped`</span>
+<span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">])</span><span class="w"> </span><span class="c"># creates a new `Foo`</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">a</span><span class="w">       </span><span class="c"># get the value for a field</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">b</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">c</span><span class="p">;</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">a</span><span class="w">       </span><span class="c"># get the value for a field</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">b</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">foo</span><span class="o">.</span><span class="n">c</span><span class="p">;</span>
 
-<span class="c"># foo.a = 2.0     # fails since it is immutable</span><span class="w"></span>
+<span class="c"># foo.a = 2.0     # fails since it is immutable</span>
 </pre></div>
 </div>
 </div>
@@ -912,11 +914,11 @@ foo.c = [1.0, 2.0, 3.0]
 <p>The first example, which is usually just as low-performance as no declaration of types at all, is to accidentally declare it with an abstract type</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">Foo2</span><span class="w"></span>
-<span class="w">    </span><span class="n">a</span><span class="o">::</span><span class="kt">Float64</span><span class="w"></span>
-<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">Integer</span><span class="w">  </span><span class="c"># BAD! Not a concrete type</span><span class="w"></span>
-<span class="w">    </span><span class="n">c</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Real</span><span class="p">}</span><span class="w">  </span><span class="c"># BAD! Not a concrete type</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">Foo2</span>
+<span class="w">    </span><span class="n">a</span><span class="o">::</span><span class="kt">Float64</span>
+<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">Integer</span><span class="w">  </span><span class="c"># BAD! Not a concrete type</span>
+<span class="w">    </span><span class="n">c</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Real</span><span class="p">}</span><span class="w">  </span><span class="c"># BAD! Not a concrete type</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </div>
@@ -925,28 +927,31 @@ foo.c = [1.0, 2.0, 3.0]
 be unnecessarily constraining what is allowed</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="c"># use the type</span><span class="w"></span>
-<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"></span>
-<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"></span>
-<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span><span class="w"></span>
-<span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="w">   </span><span class="c"># call with the foo, no problem</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="c"># use the type</span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span>
+<span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="w">   </span><span class="c"># call with the foo, no problem</span>
 
-<span class="c"># some other typed for the values</span><span class="w"></span>
-<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w">   </span><span class="c"># not a floating point but `f()` would work</span><span class="w"></span>
-<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"></span>
-<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span><span class="o">&#39;</span><span class="w">   </span><span class="c"># transpose is not a `Vector` but `f()` would work</span><span class="w"></span>
-<span class="c"># foo = Foo(a, b, c)   # fails to compile</span><span class="w"></span>
+<span class="c"># some other typed for the values</span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w">   </span><span class="c"># not a floating point but `f()` would work</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span><span class="o">&#39;</span><span class="w">   </span><span class="c"># transpose is not a `Vector` but `f()` would work</span>
+<span class="c"># foo = Foo(a, b, c)   # fails to compile</span>
 
-<span class="c"># works with `NotTyped` version, but low performance</span><span class="w"></span>
-<span class="n">foo_nt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FooNotTyped</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">foo_nt</span><span class="p">);</span><span class="w"></span>
+<span class="c"># works with `NotTyped` version, but low performance</span>
+<span class="n">foo_nt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FooNotTyped</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">foo_nt</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f(foo) = 11.0
-f(foo_nt) = 11.0
+f(foo_nt) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>11.0
 </pre></div>
 </div>
 </div>
@@ -958,19 +963,19 @@ f(foo_nt) = 11.0
 <p>Motivated by the above, we can create a type which can adapt to holding fields of different types.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">Foo3</span><span class="p">{</span><span class="kt">T1</span><span class="p">,</span><span class="w"> </span><span class="kt">T2</span><span class="p">,</span><span class="w"> </span><span class="kt">T3</span><span class="p">}</span><span class="w"></span>
-<span class="w">    </span><span class="n">a</span><span class="o">::</span><span class="kt">T1</span><span class="w">   </span><span class="c"># could be any type</span><span class="w"></span>
-<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">T2</span><span class="w"></span>
-<span class="w">    </span><span class="n">c</span><span class="o">::</span><span class="kt">T3</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">Foo3</span><span class="p">{</span><span class="kt">T1</span><span class="p">,</span><span class="w"> </span><span class="kt">T2</span><span class="p">,</span><span class="w"> </span><span class="kt">T3</span><span class="p">}</span>
+<span class="w">    </span><span class="n">a</span><span class="o">::</span><span class="kt">T1</span><span class="w">   </span><span class="c"># could be any type</span>
+<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">T2</span>
+<span class="w">    </span><span class="n">c</span><span class="o">::</span><span class="kt">T3</span>
+<span class="k">end</span>
 
-<span class="c"># works fine</span><span class="w"></span>
-<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="w"></span>
-<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"></span>
-<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span><span class="o">&#39;</span><span class="w">    </span><span class="c"># transpose is not a `Vector` but `f()` would work</span><span class="w"></span>
-<span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo3</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="w"></span>
-<span class="n">f</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="w"></span>
+<span class="c"># works fine</span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span><span class="o">&#39;</span><span class="w">    </span><span class="c"># transpose is not a `Vector` but `f()` would work</span>
+<span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo3</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+<span class="n">f</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -987,14 +992,14 @@ f(foo_nt) = 11.0
 <p>You could constrain the types based on the abstract parent type using the <code class="docutils literal notranslate"><span class="pre">&lt;:</span></code> operator</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">Foo4</span><span class="p">{</span><span class="kt">T1</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span><span class="p">,</span><span class="w"> </span><span class="kt">T2</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span><span class="p">,</span><span class="w"> </span><span class="kt">T3</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">AbstractVecOrMat</span><span class="p">{</span><span class="o">&lt;:</span><span class="kt">Real</span><span class="p">}}</span><span class="w"></span>
-<span class="w">    </span><span class="n">a</span><span class="o">::</span><span class="kt">T1</span><span class="w"></span>
-<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">T2</span><span class="w"></span>
-<span class="w">    </span><span class="n">c</span><span class="o">::</span><span class="kt">T3</span><span class="w">  </span><span class="c"># should check dimensions as well</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo4</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w">  </span><span class="c"># no problem, and high performance</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="w"></span>
-<span class="n">f</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">Foo4</span><span class="p">{</span><span class="kt">T1</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span><span class="p">,</span><span class="w"> </span><span class="kt">T2</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span><span class="p">,</span><span class="w"> </span><span class="kt">T3</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">AbstractVecOrMat</span><span class="p">{</span><span class="o">&lt;:</span><span class="kt">Real</span><span class="p">}}</span>
+<span class="w">    </span><span class="n">a</span><span class="o">::</span><span class="kt">T1</span>
+<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">T2</span>
+<span class="w">    </span><span class="n">c</span><span class="o">::</span><span class="kt">T3</span><span class="w">  </span><span class="c"># should check dimensions as well</span>
+<span class="k">end</span>
+<span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo4</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w">  </span><span class="c"># no problem, and high performance</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
+<span class="n">f</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1021,27 +1026,26 @@ f(foo_nt) = 11.0
 remedied with the <code class="docutils literal notranslate"><span class="pre">&#64;kwdef</span></code> macro from <code class="docutils literal notranslate"><span class="pre">Base</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Base</span><span class="o">:</span><span class="w"> </span><span class="nd">@kwdef</span><span class="w"></span>
-<span class="k">using</span><span class="w"> </span><span class="n">Parameters</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Base</span><span class="o">:</span><span class="w"> </span><span class="nd">@kwdef</span>
 
-<span class="nd">@kwdef</span><span class="w"> </span><span class="k">struct</span> <span class="kt">Foo5</span><span class="w"></span>
-<span class="w">    </span><span class="n">a</span><span class="o">::</span><span class="kt">Float64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w">     </span><span class="c"># adds default value</span><span class="w"></span>
-<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">Int64</span><span class="w"></span>
-<span class="w">    </span><span class="n">c</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="nd">@kwdef</span><span class="w"> </span><span class="k">struct</span> <span class="kt">Foo5</span>
+<span class="w">    </span><span class="n">a</span><span class="o">::</span><span class="kt">Float64</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w">     </span><span class="c"># adds default value</span>
+<span class="w">    </span><span class="n">b</span><span class="o">::</span><span class="kt">Int64</span>
+<span class="w">    </span><span class="n">c</span><span class="o">::</span><span class="kt">Vector</span><span class="p">{</span><span class="kt">Float64</span><span class="p">}</span>
+<span class="k">end</span>
 
-<span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo5</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">])</span><span class="w"></span>
-<span class="n">foo2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo5</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">],</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w">  </span><span class="c"># rearrange order, uses default values</span><span class="w"></span>
+<span class="n">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo5</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">])</span>
+<span class="n">foo2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Foo5</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">],</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w">  </span><span class="c"># rearrange order, uses default values</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">foo</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">foo2</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">foo</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">foo2</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@unpack</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w">     </span><span class="c"># can use `@unpack` on any struct</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="p">(;</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="c"># unpacks any struct or named tuple</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="k">end</span>
 
-<span class="n">f</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span><span class="w"></span>
+<span class="n">f</span><span class="p">(</span><span class="n">foo</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1075,29 +1079,29 @@ and many more packages – including ones that have not even been written yet.</
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># BAD</span><span class="w"></span>
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">6.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.1</span><span class="p">]</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># BAD</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="mf">6.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.1</span><span class="p">]</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Array</span><span class="p">{</span><span class="kt">Float64</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">})</span><span class="w">   </span><span class="c"># not generic!</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w">   </span><span class="c"># not generic, hidden float!</span><span class="w"></span>
-<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Diagonal</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span><span class="w">  </span><span class="c"># not generic, hidden float!</span><span class="w"></span>
-<span class="w">    </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">.=</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Array</span><span class="p">{</span><span class="kt">Float64</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">})</span><span class="w">   </span><span class="c"># not generic!</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w">   </span><span class="c"># not generic, hidden float!</span>
+<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Diagonal</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span><span class="w">  </span><span class="c"># not generic, hidden float!</span>
+<span class="w">    </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">.=</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">y</span>
+<span class="k">end</span>
 
-<span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="c"># GOOD</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span><span class="n">g2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># or `x::AbstractVector`</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">I</span><span class="w"></span>
-<span class="w">    </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">eltype</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w">  </span><span class="c"># or `fill(one(x), length(x))`</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">.=</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="c"># GOOD</span>
+<span class="k">function</span><span class="w"> </span><span class="n">g2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># or `x::AbstractVector`</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">I</span>
+<span class="w">    </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">eltype</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w">  </span><span class="c"># or `fill(one(x), length(x))`</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">.=</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">y</span>
+<span class="k">end</span>
 
-<span class="n">g2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="n">g2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1115,15 +1119,15 @@ and many more packages – including ones that have not even been written yet.</
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">eachindex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="w">      </span><span class="c"># could broadcast</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">eachindex</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">        </span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="w">      </span><span class="c"># could broadcast</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">y</span>
+<span class="k">end</span>
 
-<span class="n">g</span><span class="p">([</span><span class="kt">BigInt</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="kt">BigInt</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span><span class="w"></span>
+<span class="n">g</span><span class="p">([</span><span class="kt">BigInt</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="kt">BigInt</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
 </pre></div>
 </div>
 </div>
@@ -1140,8 +1144,8 @@ and many more packages – including ones that have not even been written yet.</
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">])</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">eltype</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">])</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">eltype</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]);</span>
 </pre></div>
 </div>
 </div>
@@ -1157,10 +1161,10 @@ eltype([1.0, 2.0, 3.0]) = Float64
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="kt">Int64</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">))</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="kt">Int64</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">ones</span><span class="p">(</span><span class="kt">Int64</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">))</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">zeros</span><span class="p">(</span><span class="kt">Int64</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">));</span>
 </pre></div>
 </div>
 </div>
@@ -1178,16 +1182,16 @@ typeof(zeros(Int64, 3)) = Vector{Int64}
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="kt">BigFloat</span><span class="p">(</span><span class="mf">1.0</span><span class="p">))</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">one</span><span class="p">(</span><span class="kt">BigFloat</span><span class="p">))</span><span class="w">  </span><span class="c"># gets multiplicative identity, passing in type</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">zero</span><span class="p">(</span><span class="kt">BigFloat</span><span class="p">))</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="kt">BigFloat</span><span class="p">(</span><span class="mf">1.0</span><span class="p">))</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">one</span><span class="p">(</span><span class="kt">BigFloat</span><span class="p">))</span><span class="w">  </span><span class="c"># gets multiplicative identity, passing in type</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">zero</span><span class="p">(</span><span class="kt">BigFloat</span><span class="p">))</span>
 
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">BigFloat</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">BigFloat</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">one</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w">  </span><span class="c"># can call with a variable for convenience</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">));</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">one</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w">  </span><span class="c"># can call with a variable for convenience</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>
 </pre></div>
 </div>
 </div>
@@ -1209,14 +1213,14 @@ typeof(zero(x)) = BigFloat
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># ACCEPTABLE</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractFloat</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.0</span><span class="w">   </span><span class="c"># assumes `1.0` can be converted to something compatible with `typeof(x)`</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># ACCEPTABLE</span>
+<span class="k">function</span><span class="w"> </span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractFloat</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.0</span><span class="w">   </span><span class="c"># assumes `1.0` can be converted to something compatible with `typeof(x)`</span>
+<span class="k">end</span>
 
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">BigFloat</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="w"></span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">BigFloat</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">));</span><span class="w">  </span><span class="c"># this has &quot;promoted&quot; the `1.0` to a `BigFloat`</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">g</span><span class="p">(</span><span class="n">x</span><span class="p">));</span><span class="w">  </span><span class="c"># this has &quot;promoted&quot; the `1.0` to a `BigFloat`</span>
 </pre></div>
 </div>
 </div>
@@ -1229,32 +1233,32 @@ typeof(zero(x)) = BigFloat
 <p>But sometimes assuming promotion is not enough</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># BAD</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span><span class="n">g2</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractFloat</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0</span><span class="w">   </span><span class="c"># can&#39;t efficiently call with `x::Integer`</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.0</span><span class="w">   </span><span class="c"># OK - assumes you can promote `Float64` to `AbstractFloat`</span><span class="w"></span>
-<span class="w">    </span><span class="k">else</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">   </span><span class="c"># BAD! Returns a `Int64`</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># BAD</span>
+<span class="k">function</span><span class="w"> </span><span class="n">g2</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractFloat</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0</span><span class="w">   </span><span class="c"># can&#39;t efficiently call with `x::Integer`</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">1.0</span><span class="w">   </span><span class="c"># OK - assumes you can promote `Float64` to `AbstractFloat`</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="w">   </span><span class="c"># BAD! Returns a `Int64`</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
 
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">BigFloat</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span><span class="w"></span>
-<span class="n">x2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">BigFloat</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span><span class="w"></span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">BigFloat</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">x2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">BigFloat</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">g2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">g2</span><span class="p">(</span><span class="n">x2</span><span class="p">))</span><span class="w">  </span><span class="c"># type unstable</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">g2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">g2</span><span class="p">(</span><span class="n">x2</span><span class="p">))</span><span class="w">  </span><span class="c"># type unstable</span>
 
-<span class="c"># GOOD</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span><span class="n">g3</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c">#</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">   </span><span class="c"># any type with an additive identity</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">one</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># more general but less important of a change</span><span class="w"></span>
-<span class="w">    </span><span class="k">else</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="c"># GOOD</span>
+<span class="k">function</span><span class="w"> </span><span class="n">g3</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c">#</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">   </span><span class="c"># any type with an additive identity</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">one</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># more general but less important of a change</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">g3</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">g3</span><span class="p">(</span><span class="n">x2</span><span class="p">));</span><span class="w">  </span><span class="c"># type stable</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">g3</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">g3</span><span class="p">(</span><span class="n">x2</span><span class="p">));</span><span class="w">  </span><span class="c"># type stable</span>
 </pre></div>
 </div>
 </div>
@@ -1285,10 +1289,9 @@ choices in these lectures: “be aware of types, but avoid declaring them”.</p
 <p>This is just one of many decisions and patterns to ensure that your code is consistent and clear.</p>
 <p>The best resource is to carefully read other peoples code, but a few sources to review are</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://docs.julialang.org/en/v1/manual/style-guide/">Julia Style Guide</a>.</p></li>
-<li><p><a class="reference external" href="https://github.com/invenia/BlueStyle">Invenia Blue Style Guide</a>.</p></li>
-<li><p><a class="reference external" href="https://github.com/JuliaPraxis/Naming/tree/master/guides">Julia Praxis Naming Guides</a>.</p></li>
-<li><p><a class="reference external" href="https://github.com/QuantEcon/lecture-source-jl/blob/master/style.md">QuantEcon Style Guide</a> used in these lectures.</p></li>
+<li><p><a class="reference external" href="https://docs.julialang.org/en/v1/manual/style-guide/">Julia Style Guide</a></p></li>
+<li><p><a class="reference external" href="https://github.com/SciML/SciMLStyle">SciML Style Guide</a></p></li>
+<li><p><a class="reference external" href="https://github.com/invenia/BlueStyle">Blue Style Guide</a></p></li>
 </ul>
 <p>Now why would we emphasize naming and style as a crucial part of the lectures?</p>
 <p>Because it is an essential tool for creating research that is
@@ -1307,6 +1310,7 @@ of yourself who may have forgotten everything, and is likely to misuse the code.
 For example, if you change notation in your model, then immediately update
 all variables in the code to reflect it.</p></li>
 </ul>
+<p>While variable naming takes discipline, code formatting for a specific style guide can be automated using <a class="reference external" href="https://github.com/domluna/JuliaFormatter.jl">JuliaFormatter.jl</a> which is built into the Julia VS Code extension.</p>
 <div class="section" id="commenting-code">
 <h4><span class="section-number">5.5.6.1. </span>Commenting Code<a class="headerlink" href="#commenting-code" title="Permalink to this headline">¶</a></h4>
 <p>One common mistake people make when trying to apply these goals is to add in a large number of comments.</p>
@@ -1324,16 +1328,18 @@ all variables in the code to reflect it.</p></li>
 <p>To see this in action, consider the absolute value function <code class="docutils literal notranslate"><span class="pre">abs</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">   </span><span class="c"># `Int64`</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span><span class="w">  </span><span class="c"># `Float64`</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="mf">0.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="nb">im</span><span class="p">);</span><span class="w">  </span><span class="c"># `Complex{Float64}`</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">   </span><span class="c"># `Int64`</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span><span class="w">  </span><span class="c"># `Float64`</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="mf">0.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1.0</span><span class="nb">im</span><span class="p">);</span><span class="w">  </span><span class="c"># `Complex{Float64}`</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>abs(-1) = 1
 abs(-1.0) = 1.0
-abs(0.0 - 1.0im) = 1.0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>abs(0.0 - 1.0im) = 1.0
 </pre></div>
 </div>
 </div>
@@ -1344,21 +1350,21 @@ abs(0.0 - 1.0im) = 1.0
 <p>To rewrite the <code class="docutils literal notranslate"><span class="pre">abs</span></code> function</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Real</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">   </span><span class="c"># note, not 0!</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
-<span class="w">    </span><span class="k">else</span><span class="w"></span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">x</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Real</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">   </span><span class="c"># note, not 0!</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">x</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="o">-</span><span class="n">x</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Complex</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">sqrt</span><span class="p">(</span><span class="n">real</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">imag</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">Complex</span><span class="p">)</span>
+<span class="w">    </span><span class="n">sqrt</span><span class="p">(</span><span class="n">real</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">imag</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">end</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">   </span><span class="c"># `Int64`</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="c"># `Float64`</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0</span><span class="nb">im</span><span class="p">);</span><span class="w">  </span><span class="c"># `Complex{Float64}`</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">   </span><span class="c"># `Int64`</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span><span class="w"> </span><span class="c"># `Float64`</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">2.0</span><span class="nb">im</span><span class="p">);</span><span class="w">  </span><span class="c"># `Complex{Float64}`</span>
 </pre></div>
 </div>
 </div>
@@ -1373,9 +1379,9 @@ ourabs(1.0 - 2.0im) = 2.23606797749979
 <p>Note that in the above, <code class="docutils literal notranslate"><span class="pre">x</span></code> works for any type of <code class="docutils literal notranslate"><span class="pre">Real</span></code>, including <code class="docutils literal notranslate"><span class="pre">Int64</span></code>, <code class="docutils literal notranslate"><span class="pre">Float64</span></code>, and ones you may not have realized exist</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="o">//</span><span class="mi">3</span><span class="w">  </span><span class="c"># `Rational` number, -2/3</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="o">//</span><span class="mi">3</span><span class="w">  </span><span class="c"># `Rational` number, -2/3</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">ourabs</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -1404,12 +1410,12 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 <code class="docutils literal notranslate"><span class="pre">typeof</span></code>, <code class="docutils literal notranslate"><span class="pre">supertype</span></code> and <code class="docutils literal notranslate"><span class="pre">show_supertypes</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span><span class="w"></span>
-<span class="n">x_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="o">:</span><span class="mi">20</span><span class="w">   </span><span class="c"># if integers</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span>
+<span class="n">x_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="o">:</span><span class="mi">20</span><span class="w">   </span><span class="c"># if integers</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">supertype</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">supertype</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1427,19 +1433,22 @@ supertype(typeof(x)) = AbstractRange{Float64}
 <p>To see the entire tree about a particular type, use <code class="docutils literal notranslate"><span class="pre">show_supertypes</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">show_supertypes</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w">  </span><span class="c"># or typeof(x) |&gt; show_supertypes</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">show_supertypes</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w">  </span><span class="c"># or typeof(x) |&gt; show_supertypes</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64} &lt;: AbstractRange{Float64} &lt;: AbstractVector{Float64} &lt;: Any
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64} &lt;: AbstractRange{Float64} &lt;: AbstractVector{
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Float64} &lt;: Any
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">show_supertypes</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">x_2</span><span class="p">))</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">show_supertypes</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">x_2</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1452,8 +1461,8 @@ supertype(typeof(x)) = AbstractRange{Float64}
 <p>The types of the range objects can be very complicated, but are both subtypes of <code class="docutils literal notranslate"><span class="pre">AbstractRange</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">AbstractRange</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">AbstractRange</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">AbstractRange</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x_2</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">AbstractRange</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -1467,10 +1476,10 @@ typeof(x_2) &lt;: AbstractRange = true
 <p>While you may not know the exact concrete type, any <code class="docutils literal notranslate"><span class="pre">AbstractRange</span></code> has an informal set of operations that are available.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">minimum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">maximum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">step</span><span class="p">(</span><span class="n">x</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">minimum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">maximum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">step</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -1486,13 +1495,13 @@ step(x) = 0.05263157894736842
 <p>Similarly, there are a number of operations available for any <code class="docutils literal notranslate"><span class="pre">AbstractVector</span></code>, such as <code class="docutils literal notranslate"><span class="pre">length</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="w"></span>
-<span class="n">f_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># calculating at the range values</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">^</span><span class="mi">2</span>
+<span class="n">f_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># calculating at the range values</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">f_x</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">supertype</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">f_x</span><span class="p">))</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">supertype</span><span class="p">(</span><span class="n">supertype</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">f_x</span><span class="p">)))</span><span class="w">  </span><span class="c"># walk up tree again!</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">f_x</span><span class="p">);</span><span class="w">   </span><span class="c"># and many more</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">f_x</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">supertype</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">f_x</span><span class="p">))</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">supertype</span><span class="p">(</span><span class="n">supertype</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">f_x</span><span class="p">)))</span><span class="w">  </span><span class="c"># walk up tree again!</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">f_x</span><span class="p">);</span><span class="w">   </span><span class="c"># and many more</span>
 </pre></div>
 </div>
 </div>
@@ -1507,7 +1516,7 @@ length(f_x) = 20
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">show_supertypes</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">f_x</span><span class="p">))</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">show_supertypes</span><span class="p">(</span><span class="n">typeof</span><span class="p">(</span><span class="n">f_x</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -1518,21 +1527,21 @@ length(f_x) = 20
 </div>
 </div>
 <p>There are also many functions that can use any <code class="docutils literal notranslate"><span class="pre">AbstractArray</span></code>, such as <code class="docutils literal notranslate"><span class="pre">diff</span></code>.</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="n">diff</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="n">diff</span>
 
-<span class="n">search</span><span class="o">:</span><span class="w"> </span><span class="n">diff</span><span class="w"> </span><span class="n">symdiff</span><span class="w"> </span><span class="n">setdiff</span><span class="w"> </span><span class="n">symdiff!</span><span class="w"> </span><span class="n">setdiff!</span><span class="w"> </span><span class="kt">Cptrdiff_t</span><span class="w"></span>
+<span class="n">search</span><span class="o">:</span><span class="w"> </span><span class="n">diff</span><span class="w"> </span><span class="n">symdiff</span><span class="w"> </span><span class="n">setdiff</span><span class="w"> </span><span class="n">symdiff!</span><span class="w"> </span><span class="n">setdiff!</span><span class="w"> </span><span class="kt">Cptrdiff_t</span>
 
-<span class="n">diff</span><span class="p">(</span><span class="n">A</span><span class="o">::</span><span class="kt">AbstractVector</span><span class="p">)</span><span class="w"> </span><span class="c"># finite difference operator of matrix or vector A</span><span class="w"></span>
+<span class="n">diff</span><span class="p">(</span><span class="n">A</span><span class="o">::</span><span class="kt">AbstractVector</span><span class="p">)</span><span class="w"> </span><span class="c"># finite difference operator of matrix or vector A</span>
 
-<span class="c"># if A is a matrix, specify the dimension over which to operate with the dims keyword argument</span><span class="w"></span>
-<span class="n">diff</span><span class="p">(</span><span class="n">A</span><span class="o">::</span><span class="kt">AbstractMatrix</span><span class="p">;</span><span class="w"> </span><span class="n">dims</span><span class="o">::</span><span class="kt">Integer</span><span class="p">)</span><span class="w"></span>
+<span class="c"># if A is a matrix, specify the dimension over which to operate with the dims keyword argument</span>
+<span class="n">diff</span><span class="p">(</span><span class="n">A</span><span class="o">::</span><span class="kt">AbstractMatrix</span><span class="p">;</span><span class="w"> </span><span class="n">dims</span><span class="o">::</span><span class="kt">Integer</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Hence, we can call this function for anything of type <code class="docutils literal notranslate"><span class="pre">AbstractVector</span></code>.</p>
 <p>Finally, we can make a high performance specialization for any <code class="docutils literal notranslate"><span class="pre">AbstractVector</span></code> and <code class="docutils literal notranslate"><span class="pre">AbstractRange</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">slopes</span><span class="p">(</span><span class="n">f_x</span><span class="o">::</span><span class="kt">AbstractVector</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractRange</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">diff</span><span class="p">(</span><span class="n">f_x</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">step</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">slopes</span><span class="p">(</span><span class="n">f_x</span><span class="o">::</span><span class="kt">AbstractVector</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractRange</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">diff</span><span class="p">(</span><span class="n">f_x</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">step</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1545,22 +1554,22 @@ length(f_x) = 20
 <p>We can use auto-differentiation to compare the results.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">ForwardDiff</span>
 
 
-<span class="c"># operator to get the derivative of this function using AD</span><span class="w"></span>
-<span class="n">D</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="c"># operator to get the derivative of this function using AD</span>
+<span class="n">D</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
 
-<span class="c"># compare slopes with AD for sin(x)</span><span class="w"></span>
-<span class="n">q</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="o">:</span><span class="mf">0.1</span><span class="o">:</span><span class="mf">4.0</span><span class="w"></span>
-<span class="n">q_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="n">q_slopes_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slopes</span><span class="p">(</span><span class="n">q_x</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="c"># compare slopes with AD for sin(x)</span>
+<span class="n">q</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="o">:</span><span class="mf">0.1</span><span class="o">:</span><span class="mf">4.0</span>
+<span class="n">q_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">q_slopes_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slopes</span><span class="p">(</span><span class="n">q_x</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
 
-<span class="n">D_q_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">D</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># broadcasts AD across vector</span><span class="w"></span>
+<span class="n">D_q_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">D</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># broadcasts AD across vector</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">D_q_x</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;q&#39; with AD&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">q_slopes_x</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;q slopes&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">D_q_x</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;q&#39; with AD&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">q_slopes_x</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;q slopes&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1570,12 +1579,12 @@ length(f_x) = 20
 <p>Consider a variation where we pass a function instead of an <code class="docutils literal notranslate"><span class="pre">AbstractArray</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">slopes</span><span class="p">(</span><span class="n">f</span><span class="o">::</span><span class="kt">Function</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractRange</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">diff</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">step</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># broadcast function</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">slopes</span><span class="p">(</span><span class="n">f</span><span class="o">::</span><span class="kt">Function</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractRange</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">diff</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">step</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># broadcast function</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Function</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">AbstractRange</span><span class="w"></span>
-<span class="n">q_slopes_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slopes</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># use slopes(f::Function, x)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">q_slopes_x</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Function</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">AbstractRange</span>
+<span class="n">q_slopes_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slopes</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># use slopes(f::Function, x)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">q_slopes_x</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
 </pre></div>
 </div>
 </div>
@@ -1591,19 +1600,22 @@ q_slopes_x[1] = 0.9983341664682815
 <p>For this, we add in a version calculating slopes with forward first-differences</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># broadcasts over the diff</span><span class="w"></span>
-<span class="n">slopes</span><span class="p">(</span><span class="n">f</span><span class="o">::</span><span class="kt">Function</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractArray</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">diff</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># broadcasts over the diff</span>
+<span class="n">slopes</span><span class="p">(</span><span class="n">f</span><span class="o">::</span><span class="kt">Function</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">::</span><span class="kt">AbstractArray</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">diff</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="n">x_array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">Array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># convert range to array</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x_array</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">AbstractArray</span><span class="w"></span>
-<span class="n">q_slopes_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slopes</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">x_array</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">q_slopes_x</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span><span class="w"></span>
+<span class="n">x_array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">Array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w">  </span><span class="c"># convert range to array</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">typeof</span><span class="p">(</span><span class="n">x_array</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">AbstractArray</span>
+<span class="n">q_slopes_x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">slopes</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="w"> </span><span class="n">x_array</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">q_slopes_x</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x_array) &lt;: AbstractArray = true
-q_slopes_x[1] = 0.9983341664682815
+q_slopes_x[1] = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9983341664682815
 </pre></div>
 </div>
 </div>
@@ -1624,26 +1636,28 @@ compared to the following for a dense array for <code class="docutils literal no
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span>
 
-<span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"></span>
-<span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">)</span><span class="w"></span>
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="w"></span>
+<span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">)</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
 
-<span class="nd">@btime</span><span class="w"> </span><span class="o">$</span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">$</span><span class="n">x</span><span class="w">  </span><span class="c"># the $ in front of variable names is sometimes important</span><span class="w"></span>
-<span class="nd">@btime</span><span class="w"> </span><span class="n">inv</span><span class="p">(</span><span class="o">$</span><span class="n">A</span><span class="p">)</span><span class="w"></span>
+<span class="nd">@btime</span><span class="w"> </span><span class="o">$</span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="o">$</span><span class="n">x</span><span class="w">  </span><span class="c"># the $ in front of variable names is sometimes important</span>
+<span class="nd">@btime</span><span class="w"> </span><span class="n">inv</span><span class="p">(</span><span class="o">$</span><span class="n">A</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  70.055 ns (1 allocation: 80 bytes)
-  663.265 ns (4 allocations: 1.86 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  97.574 ns (1 allocation: 80 bytes)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  900.026 ns (4 allocations: 1.86 KiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×3 Matrix{Float64}:
-  0.0238361   1.13692  -0.187944
-  2.78837    -2.17737  -0.484277
- -3.35428     1.65018   1.94943
+  1.17565    0.31125  -0.915591
+  0.322927  -1.52923   2.05306
+ -0.435077   1.24909  -0.106697
 </pre></div>
 </div>
 </div>
@@ -1651,22 +1665,22 @@ compared to the following for a dense array for <code class="docutils literal no
 </div>
 <div class="section" id="exercise-2">
 <h3><span class="section-number">5.7.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
-<p>A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from <a class="reference internal" href="../tools_and_techniques/kalman.html"><span class="doc">the Kalman lecture</span></a>.</p>
+<p>A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from <a class="reference internal" href="../introduction_dynamics/kalman.html"><span class="doc">the Kalman lecture</span></a>.</p>
 <p>Using what you learned from Exercise 1, benchmark this using Static Arrays</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.4</span><span class="w">  </span><span class="mf">0.3</span><span class="p">;</span><span class="w"></span>
-<span class="w">     </span><span class="mf">0.3</span><span class="w">  </span><span class="mf">0.45</span><span class="p">]</span><span class="w"></span>
-<span class="n">G</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">I</span><span class="w"></span>
-<span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Σ</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.4</span><span class="w">  </span><span class="mf">0.3</span><span class="p">;</span>
+<span class="w">     </span><span class="mf">0.3</span><span class="w">  </span><span class="mf">0.45</span><span class="p">]</span>
+<span class="n">G</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">I</span>
+<span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Σ</span>
 
-<span class="n">gain</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="w"> </span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Σ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">G</span><span class="o">&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">inv</span><span class="p">(</span><span class="n">G</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Σ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">G</span><span class="o">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">R</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@btime</span><span class="w"> </span><span class="n">gain</span><span class="p">(</span><span class="o">$</span><span class="n">Σ</span><span class="p">,</span><span class="w"> </span><span class="o">$</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="o">$</span><span class="n">R</span><span class="p">)</span><span class="w"></span>
+<span class="n">gain</span><span class="p">(</span><span class="n">Σ</span><span class="p">,</span><span class="w"> </span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Σ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">G</span><span class="o">&#39;</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">inv</span><span class="p">(</span><span class="n">G</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">Σ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">G</span><span class="o">&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">R</span><span class="p">)</span>
+<span class="nd">@btime</span><span class="w"> </span><span class="n">gain</span><span class="p">(</span><span class="o">$</span><span class="n">Σ</span><span class="p">,</span><span class="w"> </span><span class="o">$</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="o">$</span><span class="n">R</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  792.732 ns (9 allocations: 1.77 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.047 μs (9 allocations: 1.77 KiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:
@@ -1683,21 +1697,26 @@ compared to the following for a dense array for <code class="docutils literal no
 <p>The <a class="reference external" href="https://github.com/JuliaMath/Polynomials.jl">Polynomial.jl</a> provides a package for simple univariate Polynomials.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Polynomials</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Polynomials</span>
 
-<span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Polynomial</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="ss">:x</span><span class="p">)</span><span class="w">  </span><span class="c"># :x just gives a symbol for display</span><span class="w"></span>
+<span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Polynomial</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="ss">:x</span><span class="p">)</span><span class="w">  </span><span class="c"># :x just gives a symbol for display</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">p</span><span class="w"></span>
-<span class="n">p′</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">derivative</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w">   </span><span class="c"># gives the derivative of p, another polynomial</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span><span class="w"> </span><span class="n">p′</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span><span class="w">  </span><span class="c"># call like a function</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">roots</span><span class="p">(</span><span class="n">p</span><span class="p">);</span><span class="w">   </span><span class="c"># find roots such that p(x) = 0</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">p</span>
+<span class="n">p′</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">derivative</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="w">   </span><span class="c"># gives the derivative of p, another polynomial</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">p</span><span class="p">(</span><span class="mf">0.1</span><span class="p">),</span><span class="w"> </span><span class="n">p′</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span><span class="w">  </span><span class="c"># call like a function</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">roots</span><span class="p">(</span><span class="n">p</span><span class="p">);</span><span class="w">   </span><span class="c"># find roots such that p(x) = 0</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>p = Polynomial(2 - 5*x + 2*x^2)
-(p(0.1), p′(0.1)) = (1.52, -4.6)
-roots(p) = [0.5, 2.0]
+(p(0.1), p′(0.1)) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1.52, -4.6)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>roots(p) = [0.5, 2.0]
 </pre></div>
 </div>
 </div>
@@ -1744,10 +1763,10 @@ where <code class="docutils literal notranslate"><span class="pre">p::Polynomial
 library for numerical integration such as <a class="reference external" href="https://juliamath.github.io/QuadGK.jl/latest/">QuadGK.jl</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">QuadGK</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">QuadGK</span>
 
-<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="w"></span>
-<span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quadgk</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w"></span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="o">^</span><span class="mi">2</span>
+<span class="n">value</span><span class="p">,</span><span class="w"> </span><span class="n">accuracy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">quadgk</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1770,19 +1789,19 @@ library for numerical integration such as <a class="reference external" href="ht
 follow the <a class="reference internal" href="#generic-tips-tricks"><span class="std std-ref">rules for generic programming</span></a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">ForwardDiff</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="o">=</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="c"># one</span><span class="w"></span>
-<span class="k">return</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">;</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">)</span>
+<span class="w">    </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="o">=</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="c"># one</span>
+<span class="k">return</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="k">end</span>
 
-<span class="n">Df</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"></span>
+<span class="n">Df</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">),</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
 
-<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.1</span><span class="p">)</span><span class="w"></span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.1</span><span class="p">)</span>
 
-<span class="n">Df</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span><span class="w"></span>
+<span class="n">Df</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1809,16 +1828,16 @@ f(0.0, 3.1) = 1.55
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.7"
+            mode: "julia-1.8"
         },
         kernelOptions: {
-            kernelName: "julia-1.7",
+            kernelName: "julia-1.8",
             path: "./getting_started_julia"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.7'</script>
+    <script>kernelName = 'julia-1.8'</script>
 
                     </div>
                     
@@ -1962,33 +1981,60 @@ f(0.0, 3.1) = 1.55
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   18. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   19. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   20. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   21. A First Look at the Kalman Filter
+   18. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   22. Numerical Linear Algebra and Factorizations
+   19. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   23. Krylov Methods and Matrix Conditioning
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
   </a>
  </li>
 </ul>
@@ -1999,88 +2045,83 @@ f(0.0, 3.1) = 1.55
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/short_path.html">
-   24. Shortest Paths
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   25. Job Search I: The McCall Search Model
+   28. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   26. Job Search II: Search and Separation
+   29. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   27. A Problem that Stumped Milton Friedman
+   30. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   28. Job Search III: Search with Learning
+   31. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   29. Job Search IV: Modeling Career Choice
+   32. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   30. Job Search V: On-the-Job Search
+   33. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   31. Optimal Growth I: The Stochastic Optimal Growth Model
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   32. Optimal Growth II: Time Iteration
+   35. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   33. Optimal Growth III: The Endogenous Grid Method
+   36. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   34. LQ Dynamic Programming Problems
+   37. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   35. Optimal Savings I: The Permanent Income Model
+   38. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   36. Optimal Savings II: LQ Techniques
+   39. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   38. Optimal Savings III: Occasionally Binding Constraints
+   41. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   39. Robustness
+   42. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   40. Discrete State Dynamic Programming
+   43. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -2092,12 +2133,12 @@ f(0.0, 3.1) = 1.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   41. Modeling COVID 19 with Differential Equations
+   44. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -2109,57 +2150,57 @@ f(0.0, 3.1) = 1.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   43. Schelling’s Segregation Model
+   46. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   44. A Lake Model of Employment and Unemployment
+   47. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   45. Rational Expectations Equilibrium
+   48. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   46. Markov Perfect Equilibrium
+   49. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   47. Asset Pricing I: Finite State Models
+   50. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   48. Asset Pricing II: The Lucas Asset Pricing Model
+   51. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   49. Asset Pricing III:  Incomplete Markets
+   52. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   50. Uncertainty Traps
+   53. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   51. The Aiyagari Model
+   54. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   52. Default Risk and Income Fluctuations
+   55. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   53. Globalization and Cycles
+   56. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -2171,32 +2212,32 @@ f(0.0, 3.1) = 1.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   54. Covariance Stationary Processes
+   57. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   55. Estimation of Spectra
+   58. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   56. Additive Functionals
+   59. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   57. Multiplicative Functionals
+   60. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   58. Classical Control with Linear Algebra
+   61. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   59. Classical Filtering With Linear Algebra
+   62. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -2208,22 +2249,22 @@ f(0.0, 3.1) = 1.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   60. Dynamic Stackelberg Problems
+   63. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   61. Optimal Taxation in an LQ Economy
+   64. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   62. Optimal Taxation with State-Contingent Debt
+   65. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   63. Optimal Taxation without State-Contingent Debt
+   66. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -2235,22 +2276,22 @@ f(0.0, 3.1) = 1.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   64. About these Lectures
+   67. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   65. Troubleshooting
+   68. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   66. References
+   69. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Execution Statistics
+   70. Execution Statistics
   </a>
  </li>
 </ul>

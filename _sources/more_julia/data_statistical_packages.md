@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (data_statistical_packages)=
@@ -40,7 +40,7 @@ This list is not exhaustive, and others can be found in organizations such as [J
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query, VegaLite
+using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query
 using GLM
 ```
 
@@ -200,8 +200,8 @@ x = @from i in df begin
 end
 ```
 
-While it is possible to just use the `Plots.jl` library, there may be better options for displaying tabular data -- such as [VegaLite.jl](https://github.com/queryverse/VegaLite.jl).
-
+While it is possible to just use the `Plots.jl` library, there are other options for displaying tabular data -- such as [VegaLite.jl](https://github.com/queryverse/VegaLite.jl).
+<!--
 ```{code-cell} julia
 using RDatasets, VegaLite
 iris = dataset("datasets", "iris")
@@ -213,7 +213,7 @@ iris |> @vlplot(
     color=:Species
 )
 ```
-
+-->
 ## Statistics and Econometrics
 
 While Julia is not intended as a replacement for R, Stata, and similar specialty languages, it has a growing number of packages aimed at statistics and econometrics.

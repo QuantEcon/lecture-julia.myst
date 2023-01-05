@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (aiyagari)=
@@ -280,7 +280,7 @@ am_ddp = DiscreteDP(am.R, am.Q, am.β)
 results = solve(am_ddp, PFI)
 
 # Simplify names
-@unpack z_size, a_size, n, a_vals = am
+(;z_size, a_size, n, a_vals) = am
 z_vals = am.z_chain.state_values
 
 # Get all optimal actions across the set of
@@ -342,7 +342,7 @@ function prices_to_capital_stock(am, r)
 
     # Set up problem
     w = r_to_w(r)
-    @unpack a_vals, s_vals, u = am
+    (;a_vals, s_vals, u) = am
     setup_R!(am.R, a_vals, s_vals, r, w, u)
 
     aiyagari_ddp = DiscreteDP(am.R, am.Q, am.β)

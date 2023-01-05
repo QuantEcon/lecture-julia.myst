@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (covid_sde)=
@@ -231,7 +231,7 @@ First, construct our $F$ from {eq}`dfcvsde` and $G$ from {eq}`dG`
 ```{code-cell} julia
 function F(x, p, t)
     s, i, r, d, R₀, δ = x
-    @unpack γ, R̄₀, η, σ, ξ, θ, δ_bar = p
+    (;γ, R̄₀, η, σ, ξ, θ, δ_bar) = p
 
     return [-γ*R₀*s*i;        # ds/dt
             γ*R₀*s*i - γ*i;   # di/dt
@@ -244,7 +244,7 @@ end
 
 function G(x, p, t)
     s, i, r, d, R₀, δ = x
-    @unpack γ, R̄₀, η, σ, ξ, θ, δ_bar = p
+    (;γ, R̄₀, η, σ, ξ, θ, δ_bar) = p
 
     return [0; 0; 0; 0; σ*sqrt(R₀); ξ*sqrt(δ * (1-δ))]
 end
@@ -536,7 +536,7 @@ We will redo the "Ending Lockdown" simulation from above, where the only differe
 ```{code-cell} julia
 function F_reinfect(x, p, t)
     s, i, r, d, R₀, δ = x
-    @unpack γ, R̄₀, η, σ, ξ, θ, δ_bar, ν = p
+    (;γ, R̄₀, η, σ, ξ, θ, δ_bar, ν) = p
 
     return [-γ*R₀*s*i + ν*r;  # ds/dt
             γ*R₀*s*i - γ*i;   # di/dt

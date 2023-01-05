@@ -88,15 +88,14 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/geom_series.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -317,8 +316,8 @@ systems</p></li>
 <p>Below we’ll use the following packages:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
-<span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">Symbolics</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">Symbolics</span>
 </pre></div>
 </div>
 </div>
@@ -804,30 +803,21 @@ approximations, under different values of <span class="math notranslate nohighli
 below</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># True present value of a finite lease</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">G</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">x_0</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">G</span><span class="w"> </span><span class="o">.^</span><span class="w"> </span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">.^</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="n">T</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="mi">1</span><span class="p">)))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">G</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">.^</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># True present value of a finite lease</span>
+<span class="k">function</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">G</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g</span>
+<span class="w">    </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">r</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">x_0</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">G</span><span class="o">^</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">R</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="n">T</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)))</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">G</span><span class="o">*</span><span class="n">R</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="k">end</span>
 
-<span class="c"># First approximation for our finite lease</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span><span class="n">finite_lease_pv_approx</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_0</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">x_0</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">g</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">p</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="c"># First approximation for our finite lease</span>
+<span class="n">finite_lease_pv_approx</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_0</span><span class="o">*</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="n">x_0</span><span class="o">*</span><span class="n">r</span><span class="o">*</span><span class="n">g</span><span class="o">*</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">g</span><span class="p">)</span>
 
-<span class="c"># Second approximation for our finite lease</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span><span class="n">finite_lease_pv_approx_2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">x_0</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="c"># Second approximation for our finite lease</span>
+<span class="n">finite_lease_pv_approx_2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x_0</span><span class="o">*</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span>
 
-<span class="c"># Infinite lease</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span><span class="n">infinite_lease</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">G</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x_0</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">G</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">.^</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="c"># Infinite lease</span>
+<span class="n">infinite_lease</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -841,23 +831,22 @@ below</p>
 <p>First we study the quality of our approximations</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">T_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="mi">50</span>
+<span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.02</span>
+<span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.03</span>
+<span class="n">x_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 
-<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="n">T_max</span><span class="w"></span>
-<span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.02</span><span class="w"></span>
-<span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.03</span><span class="w"></span>
-<span class="n">x_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="c"># broadcast over the T range</span>
+<span class="n">y_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="o">.</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span>
+<span class="n">y_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">finite_lease_pv_approx</span><span class="o">.</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span>
+<span class="n">y_3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">finite_lease_pv_approx_2</span><span class="o">.</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">2.5</span><span class="p">,</span><span class="w"> </span><span class="mf">52.5</span><span class="p">),</span><span class="w"> </span><span class="n">ylim</span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mf">1.653</span><span class="p">,</span><span class="w"> </span><span class="mf">56.713</span><span class="p">),</span><span class="w"> </span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Finite Lease Present Value </span><span class="si">$T</span><span class="s">$ Periods Ahead&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$ Periods Ahead&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Present Value, </span><span class="si">$p_0</span><span class="s">$&quot;</span><span class="p">)</span><span class="w"></span>
-
-<span class="n">y_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"></span>
-<span class="n">y_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">finite_lease_pv_approx</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"></span>
-<span class="n">y_3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">finite_lease_pv_approx_2</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"></span>
-
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_1</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;True </span><span class="si">$T</span><span class="s">$-period Lease PV&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_2</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$-period Lease First-order Approx.&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_3</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$-period Lease First-order Approx. adj.&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span><span class="w"></span>
+<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Finite Lease Present Value </span><span class="si">$T</span><span class="s">$ Periods Ahead&quot;</span><span class="p">,</span>
+<span class="w">           </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$ Periods Ahead&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Present Value, </span><span class="si">$p_0</span><span class="s">$&quot;</span><span class="p">,</span>
+<span class="w">           </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_1</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;True </span><span class="si">$T</span><span class="s">$-period Lease PV&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_2</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$-period Lease First-order Approx.&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_3</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$-period Lease First-order Approx. adj.&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -870,18 +859,16 @@ below</p>
 over different lease lengths <span class="math notranslate nohighlight">\(T\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Convergence of infinite and finite</span><span class="w"></span>
-<span class="n">T_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1000</span><span class="w"></span>
-<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="n">T_max</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Convergence of infinite and finite</span>
+<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="mi">1000</span>
+<span class="n">y_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="o">.</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"> </span><span class="c"># broadcast</span>
+<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Infinite and Finite Lease PV </span><span class="si">$T</span><span class="s">$ Periods Ahead&quot;</span><span class="p">,</span>
+<span class="w">           </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$ Periods Ahead&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Present Value, </span><span class="si">$p_0</span><span class="s">$&quot;</span><span class="p">,</span>
+<span class="w">           </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:bottomright</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">1050</span><span class="p">),</span><span class="n">ylim</span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mf">4.1</span><span class="p">,</span><span class="w"> </span><span class="mf">108.1</span><span class="p">),</span><span class="w"> </span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Infinite and Finite Lease Present Value </span><span class="si">$T</span><span class="s">$ Periods Ahead&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$ Periods Ahead&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Present Value, </span><span class="si">$p_0</span><span class="s">$&quot;</span><span class="p">)</span><span class="w"></span>
-
-<span class="n">y_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"></span>
-<span class="n">y_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">T_max</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">infinite_lease</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)</span><span class="w"></span>
-
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_1</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$-period lease PV&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_2</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Infinite lease PV&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:bottomright</span><span class="p">)</span><span class="w"></span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_1</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$-period lease PV&quot;</span><span class="p">)</span>
+<span class="n">hline!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w">  </span><span class="p">[</span><span class="n">infinite_lease</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">)],</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span>
+<span class="w">       </span><span class="n">label</span><span class="o">=</span><span class="s">&quot;Infinite lease PV&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -895,34 +882,16 @@ perpetual lease.</p>
 <span class="math notranslate nohighlight">\(g\)</span> covary</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># First view</span><span class="w"></span>
-<span class="c"># Changing r and g</span><span class="w"></span>
-<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">10.5</span><span class="p">),</span><span class="n">ylim</span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mf">0.26</span><span class="p">,</span><span class="w"> </span><span class="mf">16.7</span><span class="p">),</span><span class="w"> </span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Value of lease of length </span><span class="si">$T</span><span class="s">$&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$ periods ahead&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Present Value, </span><span class="si">$p_0</span><span class="s">$&quot;</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">T</span><span class="o">=</span><span class="mi">0</span><span class="o">:</span><span class="mi">10</span>
 
-<span class="n">T_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="w"></span>
-<span class="n">T</span><span class="o">=</span><span class="mi">0</span><span class="o">:</span><span class="n">T_max</span><span class="w"></span>
-
-<span class="c"># r &gt;&gt; g, much bigger than g</span><span class="w"></span>
-<span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.9</span><span class="w"></span>
-<span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;r(=0.9) &gt;&gt; g(=0.4)&quot;</span><span class="p">)</span><span class="w"></span>
-
-<span class="c"># r &gt; g</span><span class="w"></span>
-<span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"></span>
-<span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;r(=0.5) &gt; g(=0.4)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;green&quot;</span><span class="p">)</span><span class="w"></span>
-
-<span class="c"># r ~ g, not defined when r = g, but approximately goes to straight</span><span class="w"></span>
-<span class="c"># line with slope 1</span><span class="w"></span>
-<span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4001</span><span class="w"></span>
-<span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;r(=0.4001) \sim g(=0.4)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;orange&quot;</span><span class="p">)</span><span class="w"></span>
-
-<span class="c"># r &lt; g</span><span class="w"></span>
-<span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w"></span>
-<span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;r(=0.4) &lt; g(=0.5)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="o">=</span><span class="s">&quot;red&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span><span class="w"></span>
+<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Value of lease of length </span><span class="si">$T</span><span class="s">$&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">,</span>
+<span class="w">           </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;</span><span class="si">$T</span><span class="s">$ periods ahead&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Present Value, </span><span class="si">$p_0</span><span class="s">$&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="o">.</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">),</span>
+<span class="w">      </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;r=0.9 \gg 0.4 = g&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="o">.</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;r=0.5 &gt; 0.4 = g&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="o">.</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4001</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">),</span>
+<span class="w">     </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;r=0.4001 </span><span class="se">\a</span><span class="s">pprox 0.4 = g&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">finite_lease_pv_true</span><span class="o">.</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.4</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;r=0.4 &lt; 0.5 = g&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -942,13 +911,13 @@ represents our present value formula for an infinite lease.</p>
 <p>After that, we’ll use <code class="docutils literal notranslate"><span class="pre">Symbolics.jl</span></code> to compute derivatives</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Creates algebraic symbols that can be used in an algebraic expression</span><span class="w"></span>
-<span class="nd">@variables</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x0</span><span class="w"></span>
-<span class="n">G</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g</span><span class="p">)</span><span class="w"></span>
-<span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">r</span><span class="p">)</span><span class="w"></span>
-<span class="n">p0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">G</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="w"></span>
-<span class="n">print</span><span class="p">(</span><span class="s">&quot;Our formula is&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">p0</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Creates algebraic symbols that can be used in an algebraic expression</span>
+<span class="nd">@variables</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">x0</span>
+<span class="n">G</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g</span><span class="p">)</span>
+<span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">r</span><span class="p">)</span>
+<span class="n">p0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">G</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;Our formula is&quot;</span><span class="p">)</span>
+<span class="n">p0</span>
 </pre></div>
 </div>
 </div>
@@ -957,18 +926,19 @@ represents our present value formula for an infinite lease.</p>
 </pre></div>
 </div>
 <div class="output text_latex math notranslate nohighlight">
-\[\begin{equation}
+\[ \begin{equation}
 \frac{x0}{1 + \frac{-1 - g}{1 + r}}
-\end{equation}\]</div>
+\end{equation}
+ \]</div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Partial derivative with respect to g</span><span class="w"></span>
-<span class="n">dg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Differential</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="w"></span>
-<span class="n">dp_dg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expand_derivatives</span><span class="p">(</span><span class="n">dg</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span><span class="w"></span>
-<span class="n">print</span><span class="p">(</span><span class="s">&quot;dp0 / dg is&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">dp_dg</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Partial derivative with respect to g</span>
+<span class="n">dg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Differential</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="n">dp_dg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expand_derivatives</span><span class="p">(</span><span class="n">dg</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;dp0 / dg is&quot;</span><span class="p">)</span>
+<span class="n">dp_dg</span>
 </pre></div>
 </div>
 </div>
@@ -977,18 +947,19 @@ represents our present value formula for an infinite lease.</p>
 </pre></div>
 </div>
 <div class="output text_latex math notranslate nohighlight">
-\[\begin{equation}
+\[ \begin{equation}
 \frac{x0}{\left( 1 + \frac{-1 - g}{1 + r} \right)^{2} \left( 1 + r \right)}
-\end{equation}\]</div>
+\end{equation}
+ \]</div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Partial derivative with respect to r</span><span class="w"></span>
-<span class="n">dr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Differential</span><span class="p">(</span><span class="n">r</span><span class="p">)</span><span class="w"></span>
-<span class="n">dp_dr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expand_derivatives</span><span class="p">(</span><span class="n">dr</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span><span class="w"></span>
-<span class="n">print</span><span class="p">(</span><span class="s">&quot;dp0 / dr is&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">dp_dr</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Partial derivative with respect to r</span>
+<span class="n">dr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Differential</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="n">dp_dr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expand_derivatives</span><span class="p">(</span><span class="n">dr</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;dp0 / dr is&quot;</span><span class="p">)</span>
+<span class="n">dp_dr</span>
 </pre></div>
 </div>
 </div>
@@ -997,9 +968,10 @@ represents our present value formula for an infinite lease.</p>
 </pre></div>
 </div>
 <div class="output text_latex math notranslate nohighlight">
-\[\begin{equation}
+\[ \begin{equation}
 \frac{x0}{\left( 1 + \frac{-1 - g}{1 + r} \right)^{2}} \frac{-1 - g}{\left( 1 + r \right)^{2}}
-\end{equation}\]</div>
+\end{equation}
+ \]</div>
 </div>
 </div>
 <p>We can see that for <span class="math notranslate nohighlight">\(\frac{\partial p_0}{\partial r}&lt;0\)</span> as long as
@@ -1016,29 +988,29 @@ time path of <span class="math notranslate nohighlight">\(y_t\)</span>, given th
 of national income, and investment is fixed.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Function that calculates a path of y</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y_init</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="p">(</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">y</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Function that calculates a path of y</span>
+<span class="k">function</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y_init</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="p">(</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">        </span><span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">y</span>
+<span class="k">end</span>
 
-<span class="c"># Initial values</span><span class="w"></span>
-<span class="n">i_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span><span class="w"></span>
-<span class="n">g_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span><span class="w"></span>
-<span class="c"># 2/3 of income goes towards consumption</span><span class="w"></span>
-<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="w"></span>
-<span class="n">y_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"></span>
-<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="w"></span>
+<span class="c"># Initial values</span>
+<span class="n">i_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span>
+<span class="n">g_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.3</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="w"> </span><span class="c"># proportion of income to consumption</span>
+<span class="n">y_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
 
-<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">107</span><span class="p">),</span><span class="n">ylim</span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.9</span><span class="p">),</span><span class="w"> </span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Path of Aggregate Output Over Time&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;y_t&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g_0</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">))</span><span class="w"></span>
-<span class="c"># Output predicted by geometric series</span><span class="w"></span>
-<span class="n">hline!</span><span class="p">([</span><span class="n">i_0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g_0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)],</span><span class="w"> </span><span class="n">linestyle</span><span class="o">=</span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">seriestype</span><span class="o">=</span><span class="s">&quot;hline&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"></span>
+<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="o">:</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g_0</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">),</span>
+<span class="w">           </span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Path of Aggregate Output Over Time&quot;</span><span class="p">,</span>
+<span class="w">           </span><span class="n">ylim</span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.9</span><span class="p">),</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;y_t&quot;</span><span class="p">)</span>
+<span class="c"># Output predicted by geometric series</span>
+<span class="n">hline!</span><span class="p">([</span><span class="n">i_0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">g_0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)],</span><span class="w"> </span><span class="n">linestyle</span><span class="o">=</span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">seriestype</span><span class="o">=</span><span class="s">&quot;hline&quot;</span><span class="p">,</span>
+<span class="w">       </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1052,15 +1024,14 @@ happen if we vary the so-called <strong>marginal propensity to consume</strong>,
 i.e., the fraction of income that is consumed</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Changing fraction of consumption</span><span class="w"></span>
-<span class="n">bs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">]</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Changing fraction of consumption</span>
+<span class="n">bs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">round</span><span class="o">.</span><span class="p">([</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mf">0.9</span><span class="p">],</span><span class="w"> </span><span class="n">digits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">xlim</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">107</span><span class="p">),</span><span class="n">ylim</span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span><span class="w"> </span><span class="mf">6.5</span><span class="p">),</span><span class="w"> </span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Changing Consumption as a Fraction of Income&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;y_t&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">bs</span><span class="w"></span>
-<span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">round</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">digits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g_0</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;b = %</span><span class="si">$b</span><span class="s">&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span><span class="w"></span>
+<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Changing Consumption as a Fraction of Income&quot;</span><span class="p">,</span>
+<span class="w">           </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;y_t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span>
+<span class="p">[</span><span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g_0</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;b = %</span><span class="si">$b</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">bs</span><span class="p">]</span>
+<span class="n">plt</span>
 </pre></div>
 </div>
 </div>
@@ -1072,25 +1043,26 @@ path of output over time.</p>
 <p>Now we will compare the effects on output of increases in investment and government spending.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="n">T</span><span class="w"></span>
-<span class="n">y_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g_0</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">)</span><span class="w"></span>
-<span class="n">l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@layout</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="p">]</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="o">:</span><span class="n">T</span>
+<span class="n">y_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g_0</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">)</span>
+<span class="n">l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@layout</span><span class="w"> </span><span class="p">[</span><span class="n">a</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="n">b</span><span class="p">]</span>
 
-<span class="c"># Changing initial investment:</span><span class="w"></span>
-<span class="n">i_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w"></span>
-<span class="n">y_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i_1</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g_0</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">)</span><span class="w"></span>
-<span class="n">plt_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_0</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i=0.3&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;An Increase in Investment on Output&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;y_t&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y_1</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i=0.4&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:bottomright</span><span class="p">)</span><span class="w"></span>
+<span class="c"># Changing initial investment:</span>
+<span class="n">i_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span>
+<span class="n">y_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i_1</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g_0</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">)</span>
+<span class="n">plt_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_0</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i=0.3&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span>
+<span class="w">             </span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;An Increase in Investment on Output&quot;</span><span class="p">,</span>
+<span class="w">             </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;y_t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:bottomright</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y_1</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i=0.4&quot;</span><span class="p">)</span>
 
-<span class="c"># Changing government spending</span><span class="w"></span>
-<span class="n">g_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span><span class="w"></span>
-<span class="n">y_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g_1</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">)</span><span class="w"></span>
-<span class="n">plt_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_0</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;g=0.3&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;An Increase in Government Spending on Output&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;y_t&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y_1</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;g=0.4&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:bottomright</span><span class="p">)</span><span class="w"></span>
-
-<span class="n">plot</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span><span class="w"> </span><span class="n">plt_2</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">l</span><span class="p">)</span><span class="w"></span>
+<span class="c"># Changing government spending</span>
+<span class="n">g_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.4</span>
+<span class="n">y_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">calculate_y</span><span class="p">(</span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">g_1</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">y_init</span><span class="p">)</span>
+<span class="n">plt_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_0</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;g=0.3&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span>
+<span class="w">             </span><span class="n">title</span><span class="o">=</span><span class="w"> </span><span class="s">&quot;An Increase in Government Spending on Output&quot;</span><span class="p">,</span>
+<span class="w">             </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;y_t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:bottomright</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt_2</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y_1</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;g=0.4&quot;</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">plt_1</span><span class="p">,</span><span class="w"> </span><span class="n">plt_2</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">l</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1112,16 +1084,16 @@ identical.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.7"
+            mode: "julia-1.8"
         },
         kernelOptions: {
-            kernelName: "julia-1.7",
+            kernelName: "julia-1.8",
             path: "./tools_and_techniques"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.7'</script>
+    <script>kernelName = 'julia-1.8'</script>
 
                     </div>
                     
@@ -1265,33 +1237,60 @@ identical.</p>
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="linear_models.html">
-   18. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="finite_markov.html">
-   19. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="stationary_densities.html">
-   20. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="kalman.html">
-   21. A First Look at the Kalman Filter
+   18. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="numerical_linear_algebra.html">
-   22. Numerical Linear Algebra and Factorizations
+   19. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="iterative_methods_sparsity.html">
-   23. Krylov Methods and Matrix Conditioning
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
   </a>
  </li>
 </ul>
@@ -1302,88 +1301,83 @@ identical.</p>
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/short_path.html">
-   24. Shortest Paths
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   25. Job Search I: The McCall Search Model
+   28. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   26. Job Search II: Search and Separation
+   29. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   27. A Problem that Stumped Milton Friedman
+   30. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   28. Job Search III: Search with Learning
+   31. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   29. Job Search IV: Modeling Career Choice
+   32. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   30. Job Search V: On-the-Job Search
+   33. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   31. Optimal Growth I: The Stochastic Optimal Growth Model
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   32. Optimal Growth II: Time Iteration
+   35. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   33. Optimal Growth III: The Endogenous Grid Method
+   36. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   34. LQ Dynamic Programming Problems
+   37. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   35. Optimal Savings I: The Permanent Income Model
+   38. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   36. Optimal Savings II: LQ Techniques
+   39. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   38. Optimal Savings III: Occasionally Binding Constraints
+   41. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   39. Robustness
+   42. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   40. Discrete State Dynamic Programming
+   43. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -1395,12 +1389,12 @@ identical.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   41. Modeling COVID 19 with Differential Equations
+   44. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1412,57 +1406,57 @@ identical.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   43. Schelling’s Segregation Model
+   46. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   44. A Lake Model of Employment and Unemployment
+   47. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   45. Rational Expectations Equilibrium
+   48. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   46. Markov Perfect Equilibrium
+   49. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   47. Asset Pricing I: Finite State Models
+   50. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   48. Asset Pricing II: The Lucas Asset Pricing Model
+   51. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   49. Asset Pricing III:  Incomplete Markets
+   52. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   50. Uncertainty Traps
+   53. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   51. The Aiyagari Model
+   54. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   52. Default Risk and Income Fluctuations
+   55. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   53. Globalization and Cycles
+   56. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1474,32 +1468,32 @@ identical.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   54. Covariance Stationary Processes
+   57. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   55. Estimation of Spectra
+   58. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   56. Additive Functionals
+   59. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   57. Multiplicative Functionals
+   60. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   58. Classical Control with Linear Algebra
+   61. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   59. Classical Filtering With Linear Algebra
+   62. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1511,22 +1505,22 @@ identical.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   60. Dynamic Stackelberg Problems
+   63. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   61. Optimal Taxation in an LQ Economy
+   64. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   62. Optimal Taxation with State-Contingent Debt
+   65. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   63. Optimal Taxation without State-Contingent Debt
+   66. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1538,22 +1532,22 @@ identical.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   64. About these Lectures
+   67. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   65. Troubleshooting
+   68. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   66. References
+   69. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Execution Statistics
+   70. Execution Statistics
   </a>
  </li>
 </ul>

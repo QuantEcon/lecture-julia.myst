@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (julia_essentials)=
@@ -37,7 +37,7 @@ Topics:
 * Comparisons and logic
 
 ```{code-cell} julia
-using LinearAlgebra, Statistics
+using LinearAlgebra, Statistics, Plots
 ```
 
 ## Common Data Types
@@ -667,8 +667,32 @@ For example, in the call
 ```{code-cell} julia
 f(x; a = 1) = exp(cos(a * x))  # note the ; in the definition
 
-f(pi, a = 2) # calling with ; is usually optional and generally discouraged
+f(pi; a = 2)
 ```
+
+The `;` in this case for calling the function is optional and the last line could equivalently be `f(pi, a = 2)`.
+
+That said separating keyword arguments  `;` is encouraged to clarify the types of arguments, and enables some nice features.
+
+For example, local variables used as keyword arguments (or in named tuples) by default pass in the same name.
+
+```{code-cell} julia
+a = 2
+f(pi; a) # equivalent to f(pi; a = a)
+```
+
+While it may seem terse at first, this pattern is common across Julia and is worth getting used to.
+
+If you see an argument in in julia to the right of the `;` assume it is a keyword argument with the name matching the value.
+
+
+The automatic naming of keyword arguments is also picked up automatically when they are fields in named tuples or structs.
+
+```{code-cell} julia
+nt = (;a = 2, b = 10)
+f(pi; nt.a) # equivalent to f(pi; a = nt.a)
+```
+
 
 ## Broadcasting
 
@@ -690,6 +714,16 @@ x_vec = [2.0, 4.0, 6.0, 8.0]
 y_vec = similar(x_vec)
 for (i, x) in enumerate(x_vec)
     y_vec[i] = sin(x)
+end
+```
+
+or alternatively just iterating with indices
+    
+```{code-cell} julia
+x_vec = [2.0, 4.0, 6.0, 8.0]
+y_vec = similar(x_vec)
+for i in eachindex(x_vec)
+    y_vec[i] = sin(x_vec[i])
 end
 ```
 
@@ -851,21 +885,25 @@ Due to scoping, you could write this as
 f(x; y = 1) = x + y  # `x` and `y` are names local to the `f` function
 x = 0.1
 y = 2
-f(x; y = y) # left hand `y` is the local name of the argument in the function
+f(x; y) # the type and value of y taken from scope
 ```
+As always, the `f(x;y)` is equivalent to `f(x;y=y)`.
 
 Similarly to named arguments, the local scope also works with named tuples.
 
 ```{code-cell} julia
 xval = 0.1
 yval = 2
-@show (x = xval, y = yval)  # named tuple with names `x` and `y`
+@show (;x = xval, y = yval)  # named tuple with names `x` and `y`
 
 x = 0.1
 y = 2
 
-# create a named tuple with names `x` and `y` local to the tuple, bound to the RHS `x` and `y`
-(x = x, y = y)
+# create a named tuple with names `x` and `y` local to the tuple
+@show (;x = x, y = y)
+
+# better yet
+@show (;x, y);
 ```
 
 As you use Julia, you will find that scoping is very natural and that there is no reason to avoid using `x` and `y` in both places.
@@ -930,10 +968,17 @@ function solvemodel(x)
     a = x^2
     b = 2 * a
     c = a + b
-    return (a = a, b = b, c = c)  # note local scope of tuples!
+    return (;a, b, c)  # note local scope of tuples!
 end
 
 solvemodel(0.1)
+```
+
+Named tuple and structure parameters can then be unpacked using the reverse notation,
+
+```{code-cell} julia
+(;a, b, c) = solvemodel(0.1)
+println("a = $a, b = $b, c = $c")
 ```
 
 ### Higher-Order Functions
@@ -955,28 +1000,17 @@ g(x) = a * x
 @show twice(g, 2.0);   # using a closure
 ```
 
-This pattern has already been used extensively in our code and is key to keeping things like interpolation, numerical integration, and plotting generic.
+This pattern has already been used extensively in our code and is key to keeping things like interpolation, numerical integration, and plotting.
 
-One example of using this in a library is [Expectations.jl](https://github.com/QuantEcon/Expectations.jl), where we can pass a function to the `expectation` function.
-
-```{code-cell} julia
-using Expectations, Distributions
-
-@show d = Exponential(2.0)
-
-f(x) = x^2
-@show expectation(f, d);  # E(f(x))
-```
-
-Another example is for a function that returns a closure itself.
+An example is for a function that returns a closure itself.
 
 ```{code-cell} julia
 function multiplyit(a, g)
-    return x -> a * g(x)  # function with `g` used in the closure
+    return x -> a * g(x) # function with `g` used in the closure
 end
 
 f(x) = x^2
-h = multiplyit(2.0, f)    # use our quadratic, returns a new function which doubles the result
+h = multiplyit(2.0, f) # returns function which doubles the result
 h(2)     # returned function is like any other function
 ```
 
@@ -996,10 +1030,18 @@ end
 
 f(x) = x^2
 h = snapabove(f, 2.0)
-
-using Plots
-
 plot(h, 0.0:0.1:3.0)
+```
+
+The above can be written more succinctly using the ternary operation, i.e., `a ? b : c` which returns `b` if `a` is true and `c` otherwise.
+
+That is
+
+```{code-cell} julia
+function snapabove2(g, a)
+    return x -> x > a ? g(x) : g(a) # returns a closure
+end
+plot(snapabove2(f, 2.0), 0.0:0.1:3.0)
 ```
 
 ### Loops

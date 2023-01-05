@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>38. Optimal Savings III: Occasionally Binding Constraints &#8212; Quantitative Economics with Julia</title>
+    <title>41. Optimal Savings III: Occasionally Binding Constraints &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -88,21 +88,20 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/ifp.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="39. Robustness" href="robustness.html" />
-    <link rel="prev" title="37. Consumption and Tax Smoothing with Complete and Incomplete Markets" href="smoothing.html" />
+    <link rel="next" title="42. Robustness" href="robustness.html" />
+    <link rel="prev" title="40. Consumption and Tax Smoothing with Complete and Incomplete Markets" href="smoothing.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -152,110 +151,110 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   38.1. Overview
+   41.1. Overview
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#references">
-     38.1.1. References
+     41.1.1. References
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#the-optimal-savings-problem">
-   38.2. The Optimal Savings Problem
+   41.2. The Optimal Savings Problem
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#set-up">
-     38.2.1. Set Up
+     41.2.1. Set Up
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#value-function-and-euler-equation">
-     38.2.2. Value Function and Euler Equation
+     41.2.2. Value Function and Euler Equation
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#optimality-results">
-     38.2.3. Optimality Results
+     41.2.3. Optimality Results
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#computation">
-   38.3. Computation
+   41.3. Computation
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#time-iteration">
-     38.3.1. Time Iteration
+     41.3.1. Time Iteration
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#value-function-iteration">
-     38.3.2. Value Function Iteration
+     41.3.2. Value Function Iteration
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#implementation">
-     38.3.3. Implementation
+     41.3.3. Implementation
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#exercises">
-   38.4. Exercises
+   41.4. Exercises
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-1">
-     38.4.1. Exercise 1
+     41.4.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-2">
-     38.4.2. Exercise 2
+     41.4.2. Exercise 2
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-3">
-     38.4.3. Exercise 3
+     41.4.3. Exercise 3
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-4">
-     38.4.4. Exercise 4
+     41.4.4. Exercise 4
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solutions">
-   38.5. Solutions
+   41.5. Solutions
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id15">
-     38.5.1. Exercise 1
+     41.5.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id16">
-     38.5.2. Exercise 2
+     41.5.2. Exercise 2
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id17">
-     38.5.3. Exercise 3
+     41.5.3. Exercise 3
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id18">
-     38.5.4. Exercise 4
+     41.5.4. Exercise 4
     </a>
    </li>
   </ul>
@@ -310,7 +309,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="tex2jax_ignore mathjax_ignore section" id="optimal-savings-iii-occasionally-binding-constraints">
-<h1><a class="toc-backref" href="#id19"><span class="section-number">38. </span><span class="target" id="index-0"></span>Optimal Savings III: Occasionally Binding Constraints</a><a class="headerlink" href="#optimal-savings-iii-occasionally-binding-constraints" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id19"><span class="section-number">41. </span><span class="target" id="index-0"></span>Optimal Savings III: Occasionally Binding Constraints</a><a class="headerlink" href="#optimal-savings-iii-occasionally-binding-constraints" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
@@ -326,19 +325,19 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id20"><span class="section-number">38.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>Next we study an optimal savings problem for an infinitely lived consumer—the “common ancestor” described in <span id="id1">[<a class="reference internal" href="../zreferences.html#id99">LS18</a>]</span>, section 1.3.</p>
+<h2><a class="toc-backref" href="#id20"><span class="section-number">41.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Next we study an optimal savings problem for an infinitely lived consumer—the “common ancestor” described in <span id="id1">[<a class="reference internal" href="../zreferences.html#id101" title="L Ljungqvist and T J Sargent. Recursive Macroeconomic Theory. MIT Press, 4 edition, 2018.">LS18</a>]</span>, section 1.3.</p>
 <p>This is an essential sub-problem for many representative macroeconomic models</p>
 <ul class="simple">
-<li><p><span id="id2">[<a class="reference internal" href="../zreferences.html#id56">Aiy94</a>]</span></p></li>
-<li><p><span id="id3">[<a class="reference internal" href="../zreferences.html#id89">Hug93</a>]</span></p></li>
+<li><p><span id="id2">[<a class="reference internal" href="../zreferences.html#id57" title="S Rao Aiyagari. Uninsured Idiosyncratic Risk and Aggregate Saving. The Quarterly Journal of Economics, 109(3):659–684, 1994.">Aiy94</a>]</span></p></li>
+<li><p><span id="id3">[<a class="reference internal" href="../zreferences.html#id91" title="Mark Huggett. The risk-free rate in heterogeneous-agent incomplete-insurance economies. Journal of Economic Dynamics and Control, 17(5-6):953–969, 1993.">Hug93</a>]</span></p></li>
 <li><p>etc.</p></li>
 </ul>
 <p>It is related to the decision problem in the <a class="reference internal" href="optgrowth.html"><span class="doc">stochastic optimal growth model</span></a>
 and yet differs in important ways.</p>
 <p>For example, the choice problem for the agent includes an additive income term that leads to an occasionally binding constraint.</p>
 <p>Our presentation of the model will be relatively brief.</p>
-<p><a href=/_static/pdfs/pi2.pdf download></a>* For further details on economic intuition, implication and models, see <span id="id4">[<a class="reference internal" href="../zreferences.html#id99">LS18</a>]</span></p>
+<p><a href=/_static/pdfs/pi2.pdf download></a>* For further details on economic intuition, implication and models, see <span id="id4">[<a class="reference internal" href="../zreferences.html#id101" title="L Ljungqvist and T J Sargent. Recursive Macroeconomic Theory. MIT Press, 4 edition, 2018.">LS18</a>]</span></p>
 <ul class="simple">
 <li><p>Proofs of all mathematical results stated below can be found in this paper</p></li>
 </ul>
@@ -349,15 +348,15 @@ and yet differs in important ways.</p>
 <li><p>More efficient numerically than value function iteration.</p></li>
 </ul>
 <div class="section" id="references">
-<h3><span class="section-number">38.1.1. </span>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h3>
-<p>Other useful references include <span id="id6">[<a class="reference internal" href="../zreferences.html#id71">Dea91</a>]</span>, <span id="id7">[<a class="reference internal" href="../zreferences.html#id73">DH10</a>]</span>, <span id="id8">[<a class="reference internal" href="../zreferences.html#id95">Kuh13</a>]</span>, <span id="id9">[<a class="reference internal" href="../zreferences.html#id119">Rab02</a>]</span>,  <span id="id10">[<a class="reference internal" href="../zreferences.html#id121">Rei09</a>]</span>  and <span id="id11">[<a class="reference internal" href="../zreferences.html#id124">SE77</a>]</span>.</p>
+<h3><span class="section-number">41.1.1. </span>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h3>
+<p>Other useful references include <span id="id6">[<a class="reference internal" href="../zreferences.html#id73" title="Angus Deaton. Saving and Liquidity Constraints. Econometrica, 59(5):1221–1248, 1991.">Dea91</a>]</span>, <span id="id7">[<a class="reference internal" href="../zreferences.html#id75" title="Wouter J Den Haan. Comparison of solutions to the incomplete markets model with aggregate uncertainty. Journal of Economic Dynamics and Control, 34(1):4–27, 2010.">DH10</a>]</span>, <span id="id8">[<a class="reference internal" href="../zreferences.html#id97" title="Moritz Kuhn. Recursive Equilibria In An Aiyagari-Style Economy With Permanent Income Shocks. International Economic Review, 54:807–835, 2013.">Kuh13</a>]</span>, <span id="id9">[<a class="reference internal" href="../zreferences.html#id121" title="Guillaume Rabault. When do borrowing constraints bind? Some new results on the income fluctuation problem. Journal of Economic Dynamics and Control, 26(2):217–245, 2002.">Rab02</a>]</span>,  <span id="id10">[<a class="reference internal" href="../zreferences.html#id123" title="Michael Reiter. Solving heterogeneous-agent models by projection and perturbation. Journal of Economic Dynamics and Control, 33(3):649–665, 2009.">Rei09</a>]</span>  and <span id="id11">[<a class="reference internal" href="../zreferences.html#id126" title="Jack Schechtman and Vera L S Escudero. Some results on an income fluctuation problem. Journal of Economic Theory, 16(2):151–166, 1977.">SE77</a>]</span>.</p>
 </div>
 </div>
 <div class="section" id="the-optimal-savings-problem">
-<h2><a class="toc-backref" href="#id21"><span class="section-number">38.2. </span>The Optimal Savings Problem</a><a class="headerlink" href="#the-optimal-savings-problem" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id21"><span class="section-number">41.2. </span>The Optimal Savings Problem</a><a class="headerlink" href="#the-optimal-savings-problem" title="Permalink to this headline">¶</a></h2>
 <p id="index-1">Let’s write down the model and then discuss how to solve it.</p>
 <div class="section" id="set-up">
-<h3><span class="section-number">38.2.1. </span>Set Up<a class="headerlink" href="#set-up" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.2.1. </span>Set Up<a class="headerlink" href="#set-up" title="Permalink to this headline">¶</a></h3>
 <p>Consider a household that chooses a state-contingent consumption plan <span class="math notranslate nohighlight">\(\{c_t\}_{t \geq 0}\)</span> to maximize</p>
 <div class="math notranslate nohighlight">
 \[
@@ -365,7 +364,7 @@ and yet differs in important ways.</p>
 \]</div>
 <p>subject to</p>
 <div class="math notranslate nohighlight" id="equation-eqst">
-<span class="eqno">(38.1)<a class="headerlink" href="#equation-eqst" title="Permalink to this equation">¶</a></span>\[c_t + a_{t+1} \leq  Ra_t  + z_t,
+<span class="eqno">(41.1)<a class="headerlink" href="#equation-eqst" title="Permalink to this equation">¶</a></span>\[c_t + a_{t+1} \leq  Ra_t  + z_t,
 \qquad c_t \geq 0,
 \qquad a_t \geq -b
 \qquad t = 0, 1, \ldots\]</div>
@@ -395,29 +394,29 @@ B\)</span> given <span class="math notranslate nohighlight">\(z_t = z\)</span>.<
 sequence <span class="math notranslate nohighlight">\(\{c_t\}\)</span> such that <span class="math notranslate nohighlight">\(\{c_t\}\)</span> and its induced asset path <span class="math notranslate nohighlight">\(\{a_t\}\)</span> satisfy</p>
 <ol class="simple">
 <li><p><span class="math notranslate nohighlight">\((a_0, z_0) = (a, z)\)</span></p></li>
-<li><p>the feasibility constraints in <a class="reference internal" href="#equation-eqst">(38.1)</a>, and</p></li>
+<li><p>the feasibility constraints in <a class="reference internal" href="#equation-eqst">(41.1)</a>, and</p></li>
 <li><p>measurability of <span class="math notranslate nohighlight">\(c_t\)</span> w.r.t. the filtration generated by <span class="math notranslate nohighlight">\(\{z_1, \ldots, z_t\}\)</span></p></li>
 </ol>
 <p>The meaning of the third point is just that consumption at time <span class="math notranslate nohighlight">\(t\)</span> can only be
 a function of outcomes that have already been observed.</p>
 </div>
 <div class="section" id="value-function-and-euler-equation">
-<h3><span class="section-number">38.2.2. </span>Value Function and Euler Equation<a class="headerlink" href="#value-function-and-euler-equation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.2.2. </span>Value Function and Euler Equation<a class="headerlink" href="#value-function-and-euler-equation" title="Permalink to this headline">¶</a></h3>
 <p>The <em>value function</em> <span class="math notranslate nohighlight">\(V \colon S \to \mathbb{R}\)</span> is defined by</p>
 <div class="math notranslate nohighlight" id="equation-eqvf">
-<span class="eqno">(38.2)<a class="headerlink" href="#equation-eqvf" title="Permalink to this equation">¶</a></span>\[V(a, z) := \sup \, \mathbb{E}
+<span class="eqno">(41.2)<a class="headerlink" href="#equation-eqvf" title="Permalink to this equation">¶</a></span>\[V(a, z) := \sup \, \mathbb{E}
 \left\{
 \sum_{t=0}^{\infty} \beta^t u(c_t)
 \right\}\]</div>
 <p>where the supremum is over all feasible consumption paths from <span class="math notranslate nohighlight">\((a,z)\)</span>.</p>
-<p>An <em>optimal consumption path</em> from <span class="math notranslate nohighlight">\((a,z)\)</span> is a feasible consumption path from <span class="math notranslate nohighlight">\((a,z)\)</span> that attains the supremum in <a class="reference internal" href="#equation-eqvf">(38.2)</a>.</p>
+<p>An <em>optimal consumption path</em> from <span class="math notranslate nohighlight">\((a,z)\)</span> is a feasible consumption path from <span class="math notranslate nohighlight">\((a,z)\)</span> that attains the supremum in <a class="reference internal" href="#equation-eqvf">(41.2)</a>.</p>
 <p>To pin down such paths we can use a version of the Euler equation, which in the present setting is</p>
 <div class="math notranslate nohighlight" id="equation-ee00">
-<span class="eqno">(38.3)<a class="headerlink" href="#equation-ee00" title="Permalink to this equation">¶</a></span>\[u' (c_t)
+<span class="eqno">(41.3)<a class="headerlink" href="#equation-ee00" title="Permalink to this equation">¶</a></span>\[u' (c_t)
 \geq \beta R \,  \mathbb{E}_t [ u'(c_{t+1}) ]\]</div>
 <p>and</p>
 <div class="math notranslate nohighlight" id="equation-ee01">
-<span class="eqno">(38.4)<a class="headerlink" href="#equation-ee01" title="Permalink to this equation">¶</a></span>\[u' (c_t) = \beta R \,  \mathbb{E}_t [ u'(c_{t+1}) ]
+<span class="eqno">(41.4)<a class="headerlink" href="#equation-ee01" title="Permalink to this equation">¶</a></span>\[u' (c_t) = \beta R \,  \mathbb{E}_t [ u'(c_{t+1}) ]
 \quad \text{whenever }
 c_t &lt; Ra_t + z_t + b\]</div>
 <p>In essence, this says that the natural “arbitrage” relation <span class="math notranslate nohighlight">\(u' (c_t) = \beta R \,  \mathbb{E}_t [ u'(c_{t+1}) ]\)</span> holds when the choice of current consumption is interior.</p>
@@ -427,24 +426,24 @@ c_t &lt; Ra_t + z_t + b\]</div>
 <p>When <span class="math notranslate nohighlight">\(c_t\)</span> does hit the upper bound <span class="math notranslate nohighlight">\(Ra_t + z_t + b\)</span>, the
 strict inequality <span class="math notranslate nohighlight">\(u' (c_t) &gt; \beta R \,  \mathbb{E}_t [ u'(c_{t+1}) ]\)</span>
 can occur because <span class="math notranslate nohighlight">\(c_t\)</span> cannot increase sufficiently to attain equality.</p>
-<p>With some thought and effort, one can show that <a class="reference internal" href="#equation-ee00">(38.3)</a> and <a class="reference internal" href="#equation-ee01">(38.4)</a> are
+<p>With some thought and effort, one can show that <a class="reference internal" href="#equation-ee00">(41.3)</a> and <a class="reference internal" href="#equation-ee01">(41.4)</a> are
 equivalent to</p>
 <div class="math notranslate nohighlight" id="equation-eqeul0">
-<span class="eqno">(38.5)<a class="headerlink" href="#equation-eqeul0" title="Permalink to this equation">¶</a></span>\[u' (c_t)
+<span class="eqno">(41.5)<a class="headerlink" href="#equation-eqeul0" title="Permalink to this equation">¶</a></span>\[u' (c_t)
 = \max \left\{
 \beta R \,  \mathbb{E}_t [ u'(c_{t+1}) ] \,,\;  u'(Ra_t + z_t + b)
 \right\}\]</div>
 </div>
 <div class="section" id="optimality-results">
-<h3><span class="section-number">38.2.3. </span>Optimality Results<a class="headerlink" href="#optimality-results" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.2.3. </span>Optimality Results<a class="headerlink" href="#optimality-results" title="Permalink to this headline">¶</a></h3>
 <p>Given our assumptions, it is <a href=/_static/pdfs/pi2.pdf download>known</a> that</p>
 <ol class="simple">
 <li><p>For each <span class="math notranslate nohighlight">\((a,z) \in S\)</span>, a unique optimal consumption path from <span class="math notranslate nohighlight">\((a,z)\)</span> exists.</p></li>
 <li><p>This path is the unique feasible path from <span class="math notranslate nohighlight">\((a,z)\)</span> satisfying the
-Euler equality <a class="reference internal" href="#equation-eqeul0">(38.5)</a> and the transversality condition</p></li>
+Euler equality <a class="reference internal" href="#equation-eqeul0">(41.5)</a> and the transversality condition</p></li>
 </ol>
 <div class="math notranslate nohighlight" id="equation-eqtv">
-<span class="eqno">(38.6)<a class="headerlink" href="#equation-eqtv" title="Permalink to this equation">¶</a></span>\[\lim_{t \to \infty} \beta^t \, \mathbb{E} \, [ u'(c_t) a_{t+1} ] = 0.\]</div>
+<span class="eqno">(41.6)<a class="headerlink" href="#equation-eqtv" title="Permalink to this equation">¶</a></span>\[\lim_{t \to \infty} \beta^t \, \mathbb{E} \, [ u'(c_t) a_{t+1} ] = 0.\]</div>
 <p>Moreover, there exists an <em>optimal consumption function</em> <span class="math notranslate nohighlight">\(c^* \colon S \to [0, \infty)\)</span> such that the path from <span class="math notranslate nohighlight">\((a,z)\)</span> generated by</p>
 <div class="math notranslate nohighlight">
 \[
@@ -456,13 +455,13 @@ c_t = c^*(a_t, z_t)
 \quad \text{and} \quad
 a_{t+1} = R a_t + z_t - c_t
 \]</div>
-<p>satisfies both <a class="reference internal" href="#equation-eqeul0">(38.5)</a> and <a class="reference internal" href="#equation-eqtv">(38.6)</a>, and hence is the unique optimal
+<p>satisfies both <a class="reference internal" href="#equation-eqeul0">(41.5)</a> and <a class="reference internal" href="#equation-eqtv">(41.6)</a>, and hence is the unique optimal
 path from <span class="math notranslate nohighlight">\((a,z)\)</span>.</p>
 <p>In summary, to solve the optimization problem, we need to compute <span class="math notranslate nohighlight">\(c^*\)</span>.</p>
 </div>
 </div>
 <div class="section" id="computation">
-<span id="ifp-computation"></span><h2><a class="toc-backref" href="#id22"><span class="section-number">38.3. </span>Computation</a><a class="headerlink" href="#computation" title="Permalink to this headline">¶</a></h2>
+<span id="ifp-computation"></span><h2><a class="toc-backref" href="#id22"><span class="section-number">41.3. </span>Computation</a><a class="headerlink" href="#computation" title="Permalink to this headline">¶</a></h2>
 <p id="index-2">There are two standard ways to solve for <span class="math notranslate nohighlight">\(c^*\)</span></p>
 <ol class="simple">
 <li><p>Time iteration (TI) using the Euler equality</p></li>
@@ -470,12 +469,12 @@ path from <span class="math notranslate nohighlight">\((a,z)\)</span>.</p>
 </ol>
 <p>Let’s look at these in turn.</p>
 <div class="section" id="time-iteration">
-<h3><span class="section-number">38.3.1. </span>Time Iteration<a class="headerlink" href="#time-iteration" title="Permalink to this headline">¶</a></h3>
-<p>We can rewrite <a class="reference internal" href="#equation-eqeul0">(38.5)</a> to make it a statement about functions rather than
+<h3><span class="section-number">41.3.1. </span>Time Iteration<a class="headerlink" href="#time-iteration" title="Permalink to this headline">¶</a></h3>
+<p>We can rewrite <a class="reference internal" href="#equation-eqeul0">(41.5)</a> to make it a statement about functions rather than
 random variables.</p>
 <p>In particular, consider the functional equation</p>
 <div class="math notranslate nohighlight" id="equation-eqeul1">
-<span class="eqno">(38.7)<a class="headerlink" href="#equation-eqeul1" title="Permalink to this equation">¶</a></span>\[u' \circ c \, (a, z)
+<span class="eqno">(41.7)<a class="headerlink" href="#equation-eqeul1" title="Permalink to this equation">¶</a></span>\[u' \circ c \, (a, z)
 = \max \left\{
 \gamma \int u' \circ c \, \{R a + z - c(a, z), \, \acute z\}
 \, \Pi(z,d \acute z)
@@ -483,7 +482,7 @@ random variables.</p>
      u'(Ra + z + b)
      \right\}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\gamma := \beta R\)</span> and <span class="math notranslate nohighlight">\(u' \circ c(s) := u'(c(s))\)</span>.</p>
-<p>Equation <a class="reference internal" href="#equation-eqeul1">(38.7)</a> is a functional equation in <span class="math notranslate nohighlight">\(c\)</span>.</p>
+<p>Equation <a class="reference internal" href="#equation-eqeul1">(41.7)</a> is a functional equation in <span class="math notranslate nohighlight">\(c\)</span>.</p>
 <p>In order to identify a solution, let <span class="math notranslate nohighlight">\(\mathscr{C}\)</span> be the set of candidate consumption functions <span class="math notranslate nohighlight">\(c \colon S \to \mathbb R\)</span> such that</p>
 <ul class="simple">
 <li><p>each <span class="math notranslate nohighlight">\(c \in \mathscr{C}\)</span> is continuous and (weakly) increasing</p></li>
@@ -492,7 +491,7 @@ random variables.</p>
 <p>In addition, let <span class="math notranslate nohighlight">\(K \colon \mathscr{C} \to \mathscr{C}\)</span> be defined as follows:</p>
 <p>For given <span class="math notranslate nohighlight">\(c\in \mathscr{C}\)</span>, the value <span class="math notranslate nohighlight">\(Kc(a,z)\)</span> is the unique <span class="math notranslate nohighlight">\(t \in J(a,z)\)</span> that solves</p>
 <div class="math notranslate nohighlight" id="equation-eqsifc">
-<span class="eqno">(38.8)<a class="headerlink" href="#equation-eqsifc" title="Permalink to this equation">¶</a></span>\[u'(t)
+<span class="eqno">(41.8)<a class="headerlink" href="#equation-eqsifc" title="Permalink to this equation">¶</a></span>\[u'(t)
 = \max \left\{
 \gamma \int u' \circ c \, \{R a + z - t, \, \acute z\}
 \, \Pi(z,d \acute z)
@@ -501,8 +500,8 @@ random variables.</p>
      \right\}\]</div>
 <p>where</p>
 <div class="math notranslate nohighlight" id="equation-eqbos">
-<span class="eqno">(38.9)<a class="headerlink" href="#equation-eqbos" title="Permalink to this equation">¶</a></span>\[J(a,z) := \{t \in \mathbb{R} \,:\, \min Z \leq t \leq Ra+ z + b\}\]</div>
-<p>We refer to <span class="math notranslate nohighlight">\(K\)</span> as Coleman’s policy function operator <span id="id12">[<a class="reference internal" href="../zreferences.html#id69">Col90</a>]</span>.</p>
+<span class="eqno">(41.9)<a class="headerlink" href="#equation-eqbos" title="Permalink to this equation">¶</a></span>\[J(a,z) := \{t \in \mathbb{R} \,:\, \min Z \leq t \leq Ra+ z + b\}\]</div>
+<p>We refer to <span class="math notranslate nohighlight">\(K\)</span> as Coleman’s policy function operator <span id="id12">[<a class="reference internal" href="../zreferences.html#id71" title="Wilbur John Coleman. Solving the Stochastic Growth Model by Policy-Function Iteration. Journal of Business &amp; Economic Statistics, 8(1):27–29, 1990.">Col90</a>]</span>.</p>
 <p>It is <a href=/_static/pdfs/pi2.pdf download>known</a> that</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(K\)</span> is a contraction mapping on <span class="math notranslate nohighlight">\(\mathscr{C}\)</span> under the metric</p></li>
@@ -520,18 +519,18 @@ random variables.</p>
 <p>In consequence, <span class="math notranslate nohighlight">\(K\)</span> has a unique fixed point <span class="math notranslate nohighlight">\(c^* \in \mathscr{C}\)</span>
 and <span class="math notranslate nohighlight">\(K^n c \to c^*\)</span> as <span class="math notranslate nohighlight">\(n \to \infty\)</span> for any <span class="math notranslate nohighlight">\(c \in \mathscr{C}\)</span>.</p>
 <p>By the definition of <span class="math notranslate nohighlight">\(K\)</span>, the fixed points of <span class="math notranslate nohighlight">\(K\)</span> in <span class="math notranslate nohighlight">\(\mathscr{C}\)</span> coincide with
-the solutions to <a class="reference internal" href="#equation-eqeul1">(38.7)</a> in <span class="math notranslate nohighlight">\(\mathscr{C}\)</span>.</p>
+the solutions to <a class="reference internal" href="#equation-eqeul1">(41.7)</a> in <span class="math notranslate nohighlight">\(\mathscr{C}\)</span>.</p>
 <p>In particular, it <a href=/_static/pdfs/pi2.pdf download>can be shown</a> that the path <span class="math notranslate nohighlight">\(\{c_t\}\)</span>
 generated from <span class="math notranslate nohighlight">\((a_0,z_0) \in S\)</span> using policy function <span class="math notranslate nohighlight">\(c^*\)</span> is
 the unique optimal path from <span class="math notranslate nohighlight">\((a_0,z_0) \in S\)</span>.</p>
 <p><strong>TL;DR</strong> The unique optimal policy can be computed by picking any
-<span class="math notranslate nohighlight">\(c \in \mathscr{C}\)</span> and iterating with the operator <span class="math notranslate nohighlight">\(K\)</span> defined in <a class="reference internal" href="#equation-eqsifc">(38.8)</a>.</p>
+<span class="math notranslate nohighlight">\(c \in \mathscr{C}\)</span> and iterating with the operator <span class="math notranslate nohighlight">\(K\)</span> defined in <a class="reference internal" href="#equation-eqsifc">(41.8)</a>.</p>
 </div>
 <div class="section" id="value-function-iteration">
-<h3><span class="section-number">38.3.2. </span>Value Function Iteration<a class="headerlink" href="#value-function-iteration" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.3.2. </span>Value Function Iteration<a class="headerlink" href="#value-function-iteration" title="Permalink to this headline">¶</a></h3>
 <p>The Bellman operator for this problem is given by</p>
 <div class="math notranslate nohighlight" id="equation-eqbop">
-<span class="eqno">(38.10)<a class="headerlink" href="#equation-eqbop" title="Permalink to this equation">¶</a></span>\[Tv(a, z)
+<span class="eqno">(41.10)<a class="headerlink" href="#equation-eqbop" title="Permalink to this equation">¶</a></span>\[Tv(a, z)
 = \max_{0 \leq c \leq Ra + z + b}
 \left\{
     u(c) + \beta \int v(Ra + z - c, \acute z) \Pi(z, d \acute z)
@@ -548,7 +547,7 @@ the unique optimal path from <span class="math notranslate nohighlight">\((a_0,z
 <p>The latter is known to converge, as described above.</p>
 </div>
 <div class="section" id="implementation">
-<h3><span class="section-number">38.3.3. </span>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.3.3. </span>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
 <p id="index-3">Here’s the code for a named-tuple constructor called <code class="docutils literal notranslate"><span class="pre">ConsumerProblem</span></code> that stores primitives, as well as</p>
 <ul class="simple">
 <li><p>a <code class="docutils literal notranslate"><span class="pre">T</span></code> function, which implements the Bellman operator <span class="math notranslate nohighlight">\(T\)</span> specified above</p></li>
@@ -557,122 +556,122 @@ the unique optimal path from <span class="math notranslate nohighlight">\((a_0,z
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
-<span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Optim</span><span class="p">,</span><span class="w"> </span><span class="n">Parameters</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">QuantEcon</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="w"></span>
-<span class="k">using</span><span class="w"> </span><span class="n">Optim</span><span class="o">:</span><span class="w"> </span><span class="n">converged</span><span class="p">,</span><span class="w"> </span><span class="n">maximum</span><span class="p">,</span><span class="w"> </span><span class="n">maximizer</span><span class="p">,</span><span class="w"> </span><span class="n">minimizer</span><span class="p">,</span><span class="w"> </span><span class="n">iterations</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Optim</span><span class="p">,</span><span class="w"> </span><span class="n">Parameters</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">QuantEcon</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Optim</span><span class="o">:</span><span class="w"> </span><span class="n">converged</span><span class="p">,</span><span class="w"> </span><span class="n">maximum</span><span class="p">,</span><span class="w"> </span><span class="n">maximizer</span><span class="p">,</span><span class="w"> </span><span class="n">minimizer</span><span class="p">,</span><span class="w"> </span><span class="n">iterations</span>
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># utility and marginal utility functions</span><span class="w"></span>
-<span class="n">u</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="n">du</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># utility and marginal utility functions</span>
+<span class="n">u</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">du</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">x</span>
 
-<span class="c"># model</span><span class="w"></span>
-<span class="k">function</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">(;</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"></span>
-<span class="w">                         </span><span class="n">β</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.96</span><span class="p">,</span><span class="w"></span>
-<span class="w">                         </span><span class="n">Π</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.6</span><span class="w"> </span><span class="mf">0.4</span><span class="p">;</span><span class="w"> </span><span class="mf">0.05</span><span class="w"> </span><span class="mf">0.95</span><span class="p">],</span><span class="w"></span>
-<span class="w">                         </span><span class="n">z_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">],</span><span class="w"></span>
-<span class="w">                         </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"></span>
-<span class="w">                         </span><span class="n">grid_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"></span>
-<span class="w">                         </span><span class="n">grid_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">r</span><span class="w"></span>
-<span class="w">    </span><span class="n">asset_grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">grid_max</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">grid_size</span><span class="p">)</span><span class="w"></span>
+<span class="c"># model</span>
+<span class="k">function</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">(;</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">β</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.96</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">Π</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.6</span><span class="w"> </span><span class="mf">0.4</span><span class="p">;</span><span class="w"> </span><span class="mf">0.05</span><span class="w"> </span><span class="mf">0.95</span><span class="p">],</span>
+<span class="w">                         </span><span class="n">z_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">],</span>
+<span class="w">                         </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">grid_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span>
+<span class="w">                         </span><span class="n">grid_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">50</span><span class="p">)</span>
+<span class="w">    </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">r</span>
+<span class="w">    </span><span class="n">asset_grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">grid_max</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">grid_size</span><span class="p">)</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">Π</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Π</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_vals</span><span class="p">,</span><span class="w"> </span><span class="n">asset_grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asset_grid</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">Π</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Π</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_vals</span><span class="p">,</span><span class="w"> </span><span class="n">asset_grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">asset_grid</span><span class="p">)</span>
+<span class="k">end</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">T!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">;</span><span class="w"> </span><span class="n">ret_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">T!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">;</span><span class="w"> </span><span class="n">ret_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
 
-<span class="w">    </span><span class="c"># unpack input, set up arrays</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@unpack</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">Π</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="w"></span>
-<span class="w">    </span><span class="n">z_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="c"># unpack input, set up arrays</span>
+<span class="w">    </span><span class="p">(;</span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">Π</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span>
+<span class="w">    </span><span class="n">z_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span>
 
-<span class="w">    </span><span class="c"># value function when the shock index is z_i</span><span class="w"></span>
-<span class="w">    </span><span class="n">vf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">interp</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="c"># value function when the shock index is z_i</span>
+<span class="w">    </span><span class="n">vf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">interp</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">)</span>
 
-<span class="w">    </span><span class="n">opt_lb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e-8</span><span class="w"></span>
+<span class="w">    </span><span class="n">opt_lb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e-8</span>
 
-<span class="w">    </span><span class="c"># solve for RHS of Bellman equation</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_z</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="c"># solve for RHS of Bellman equation</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_z</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">)</span>
 
-<span class="w">            </span><span class="k">function</span><span class="w"> </span><span class="n">obj</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="n">EV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">vf</span><span class="o">.</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">z_idx</span><span class="p">),</span><span class="w"> </span><span class="n">Π</span><span class="p">[</span><span class="n">i_z</span><span class="p">,</span><span class="w"> </span><span class="o">:</span><span class="p">])</span><span class="w"> </span><span class="c"># compute expectation</span><span class="w"></span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">u</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">  </span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">EV</span><span class="w"></span>
-<span class="w">            </span><span class="k">end</span><span class="w"></span>
-<span class="w">            </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximize</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="n">opt_lb</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="n">converged</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Didn&#39;t converge&quot;</span><span class="p">)</span><span class="w"> </span><span class="c"># important to check</span><span class="w"></span>
+<span class="w">            </span><span class="k">function</span><span class="w"> </span><span class="n">obj</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+<span class="w">                </span><span class="n">EV</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">vf</span><span class="o">.</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">z_idx</span><span class="p">),</span><span class="w"> </span><span class="n">Π</span><span class="p">[</span><span class="n">i_z</span><span class="p">,</span><span class="w"> </span><span class="o">:</span><span class="p">])</span><span class="w"> </span><span class="c"># compute expectation</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">u</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">  </span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">EV</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">            </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximize</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="w"> </span><span class="n">opt_lb</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="w">            </span><span class="n">converged</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Didn&#39;t converge&quot;</span><span class="p">)</span><span class="w"> </span><span class="c"># important to check</span>
 
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="n">ret_policy</span><span class="w"></span>
-<span class="w">                </span><span class="n">out</span><span class="p">[</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximizer</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="k">else</span><span class="w"></span>
-<span class="w">                </span><span class="n">out</span><span class="p">[</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximum</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="k">end</span><span class="w"></span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="n">ret_policy</span>
+<span class="w">                </span><span class="n">out</span><span class="p">[</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximizer</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="w">            </span><span class="k">else</span>
+<span class="w">                </span><span class="n">out</span><span class="p">[</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximum</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="w">            </span><span class="k">end</span>
 
-<span class="w">        </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="n">out</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">out</span>
+<span class="k">end</span>
 
-<span class="n">T</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">;</span><span class="w"> </span><span class="n">ret_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
-<span class="w">    </span><span class="n">T!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">V</span><span class="p">);</span><span class="w"> </span><span class="n">ret_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ret_policy</span><span class="p">)</span><span class="w"></span>
+<span class="n">T</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">;</span><span class="w"> </span><span class="n">ret_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">T!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">V</span><span class="p">);</span><span class="w"> </span><span class="n">ret_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ret_policy</span><span class="p">)</span>
 
-<span class="n">get_greedy!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
-<span class="w">    </span><span class="n">update_bellman!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">ret_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span><span class="w"></span>
+<span class="n">get_greedy!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">)</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">update_bellman!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">,</span><span class="w"> </span><span class="n">ret_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
 
-<span class="n">get_greedy</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
-<span class="w">    </span><span class="n">update_bellman</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">ret_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span><span class="w"></span>
+<span class="n">get_greedy</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">)</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">update_bellman</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">ret_policy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">)</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">K!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c"># simplify names, set up arrays</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@unpack</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">Π</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="w"></span>
-<span class="w">    </span><span class="n">z_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">gam</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">β</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">K!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">out</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># simplify names, set up arrays</span>
+<span class="w">    </span><span class="p">(;</span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">Π</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span>
+<span class="w">    </span><span class="n">z_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span>
+<span class="w">    </span><span class="n">gam</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">β</span>
 
-<span class="w">    </span><span class="c"># policy function when the shock index is z_i</span><span class="w"></span>
-<span class="w">    </span><span class="n">cf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">interp</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="c"># policy function when the shock index is z_i</span>
+<span class="w">    </span><span class="n">cf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">interp</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span>
 
-<span class="w">    </span><span class="c"># compute lower_bound for optimization</span><span class="w"></span>
-<span class="w">    </span><span class="n">opt_lb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e-8</span><span class="w"></span>
+<span class="w">    </span><span class="c"># compute lower_bound for optimization</span>
+<span class="w">    </span><span class="n">opt_lb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e-8</span>
 
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_z</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="k">function</span><span class="w"> </span><span class="n">h</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="w"></span>
-<span class="w">                </span><span class="n">cps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="o">.</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">z_idx</span><span class="p">)</span><span class="w"> </span><span class="c"># c&#39; for each z&#39;</span><span class="w"></span>
-<span class="w">                </span><span class="n">expectation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">du</span><span class="o">.</span><span class="p">(</span><span class="n">cps</span><span class="p">),</span><span class="w"> </span><span class="n">Π</span><span class="p">[</span><span class="n">i_z</span><span class="p">,</span><span class="w"> </span><span class="o">:</span><span class="p">])</span><span class="w"></span>
-<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="n">du</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="n">gam</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">expectation</span><span class="p">,</span><span class="w"> </span><span class="n">du</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">)))</span><span class="w"></span>
-<span class="w">            </span><span class="k">end</span><span class="w"></span>
-<span class="w">            </span><span class="n">opt_ub</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="o">*</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w">  </span><span class="c"># addresses issue #8 on github</span><span class="w"></span>
-<span class="w">            </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">optimize</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">min</span><span class="p">(</span><span class="n">opt_lb</span><span class="p">,</span><span class="w"> </span><span class="n">opt_ub</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1e-2</span><span class="p">),</span><span class="w"> </span><span class="n">opt_ub</span><span class="p">,</span><span class="w"></span>
-<span class="w">                           </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Optim</span><span class="o">.</span><span class="n">Brent</span><span class="p">())</span><span class="w"></span>
-<span class="w">            </span><span class="n">out</span><span class="p">[</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">minimizer</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">out</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_z</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">)</span>
+<span class="w">            </span><span class="k">function</span><span class="w"> </span><span class="n">h</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="w">                </span><span class="n">cps</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cf</span><span class="o">.</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">z_idx</span><span class="p">)</span><span class="w"> </span><span class="c"># c&#39; for each z&#39;</span>
+<span class="w">                </span><span class="n">expectation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">du</span><span class="o">.</span><span class="p">(</span><span class="n">cps</span><span class="p">),</span><span class="w"> </span><span class="n">Π</span><span class="p">[</span><span class="n">i_z</span><span class="p">,</span><span class="w"> </span><span class="o">:</span><span class="p">])</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="n">du</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">max</span><span class="p">(</span><span class="n">gam</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">expectation</span><span class="p">,</span><span class="w"> </span><span class="n">du</span><span class="p">(</span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">)))</span>
+<span class="w">            </span><span class="k">end</span>
+<span class="w">            </span><span class="n">opt_ub</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="o">*</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w">  </span><span class="c"># addresses issue #8 on github</span>
+<span class="w">            </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">optimize</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">min</span><span class="p">(</span><span class="n">opt_lb</span><span class="p">,</span><span class="w"> </span><span class="n">opt_ub</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">1e-2</span><span class="p">),</span><span class="w"> </span><span class="n">opt_ub</span><span class="p">,</span>
+<span class="w">                           </span><span class="n">method</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Optim</span><span class="o">.</span><span class="n">Brent</span><span class="p">())</span>
+<span class="w">            </span><span class="n">out</span><span class="p">[</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">minimizer</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">out</span>
+<span class="k">end</span>
 
-<span class="n">K</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">K!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">c</span><span class="p">))</span><span class="w"></span>
+<span class="n">K</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">K!</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c"># simplify names, set up arrays</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@unpack</span><span class="w"> </span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="w"></span>
-<span class="w">    </span><span class="n">shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">),</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">...</span><span class="p">),</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">...</span><span class="p">)</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
+<span class="w">    </span><span class="c"># simplify names, set up arrays</span>
+<span class="w">    </span><span class="p">(;</span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span>
+<span class="w">    </span><span class="n">shape</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">),</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span>
+<span class="w">    </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">...</span><span class="p">),</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">...</span><span class="p">)</span>
 
-<span class="w">    </span><span class="c"># populate V and c</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_z</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">)</span><span class="w"></span>
-<span class="w">            </span><span class="n">c_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"></span>
-<span class="w">            </span><span class="n">c</span><span class="p">[</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c_max</span><span class="w"></span>
-<span class="w">            </span><span class="n">V</span><span class="p">[</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">(</span><span class="n">c_max</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">β</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="c"># populate V and c</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_z</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">asset_grid</span><span class="p">)</span>
+<span class="w">            </span><span class="n">c_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span>
+<span class="w">            </span><span class="n">c</span><span class="p">[</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c_max</span>
+<span class="w">            </span><span class="n">V</span><span class="p">[</span><span class="n">i_a</span><span class="p">,</span><span class="w"> </span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">(</span><span class="n">c_max</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">β</span><span class="p">)</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">c</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </div>
@@ -689,9 +688,9 @@ the unique optimal path from <span class="math notranslate nohighlight">\((a_0,z
 </div>
 </div>
 <div class="section" id="exercises">
-<h2><a class="toc-backref" href="#id23"><span class="section-number">38.4. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id23"><span class="section-number">41.4. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exercise-1">
-<span id="ifp-ex1"></span><h3><span class="section-number">38.4.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<span id="ifp-ex1"></span><h3><span class="section-number">41.4.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
 <p>The first exercise is to replicate the following figure, which compares TI and VFI as solution methods</p>
 <div class="figure align-default">
 <a class="reference internal image-reference" href="../_images/vfi_vs_pfi.png"><img alt="../_images/vfi_vs_pfi.png" src="../_images/vfi_vs_pfi.png" style="width: 100%;" /></a>
@@ -713,8 +712,8 @@ faster than iteration with <span class="math notranslate nohighlight">\(T\)</spa
 <p>In the Julia console, a comparison of the operators can be made as follows</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">()</span><span class="w"></span>
-<span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">()</span>
+<span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -726,31 +725,31 @@ faster than iteration with <span class="math notranslate nohighlight">\(T\)</spa
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@btime</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@btime</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  397.925 μs (4351 allocations: 340.72 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  504.717 μs (4191 allocations: 328.22 KiB)
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@btime</span><span class="w"> </span><span class="n">K</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@btime</span><span class="w"> </span><span class="n">K</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  576.136 μs (7824 allocations: 612.05 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  689.233 μs (7824 allocations: 612.05 KiB)
 </pre></div>
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="exercise-2">
-<span id="ifp-ex2"></span><h3><span class="section-number">38.4.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+<span id="ifp-ex2"></span><h3><span class="section-number">41.4.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
 <p>Next let’s consider how the interest rate affects consumption.</p>
 <p>Reproduce the following figure, which shows (approximately) optimal consumption policies for different interest rates</p>
 <div class="figure align-default">
@@ -764,31 +763,31 @@ faster than iteration with <span class="math notranslate nohighlight">\(T\)</spa
 <p>The figure shows that higher interest rates boost savings and hence suppress consumption.</p>
 </div>
 <div class="section" id="exercise-3">
-<span id="ifp-ex3"></span><h3><span class="section-number">38.4.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
+<span id="ifp-ex3"></span><h3><span class="section-number">41.4.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
 <p>Now let’s consider the long run asset levels held by households.</p>
 <p>We’ll take r = 0.03 and otherwise use default parameters.</p>
 <p>The following figure is a 45 degree diagram showing the law of motion for assets when consumption is optimal</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># solve for optimal consumption</span><span class="w"></span>
-<span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.03</span><span class="p">,</span><span class="w"> </span><span class="n">grid_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"></span>
-<span class="n">v_init</span><span class="p">,</span><span class="w"> </span><span class="n">c_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># solve for optimal consumption</span>
+<span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.03</span><span class="p">,</span><span class="w"> </span><span class="n">grid_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="n">v_init</span><span class="p">,</span><span class="w"> </span><span class="n">c_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
 
-<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_fixed_point</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">K</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">),</span><span class="w"></span>
-<span class="w">                        </span><span class="n">c_init</span><span class="p">,</span><span class="w"></span>
-<span class="w">                        </span><span class="n">max_iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span><span class="w"></span>
-<span class="w">                        </span><span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"></span>
-<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="o">.</span><span class="n">asset_grid</span><span class="w"></span>
-<span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="o">.</span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="o">.</span><span class="n">z_vals</span><span class="w"></span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_fixed_point</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">K</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">),</span>
+<span class="w">                        </span><span class="n">c_init</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">max_iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span>
+<span class="w">                        </span><span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="o">.</span><span class="n">asset_grid</span>
+<span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="o">.</span><span class="n">R</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="o">.</span><span class="n">z_vals</span>
 
-<span class="c"># generate savings plot</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">z_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Low income&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Current assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Next period assets&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">z_vals</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;High income&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Current assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Next period assets&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;black&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Current assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Next period assets&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span><span class="w"></span>
+<span class="c"># generate savings plot</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">z_vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Low income&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Current assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Next period assets&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">z_vals</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;High income&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Current assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Next period assets&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">linestyle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:dash</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;black&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Current assets&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Next period assets&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -806,7 +805,7 @@ a' = h(a, z) := R a + z - c^*(a, z)
 diverge.</p>
 <p>In fact there is a unique stationary distribution of assets that we can calculate by simulation</p>
 <ul class="simple">
-<li><p>Can be proved via theorem 2 of <span id="id13">[<a class="reference internal" href="../zreferences.html#id87">HP92</a>]</span>.</p></li>
+<li><p>Can be proved via theorem 2 of <span id="id13">[<a class="reference internal" href="../zreferences.html#id89" title="Hugo A Hopenhayn and Edward C Prescott. Stochastic Monotonicity and Stationary Distributions for Dynamic Economies. Econometrica, 60(6):1387–1406, 1992.">HP92</a>]</span>.</p></li>
 <li><p>Represents the long run dispersion of assets across households when households have idiosyncratic shocks.</p></li>
 </ul>
 <p>Ergodicity is valid here, so stationary probabilities can be calculated by averaging over a single long time series.</p>
@@ -825,10 +824,10 @@ diverge.</p>
 </ul>
 </div>
 <div class="section" id="exercise-4">
-<span id="ifp-ex4"></span><h3><span class="section-number">38.4.4. </span>Exercise 4<a class="headerlink" href="#exercise-4" title="Permalink to this headline">¶</a></h3>
+<span id="ifp-ex4"></span><h3><span class="section-number">41.4.4. </span>Exercise 4<a class="headerlink" href="#exercise-4" title="Permalink to this headline">¶</a></h3>
 <p>Following on from exercises 2 and 3, let’s look at how savings and aggregate asset holdings vary with the interest rate</p>
 <ul class="simple">
-<li><p>Note: <span id="id14">[<a class="reference internal" href="../zreferences.html#id99">LS18</a>]</span> section 18.6 can be consulted for more background on the topic treated in this exercise</p></li>
+<li><p>Note: <span id="id14">[<a class="reference internal" href="../zreferences.html#id101" title="L Ljungqvist and T J Sargent. Recursive Macroeconomic Theory. MIT Press, 4 edition, 2018.">LS18</a>]</span> section 18.6 can be consulted for more background on the topic treated in this exercise</p></li>
 </ul>
 <p>For a given parameterization of the model, the mean of the stationary distribution can be interpreted as aggregate capital in an economy with a unit mass of <em>ex-ante</em> identical households facing idiosyncratic shocks.</p>
 <p>Let’s look at how this measure of aggregate capital varies with the interest
@@ -845,31 +844,31 @@ when <span class="math notranslate nohighlight">\(r=0\)</span> for both cases sh
 </div>
 </div>
 <div class="section" id="solutions">
-<h2><a class="toc-backref" href="#id24"><span class="section-number">38.5. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id24"><span class="section-number">41.5. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id15">
-<h3><span class="section-number">38.5.1. </span>Exercise 1<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.5.1. </span>Exercise 1<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">()</span><span class="w"></span>
-<span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">80</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">()</span>
+<span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">80</span>
 
-<span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span><span class="w"></span>
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;Starting value function iteration&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">N</span><span class="w"></span>
-<span class="w">    </span><span class="n">V</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="n">c1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">ret_policy</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span><span class="w"></span>
+<span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Starting value function iteration&quot;</span><span class="p">)</span>
+<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">N</span>
+<span class="w">    </span><span class="n">V</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">c1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">ret_policy</span><span class="o">=</span><span class="nb">true</span><span class="p">)</span>
 
-<span class="n">V2</span><span class="p">,</span><span class="w"> </span><span class="n">c2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span><span class="w"></span>
-<span class="n">println</span><span class="p">(</span><span class="s">&quot;Starting policy function iteration&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">N</span><span class="w"></span>
-<span class="w">    </span><span class="n">c2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">K</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">c2</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="n">V2</span><span class="p">,</span><span class="w"> </span><span class="n">c2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
+<span class="n">println</span><span class="p">(</span><span class="s">&quot;Starting policy function iteration&quot;</span><span class="p">)</span>
+<span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">N</span>
+<span class="w">    </span><span class="n">c2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">K</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">c2</span><span class="p">)</span>
+<span class="k">end</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">c1</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;value function iteration&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">c2</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;policy function iteration&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;asset level&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Consumption (low income)&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span><span class="w"></span>
+<span class="n">plot</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">c1</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;value function iteration&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">c2</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;policy function iteration&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;asset level&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Consumption (low income)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -882,27 +881,27 @@ Starting policy function iteration
 </div>
 </div>
 <div class="section" id="id16">
-<h3><span class="section-number">38.5.2. </span>Exercise 2<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.5.2. </span>Exercise 2<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">r_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.04</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"></span>
-<span class="n">traces</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="n">legends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">r_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.04</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="n">traces</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="n">legends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
 
-<span class="k">for</span><span class="w"> </span><span class="n">r_val</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">r_vals</span><span class="w"></span>
-<span class="w">    </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r_val</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">v_init</span><span class="p">,</span><span class="w"> </span><span class="n">c_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_fixed_point</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">K</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">),</span><span class="w"></span>
-<span class="w">                            </span><span class="n">c_init</span><span class="p">,</span><span class="w"></span>
-<span class="w">                            </span><span class="n">max_iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span><span class="w"></span>
-<span class="w">                            </span><span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">traces</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">push!</span><span class="p">(</span><span class="n">traces</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">])</span><span class="w"></span>
-<span class="w">    </span><span class="n">legends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">push!</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;r = %</span><span class="si">$</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="n">r_val</span><span class="p">,</span><span class="w"> </span><span class="n">digits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">))</span><span class="s">&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="k">for</span><span class="w"> </span><span class="n">r_val</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">r_vals</span>
+<span class="w">    </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r_val</span><span class="p">)</span>
+<span class="w">    </span><span class="n">v_init</span><span class="p">,</span><span class="w"> </span><span class="n">c_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
+<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_fixed_point</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">K</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">),</span>
+<span class="w">                            </span><span class="n">c_init</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">max_iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
+<span class="w">    </span><span class="n">traces</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">push!</span><span class="p">(</span><span class="n">traces</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">[</span><span class="o">:</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">])</span>
+<span class="w">    </span><span class="n">legends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">push!</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;r = %</span><span class="si">$</span><span class="p">(</span><span class="n">round</span><span class="p">(</span><span class="n">r_val</span><span class="p">,</span><span class="w"> </span><span class="n">digits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="p">))</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="k">end</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">traces</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">legends</span><span class="p">)))</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;asset level&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Consumption (low income)&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span><span class="w"></span>
+<span class="n">plot</span><span class="p">(</span><span class="n">traces</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">legends</span><span class="p">)))</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;asset level&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Consumption (low income)&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -911,31 +910,31 @@ Starting policy function iteration
 </div>
 </div>
 <div class="section" id="id17">
-<h3><span class="section-number">38.5.3. </span>Exercise 3<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.5.3. </span>Exercise 3<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">compute_asset_series</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500_000</span><span class="p">;</span><span class="w"> </span><span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@unpack</span><span class="w"> </span><span class="n">Π</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="w">  </span><span class="c"># simplify names</span><span class="w"></span>
-<span class="w">    </span><span class="n">z_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">v_init</span><span class="p">,</span><span class="w"> </span><span class="n">c_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_fixed_point</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">K</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">c_init</span><span class="p">,</span><span class="w"></span>
-<span class="w">                            </span><span class="n">max_iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span><span class="w"> </span><span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">compute_asset_series</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500_000</span><span class="p">;</span><span class="w"> </span><span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
+<span class="w">    </span><span class="p">(;</span><span class="n">Π</span><span class="p">,</span><span class="w"> </span><span class="n">z_vals</span><span class="p">,</span><span class="w"> </span><span class="n">R</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="w">  </span><span class="c"># simplify names</span>
+<span class="w">    </span><span class="n">z_idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="p">(</span><span class="n">z_vals</span><span class="p">)</span>
+<span class="w">    </span><span class="n">v_init</span><span class="p">,</span><span class="w"> </span><span class="n">c_init</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initialize</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
+<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_fixed_point</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">K</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">),</span><span class="w"> </span><span class="n">c_init</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">max_iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">150</span><span class="p">,</span><span class="w"> </span><span class="n">verbose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span>
 
-<span class="w">    </span><span class="n">cf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">interp</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">cf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">interp</span><span class="p">(</span><span class="n">cp</span><span class="o">.</span><span class="n">asset_grid</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">)</span>
 
-<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">z_seq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">simulate</span><span class="p">(</span><span class="n">MarkovChain</span><span class="p">(</span><span class="n">Π</span><span class="p">),</span><span class="w"> </span><span class="n">T</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span><span class="w"></span>
-<span class="w">        </span><span class="n">i_z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_seq</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="w"></span>
-<span class="w">        </span><span class="n">a</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z_vals</span><span class="p">[</span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cf</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">t</span><span class="p">],</span><span class="w"> </span><span class="n">i_z</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">z_seq</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">simulate</span><span class="p">(</span><span class="n">MarkovChain</span><span class="p">(</span><span class="n">Π</span><span class="p">),</span><span class="w"> </span><span class="n">T</span><span class="p">)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span>
+<span class="w">        </span><span class="n">i_z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_seq</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+<span class="w">        </span><span class="n">a</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z_vals</span><span class="p">[</span><span class="n">i_z</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cf</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">t</span><span class="p">],</span><span class="w"> </span><span class="n">i_z</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">a</span>
+<span class="k">end</span>
 
-<span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.03</span><span class="p">,</span><span class="w"> </span><span class="n">grid_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="w"></span>
-<span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="w"> </span><span class="c"># for reproducibility</span><span class="w"></span>
-<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_asset_series</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span><span class="w"></span>
-<span class="n">histogram</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">nbins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="n">leg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="n">normed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;assets&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.03</span><span class="p">,</span><span class="w"> </span><span class="n">grid_max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span>
+<span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="w"> </span><span class="c"># for reproducibility</span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">compute_asset_series</span><span class="p">(</span><span class="n">cp</span><span class="p">)</span>
+<span class="n">histogram</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">nbins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="n">leg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">,</span><span class="w"> </span><span class="n">normed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;assets&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -944,39 +943,41 @@ Starting policy function iteration
 </div>
 </div>
 <div class="section" id="id18">
-<h3><span class="section-number">38.5.4. </span>Exercise 4<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">41.5.4. </span>Exercise 4<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="w"></span>
-<span class="n">r_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.04</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">M</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span>
+<span class="n">r_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.04</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">M</span><span class="p">)</span>
 
-<span class="n">xs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="n">ys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="n">legends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span><span class="w"></span>
-<span class="k">for</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="n">asset_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">M</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">r_val</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">r_vals</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r_val</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">the_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">compute_asset_series</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="mi">250_000</span><span class="p">))</span><span class="w"></span>
-<span class="w">        </span><span class="n">asset_mean</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">the_mean</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
-<span class="w">    </span><span class="n">xs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">push!</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span><span class="w"> </span><span class="n">asset_mean</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">ys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">push!</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="w"> </span><span class="n">r_vals</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">legends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">push!</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;b = %</span><span class="si">$b</span><span class="s">&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Finished iteration b = </span><span class="si">$b</span><span class="s">&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span><span class="w"> </span><span class="n">ys</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">legends</span><span class="p">)))</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;capital&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;interest rate&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">yticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.045</span><span class="p">]))</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:bottomright</span><span class="p">)</span><span class="w"></span>
+<span class="n">xs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="n">ys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="n">legends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[]</span>
+<span class="k">for</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span>
+<span class="w">    </span><span class="n">asset_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">r_val</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">r_vals</span><span class="p">)</span>
+<span class="w">        </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsumerProblem</span><span class="p">(</span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">r_val</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="p">)</span>
+<span class="w">        </span><span class="n">the_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">compute_asset_series</span><span class="p">(</span><span class="n">cp</span><span class="p">,</span><span class="w"> </span><span class="mi">250_000</span><span class="p">))</span>
+<span class="w">        </span><span class="n">asset_mean</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">the_mean</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">xs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">push!</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span><span class="w"> </span><span class="n">asset_mean</span><span class="p">)</span>
+<span class="w">    </span><span class="n">ys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">push!</span><span class="p">(</span><span class="n">ys</span><span class="p">,</span><span class="w"> </span><span class="n">r_vals</span><span class="p">)</span>
+<span class="w">    </span><span class="n">legends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">push!</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;b = %</span><span class="si">$b</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">println</span><span class="p">(</span><span class="s">&quot;Finished iteration b = </span><span class="si">$b</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span><span class="w"> </span><span class="n">ys</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reshape</span><span class="p">(</span><span class="n">legends</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">legends</span><span class="p">)))</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;capital&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;interest rate&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">yticks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.045</span><span class="p">]))</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:bottomright</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Finished iteration b = 1.0
-Finished iteration b = 3.0
 </pre></div>
 </div>
-<img alt="../_images/ifp_22_1.svg" src="../_images/ifp_22_1.svg" /></div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Finished iteration b = 3.0
+</pre></div>
+</div>
+<img alt="../_images/ifp_22_2.svg" src="../_images/ifp_22_2.svg" /></div>
 </div>
 </div>
 </div>
@@ -991,16 +992,16 @@ Finished iteration b = 3.0
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.7"
+            mode: "julia-1.8"
         },
         kernelOptions: {
-            kernelName: "julia-1.7",
+            kernelName: "julia-1.8",
             path: "./dynamic_programming"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.7'</script>
+    <script>kernelName = 'julia-1.8'</script>
 
                     </div>
                     
@@ -1144,33 +1145,60 @@ Finished iteration b = 3.0
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   18. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   19. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   20. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   21. A First Look at the Kalman Filter
+   18. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   22. Numerical Linear Algebra and Factorizations
+   19. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   23. Krylov Methods and Matrix Conditioning
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
   </a>
  </li>
 </ul>
@@ -1181,88 +1209,83 @@ Finished iteration b = 3.0
 </p>
 <ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="short_path.html">
-   24. Shortest Paths
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="mccall_model.html">
-   25. Job Search I: The McCall Search Model
+   28. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="mccall_model_with_separation.html">
-   26. Job Search II: Search and Separation
+   29. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="wald_friedman.html">
-   27. A Problem that Stumped Milton Friedman
+   30. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="odu.html">
-   28. Job Search III: Search with Learning
+   31. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="career.html">
-   29. Job Search IV: Modeling Career Choice
+   32. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="jv.html">
-   30. Job Search V: On-the-Job Search
+   33. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="optgrowth.html">
-   31. Optimal Growth I: The Stochastic Optimal Growth Model
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="coleman_policy_iter.html">
-   32. Optimal Growth II: Time Iteration
+   35. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="egm_policy_iter.html">
-   33. Optimal Growth III: The Endogenous Grid Method
+   36. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lqcontrol.html">
-   34. LQ Dynamic Programming Problems
+   37. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="perm_income.html">
-   35. Optimal Savings I: The Permanent Income Model
+   38. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="perm_income_cons.html">
-   36. Optimal Savings II: LQ Techniques
+   39. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="smoothing.html">
-   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   38. Optimal Savings III: Occasionally Binding Constraints
+   41. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="robustness.html">
-   39. Robustness
+   42. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="discrete_dp.html">
-   40. Discrete State Dynamic Programming
+   43. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -1274,12 +1297,12 @@ Finished iteration b = 3.0
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   41. Modeling COVID 19 with Differential Equations
+   44. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1291,57 +1314,57 @@ Finished iteration b = 3.0
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   43. Schelling’s Segregation Model
+   46. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   44. A Lake Model of Employment and Unemployment
+   47. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   45. Rational Expectations Equilibrium
+   48. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   46. Markov Perfect Equilibrium
+   49. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   47. Asset Pricing I: Finite State Models
+   50. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   48. Asset Pricing II: The Lucas Asset Pricing Model
+   51. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   49. Asset Pricing III:  Incomplete Markets
+   52. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   50. Uncertainty Traps
+   53. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   51. The Aiyagari Model
+   54. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   52. Default Risk and Income Fluctuations
+   55. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   53. Globalization and Cycles
+   56. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1353,32 +1376,32 @@ Finished iteration b = 3.0
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   54. Covariance Stationary Processes
+   57. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   55. Estimation of Spectra
+   58. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   56. Additive Functionals
+   59. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   57. Multiplicative Functionals
+   60. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   58. Classical Control with Linear Algebra
+   61. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   59. Classical Filtering With Linear Algebra
+   62. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1390,22 +1413,22 @@ Finished iteration b = 3.0
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   60. Dynamic Stackelberg Problems
+   63. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   61. Optimal Taxation in an LQ Economy
+   64. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   62. Optimal Taxation with State-Contingent Debt
+   65. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   63. Optimal Taxation without State-Contingent Debt
+   66. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1417,22 +1440,22 @@ Finished iteration b = 3.0
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   64. About these Lectures
+   67. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   65. Troubleshooting
+   68. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   66. References
+   69. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Execution Statistics
+   70. Execution Statistics
   </a>
  </li>
 </ul>

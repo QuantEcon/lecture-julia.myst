@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (lqc)=
@@ -39,7 +39,7 @@ Moreover, while the linear-quadratic structure is restrictive, it is in fact far
 
 These themes appear repeatedly below.
 
-Mathematically, LQ control problems are closely related to {doc}`the Kalman filter <../tools_and_techniques/kalman>`.
+Mathematically, LQ control problems are closely related to {doc}`the Kalman filter <../introduction_dynamics/kalman>`.
 
 * Recursive formulations of linear-quadratic control problems and Kalman filtering problems both involve matrix **Riccati equations**.
 * Classical formulations of linear control and linear filtering problems make use of similar matrix decompositions (see for example {doc}`this lecture <../time_series_models/lu_tricks>` and {doc}`this lecture <../time_series_models/classical_filtering>`).
@@ -48,7 +48,7 @@ In reading what follows, it will be useful to have some familiarity with
 
 * matrix manipulations
 * vectors of random variables
-* dynamic programming and the Bellman equation (see for example {doc}`this lecture <../dynamic_programming/short_path>` and {doc}`this lecture <../dynamic_programming/optgrowth>`)
+* dynamic programming and the Bellman equation (see for example {doc}`this lecture <../introduction_dynamics/short_path>` and {doc}`this lecture <../dynamic_programming/optgrowth>`)
 
 For additional reading on LQ control, see, for example,
 
@@ -350,7 +350,7 @@ What's special about the LQ case is that -- as we shall soon see ---  the optima
 ### Solution
 
 To solve the finite horizon LQ problem we can use a dynamic programming
-strategy based on backwards induction that is conceptually similar to the approach adopted in {doc}`this lecture <../dynamic_programming/short_path>`.
+strategy based on backwards induction that is conceptually similar to the approach adopted in {doc}`this lecture <../introduction_dynamics/short_path>`.
 
 For reasons that will soon become clear, we first introduce the notation $J_T(x) = x' R_f x$.
 

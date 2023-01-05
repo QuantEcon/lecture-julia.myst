@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (orth_proj)=
@@ -627,7 +627,7 @@ One description of this procedure is as follows:
 
 The sequence $u_1, \ldots, u_k$ has the stated properties.
 
-A Gram-Schmidt orthogonalization construction is a key idea behind the Kalman filter described in {doc}`A First Look at the Kalman filter <../tools_and_techniques/kalman>`.
+A Gram-Schmidt orthogonalization construction is a key idea behind the Kalman filter described in {doc}`A First Look at the Kalman filter <../introduction_dynamics/kalman>`.
 
 In some exercises below you are asked to implement this algorithm and test it using projection.
 

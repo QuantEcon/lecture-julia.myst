@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (optgrowth)=
@@ -38,7 +38,7 @@ The model is a version of the standard one sector infinite horizon growth model 
 The technique we use to solve the model is dynamic programming.
 
 Our treatment of dynamic programming follows on from earlier
-treatments in our lectures on {doc}`shortest paths <../dynamic_programming/short_path>` and
+treatments in our lectures on {doc}`shortest paths <../introduction_dynamics/short_path>` and
 {doc}`job search <../dynamic_programming/mccall_model>`.
 
 We'll discuss some of the technical details of dynamic programming as we
@@ -499,7 +499,7 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
 ```{code-cell} julia
 function T(w;p, tol = 1e-10)
-    @unpack β, u, f, ξ, y = p # unpack parameters
+    (;β, u, f, ξ, y) = p # unpack parameters
     w_func = LinearInterpolation(y, w)
 
     Tw = similar(w)
@@ -573,7 +573,7 @@ OptimalGrowthModel = @with_kw (α = 0.4, β = 0.96, μ = 0.0, s = 0.1,
 
 # True value and policy function
 function v_star(y;p)
-    @unpack α, μ, β = p
+    (;α, μ, β) = p
     c1 = log(1 - α * β) / (1 - β)
     c2 = (μ + α * log(α * β)) / (1 - α)
     c3 = 1 / (1 - β)

@@ -1,0 +1,1492 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>22. AR1 Processes &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+        <script>
+            MathJax = {
+            loader: {load: ['[tex]/boldsymbol', '[tex]/textmacros']},
+            tex: {
+                packages: {'[+]': ['boldsymbol', 'textmacros']},
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true,
+                macros: {
+                    "argmax" : "arg\\,max",
+                    "argmin" : "arg\\,min",
+                    "col"    : "col",
+                    "Span"   :  "span",
+                    "epsilon": "\\varepsilon",
+                    "EE": "\\mathbb{E}",
+                    "PP": "\\mathbb{P}",
+                    "RR": "\\mathbb{R}",
+                    "NN": "\\mathbb{N}",
+                    "ZZ": "\\mathbb{Z}",
+                    "aA": "\\mathcal{A}",
+                    "bB": "\\mathcal{B}",
+                    "cC": "\\mathcal{C}",
+                    "dD": "\\mathcal{D}",
+                    "eE": "\\mathcal{E}",
+                    "fF": "\\mathcal{F}",
+                    "gG": "\\mathcal{G}",
+                    "hH": "\\mathcal{H}",
+                }
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 0.92,
+                displayAlign: "center",
+            },
+            };
+        </script>
+    
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/quantecon-book-theme.1ef59f8f4e91ec8319176e8479c6af4e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/introduction_dynamics/ar1_processes.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="23. Finite Markov Chains" href="finite_markov.html" />
+    <link rel="prev" title="21. Dynamics in One Dimension" href="scalar_dynam.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="AR1 Processes"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="AR1 Processes" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/introduction_dynamics/ar1_processes.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="qe-wrapper">
+
+        <div class="qe-main">
+
+            <div class="qe-page" id=introduction_dynamics/ar1_processes>
+
+                <div class="qe-page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="qe-page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="qe-page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   22.1. Overview
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#the-ar-1-model">
+   22.2. The AR(1) Model
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#moving-average-representation">
+     22.2.1. Moving Average Representation
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#distribution-dynamics">
+     22.2.2. Distribution Dynamics
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#stationarity-and-asymptotic-stability">
+   22.3. Stationarity and Asymptotic Stability
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#stationary-distributions">
+     22.3.1. Stationary Distributions
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#ergodicity">
+   22.4. Ergodicity
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercises">
+   22.5. Exercises
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-1">
+     22.5.1. Exercise 1
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-2">
+     22.5.2. Exercise 2
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#exercise-3">
+     22.5.3. Exercise 3
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#solutions">
+   22.6. Solutions
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id2">
+     22.6.1. Exercise 1
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id3">
+     22.6.2. Exercise 2
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#id4">
+     22.6.3. Exercise 3
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="qe-page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="qe-page__header">
+
+                    <div class="qe-page__header-copy">
+
+                        <p class="qe-page__header-heading"><a href="../intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="qe-page__header-subheading">AR1 Processes</p>
+
+                    </div>
+
+                    <p class="qe-page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="qe-page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" align="right" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" width="250px" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="tex2jax_ignore mathjax_ignore section" id="ar1-processes">
+<h1><a class="toc-backref" href="#id5"><span class="section-number">22. </span><span class="target" id="index-0"></span>AR1 Processes</a><a class="headerlink" href="#ar1-processes" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#ar1-processes" id="id5">AR1 Processes</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id6">Overview</a></p></li>
+<li><p><a class="reference internal" href="#the-ar-1-model" id="id7">The AR(1) Model</a></p></li>
+<li><p><a class="reference internal" href="#stationarity-and-asymptotic-stability" id="id8">Stationarity and Asymptotic Stability</a></p></li>
+<li><p><a class="reference internal" href="#ergodicity" id="id9">Ergodicity</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id10">Exercises</a></p></li>
+<li><p><a class="reference internal" href="#solutions" id="id11">Solutions</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id6"><span class="section-number">22.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>In this lecture we are going to study a very simple class of stochastic
+models called AR(1) processes.</p>
+<p>These simple models are used again and again in economic research to represent the dynamics of series such as</p>
+<ul class="simple">
+<li><p>labor income</p></li>
+<li><p>dividends</p></li>
+<li><p>productivity, etc.</p></li>
+</ul>
+<p>AR(1) processes can take negative values but are easily converted into positive processes when necessary by a transformation such as exponentiation.</p>
+<p>We are going to study AR(1) processes partly because they are useful and
+partly because they help us understand important concepts.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="the-ar-1-model">
+<h2><a class="toc-backref" href="#id7"><span class="section-number">22.2. </span>The AR(1) Model</a><a class="headerlink" href="#the-ar-1-model" title="Permalink to this headline">¶</a></h2>
+<p>The <strong>AR(1) model</strong> (autoregressive model of order 1) takes the form</p>
+<div class="math notranslate nohighlight" id="equation-can-ar1">
+<span class="eqno">(22.1)<a class="headerlink" href="#equation-can-ar1" title="Permalink to this equation">¶</a></span>\[X_{t+1} = a X_t + b + c W_{t+1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(a, b, c\)</span> are scalar-valued parameters.</p>
+<p>This law of motion generates a time series <span class="math notranslate nohighlight">\(\{ X_t\}\)</span> as soon as we
+specify an initial condition <span class="math notranslate nohighlight">\(X_0\)</span>.</p>
+<p>This is called the <strong>state process</strong> and the state space is <span class="math notranslate nohighlight">\(\mathbb R\)</span>.</p>
+<p>To make things even simpler, we will assume that</p>
+<ul class="simple">
+<li><p>the process <span class="math notranslate nohighlight">\(\{ W_t \}\)</span> is IID and standard normal,</p></li>
+<li><p>the initial condition <span class="math notranslate nohighlight">\(X_0\)</span> is drawn from the normal distribution <span class="math notranslate nohighlight">\(N(\mu_0, v_0)\)</span> and</p></li>
+<li><p>the initial condition <span class="math notranslate nohighlight">\(X_0\)</span> is independent of <span class="math notranslate nohighlight">\(\{ W_t \}\)</span>.</p></li>
+</ul>
+<div class="section" id="moving-average-representation">
+<h3><span class="section-number">22.2.1. </span>Moving Average Representation<a class="headerlink" href="#moving-average-representation" title="Permalink to this headline">¶</a></h3>
+<p>Iterating backwards from time <span class="math notranslate nohighlight">\(t\)</span>, we obtain</p>
+<div class="math notranslate nohighlight">
+\[
+X_t = a X_{t-1} + b +  c W_t
+        = a^2 X_{t-2} + a b + a c W_{t-1} + b + c W_t
+        = \cdots
+\]</div>
+<p>If we work all the way back to time zero, we get</p>
+<div class="math notranslate nohighlight" id="equation-ar1-ma">
+<span class="eqno">(22.2)<a class="headerlink" href="#equation-ar1-ma" title="Permalink to this equation">¶</a></span>\[X_t = a^t X_0 + b \sum_{j=0}^{t-1} a^j +
+        c \sum_{j=0}^{t-1} a^j  W_{t-j}\]</div>
+<p>Equation <a class="reference internal" href="#equation-ar1-ma">(22.2)</a> shows that <span class="math notranslate nohighlight">\(X_t\)</span> is a well defined random variable, the value of which depends on</p>
+<ul class="simple">
+<li><p>the parameters,</p></li>
+<li><p>the initial condition <span class="math notranslate nohighlight">\(X_0\)</span> and</p></li>
+<li><p>the shocks <span class="math notranslate nohighlight">\(W_1, \ldots W_t\)</span> from time <span class="math notranslate nohighlight">\(t=1\)</span> to the present.</p></li>
+</ul>
+<p>Throughout, the symbol <span class="math notranslate nohighlight">\(\psi_t\)</span> will be used to refer to the
+density of this random variable <span class="math notranslate nohighlight">\(X_t\)</span>.</p>
+</div>
+<div class="section" id="distribution-dynamics">
+<h3><span class="section-number">22.2.2. </span>Distribution Dynamics<a class="headerlink" href="#distribution-dynamics" title="Permalink to this headline">¶</a></h3>
+<p>One of the nice things about this model is that it’s so easy to trace out the sequence of distributions <span class="math notranslate nohighlight">\(\{ \psi_t \}\)</span> corresponding to the time
+series <span class="math notranslate nohighlight">\(\{ X_t\}\)</span>.</p>
+<p>To see this, we first note that <span class="math notranslate nohighlight">\(X_t\)</span> is normally distributed for each <span class="math notranslate nohighlight">\(t\)</span>.</p>
+<p>This is immediate from <a class="reference internal" href="#equation-ar1-ma">(22.2)</a>, since linear combinations of independent
+normal random variables are normal.</p>
+<p>Given that <span class="math notranslate nohighlight">\(X_t\)</span> is normally distributed, we will know the full distribution
+<span class="math notranslate nohighlight">\(\psi_t\)</span> if we can pin down its first two moments.</p>
+<p>Let <span class="math notranslate nohighlight">\(\mu_t\)</span> and <span class="math notranslate nohighlight">\(v_t\)</span> denote the mean and variance
+of <span class="math notranslate nohighlight">\(X_t\)</span> respectively.</p>
+<p>We can pin down these values from <a class="reference internal" href="#equation-ar1-ma">(22.2)</a> or we can use the following
+recursive expressions:</p>
+<div class="math notranslate nohighlight" id="equation-dyn-tm">
+<span class="eqno">(22.3)<a class="headerlink" href="#equation-dyn-tm" title="Permalink to this equation">¶</a></span>\[\mu_{t+1} = a \mu_t + b
+\quad \text{and} \quad
+v_{t+1} = a^2 v_t + c^2\]</div>
+<p>These expressions are obtained from <a class="reference internal" href="#equation-can-ar1">(22.1)</a> by taking, respectively, the expectation and variance of both sides of the equality.</p>
+<p>In calculating the second expression, we are using the fact that <span class="math notranslate nohighlight">\(X_t\)</span>
+and <span class="math notranslate nohighlight">\(W_{t+1}\)</span> are independent.</p>
+<p>(This follows from our assumptions and <a class="reference internal" href="#equation-ar1-ma">(22.2)</a>.)</p>
+<p>Given the dynamics in <a class="reference internal" href="#equation-ar1-ma">(22.2)</a> and initial conditions <span class="math notranslate nohighlight">\(\mu_0,
+v_0\)</span>, we obtain <span class="math notranslate nohighlight">\(\mu_t, v_t\)</span> and hence</p>
+<div class="math notranslate nohighlight">
+\[
+\psi_t = N(\mu_t, v_t)
+\]</div>
+<p>The following code uses these facts to track the sequence of marginal
+distributions <span class="math notranslate nohighlight">\(\{ \psi_t \}\)</span>.</p>
+<p>The parameters are</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.9</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span>
+
+<span class="c"># initial conditions mu_0, v_0</span>
+<span class="n">mu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mf">3.0</span>
+<span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.6</span><span class="w"> </span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.6
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here’s the sequence of distributions:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">StatsPlots</span>
+
+<span class="n">sim_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span>
+<span class="n">x_grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">120</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">()</span>
+<span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">sim_length</span>
+<span class="w">    </span><span class="n">mu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span>
+<span class="w">    </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">c</span><span class="o">^</span><span class="mi">2</span>
+<span class="w">    </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="w">    </span><span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">x_grid</span><span class="p">,</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span><span class="w"> </span><span class="n">x_grid</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;\psi_{%</span><span class="si">$t</span><span class="s">}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linealpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">plt</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ar1_processes_5_0.svg" src="../_images/ar1_processes_5_0.svg" /></div>
+</div>
+</div>
+</div>
+<div class="section" id="stationarity-and-asymptotic-stability">
+<h2><a class="toc-backref" href="#id8"><span class="section-number">22.3. </span>Stationarity and Asymptotic Stability</a><a class="headerlink" href="#stationarity-and-asymptotic-stability" title="Permalink to this headline">¶</a></h2>
+<p>Notice that, in the figure above, the sequence <span class="math notranslate nohighlight">\(\{ \psi_t \}\)</span> seems to be converging to a limiting distribution.</p>
+<p>This is even clearer if we project forward further into the future:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">plot_density_seq</span><span class="p">(</span><span class="n">mu_0</span><span class="o">=-</span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="n">v_0</span><span class="o">=</span><span class="mf">0.6</span><span class="p">;</span><span class="w"> </span><span class="n">sim_length</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+<span class="w">    </span><span class="n">mu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mu_0</span>
+<span class="w">    </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">v_0</span>
+<span class="w">    </span><span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">()</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">sim_length</span>
+<span class="w">        </span><span class="n">mu</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mu</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span>
+<span class="w">        </span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">c</span><span class="o">^</span><span class="mi">2</span>
+<span class="w">        </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+<span class="w">        </span><span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">x_grid</span><span class="p">,</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span><span class="w"> </span><span class="n">x_grid</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="nb">nothing</span><span class="p">,</span><span class="w"> </span><span class="n">linealpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">plt</span>
+<span class="k">end</span>
+
+<span class="n">plot_density_seq</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ar1_processes_7_0.svg" src="../_images/ar1_processes_7_0.svg" /></div>
+</div>
+<p>Moreover, the limit does not depend on the initial condition.</p>
+<p>For example, this alternative density sequence also converges to the same limit.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot_density_seq</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ar1_processes_9_0.svg" src="../_images/ar1_processes_9_0.svg" /></div>
+</div>
+<p>In fact it’s easy to show that such convergence will occur, regardless of the initial condition, whenever <span class="math notranslate nohighlight">\(|a| &lt; 1\)</span>.</p>
+<p>To see this, we just have to look at the dynamics of the first two moments, as
+given in <a class="reference internal" href="#equation-dyn-tm">(22.3)</a>.</p>
+<p>When <span class="math notranslate nohighlight">\(|a| &lt; 1\)</span>, these sequences converge to the respective limits</p>
+<div class="math notranslate nohighlight" id="equation-mu-sig-star">
+<span class="eqno">(22.4)<a class="headerlink" href="#equation-mu-sig-star" title="Permalink to this equation">¶</a></span>\[\mu^* := \frac{b}{1-a}
+\quad \text{and} \quad
+v^* = \frac{c^2}{1 - a^2}\]</div>
+<p>(See our <a class="reference internal" href="scalar_dynam.html"><span class="doc">lecture on one dimensional dynamics</span></a> for background on deterministic convergence.)</p>
+<p>Hence</p>
+<div class="math notranslate nohighlight" id="equation-ar1-psi-star">
+<span class="eqno">(22.5)<a class="headerlink" href="#equation-ar1-psi-star" title="Permalink to this equation">¶</a></span>\[\psi_t \to \psi^* = N(\mu^*, v^*)
+\quad \text{as }
+t \to \infty\]</div>
+<p>We can confirm this is valid for the sequence above using the following code.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot_density_seq</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span>
+
+<span class="n">mu_star</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
+<span class="n">std_star</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">c</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="o">^</span><span class="mi">2</span><span class="p">))</span><span class="w">  </span><span class="c"># square root of v_star</span>
+<span class="n">psi_star</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">(</span><span class="n">mu_star</span><span class="p">,</span><span class="w"> </span><span class="n">std_star</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">x_grid</span><span class="p">,</span><span class="w"> </span><span class="n">psi_star</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:black</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;\psi^*&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ar1_processes_11_0.svg" src="../_images/ar1_processes_11_0.svg" /></div>
+</div>
+<p>As claimed, the sequence <span class="math notranslate nohighlight">\(\{ \psi_t \}\)</span> converges to <span class="math notranslate nohighlight">\(\psi^*\)</span>.</p>
+<div class="section" id="stationary-distributions">
+<h3><span class="section-number">22.3.1. </span>Stationary Distributions<a class="headerlink" href="#stationary-distributions" title="Permalink to this headline">¶</a></h3>
+<p>A stationary distribution is a distribution that is a fixed
+point of the update rule for distributions.</p>
+<p>In other words, if <span class="math notranslate nohighlight">\(\psi_t\)</span> is stationary, then <span class="math notranslate nohighlight">\(\psi_{t+j} =
+\psi_t\)</span> for all <span class="math notranslate nohighlight">\(j\)</span> in <span class="math notranslate nohighlight">\(\mathbb N\)</span>.</p>
+<p>A different way to put this, specialized to the current setting, is as follows: a
+density <span class="math notranslate nohighlight">\(\psi\)</span> on <span class="math notranslate nohighlight">\(\mathbb R\)</span> is <strong>stationary</strong> for the AR(1) process if</p>
+<div class="math notranslate nohighlight">
+\[
+X_t \sim \psi
+\quad \implies \quad
+a X_t + b + c W_{t+1} \sim \psi
+\]</div>
+<p>The distribution <span class="math notranslate nohighlight">\(\psi^*\)</span> in <a class="reference internal" href="#equation-ar1-psi-star">(22.5)</a> has this property —
+checking this is an exercise.</p>
+<p>(Of course, we are assuming that <span class="math notranslate nohighlight">\(|a| &lt; 1\)</span> so that <span class="math notranslate nohighlight">\(\psi^*\)</span> is
+well defined.)</p>
+<p>In fact, it can be shown that no other distribution on <span class="math notranslate nohighlight">\(\mathbb R\)</span> has this property.</p>
+<p>Thus, when <span class="math notranslate nohighlight">\(|a| &lt; 1\)</span>, the AR(1) model has exactly one stationary density and that density is given by <span class="math notranslate nohighlight">\(\psi^*\)</span>.</p>
+</div>
+</div>
+<div class="section" id="ergodicity">
+<h2><a class="toc-backref" href="#id9"><span class="section-number">22.4. </span>Ergodicity</a><a class="headerlink" href="#ergodicity" title="Permalink to this headline">¶</a></h2>
+<p>The concept of ergodicity is used in different ways by different authors.</p>
+<p>One way to understand it in the present setting is that a version of the Law
+of Large Numbers is valid for <span class="math notranslate nohighlight">\(\{X_t\}\)</span>, even though it is not IID.</p>
+<p>In particular, averages over time series converge to expectations under the
+stationary distribution.</p>
+<p>Indeed, it can be proved that, whenever <span class="math notranslate nohighlight">\(|a| &lt; 1\)</span>, we have</p>
+<div class="math notranslate nohighlight" id="equation-ar1-ergo">
+<span class="eqno">(22.6)<a class="headerlink" href="#equation-ar1-ergo" title="Permalink to this equation">¶</a></span>\[\frac{1}{m} \sum_{t = 1}^m h(X_t)  \to
+\int h(x) \psi^*(x) dx
+    \quad \text{as } m \to \infty\]</div>
+<p>whenever the integral on the right hand side is finite and well defined.</p>
+<p>Notes:</p>
+<ul class="simple">
+<li><p>In <a class="reference internal" href="#equation-ar1-ergo">(22.6)</a>, convergence holds with probability one.</p></li>
+<li><p>The textbook by <span id="id1">[<a class="reference internal" href="../zreferences.html#id111" title="S P Meyn and R L Tweedie. Markov Chains and Stochastic Stability. Cambridge University Press, 2009.">MT09</a>]</span> is a classic reference on ergodicity.</p></li>
+</ul>
+<p>For example, if we consider the identity function <span class="math notranslate nohighlight">\(h(x) = x\)</span>, we get</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{m} \sum_{t = 1}^m X_t  \to
+\int x \psi^*(x) dx
+    \quad \text{as } m \to \infty
+\]</div>
+<p>In other words, the time series sample mean converges to the mean of the
+stationary distribution.</p>
+<p>As will become clear over the next few lectures, ergodicity is a very
+important concept for statistics and simulation.</p>
+</div>
+<div class="section" id="exercises">
+<h2><a class="toc-backref" href="#id10"><span class="section-number">22.5. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="exercise-1">
+<span id="ar1p-ex1"></span><h3><span class="section-number">22.5.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(k\)</span> be a natural number.</p>
+<p>The <span class="math notranslate nohighlight">\(k\)</span>-th central moment of a  random variable is defined as</p>
+<div class="math notranslate nohighlight">
+\[
+M_k := \mathbb E [ (X - \mathbb E X )^k ]
+\]</div>
+<p>When that random variable is <span class="math notranslate nohighlight">\(N(\mu, \sigma^2)\)</span>, it is known that</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+M_k =
+\begin{cases}
+    0 &amp; \text{ if } k \text{ is odd} \\
+    \sigma^k (k-1)!! &amp; \text{ if } k \text{ is even}
+\end{cases}
+\end{split}\]</div>
+<p>Here <span class="math notranslate nohighlight">\(n!!\)</span> is the double factorial.</p>
+<p>According to <a class="reference internal" href="#equation-ar1-ergo">(22.6)</a>, we should have, for any <span class="math notranslate nohighlight">\(k \in \mathbb N\)</span>,</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{1}{m} \sum_{t = 1}^m
+    (X_t - \mu^* )^k
+    \approx M_k
+\]</div>
+<p>when <span class="math notranslate nohighlight">\(m\)</span> is large.</p>
+<p>Confirm this by simulation at a range of <span class="math notranslate nohighlight">\(k\)</span> using the default parameters from the lecture.</p>
+</div>
+<div class="section" id="exercise-2">
+<span id="ar1p-ex2"></span><h3><span class="section-number">22.5.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+<p>Write your own version of a one dimensional <a class="reference external" href="https://en.wikipedia.org/wiki/Kernel_density_estimation">kernel density
+estimator</a>,
+which estimates a density from a sample.</p>
+<p>Write it as a function <span class="math notranslate nohighlight">\(f\)</span> that takes the data <span class="math notranslate nohighlight">\(X\)</span> and bandwidth
+<span class="math notranslate nohighlight">\(h\)</span> such that</p>
+<div class="math notranslate nohighlight">
+\[
+f(x) = \frac{1}{hn} \sum_{i=1}^n
+K \left( \frac{x-X_i}{h} \right)
+\]</div>
+<p>For <span class="math notranslate nohighlight">\(K\)</span> use the Gaussian kernel (<span class="math notranslate nohighlight">\(K\)</span> is the standard normal
+density).</p>
+<p>To set the bandwidth, use Silverman’s rule (see
+the “rule of thumb” discussion on <a class="reference external" href="https://en.wikipedia.org/wiki/Kernel_density_estimation">this
+page</a>). Test
+the function you have written by going through the steps</p>
+<ol class="simple">
+<li><p>simulate data <span class="math notranslate nohighlight">\(X_1, \ldots, X_n\)</span> from distribution <span class="math notranslate nohighlight">\(\phi\)</span></p></li>
+<li><p>plot the kernel density estimate over a suitable range</p></li>
+<li><p>plot the density of <span class="math notranslate nohighlight">\(\phi\)</span> on the same figure</p></li>
+</ol>
+<p>for distributions <span class="math notranslate nohighlight">\(\phi\)</span> of the following types</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Beta_distribution">beta
+distribution</a>
+with <span class="math notranslate nohighlight">\(\alpha = \beta = 2\)</span></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Beta_distribution">beta
+distribution</a>
+with <span class="math notranslate nohighlight">\(\alpha = 2\)</span> and <span class="math notranslate nohighlight">\(\beta = 5\)</span></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Beta_distribution">beta
+distribution</a>
+with <span class="math notranslate nohighlight">\(\alpha = \beta = 0.5\)</span></p></li>
+</ul>
+<p>Use <span class="math notranslate nohighlight">\(n=500\)</span>.</p>
+<p>Make a comment on your results. (Do you think this is a good estimator
+of these distributions?)</p>
+</div>
+<div class="section" id="exercise-3">
+<span id="ar1p-ex3"></span><h3><span class="section-number">22.5.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
+<p>In the lecture we discussed the following fact: for the <span class="math notranslate nohighlight">\(AR(1)\)</span> process</p>
+<div class="math notranslate nohighlight">
+\[
+X_{t+1} = a X_t + b + c W_{t+1}
+\]</div>
+<p>with <span class="math notranslate nohighlight">\(\{ W_t \}\)</span> iid and standard normal,</p>
+<div class="math notranslate nohighlight">
+\[
+\psi_t = N(\mu, s^2) \implies \psi_{t+1}
+= N(a \mu + b, a^2 s^2 + c^2)
+\]</div>
+<p>Confirm this, at least approximately, by simulation. Let</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(a = 0.9\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(b = 0.0\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(c = 0.1\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(\mu = -3\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(s = 0.2\)</span></p></li>
+</ul>
+<p>First, plot <span class="math notranslate nohighlight">\(\psi_t\)</span> and <span class="math notranslate nohighlight">\(\psi_{t+1}\)</span> using the true
+distributions described above.</p>
+<p>Second, plot <span class="math notranslate nohighlight">\(\psi_{t+1}\)</span> on the same figure (in a different
+color) as follows:</p>
+<ol class="simple">
+<li><p>Generate <span class="math notranslate nohighlight">\(n\)</span> draws of <span class="math notranslate nohighlight">\(X_t\)</span> from the <span class="math notranslate nohighlight">\(N(\mu, s^2)\)</span>
+distribution</p></li>
+<li><p>Update them all using the rule
+<span class="math notranslate nohighlight">\(X_{t+1} = a X_t + b + c W_{t+1}\)</span></p></li>
+<li><p>Use the resulting sample of <span class="math notranslate nohighlight">\(X_{t+1}\)</span> values to produce a
+density estimate via kernel density estimation.</p></li>
+</ol>
+<p>Try this for <span class="math notranslate nohighlight">\(n=2000\)</span> and confirm that the
+simulation based estimate of <span class="math notranslate nohighlight">\(\psi_{t+1}\)</span> does converge to the
+theoretical distribution.</p>
+</div>
+</div>
+<div class="section" id="solutions">
+<h2><a class="toc-backref" href="#id11"><span class="section-number">22.6. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3><span class="section-number">22.6.1. </span>Exercise 1<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Here is one solution:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Random</span>
+
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.9</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span>
+<span class="n">mu_star</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
+<span class="n">std_star</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">c</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="o">^</span><span class="mi">2</span><span class="p">))</span><span class="w">  </span><span class="c"># square root of v_star</span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">sample_moments_ar1</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="o">=</span><span class="mi">100_000</span><span class="p">,</span><span class="w"> </span><span class="n">mu_0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">sigma_0</span><span class="o">=</span><span class="mf">1.0</span><span class="p">;</span><span class="w"> </span><span class="n">seed</span><span class="o">=</span><span class="mi">1234</span><span class="p">)</span>
+<span class="w">    </span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<span class="w">    </span><span class="n">sample_sum</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mu_0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sigma_0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">randn</span><span class="p">()</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">m</span>
+<span class="w">        </span><span class="n">sample_sum</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mu_star</span><span class="p">)</span><span class="o">^</span><span class="n">k</span>
+<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">randn</span><span class="p">()</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">sample_sum</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">m</span>
+<span class="k">end</span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">double_factorial</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">prod</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">2</span><span class="o">:</span><span class="n">n</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">true_moments_ar1</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">std_star</span><span class="o">^</span><span class="n">k</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">double_factorial</span><span class="p">(</span><span class="n">k</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">k_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">collect</span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">sample_moments</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">true_moments</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">k_idx</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">k_vals</span><span class="p">)</span>
+<span class="w">    </span><span class="n">sample_moments</span><span class="p">[</span><span class="n">k_idx</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sample_moments_ar1</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+<span class="w">    </span><span class="n">true_moments</span><span class="p">[</span><span class="n">k_idx</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">true_moments_ar1</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">k_vals</span><span class="p">,</span><span class="w"> </span><span class="n">true_moments</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="s">&quot;true moments&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">k_vals</span><span class="p">,</span><span class="w"> </span><span class="n">sample_moments</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="s">&quot;sample moments&quot;</span><span class="p">)</span>
+<span class="n">plt</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ar1_processes_13_0.svg" src="../_images/ar1_processes_13_0.svg" /></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h3><span class="section-number">22.6.2. </span>Exercise 2<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>Here is one solution:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">K</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">Normal</span><span class="p">(),</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span><span class="w"> </span><span class="n">x_data</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">K</span><span class="p">((</span><span class="n">x_val</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">x_data</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">))</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">plot_kde</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">;</span><span class="w"> </span><span class="n">x_min</span><span class="o">=-</span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="n">x_max</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="w">    </span><span class="n">x_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+<span class="w">    </span><span class="n">x_grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="mf">1.2</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
+<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">(</span><span class="n">x_data</span><span class="p">)</span>
+<span class="w">    </span><span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.06</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span>
+<span class="w">    </span><span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span><span class="w"> </span><span class="n">x_grid</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span><span class="w"> </span><span class="kt">Ref</span><span class="p">(</span><span class="n">x_data</span><span class="p">),</span><span class="w"> </span><span class="n">h</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="s">&quot;estimate&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span><span class="w"> </span><span class="n">x_grid</span><span class="p">,</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">ϕ</span><span class="p">,</span><span class="w"> </span><span class="n">x_grid</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="s">&quot;true density&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">plt</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>plot_kde (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span>
+<span class="n">parameter_pairs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">)]</span>
+<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">α</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="p">))</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">parameter_pairs</span><span class="p">)</span>
+<span class="w">    </span><span class="n">plot_kde</span><span class="p">(</span><span class="n">Beta</span><span class="p">(</span><span class="n">α</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">plt</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ar1_processes_17_0.svg" src="../_images/ar1_processes_17_0.svg" /></div>
+</div>
+<p>We see that the kernel density estimator is effective when the underlying
+distribution is smooth but less so otherwise.</p>
+</div>
+<div class="section" id="id4">
+<h3><span class="section-number">22.6.3. </span>Exercise 3<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>Here is our solution:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.9</span>
+<span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.1</span>
+<span class="n">μ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span>
+<span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.2</span>
+
+<span class="n">μ_next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">μ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span>
+<span class="n">s_next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">a</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">c</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">ψ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">(</span><span class="n">μ</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">)</span>
+<span class="n">ψ_next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">(</span><span class="n">μ_next</span><span class="p">,</span><span class="w"> </span><span class="n">s_next</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Normal{Float64}(μ=-2.7, σ=0.20591260281974003)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">K</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">Normal</span><span class="p">(),</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+
+<span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x_val</span><span class="p">,</span><span class="w"> </span><span class="n">x_data</span><span class="p">,</span><span class="w"> </span><span class="n">h</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">mean</span><span class="p">(</span><span class="n">K</span><span class="p">((</span><span class="n">x_val</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">x_data</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">h</span><span class="p">))</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2000</span>
+<span class="n">x_draws</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">ψ</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
+<span class="n">x_draws_next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x_draws</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="p">(</span><span class="n">x_draws_next</span><span class="p">)</span>
+<span class="n">h</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.06</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">x_grid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="n">μ</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">μ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">)</span>
+<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">()</span>
+
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">x_grid</span><span class="p">,</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">ψ</span><span class="p">,</span><span class="w"> </span><span class="n">x_grid</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;$\psi_t$&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">x_grid</span><span class="p">,</span><span class="w"> </span><span class="n">pdf</span><span class="o">.</span><span class="p">(</span><span class="n">ψ_next</span><span class="p">,</span><span class="w"> </span><span class="n">x_grid</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;$\psi_{t+1}$&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">x_grid</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span><span class="w"> </span><span class="kt">Ref</span><span class="p">(</span><span class="n">x_draws_next</span><span class="p">),</span><span class="w"> </span><span class="n">h</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;estimate of $\psi_{t+1}$&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ar1_processes_21_0.svg" src="../_images/ar1_processes_21_0.svg" /></div>
+</div>
+<p>The simulated distribution approximately coincides with the theoretical
+distribution, as predicted.</p>
+</div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.8"
+        },
+        kernelOptions: {
+            kernelName: "julia-1.8",
+            path: "./introduction_dynamics"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.8'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="qe-page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+
+            
+            <div class="qe-sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="qe-sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="qe-sidebar__nav" id="qe-sidebar-nav" aria-label="Main navigation">
+                    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   2. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   3. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   4. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   5. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   6. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   7. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   8. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   9. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/tools_editors.html">
+   10. Visual Studio Code and Other Tools
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/version_control.html">
+   11. GitHub, Version Control and Collaboration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/testing.html">
+   12. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/need_for_speed.html">
+   13. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/geom_series.html">
+   14. Geometric Series for Elementary Economics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   18. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   19. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="short_path.html">
+   27. Shortest Paths
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   28. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   29. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   30. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   31. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   32. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   33. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   35. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   36. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   37. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   38. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   39. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   41. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   42. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   43. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   44. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   46. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   47. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   48. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   49. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   50. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   51. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   52. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   53. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   54. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   55. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   56. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   57. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   58. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   59. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   60. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   61. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   62. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   63. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   64. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   65. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   66. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   67. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   68. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   69. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   70. Execution Statistics
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="qe-sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="qe-toolbar">
+
+            <div class="qe-toolbar__inner">
+
+                <ul class="qe-toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="qe-toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="/_notebooks/introduction_dynamics/ar1_processes.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li class="settings-button" id="settingsButton"><div data-tippy-content="Launch Notebook"><i data-feather="play-circle"></i></div></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/main/lectures/introduction_dynamics/ar1_processes.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p>Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title"> Notebook Launcher </p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/main?urlpath=tree/introduction_dynamics/ar1_processes.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" data-repourl="https://github.com/QuantEcon/lecture-julia.notebooks" data-urlpath="tree/lecture-julia.notebooks/introduction_dynamics/ar1_processes.ipynb" data-branch=main>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            </ul>
+            <p class="launch"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/main?urlpath=tree/introduction_dynamics/ar1_processes.ipynb" id="advancedLaunchButton" target="_blank">Launch Notebook</a></p>
+            <script>
+                // QuantEcon Notebook Launcher
+                const launcherTypeElements = document.querySelectorAll('#settingsModal .modal-servers li');
+                // Highlight the server type if previous selection exists
+                if (typeof localStorage.launcherType !== 'undefined') {
+                  for (var i = 0; i < launcherTypeElements.length; i++) {
+                    launcherTypeElements[i].classList.remove('active');
+                    if ( launcherTypeElements[i].classList.contains(localStorage.launcherType) ) {
+                      launcherTypeElements[i].classList.add('active');
+                    }
+                  }
+                }
+                // Highlight server type on click and set local storage value
+                for (var i = 0; i < launcherTypeElements.length; i++) {
+                  launcherTypeElements[i].addEventListener('click', function() {
+                    for (var j = 0; j < launcherTypeElements.length; j++) {
+                      launcherTypeElements[j].classList.remove('active');
+                    }
+                    this.classList.add('active');
+                    if ( this.classList.contains('launcher-private') ) {
+                      localStorage.launcherType = 'launcher-private';
+                    } else if ( this.classList.contains('launcher-public') ) {
+                      localStorage.launcherType = 'launcher-public';
+                    }
+                    setLaunchServer();
+                  })
+                }
+                const launcherPublic = document.getElementById('launcher-public-input');
+                const launcherPrivate = document.getElementById('launcher-private-input');
+                const pageName = "introduction_dynamics/ar1_processes";
+                const repoURL = "https://github.com/QuantEcon/lecture-julia.notebooks";
+                const urlPath = "tree/lecture-julia.notebooks/introduction_dynamics/ar1_processes.ipynb";
+                const branch = "main"
+                const launchNotebookLink = document.getElementById('advancedLaunchButton');
+
+                // Highlight public server option if previous selection exists
+                if (typeof localStorage.launcherPublic !== 'undefined') {
+                  launcherPublic.value = localStorage.launcherPublic;
+                }
+                // Update local storage upon public server selection
+                launcherPublic.addEventListener('change', (event) => {
+                  setLaunchServer();
+                });
+                // Populate private server input if previous entry exists
+                if (typeof localStorage.launcherPrivate !== 'undefined') {
+                  launcherPrivate.value = localStorage.launcherPrivate;
+                }
+                // Update local storage when a private server is entered
+                launcherPrivate.addEventListener('input', (event) => {
+                  setLaunchServer();
+                });
+
+                // Function to update the "Launch Notebook" link href
+                function setLaunchServer() {
+                  launchNotebookLink.removeAttribute("style")
+                  if ( localStorage.launcherType == 'launcher-private' ) {
+                    let repoPrefix = "/jupyter/hub/user-redirect/git-pull?repo=" + repoURL + "&branch=" + branch + "&urlpath=" + urlPath;
+                    launcherPrivateValue = launcherPrivate.value
+                    if (!launcherPrivateValue) {
+                        launchNotebookLink.removeAttribute("href")
+                        launchNotebookLink.style.background = "grey"
+                        return
+                    }
+                    localStorage.launcherPrivate = launcherPrivateValue;
+                    privateServer = localStorage.launcherPrivate.replace(/\/$/, "")
+                    if (!privateServer.includes("http")) {
+                        privateServer = "http://" + privateServer
+                    }
+                    launchNotebookLinkURL = privateServer + repoPrefix;
+                  } else if ( localStorage.launcherType == 'launcher-public' ) {
+                    launcherPublicValue = launcherPublic.options[launcherPublic.selectedIndex].value;
+                    localStorage.launcherPublic = launcherPublicValue;
+                    launchNotebookLinkURL = localStorage.launcherPublic;
+                  }
+                  if (launchNotebookLinkURL) launchNotebookLink.href = launchNotebookLinkURL;
+                }
+                // Check if user has previously selected a server
+                if ( (typeof localStorage.launcherPrivate !== 'undefined') || (typeof localStorage.launcherPublic !== 'undefined') ) {
+                  setLaunchServer();
+                }
+                </script>
+
+        </div>
+
+    </div> <!-- .wrapper-->
+    
+<script async="" src="https://www.google-analytics.com/analytics.js"></script>
+<script>
+                        window.ga = window.ga || function () {
+                            (ga.q = ga.q || []).push(arguments) };
+                        ga.l = +new Date;
+                        ga('create', 'UA-54984338-8', 'auto');
+                        ga('set', 'anonymizeIp', true);
+                        ga('send', 'pageview');
+                    </script>
+
+  </body>
+</html>

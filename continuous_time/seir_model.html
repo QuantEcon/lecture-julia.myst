@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>41. Modeling COVID 19 with Differential Equations &#8212; Quantitative Economics with Julia</title>
+    <title>44. Modeling COVID 19 with Differential Equations &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -88,21 +88,20 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/continuous_time/seir_model.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="42. Modeling Shocks in COVID 19 with Stochastic Differential Equations" href="covid_sde.html" />
-    <link rel="prev" title="40. Discrete State Dynamic Programming" href="../dynamic_programming/discrete_dp.html" />
+    <link rel="next" title="45. Modeling Shocks in COVID 19 with Stochastic Differential Equations" href="covid_sde.html" />
+    <link rel="prev" title="43. Discrete State Dynamic Programming" href="../dynamic_programming/discrete_dp.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -152,78 +151,78 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   41.1. Overview
+   44.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#the-seir-model">
-   41.2. The SEIR Model
+   44.2. The SEIR Model
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#changes-in-the-infected-state">
-     41.2.1. Changes in the Infected State
+     44.2.1. Changes in the Infected State
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#basic-reproduction-number">
-     41.2.2. Basic Reproduction Number
+     44.2.2. Basic Reproduction Number
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#implementation">
-     41.2.3. Implementation
+     44.2.3. Implementation
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#extending-the-model">
-     41.2.4. Extending the Model
+     44.2.4. Extending the Model
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#parameters">
-     41.2.5. Parameters
+     44.2.5. Parameters
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#id4">
-   41.3. Implementation
+   44.3. Implementation
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id5">
-     41.3.1. Parameters
+     44.3.1. Parameters
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#experiments">
-   41.4. Experiments
+   44.4. Experiments
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#experiment-1-constant-reproduction-case">
-     41.4.1. Experiment 1: Constant Reproduction Case
+     44.4.1. Experiment 1: Constant Reproduction Case
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#experiment-2-changing-mitigation">
-     41.4.2. Experiment 2: Changing Mitigation
+     44.4.2. Experiment 2: Changing Mitigation
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#ending-lockdown">
-   41.5. Ending Lockdown
+   44.5. Ending Lockdown
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#randomness">
-     41.5.1. Randomness
+     44.5.1. Randomness
     </a>
    </li>
   </ul>
@@ -278,7 +277,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="tex2jax_ignore mathjax_ignore section" id="modeling-covid-19-with-differential-equations">
-<h1><a class="toc-backref" href="#id6"><span class="section-number">41. </span><span class="target" id="index-0"></span>Modeling COVID 19 with Differential Equations</a><a class="headerlink" href="#modeling-covid-19-with-differential-equations" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id6"><span class="section-number">44. </span><span class="target" id="index-0"></span>Modeling COVID 19 with Differential Equations</a><a class="headerlink" href="#modeling-covid-19-with-differential-equations" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
@@ -294,7 +293,7 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id7"><span class="section-number">41.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7"><span class="section-number">44.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>Coauthored with Chris Rackauckas</p>
 <p>This is a Julia version of code for analyzing the COVID-19 pandemic.</p>
 <p>The purpose of these notes is to introduce economists to quantitative modeling of infectious disease dynamics, and to modeling with ordinary differential
@@ -318,7 +317,7 @@ equations where the number of agents is large and there are no exogenous stochas
 </ul>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">SparseArrays</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">SparseArrays</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
 </pre></div>
 </div>
 </div>
@@ -326,15 +325,15 @@ equations where the number of agents is large and there are no exogenous stochas
 <p>In addition, we will be exploring the <a class="reference external" href="https://diffeq.sciml.ai/dev/tutorials/ode_example/">Ordinary Differential Equations</a> package within the <a class="reference external" href="https://github.com/SciML/">SciML ecosystem</a>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">OrdinaryDiffEq</span><span class="w"></span>
-<span class="k">using</span><span class="w"> </span><span class="n">Parameters</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">OrdinaryDiffEq</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Parameters</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="the-seir-model">
-<h2><a class="toc-backref" href="#id8"><span class="section-number">41.2. </span>The SEIR Model</a><a class="headerlink" href="#the-seir-model" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8"><span class="section-number">44.2. </span>The SEIR Model</a><a class="headerlink" href="#the-seir-model" title="Permalink to this headline">¶</a></h2>
 <p>In the version of the SEIR model, all individuals in the population are assumed to be in a finite number of states.</p>
 <p>The states are: susceptible (S), exposed (E), infected (I) and removed (R).</p>
 <p>This type of <a class="reference external" href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#Elaborations_on_the_basic_SIR_model">compartmentalized model</a>  has many extensions (e.g. SEIRS relaxes lifetime immunity and allow transitions from <span class="math notranslate nohighlight">\(R \to S\)</span>).</p>
@@ -345,7 +344,7 @@ equations where the number of agents is large and there are no exogenous stochas
 <li><p>Those in the exposed group are not yet infectious.</p></li>
 </ul>
 <div class="section" id="changes-in-the-infected-state">
-<h3><span class="section-number">41.2.1. </span>Changes in the Infected State<a class="headerlink" href="#changes-in-the-infected-state" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">44.2.1. </span>Changes in the Infected State<a class="headerlink" href="#changes-in-the-infected-state" title="Permalink to this headline">¶</a></h3>
 <p>Within the SEIR model, the flow across states follows the path <span class="math notranslate nohighlight">\(S \to E \to I \to R\)</span>.</p>
 <p>We will ignore birth and non-covid death during our time horizon, and assume a large, constant, number of individuals of size <span class="math notranslate nohighlight">\(N\)</span> throughout.</p>
 <p>With this, the symbols <span class="math notranslate nohighlight">\(S, E, I, R\)</span> are used for the total number of individuals in each state at each point in time, and <span class="math notranslate nohighlight">\(S(t) + E(t) + I(t) + R(t) = N\)</span> for all <span class="math notranslate nohighlight">\(t\)</span>.</p>
@@ -359,7 +358,7 @@ equations where the number of agents is large and there are no exogenous stochas
 <p>The rate <span class="math notranslate nohighlight">\(\beta(t)\)</span> is influenced by both the characteristics of the disease (e.g. the type and length of prolonged contact required for a transmission) and behavior of the individuals (e.g. social distancing, hygiene).</p>
 <p>The SEIR model can then be written as</p>
 <div class="math notranslate nohighlight" id="equation-seir-system-big">
-<span class="eqno">(41.1)<a class="headerlink" href="#equation-seir-system-big" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(44.1)<a class="headerlink" href="#equation-seir-system-big" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
      \frac{d S}{d t}  &amp; = - \beta \, S \,  \frac{I}{N}
      \\
      \frac{d E}{d t}   &amp; = \beta \, S \,   \frac{I}{N}  - \sigma E
@@ -369,7 +368,7 @@ equations where the number of agents is large and there are no exogenous stochas
       \frac{d R}{d t}  &amp; = \gamma  I
 \end{aligned}\end{split}\]</div>
 <p>Here, <span class="math notranslate nohighlight">\(dy/dt\)</span> represents the time derivative for the particular variable.</p>
-<p>The first term of <a class="reference internal" href="#equation-seir-system-big">(41.1)</a>, <span class="math notranslate nohighlight">\(-\beta \, S \,  \frac{I}{N}\)</span>, is the flow of individuals moving from <span class="math notranslate nohighlight">\(S \to E\)</span>, and highlights the underlying dynamics of the epidemic</p>
+<p>The first term of <a class="reference internal" href="#equation-seir-system-big">(44.1)</a>, <span class="math notranslate nohighlight">\(-\beta \, S \,  \frac{I}{N}\)</span>, is the flow of individuals moving from <span class="math notranslate nohighlight">\(S \to E\)</span>, and highlights the underlying dynamics of the epidemic</p>
 <ul class="simple">
 <li><p>Individuals in the susceptible state (S) have a rate <span class="math notranslate nohighlight">\(\beta(t)\)</span> of prolonged contacts with other individuals where transmission would occur if either was infected</p></li>
 <li><p>Of these contacts, a fraction <span class="math notranslate nohighlight">\(\frac{I(t)}{N}\)</span> will be with infected agents (since we assumed that exposed individuals are not yet infectious)</p></li>
@@ -378,24 +377,24 @@ equations where the number of agents is large and there are no exogenous stochas
 </ul>
 </div>
 <div class="section" id="basic-reproduction-number">
-<h3><span class="section-number">41.2.2. </span>Basic Reproduction Number<a class="headerlink" href="#basic-reproduction-number" title="Permalink to this headline">¶</a></h3>
-<p>If <span class="math notranslate nohighlight">\(\beta\)</span> was constant, then we could define <span class="math notranslate nohighlight">\(R_0 := \beta / \gamma\)</span>.  This is the famous <em>basic reproduction number</em> for the SEIR model.  See <span id="id1">[<a class="reference internal" href="../zreferences.html#id5">HSW05</a>]</span> for more details.</p>
-<p>When the transmission rate is time-varying, we will follow notation in <span id="id2">[<a class="reference internal" href="../zreferences.html#id6">FVJ20</a>]</span> and refer to <span class="math notranslate nohighlight">\(R_0(t)\)</span> as a time-varying version of the basic reproduction number.</p>
-<p>Analyzing the system in <a class="reference internal" href="#equation-seir-system-big">(41.1)</a> provides some intuition on the <span class="math notranslate nohighlight">\(R_0(t) := \beta(t) / \gamma\)</span> expression:</p>
+<h3><span class="section-number">44.2.2. </span>Basic Reproduction Number<a class="headerlink" href="#basic-reproduction-number" title="Permalink to this headline">¶</a></h3>
+<p>If <span class="math notranslate nohighlight">\(\beta\)</span> was constant, then we could define <span class="math notranslate nohighlight">\(R_0 := \beta / \gamma\)</span>.  This is the famous <em>basic reproduction number</em> for the SEIR model.  See <span id="id1">[<a class="reference internal" href="../zreferences.html#id5" title="Jane M Heffernan, Robert J Smith, and Lindi M Wahl. Perspectives on the basic reproductive ratio. Journal of the Royal Society Interface, 2(4):281–293, 2005.">HSW05</a>]</span> for more details.</p>
+<p>When the transmission rate is time-varying, we will follow notation in <span id="id2">[<a class="reference internal" href="../zreferences.html#id6" title="Jesús Fernández-Villaverde and Charles I Jones. Estimating and simulating a sird model of covid-19 for many countries, states, and cities. Working Paper 27128, National Bureau of Economic Research, May 2020. URL: http://www.nber.org/papers/w27128, doi:10.3386/w27128.">FVJ20</a>]</span> and refer to <span class="math notranslate nohighlight">\(R_0(t)\)</span> as a time-varying version of the basic reproduction number.</p>
+<p>Analyzing the system in <a class="reference internal" href="#equation-seir-system-big">(44.1)</a> provides some intuition on the <span class="math notranslate nohighlight">\(R_0(t) := \beta(t) / \gamma\)</span> expression:</p>
 <ul class="simple">
 <li><p>Individual transitions from the infected to removed state occur at a Poisson rate <span class="math notranslate nohighlight">\(\gamma\)</span>, the expected time in the infected state is <span class="math notranslate nohighlight">\(1/\gamma\)</span></p></li>
 <li><p>Prolonged interactions occur at rate <span class="math notranslate nohighlight">\(\beta\)</span>, so a new individual entering the infected state will potentially transmit the virus to an average of <span class="math notranslate nohighlight">\(R_0 = \beta \times 1 / \gamma\)</span> others</p></li>
-<li><p>In more complicated models, see <span id="id3">[<a class="reference internal" href="../zreferences.html#id5">HSW05</a>]</span> for a formal definition for arbitrary models, and an analysis on the role of <span class="math notranslate nohighlight">\(R_0 &lt; 1\)</span>.</p></li>
+<li><p>In more complicated models, see <span id="id3">[<a class="reference internal" href="../zreferences.html#id5" title="Jane M Heffernan, Robert J Smith, and Lindi M Wahl. Perspectives on the basic reproductive ratio. Journal of the Royal Society Interface, 2(4):281–293, 2005.">HSW05</a>]</span> for a formal definition for arbitrary models, and an analysis on the role of <span class="math notranslate nohighlight">\(R_0 &lt; 1\)</span>.</p></li>
 </ul>
 <p>Note that the notation <span class="math notranslate nohighlight">\(R_0\)</span> is standard in the epidemiology literature - though confusing, since <span class="math notranslate nohighlight">\(R_0\)</span> is unrelated to <span class="math notranslate nohighlight">\(R\)</span>, the symbol that represents the removed state.  For the remainder of the lecture, we will avoid using <span class="math notranslate nohighlight">\(R\)</span> for removed state.</p>
-<p>Prior to solving the model directly, we make a few changes to <a class="reference internal" href="#equation-seir-system-big">(41.1)</a></p>
+<p>Prior to solving the model directly, we make a few changes to <a class="reference internal" href="#equation-seir-system-big">(44.1)</a></p>
 <ul class="simple">
 <li><p>Re-parameterize using <span class="math notranslate nohighlight">\(\beta(t) = \gamma R_0(t)\)</span></p></li>
 <li><p>Define the proportion of individuals in each state as <span class="math notranslate nohighlight">\(s := S/N\)</span> etc.</p></li>
-<li><p>Divide each equation in <a class="reference internal" href="#equation-seir-system-big">(41.1)</a> by <span class="math notranslate nohighlight">\(N\)</span>, and write the system of ODEs in terms of the proportions</p></li>
+<li><p>Divide each equation in <a class="reference internal" href="#equation-seir-system-big">(44.1)</a> by <span class="math notranslate nohighlight">\(N\)</span>, and write the system of ODEs in terms of the proportions</p></li>
 </ul>
 <div class="math notranslate nohighlight" id="equation-seir-system">
-<span class="eqno">(41.2)<a class="headerlink" href="#equation-seir-system" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(44.2)<a class="headerlink" href="#equation-seir-system" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
      \frac{d s}{d t}  &amp; = - \gamma \, R_0 \, s \,  i
      \\
      \frac{d e}{d t}   &amp; = \gamma \, R_0 \, s \,  i  - \sigma e
@@ -407,20 +406,20 @@ equations where the number of agents is large and there are no exogenous stochas
 <p>Since the states form a partition, we could reconstruct the “removed” fraction of the population as <span class="math notranslate nohighlight">\(r = 1 - s - e - i\)</span>.  However, keeping it in the system will make plotting more convenient.</p>
 </div>
 <div class="section" id="implementation">
-<h3><span class="section-number">41.2.3. </span>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">44.2.3. </span>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h3>
 <p>We begin by implementing a simple version of this model with a constant <span class="math notranslate nohighlight">\(R_0\)</span> and some baseline parameter values (which we discuss later).</p>
 <p>First, define the system of equations</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">F_simple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="w"> </span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="n">R₀</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mf">5.2</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">F_simple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="w"> </span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="n">R₀</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mf">5.2</span><span class="p">)</span>
+<span class="w">    </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="n">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">       </span><span class="c"># ds/dt = -γR₀si</span><span class="w"></span>
-<span class="w">             </span><span class="n">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w">  </span><span class="n">σ</span><span class="o">*</span><span class="n">e</span><span class="p">;</span><span class="c"># de/dt =  γR₀si -σe</span><span class="w"></span>
-<span class="w">             </span><span class="n">σ</span><span class="o">*</span><span class="n">e</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">      </span><span class="c"># di/dt =         σe -γi</span><span class="w"></span>
-<span class="w">                   </span><span class="n">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">      </span><span class="c"># dr/dt =             γi</span><span class="w"></span>
-<span class="w">            </span><span class="p">]</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="n">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">       </span><span class="c"># ds/dt = -γR₀si</span>
+<span class="w">             </span><span class="n">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w">  </span><span class="n">σ</span><span class="o">*</span><span class="n">e</span><span class="p">;</span><span class="c"># de/dt =  γR₀si -σe</span>
+<span class="w">             </span><span class="n">σ</span><span class="o">*</span><span class="n">e</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">      </span><span class="c"># di/dt =         σe -γi</span>
+<span class="w">                   </span><span class="n">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">      </span><span class="c"># dr/dt =             γi</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </div>
@@ -433,19 +432,19 @@ equations where the number of agents is large and there are no exogenous stochas
 <p>Given this system, we choose an initial condition and a timespan, and create a <code class="docutils literal notranslate"><span class="pre">ODEProblem</span></code> encapsulating the system.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">i_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1E-7</span><span class="w">                  </span><span class="c"># 33 = 1E-7 * 330 million population = initially infected</span><span class="w"></span>
-<span class="n">e_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i_0</span><span class="w">             </span><span class="c"># 132 = 1E-7 *330 million = initially exposed</span><span class="w"></span>
-<span class="n">s_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i_0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">e_0</span><span class="w"></span>
-<span class="n">r_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="w"></span>
-<span class="n">x_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">e_0</span><span class="p">,</span><span class="w"> </span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="n">r_0</span><span class="p">]</span><span class="w">  </span><span class="c"># initial condition</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">i_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1E-7</span><span class="w">                  </span><span class="c"># 33 = 1E-7 * 330 million population = initially infected</span>
+<span class="n">e_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i_0</span><span class="w">             </span><span class="c"># 132 = 1E-7 *330 million = initially exposed</span>
+<span class="n">s_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i_0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">e_0</span>
+<span class="n">r_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="n">x_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">e_0</span><span class="p">,</span><span class="w"> </span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="n">r_0</span><span class="p">]</span><span class="w">  </span><span class="c"># initial condition</span>
 
-<span class="n">tspan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">350.0</span><span class="p">)</span><span class="w">  </span><span class="c"># ≈ 350 days</span><span class="w"></span>
-<span class="n">prob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F_simple</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">)</span><span class="w"></span>
+<span class="n">tspan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">350.0</span><span class="p">)</span><span class="w">  </span><span class="c"># ≈ 350 days</span>
+<span class="n">prob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F_simple</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Cyan">ODEProblem</span> with uType <span class=" -Color -Color-Cyan">Vector{Float64}</span> and tType <span class=" -Color -Color-Cyan">Float64</span>. In-place: <span class=" -Color -Color-Cyan">false</span>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ODEProblem with uType Vector{Float64} and tType Float64. In-place: false
 timespan: (0.0, 350.0)
 u0: 4-element Vector{Float64}:
  0.9999995
@@ -459,8 +458,8 @@ u0: 4-element Vector{Float64}:
 <p>With this, choose an ODE algorithm and solve the initial value problem.  A good default algorithm for non-stiff ODEs of this sort might be <code class="docutils literal notranslate"><span class="pre">Tsit5()</span></code>, which is the Tsitouras 5/4 Runge-Kutta method).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span><span class="w"> </span><span class="n">Tsit5</span><span class="p">())</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span><span class="w"> </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sa">L</span><span class="s">&quot;s&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;e&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;r&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SEIR Dynamics&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span><span class="w"> </span><span class="n">Tsit5</span><span class="p">())</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span><span class="w"> </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sa">L</span><span class="s">&quot;s&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;e&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;r&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SEIR Dynamics&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -471,7 +470,7 @@ u0: 4-element Vector{Float64}:
 <p>Or, as an alternative visualization, the proportions in each state over time</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">areaplot</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">sol</span><span class="o">&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sa">L</span><span class="s">&quot;s&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;e&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;r&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SEIR Proportions&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">areaplot</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">sol</span><span class="o">&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sa">L</span><span class="s">&quot;s&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;e&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;r&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;SEIR Proportions&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -481,26 +480,26 @@ u0: 4-element Vector{Float64}:
 <p>While maintaining the core system of ODEs in <span class="math notranslate nohighlight">\((s, e, i, r)\)</span>, we will extend the basic model to enable some policy experiments and calculations of aggregate values.</p>
 </div>
 <div class="section" id="extending-the-model">
-<h3><span class="section-number">41.2.4. </span>Extending the Model<a class="headerlink" href="#extending-the-model" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">44.2.4. </span>Extending the Model<a class="headerlink" href="#extending-the-model" title="Permalink to this headline">¶</a></h3>
 <p>First, we can consider some additional calculations such as the cumulative caseload (i.e., all those who have or have had the infection) as <span class="math notranslate nohighlight">\(c = i + r\)</span>.  Differentiating that expression and substituting from the time-derivatives of <span class="math notranslate nohighlight">\(i(t)\)</span> and <span class="math notranslate nohighlight">\(r(t)\)</span> yields <span class="math notranslate nohighlight">\(\frac{d c}{d t} = \sigma e\)</span>.</p>
 <p>We will assume that the transmission rate follows a process with a reversion to a value <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> which could conceivably be influenced by policy.  The intuition is that even if the targeted <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> was changed through social distancing/etc., lags in behavior and implementation would smooth out the transition, where <span class="math notranslate nohighlight">\(\eta\)</span> governs the speed of <span class="math notranslate nohighlight">\(R_0(t)\)</span> moves towards <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span>.</p>
 <div class="math notranslate nohighlight" id="equation-rode">
-<span class="eqno">(41.3)<a class="headerlink" href="#equation-rode" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(44.3)<a class="headerlink" href="#equation-rode" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}
 \frac{d R_0}{d t} &amp;= \eta (\bar{R}_0 - R_0)\\
 \end{aligned}\end{split}\]</div>
 <p>Finally, let <span class="math notranslate nohighlight">\(\delta\)</span> be the mortality rate, which we will leave constant.  The cumulative deaths can be integrated through the flow <span class="math notranslate nohighlight">\(\gamma i\)</span> entering the “Removed” state.</p>
 <p>Define the cumulative number of deaths as <span class="math notranslate nohighlight">\(D(t)\)</span> with the proportion <span class="math notranslate nohighlight">\(d(t) := D(t)/N\)</span>.</p>
 <div class="math notranslate nohighlight" id="equation-mode">
-<span class="eqno">(41.4)<a class="headerlink" href="#equation-mode" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}\\
+<span class="eqno">(44.4)<a class="headerlink" href="#equation-mode" title="Permalink to this equation">¶</a></span>\[\begin{split}\begin{aligned}\\
 \frac{d}{d t}d(t) &amp;= \delta \gamma  i
 \end{aligned}\end{split}\]</div>
 <p>While we could integrate the deaths given the solution to the model ex-post, it is more convenient to use the integrator built into the ODE solver.  That is, we add <span class="math notranslate nohighlight">\(\frac{d}{dt} d(t)\)</span> rather than calculating <span class="math notranslate nohighlight">\(d(t) = \int_0^t \delta \gamma\, i(\tau) d \tau\)</span> ex-post.</p>
 <p>This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is not a regular time grid). Note that when doing so, <span class="math notranslate nohighlight">\(d(0) = \int_0^0 \delta \gamma i(\tau) d \tau = 0\)</span> is the initial condition.</p>
-<p>The system <a class="reference internal" href="#equation-seir-system">(41.2)</a> and the supplemental equations can be written in vector form <span class="math notranslate nohighlight">\(x := [s, e, i, r, R₀, c, d]\)</span> with parameter tuple <span class="math notranslate nohighlight">\(p := (\sigma, \gamma, \eta, \delta, \bar{R}_0(\cdot))\)</span></p>
+<p>The system <a class="reference internal" href="#equation-seir-system">(44.2)</a> and the supplemental equations can be written in vector form <span class="math notranslate nohighlight">\(x := [s, e, i, r, R₀, c, d]\)</span> with parameter tuple <span class="math notranslate nohighlight">\(p := (\sigma, \gamma, \eta, \delta, \bar{R}_0(\cdot))\)</span></p>
 <p>Note that in those parameters, the targeted reproduction number, <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span>, is an exogenous function.</p>
 <p>The model is then <span class="math notranslate nohighlight">\(\frac{d x}{d t} = F(x,t)\)</span>  where,</p>
 <div class="math notranslate nohighlight" id="equation-dfcv">
-<span class="eqno">(41.5)<a class="headerlink" href="#equation-dfcv" title="Permalink to this equation">¶</a></span>\[\begin{split}F(x,t) := \begin{bmatrix}
+<span class="eqno">(44.5)<a class="headerlink" href="#equation-dfcv" title="Permalink to this equation">¶</a></span>\[\begin{split}F(x,t) := \begin{bmatrix}
     -\gamma \, R_0 \, s \,  i
     \\
     \gamma \, R_0 \,  s \,  i  - \sigma e
@@ -518,7 +517,7 @@ u0: 4-element Vector{Float64}:
 <p>Note that if <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> is time-invariant, then <span class="math notranslate nohighlight">\(F(x, t)\)</span> is time-invariant as well.</p>
 </div>
 <div class="section" id="parameters">
-<h3><span class="section-number">41.2.5. </span>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">44.2.5. </span>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
 <p>The parameters, <span class="math notranslate nohighlight">\(\sigma, \delta,\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> should be thought of as parameters determined from biology and medical technology, and independent of social interactions.</p>
 <p>As in Atkeson’s note, we set</p>
 <ul class="simple">
@@ -531,23 +530,23 @@ u0: 4-element Vector{Float64}:
 </div>
 </div>
 <div class="section" id="id4">
-<h2><a class="toc-backref" href="#id9"><span class="section-number">41.3. </span>Implementation</a><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
-<p>First, construct our <span class="math notranslate nohighlight">\(F\)</span> from <a class="reference internal" href="#equation-dfcv">(41.5)</a></p>
+<h2><a class="toc-backref" href="#id9"><span class="section-number">44.3. </span>Implementation</a><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>First, construct our <span class="math notranslate nohighlight">\(F\)</span> from <a class="reference internal" href="#equation-dfcv">(44.5)</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">F</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">R₀</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@unpack</span><span class="w"> </span><span class="n">σ</span><span class="p">,</span><span class="w"> </span><span class="n">γ</span><span class="p">,</span><span class="w"> </span><span class="n">R̄₀</span><span class="p">,</span><span class="w"> </span><span class="n">η</span><span class="p">,</span><span class="w"> </span><span class="n">δ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">F</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
+<span class="w">    </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">e</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">r</span><span class="p">,</span><span class="w"> </span><span class="n">R₀</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span>
+<span class="w">    </span><span class="p">(;</span><span class="n">σ</span><span class="p">,</span><span class="w"> </span><span class="n">γ</span><span class="p">,</span><span class="w"> </span><span class="n">R̄₀</span><span class="p">,</span><span class="w"> </span><span class="n">η</span><span class="p">,</span><span class="w"> </span><span class="n">δ</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span>
 
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="n">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">        </span><span class="c"># ds/dt</span><span class="w"></span>
-<span class="w">            </span><span class="n">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w">  </span><span class="n">σ</span><span class="o">*</span><span class="n">e</span><span class="p">;</span><span class="w">  </span><span class="c"># de/dt</span><span class="w"></span>
-<span class="w">            </span><span class="n">σ</span><span class="o">*</span><span class="n">e</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">        </span><span class="c"># di/dt</span><span class="w"></span>
-<span class="w">            </span><span class="n">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">              </span><span class="c"># dr/dt</span><span class="w"></span>
-<span class="w">            </span><span class="n">η</span><span class="o">*</span><span class="p">(</span><span class="n">R̄₀</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">R₀</span><span class="p">);</span><span class="c"># dR₀/dt</span><span class="w"></span>
-<span class="w">            </span><span class="n">σ</span><span class="o">*</span><span class="n">e</span><span class="p">;</span><span class="w">              </span><span class="c"># dc/dt</span><span class="w"></span>
-<span class="w">            </span><span class="n">δ</span><span class="o">*</span><span class="n">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">            </span><span class="c"># dd/dt</span><span class="w"></span>
-<span class="w">            </span><span class="p">]</span><span class="w"></span>
-<span class="k">end</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">[</span><span class="o">-</span><span class="n">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">        </span><span class="c"># ds/dt</span>
+<span class="w">            </span><span class="n">γ</span><span class="o">*</span><span class="n">R₀</span><span class="o">*</span><span class="n">s</span><span class="o">*</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w">  </span><span class="n">σ</span><span class="o">*</span><span class="n">e</span><span class="p">;</span><span class="w">  </span><span class="c"># de/dt</span>
+<span class="w">            </span><span class="n">σ</span><span class="o">*</span><span class="n">e</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">        </span><span class="c"># di/dt</span>
+<span class="w">            </span><span class="n">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">              </span><span class="c"># dr/dt</span>
+<span class="w">            </span><span class="n">η</span><span class="o">*</span><span class="p">(</span><span class="n">R̄₀</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">R₀</span><span class="p">);</span><span class="c"># dR₀/dt</span>
+<span class="w">            </span><span class="n">σ</span><span class="o">*</span><span class="n">e</span><span class="p">;</span><span class="w">              </span><span class="c"># dc/dt</span>
+<span class="w">            </span><span class="n">δ</span><span class="o">*</span><span class="n">γ</span><span class="o">*</span><span class="n">i</span><span class="p">;</span><span class="w">            </span><span class="c"># dd/dt</span>
+<span class="w">            </span><span class="p">]</span>
+<span class="k">end</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -555,13 +554,13 @@ u0: 4-element Vector{Float64}:
 <p>This function takes the vector <code class="docutils literal notranslate"><span class="pre">x</span></code> of states in the system and extracts the fixed parameters passed into the <code class="docutils literal notranslate"><span class="pre">p</span></code> object.</p>
 <p>The only confusing part of the notation is the <code class="docutils literal notranslate"><span class="pre">R̄₀(t,</span> <span class="pre">p)</span></code> which evaluates the <code class="docutils literal notranslate"><span class="pre">p.R̄₀</span></code> at this time (and also allows it to depend on the <code class="docutils literal notranslate"><span class="pre">p</span></code> parameter).</p>
 <div class="section" id="id5">
-<h3><span class="section-number">41.3.1. </span>Parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">44.3.1. </span>Parameters<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>The baseline parameters are put into a named tuple generator (see previous lectures using <a class="reference external" href="https://github.com/mauro3/Parameters.jl">Parameters.jl</a>) with default values discussed above.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p_gen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@with_kw</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">550.0</span><span class="p">,</span><span class="w"> </span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">5.2</span><span class="p">,</span><span class="w"> </span><span class="n">η</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">R₀_n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.6</span><span class="p">,</span><span class="w"> </span><span class="n">δ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.3E8</span><span class="p">,</span><span class="w"></span>
-<span class="w">                </span><span class="n">R̄₀</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">R₀_n</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p_gen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@with_kw</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">550.0</span><span class="p">,</span><span class="w"> </span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">5.2</span><span class="p">,</span><span class="w"> </span><span class="n">η</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">                </span><span class="n">R₀_n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.6</span><span class="p">,</span><span class="w"> </span><span class="n">δ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.01</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.3E8</span><span class="p">,</span>
+<span class="w">                </span><span class="n">R̄₀</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">R₀_n</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -570,20 +569,20 @@ u0: 4-element Vector{Float64}:
 <p>Setting initial conditions, we choose a fixed <span class="math notranslate nohighlight">\(s, i, e, r\)</span>, as well as <span class="math notranslate nohighlight">\(R_0(0) = R_{0n}\)</span> and <span class="math notranslate nohighlight">\(m(0) = 0.01\)</span></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_gen</span><span class="p">()</span><span class="w">  </span><span class="c"># use all default parameters</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_gen</span><span class="p">()</span><span class="w">  </span><span class="c"># use all default parameters</span>
 
-<span class="n">i_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1E-7</span><span class="w"></span>
-<span class="n">e_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i_0</span><span class="w"></span>
-<span class="n">s_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i_0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">e_0</span><span class="w"></span>
+<span class="n">i_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1E-7</span>
+<span class="n">e_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">4.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i_0</span>
+<span class="n">s_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i_0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">e_0</span>
 
-<span class="n">x_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">e_0</span><span class="p">,</span><span class="w"> </span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">R₀_n</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">]</span><span class="w"></span>
-<span class="n">tspan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="w"></span>
-<span class="n">prob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"></span>
+<span class="n">x_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">e_0</span><span class="p">,</span><span class="w"> </span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">R₀_n</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">]</span>
+<span class="n">tspan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="n">prob</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Cyan">ODEProblem</span> with uType <span class=" -Color -Color-Cyan">Vector{Float64}</span> and tType <span class=" -Color -Color-Cyan">Float64</span>. In-place: <span class=" -Color -Color-Cyan">false</span>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ODEProblem with uType Vector{Float64} and tType Float64. In-place: false
 timespan: (0.0, 550.0)
 u0: 7-element Vector{Float64}:
  0.9999995
@@ -603,12 +602,12 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 </div>
 </div>
 <div class="section" id="experiments">
-<h2><a class="toc-backref" href="#id10"><span class="section-number">41.4. </span>Experiments</a><a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10"><span class="section-number">44.4. </span>Experiments</a><a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h2>
 <p>Let’s run some experiments using this code.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span><span class="w"> </span><span class="n">Tsit5</span><span class="p">())</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">t</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span><span class="w"> </span><span class="n">Tsit5</span><span class="p">())</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">sol</span><span class="o">.</span><span class="n">t</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -623,14 +622,19 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 <p>The solution object has <a class="reference external" href="https://docs.sciml.ai/stable/basics/plot/">built in</a> plotting support.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span><span class="w"> </span><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sa">L</span><span class="s">&quot;c(t)&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;d(t)&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"></span>
-<span class="w">     </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;Cumulative Infected&quot;</span><span class="w"> </span><span class="s">&quot;Death Proportion&quot;</span><span class="p">],</span><span class="w"></span>
-<span class="w">     </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">900</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">))</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plot</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span><span class="w"> </span><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">7</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sa">L</span><span class="s">&quot;c(t)&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;d(t)&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">     </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;Cumulative Infected&quot;</span><span class="w"> </span><span class="s">&quot;Death Proportion&quot;</span><span class="p">],</span>
+<span class="w">     </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">900</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/seir_model_22_0.svg" src="../_images/seir_model_22_0.svg" /></div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Yellow">┌ Warning: </span>To maintain consistency with solution indexing, keyword argument vars will be removed in a future version. Please use keyword argument idxs instead.
+<span class=" -Color -Color-Bold -Color-Bold-Yellow">│ </span>  caller = ip:0x0
+<span class=" -Color -Color-Bold -Color-Bold-Yellow">└ </span>@ Core :-1
+</pre></div>
+</div>
+<img alt="../_images/seir_model_22_1.svg" src="../_images/seir_model_22_1.svg" /></div>
 </div>
 <p>A few more comments:</p>
 <ul class="simple">
@@ -639,14 +643,14 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 <li><p>See <a class="reference external" href="https://docs.sciml.ai/stable/basics/solution/">here</a> for details on analyzing the solution and extracting the output.</p></li>
 </ul>
 <div class="section" id="experiment-1-constant-reproduction-case">
-<h3><span class="section-number">41.4.1. </span>Experiment 1: Constant Reproduction Case<a class="headerlink" href="#experiment-1-constant-reproduction-case" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">44.4.1. </span>Experiment 1: Constant Reproduction Case<a class="headerlink" href="#experiment-1-constant-reproduction-case" title="Permalink to this headline">¶</a></h3>
 <p>Let’s start with the case where <span class="math notranslate nohighlight">\(\bar{R}_0(t) = R_{0n}\)</span> is constant.</p>
 <p>We calculate the time path of infected people under different assumptions of <span class="math notranslate nohighlight">\(R_{0n}\)</span>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">R₀_n_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">1.6</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="w"></span>
-<span class="n">sols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">solve</span><span class="p">(</span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">,</span><span class="w"> </span><span class="n">p_gen</span><span class="p">(</span><span class="n">R₀_n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R₀_n</span><span class="p">)),</span><span class="w"></span>
-<span class="w">              </span><span class="n">Tsit5</span><span class="p">(),</span><span class="w"> </span><span class="n">saveat</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">R₀_n</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">R₀_n_vals</span><span class="p">];</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">R₀_n_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">1.6</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span>
+<span class="n">sols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">solve</span><span class="p">(</span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">,</span><span class="w"> </span><span class="n">p_gen</span><span class="p">(</span><span class="n">R₀_n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R₀_n</span><span class="p">)),</span>
+<span class="w">              </span><span class="n">Tsit5</span><span class="p">(),</span><span class="w"> </span><span class="n">saveat</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">R₀_n</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">R₀_n_vals</span><span class="p">];</span>
 </pre></div>
 </div>
 </div>
@@ -656,10 +660,10 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 <p>Let’s plot current cases as a fraction of the population.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">permutedims</span><span class="p">([</span><span class="sa">L</span><span class="s">&quot;R_0 = %</span><span class="si">$r</span><span class="s">&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">R₀_n_vals</span><span class="p">])</span><span class="w"></span>
-<span class="n">infecteds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">infecteds</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="o">=</span><span class="ss">:topleft</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i(t)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Current Cases&quot;</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">permutedims</span><span class="p">([</span><span class="sa">L</span><span class="s">&quot;R_0 = %</span><span class="si">$r</span><span class="s">&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">R₀_n_vals</span><span class="p">])</span>
+<span class="n">infecteds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">infecteds</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="o">=</span><span class="ss">:topleft</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span>
+<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i(t)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Current Cases&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -671,9 +675,9 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 <p>Here is cumulative cases, as a fraction of population:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cumulative_infected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="o">:</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">cumulative_infected</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="w"> </span><span class="p">,</span><span class="n">legend</span><span class="o">=</span><span class="ss">:topleft</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;c(t)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Cumulative Cases&quot;</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cumulative_infected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="o">:</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">cumulative_infected</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="w"> </span><span class="p">,</span><span class="n">legend</span><span class="o">=</span><span class="ss">:topleft</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span>
+<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;c(t)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Cumulative Cases&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -682,7 +686,7 @@ rate of the transition probabilities (i.e. the <span class="math notranslate noh
 </div>
 </div>
 <div class="section" id="experiment-2-changing-mitigation">
-<h3><span class="section-number">41.4.2. </span>Experiment 2: Changing Mitigation<a class="headerlink" href="#experiment-2-changing-mitigation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">44.4.2. </span>Experiment 2: Changing Mitigation<a class="headerlink" href="#experiment-2-changing-mitigation" title="Permalink to this headline">¶</a></h3>
 <p>Let’s look at a scenario where mitigation (e.g., social distancing) is
 successively imposed, but the target (maintaining <span class="math notranslate nohighlight">\(R_{0n}\)</span>) is fixed.</p>
 <p>To do this, we start with <span class="math notranslate nohighlight">\(R_0(0) \neq R_{0n}\)</span> and examine the dynamics using the <span class="math notranslate nohighlight">\(\frac{d R_0}{d t} = \eta (R_{0n} - R_0)\)</span> ODE.</p>
@@ -693,8 +697,8 @@ imposed.</p>
 <p>We consider several different rates:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">η_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">100</span><span class="p">]</span><span class="w"></span>
-<span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">permutedims</span><span class="p">([</span><span class="sa">L</span><span class="s">&quot;\eta = %</span><span class="si">$η</span><span class="s">&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">η</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">η_vals</span><span class="p">]);</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">η_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">50</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="o">/</span><span class="mi">100</span><span class="p">]</span>
+<span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">permutedims</span><span class="p">([</span><span class="sa">L</span><span class="s">&quot;\eta = %</span><span class="si">$η</span><span class="s">&quot;</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">η</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">η_vals</span><span class="p">]);</span>
 </pre></div>
 </div>
 </div>
@@ -702,8 +706,8 @@ imposed.</p>
 <p>Let’s calculate the time path of infected people, current cases, and mortality</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">e_0</span><span class="p">,</span><span class="w"> </span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">]</span><span class="w"></span>
-<span class="n">sols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">solve</span><span class="p">(</span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">,</span><span class="w"> </span><span class="n">p_gen</span><span class="p">(</span><span class="n">η</span><span class="o">=</span><span class="n">η</span><span class="p">)),</span><span class="w"> </span><span class="n">Tsit5</span><span class="p">(),</span><span class="w"> </span><span class="n">saveat</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">η</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">η_vals</span><span class="p">];</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">e_0</span><span class="p">,</span><span class="w"> </span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">]</span>
+<span class="n">sols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">solve</span><span class="p">(</span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">,</span><span class="w"> </span><span class="n">p_gen</span><span class="p">(</span><span class="n">η</span><span class="o">=</span><span class="n">η</span><span class="p">)),</span><span class="w"> </span><span class="n">Tsit5</span><span class="p">(),</span><span class="w"> </span><span class="n">saveat</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">η</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">η_vals</span><span class="p">];</span>
 </pre></div>
 </div>
 </div>
@@ -711,9 +715,9 @@ imposed.</p>
 <p>Next, plot the <span class="math notranslate nohighlight">\(R_0\)</span> over time:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Rs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="o">:</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">Rs</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="o">=</span><span class="ss">:topright</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;R_0(t)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Basic Reproduction Number&quot;</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Rs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="o">:</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">Rs</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="o">=</span><span class="ss">:topright</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span>
+<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;R_0(t)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Basic Reproduction Number&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -724,9 +728,9 @@ imposed.</p>
 of infected persons:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">infecteds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">infecteds</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="o">=</span><span class="ss">:topleft</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i(t)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Current Infected&quot;</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">infecteds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">infecteds</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="o">=</span><span class="ss">:topleft</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span>
+<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;i(t)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Current Infected&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -735,9 +739,9 @@ of infected persons:</p>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cumulative_infected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="o">:</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">cumulative_infected</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="w"> </span><span class="p">,</span><span class="n">legend</span><span class="o">=</span><span class="ss">:topleft</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;c(t)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Cumulative Infected&quot;</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">cumulative_infected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="o">:</span><span class="p">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">cumulative_infected</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="n">labels</span><span class="w"> </span><span class="p">,</span><span class="n">legend</span><span class="o">=</span><span class="ss">:topleft</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">,</span>
+<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;c(t)&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Cumulative Infected&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -747,7 +751,7 @@ of infected persons:</p>
 </div>
 </div>
 <div class="section" id="ending-lockdown">
-<h2><a class="toc-backref" href="#id11"><span class="section-number">41.5. </span>Ending Lockdown</a><a class="headerlink" href="#ending-lockdown" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11"><span class="section-number">44.5. </span>Ending Lockdown</a><a class="headerlink" href="#ending-lockdown" title="Permalink to this headline">¶</a></h2>
 <p>The following is inspired by <a class="reference external" href="https://drive.google.com/file/d/1uS7n-7zq5gfSgrL3S0HByExmpq4Bn3oh/view">additional results</a> by Andrew Atkeson on the timing of lifting lockdown.</p>
 <p>Consider these two mitigation scenarios:</p>
 <ol class="simple">
@@ -759,28 +763,28 @@ of infected persons:</p>
 and 75,000 agents already exposed to the virus and thus soon to be contagious.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">R₀_L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="w">  </span><span class="c"># lockdown</span><span class="w"></span>
-<span class="n">R̄₀_lift_early</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">30.0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">R₀_L</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">2.0</span><span class="w"></span>
-<span class="n">R̄₀_lift_late</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">120.0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">R₀_L</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">2.0</span><span class="w"></span>
-<span class="n">p_early</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_gen</span><span class="p">(</span><span class="n">R̄₀</span><span class="o">=</span><span class="w"> </span><span class="n">R̄₀_lift_early</span><span class="p">,</span><span class="w"> </span><span class="n">η</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span><span class="p">)</span><span class="w"></span>
-<span class="n">p_late</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_gen</span><span class="p">(</span><span class="n">R̄₀</span><span class="o">=</span><span class="w"> </span><span class="n">R̄₀_lift_late</span><span class="p">,</span><span class="w"> </span><span class="n">η</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">R₀_L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.5</span><span class="w">  </span><span class="c"># lockdown</span>
+<span class="n">R̄₀_lift_early</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">30.0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">R₀_L</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">2.0</span>
+<span class="n">R̄₀_lift_late</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">120.0</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">R₀_L</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">2.0</span>
+<span class="n">p_early</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_gen</span><span class="p">(</span><span class="n">R̄₀</span><span class="o">=</span><span class="w"> </span><span class="n">R̄₀_lift_early</span><span class="p">,</span><span class="w"> </span><span class="n">η</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span><span class="p">)</span>
+<span class="n">p_late</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p_gen</span><span class="p">(</span><span class="n">R̄₀</span><span class="o">=</span><span class="w"> </span><span class="n">R̄₀_lift_late</span><span class="p">,</span><span class="w"> </span><span class="n">η</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">10.0</span><span class="p">)</span>
 
 
-<span class="c"># initial conditions</span><span class="w"></span>
-<span class="n">i_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25000</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">p_early</span><span class="o">.</span><span class="n">N</span><span class="w"></span>
-<span class="n">e_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">75000</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">p_early</span><span class="o">.</span><span class="n">N</span><span class="w"></span>
-<span class="n">s_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i_0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">e_0</span><span class="w"></span>
+<span class="c"># initial conditions</span>
+<span class="n">i_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25000</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">p_early</span><span class="o">.</span><span class="n">N</span>
+<span class="n">e_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">75000</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">p_early</span><span class="o">.</span><span class="n">N</span>
+<span class="n">s_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i_0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">e_0</span>
 
-<span class="n">x_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">e_0</span><span class="p">,</span><span class="w"> </span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">R₀_L</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">]</span><span class="w"> </span><span class="c"># start in lockdown</span><span class="w"></span>
+<span class="n">x_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">e_0</span><span class="p">,</span><span class="w"> </span><span class="n">i_0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="n">R₀_L</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">]</span><span class="w"> </span><span class="c"># start in lockdown</span>
 
-<span class="c"># create two problems, with rapid movement of R₀(t) towards R̄₀(t)</span><span class="w"></span>
-<span class="n">prob_early</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">,</span><span class="w"> </span><span class="n">p_early</span><span class="p">)</span><span class="w"></span>
-<span class="n">prob_late</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">,</span><span class="w"> </span><span class="n">p_late</span><span class="p">)</span><span class="w"></span>
+<span class="c"># create two problems, with rapid movement of R₀(t) towards R̄₀(t)</span>
+<span class="n">prob_early</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">,</span><span class="w"> </span><span class="n">p_early</span><span class="p">)</span>
+<span class="n">prob_late</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ODEProblem</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">tspan</span><span class="p">,</span><span class="w"> </span><span class="n">p_late</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Cyan">ODEProblem</span> with uType <span class=" -Color -Color-Cyan">Vector{Float64}</span> and tType <span class=" -Color -Color-Cyan">Float64</span>. In-place: <span class=" -Color -Color-Cyan">false</span>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ODEProblem with uType Vector{Float64} and tType Float64. In-place: false
 timespan: (0.0, 550.0)
 u0: 7-element Vector{Float64}:
  0.9996969696969696
@@ -798,10 +802,10 @@ u0: 7-element Vector{Float64}:
 <p>Let’s calculate the paths:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sol_early</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve</span><span class="p">(</span><span class="n">prob_early</span><span class="p">,</span><span class="w"> </span><span class="n">Tsit5</span><span class="p">(),</span><span class="w"> </span><span class="n">tstops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">30.0</span><span class="p">,</span><span class="w"> </span><span class="mf">120.0</span><span class="p">])</span><span class="w"></span>
-<span class="n">sol_late</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve</span><span class="p">(</span><span class="n">prob_late</span><span class="p">,</span><span class="w"> </span><span class="n">Tsit5</span><span class="p">(),</span><span class="w"> </span><span class="n">tstops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">30.0</span><span class="p">,</span><span class="w"> </span><span class="mf">120.0</span><span class="p">])</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">sol_early</span><span class="p">,</span><span class="w"> </span><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">7</span><span class="p">],</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Total Mortality&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lift Early&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">sol_late</span><span class="p">,</span><span class="w"> </span><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">7</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lift Late&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">sol_early</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve</span><span class="p">(</span><span class="n">prob_early</span><span class="p">,</span><span class="w"> </span><span class="n">Tsit5</span><span class="p">(),</span><span class="w"> </span><span class="n">tstops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">30.0</span><span class="p">,</span><span class="w"> </span><span class="mf">120.0</span><span class="p">])</span>
+<span class="n">sol_late</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve</span><span class="p">(</span><span class="n">prob_late</span><span class="p">,</span><span class="w"> </span><span class="n">Tsit5</span><span class="p">(),</span><span class="w"> </span><span class="n">tstops</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">30.0</span><span class="p">,</span><span class="w"> </span><span class="mf">120.0</span><span class="p">])</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">sol_early</span><span class="p">,</span><span class="w"> </span><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">7</span><span class="p">],</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Total Mortality&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lift Early&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">sol_late</span><span class="p">,</span><span class="w"> </span><span class="n">vars</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">7</span><span class="p">],</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lift Late&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -811,10 +815,10 @@ u0: 7-element Vector{Float64}:
 <p>Next we examine the daily deaths, <span class="math notranslate nohighlight">\(\frac{d D(t)}{dt} = N \delta \gamma i(t)\)</span>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">flow_deaths</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">δ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">γ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sol</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">]</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">flow_deaths</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">N</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">δ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">γ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sol</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="o">:</span><span class="p">]</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">sol_early</span><span class="o">.</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">flow_deaths</span><span class="p">(</span><span class="n">sol_early</span><span class="p">,</span><span class="w"> </span><span class="n">p_early</span><span class="p">),</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Flow Deaths&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lift Early&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">plot!</span><span class="p">(</span><span class="n">sol_late</span><span class="o">.</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">flow_deaths</span><span class="p">(</span><span class="n">sol_late</span><span class="p">,</span><span class="w"> </span><span class="n">p_late</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lift Late&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">plot</span><span class="p">(</span><span class="n">sol_early</span><span class="o">.</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">flow_deaths</span><span class="p">(</span><span class="n">sol_early</span><span class="p">,</span><span class="w"> </span><span class="n">p_early</span><span class="p">),</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Flow Deaths&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lift Early&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">sol_late</span><span class="o">.</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">flow_deaths</span><span class="p">(</span><span class="n">sol_late</span><span class="p">,</span><span class="w"> </span><span class="n">p_late</span><span class="p">),</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lift Late&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;t&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -824,7 +828,7 @@ u0: 7-element Vector{Float64}:
 <p>Pushing the peak of curve further into the future may reduce cumulative deaths
 if a vaccine is found, or allow health authorities to better smooth the caseload.</p>
 <div class="section" id="randomness">
-<h3><span class="section-number">41.5.1. </span>Randomness<a class="headerlink" href="#randomness" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">44.5.1. </span>Randomness<a class="headerlink" href="#randomness" title="Permalink to this headline">¶</a></h3>
 <p>Despite its richness, the model above is fully deterministic.  The policy <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> could change over time, but only in predictable ways.</p>
 <p>One way that randomness can lead to aggregate fluctuations is the granularity that comes through the discreteness of individuals.  This topic, the connection between SDEs and the Langevin equations typically used in the approximation of chemical reactions in well-mixed media is explored in further lectures on continuous time Markov chains.</p>
 <p>Instead, in the <a class="reference internal" href="covid_sde.html"><span class="doc">next lecture</span></a>, we will concentrate on randomness that comes from aggregate changes in behavior or policy.</p>
@@ -841,16 +845,16 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.7"
+            mode: "julia-1.8"
         },
         kernelOptions: {
-            kernelName: "julia-1.7",
+            kernelName: "julia-1.8",
             path: "./continuous_time"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.7'</script>
+    <script>kernelName = 'julia-1.8'</script>
 
                     </div>
                     
@@ -994,33 +998,60 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   18. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   19. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   20. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   21. A First Look at the Kalman Filter
+   18. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   22. Numerical Linear Algebra and Factorizations
+   19. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   23. Krylov Methods and Matrix Conditioning
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
   </a>
  </li>
 </ul>
@@ -1031,88 +1062,83 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/short_path.html">
-   24. Shortest Paths
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   25. Job Search I: The McCall Search Model
+   28. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   26. Job Search II: Search and Separation
+   29. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   27. A Problem that Stumped Milton Friedman
+   30. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   28. Job Search III: Search with Learning
+   31. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   29. Job Search IV: Modeling Career Choice
+   32. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   30. Job Search V: On-the-Job Search
+   33. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   31. Optimal Growth I: The Stochastic Optimal Growth Model
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   32. Optimal Growth II: Time Iteration
+   35. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   33. Optimal Growth III: The Endogenous Grid Method
+   36. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   34. LQ Dynamic Programming Problems
+   37. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   35. Optimal Savings I: The Permanent Income Model
+   38. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   36. Optimal Savings II: LQ Techniques
+   39. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   38. Optimal Savings III: Occasionally Binding Constraints
+   41. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   39. Robustness
+   42. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   40. Discrete State Dynamic Programming
+   43. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -1124,12 +1150,12 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 <ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   41. Modeling COVID 19 with Differential Equations
+   44. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="covid_sde.html">
-   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1141,57 +1167,57 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   43. Schelling’s Segregation Model
+   46. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   44. A Lake Model of Employment and Unemployment
+   47. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   45. Rational Expectations Equilibrium
+   48. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   46. Markov Perfect Equilibrium
+   49. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   47. Asset Pricing I: Finite State Models
+   50. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   48. Asset Pricing II: The Lucas Asset Pricing Model
+   51. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   49. Asset Pricing III:  Incomplete Markets
+   52. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   50. Uncertainty Traps
+   53. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   51. The Aiyagari Model
+   54. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   52. Default Risk and Income Fluctuations
+   55. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   53. Globalization and Cycles
+   56. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1203,32 +1229,32 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   54. Covariance Stationary Processes
+   57. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   55. Estimation of Spectra
+   58. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   56. Additive Functionals
+   59. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   57. Multiplicative Functionals
+   60. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   58. Classical Control with Linear Algebra
+   61. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   59. Classical Filtering With Linear Algebra
+   62. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1240,22 +1266,22 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   60. Dynamic Stackelberg Problems
+   63. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   61. Optimal Taxation in an LQ Economy
+   64. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   62. Optimal Taxation with State-Contingent Debt
+   65. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   63. Optimal Taxation without State-Contingent Debt
+   66. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1267,22 +1293,22 @@ if a vaccine is found, or allow health authorities to better smooth the caseload
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   64. About these Lectures
+   67. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   65. Troubleshooting
+   68. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   66. References
+   69. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Execution Statistics
+   70. Execution Statistics
   </a>
  </li>
 </ul>

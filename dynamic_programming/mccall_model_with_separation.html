@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>26. Job Search II: Search and Separation &#8212; Quantitative Economics with Julia</title>
+    <title>29. Job Search II: Search and Separation &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -88,21 +88,20 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
-    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/dynamic_programming/mccall_model_with_separation.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="27. A Problem that Stumped Milton Friedman" href="wald_friedman.html" />
-    <link rel="prev" title="25. Job Search I: The McCall Search Model" href="mccall_model.html" />
+    <link rel="next" title="30. A Problem that Stumped Milton Friedman" href="wald_friedman.html" />
+    <link rel="prev" title="28. Job Search I: The McCall Search Model" href="mccall_model.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -152,95 +151,95 @@
                             <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#overview">
-   26.1. Overview
+   29.1. Overview
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#the-model">
-   26.2. The Model
+   29.2. The Model
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#timing-and-decisions">
-     26.2.1. Timing and Decisions
+     29.2.1. Timing and Decisions
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solving-the-model-using-dynamic-programming">
-   26.3. Solving the Model using Dynamic Programming
+   29.3. Solving the Model using Dynamic Programming
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#stochastic-offers">
-     26.3.1. Stochastic Offers
+     29.3.1. Stochastic Offers
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#solving-the-bellman-equations">
-     26.3.2. Solving the Bellman Equations
+     29.3.2. Solving the Bellman Equations
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#implementation">
-   26.4. Implementation
+   29.4. Implementation
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#the-reservation-wage">
-   26.5. The Reservation Wage
+   29.5. The Reservation Wage
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-reservation-wage-and-unemployment-compensation">
-     26.5.1. The Reservation Wage and Unemployment Compensation
+     29.5.1. The Reservation Wage and Unemployment Compensation
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-reservation-wage-and-discounting">
-     26.5.2. The Reservation Wage and Discounting
+     29.5.2. The Reservation Wage and Discounting
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#the-reservation-wage-and-job-destruction">
-     26.5.3. The Reservation Wage and Job Destruction
+     29.5.3. The Reservation Wage and Job Destruction
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#exercises">
-   26.6. Exercises
+   29.6. Exercises
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-1">
-     26.6.1. Exercise 1
+     29.6.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#exercise-2">
-     26.6.2. Exercise 2
+     29.6.2. Exercise 2
     </a>
    </li>
   </ul>
  </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#solutions">
-   26.7. Solutions
+   29.7. Solutions
   </a>
   <ul class="nav section-nav flex-column">
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id2">
-     26.7.1. Exercise 1
+     29.7.1. Exercise 1
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#id3">
-     26.7.2. Exercise 2
+     29.7.2. Exercise 2
     </a>
    </li>
   </ul>
@@ -295,7 +294,7 @@
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><div class="tex2jax_ignore mathjax_ignore section" id="job-search-ii-search-and-separation">
-<h1><a class="toc-backref" href="#id4"><span class="section-number">26. </span>Job Search II: Search and Separation</a><a class="headerlink" href="#job-search-ii-search-and-separation" title="Permalink to this headline">¶</a></h1>
+<h1><a class="toc-backref" href="#id4"><span class="section-number">29. </span>Job Search II: Search and Separation</a><a class="headerlink" href="#job-search-ii-search-and-separation" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
 <span id="index-0"></span><p class="topic-title">Contents</p>
 <ul class="simple">
@@ -313,8 +312,8 @@
 </ul>
 </div>
 <div class="section" id="overview">
-<h2><a class="toc-backref" href="#id5"><span class="section-number">26.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
-<p>Previously <a class="reference internal" href="mccall_model.html"><span class="doc">we looked</span></a> at the McCall job search model <span id="id1">[<a class="reference internal" href="../zreferences.html#id107">McC70</a>]</span> as a way of understanding unemployment and worker decisions.</p>
+<h2><a class="toc-backref" href="#id5"><span class="section-number">29.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Previously <a class="reference internal" href="mccall_model.html"><span class="doc">we looked</span></a> at the McCall job search model <span id="id1">[<a class="reference internal" href="../zreferences.html#id109" title="J J McCall. Economics of Information and Job Search. The Quarterly Journal of Economics, 84(1):113–126, 1970.">McC70</a>]</span> as a way of understanding unemployment and worker decisions.</p>
 <p>One unrealistic feature of the model is that every job is permanent.</p>
 <p>In this lecture we extend the McCall model by introducing job separation.</p>
 <p>Once separation enters the picture, the agent comes to view</p>
@@ -324,15 +323,15 @@
 </ul>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="w"></span>
-<span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">Expectations</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Parameters</span><span class="p">,</span><span class="w"> </span><span class="n">NLsolve</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">Expectations</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Parameters</span><span class="p">,</span><span class="w"> </span><span class="n">NLsolve</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="the-model">
-<h2><a class="toc-backref" href="#id6"><span class="section-number">26.2. </span>The Model</a><a class="headerlink" href="#the-model" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id6"><span class="section-number">29.2. </span>The Model</a><a class="headerlink" href="#the-model" title="Permalink to this headline">¶</a></h2>
 <p>The model concerns the life of an infinitely lived worker and</p>
 <ul class="simple">
 <li><p>the opportunities he or she (let’s say he to save one character) has to work at different wages</p></li>
@@ -342,12 +341,12 @@
 <p>The worker can be in one of two states: employed or unemployed.</p>
 <p>He wants to maximize</p>
 <div class="math notranslate nohighlight" id="equation-objective">
-<span class="eqno">(26.1)<a class="headerlink" href="#equation-objective" title="Permalink to this equation">¶</a></span>\[{\mathbb E} \sum_{t=0}^\infty \beta^t u(Y_t)\]</div>
+<span class="eqno">(29.1)<a class="headerlink" href="#equation-objective" title="Permalink to this equation">¶</a></span>\[{\mathbb E} \sum_{t=0}^\infty \beta^t u(Y_t)\]</div>
 <p>The only difference from the <a class="reference internal" href="mccall_model.html"><span class="doc">baseline model</span></a> is that
 we’ve added some flexibility over preferences by introducing a utility function <span class="math notranslate nohighlight">\(u\)</span>.</p>
 <p>It satisfies <span class="math notranslate nohighlight">\(u'&gt; 0\)</span> and <span class="math notranslate nohighlight">\(u'' &lt; 0\)</span>.</p>
 <div class="section" id="timing-and-decisions">
-<h3><span class="section-number">26.2.1. </span>Timing and Decisions<a class="headerlink" href="#timing-and-decisions" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">29.2.1. </span>Timing and Decisions<a class="headerlink" href="#timing-and-decisions" title="Permalink to this headline">¶</a></h3>
 <p>Here’s what happens at the start of a given period in our model with search and separation.</p>
 <p>If currently <em>employed</em>, the worker consumes his wage <span class="math notranslate nohighlight">\(w\)</span>, receiving utility <span class="math notranslate nohighlight">\(u(w)\)</span>.</p>
 <p>If currently <em>unemployed</em>, he</p>
@@ -364,34 +363,34 @@ up in a <a class="reference internal" href="jv.html"><span class="doc">later lec
 </div>
 </div>
 <div class="section" id="solving-the-model-using-dynamic-programming">
-<h2><a class="toc-backref" href="#id7"><span class="section-number">26.3. </span>Solving the Model using Dynamic Programming</a><a class="headerlink" href="#solving-the-model-using-dynamic-programming" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7"><span class="section-number">29.3. </span>Solving the Model using Dynamic Programming</a><a class="headerlink" href="#solving-the-model-using-dynamic-programming" title="Permalink to this headline">¶</a></h2>
 <p>Let</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(V(w)\)</span> be the total lifetime value accruing to a worker who enters the current period <em>employed</em> with wage <span class="math notranslate nohighlight">\(w\)</span>.</p></li>
 <li><p><span class="math notranslate nohighlight">\(U\)</span> be the total lifetime value accruing to a worker who is <em>unemployed</em> this period.</p></li>
 </ul>
-<p>Here <em>value</em> means the value of the objective function <a class="reference internal" href="#equation-objective">(26.1)</a> when the worker makes optimal decisions at all future points in time.</p>
+<p>Here <em>value</em> means the value of the objective function <a class="reference internal" href="#equation-objective">(29.1)</a> when the worker makes optimal decisions at all future points in time.</p>
 <p>Suppose for now that the worker can calculate the function <span class="math notranslate nohighlight">\(V\)</span> and the constant <span class="math notranslate nohighlight">\(U\)</span> and use them in his decision making.</p>
 <p>Then <span class="math notranslate nohighlight">\(V\)</span> and <span class="math notranslate nohighlight">\(U\)</span>  should satisfy</p>
 <div class="math notranslate nohighlight" id="equation-bell1-mccall">
-<span class="eqno">(26.2)<a class="headerlink" href="#equation-bell1-mccall" title="Permalink to this equation">¶</a></span>\[V(w) = u(w) + \beta [(1-\alpha)V(w) + \alpha U ]\]</div>
+<span class="eqno">(29.2)<a class="headerlink" href="#equation-bell1-mccall" title="Permalink to this equation">¶</a></span>\[V(w) = u(w) + \beta [(1-\alpha)V(w) + \alpha U ]\]</div>
 <p>and</p>
 <div class="math notranslate nohighlight" id="equation-bell2-mccall">
-<span class="eqno">(26.3)<a class="headerlink" href="#equation-bell2-mccall" title="Permalink to this equation">¶</a></span>\[U = u(c) + \beta \sum_i \max \left\{ U, V(w_i) \right\} p_i\]</div>
+<span class="eqno">(29.3)<a class="headerlink" href="#equation-bell2-mccall" title="Permalink to this equation">¶</a></span>\[U = u(c) + \beta \sum_i \max \left\{ U, V(w_i) \right\} p_i\]</div>
 <p>Let’s interpret these two equations in light of the fact that today’s tomorrow is tomorrow’s today.</p>
 <ul class="simple">
-<li><p>The left hand sides of equations <a class="reference internal" href="#equation-bell1-mccall">(26.2)</a> and <a class="reference internal" href="#equation-bell2-mccall">(26.3)</a> are the values of a worker in a particular situation <em>today</em>.</p></li>
+<li><p>The left hand sides of equations <a class="reference internal" href="#equation-bell1-mccall">(29.2)</a> and <a class="reference internal" href="#equation-bell2-mccall">(29.3)</a> are the values of a worker in a particular situation <em>today</em>.</p></li>
 <li><p>The right hand sides of the equations are the discounted (by <span class="math notranslate nohighlight">\(\beta\)</span>) expected values of the possible situations that worker can be in <em>tomorrow</em>.</p></li>
 <li><p>But <em>tomorrow</em> the worker can be in only one of the situations whose values <em>today</em> are on the left sides of our two equations.</p></li>
 </ul>
-<p>Equation <a class="reference internal" href="#equation-bell2-mccall">(26.3)</a> incorporates the fact that a currently unemployed worker will maximize his own welfare.</p>
+<p>Equation <a class="reference internal" href="#equation-bell2-mccall">(29.3)</a> incorporates the fact that a currently unemployed worker will maximize his own welfare.</p>
 <p>In particular, if his next period wage offer is <span class="math notranslate nohighlight">\(w'\)</span>, he will choose to remain unemployed unless  <span class="math notranslate nohighlight">\(U &lt; V(w')\)</span>.</p>
-<p>Equations <a class="reference internal" href="#equation-bell1-mccall">(26.2)</a> and <a class="reference internal" href="#equation-bell2-mccall">(26.3)</a> are the Bellman equations
+<p>Equations <a class="reference internal" href="#equation-bell1-mccall">(29.2)</a> and <a class="reference internal" href="#equation-bell2-mccall">(29.3)</a> are the Bellman equations
 for this model.</p>
-<p>Equations <a class="reference internal" href="#equation-bell1-mccall">(26.2)</a> and <a class="reference internal" href="#equation-bell2-mccall">(26.3)</a> provide enough information to solve out for both <span class="math notranslate nohighlight">\(V\)</span> and <span class="math notranslate nohighlight">\(U\)</span>.</p>
+<p>Equations <a class="reference internal" href="#equation-bell1-mccall">(29.2)</a> and <a class="reference internal" href="#equation-bell2-mccall">(29.3)</a> provide enough information to solve out for both <span class="math notranslate nohighlight">\(V\)</span> and <span class="math notranslate nohighlight">\(U\)</span>.</p>
 <p>Before discussing this, however, let’s make a small extension to the model.</p>
 <div class="section" id="stochastic-offers">
-<h3><span class="section-number">26.3.1. </span>Stochastic Offers<a class="headerlink" href="#stochastic-offers" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">29.3.1. </span>Stochastic Offers<a class="headerlink" href="#stochastic-offers" title="Permalink to this headline">¶</a></h3>
 <p>Let’s suppose now that unemployed workers don’t always receive job offers.</p>
 <p>Instead, let’s suppose that unemployed workers only receive an offer with probability <span class="math notranslate nohighlight">\(\gamma\)</span>.</p>
 <p>If our worker does receive an offer, the wage offer is drawn from <span class="math notranslate nohighlight">\(p\)</span> as before.</p>
@@ -399,88 +398,87 @@ for this model.</p>
 <p>Otherwise the model is the same.</p>
 <p>With some thought, you  will be able to convince yourself that <span class="math notranslate nohighlight">\(V\)</span> and <span class="math notranslate nohighlight">\(U\)</span>  should now satisfy</p>
 <div class="math notranslate nohighlight" id="equation-bell01-mccall">
-<span class="eqno">(26.4)<a class="headerlink" href="#equation-bell01-mccall" title="Permalink to this equation">¶</a></span>\[V(w) = u(w) + \beta [(1-\alpha)V(w) + \alpha U ]\]</div>
+<span class="eqno">(29.4)<a class="headerlink" href="#equation-bell01-mccall" title="Permalink to this equation">¶</a></span>\[V(w) = u(w) + \beta [(1-\alpha)V(w) + \alpha U ]\]</div>
 <p>and</p>
 <div class="math notranslate nohighlight" id="equation-bell02-mccall">
-<span class="eqno">(26.5)<a class="headerlink" href="#equation-bell02-mccall" title="Permalink to this equation">¶</a></span>\[U = u(c) +
+<span class="eqno">(29.5)<a class="headerlink" href="#equation-bell02-mccall" title="Permalink to this equation">¶</a></span>\[U = u(c) +
   \beta (1 - \gamma) U +
   \beta \gamma \sum_i \max \left\{ U, V(w_i) \right\} p_i\]</div>
 </div>
 <div class="section" id="solving-the-bellman-equations">
-<h3><span class="section-number">26.3.2. </span>Solving the Bellman Equations<a class="headerlink" href="#solving-the-bellman-equations" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">29.3.2. </span>Solving the Bellman Equations<a class="headerlink" href="#solving-the-bellman-equations" title="Permalink to this headline">¶</a></h3>
 <p>We’ll use the same iterative approach to solving the Bellman equations that we
 adopted in the <a class="reference internal" href="mccall_model.html"><span class="doc">first job search lecture</span></a>.</p>
 <p>Here this amounts to</p>
 <ol class="simple">
 <li><p>make guesses for <span class="math notranslate nohighlight">\(U\)</span> and <span class="math notranslate nohighlight">\(V\)</span></p></li>
-<li><p>plug these guesses into the right hand sides of <a class="reference internal" href="#equation-bell01-mccall">(26.4)</a> and <a class="reference internal" href="#equation-bell02-mccall">(26.5)</a></p></li>
+<li><p>plug these guesses into the right hand sides of <a class="reference internal" href="#equation-bell01-mccall">(29.4)</a> and <a class="reference internal" href="#equation-bell02-mccall">(29.5)</a></p></li>
 <li><p>update the left hand sides from this rule and then repeat</p></li>
 </ol>
 <p>In other words, we are iterating using the rules</p>
 <div class="math notranslate nohighlight" id="equation-bell1001">
-<span class="eqno">(26.6)<a class="headerlink" href="#equation-bell1001" title="Permalink to this equation">¶</a></span>\[V_{n+1} (w_i) = u(w_i) + \beta [(1-\alpha)V_n (w_i) + \alpha U_n ]\]</div>
+<span class="eqno">(29.6)<a class="headerlink" href="#equation-bell1001" title="Permalink to this equation">¶</a></span>\[V_{n+1} (w_i) = u(w_i) + \beta [(1-\alpha)V_n (w_i) + \alpha U_n ]\]</div>
 <p>and</p>
 <div class="math notranslate nohighlight" id="equation-bell2001">
-<span class="eqno">(26.7)<a class="headerlink" href="#equation-bell2001" title="Permalink to this equation">¶</a></span>\[U_{n+1} = u(c) +
+<span class="eqno">(29.7)<a class="headerlink" href="#equation-bell2001" title="Permalink to this equation">¶</a></span>\[U_{n+1} = u(c) +
     \beta (1 - \gamma) U_n +
     \beta \gamma \sum_i \max \{ U_n, V_n(w_i) \} p_i\]</div>
 <p>starting from some initial conditions <span class="math notranslate nohighlight">\(U_0, V_0\)</span>.</p>
 <p>Formally, we can define a “Bellman operator” T which maps:</p>
 <div class="math notranslate nohighlight" id="equation-bellman-operator">
-<span class="eqno">(26.8)<a class="headerlink" href="#equation-bellman-operator" title="Permalink to this equation">¶</a></span>\[TV(\cdot) = u(\cdot) + \beta  (1-\alpha)V(\cdot) + \alpha U\]</div>
+<span class="eqno">(29.8)<a class="headerlink" href="#equation-bellman-operator" title="Permalink to this equation">¶</a></span>\[TV(\cdot) = u(\cdot) + \beta  (1-\alpha)V(\cdot) + \alpha U\]</div>
 <p>In which case we are searching for a fixed point</p>
 <div class="math notranslate nohighlight" id="equation-bellman-operator-fp">
-<span class="eqno">(26.9)<a class="headerlink" href="#equation-bellman-operator-fp" title="Permalink to this equation">¶</a></span>\[TV^{*} = V^*\]</div>
+<span class="eqno">(29.9)<a class="headerlink" href="#equation-bellman-operator-fp" title="Permalink to this equation">¶</a></span>\[TV^{*} = V^*\]</div>
 <p>As before, the system always converges to the true solutions—in this case,
-the <span class="math notranslate nohighlight">\(V\)</span> and <span class="math notranslate nohighlight">\(U\)</span> that solve <a class="reference internal" href="#equation-bell01-mccall">(26.4)</a> and <a class="reference internal" href="#equation-bell02-mccall">(26.5)</a>.</p>
+the <span class="math notranslate nohighlight">\(V\)</span> and <span class="math notranslate nohighlight">\(U\)</span> that solve <a class="reference internal" href="#equation-bell01-mccall">(29.4)</a> and <a class="reference internal" href="#equation-bell02-mccall">(29.5)</a>.</p>
 <p>A proof can be obtained via the Banach contraction mapping theorem.</p>
 </div>
 </div>
 <div class="section" id="implementation">
-<h2><a class="toc-backref" href="#id8"><span class="section-number">26.4. </span>Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id8"><span class="section-number">29.4. </span>Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
 <p>Let’s implement this iterative process</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Expectations</span><span class="p">,</span><span class="w"> </span><span class="n">Parameters</span><span class="p">,</span><span class="w"> </span><span class="n">NLsolve</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Expectations</span><span class="p">,</span><span class="w"> </span><span class="n">Parameters</span><span class="p">,</span><span class="w"> </span><span class="n">NLsolve</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span>
 
-<span class="k">function</span><span class="w"> </span><span class="n">solve_mccall_model</span><span class="p">(</span><span class="n">mcm</span><span class="p">;</span><span class="w"> </span><span class="n">U_iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">V_iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">mcm</span><span class="o">.</span><span class="n">w</span><span class="p">)),</span><span class="w"> </span><span class="n">tol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e-5</span><span class="p">,</span><span class="w"></span>
-<span class="w">                            </span><span class="n">iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2_000</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="c"># α, β, σ, c, γ, w = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ, mcm.w</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@unpack</span><span class="w"> </span><span class="n">α</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">γ</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">dist</span><span class="p">,</span><span class="w"> </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mcm</span><span class="w"></span>
+<span class="k">function</span><span class="w"> </span><span class="n">solve_mccall_model</span><span class="p">(</span><span class="n">mcm</span><span class="p">;</span><span class="w"> </span><span class="n">U_iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="n">V_iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">mcm</span><span class="o">.</span><span class="n">w</span><span class="p">)),</span><span class="w"> </span><span class="n">tol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1e-5</span><span class="p">,</span>
+<span class="w">                            </span><span class="n">iter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2_000</span><span class="p">)</span>
+<span class="w">    </span><span class="p">(;</span><span class="w"> </span><span class="n">α</span><span class="p">,</span><span class="w"> </span><span class="n">β</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">,</span><span class="w"> </span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">γ</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">dist</span><span class="p">,</span><span class="w"> </span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mcm</span>
 
-<span class="w">    </span><span class="c"># parameter validation</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@assert</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0</span><span class="w"></span>
-<span class="w">    </span><span class="nd">@assert</span><span class="w"> </span><span class="n">minimum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="c"># perhaps not strictly necessary, but useful here</span><span class="w"></span>
+<span class="w">    </span><span class="c"># parameter validation</span>
+<span class="w">    </span><span class="nd">@assert</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">    </span><span class="nd">@assert</span><span class="w"> </span><span class="n">minimum</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="c"># perhaps not strictly necessary, but useful here</span>
 
-<span class="w">    </span><span class="c"># necessary objects</span><span class="w"></span>
-<span class="w">    </span><span class="n">u_w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="o">.</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">u_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expectation</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span><span class="w"> </span><span class="c"># expectation operator for wage distribution</span><span class="w"></span>
+<span class="w">    </span><span class="c"># necessary objects</span>
+<span class="w">    </span><span class="n">u_w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="o">.</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span>
+<span class="w">    </span><span class="n">u_c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span>
+<span class="w">    </span><span class="n">E</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expectation</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span><span class="w"> </span><span class="c"># expectation operator for wage distribution</span>
 
-<span class="w">    </span><span class="c"># Bellman operator T. Fixed point is x* s.t. T(x*) = x*</span><span class="w"></span>
-<span class="w">    </span><span class="k">function</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"></span>
-<span class="w">        </span><span class="n">V</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"></span>
-<span class="w">        </span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="p">]</span><span class="w"></span>
-<span class="w">        </span><span class="p">[</span><span class="n">u_w</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">((</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">α</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">U</span><span class="p">);</span><span class="w"> </span><span class="n">u_c</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">γ</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">U</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">γ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">max</span><span class="o">.</span><span class="p">(</span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">)]</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="c"># Bellman operator T. Fixed point is x* s.t. T(x*) = x*</span>
+<span class="w">    </span><span class="k">function</span><span class="w"> </span><span class="n">T</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">        </span><span class="n">V</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="w">        </span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
+<span class="w">        </span><span class="p">[</span><span class="n">u_w</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">((</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">α</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">V</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">U</span><span class="p">);</span><span class="w"> </span><span class="n">u_c</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">γ</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">U</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">β</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">γ</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">max</span><span class="o">.</span><span class="p">(</span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">V</span><span class="p">)]</span>
+<span class="w">    </span><span class="k">end</span>
 
-<span class="w">    </span><span class="c"># value function iteration</span><span class="w"></span>
-<span class="w">    </span><span class="n">x_iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">V_iv</span><span class="p">;</span><span class="w"> </span><span class="n">U_iv</span><span class="p">]</span><span class="w"> </span><span class="c"># initial x val</span><span class="w"></span>
-<span class="w">    </span><span class="n">xstar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fixedpoint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">x_iv</span><span class="p">,</span><span class="w"> </span><span class="n">iterations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iter</span><span class="p">,</span><span class="w"> </span><span class="n">xtol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tol</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">zero</span><span class="w"></span>
-<span class="w">    </span><span class="n">V</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xstar</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"></span>
-<span class="w">    </span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xstar</span><span class="p">[</span><span class="k">end</span><span class="p">]</span><span class="w"></span>
+<span class="w">    </span><span class="c"># value function iteration</span>
+<span class="w">    </span><span class="n">x_iv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">V_iv</span><span class="p">;</span><span class="w"> </span><span class="n">U_iv</span><span class="p">]</span><span class="w"> </span><span class="c"># initial x val</span>
+<span class="w">    </span><span class="n">xstar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fixedpoint</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">x_iv</span><span class="p">,</span><span class="w"> </span><span class="n">iterations</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">iter</span><span class="p">,</span><span class="w"> </span><span class="n">xtol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tol</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">zero</span>
+<span class="w">    </span><span class="n">V</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xstar</span><span class="p">[</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="w">    </span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">xstar</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
 
-<span class="w">    </span><span class="c"># compute the reservation wage</span><span class="w"></span>
-<span class="w">    </span><span class="n">wbarindex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">searchsortedfirst</span><span class="p">(</span><span class="n">V</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"></span>
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">wbarindex</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="c"># if this is true, you never want to accept</span><span class="w"></span>
-<span class="w">        </span><span class="n">w̄</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Inf</span><span class="w"></span>
-<span class="w">    </span><span class="k">else</span><span class="w"></span>
-<span class="w">        </span><span class="n">w̄</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w</span><span class="p">[</span><span class="n">wbarindex</span><span class="p">]</span><span class="w"> </span><span class="c"># otherwise, return the number</span><span class="w"></span>
-<span class="w">    </span><span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="c"># compute the reservation wage</span>
+<span class="w">    </span><span class="n">wbarindex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">searchsortedfirst</span><span class="p">(</span><span class="n">V</span><span class="w"> </span><span class="o">.-</span><span class="w"> </span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">wbarindex</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="c"># if this is true, you never want to accept</span>
+<span class="w">        </span><span class="n">w̄</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Inf</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="n">w̄</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w</span><span class="p">[</span><span class="n">wbarindex</span><span class="p">]</span><span class="w"> </span><span class="c"># otherwise, return the number</span>
+<span class="w">    </span><span class="k">end</span>
 
-<span class="w">    </span><span class="c"># return a NamedTuple, so we can select values by name</span><span class="w"></span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">V</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">w̄</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w̄</span><span class="p">)</span><span class="w"></span>
-<span class="k">end</span><span class="w"></span>
+<span class="w">    </span><span class="c"># return a NamedTuple, so we can select values by name</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">V</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">w̄</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w̄</span><span class="p">)</span>
+<span class="k">end</span>
 </pre></div>
 </div>
 </div>
@@ -496,37 +494,37 @@ the <span class="math notranslate nohighlight">\(V\)</span> and <span class="mat
 <p>We’ll use the default parameterizations found in the code above.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># a default utility function</span><span class="w"></span>
-<span class="n">u</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># a default utility function</span>
+<span class="n">u</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="o">^</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">σ</span><span class="p">)</span>
 
-<span class="c"># model constructor</span><span class="w"></span>
-<span class="n">McCallModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@with_kw</span><span class="w"> </span><span class="p">(</span><span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">β</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.98</span><span class="p">,</span><span class="w"> </span><span class="c"># discount rate</span><span class="w"></span>
-<span class="w">    </span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">6.0</span><span class="p">,</span><span class="w"> </span><span class="c"># unemployment compensation</span><span class="w"></span>
-<span class="w">    </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="c"># utility function</span><span class="w"></span>
-<span class="w">    </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">60</span><span class="p">),</span><span class="w"> </span><span class="c"># wage values</span><span class="w"></span>
-<span class="w">    </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BetaBinomial</span><span class="p">(</span><span class="mi">59</span><span class="p">,</span><span class="w"> </span><span class="mi">600</span><span class="p">,</span><span class="w"> </span><span class="mi">400</span><span class="p">))</span><span class="w"> </span><span class="c"># distribution over wage values</span><span class="w"></span>
+<span class="c"># model constructor</span>
+<span class="n">McCallModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nd">@with_kw</span><span class="w"> </span><span class="p">(</span><span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.2</span><span class="p">,</span>
+<span class="w">    </span><span class="n">β</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.98</span><span class="p">,</span><span class="w"> </span><span class="c"># discount rate</span>
+<span class="w">    </span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span>
+<span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">6.0</span><span class="p">,</span><span class="w"> </span><span class="c"># unemployment compensation</span>
+<span class="w">    </span><span class="n">σ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">    </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="c"># utility function</span>
+<span class="w">    </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">60</span><span class="p">),</span><span class="w"> </span><span class="c"># wage values</span>
+<span class="w">    </span><span class="n">dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BetaBinomial</span><span class="p">(</span><span class="mi">59</span><span class="p">,</span><span class="w"> </span><span class="mi">600</span><span class="p">,</span><span class="w"> </span><span class="mi">400</span><span class="p">))</span><span class="w"> </span><span class="c"># distribution over wage values</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##NamedTuple_kw#275 (generic function with 2 methods)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>##NamedTuple_kw#312 (generic function with 2 methods)
 </pre></div>
 </div>
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># plots setting</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># plots setting</span>
 
 
-<span class="n">mcm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">McCallModel</span><span class="p">()</span><span class="w"></span>
-<span class="nd">@unpack</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">U</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve_mccall_model</span><span class="p">(</span><span class="n">mcm</span><span class="p">)</span><span class="w"></span>
-<span class="n">U_vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fill</span><span class="p">(</span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">mcm</span><span class="o">.</span><span class="n">w</span><span class="p">))</span><span class="w"></span>
+<span class="n">mcm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">McCallModel</span><span class="p">()</span>
+<span class="p">(;</span><span class="w"> </span><span class="n">V</span><span class="p">,</span><span class="w"> </span><span class="n">U</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve_mccall_model</span><span class="p">(</span><span class="n">mcm</span><span class="p">)</span>
+<span class="n">U_vec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fill</span><span class="p">(</span><span class="n">U</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">mcm</span><span class="o">.</span><span class="n">w</span><span class="p">))</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">mcm</span><span class="o">.</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">V</span><span class="w"> </span><span class="n">U_vec</span><span class="p">],</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sa">L</span><span class="s">&quot;V&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;U&quot;</span><span class="p">])</span><span class="w"></span>
+<span class="n">plot</span><span class="p">(</span><span class="n">mcm</span><span class="o">.</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">V</span><span class="w"> </span><span class="n">U_vec</span><span class="p">],</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="sa">L</span><span class="s">&quot;V&quot;</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;U&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -538,7 +536,7 @@ the <span class="math notranslate nohighlight">\(V\)</span> and <span class="mat
 <p>These calculations, called comparative statics, are performed in the next section.</p>
 </div>
 <div class="section" id="the-reservation-wage">
-<h2><a class="toc-backref" href="#id9"><span class="section-number">26.5. </span>The Reservation Wage</a><a class="headerlink" href="#the-reservation-wage" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id9"><span class="section-number">29.5. </span>The Reservation Wage</a><a class="headerlink" href="#the-reservation-wage" title="Permalink to this headline">¶</a></h2>
 <p>Once <span class="math notranslate nohighlight">\(V\)</span> and <span class="math notranslate nohighlight">\(U\)</span> are known, the agent can use them to make decisions in the face of a given wage offer.</p>
 <p>If <span class="math notranslate nohighlight">\(V(w) &gt; U\)</span>, then working at wage <span class="math notranslate nohighlight">\(w\)</span> is preferred to unemployment.</p>
 <p>If <span class="math notranslate nohighlight">\(V(w) &lt; U\)</span>, then remaining unemployed will generate greater lifetime value.</p>
@@ -554,7 +552,7 @@ the <span class="math notranslate nohighlight">\(V\)</span> and <span class="mat
 <p>Let’s use it to look at how the reservation wage varies with parameters.</p>
 <p>In each instance below we’ll show you a figure and then ask you to reproduce it in the exercises.</p>
 <div class="section" id="the-reservation-wage-and-unemployment-compensation">
-<h3><span class="section-number">26.5.1. </span>The Reservation Wage and Unemployment Compensation<a class="headerlink" href="#the-reservation-wage-and-unemployment-compensation" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">29.5.1. </span>The Reservation Wage and Unemployment Compensation<a class="headerlink" href="#the-reservation-wage-and-unemployment-compensation" title="Permalink to this headline">¶</a></h3>
 <p>First, let’s look at how <span class="math notranslate nohighlight">\(\bar w\)</span> varies with unemployment compensation.</p>
 <p>In the figure below, we use the default parameters in the McCallModel tuple, apart from
 c (which takes the values given on the horizontal axis)</p>
@@ -565,7 +563,7 @@ c (which takes the values given on the horizontal axis)</p>
 <p>In effect, the cost of continuing job search is reduced.</p>
 </div>
 <div class="section" id="the-reservation-wage-and-discounting">
-<h3><span class="section-number">26.5.2. </span>The Reservation Wage and Discounting<a class="headerlink" href="#the-reservation-wage-and-discounting" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">29.5.2. </span>The Reservation Wage and Discounting<a class="headerlink" href="#the-reservation-wage-and-discounting" title="Permalink to this headline">¶</a></h3>
 <p>Next let’s investigate how <span class="math notranslate nohighlight">\(\bar w\)</span> varies with the discount rate.</p>
 <p>The next figure plots the reservation wage associated with different values of
 <span class="math notranslate nohighlight">\(\beta\)</span></p>
@@ -575,7 +573,7 @@ c (which takes the values given on the horizontal axis)</p>
 <p>Again, the results are intuitive: More patient workers will hold out for higher wages.</p>
 </div>
 <div class="section" id="the-reservation-wage-and-job-destruction">
-<h3><span class="section-number">26.5.3. </span>The Reservation Wage and Job Destruction<a class="headerlink" href="#the-reservation-wage-and-job-destruction" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">29.5.3. </span>The Reservation Wage and Job Destruction<a class="headerlink" href="#the-reservation-wage-and-job-destruction" title="Permalink to this headline">¶</a></h3>
 <p>Finally, let’s look at how <span class="math notranslate nohighlight">\(\bar w\)</span> varies with the job separation rate <span class="math notranslate nohighlight">\(\alpha\)</span>.</p>
 <p>Higher <span class="math notranslate nohighlight">\(\alpha\)</span> translates to a greater chance that a worker will face termination in each period once employed.</p>
 <div class="figure align-default">
@@ -587,18 +585,18 @@ c (which takes the values given on the horizontal axis)</p>
 </div>
 </div>
 <div class="section" id="exercises">
-<h2><a class="toc-backref" href="#id10"><span class="section-number">26.6. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id10"><span class="section-number">29.6. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="exercise-1">
-<h3><span class="section-number">26.6.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">29.6.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
 <p>Reproduce all the reservation wage figures shown above.</p>
 </div>
 <div class="section" id="exercise-2">
-<h3><span class="section-number">26.6.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">29.6.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
 <p>Plot the reservation wage against the job offer rate <span class="math notranslate nohighlight">\(\gamma\)</span>.</p>
 <p>Use</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">γ_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span><span class="w">  </span><span class="mf">0.95</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">γ_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span><span class="w">  </span><span class="mf">0.95</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -612,27 +610,27 @@ c (which takes the values given on the horizontal axis)</p>
 </div>
 </div>
 <div class="section" id="solutions">
-<h2><a class="toc-backref" href="#id11"><span class="section-number">26.7. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11"><span class="section-number">29.7. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="id2">
-<h3><span class="section-number">26.7.1. </span>Exercise 1<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">29.7.1. </span>Exercise 1<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>Using the solve_mccall_model function mentioned earlier in the lecture,
 we can create an array for reservation wages for different values of <span class="math notranslate nohighlight">\(c\)</span>,
 <span class="math notranslate nohighlight">\(\beta\)</span> and <span class="math notranslate nohighlight">\(\alpha\)</span> and plot the results like so</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">c_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">c_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">)</span>
 
-<span class="n">models</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">McCallModel</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cval</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">cval</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">c_vals</span><span class="p">]</span><span class="w"></span>
-<span class="n">sols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve_mccall_model</span><span class="o">.</span><span class="p">(</span><span class="n">models</span><span class="p">)</span><span class="w"></span>
-<span class="n">w̄_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="o">.</span><span class="n">w̄</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span><span class="w"></span>
+<span class="n">models</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">McCallModel</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cval</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">cval</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">c_vals</span><span class="p">]</span>
+<span class="n">sols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve_mccall_model</span><span class="o">.</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+<span class="n">w̄_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="o">.</span><span class="n">w̄</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">c_vals</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">w̄_vals</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;unemployment compensation&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reservation wage&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;$\overline{w}$ as a function of </span><span class="si">$c</span><span class="s">$&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">plot</span><span class="p">(</span><span class="n">c_vals</span><span class="p">,</span>
+<span class="w">    </span><span class="n">w̄_vals</span><span class="p">,</span>
+<span class="w">    </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span>
+<span class="w">    </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;unemployment compensation&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reservation wage&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;$\overline{w}$ as a function of </span><span class="si">$c</span><span class="s">$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -642,26 +640,26 @@ we can create an array for reservation wages for different values of <span class
 <p>Note that we could’ve done the above in one pass (which would be important if, for example, the parameter space was quite large).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">w̄_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">solve_mccall_model</span><span class="p">(</span><span class="n">McCallModel</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cval</span><span class="p">))</span><span class="o">.</span><span class="n">w̄</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">cval</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">c_vals</span><span class="p">];</span><span class="w"></span>
-<span class="c"># doesn&#39;t allocate new arrays for models and solutions</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">w̄_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">solve_mccall_model</span><span class="p">(</span><span class="n">McCallModel</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cval</span><span class="p">))</span><span class="o">.</span><span class="n">w̄</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">cval</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">c_vals</span><span class="p">];</span>
+<span class="c"># doesn&#39;t allocate new arrays for models and solutions</span>
 </pre></div>
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="id3">
-<h3><span class="section-number">26.7.2. </span>Exercise 2<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">29.7.2. </span>Exercise 2<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>Similar to above, we can plot <span class="math notranslate nohighlight">\(\bar w\)</span> against <span class="math notranslate nohighlight">\(\gamma\)</span> as follows</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">γ_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span><span class="w">  </span><span class="mf">0.95</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">γ_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span><span class="w">  </span><span class="mf">0.95</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">25</span><span class="p">)</span>
 
-<span class="n">models</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">McCallModel</span><span class="p">(</span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">γval</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">γval</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">γ_vals</span><span class="p">]</span><span class="w"></span>
-<span class="n">sols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve_mccall_model</span><span class="o">.</span><span class="p">(</span><span class="n">models</span><span class="p">)</span><span class="w"></span>
-<span class="n">w̄_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="o">.</span><span class="n">w̄</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span><span class="w"></span>
+<span class="n">models</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">McCallModel</span><span class="p">(</span><span class="n">γ</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">γval</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">γval</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">γ_vals</span><span class="p">]</span>
+<span class="n">sols</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">solve_mccall_model</span><span class="o">.</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+<span class="n">w̄_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">sol</span><span class="o">.</span><span class="n">w̄</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">sol</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">sols</span><span class="p">]</span>
 
-<span class="n">plot</span><span class="p">(</span><span class="n">γ_vals</span><span class="p">,</span><span class="w"> </span><span class="n">w̄_vals</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;job offer rate&quot;</span><span class="p">,</span><span class="w"></span>
-<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reservation wage&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;$\overline{w}$ as a function of $\gamma$&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">plot</span><span class="p">(</span><span class="n">γ_vals</span><span class="p">,</span><span class="w"> </span><span class="n">w̄_vals</span><span class="p">,</span><span class="w"> </span><span class="n">lw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.7</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;job offer rate&quot;</span><span class="p">,</span>
+<span class="w">     </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;reservation wage&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;$\overline{w}$ as a function of $\gamma$&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -685,16 +683,16 @@ search environment.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.7"
+            mode: "julia-1.8"
         },
         kernelOptions: {
-            kernelName: "julia-1.7",
+            kernelName: "julia-1.8",
             path: "./dynamic_programming"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.7'</script>
+    <script>kernelName = 'julia-1.8'</script>
 
                     </div>
                     
@@ -838,33 +836,60 @@ search environment.</p>
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   18. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   19. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   20. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   21. A First Look at the Kalman Filter
+   18. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   22. Numerical Linear Algebra and Factorizations
+   19. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   23. Krylov Methods and Matrix Conditioning
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
   </a>
  </li>
 </ul>
@@ -875,88 +900,83 @@ search environment.</p>
 </p>
 <ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="short_path.html">
-   24. Shortest Paths
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="mccall_model.html">
-   25. Job Search I: The McCall Search Model
+   28. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   26. Job Search II: Search and Separation
+   29. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="wald_friedman.html">
-   27. A Problem that Stumped Milton Friedman
+   30. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="odu.html">
-   28. Job Search III: Search with Learning
+   31. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="career.html">
-   29. Job Search IV: Modeling Career Choice
+   32. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="jv.html">
-   30. Job Search V: On-the-Job Search
+   33. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="optgrowth.html">
-   31. Optimal Growth I: The Stochastic Optimal Growth Model
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="coleman_policy_iter.html">
-   32. Optimal Growth II: Time Iteration
+   35. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="egm_policy_iter.html">
-   33. Optimal Growth III: The Endogenous Grid Method
+   36. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="lqcontrol.html">
-   34. LQ Dynamic Programming Problems
+   37. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="perm_income.html">
-   35. Optimal Savings I: The Permanent Income Model
+   38. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="perm_income_cons.html">
-   36. Optimal Savings II: LQ Techniques
+   39. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="smoothing.html">
-   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="ifp.html">
-   38. Optimal Savings III: Occasionally Binding Constraints
+   41. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="robustness.html">
-   39. Robustness
+   42. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="discrete_dp.html">
-   40. Discrete State Dynamic Programming
+   43. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -968,12 +988,12 @@ search environment.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   41. Modeling COVID 19 with Differential Equations
+   44. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -985,57 +1005,57 @@ search environment.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   43. Schelling’s Segregation Model
+   46. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   44. A Lake Model of Employment and Unemployment
+   47. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   45. Rational Expectations Equilibrium
+   48. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   46. Markov Perfect Equilibrium
+   49. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   47. Asset Pricing I: Finite State Models
+   50. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   48. Asset Pricing II: The Lucas Asset Pricing Model
+   51. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   49. Asset Pricing III:  Incomplete Markets
+   52. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   50. Uncertainty Traps
+   53. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   51. The Aiyagari Model
+   54. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   52. Default Risk and Income Fluctuations
+   55. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   53. Globalization and Cycles
+   56. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1047,32 +1067,32 @@ search environment.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   54. Covariance Stationary Processes
+   57. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   55. Estimation of Spectra
+   58. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   56. Additive Functionals
+   59. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   57. Multiplicative Functionals
+   60. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   58. Classical Control with Linear Algebra
+   61. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   59. Classical Filtering With Linear Algebra
+   62. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1084,22 +1104,22 @@ search environment.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   60. Dynamic Stackelberg Problems
+   63. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   61. Optimal Taxation in an LQ Economy
+   64. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   62. Optimal Taxation with State-Contingent Debt
+   65. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   63. Optimal Taxation without State-Contingent Debt
+   66. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1111,22 +1131,22 @@ search environment.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   64. About these Lectures
+   67. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   65. Troubleshooting
+   68. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   66. References
+   69. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Execution Statistics
+   70. Execution Statistics
   </a>
  </li>
 </ul>

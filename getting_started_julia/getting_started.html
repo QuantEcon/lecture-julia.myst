@@ -88,12 +88,11 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
     <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
-    <script async="async" src="https://unpkg.com/thebe@0.5.1/lib/index.js"></script>
-    <script>
-        const thebe_selector = ".thebe"
-        const thebe_selector_input = "pre"
-        const thebe_selector_output = ".output"
-    </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="canonical" href="https://julia.quantecon.org/getting_started_julia/getting_started.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
@@ -406,18 +405,33 @@
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">jupyter</span></code>.  Alternatively you can let <code class="docutils literal notranslate"><span class="pre">IJulia</span></code> install its own version of Conda by following <a class="reference external" href="https://julialang.github.io/IJulia.jl/dev/manual/running/">these instructions</a>, or use the experimental support for <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter">Jupyter notebooks in VS Code</a> - which does no Python installation at all.</p>
+<p>While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">jupyter</span></code>.  Alternatively you can let <code class="docutils literal notranslate"><span class="pre">IJulia</span></code> install its own version of Conda by following <a class="reference external" href="https://julialang.github.io/IJulia.jl/dev/manual/running/">these instructions</a>, or use the direct support for <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter">Jupyter notebooks in VS Code</a> - which does no Python installation at all.</p>
 </div>
 </div>
 <div class="section" id="install-julia">
 <span id="intro-repl"></span><h3><span class="section-number">1.3.2. </span>Install Julia<a class="headerlink" href="#install-julia" title="Permalink to this headline">¶</a></h3>
 <p>After Conda is installed, you can install Julia.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The semi-official installation method for Windows is to use <a class="reference external" href="https://github.com/JuliaLang/juliaup">Juliaup</a>, which makes it easier to upgrade and manage concurrent Julia versions.  Support on Mac and Linux is prerelease.  See <a class="reference external" href="https://github.com/JuliaLang/juliaup#using-juliaup">here</a> for a list of commands, such as <code class="docutils literal notranslate"><span class="pre">juliaup</span> <span class="pre">update</span></code> to upgrade to the latest available Julia version after installation, or ways to switch to newer Julia versions after they are released.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Juila 1.8.4, which is currently the most recent release, has broken plotting on the Windows operating system.  Until the bug is fixed or 1.8.5 is released, you should use Julia 1.8.3.  With <code class="docutils literal notranslate"><span class="pre">juliaup</span></code> this is straightforward, as <code class="docutils literal notranslate"><span class="pre">juliaup</span> <span class="pre">add</span> <span class="pre">1.8.3</span></code> will install that version, and then <code class="docutils literal notranslate"><span class="pre">juliaup</span> <span class="pre">default</span> <span class="pre">1.8.3</span></code> will set it as the default.  If you have additional issues, see the docs for fully removing the 1.8.4 version</p>
+</div>
 <ol>
-<li><p>Download and install Julia, from <a class="reference external" href="http://julialang.org/downloads/">download page</a>, accepting all default options.</p></li>
+<li><p>Download and install Julia following the <a class="reference external" href="https://github.com/JuliaLang/juliaup#installation">Juliaup instructions</a> or manually installing from <a class="reference external" href="http://julialang.org/downloads/">download page</a>, accepting all default options.  That is,</p>
+<ul class="simple">
+<li><p>Easiest method may be executing <code class="docutils literal notranslate"><span class="pre">winget</span> <span class="pre">install</span> <span class="pre">julia</span> <span class="pre">-s</span> <span class="pre">msstore</span></code> in a Windows terminal, or</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">curl</span> <span class="pre">-fsSL</span> <span class="pre">https://install.julialang.org</span> <span class="pre">|</span> <span class="pre">sh</span></code> on a Mac terminal.</p></li>
+<li><p>We recommend installing <a class="reference external" href="https://julialang.org/downloads/platform/#linux_and_freebsd">manually</a> on Linux.</p></li>
+<li><p>If you have previously installed Julia manually, you will need to uninstall previous versions before switching to Juliaup.</p></li>
+</ul>
+</li>
 <li><p>Open Julia, by either</p>
 <ul class="simple">
 <li><p>Navigating to Julia through your menus or desktop icons (Windows, Mac), or</p></li>
-<li><p>Opening a terminal and type <code class="docutils literal notranslate"><span class="pre">julia</span></code> (Linux; to set this up on macOS, see <a class="reference external" href="https://julialang.org/downloads/platform/#macos">here</a>).</p></li>
+<li><p>Opening a terminal and type <code class="docutils literal notranslate"><span class="pre">julia</span></code> (Windows; to set this up on macOS, see <a class="reference external" href="https://julialang.org/downloads/platform/#macos">here</a>; to set this up on Linux, see <a class="reference external" href="https://julialang.org/downloads/platform/#linux_and_freebsd">here</a>).</p></li>
 </ul>
 <p>You should now be looking at something like this</p>
 <div class="figure align-default">
@@ -426,13 +440,13 @@
 <p>This is called the JULIA <em>REPL</em> (Read-Evaluate-Print-Loop), which we discuss more <a class="reference internal" href="../software_engineering/tools_editors.html#repl-main"><span class="std std-ref">later</span></a>.</p>
 </li>
 <li><p>In the Julia REPL, hit <code class="docutils literal notranslate"><span class="pre">]</span></code> to enter package mode and then enter:</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">add</span><span class="w"> </span><span class="n">IJulia</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">add</span><span class="w"> </span><span class="n">IJulia</span>
 </pre></div>
 </div>
 <p>This adds packages for the <code class="docutils literal notranslate"><span class="pre">IJulia</span></code> kernel which links Julia to Jupyter you previously installed with Anaconda (i.e., allows your browser to run Julia code, manage Julia packages, etc.).</p>
 </li>
 <li><p>You can exit the julia REPL by hitting backspace to exit the package mode, and then</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">exit</span><span class="p">()</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">exit</span><span class="p">()</span>
 </pre></div>
 </div>
 </li>
@@ -512,18 +526,18 @@ denote opening the command palette and searching for a command with things like 
 </ul>
 </li>
 <li><p>Execute the following code in the terminal to download the entire suite of notebooks associated with these lectures.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/quantecon/lecture-julia.notebooks
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/quantecon/lecture-julia.notebooks
 </pre></div>
 </div>
 <p>This will download the repository with the notebooks into the directory <code class="docutils literal notranslate"><span class="pre">lecture-julia.notebooks</span></code> within your working directory.</p>
 </li>
 <li><p>Then, <code class="docutils literal notranslate"><span class="pre">cd</span></code> to that location in your terminal</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> lecture-julia.notebooks
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>lecture-julia.notebooks
 </pre></div>
 </div>
 </li>
 <li><p>Finally, you can open this directory from your terminal with the following</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>code .
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>code<span class="w"> </span>.
 </pre></div>
 </div>
 </li>
@@ -561,14 +575,14 @@ denote opening the command palette and searching for a command with things like 
 <p>This process will take several minutes to download and compile all of the files used by the lectures.</p>
 <div class="admonition attention">
 <p class="admonition-title">Attention</p>
-<p>If the cursor is instead <code class="docutils literal notranslate"><span class="pre">(&#64;v1.7)</span> <span class="pre">pkg&gt;</span></code> then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type <code class="docutils literal notranslate"><span class="pre">activate</span> <span class="pre">.</span></code> in the package mode, the cursor should change to <code class="docutils literal notranslate"><span class="pre">(quantecon-notebooks-julia)</span> <span class="pre">pkg&gt;</span></code> as it activates this project file.</p>
+<p>If the cursor is instead <code class="docutils literal notranslate"><span class="pre">(&#64;v1.8)</span> <span class="pre">pkg&gt;</span></code> then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type <code class="docutils literal notranslate"><span class="pre">activate</span> <span class="pre">.</span></code> in the package mode, the cursor should change to <code class="docutils literal notranslate"><span class="pre">(quantecon-notebooks-julia)</span> <span class="pre">pkg&gt;</span></code> as it activates this project file.</p>
 <p>One benefit of using the integrated REPL is that it will set important options for launching Julia (e.g. the number of threads) and activate the local project files (i.e. the <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> file in the notebooks directory) automatically.  If you use an external REPL, you will need to set these manually.  Here you would want to run the REPL with <code class="docutils literal notranslate"><span class="pre">julia</span> <span class="pre">--project</span> <span class="pre">--threads</span> <span class="pre">auto</span></code>  to tell Julia to set the number of threads equal to your local machine’s number of cores, and to activate the existing project.  See <a class="reference internal" href="../software_engineering/tools_editors.html#repl-main"><span class="std std-ref">here</span></a> for more details.</p>
 </div>
 </div>
 <div class="section" id="running-jupyterlab">
 <span id="id1"></span><h2><a class="toc-backref" href="#id10"><span class="section-number">1.7. </span>Running JupyterLab</a><a class="headerlink" href="#running-jupyterlab" title="Permalink to this headline">¶</a></h2>
 <p>You can start Jupyter within any directory by executing the following in a terminal</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jupyter lab
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>jupyter<span class="w"> </span>lab
 </pre></div>
 </div>
 <p>This runs a process giving Jupyter permission to access this directory, but not its parents.  This is especially convenient to do in VS Code since we have already navigated to this directory:</p>
@@ -687,8 +701,8 @@ denote opening the command palette and searching for a command with things like 
 <p>Run the following cell</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Plots</span><span class="w"></span>
-<span class="n">plot</span><span class="p">(</span><span class="n">sin</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="nb">π</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="nb">π</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="s">&quot;sin(x)&quot;</span><span class="p">)</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Plots</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">sin</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">2</span><span class="nb">π</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="nb">π</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="s">&quot;sin(x)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -763,11 +777,11 @@ such as <code class="docutils literal notranslate"><span class="pre">α</span></
 <p>There are other operators with a mathematical notation.  For example, the <code class="docutils literal notranslate"><span class="pre">LinearAlgebra</span></code> package has a <code class="docutils literal notranslate"><span class="pre">dot</span></code> function as identical to the latex <code class="docutils literal notranslate"><span class="pre">\cdot</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="w"></span>
-<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span><span class="w"></span>
-<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">]</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"></span>
-<span class="nd">@show</span><span class="w"> </span><span class="n">x⋅y</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">]</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">]</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">x⋅y</span><span class="p">;</span>
 </pre></div>
 </div>
 </div>
@@ -817,16 +831,16 @@ which provides a static HTML representations of notebooks.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.7"
+            mode: "julia-1.8"
         },
         kernelOptions: {
-            kernelName: "julia-1.7",
+            kernelName: "julia-1.8",
             path: "./getting_started_julia"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.7'</script>
+    <script>kernelName = 'julia-1.8'</script>
 
                     </div>
                     
@@ -970,33 +984,60 @@ which provides a static HTML representations of notebooks.</p>
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/linear_models.html">
-   18. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/finite_markov.html">
-   19. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   20. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/kalman.html">
-   21. A First Look at the Kalman Filter
+   18. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   22. Numerical Linear Algebra and Factorizations
+   19. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   23. Krylov Methods and Matrix Conditioning
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
   </a>
  </li>
 </ul>
@@ -1007,88 +1048,83 @@ which provides a static HTML representations of notebooks.</p>
 </p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/short_path.html">
-   24. Shortest Paths
-  </a>
- </li>
- <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   25. Job Search I: The McCall Search Model
+   28. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   26. Job Search II: Search and Separation
+   29. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   27. A Problem that Stumped Milton Friedman
+   30. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   28. Job Search III: Search with Learning
+   31. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   29. Job Search IV: Modeling Career Choice
+   32. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   30. Job Search V: On-the-Job Search
+   33. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   31. Optimal Growth I: The Stochastic Optimal Growth Model
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   32. Optimal Growth II: Time Iteration
+   35. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   33. Optimal Growth III: The Endogenous Grid Method
+   36. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   34. LQ Dynamic Programming Problems
+   37. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   35. Optimal Savings I: The Permanent Income Model
+   38. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   36. Optimal Savings II: LQ Techniques
+   39. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   37. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   38. Optimal Savings III: Occasionally Binding Constraints
+   41. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   39. Robustness
+   42. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   40. Discrete State Dynamic Programming
+   43. Discrete State Dynamic Programming
   </a>
  </li>
 </ul>
@@ -1100,12 +1136,12 @@ which provides a static HTML representations of notebooks.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   41. Modeling COVID 19 with Differential Equations
+   44. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   42. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1117,57 +1153,57 @@ which provides a static HTML representations of notebooks.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   43. Schelling’s Segregation Model
+   46. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   44. A Lake Model of Employment and Unemployment
+   47. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   45. Rational Expectations Equilibrium
+   48. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   46. Markov Perfect Equilibrium
+   49. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   47. Asset Pricing I: Finite State Models
+   50. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   48. Asset Pricing II: The Lucas Asset Pricing Model
+   51. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   49. Asset Pricing III:  Incomplete Markets
+   52. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   50. Uncertainty Traps
+   53. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   51. The Aiyagari Model
+   54. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   52. Default Risk and Income Fluctuations
+   55. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   53. Globalization and Cycles
+   56. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1179,32 +1215,32 @@ which provides a static HTML representations of notebooks.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
-   54. Covariance Stationary Processes
+   57. Covariance Stationary Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/estspec.html">
-   55. Estimation of Spectra
+   58. Estimation of Spectra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   56. Additive Functionals
+   59. Additive Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   57. Multiplicative Functionals
+   60. Multiplicative Functionals
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   58. Classical Control with Linear Algebra
+   61. Classical Control with Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   59. Classical Filtering With Linear Algebra
+   62. Classical Filtering With Linear Algebra
   </a>
  </li>
 </ul>
@@ -1216,22 +1252,22 @@ which provides a static HTML representations of notebooks.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   60. Dynamic Stackelberg Problems
+   63. Dynamic Stackelberg Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   61. Optimal Taxation in an LQ Economy
+   64. Optimal Taxation in an LQ Economy
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   62. Optimal Taxation with State-Contingent Debt
+   65. Optimal Taxation with State-Contingent Debt
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   63. Optimal Taxation without State-Contingent Debt
+   66. Optimal Taxation without State-Contingent Debt
   </a>
  </li>
 </ul>
@@ -1243,22 +1279,22 @@ which provides a static HTML representations of notebooks.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   64. About these Lectures
+   67. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   65. Troubleshooting
+   68. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   66. References
+   69. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   67. Execution Statistics
+   70. Execution Statistics
   </a>
  </li>
 </ul>

@@ -1,0 +1,1724 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>25. Wealth Distribution Dynamics &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+        <script>
+            MathJax = {
+            loader: {load: ['[tex]/boldsymbol', '[tex]/textmacros']},
+            tex: {
+                packages: {'[+]': ['boldsymbol', 'textmacros']},
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true,
+                macros: {
+                    "argmax" : "arg\\,max",
+                    "argmin" : "arg\\,min",
+                    "col"    : "col",
+                    "Span"   :  "span",
+                    "epsilon": "\\varepsilon",
+                    "EE": "\\mathbb{E}",
+                    "PP": "\\mathbb{P}",
+                    "RR": "\\mathbb{R}",
+                    "NN": "\\mathbb{N}",
+                    "ZZ": "\\mathbb{Z}",
+                    "aA": "\\mathcal{A}",
+                    "bB": "\\mathcal{B}",
+                    "cC": "\\mathcal{C}",
+                    "dD": "\\mathcal{D}",
+                    "eE": "\\mathcal{E}",
+                    "fF": "\\mathcal{F}",
+                    "gG": "\\mathcal{G}",
+                    "hH": "\\mathcal{H}",
+                }
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 0.92,
+                displayAlign: "center",
+            },
+            };
+        </script>
+    
+    
+    
+  <link href="../_static/css/theme.css" rel="stylesheet">
+  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    
+      
+
+    
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/quantecon-book-theme.1ef59f8f4e91ec8319176e8479c6af4e.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
+    
+  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script src="../_static/quantecon-book-theme.15b0c36fffe88f468997fa7b698991d3.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <link rel="canonical" href="https://julia.quantecon.org/introduction_dynamics/wealth_dynamics.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="26. A First Look at the Kalman Filter" href="kalman.html" />
+    <link rel="prev" title="24. Linear State Space Models" href="linear_models.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Wealth Distribution Dynamics"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Wealth Distribution Dynamics" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/introduction_dynamics/wealth_dynamics.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="qe-wrapper">
+
+        <div class="qe-main">
+
+            <div class="qe-page" id=introduction_dynamics/wealth_dynamics>
+
+                <div class="qe-page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="qe-page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="qe-page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#overview">
+   25.1. Overview
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#a-note-on-assumptions">
+     25.1.1. A Note on Assumptions
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#lorenz-curves-and-the-gini-coefficient">
+   25.2. Lorenz Curves and the Gini Coefficient
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#lorenz-curves">
+     25.2.1. Lorenz Curves
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#the-gini-coefficient">
+     25.2.2. The Gini Coefficient
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#in-place-functions-preallocation-and-performance">
+     25.2.3. In-place Functions, Preallocation, and Performance
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#a-model-of-wealth-dynamics">
+   25.3. A Model of Wealth Dynamics
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#implementation">
+   25.4. Implementation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#simulating-wealth-dynamics">
+   25.5. Simulating Wealth Dynamics
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#inequality-measures">
+   25.6. Inequality Measures
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#parallelization-and-vectorization">
+     25.6.1. Parallelization and Vectorization
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="qe-page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="qe-page__header">
+
+                    <div class="qe-page__header-copy">
+
+                        <p class="qe-page__header-heading"><a href="../intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="qe-page__header-subheading">Wealth Distribution Dynamics</p>
+
+                    </div>
+
+                    <p class="qe-page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="qe-page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" align="right" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" width="250px" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><div class="tex2jax_ignore mathjax_ignore section" id="wealth-distribution-dynamics">
+<h1><a class="toc-backref" href="#id3"><span class="section-number">25. </span><span class="target" id="index-0"></span>Wealth Distribution Dynamics</a><a class="headerlink" href="#wealth-distribution-dynamics" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#wealth-distribution-dynamics" id="id3">Wealth Distribution Dynamics</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id4">Overview</a></p></li>
+<li><p><a class="reference internal" href="#lorenz-curves-and-the-gini-coefficient" id="id5">Lorenz Curves and the Gini Coefficient</a></p></li>
+<li><p><a class="reference internal" href="#a-model-of-wealth-dynamics" id="id6">A Model of Wealth Dynamics</a></p></li>
+<li><p><a class="reference internal" href="#implementation" id="id7">Implementation</a></p></li>
+<li><p><a class="reference internal" href="#simulating-wealth-dynamics" id="id8">Simulating Wealth Dynamics</a></p></li>
+<li><p><a class="reference internal" href="#inequality-measures" id="id9">Inequality Measures</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id4"><span class="section-number">25.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>This notebook gives an introduction to wealth distribution dynamics, with a
+focus on</p>
+<ul class="simple">
+<li><p>modeling and computing the wealth distribution via simulation,</p></li>
+<li><p>measures of inequality such as the Lorenz curve and Gini coefficient, and</p></li>
+<li><p>how inequality is affected by the properties of wage income and returns on assets.</p></li>
+</ul>
+<p>One interesting property of the wealth distribution we discuss is Pareto
+tails.</p>
+<p>The wealth distribution in many countries exhibits a Pareto tail</p>
+<ul class="simple">
+<li><p>The <a class="reference external" href="https://en.wikipedia.org/wiki/Pareto_distribution">Pareto Distribution</a> is a canonical example of a <a class="reference external" href="https://en.wikipedia.org/wiki/Heavy-tailed_distribution">heavy-tailed distribution</a>.</p></li>
+<li><p>See <a class="reference external" href="https://python.quantecon.org/heavy_tails.html">here</a> for a lecture on heavy-tailed distributions using Python.</p></li>
+<li><p>For a review of the empirical evidence on the wealth distribution, see, for example, <span id="id1">[<a class="reference internal" href="../zreferences.html#id50" title="Jess Benhabib and Alberto Bisin. Skewed wealth distributions: theory and empirics. Journal of Economic Literature, 56(4):1261–91, 2018.">BB18</a>]</span>.</p></li>
+<li><p>See <span id="id2">[<a class="reference internal" href="../zreferences.html#id58" title="Xavier Gabaix. Power laws in economics and finance. Annual Review of Economics, 1(1):255-294, 2009. doi:10.1146/annurev.economics.050708.142940.">Gab09</a>]</span> for a review of the theory and empirics of power-laws and Kesten Processes.</p></li>
+</ul>
+<p>This is consistent with high concentration of wealth amongst the richest households.</p>
+<p>It also gives us a way to quantify such concentration, in terms of the tail index.</p>
+<p>One question of interest is whether or not we can replicate Pareto tails from a relatively simple model.</p>
+<div class="section" id="a-note-on-assumptions">
+<h3><span class="section-number">25.1.1. </span>A Note on Assumptions<a class="headerlink" href="#a-note-on-assumptions" title="Permalink to this headline">¶</a></h3>
+<p>The evolution of wealth for any given household depends on their
+savings behavior.</p>
+<p>Modeling such behavior will form an important part of this lecture series.</p>
+<p>However, in this particular lecture, we will be content with rather ad hoc (but plausible) savings rules.</p>
+<p>We do this to more easily explore the implications of different specifications of income dynamics and investment returns.</p>
+<p>At the same time, all of the techniques discussed here can be plugged into models that use optimization to obtain savings rules.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">BenchmarkTools</span>
+<span class="k">using</span><span class="w"> </span><span class="n">LoopVectorization</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="lorenz-curves-and-the-gini-coefficient">
+<h2><a class="toc-backref" href="#id5"><span class="section-number">25.2. </span>Lorenz Curves and the Gini Coefficient</a><a class="headerlink" href="#lorenz-curves-and-the-gini-coefficient" title="Permalink to this headline">¶</a></h2>
+<p>Before we investigate wealth dynamics, we briefly review some measures of
+inequality.</p>
+<div class="section" id="lorenz-curves">
+<h3><span class="section-number">25.2.1. </span>Lorenz Curves<a class="headerlink" href="#lorenz-curves" title="Permalink to this headline">¶</a></h3>
+<p>One popular graphical measure of inequality is the <a class="reference external" href="https://en.wikipedia.org/wiki/Lorenz_curve">Lorenz curve</a>.</p>
+<p>Since we are using an unweighted Lorenz curve, we can write an efficient version ourselves which implements the simple case of <a class="reference external" href="https://en.wikipedia.org/wiki/Lorenz_curve#Definition_and_calculation">the definition</a> with equal probabilities and assumes the input vector is already sorted.</p>
+<p>The package <a class="reference external" href="https://github.com/JosepER/Inequality.jl">Inequality.jl</a> can be used for fancier and more general cases.</p>
+<p>To illustrate, suppose that</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10_000</span>
+<span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sort</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">randn</span><span class="p">(</span><span class="n">n</span><span class="p">)));</span><span class="w">  </span><span class="c"># lognormal draws</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>is data representing the wealth of 10,000 households.</p>
+<p>We can compute the Lorenz curve using the <a class="reference external" href="https://en.wikipedia.org/wiki/Lorenz_curve#Definition_and_calculation">simple, unweighted definition</a>:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">lorenz</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w">  </span><span class="c"># assumed sorted vector</span>
+<span class="w">    </span><span class="n">S</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cumsum</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w">  </span><span class="c"># cumulative sums: [v[1], v[1] + v[2], ... ]</span>
+<span class="w">    </span><span class="n">F</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="p">(</span><span class="n">v</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="w">    </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">S</span><span class="w"> </span><span class="o">./</span><span class="w"> </span><span class="n">S</span><span class="p">[</span><span class="k">end</span><span class="p">]</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"> </span><span class="c"># returns named tuple</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>lorenz (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<p>where:</p>
+<div class="math notranslate nohighlight">
+\[
+S = [\sum_{j = 1}^1 v_1, \sum_{j = 1}^2 v_2, \dots, \sum_{j = 1}^n v_n]
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+F = [\frac{1}{n}, \frac{2}{n}, \dots, \frac{n}{n}]
+\]</div>
+<div class="math notranslate nohighlight">
+\[
+L = [\frac{S_1}{S_n}, \frac{S_2}{S_n}, \dots, \frac{S_n}{S_n}]
+\]</div>
+<p>We can then plot the curve:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">(;</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lorenz</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lorenz curve, lognormal sample&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lorenz curve, equality&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/wealth_dynamics_7_0.svg" src="../_images/wealth_dynamics_7_0.svg" /></div>
+</div>
+<p>This curve can be understood as follows: if point <span class="math notranslate nohighlight">\((x,y)\)</span> lies on the curve, it means that, collectively, the bottom <span class="math notranslate nohighlight">\((100x)\%\)</span> of the population holds <span class="math notranslate nohighlight">\((100y)\%\)</span> of the wealth.</p>
+<p>The “equality” line is the 45 degree line (which might not be exactly 45
+degrees in the figure, depending on the aspect ratio).</p>
+<p>A sample that produces this line exhibits perfect equality.</p>
+<p>The other line in the figure is the Lorenz curve for the lognormal sample, which deviates significantly from perfect equality.</p>
+<p>For example, the bottom 80% of the population holds around 40% of total wealth.</p>
+<p>Here is another example, which shows how the Lorenz curve shifts as the
+underlying distribution changes.</p>
+<p>We generate 10,000 observations using the Pareto distribution with a range of
+parameters, and then compute the Lorenz curve corresponding to each set of
+observations.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">a_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10_000</span>
+<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;equality&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">)</span>
+<span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">a_vals</span>
+<span class="w">    </span><span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sort</span><span class="p">(</span><span class="n">u</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">a</span><span class="p">))</span><span class="w">  </span><span class="c"># distributed as Pareto with tail index a</span>
+<span class="w">    </span><span class="p">(;</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lorenz</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="w">    </span><span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;a = %</span><span class="si">$a</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="n">plt</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/wealth_dynamics_9_0.svg" src="../_images/wealth_dynamics_9_0.svg" /></div>
+</div>
+<p>You can see that, as the tail parameter of the Pareto distribution increases, inequality decreases.</p>
+<p>This is to be expected, because a higher tail index implies less weight in the tail of the Pareto distribution.</p>
+</div>
+<div class="section" id="the-gini-coefficient">
+<h3><span class="section-number">25.2.2. </span>The Gini Coefficient<a class="headerlink" href="#the-gini-coefficient" title="Permalink to this headline">¶</a></h3>
+<p>The definition and interpretation of the Gini coefficient can be found on the corresponding <a class="reference external" href="https://en.wikipedia.org/wiki/Gini_coefficient">Wikipedia page</a>.</p>
+<p>A value of 0 indicates perfect equality (corresponding the case where the
+Lorenz curve matches the 45 degree line) and a value of 1 indicates complete
+inequality (all wealth held by the richest household).</p>
+<p>Since we are using an unweighted Gini coefficient, we can write an efficient version ourselves using a <a class="reference external" href="https://en.wikipedia.org/wiki/Gini_coefficient#Alternative_expressions">simplification</a> and assuming the input vector is already sorted.</p>
+<p>The <a class="reference external" href="https://github.com/JosepER/Inequality.jl">Inequality.jl</a> package can be used for a more complete implementation, including weighted Gini indices.</p>
+<p>We can test it on the Weibull distribution with parameter <span class="math notranslate nohighlight">\(a\)</span>, where the Gini coefficient is known to be</p>
+<div class="math notranslate nohighlight">
+\[
+G = 1 - 2^{-1/a}
+\]</div>
+<p>Let’s see if the Gini coefficient computed from a simulated sample matches
+this at each fixed value of <span class="math notranslate nohighlight">\(a\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">gini</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">enumerate</span><span class="p">(</span><span class="n">v</span><span class="p">))</span><span class="o">/</span><span class="n">sum</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+<span class="w">           </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">length</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="o">/</span><span class="n">length</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+<span class="n">a_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">19</span>
+<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
+<span class="n">ginis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">gini</span><span class="p">(</span><span class="n">sort</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="n">Weibull</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="w"> </span><span class="n">n</span><span class="p">)))</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">a_vals</span><span class="p">]</span>
+<span class="n">ginis_theoretical</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">2</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">a_vals</span><span class="p">]</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">a_vals</span><span class="p">,</span><span class="w"> </span><span class="n">ginis</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;estimated gini coefficient&quot;</span><span class="p">,</span>
+<span class="w">     </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;Weibull parameter </span><span class="si">$a</span><span class="s">$&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ylabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Gini coefficient&quot;</span><span class="p">)</span>
+<span class="n">plot!</span><span class="p">(</span><span class="n">a_vals</span><span class="p">,</span><span class="w"> </span><span class="n">ginis_theoretical</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;theoretical gini coefficient&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/wealth_dynamics_11_0.svg" src="../_images/wealth_dynamics_11_0.svg" /></div>
+</div>
+<p>The simulation shows that the fit is good.</p>
+</div>
+<div class="section" id="in-place-functions-preallocation-and-performance">
+<h3><span class="section-number">25.2.3. </span>In-place Functions, Preallocation, and Performance<a class="headerlink" href="#in-place-functions-preallocation-and-performance" title="Permalink to this headline">¶</a></h3>
+<p>When working with large vectors and matrices, a performance advantage of Julia is its ability to manage allocations and perform in-place operations.</p>
+<p>As always, don’t prematurely optimize your code - but in cases where the datastructures are large and the code is of equivalent complexity, don’t be afraid to use in-place operations.</p>
+<p>To demonstrate this, we will compare an inplace Lorenz calculation with the one above.</p>
+<p>The convention in Julia is to use <code class="docutils literal notranslate"><span class="pre">!</span></code> to denote a function which mutates its arguments and to put any arguments that will be modified first.</p>
+<p>In the following case, the <code class="docutils literal notranslate"><span class="pre">L</span></code> is pre-allocated and will be overwritten.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">lorenz!</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
+<span class="w">   </span><span class="c"># cumulative sum but inplace: [v[1], v[1] + v[2], ... ]</span>
+<span class="w">    </span><span class="n">cumsum!</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span><span class="w">    </span>
+<span class="w">    </span><span class="n">L</span><span class="w"> </span><span class="o">./=</span><span class="w"> </span><span class="n">L</span><span class="p">[</span><span class="k">end</span><span class="p">]</span><span class="w">  </span><span class="c"># inplace division to normalize</span>
+<span class="w">    </span><span class="n">F</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="o">:</span><span class="n">length</span><span class="p">(</span><span class="n">v</span><span class="p">))</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="c"># doesn&#39;t allocate since F is a range</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="c"># using inplace we can still return the L vector</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>lorenz! (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="admonition-performance-benchmarking admonition">
+<p class="admonition-title">Performance benchmarking</p>
+<p>For performance comparisons, always use the <a class="reference external" href="https://github.com/JuliaCI/BenchmarkTools.jl">BenchmarkTools.jl</a>.  Whenever passing in arguments that are not scalars, you typically want to <a class="reference external" href="https://juliaci.github.io/BenchmarkTools.jl/stable/manual/#Interpolating-values-into-benchmark-expressions">interpolate</a> by prepending with the <code class="docutils literal notranslate"><span class="pre">$</span></code> (e.g., <code class="docutils literal notranslate"><span class="pre">&#64;btime</span> <span class="pre">lorenz($v)</span></code> rather than <code class="docutils literal notranslate"><span class="pre">&#64;btime</span> <span class="pre">lorenz(v)</span></code>) or else it may treat the value as a global variable and gives distorted performance results.</p>
+<p>For more detailed results, replace <code class="docutils literal notranslate"><span class="pre">&#64;btime</span></code> with <code class="docutils literal notranslate"><span class="pre">&#64;benchmark</span></code>.</p>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span>
+<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1_000_000</span>
+<span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="n">u</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+<span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sort</span><span class="p">(</span><span class="n">u</span><span class="o">.^</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="n">a</span><span class="p">))</span>
+<span class="nd">@btime</span><span class="w"> </span><span class="n">lorenz</span><span class="p">(</span><span class="o">$</span><span class="n">v</span><span class="p">);</span><span class="w"> </span><span class="c"># performance with out-of-place</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4.221 ms (4 allocations: 15.26 MiB)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note the speed and allocations.  Next use the inplace version</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="w"> </span><span class="c"># preallocate of same type, size</span>
+<span class="nd">@btime</span><span class="w"> </span><span class="n">lorenz!</span><span class="p">(</span><span class="o">$</span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="o">$</span><span class="n">v</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3.849 ms (0 allocations: 0 bytes)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Depending on your system, this should be perhaps twice as fast but have no allocations.</p>
+<p>On the other hand, if we use a smaller vector such as <code class="docutils literal notranslate"><span class="pre">n=1000</span></code> above, then the performance difference is much smaller - perhaps only 30% improvement.</p>
+<p>Furthermore, this benefit is only felt if we are reusing the same <code class="docutils literal notranslate"><span class="pre">L</span></code> in repeated calls.  If we need to allocate (e.g. a <code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">=</span> <span class="pre">similar(v)</span></code>) each time, then there is no benefit.</p>
+<!--
+```{code-cell} julia
+n = 1000
+a = 2
+u = rand(n)
+v = sort(u.^(-1/a))
+L = similar(v) # preallocate of same type, size
+@btime lorenz($v)
+@btime lorenz!($L, $v)
+```
+--> 
+<p>This provides a common and cautionary lesson: for some algorithms, avoiding allocations does not have a significant difference and may not be worth the trouble.</p>
+<p>This all depends on the steps of the underlying algorithm.  In the case above, the <code class="docutils literal notranslate"><span class="pre">cumsum</span></code> is significantly more expensive than the data allocation.</p>
+<p>In other cases, such as those in large-scale difference or differential equations, in-place operations can have an enormous impact.</p>
+</div>
+</div>
+<div class="section" id="a-model-of-wealth-dynamics">
+<h2><a class="toc-backref" href="#id6"><span class="section-number">25.3. </span>A Model of Wealth Dynamics</a><a class="headerlink" href="#a-model-of-wealth-dynamics" title="Permalink to this headline">¶</a></h2>
+<p>Having discussed inequality measures, let us now turn to wealth dynamics.</p>
+<p>The model we will study is</p>
+<div class="math notranslate nohighlight" id="equation-wealth-dynam-ah">
+<span class="eqno">(25.1)<a class="headerlink" href="#equation-wealth-dynam-ah" title="Permalink to this equation">¶</a></span>\[w_{t+1} = (1 + r_{t+1}) s(w_t) + y_{t+1}\]</div>
+<p>where</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(w_t\)</span> is wealth at time <span class="math notranslate nohighlight">\(t\)</span> for a given household,</p></li>
+<li><p><span class="math notranslate nohighlight">\(r_t\)</span> is the rate of return of financial assets,</p></li>
+<li><p><span class="math notranslate nohighlight">\(y_t\)</span> is current non-financial (e.g., labor) income and</p></li>
+<li><p><span class="math notranslate nohighlight">\(s(w_t)\)</span> is current wealth net of consumption</p></li>
+</ul>
+<p>Letting <span class="math notranslate nohighlight">\(\{z_t\}\)</span> be a correlated state process of the form</p>
+<div class="math notranslate nohighlight">
+\[
+z_{t+1} = a z_t + b + \sigma_z \epsilon_{t+1}
+\]</div>
+<p>we’ll assume that</p>
+<div class="math notranslate nohighlight">
+\[
+R_t := 1 + r_t = c_r \exp(z_t) + \exp(\mu_r + \sigma_r \xi_t)
+\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[
+y_t = c_y \exp(z_t) + \exp(\mu_y + \sigma_y \zeta_t)
+\]</div>
+<p>Here <span class="math notranslate nohighlight">\(\{ (\epsilon_t, \xi_t, \zeta_t) \}\)</span> is IID and standard
+normal in <span class="math notranslate nohighlight">\(\mathbb R^3\)</span>.</p>
+<p>The value of <span class="math notranslate nohighlight">\(c_r\)</span> should be close to zero, since rates of return
+on assets do not exhibit large trends.</p>
+<p>When we simulate a population of households, we will assume all shocks are idiosyncratic (i.e.,  specific to individual households and independent across them).</p>
+<p>Regarding the savings function <span class="math notranslate nohighlight">\(s\)</span>, our default model will be</p>
+<div class="math notranslate nohighlight" id="equation-sav-ah">
+<span class="eqno">(25.2)<a class="headerlink" href="#equation-sav-ah" title="Permalink to this equation">¶</a></span>\[s(w) = s_0 w \cdot \mathbb 1\{w \geq \hat w\}\]</div>
+<p>where <span class="math notranslate nohighlight">\(s_0\)</span> is a positive constant.</p>
+<p>Thus, for <span class="math notranslate nohighlight">\(w &lt; \hat w\)</span>, the household saves nothing. For
+<span class="math notranslate nohighlight">\(w \geq \bar w\)</span>, the household saves a fraction <span class="math notranslate nohighlight">\(s_0\)</span> of
+their wealth.</p>
+<p>We are using something akin to a fixed savings rate model, while
+acknowledging that low wealth households tend to save very little.</p>
+</div>
+<div class="section" id="implementation">
+<h2><a class="toc-backref" href="#id7"><span class="section-number">25.4. </span>Implementation</a><a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p>First, we will write a function which collects all of the parameters into a named tuple.  While we could also use a Julia <code class="docutils literal notranslate"><span class="pre">struct</span></code> (see <a class="reference internal" href="../getting_started_julia/introduction_to_types.html"><span class="doc">creating new types</span></a>) they tend to be more difficult to use properly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">wealth_dynamics_model</span><span class="p">(;</span><span class="w"> </span><span class="c"># all named arguments</span>
+<span class="w">                 </span><span class="n">w_hat</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="c"># savings parameter</span>
+<span class="w">                 </span><span class="n">s_0</span><span class="o">=</span><span class="mf">0.75</span><span class="p">,</span><span class="w"> </span><span class="c"># savings parameter</span>
+<span class="w">                 </span><span class="n">c_y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="c"># labor income parameter</span>
+<span class="w">                 </span><span class="n">μ_y</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="c"># labor income parameter</span>
+<span class="w">                 </span><span class="n">σ_y</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span><span class="w"> </span><span class="c"># labor income parameter</span>
+<span class="w">                 </span><span class="n">c_r</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span><span class="w"> </span><span class="c"># rate of return parameter</span>
+<span class="w">                 </span><span class="n">μ_r</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span><span class="w"> </span><span class="c"># rate of return parameter</span>
+<span class="w">                 </span><span class="n">σ_r</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="c"># rate of return parameter</span>
+<span class="w">                 </span><span class="n">a</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="c"># aggregate shock parameter</span>
+<span class="w">                 </span><span class="n">b</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="c"># aggregate shock parameter</span>
+<span class="w">                 </span><span class="n">σ_z</span><span class="o">=</span><span class="mf">0.1</span><span class="w"> </span><span class="c"># aggregate shock parameter</span>
+<span class="w">                 </span><span class="p">)</span>
+<span class="w">    </span><span class="n">z_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
+<span class="w">    </span><span class="n">z_var</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">σ_z</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="n">exp_z_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">z_mean</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">z_var</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="n">R_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c_r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">exp_z_mean</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">μ_r</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">σ_r</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y_mean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c_y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">exp_z_mean</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">μ_y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">σ_y</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span>
+<span class="w">    </span><span class="n">α</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">R_mean</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s_0</span>
+
+<span class="w">    </span><span class="c"># Distributions</span>
+<span class="w">    </span><span class="n">z_stationary_dist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Normal</span><span class="p">(</span><span class="n">z_mean</span><span class="p">,</span><span class="w"> </span><span class="n">sqrt</span><span class="p">(</span><span class="n">z_var</span><span class="p">))</span>
+
+<span class="w">    </span><span class="nd">@assert</span><span class="w"> </span><span class="n">α</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c"># check stability condition that wealth does not diverge</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(;</span><span class="n">w_hat</span><span class="p">,</span><span class="w"> </span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">c_y</span><span class="p">,</span><span class="w"> </span><span class="n">μ_y</span><span class="p">,</span><span class="w"> </span><span class="n">σ_y</span><span class="p">,</span><span class="w"> </span><span class="n">c_r</span><span class="p">,</span><span class="w"> </span><span class="n">μ_r</span><span class="p">,</span><span class="w"> </span><span class="n">σ_r</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">σ_z</span><span class="p">,</span><span class="w"> </span><span class="n">z_mean</span><span class="p">,</span>
+<span class="w">             </span><span class="n">z_var</span><span class="p">,</span><span class="n">z_stationary_dist</span><span class="p">,</span><span class="w"> </span><span class="n">exp_z_mean</span><span class="p">,</span><span class="w"> </span><span class="n">R_mean</span><span class="p">,</span><span class="w"> </span><span class="n">y_mean</span><span class="p">,</span><span class="w"> </span><span class="n">α</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>wealth_dynamics_model (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="simulating-wealth-dynamics">
+<h2><a class="toc-backref" href="#id8"><span class="section-number">25.5. </span>Simulating Wealth Dynamics</a><a class="headerlink" href="#simulating-wealth-dynamics" title="Permalink to this headline">¶</a></h2>
+<p>To implement this process, we will write a function which simulates an entire path for an agent or the wealth distribution.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">p</span></code> argument is a named-tuple or struct consist with the <code class="docutils literal notranslate"><span class="pre">wealth_dynamics_model</span></code> function above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">simulate_wealth_dynamics</span><span class="p">(</span><span class="n">w_0</span><span class="p">,</span><span class="w"> </span><span class="n">z_0</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">params</span><span class="p">)</span>
+<span class="w">    </span><span class="p">(;</span><span class="n">w_hat</span><span class="p">,</span><span class="w"> </span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">c_y</span><span class="p">,</span><span class="w"> </span><span class="n">μ_y</span><span class="p">,</span><span class="w"> </span><span class="n">σ_y</span><span class="p">,</span><span class="w"> </span><span class="n">c_r</span><span class="p">,</span><span class="w"> </span><span class="n">μ_r</span><span class="p">,</span><span class="w"> </span><span class="n">σ_r</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">σ_z</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">params</span><span class="w"> </span><span class="c"># unpack</span>
+<span class="w">    </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w_0</span>
+<span class="w">    </span><span class="n">z</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_0</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span>
+<span class="w">        </span><span class="n">z</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">*</span><span class="n">z</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">σ_z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">randn</span><span class="p">()</span>
+<span class="w">        </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c_y</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">t</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">μ_y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">σ_y</span><span class="o">*</span><span class="n">randn</span><span class="p">())</span>
+<span class="w">        </span><span class="n">w</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="c"># income goes to next periods wealth</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">w</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">w_hat</span><span class="w"> </span><span class="c"># if above minimum wealth level, add savings</span>
+<span class="w">            </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c_r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">t</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">μ_r</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">σ_r</span><span class="o">*</span><span class="n">randn</span><span class="p">())</span>
+<span class="w">            </span><span class="n">w</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s_0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">w</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">    </span><span class="k">end</span><span class="w">    </span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">z</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>simulate_wealth_dynamics (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s look at the wealth dynamics of an individual household.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wealth_dynamics_model</span><span class="p">()</span><span class="w">  </span><span class="c"># all defaults</span>
+<span class="n">y_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">y_mean</span>
+<span class="n">z_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">z_stationary_dist</span><span class="p">)</span>
+<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span>
+<span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">simulate_wealth_dynamics</span><span class="p">(</span><span class="n">y_0</span><span class="p">,</span><span class="w"> </span><span class="n">z_0</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span>
+
+<span class="n">plot</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">caption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Wealth simulation&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="o">=</span><span class="s">&quot;t&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="o">=</span><span class="sa">L</span><span class="s">&quot;w(t)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/wealth_dynamics_23_0.svg" src="../_images/wealth_dynamics_23_0.svg" /></div>
+</div>
+<p>Notice the large spikes in wealth over time.</p>
+<p>Such spikes are similar to what is observed in a time series with a Kesten process.  See <a class="reference external" href="https://python.quantecon.org/kesten_processes.html">Kesten Processes and Firm Dynamics</a> for a lecture introducing these with Python.</p>
+</div>
+<div class="section" id="inequality-measures">
+<h2><a class="toc-backref" href="#id9"><span class="section-number">25.6. </span>Inequality Measures</a><a class="headerlink" href="#inequality-measures" title="Permalink to this headline">¶</a></h2>
+<p>Let’s look at how inequality varies with returns on financial assets</p>
+<p>The code above could be used to simulate a number of different households, but it would be relatively slow if the number of households becomes large.</p>
+<p>One change which will help with efficiency is to replace the check on <code class="docutils literal notranslate"><span class="pre">w</span> <span class="pre">&gt;=</span> <span class="pre">w_hat</span></code> with the <a class="reference external" href="https://docs.julialang.org/en/v1/manual/control-flow/#man-conditional-evaluation">ternary operator</a>.</p>
+<p>The syntax is <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">?</span> <span class="pre">b</span> <span class="pre">:</span> <span class="pre">c</span></code> where if the expression <code class="docutils literal notranslate"><span class="pre">a</span></code> is true it returns the evaluation of expression <code class="docutils literal notranslate"><span class="pre">b</span></code>, and it returns <code class="docutils literal notranslate"><span class="pre">c</span></code> if false.</p>
+<p>To see this in practice, note the following three are equivalent.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">f1</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">        </span><span class="n">val</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">x</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">        </span><span class="n">val</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">x</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">val</span>
+<span class="k">end</span>
+<span class="k">function</span><span class="w"> </span><span class="n">f2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="n">val</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span>
+<span class="w">    </span><span class="n">temp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="n">x</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">temp</span>
+<span class="k">end</span>
+<span class="n">f3</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">-</span><span class="n">x</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">f1</span><span class="p">(</span><span class="mf">0.8</span><span class="p">),</span><span class="w"> </span><span class="n">f2</span><span class="p">(</span><span class="mf">0.8</span><span class="p">),</span><span class="w"> </span><span class="n">f3</span><span class="p">(</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">f1</span><span class="p">(</span><span class="mf">1.8</span><span class="p">),</span><span class="w"> </span><span class="n">f2</span><span class="p">(</span><span class="mf">1.8</span><span class="p">),</span><span class="w"> </span><span class="n">f3</span><span class="p">(</span><span class="mf">1.8</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(f1(0.8), f2(0.8), f3(0.8)) = (2.8, 2.8, 2.8)
+(f1(1.8), f2(1.8), f3(1.8)) = (3.8, 3.8, 3.8)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Using this, lets rewrite our code to simplify the conditional and otherwise simulate multiple agents.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">simulate_panel</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span>
+<span class="w">    </span><span class="p">(;</span><span class="n">w_hat</span><span class="p">,</span><span class="w"> </span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">c_y</span><span class="p">,</span><span class="w"> </span><span class="n">μ_y</span><span class="p">,</span><span class="w"> </span><span class="n">σ_y</span><span class="p">,</span><span class="w"> </span><span class="n">c_r</span><span class="p">,</span><span class="w"> </span><span class="n">μ_r</span><span class="p">,</span><span class="w"> </span><span class="n">σ_r</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">σ_z</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span>
+<span class="w">    </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">y_mean</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="c"># start at the mean of y</span>
+<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">z_stationary_dist</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c"># Preallocate next period states and R intermediate</span>
+<span class="w">    </span><span class="n">zp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="w">    </span><span class="n">wp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="w">    </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span>
+<span class="w">        </span><span class="n">z_shock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="w">        </span><span class="n">R_shock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="w">        </span><span class="n">w_shock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+<span class="w">        </span><span class="nd">@turbo</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">N</span>
+<span class="w">            </span><span class="n">zp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">*</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">σ_z</span><span class="o">*</span><span class="n">z_shock</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="w">            </span><span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">w_hat</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">c_r</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">zp</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">μ_r</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">σ_r</span><span class="o">*</span><span class="n">R_shock</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">            </span><span class="n">wp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c_y</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">zp</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">μ_y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">σ_y</span><span class="o">*</span><span class="n">w_shock</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="n">s_0</span><span class="o">*</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w">            </span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="c"># Step forward</span>
+<span class="w">        </span><span class="n">w</span><span class="w"> </span><span class="o">.=</span><span class="w"> </span><span class="n">wp</span>
+<span class="w">        </span><span class="n">z</span><span class="w"> </span><span class="o">.=</span><span class="w"> </span><span class="n">zp</span>
+<span class="w">    </span><span class="k">end</span><span class="w">    </span>
+<span class="w">    </span><span class="n">sort!</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="c"># sorts the wealth so we can calculate gini/lorenz        </span>
+<span class="w">    </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lorenz</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(;</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="n">gini</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gini</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>simulate_panel (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<p>We have used a look with a few modifications to help with efficiency.  To summarize, we have</p>
+<ul class="simple">
+<li><p>replaced the <code class="docutils literal notranslate"><span class="pre">if</span></code> with the ternary interface</p></li>
+<li><p>preallocated a <code class="docutils literal notranslate"><span class="pre">zp,</span> <span class="pre">wp,</span> <span class="pre">R</span></code> to store intermediate values for the calculations.</p></li>
+<li><p>swapped the <code class="docutils literal notranslate"><span class="pre">w,</span> <span class="pre">z</span></code> and <code class="docutils literal notranslate"><span class="pre">wp,</span> <span class="pre">zp</span></code> to step forward each period rather than savings all of the simulation paths.  This is sufficient since we will only plot statistics of the terminal distribution rather than in the transition.</p></li>
+<li><p>annotated with the <code class="docutils literal notranslate"><span class="pre">&#64;turbo</span></code> macro  uses a package to speed up the inner loop.  This is discussed in more detail below.</p></li>
+<li><p>replaced the <code class="docutils literal notranslate"><span class="pre">randn()</span></code> at each simulation step with a draw of random values for all agents, i.e. <code class="docutils literal notranslate"><span class="pre">z_shock,</span> <span class="pre">R_shock,</span> <span class="pre">w_shock</span></code>.  This will make parallelization with <code class="docutils literal notranslate"><span class="pre">&#64;turbo</span></code> possible.</p></li>
+</ul>
+<p>To use this function, we pass in parameters and can access the resulting wealth distribution and inequality measures.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">wealth_dynamics_model</span><span class="p">()</span>
+<span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100_000</span>
+<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">500</span>
+<span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">simulate_panel</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">median</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">res</span><span class="o">.</span><span class="n">gini</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>median(res.w) = 38.53580894325252
+res.gini = 0.7597824185525733
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we investigate how the Lorenz curves associated with the wealth distribution change as return to savings varies.</p>
+<p>The code below simulates the wealth distribution, Lorenz curve, and gini for multiple values of <span class="math notranslate nohighlight">\(\mu_r\)</span>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">μ_r_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.075</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map</span><span class="p">(</span><span class="n">μ_r</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">simulate_panel</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">wealth_dynamics_model</span><span class="p">(;</span><span class="n">μ_r</span><span class="p">)),</span>
+<span class="w">              </span><span class="n">μ_r_vals</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Using these results, we can plot the Lorenz curves for each value of <span class="math notranslate nohighlight">\(\mu_r\)</span> and compare to perfect equality.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;equality&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">,</span>
+<span class="w">           </span><span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;Lorenz Curve&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="o">.</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="o">.</span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;\psi^*, \mu_r = %</span><span class="si">$μ_r</span><span class="s">&quot;</span><span class="p">)</span><span class="w"> </span>
+<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">μ_r</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">zip</span><span class="p">(</span><span class="n">μ_r_vals</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p">)]</span>
+<span class="n">plt</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/wealth_dynamics_33_0.svg" src="../_images/wealth_dynamics_33_0.svg" /></div>
+</div>
+<p>The Lorenz curve shifts downwards as returns on financial income rise, indicating a rise in inequality.</p>
+<p>Now let’s check the Gini coefficient.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ginis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">res</span><span class="o">.</span><span class="n">gini</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">results</span><span class="p">]</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">μ_r_vals</span><span class="p">,</span><span class="w"> </span><span class="n">ginis</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Gini coefficient&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;\mu_r&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/wealth_dynamics_35_0.svg" src="../_images/wealth_dynamics_35_0.svg" /></div>
+</div>
+<p>Once again, we see that inequality increases as returns on financial income rise, and the relationship is roughly linear.</p>
+<p>Let’s finish this section by investigating what happens when we change the
+volatility term <span class="math notranslate nohighlight">\(\sigma_r\)</span> in financial returns.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">σ_r_vals</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">range</span><span class="p">(</span><span class="mf">0.35</span><span class="p">,</span><span class="w"> </span><span class="mf">0.53</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
+<span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">map</span><span class="p">(</span><span class="n">σ_r</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">simulate_panel</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">wealth_dynamics_model</span><span class="p">(;</span><span class="n">σ_r</span><span class="p">)),</span>
+<span class="w">              </span><span class="n">σ_r_vals</span><span class="p">);</span>
+<span class="n">plt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plot</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;equality&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ss">:topleft</span><span class="p">,</span>
+<span class="w">           </span><span class="n">ylabel</span><span class="o">=</span><span class="s">&quot;Lorenz Curve&quot;</span><span class="p">)</span>
+<span class="p">[</span><span class="n">plot!</span><span class="p">(</span><span class="n">plt</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="o">.</span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="o">.</span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;\psi^*, \sigma_r = %</span><span class="si">$σ_r</span><span class="s">&quot;</span><span class="p">)</span>
+<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">σ_r</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">zip</span><span class="p">(</span><span class="n">σ_r_vals</span><span class="p">,</span><span class="w"> </span><span class="n">results</span><span class="p">)]</span>
+<span class="n">plt</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/wealth_dynamics_37_0.svg" src="../_images/wealth_dynamics_37_0.svg" /></div>
+</div>
+<p>We see that greater volatility has the effect of increasing inequality in this model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">ginis</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="n">res</span><span class="o">.</span><span class="n">gini</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">res</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">results</span><span class="p">]</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">σ_r_vals</span><span class="p">,</span><span class="w"> </span><span class="n">ginis</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Gini coefficient&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">xlabel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sa">L</span><span class="s">&quot;\sigma_r&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/wealth_dynamics_39_0.svg" src="../_images/wealth_dynamics_39_0.svg" /></div>
+</div>
+<p>Similarly, the Gini coefficient shows that greater volatility increases inequality and approaches a Gini of 1 (i.e., perfect inequality) as the volatility increases where a <span class="math notranslate nohighlight">\(\sigma_r \approx 0.53\)</span> is close to the maximum value fixing the other parameters at their default values.</p>
+<p>In this case, the divergence occurs as the <span class="math notranslate nohighlight">\(\alpha &lt; 1\)</span> condition begins to fail because high volatility increases mean rate of return, leading to explosive savings behavior.</p>
+<div class="section" id="parallelization-and-vectorization">
+<h3><span class="section-number">25.6.1. </span>Parallelization and Vectorization<a class="headerlink" href="#parallelization-and-vectorization" title="Permalink to this headline">¶</a></h3>
+<p>Note that the simulation above is written in a loop rather than vectorized in a Matlab or Python style.  Loops are perfectly fine, and often have higher-performance, in Julia and other compiled languages.</p>
+<p>One advantage of loops in these cases is that it can exploit different sorts of parallelization and is amenable to compiler optimizations.</p>
+<p>A common approach to this is to use macros which transform the code into a form more amenable to parallelization before handing the code off to the compiler.  One of the most standard packages for this is <a class="reference external" href="https://github.com/JuliaSIMD/LoopVectorization.jl">LoopVectorization.jl</a> - a dependency in already included in many high-performance libraries in Julia.</p>
+<p>Note that in the above version with <code class="docutils literal notranslate"><span class="pre">&#64;turbo</span></code> if we instead of using <code class="docutils literal notranslate"><span class="pre">randn(N)</span></code> to preallocate the shocks before the loop, we left in the <code class="docutils literal notranslate"><span class="pre">randn()</span></code>, the code gives the wrong answer.  The details are subtle, but in all likelihood it is because the macro assumes all functions are pure (i.e., that <code class="docutils literal notranslate"><span class="pre">randn()</span></code> would return the same value within the loop and can then be cached and reused).</p>
+<p>This is part of a broader caution of using fancy macros to speed up code.</p>
+<div class="admonition-caution-with-loop-optimizations admonition">
+<p class="admonition-title">Caution with loop optimizations</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;turbo</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;inbounds</span></code> and other macros can be useful but can lead to subtle bugs - so only use after ensuring correctness of your methods without the accelerations.  See <a class="reference external" href="https://github.com/JuliaSIMD/LoopVectorization.jl#warning">the warnings</a> associated with the package.  In addition, by skipping bounds checking you may corrupt memory and crash Julia if there are bugs in your code - whereas otherwise it would simply report back an error to help with debugging.</p>
+</div>
+<p>Lets write a version without the macro.  In that case, we do not need to allocate the entire sequences of shocks beforehand</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">simulate_panel_no_turbo</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span>
+<span class="w">    </span><span class="p">(;</span><span class="n">w_hat</span><span class="p">,</span><span class="w"> </span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">c_y</span><span class="p">,</span><span class="w"> </span><span class="n">μ_y</span><span class="p">,</span><span class="w"> </span><span class="n">σ_y</span><span class="p">,</span><span class="w"> </span><span class="n">c_r</span><span class="p">,</span><span class="w"> </span><span class="n">μ_r</span><span class="p">,</span><span class="w"> </span><span class="n">σ_r</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">σ_z</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span>
+<span class="w">    </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">y_mean</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="c"># start at the mean of y</span>
+<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">z_stationary_dist</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="c"># Preallocate next period states and R intermediate</span>
+<span class="w">    </span><span class="n">zp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="w">    </span><span class="n">wp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="w">    </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span>
+<span class="w">        </span><span class="nd">@inbounds</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">N</span>
+<span class="w">            </span><span class="n">zp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">*</span><span class="n">z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">σ_z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">randn</span><span class="p">()</span>
+<span class="w">            </span><span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">w_hat</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">c_r</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">zp</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">μ_r</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">σ_r</span><span class="o">*</span><span class="n">randn</span><span class="p">())</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">            </span><span class="n">wp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c_y</span><span class="o">*</span><span class="n">exp</span><span class="p">(</span><span class="n">zp</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">exp</span><span class="p">(</span><span class="n">μ_y</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">σ_y</span><span class="o">*</span><span class="n">randn</span><span class="p">())</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">s_0</span><span class="o">*</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w">            </span>
+<span class="w">        </span><span class="k">end</span>
+<span class="w">        </span><span class="c"># Step forward</span>
+<span class="w">        </span><span class="n">w</span><span class="w"> </span><span class="o">.=</span><span class="w"> </span><span class="n">wp</span>
+<span class="w">        </span><span class="n">z</span><span class="w"> </span><span class="o">.=</span><span class="w"> </span><span class="n">zp</span>
+<span class="w">    </span><span class="k">end</span><span class="w">    </span>
+<span class="w">    </span><span class="n">sort!</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="c"># sorts the wealth so we can calculate gini/lorenz        </span>
+<span class="w">    </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lorenz</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(;</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="n">gini</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gini</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>simulate_panel_no_turbo (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">&#64;inbounds</span></code> macro ignore bounds checking to gain a few percent increase in speed but is not essential otherwise.</p>
+<p>Finally, to see the comparison to a vectorized approach in the style of matlab or numpy,</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">step_wealth_vectorized</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span>
+<span class="w">    </span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="c"># panel size    </span>
+<span class="w">    </span><span class="p">(;</span><span class="n">w_hat</span><span class="p">,</span><span class="w"> </span><span class="n">s_0</span><span class="p">,</span><span class="w"> </span><span class="n">c_y</span><span class="p">,</span><span class="w"> </span><span class="n">μ_y</span><span class="p">,</span><span class="w"> </span><span class="n">σ_y</span><span class="p">,</span><span class="w"> </span><span class="n">c_r</span><span class="p">,</span><span class="w"> </span><span class="n">μ_r</span><span class="p">,</span><span class="w"> </span><span class="n">σ_r</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">σ_z</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span>
+<span class="w">    </span><span class="n">zp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="o">*</span><span class="n">z</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">σ_z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="c"># vectorized</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c_y</span><span class="o">*</span><span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">zp</span><span class="p">)</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">μ_y</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">σ_y</span><span class="o">*</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+
+<span class="w">    </span><span class="c"># return set to zero if no savings, simplifies vectorization</span>
+<span class="w">    </span><span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">w</span><span class="w"> </span><span class="o">.&gt;</span><span class="w"> </span><span class="n">w_hat</span><span class="p">)</span><span class="o">.*</span><span class="p">(</span><span class="n">c_r</span><span class="o">*</span><span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">zp</span><span class="p">)</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">exp</span><span class="o">.</span><span class="p">(</span><span class="n">μ_r</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">σ_r</span><span class="o">*</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">)))</span>
+<span class="w">    </span><span class="n">wp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">s_0</span><span class="o">*</span><span class="n">R</span><span class="o">.*</span><span class="n">w</span><span class="w"> </span><span class="c"># note R = 0 if not saving since w &lt; w_hat</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">wp</span><span class="p">,</span><span class="w"> </span><span class="n">zp</span>
+<span class="k">end</span>
+<span class="k">function</span><span class="w"> </span><span class="n">simulate_panel_vectorized</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span>
+<span class="w">    </span><span class="n">y_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="o">.</span><span class="n">y_mean</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span><span class="w"> </span><span class="c"># start at the mean</span>
+<span class="w">    </span><span class="n">z_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rand</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">z_stationary_dist</span><span class="p">,</span><span class="w"> </span><span class="n">N</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c"># iterate forward from initial condition</span>
+<span class="w">    </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y_0</span><span class="w"> </span><span class="c"># start at mean of income process</span>
+<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z_0</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">T</span>
+<span class="w">        </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">step_wealth_vectorized</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">z</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="c"># steps forward</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">sort!</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="w"> </span><span class="c"># sorts the wealth so we can calculate gini/lorenz        </span>
+<span class="w">    </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lorenz</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(;</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">F</span><span class="p">,</span><span class="w"> </span><span class="n">L</span><span class="p">,</span><span class="w"> </span><span class="n">gini</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">gini</span><span class="p">(</span><span class="n">w</span><span class="p">))</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>simulate_panel_vectorized (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can then compare the performance of these versions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">N</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100_000</span>
+<span class="n">T</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span>
+<span class="nd">@btime</span><span class="w"> </span><span class="n">simulate_panel</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="o">$</span><span class="n">p</span><span class="p">)</span>
+<span class="nd">@btime</span><span class="w"> </span><span class="n">simulate_panel_no_turbo</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="o">$</span><span class="n">p</span><span class="p">)</span>
+<span class="nd">@btime</span><span class="w"> </span><span class="n">simulate_panel_vectorized</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="o">$</span><span class="n">p</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  423.474 ms (1218 allocations: 463.90 MiB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.150 s (18 allocations: 6.10 MiB)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.343 s (6412 allocations: 2.39 GiB)
+</pre></div>
+</div>
+</div>
+</div>
+<p>The results displayed above are done with the server compiling these notes, and may not be representative.  The performance will depend on the availability of <a class="reference external" href="https://en.wikipedia.org/wiki/Single_instruction,_multiple_data">SIMD</a> and <a class="reference external" href="https://en.wikipedia.org/wiki/AVX-512">AVX512</a> on your processor.</p>
+<p><a class="reference external" href="https://github.com/JuliaSIMD/LoopVectorization.jl">LoopVectorization.jl</a> can also parallelize over threads and multiple processes by replacing with the <a class="reference external" href="https://juliasimd.github.io/LoopVectorization.jl/latest/examples/multithreading/"><code class="docutils literal notranslate"><span class="pre">&#64;tturbo</span></code></a> macro, but this does not seem to significantly improve performance in this case.</p>
+<!--
+# DECIDED AGAINST INCLUSION AFTER SEEING PERFORMANCE OF LOOPVECTORIZATION VERSION
+
+### (Premature) Performance Optimizations of the Simulation
+Before asking how we can make our simulations faster, we should ask whether it is already fast enough for our needs - which it seems to be in this case for the above figures.
+
+That said, lets consider if we had a compelling need to handle much larger panels or variations on simulating for many more parameters.
+
+First, a vectorized version of our original code is
+
+```{code-cell} julia
+function step_wealth(w, z, params)
+    N = length(w) # panel size    
+    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = params
+    zp = a*z .+ b .+ σ_z * randn(N) # vectorized
+    y = c_y*exp.(zp) .+ exp.(μ_y .+ σ_y*randn(N))
+
+    # return set to zero if no savings, simplifies vectorization
+    R = (w .> w_hat).*(c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N)))
+    wp = y .+ s_0*R.*w # note R = 0 if not saving since w < w_hat
+    return wp, zp
+end
+function simulate_panel(N, T, params)
+    y_0 = params.y_mean * ones(N) # start at the mean
+    z_0 = rand(params.z_stationary_dist, N)
+
+    # iterate forward from initial condition
+    w = y_0 # start at mean of income process
+    z = z_0
+    for t in 1:T
+        w, z = step_wealth(w, z, params) # steps forward, discarding results
+    end
+    sort!(w) # sorts the wealth so we can calculate gini/lorenz        
+    F, L = lorenz(w)
+    return (;w, F, L, gini = gini(w))
+end
+```
+
+Minimizing allocations and doing calculations in-place can lead to faster code - though usually in the case of {doc}`numerical methods for linear algebra <../tools_and_techniques/numerical_linear_algebra>` and  In {doc}`iterative methods  <../tools_and_techniques/iterative_methods_sparsity>`.
+
+Example operations for this are the in-place versions of existing functions (e.g., `lmul!(v, 2.0)` for inplace scalar multiplication or `mul!(y, A, x)` for inplace matrix-multiplication).
+
+Using these operations, we can carefully rewrite our functions to be in-place and modify `w` and `z` rather than return new vectors each time.
+
+In addition, a standard trick is to pass in a pre-allocated buffer which is replaced in each iteration, which we provide for the `y` and `R`.
+
+```{code-cell} julia
+function step_wealth!(w, z, y, R, params)
+    N = length(w) # panel size    
+    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = params
+
+    # Splitting up old: zp = a*z .+ b .+ σ_z * randn(N) # vectorized
+    shock_z = randn(N)
+    lmul!(σ_z, shock_z) # σ_z * randn(N)
+    shock_z .+= b # b .+ σ_z * randn(N)
+    lmul!(a, z) # a*z
+    z .+= shock_z # zp = a*z .+ b .+ σ_z * randn(N)
+
+    # Splitting up old: y = c_y*exp.(zp) .+ exp.(μ_y .+ σ_y*randn(N))
+    exp_zp = exp.(z)
+    copy!(y, exp_zp) # y = exp.(zp)
+    lmul!(c_y, y) # y = c_y*exp.(zp)
+    shock_y = randn(N)
+    lmul!(σ_y, shock_y) # σ_y*randn(N)
+    shock_y .+= μ_y # μ_y .+ σ_y*randn(N)    
+    y .+= exp.(shock_y) # y = c_y*exp.(zp) .+ exp.(μ_y .+ σ_y*randn(N))
+
+    # Split up the: R .= (w .> w_hat).*(c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N)))
+    shock_R = randn(N)
+    lmul!(σ_r, shock_R) # σ_r*randn(N)
+    shock_R .+= μ_r # μ_r .+ σ_y*randn(N)    
+    copy!(R, exp_zp) # exp.(zp)
+    lmul!(c_r, R) # c_r*exp.(zp)
+    R .+= exp.(shock_R) # c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N))
+    R .*= (w .> w_hat) # (w .> w_hat).*(c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N)))
+
+    # Split up the: wp = y .+ s_0*R.*w
+    lmul!(s_0, w) # s_0*w
+    w .*= R # s_0*R.*w
+    w .+= y # wp = y .+ s_0*R.*w
+    return w, z
+end
+function simulate_panel!(N, T, params)
+    y_0 = params.y_mean * ones(N) # start at the mean
+    z_0 = rand(params.z_stationary_dist, N)
+
+    # iterate forward from initial condition
+    w = y_0 # start at mean of income process
+    z = z_0
+    y = similar(z)
+    R = similar(z)
+    for t in 1:T
+        step_wealth!(w, z, y, R, params) # steps forward in-place
+    end
+    sort!(w) # sorts the wealth so we can calculate gini/lorenz        
+    F, L = lorenz(w)
+    return (;w, F, L, gini = gini(w))
+end
+```
+As you can see, this was a lot of work, most of which was attempting to eliminate temporary values.
+
+We can identify those temporaries because of the assignment (i.e., `wp = ` typically allocates where `wp .= ` overwrites).
+
+Was all of this trouble worthwhile?  Let's first benchmark the old version
+
+```{code-cell} julia
+p = wealth_dynamics_model()
+N = 100_000
+T = 200
+@btime simulate_panel(N, T, $p);
+```
+
+Then compare,
+
+```{code-cell} julia
+@btime simulate_panel!(N, T, $p);
+```
+
+All of that work led to only a modest speedup of less than a factor of 50% on most systems.
+
+The allocations decrease more substantially (e.g., a factor of 4) but that does not seem to be the key bottleneck.
+
+This is a common of with a lot of performance tweaking of code - a lot of work with very little gain.  Don't optimize code unless you can justify the risk that hours of work leading to only modest speedups.
+
+As discussed above, cases with more significant linear algebra can be much more amenable to in-place operations and lead to more significant speedups as discussed in {doc}`iterative methods  <../tools_and_techniques/iterative_methods_sparsity>` and related lectures.
+--></div>
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.8"
+        },
+        kernelOptions: {
+            kernelName: "julia-1.8",
+            path: "./introduction_dynamics"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.8'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="qe-page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+
+            
+            <div class="qe-sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="qe-sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="qe-sidebar__nav" id="qe-sidebar-nav" aria-label="Main navigation">
+                    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   2. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   3. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   4. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   5. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   6. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   7. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   8. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   9. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/tools_editors.html">
+   10. Visual Studio Code and Other Tools
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/version_control.html">
+   11. GitHub, Version Control and Collaboration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/testing.html">
+   12. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/need_for_speed.html">
+   13. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/geom_series.html">
+   14. Geometric Series for Elementary Economics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   18. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   19. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="short_path.html">
+   27. Shortest Paths
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   28. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   29. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   30. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   31. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   32. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   33. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   35. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   36. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   37. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   38. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   39. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   41. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   42. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   43. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   44. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   46. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   47. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   48. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   49. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   50. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   51. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   52. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   53. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   54. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   55. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   56. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   57. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   58. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   59. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   60. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   61. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   62. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   63. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   64. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   65. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   66. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   67. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   68. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   69. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   70. Execution Statistics
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="qe-sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="qe-toolbar">
+
+            <div class="qe-toolbar__inner">
+
+                <ul class="qe-toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                    <!-- <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off">
+                            <i data-feather="search"></i>
+                        </form>
+                    </li> -->
+                </ul>
+
+                <ul class="qe-toolbar__links">
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="/_notebooks/introduction_dynamics/wealth_dynamics.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li class="settings-button" id="settingsButton"><div data-tippy-content="Launch Notebook"><i data-feather="play-circle"></i></div></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/QuantEcon/lecture-julia.myst/tree/main/lectures/introduction_dynamics/wealth_dynamics.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p>Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title"> Notebook Launcher </p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input">
+                
+                    <option value="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/main?urlpath=tree/introduction_dynamics/wealth_dynamics.ipynb">BinderHub</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" data-repourl="https://github.com/QuantEcon/lecture-julia.notebooks" data-urlpath="tree/lecture-julia.notebooks/introduction_dynamics/wealth_dynamics.ipynb" data-branch=main>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            </ul>
+            <p class="launch"><a href="https://mybinder.org/v2/gh/QuantEcon/lecture-julia.notebooks/main?urlpath=tree/introduction_dynamics/wealth_dynamics.ipynb" id="advancedLaunchButton" target="_blank">Launch Notebook</a></p>
+            <script>
+                // QuantEcon Notebook Launcher
+                const launcherTypeElements = document.querySelectorAll('#settingsModal .modal-servers li');
+                // Highlight the server type if previous selection exists
+                if (typeof localStorage.launcherType !== 'undefined') {
+                  for (var i = 0; i < launcherTypeElements.length; i++) {
+                    launcherTypeElements[i].classList.remove('active');
+                    if ( launcherTypeElements[i].classList.contains(localStorage.launcherType) ) {
+                      launcherTypeElements[i].classList.add('active');
+                    }
+                  }
+                }
+                // Highlight server type on click and set local storage value
+                for (var i = 0; i < launcherTypeElements.length; i++) {
+                  launcherTypeElements[i].addEventListener('click', function() {
+                    for (var j = 0; j < launcherTypeElements.length; j++) {
+                      launcherTypeElements[j].classList.remove('active');
+                    }
+                    this.classList.add('active');
+                    if ( this.classList.contains('launcher-private') ) {
+                      localStorage.launcherType = 'launcher-private';
+                    } else if ( this.classList.contains('launcher-public') ) {
+                      localStorage.launcherType = 'launcher-public';
+                    }
+                    setLaunchServer();
+                  })
+                }
+                const launcherPublic = document.getElementById('launcher-public-input');
+                const launcherPrivate = document.getElementById('launcher-private-input');
+                const pageName = "introduction_dynamics/wealth_dynamics";
+                const repoURL = "https://github.com/QuantEcon/lecture-julia.notebooks";
+                const urlPath = "tree/lecture-julia.notebooks/introduction_dynamics/wealth_dynamics.ipynb";
+                const branch = "main"
+                const launchNotebookLink = document.getElementById('advancedLaunchButton');
+
+                // Highlight public server option if previous selection exists
+                if (typeof localStorage.launcherPublic !== 'undefined') {
+                  launcherPublic.value = localStorage.launcherPublic;
+                }
+                // Update local storage upon public server selection
+                launcherPublic.addEventListener('change', (event) => {
+                  setLaunchServer();
+                });
+                // Populate private server input if previous entry exists
+                if (typeof localStorage.launcherPrivate !== 'undefined') {
+                  launcherPrivate.value = localStorage.launcherPrivate;
+                }
+                // Update local storage when a private server is entered
+                launcherPrivate.addEventListener('input', (event) => {
+                  setLaunchServer();
+                });
+
+                // Function to update the "Launch Notebook" link href
+                function setLaunchServer() {
+                  launchNotebookLink.removeAttribute("style")
+                  if ( localStorage.launcherType == 'launcher-private' ) {
+                    let repoPrefix = "/jupyter/hub/user-redirect/git-pull?repo=" + repoURL + "&branch=" + branch + "&urlpath=" + urlPath;
+                    launcherPrivateValue = launcherPrivate.value
+                    if (!launcherPrivateValue) {
+                        launchNotebookLink.removeAttribute("href")
+                        launchNotebookLink.style.background = "grey"
+                        return
+                    }
+                    localStorage.launcherPrivate = launcherPrivateValue;
+                    privateServer = localStorage.launcherPrivate.replace(/\/$/, "")
+                    if (!privateServer.includes("http")) {
+                        privateServer = "http://" + privateServer
+                    }
+                    launchNotebookLinkURL = privateServer + repoPrefix;
+                  } else if ( localStorage.launcherType == 'launcher-public' ) {
+                    launcherPublicValue = launcherPublic.options[launcherPublic.selectedIndex].value;
+                    localStorage.launcherPublic = launcherPublicValue;
+                    launchNotebookLinkURL = localStorage.launcherPublic;
+                  }
+                  if (launchNotebookLinkURL) launchNotebookLink.href = launchNotebookLinkURL;
+                }
+                // Check if user has previously selected a server
+                if ( (typeof localStorage.launcherPrivate !== 'undefined') || (typeof localStorage.launcherPublic !== 'undefined') ) {
+                  setLaunchServer();
+                }
+                </script>
+
+        </div>
+
+    </div> <!-- .wrapper-->
+    
+<script async="" src="https://www.google-analytics.com/analytics.js"></script>
+<script>
+                        window.ga = window.ga || function () {
+                            (ga.q = ga.q || []).push(arguments) };
+                        ga.l = +new Date;
+                        ga('create', 'UA-54984338-8', 'auto');
+                        ga('set', 'anonymizeIp', true);
+                        ga('send', 'pageview');
+                    </script>
+
+  </body>
+</html>

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (smoothing)=
@@ -369,7 +369,7 @@ ConsumptionProblem = @with_kw (β = 0.96,
 
 function consumption_complete(cp)
 
-    @unpack β, P, y, b0 = cp   # Unpack
+    (;β, P, y, b0) = cp
 
     y1, y2 = y                              # extract income levels
     b1 = b0                                 # b1 is known to be equal to b0
@@ -386,7 +386,7 @@ end
 
 function consumption_incomplete(cp; N_simul = 150)
 
-    @unpack β, P, y, b0 = cp  # unpack
+    (;β, P, y, b0) = cp
 
     # for the simulation use the MarkovChain type
     mc = MarkovChain(P)
@@ -798,7 +798,7 @@ Now we'll use a setting like that in  {doc}`first lecture on the permanent incom
 In that model, there were
 
 * incomplete markets: the consumer could trade only a single risk-free one-period bond bearing gross one-period risk-free interest rate equal to $\beta^{-1}$
-* the consumer's exogenous nonfinancial income was governed by a linear state space model driven by Gaussian shocks, the kind of model studied in an earlier lecture about {doc}`linear state space models <../tools_and_techniques/linear_models>`
+* the consumer's exogenous nonfinancial income was governed by a linear state space model driven by Gaussian shocks, the kind of model studied in an earlier lecture about {doc}`linear state space models <../introduction_dynamics/linear_models>`
 
 We'll write down a complete markets counterpart of that model.
 

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (wald_friedman)=
@@ -470,7 +470,7 @@ We can simulate an agent facing a problem and the outcome with the following fun
 
 ```{code-cell} julia
 function simulation(problem)
-    @unpack d0, d1, L0, L1, c, p, n, return_output = problem
+    (;d0, d1, L0, L1, c, p, n, return_output) = problem
     α, β = decision_rule(d0, d1, L0, L1, c)
     outcomes = fill(false, n)
     costs = fill(0.0, n)
@@ -516,7 +516,7 @@ tags: [remove-cell]
 ---
 @testset "Verifying Output" begin
     Random.seed!(0)
-    @unpack d0, d1, L0, L1, c = Problem()
+    (;d0, d1, L0, L1, c) = Problem()
     α, β, outcomes, costs, trials = simulation(Problem(return_output = true))
     #test α ≈ 0.57428237
     #test β ≈ 0.352510338
@@ -543,7 +543,7 @@ tags: [remove-cell]
 ---
 @testset "Comparative Statics" begin
     Random.seed!(0)
-    @unpack d0, d1, L0, L1, c = Problem()
+    (;d0, d1, L0, L1, c) = Problem()
     α, β, outcomes, costs, trials = simulation(Problem(c = 2c, return_output = true))
     #test α ≈ 0.53551172 atol = 1e-3
     #test β ≈ 0.41244737 atol = 1e-3

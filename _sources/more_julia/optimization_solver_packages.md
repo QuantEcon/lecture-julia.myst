@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.7
+  name: julia-1.8
 ---
 
 (optimization_solver_packages)=
@@ -445,7 +445,7 @@ function squareroot(x) # pretending we don't know sqrt()
     end
     return z
 end
-m = Model(with_optimizer(Ipopt.Optimizer))
+m = Model(Ipopt.Optimizer)
 # need to register user defined functions for AD
 JuMP.register(m,:squareroot, 1, squareroot, autodiff=true)
 
@@ -463,7 +463,7 @@ And this is an example of a quadratic objective
 # st x + y >= 10
 
 using JuMP,Ipopt
-m = Model(with_optimizer(Ipopt.Optimizer)) # settings for the solver
+m = Model(Ipopt.Optimizer) # settings for the solver
 @variable(m, x, start = 0.0)
 @variable(m, y, start = 0.0)
 
