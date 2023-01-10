@@ -387,7 +387,7 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Interpolations, LaTeXStrings, Parameters, Plots, QuantEcon, Random
+using Distributions, Interpolations, LaTeXStrings, Parameters, Plots, Random
 
 ```
 

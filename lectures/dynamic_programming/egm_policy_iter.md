@@ -143,7 +143,7 @@ Here's an implementation of $K$ using EGM as described above.
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using BenchmarkTools, Interpolations, LaTeXStrings, Parameters, Plots, QuantEcon, Random, Roots
+using BenchmarkTools, Interpolations, LaTeXStrings, Parameters, Plots, Random, Roots
 
 ```
 

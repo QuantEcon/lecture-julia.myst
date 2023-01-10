@@ -44,7 +44,7 @@ kernelspec:
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, QuantEcon, Interpolations, Expectations, Parameters
+using Distributions, Interpolations, Expectations, Parameters
 using LaTeXStrings, Plots, NLsolve, Random
 
 ```
@@ -184,8 +184,6 @@ using Test
 ```
 
 ```{code-cell} julia
-using Distributions, QuantEcon, Interpolations, Expectations, Parameters
-
   # model object
   function JvWorker(;A = 1.4,
               α = 0.6,
