@@ -91,9 +91,6 @@ After Conda is installed, you can install Julia.
 The semi-official installation method for Windows is to use [Juliaup](https://github.com/JuliaLang/juliaup), which makes it easier to upgrade and manage concurrent Julia versions.  Support on Mac and Linux is prerelease.  See [here](https://github.com/JuliaLang/juliaup#using-juliaup) for a list of commands, such as `juliaup update` to upgrade to the latest available Julia version after installation, or ways to switch to newer Julia versions after they are released.
 ```
 
-```{warning}
-Juila 1.8.4, which is currently the most recent release, has broken plotting on the Windows operating system.  Until the bug is fixed or 1.8.5 is released, you should use Julia 1.8.3.  With `juliaup` this is straightforward, as `juliaup add 1.8.3` will install that version, and then `juliaup default 1.8.3` will set it as the default.  If you have additional issues, see the docs for fully removing the 1.8.4 version
-```
 
 1. Download and install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation) or manually installing from [download page](http://julialang.org/downloads/), accepting all default options.  That is,
     - Easiest method may be executing `winget install julia -s msstore` in a Windows terminal, or

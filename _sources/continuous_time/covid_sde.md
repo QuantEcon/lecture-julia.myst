@@ -604,5 +604,5 @@ In this case, there are significant differences between the early and late death
 
 This bleak simulation has assumed that no individuals has long-term immunity and that there will be no medical advancements on that time horizon - both of which are unlikely to be true.
 
-Nevertheless, it suggest that the timing of lifting lockdown has a more profound impact after 18 months if we allow stochastic shocks imperfect immunity.
+Nevertheless, it suggests that the timing of lifting lockdown has a more profound impact after 18 months if we allow stochastic shocks imperfect immunity.
 
