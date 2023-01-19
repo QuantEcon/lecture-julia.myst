@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (mccall_with_sep)=
@@ -47,7 +47,7 @@ Once separation enters the picture, the agent comes to view
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Expectations, Parameters, NLsolve, Plots
+using Distributions, Expectations, LaTeXStrings, Parameters, NLsolve, Plots
 ```
 
 ## The Model
@@ -237,8 +237,7 @@ using Distributions, LinearAlgebra, Expectations, Parameters, NLsolve, Plots
 
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
                             iter = 2_000)
-    # α, β, σ, c, γ, w = mcm.α, mcm.β, mcm.σ, mcm.c, mcm.γ, mcm.w
-    @unpack α, β, σ, c, γ, w, dist, u = mcm
+    (; α, β, σ, c, γ, w, dist, u) = mcm
 
     # parameter validation
     @assert c > 0.0
@@ -303,10 +302,10 @@ McCallModel = @with_kw (α = 0.2,
 
 
 mcm = McCallModel()
-@unpack V, U = solve_mccall_model(mcm)
+(; V, U) = solve_mccall_model(mcm)
 U_vec = fill(U, length(mcm.w))
 
-plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = ["V" "U"])
+plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = [L"V" L"U"])
 ```
 
 ```{code-cell} julia
@@ -433,7 +432,7 @@ plot(c_vals,
     α = 0.7,
     xlabel = "unemployment compensation",
     ylabel = "reservation wage",
-    label = "w̄ as a function of c")
+    label = L"$\overline{w}$ as a function of $c$")
 ```
 
 Note that we could've done the above in one pass (which would be important if, for example, the parameter space was quite large).
@@ -467,7 +466,7 @@ sols = solve_mccall_model.(models)
 w̄_vals = [sol.w̄ for sol in sols]
 
 plot(γ_vals, w̄_vals, lw = 2, α = 0.7, xlabel = "job offer rate",
-     ylabel = "reservation wage", label = "w̄ as a function of gamma")
+     ylabel = "reservation wage", label = L"$\overline{w}$ as a function of $\gamma$")
 ```
 
 ```{code-cell} julia

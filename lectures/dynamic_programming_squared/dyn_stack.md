@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (dyn_stack)=
@@ -914,7 +914,7 @@ dynamic program as outlined above
 
 
 ```{code-cell} julia
-using QuantEcon, Plots, LinearAlgebra, Statistics, Parameters, Random
+using LaTeXStrings, QuantEcon, Plots, LinearAlgebra, Statistics, Parameters, Random
 
 ```
 
@@ -1005,8 +1005,8 @@ p = a0 .- a1*q;
 
 plot(1:n+1, [q_leader, q_follower, p],
     title = "Output and Prices, Stackelberg Duopoly",
-    labels = ["leader output", "follower output", "price"],
-    xlabel = "t")
+    labels = ["leader output" "follower output" "price"],
+    xlabel = L"t")
 ```
 
 ### Value of Stackelberg Leader
@@ -1085,11 +1085,11 @@ for t in 1:n
     vt_reset_leader[t] = -yt_reset[:, t]' * P * yt_reset[:, t]
 end
 
-p1 = plot(1:n+1, [(-F * yt)', (-F * yt_reset)'], labels = ["Stackelberg Leader", "Continuation Leader at t"],
-        title = "Leader Control Variable", xlabel = "t");
-p2 = plot(1:n+1, [yt[4, :], yt_reset[4, :]], title = "Follower Control Variable", xlabel = "t", legend = false);
+p1 = plot(1:n+1, [(-F * yt)', (-F * yt_reset)'], labels = ["Stackelberg Leader" L"Continuation Leader at $t$"],
+        title = "Leader Control Variable", xlabel = L"t");
+p2 = plot(1:n+1, [yt[4, :], yt_reset[4, :]], title = "Follower Control Variable", xlabel = L"t", legend = false);
 p3 = plot(1:n, [vt_leader, vt_reset_leader], legend = false,
-            xlabel = "t", title = "Leader Value Function");
+            xlabel = L"t", title = "Leader Value Function");
 plot(p1, p2, p3, layout = (3, 1), size = (800, 600))
 ```
 
@@ -1117,7 +1117,7 @@ yt_tilde = compute_sequence(lq_tilde, y0_tilde, n)[1];
 ```{code-cell} julia
 # checks that the recursive formulation of the follower's problem gives
 # the same solution as the original Stackelberg problem
-plot(1:n+1, [yt_tilde[5, :], yt_tilde[3, :]], labels = ["q_tilde", "q"])
+plot(1:n+1, [yt_tilde[5, :], yt_tilde[3, :]], labels = [L"\tilde{q}" L"q"])
 ```
 
 Note: Variables with `_tilde` are obtained from solving the follower's
@@ -1263,7 +1263,7 @@ for t in 1:n-1
     yt_tilde_star[t+1, :] = (Ã - B̃ * F̃_star) * yt_tilde_star[t, :];
 end
 
-plot([yt_tilde_star[:, 5], yt_tilde[3, :]], labels = ["q_tilde", "q"])
+plot([yt_tilde_star[:, 5], yt_tilde[3, :]], labels = [L"\tilde{q}" L"q"])
 ```
 
 ```{code-cell} julia
@@ -1351,7 +1351,7 @@ q1 = z[2, :];
 q2 = z[3, :];
 q = q1 + q2; # total output, MPE
 p = a0 .- a1 * q; # total price, MPE
-plot([q, p], labels = ["total ouput", "total price"], title = "Output and prices, duopoly MPE", xlabel = "t")
+plot([q, p], labels = ["total ouput" "total price"], title = "Output and prices, duopoly MPE", xlabel = L"t")
 ```
 
 ```{code-cell} julia
@@ -1414,9 +1414,9 @@ for t in 1:n
     vt_follower[t] = -yt_tilde[:, t]' * P̃ * yt_tilde[:, t];
 end
 
-plot([vt_MPE, vt_leader, vt_follower], labels = ["MPE", "Stackelberg leader",
-        "Stackelberg follower"], title = "MPE vs Stackelberg Values",
-        xlabel = "t")
+plot([vt_MPE, vt_leader, vt_follower], labels = ["MPE" "Stackelberg leader" "Stackelberg follower"], 
+        title = "MPE vs Stackelberg Values",
+        xlabel = L"t")
 ```
 
 ```{code-cell} julia
@@ -1435,6 +1435,6 @@ vt_leader[1] + vt_follower[1] - 2*vt_MPE[1]
 ---
 tags: [remove-cell]
 ---
-@test round(vt_leader[1] + vt_follower[1] - 2*vt_MPE[1], digits = 4) == -3.9708
+@test round(vt_leader[1] + vt_follower[1] - 2*vt_MPE[1], digits = 4) == -3.9707
 ```
 

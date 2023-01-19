@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (odu)=
@@ -161,7 +161,7 @@ using Test # At the head of every lecture.
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Plots, QuantEcon, Interpolations, Parameters
+using Distributions, LaTeXStrings, Plots, QuantEcon, Interpolations, Parameters
 
 
 
@@ -170,8 +170,8 @@ x = range(0,  w_max, length = 200)
 
 G = Beta(3, 1.6)
 F = Beta(1, 1)
-plot(x, pdf.(G, x/w_max)/w_max, label="g")
-plot!(x, pdf.(F, x/w_max)/w_max, label="f")
+plot(x, pdf.(G, x/w_max)/w_max, label=L"g")
+plot!(x, pdf.(F, x/w_max)/w_max, label=L"f")
 ```
 
 ```{code-cell} julia
@@ -248,7 +248,7 @@ end
 function T!(sp, v, out;
                            ret_policy = false)
     # simplify names
-    @unpack f, g, β, c = sp
+    (;f, g, β, c) = sp
     nodes, weights = sp.quad_nodes, sp.quad_weights
 
     vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v,
@@ -290,7 +290,7 @@ get_greedy(sp, v) = T(sp, v, ret_policy = true)
 
 function res_wage_operator!(sp, ϕ, out)
     # simplify name
-    @unpack f, g, β, c = sp
+    (;f, g, β, c) = sp
 
     # Construct interpolator over π_grid, given ϕ
     ϕ_f = LinearInterpolation(sp.π_grid, ϕ, extrapolation_bc = Line())
@@ -347,7 +347,7 @@ function plot_value_function(;w_plot_grid_size = 100,
           for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
   p = contour(π_plot_grid, w_plot_grid, Z, levels=15, alpha=0.6,
               fill=true, size=(400, 400), c=:lightrainbow)
-  plot!(xlabel="pi", ylabel="w", xguidefont=font(12))
+  plot!(xlabel=L"\pi", ylabel=L"w", xguidefont=font(12))
   return p
 end
 
@@ -366,7 +366,7 @@ function plot_policy_function(;w_plot_grid_size = 100,
             for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
     p = contour(π_plot_grid, w_plot_grid, Z, levels=1, alpha=0.6, fill=true,
                 size=(400, 400), c=:coolwarm)
-    plot!(xlabel="pi", ylabel="wage", xguidefont=font(12), cbar=false)
+    plot!(xlabel=L"\pi", ylabel="wage", xguidefont=font(12), cbar=false)
     annotate!(0.4, 1.0, "reject")
     annotate!(0.7, 1.8, "accept")
     return p

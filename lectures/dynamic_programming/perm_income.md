@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (perm_income)=
@@ -138,7 +138,7 @@ The consumer also faces initial conditions $b_0$ and $y_0$, which can be fixed o
 
 For the remainder of this lecture, we follow Friedman and Hall in assuming that $(1 + r)^{-1} = \beta$.
 
-Regarding the endowment process, we assume it has the {doc}`state-space representation <../tools_and_techniques/linear_models>`.
+Regarding the endowment process, we assume it has the {doc}`state-space representation <../introduction_dynamics/linear_models>`.
 
 ```{math}
 :label: sprob15ab
@@ -388,7 +388,7 @@ Then we can express equation  {eq}`pi_ssr` as
 \end{aligned}
 ```
 
-We can use the following formulas from {doc}`linear state space models <../tools_and_techniques/linear_models>` to compute population mean $\mu_t = \mathbb{E}    x_t$ and covariance $\Sigma_t := \mathbb{E} [ (x_t - \mu_t) (x_t - \mu_t)']$
+We can use the following formulas from {doc}`linear state space models <../introduction_dynamics/linear_models>` to compute population mean $\mu_t = \mathbb{E}    x_t$ and covariance $\Sigma_t := \mathbb{E} [ (x_t - \mu_t) (x_t - \mu_t)']$
 
 ```{math}
 :label: lss_mut_perm_income
@@ -663,7 +663,7 @@ Equation {eq}`sprob77`  asserts that the *cointegrating residual*  on the left s
 ### Cross-Sectional Implications
 
 Consider again {eq}`sprob16abcd`, this time in light of our discussion of
-distribution dynamics in the {doc}`lecture on linear systems <../tools_and_techniques/linear_models>`.
+distribution dynamics in the {doc}`lecture on linear systems <../introduction_dynamics/linear_models>`.
 
 The dynamics of $c_t$ are given by
 
@@ -932,7 +932,7 @@ In the same discussion in {cite}`Ljungqvist2012` it is shown that $K \in [0,1]$ 
 
 In other words, $K$ increases as the ratio of the standard deviation of the permanent shock to that of the transitory shock increases.
 
-Please see  {doc}`first look at the Kalman filter <../tools_and_techniques/kalman>`.
+Please see  {doc}`first look at the Kalman filter <../introduction_dynamics/kalman>`.
 
 Applying formulas {eq}`sprob16abcd` implies
 

@@ -9,7 +9,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.9
       - name: Install Python Dependencies
         run: |
           pip install -r requirements.txt
@@ -27,7 +27,7 @@ jobs:
       - name: Set up Julia
         uses: julia-actions/setup-julia@v1
         with:
-          version: 1.6.0
+          version: 1.8.3
       - name: Install IJulia and Setup Project
         shell: bash
         run: |
@@ -51,14 +51,14 @@ jobs:
       - name: Build Download Notebooks (sphinx-tojupyter)
         shell: bash -l {0}
         run: |
-          jb build lectures --path-output ./ --builder=custom --custom-builder=jupyter
+          jb build lectures --path-output ./ --builder=custom --custom-builder=jupyter -W --keep-going
           mkdir -p _build/html/_notebooks
-          cp -u _build/jupyter/*.ipynb _build/html/_notebooks
+          rsync -r  _build/jupyter/ _build/html/_notebooks/
       # Build HTML (Website)
       - name: Build HTML
         shell: bash -l {0}
         run: |
-          jb build lectures --path-output ./ 
+          jb build lectures --path-output ./
       - name: Save Build as Artifact
         uses: actions/upload-artifact@v1
         with:

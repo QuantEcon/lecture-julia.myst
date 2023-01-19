@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (iterative_methods_sparsity)=
@@ -333,7 +333,7 @@ $$
 First, interpolate with $N = 5$ and avoid taking the inverse.  In that case, as long as we avoid taking an inverse, the numerical errors from the ill-conditioned matrix are manageable.
 
 ```{code-cell} julia
-using Plots
+using LaTeXStrings, Plots
 
 
 N_display = 100
@@ -351,8 +351,8 @@ c_5 = A_5 \ y
 # use the coefficients to evaluate on x_display grid
 B_5 = [x_i^n for x_i in x_display, n in 0:N]   # calculate monomials for display grid
 y_5 = B_5 * c_5  # calculates for each in x_display_grid
-plot(x_display, y_5, label = "P_5(x)")
-plot!(x_display, y_display, w = 3, label = "g(x)")
+plot(x_display, y_5, label = L"P_5(x)")
+plot!(x_display, y_display, w = 3, label = L"g(x)")
 ```
 
 Note that while the function, $g(x)$, and the approximation with a 5th-order polynomial, $P_5(x)$, coincide at the 6 nodes, the
@@ -371,32 +371,18 @@ c_9 = A_9 \ y
 # use the coefficients to evaluate on x_display grid
 B_9 = [x_i^n for x_i in x_display, n in 0:N]   # calculate monomials for display grid
 y_9 = B_9 * c_9  # calculates for each in x_display_grid
-plot(x_display, y_9, label = "P_9(x)")
-plot!(x_display, y_display, w = 3, label = "g(x)")
+plot(x_display, y_9, label = L"P_9(x)")
+plot!(x_display, y_display, w = 3, label = L"g(x)")
 ```
 
 While the approximation is better near `x=0`, the oscillations near the boundaries have become worse.  Adding on extra polynomial terms will not
 globally increase the quality of the approximation.
 
-#### Using an Orthogonal Polynomial Basis
-
+```{admonition} Using an Orthogonal Polynomial Basis
 We can minimize the numerical problems of an ill-conditioned basis matrix by choosing a different basis for the polynomials.
 
-For example, [Chebyshev polynomials](https://en.wikipedia.org/wiki/Chebyshev_polynomials) form an orthonormal basis under an appropriate inner product, and we can form precise high-order approximations, with very little numerical error
-
-```{code-cell} julia
-using ApproxFun
-N = 10000
-S = Chebyshev(-1.0..1.0)  # form Chebyshev basis
-x = points(S, N)  # chooses Chebyshev nodes
-y = g.(x)
-g_approx = Fun(S,ApproxFun.transform(S,y))  # transform fits the polynomial
-@show norm(g_approx.(x) - g.(x), Inf)
-plot(x_display, g_approx.(x_display), label = "P_10000(x)")
-plot!(x_display, g.(x_display), w = 3, label = "g(x)")
+For example, [Chebyshev polynomials](https://en.wikipedia.org/wiki/Chebyshev_polynomials) form an orthonormal basis under an appropriate inner product, and we can form precise high-order approximations, with very little numerical error.  Besides the use of a different polynomial basis, we are approximating at different nodes (i.e., [Chebyshev nodes](https://en.wikipedia.org/wiki/Chebyshev_nodes)).  Interpolation with Chebyshev polynomials at the Chebyshev nodes ends up minimizing (but not eliminating) Runge's Phenomenon.
 ```
-
-Besides the use of a different polynomial basis, we are approximating at different nodes (i.e., [Chebyshev nodes](https://en.wikipedia.org/wiki/Chebyshev_nodes)).  Interpolation with Chebyshev polynomials at the Chebyshev nodes ends up minimizing (but not eliminating) Runge's Phenomenon.
 
 #### Lessons for Approximation and Interpolation
 
@@ -1083,7 +1069,7 @@ Next, implement the in-place matrix-free product
 
 ```{code-cell} julia
 function Q_mul!(dv, v, p)
-    @unpack θ, ζ, N, M, shape, e_m = p
+    (;θ, ζ, N, M, shape, e_m) = p
     v = reshape(v, shape)  # now can access v, dv as M-dim arrays
     dv = reshape(dv, shape)
 
@@ -1162,7 +1148,7 @@ Putting everything together to solving much larger systems with GMRES as our lin
 
 ```{code-cell} julia
 function solve_bellman(p; iv = zeros(p.N^p.M))
-    @unpack ρ, N, M = p
+    (;ρ, N, M) = p
     Q = LinearMap((df, f) -> Q_mul!(df, f, p), N^M, ismutating = true)
     A = ρ * I - Q
     r = r_vec(p)
@@ -1206,7 +1192,7 @@ $$
 
 ```{code-cell} julia
 function Q_T_mul!(dψ, ψ, p)
-    @unpack θ, ζ, N, M, shape, e_m = p
+    (;θ, ζ, N, M, shape, e_m) = p
     ψ = reshape(ψ, shape)
     dψ = reshape(dψ, shape)
 
@@ -1309,7 +1295,7 @@ For this, we can set up a `MatrixFreeOperator` for our `Q_T_mul!` function (equi
 using OrdinaryDiffEq, DiffEqOperators
 
 function solve_transition_dynamics(p, t)
-    @unpack N, M = p
+    (;N, M) = p
 
     ψ_0 = [1.0; fill(0.0, N^M - 1)]
     O! = MatrixFreeOperator((dψ, ψ, p, t) -> Q_T_mul!(dψ, ψ, p), (p, 0.0),
@@ -1323,7 +1309,7 @@ t = 0.0:5.0:100.0
 p = default_params(N=10, M=6)
 sol = solve_transition_dynamics(p, t)
 v = solve_bellman(p)
-plot(t, [dot(sol(tval), v) for tval in t], xlabel = "t", label = "E_t(v)")
+plot(t, [dot(sol(tval), v) for tval in t], xlabel = L"t", label = L"E_t(v)")
 ```
 
 The above plot (1) calculates the full dynamics of the Markov chain from the $n_m = 1$ for all $m$ initial condition; (2) solves the dynamics of a system of a million ODEs; and (3) uses the calculation of the Bellman equation to find the expected valuation during that transition.  The entire process takes less than 30 seconds.

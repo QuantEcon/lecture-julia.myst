@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (markov_perf)=
@@ -520,7 +520,7 @@ The following program
 * extracts and plots industry output $q_t = q_{1t} + q_{2t}$ and price $p_t = a_0 - a_1 q_t$
 
 ```{code-cell} julia
-using Plots
+using LaTeXStrings, Plots
 
 
 AF = A - B1 * F1 - B2 * F2
@@ -952,7 +952,7 @@ I2 = x[2, :]
 
 plot(I1, color=:blue, lw=2, alpha=0.75, label="inventories, firm 1")
 plot!(I2, color=:green, lw=2, alpha=0.75, label="inventories, firm 2")
-plot!(title="delta = 0.02")
+plot!(title=L"\delta = 0.02")
 ```
 
 ```{code-cell} julia

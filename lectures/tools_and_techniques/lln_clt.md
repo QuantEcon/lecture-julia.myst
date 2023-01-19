@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (lln_clt)=
@@ -221,7 +221,7 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Plots, Distributions, Random, Statistics
+using LaTeXStrings, Plots, Distributions, Random, Statistics
 ```
 
 ```{code-cell} julia
@@ -236,7 +236,7 @@ function ksl(distribution, n = 100)
           alpha = 0.5, label = "", linewidth = 0)
     if !isnan(μ)
         hline!([μ], color = :black, linewidth = 1.5, linestyle = :dash, grid = false,
-               label = ["Mean"])
+               label = "Mean")
     end
     plot!(1:n, sample_means, linewidth = 3, alpha = 0.6, color = :green,
           label = "Sample mean")
@@ -397,7 +397,7 @@ The next figure plots the probability mass function of $Y_n$ for $n = 1, 2, 4, 8
 binomial_pdf(n) =
     bar(0:n, pdf.(Binomial(n), 0:n),
         xticks = 0:10, ylim = (0, 1), yticks = 0:0.1:1,
-        label = "Binomial($n, 0.5)", legend = :topleft)
+        label = L"Binomial(%$n, 0.5)", legend = :topleft)
 ```
 
 ```{code-cell} julia
@@ -456,7 +456,7 @@ function simulation1(distribution, n = 250, k = 10_000)
     y = √n * vec(y)
     density(y, label = "Empirical Distribution")
     return plot!(Normal(0, σ), linestyle = :dash, color = :black,
-                 label = "Normal(0.00, $(σ^2))")
+                 label = L"Normal(0.00, %$(σ^2))")
 end
 ```
 
@@ -503,7 +503,7 @@ end
 ys = simulation2()
 plots = [] # would preallocate in optimized code
 for i in 1:size(ys, 2)
-    p = density(ys[:, i], linealpha = i, title = "n = $i")
+    p = density(ys[:, i], linealpha = i, title = L"n = %$i")
     push!(plots, p)
 end
 

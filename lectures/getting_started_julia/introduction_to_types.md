@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (introduction_to_types)=
@@ -483,12 +483,13 @@ The code works, and is equivalent in performance to a `NamedTuple`, but is more 
 
 There is no way to avoid learning parametric types to achieve high performance code.
 
-However, the other issue where constructor arguments are error-prone, can be remedied with the `Parameters.jl` library.
+However, the other issue where constructor arguments are error-prone can be
+remedied with the `@kwdef` macro from `Base`.
 
 ```{code-cell} julia
-using Parameters
+using Base: @kwdef
 
-@with_kw  struct Foo5
+@kwdef struct Foo5
     a::Float64 = 2.0     # adds default value
     b::Int64
     c::Vector{Float64}
@@ -501,7 +502,7 @@ foo2 = Foo5(c = [1.0, 2.0, 3.0], b = 2)  # rearrange order, uses default values
 @show foo2
 
 function f(x)
-    @unpack a, b, c = x     # can use `@unpack` on any struct
+    (;a, b, c) = x # unpacks any struct or named tuple
     return a + b + sum(c)
 end
 
@@ -622,7 +623,7 @@ x = BigFloat(1.0)
 function g2(x::AbstractFloat)
     if x > 0.0   # can't efficiently call with `x::Integer`
         return x + 1.0   # OK - assumes you can promote `Float64` to `AbstractFloat`
-    otherwise
+    else
         return 0   # BAD! Returns a `Int64`
     end
 end
@@ -637,7 +638,7 @@ x2 = BigFloat(-1.0)
 function g3(x) #
     if x > zero(x)   # any type with an additive identity
         return x + one(x)  # more general but less important of a change
-    otherwise
+    else
         return zero(x)
     end
 end
@@ -668,10 +669,9 @@ This is just one of many decisions and patterns to ensure that your code is cons
 
 The best resource is to carefully read other peoples code, but a few sources to review are
 
-* [Julia Style Guide](https://docs.julialang.org/en/v1/manual/style-guide/).
-* [Invenia Blue Style Guide](https://github.com/invenia/BlueStyle).
-* [Julia Praxis Naming Guides](https://github.com/JuliaPraxis/Naming/tree/master/guides).
-* [QuantEcon Style Guide](https://github.com/QuantEcon/lecture-source-jl/blob/master/style.md) used in these lectures.
+* [Julia Style Guide](https://docs.julialang.org/en/v1/manual/style-guide/)
+* [SciML Style Guide](https://github.com/SciML/SciMLStyle)
+* [Blue Style Guide](https://github.com/invenia/BlueStyle)
 
 Now why would we emphasize naming and style as a crucial part of the lectures?
 
@@ -691,6 +691,9 @@ Some helpful ways to think about this are
 * **Maintain the correspondence between the whiteboard math and the code**:
   For example, if you change notation in your model, then immediately update
   all variables in the code to reflect it.
+
+
+While variable naming takes discipline, code formatting for a specific style guide can be automated using [JuliaFormatter.jl](https://github.com/domluna/JuliaFormatter.jl) which is built into the Julia VS Code extension.
 
 #### Commenting Code
 
@@ -921,7 +924,7 @@ x = rand(N)
 
 ### Exercise 2
 
-A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from {doc}`the Kalman lecture <../tools_and_techniques/kalman>`.
+A key step in the calculation of the Kalman Filter is calculation of the Kalman gain, as can be seen with the following example using dense matrices from {doc}`the Kalman lecture <../introduction_dynamics/kalman>`.
 
 Using what you learned from Exercise 1, benchmark this using Static Arrays
 

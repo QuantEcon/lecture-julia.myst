@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (aiyagari)=
@@ -205,7 +205,7 @@ using Test, Random
 ```
 
 ```{code-cell} julia
-using Parameters, Plots, QuantEcon
+using LaTeXStrings, Parameters, Plots, QuantEcon
 
 ```
 
@@ -280,14 +280,14 @@ am_ddp = DiscreteDP(am.R, am.Q, am.β)
 results = solve(am_ddp, PFI)
 
 # Simplify names
-@unpack z_size, a_size, n, a_vals = am
+(;z_size, a_size, n, a_vals) = am
 z_vals = am.z_chain.state_values
 
 # Get all optimal actions across the set of
 # a indices with z fixed in each column
 a_star = reshape([a_vals[results.sigma[s_i]] for s_i in 1:n], a_size, z_size)
 
-labels = ["z = $(z_vals[1])" "z = $(z_vals[2])"]
+labels = [L"z = %$(z_vals[1])" L"z = %$(z_vals[2])"]
 plot(a_vals, a_star, label = labels, lw = 2, alpha = 0.6)
 plot!(a_vals, a_vals, label = "", color = :black, linestyle = :dash)
 plot!(xlabel = "current assets", ylabel = "next period assets", grid = false)
@@ -342,7 +342,7 @@ function prices_to_capital_stock(am, r)
 
     # Set up problem
     w = r_to_w(r)
-    @unpack a_vals, s_vals, u = am
+    (;a_vals, s_vals, u) = am
     setup_R!(am.R, a_vals, s_vals, r, w, u)
 
     aiyagari_ddp = DiscreteDP(am.R, am.Q, am.β)

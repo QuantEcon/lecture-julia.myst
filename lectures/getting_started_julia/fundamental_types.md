@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (fundamental_types)=
@@ -234,7 +234,7 @@ x = [1, 2, 3]
 y = similar(x, 2, 2)  # make a 2x2 matrix
 ```
 
-#### Manual Array Definitions
+#### Array Definitions from Literals
 
 As we've seen, you can create one dimensional arrays from manually specified data like so
 
@@ -274,6 +274,39 @@ a = [10 20 30 40]'
 
 ```{code-cell} julia
 ndims(a)
+```
+
+Note, however, that the transformed array is not a matrix but rather a special type (e.g., `adjoint(::Matrix{Int64}) with eltype Int64`).
+
+Keeping the special structure of a transposed array can let Julia use more efficient algorithms in some cases.
+
+Finally, we can see how to create multidimensional arrays from literals with the `;` separator.
+
+First, we can create a vector
+
+```{code-cell} julia
+[1; 2;]
+```
+
+Next, by appending an additional `;` we can tell it to use a 2 dimensional array
+
+```{code-cell} julia
+[1; 2;;]
+``` 
+
+Or 3 dimensions
+```{code-cell} julia
+[1; 2;;;]
+``` 
+
+Or a 1x1 matrix with a single value
+```{code-cell} julia
+[1;;]
+```
+
+Or a 2x2x1 array
+```{code-cell} julia
+[1 2; 3 4;;;]
 ```
 
 ### Array Indexing
@@ -522,7 +555,7 @@ val = [1, 2]
 y = similar(val)
 
 function f!(out, x)
-    out = [1 2; 3 4] * x   # MISTAKE! Should be .= or [:]
+    out = [1 2; 3 4] * x   # MISTAKE! Should be .=
 end
 f!(y, val)
 y
@@ -950,16 +983,17 @@ println("a = $a and b = $b")
 As well as **named tuples**, which extend tuples with names for each argument.
 
 ```{code-cell} julia
-t = (val1 = 1.0, val2 = "test")
+t = (;val1 = 1.0, val2 = "test") # ; is optional but good form
 t.val1      # access by index
-# a, b = t  # bad style, better to unpack by name with @unpack
-println("val1 = $(t.val1) and val1 = $(t.val1)") # access by name
+println("val1 = $(t.val1) and val2 = $(t.val2)") # access by name
+(;val1, val2) = t  # unpacking notation (note the ;)
+println("val1 = $val1 and val2 = $val2")
 ```
 
 While immutable, it is possible to manipulate tuples and generate new ones
 
 ```{code-cell} julia
-t2 = (val3 = 4, val4 = "test!!")
+t2 = (;val3 = 4, val4 = "test!!")
 t3 = merge(t, t2)  # new tuple
 ```
 
@@ -967,29 +1001,27 @@ Named tuples are a convenient and high-performance way to manage and unpack sets
 
 ```{code-cell} julia
 function f(parameters)
-    α, β = parameters.α, parameters.β  # poor style, error prone if adding parameters
+    α, β = parameters.α, parameters.β # poor style, error prone
     return α + β
 end
 
-parameters = (α = 0.1, β = 0.2)
+parameters = (;α = 0.1, β = 0.2)
 f(parameters)
 ```
 
-This functionality is aided by the `Parameters.jl` package and the `@unpack` macro
+This functionality is aided by the unpacking notation
 
 ```{code-cell} julia
-using Parameters
-
 function f(parameters)
-    @unpack α, β = parameters  # good style, less sensitive to errors
+    (;α, β) = parameters  # good style, less sensitive to errors
     return α + β
 end
 
-parameters = (α = 0.1, β = 0.2)
+parameters = (;α = 0.1, β = 0.2)
 f(parameters)
 ```
 
-In order to manage default values, use the `@with_kw` macro
+In order to manage default values, use the `@with_kw` from the `Parameters.jl` package
 
 ```{code-cell} julia
 using Parameters
@@ -999,6 +1031,15 @@ paramgen = @with_kw (α = 0.1, β = 0.2)  # create named tuples with defaults
 @show paramgen()  # calling without arguments gives all defaults
 @show paramgen(α = 0.2)
 @show paramgen(α = 0.2, β = 0.5);
+```
+
+Or create a function which returns the named tuple with defaults, which can also do intermediate calculations
+```{code-cell} julia
+function paramgen2(;α = 0.1, β = 0.2)
+    return (;α, β)
+end
+@show paramgen2()
+@show paramgen2(;α = 0.2)
 ```
 
 An alternative approach, defining a new type using `struct` tends to be more prone to accidental misuse, and leads to a great deal of boilerplate code.

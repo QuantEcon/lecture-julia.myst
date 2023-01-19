@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (uncertainty_traps)=
@@ -38,7 +38,7 @@ In the model,
 * Greater uncertainty means greater dispersions of these distributions.
 * Entrepreneurs are risk averse and hence less inclined to be active  when uncertainty is high.
 * The output of active entrepreneurs is observable, supplying a noisy signal that helps everyone inside the model infer fundamentals.
-* Entrepreneurs update their beliefs about fundamentals using Bayes' Law, implemented via {doc}`Kalman filtering <../tools_and_techniques/kalman>`.
+* Entrepreneurs update their beliefs about fundamentals using Bayes' Law, implemented via {doc}`Kalman filtering <../introduction_dynamics/kalman>`.
 
 Uncertainty traps emerge because:
 
@@ -231,7 +231,7 @@ using Test, Random
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using DataFrames, Parameters, Plots
+using DataFrames, LaTeXStrings, Parameters, Plots
 
 ```
 
@@ -367,11 +367,11 @@ econ = UncertaintyTrapEcon()
 M_range = 0:6
 γp = 1 ./ (ρ^2 ./ (γ .+ γ_x .* M_range') .+ σ_θ^2)
 
-labels = ["0", "1", "2", "3", "4", "5", "6"]
+labels = ["0" "1" "2" "3" "4" "5" "6"]
 
 plot(γ, γ, lw = 2, label = "45 Degree")
 plot!(γ, γp, lw = 2, label = labels)
-plot!(xlabel = "Gamma", ylabel = "Gamma'", legend_title = "M", legend = :bottomright)
+plot!(xlabel = L"\gamma", ylabel = L"\gamma^\prime", legend_title = L"M", legend = :bottomright)
 ```
 
 ```{code-cell} julia
@@ -459,9 +459,9 @@ Random.seed!(42);  # set random seed for reproducible results
 ```{code-cell} julia
 df = simulate(econ)
 
-plot(eachindex(df.μ), df.μ, lw = 2, label = "Mu")
-plot!(eachindex(df.θ), df.θ, lw = 2, label = "Theta")
-plot!(xlabel = "x", ylabel = "y", legend_title = "Variable", legend = :bottomright)
+plot(eachindex(df.μ), df.μ, lw = 2, label = L"\mu")
+plot!(eachindex(df.θ), df.θ, lw = 2, label = L"\theta")
+plot!(xlabel = L"x", ylabel = L"y", legend_title = "Variable", legend = :bottomright)
 ```
 
 Now let's plot the whole thing together
@@ -469,12 +469,12 @@ Now let's plot the whole thing together
 ```{code-cell} julia
 len = eachindex(df.θ)
 yvals = [df.θ, df.μ, df.γ, df.M]
-vars = ["Theta", "Mu", "Gamma", "M"]
+vars = [L"\theta", L"\mu", L"\gamma", L"M"]
 
 plt = plot(layout = (4,1), size = (600, 600))
 
 for i in 1:4
-    plot!(plt[i], len, yvals[i], xlabel = "t", ylabel = vars[i], label = "")
+    plot!(plt[i], len, yvals[i], xlabel = L"t", ylabel = vars[i], label = "")
 end
 
 plot(plt)

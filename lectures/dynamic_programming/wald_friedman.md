@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (wald_friedman)=
@@ -165,7 +165,7 @@ The bottom panel presents mixtures of these distributions, with various mixing p
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Parameters, Printf, Random, Roots, Plots
+using Distributions, LaTeXStrings, Parameters, Printf, Random, Roots, Plots
 
 ```
 
@@ -182,8 +182,8 @@ using StatsPlots
 begin
     base_dist = [Beta(1, 1), Beta(3, 3)]
     mixed_dist = MixtureModel.(Ref(base_dist), (p -> [p, one(p) - p]).(0.25:0.25:0.75))
-    plot(plot(base_dist, labels = ["f_0", "f_1"], title = "Original Distributions"),
-         plot(mixed_dist, labels = ["1/4-3/4", "1/2-1/2", "3/4-1/4"],
+    plot(plot(base_dist, labels = [L"f_0" L"f_1"], title = "Original Distributions"),
+         plot(mixed_dist, labels = [L"1/4-3/4" L"1/2-1/2" L"3/4-1/4"],
               title = "Distribution Mixtures"),
          # Global settings across both plots
          ylab = "Density", ylim = (0, 2), layout = (2, 1)
@@ -470,7 +470,7 @@ We can simulate an agent facing a problem and the outcome with the following fun
 
 ```{code-cell} julia
 function simulation(problem)
-    @unpack d0, d1, L0, L1, c, p, n, return_output = problem
+    (;d0, d1, L0, L1, c, p, n, return_output) = problem
     α, β = decision_rule(d0, d1, L0, L1, c)
     outcomes = fill(false, n)
     costs = fill(0.0, n)
@@ -516,7 +516,7 @@ tags: [remove-cell]
 ---
 @testset "Verifying Output" begin
     Random.seed!(0)
-    @unpack d0, d1, L0, L1, c = Problem()
+    (;d0, d1, L0, L1, c) = Problem()
     α, β, outcomes, costs, trials = simulation(Problem(return_output = true))
     #test α ≈ 0.57428237
     #test β ≈ 0.352510338
@@ -543,7 +543,7 @@ tags: [remove-cell]
 ---
 @testset "Comparative Statics" begin
     Random.seed!(0)
-    @unpack d0, d1, L0, L1, c = Problem()
+    (;d0, d1, L0, L1, c) = Problem()
     α, β, outcomes, costs, trials = simulation(Problem(c = 2c, return_output = true))
     #test α ≈ 0.53551172 atol = 1e-3
     #test β ≈ 0.41244737 atol = 1e-3

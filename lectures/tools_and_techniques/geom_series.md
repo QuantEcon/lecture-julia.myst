@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (mc)=
@@ -47,7 +47,7 @@ Below we'll use the following packages:
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Plots, Random, Symbolics
+using Distributions, LaTeXStrings, Plots, Random, Symbolics
 ```
 
 ## Key Formulas
@@ -653,28 +653,19 @@ using Test
 ```{code-cell} julia
 # True present value of a finite lease
 function finite_lease_pv_true(T, g, r, x_0)
-    G = (1 .+ g)
-    R = (1 .+ r)
-    return (x_0 .* (1 .- G .^ (T .+ 1) .* R .^ (-T .- 1))) / (1 .- G .* R .^ (-1))
+    G = 1 + g
+    R = 1 + r
+    return (x_0*(1 - G^(T + 1)*R^(-T - 1)))/(1 - G*R^(-1))
 end
 
 # First approximation for our finite lease
-function finite_lease_pv_approx(T, g, r, x_0)
-    p = x_0 .* (T .+ 1) .+ x_0 .* r .* g .* (T .+ 1) / (r .- g)
-    return p
-end
+finite_lease_pv_approx(T, g, r, x_0) = x_0*(T + 1)+x_0*r*g*(T + 1)/(r - g)
 
 # Second approximation for our finite lease
-function finite_lease_pv_approx_2(T, g, r, x_0)
-    return (x_0 .* (T .+ 1))
-end
+finite_lease_pv_approx_2(T, g, r, x_0) = (x_0*(T + 1))
 
 # Infinite lease
-function infinite_lease(g, r, x_0)
-    G = (1 .+ g)
-    R = (1 .+ r)
-    return x_0 ./ (1 .- G .* R .^ (-1))
-end
+infinite_lease(g, r, x_0) = x_0 / (1 - (1 + g)*(1 + r)^(-1))
 ```
 
 Now that we have defined our functions, we can plot some outcomes.
@@ -683,24 +674,22 @@ First we study the quality of our approximations
 
 
 ```{code-cell} julia
-
-T_max = 50
-
-T = 0:T_max
+T = 0:50
 g = 0.02
 r = 0.03
 x_0 = 1
 
-plt = plot(xlim=(-2.5, 52.5), ylim= (-1.653, 56.713), title= "Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p0")
+# broadcast over the T range
+y_1 = finite_lease_pv_true.(T, g, r, x_0)
+y_2 = finite_lease_pv_approx.(T, g, r, x_0)
+y_3 = finite_lease_pv_approx_2.(T, g, r, x_0)
 
-y_1 = finite_lease_pv_true(T, g, r, x_0)
-y_2 = finite_lease_pv_approx(T, g, r, x_0)
-y_3 = finite_lease_pv_approx_2(T, g, r, x_0)
-
-plot!(plt, T, y_1, label="True T-period Lease PV")
-plot!(plt, T, y_2, label="T-period Lease First-order Approx.")
-plot!(plt, T, y_3, label="T-period Lease First-order Approx. adj.")
-plot!(plt, legend = :topleft)
+plt = plot(title= L"Finite Lease Present Value $T$ Periods Ahead",
+           xlabel = L"$T$ Periods Ahead", ylabel = L"Present Value, $p_0$",
+           legend = :topleft)
+plot!(plt, T, y_1, label=L"True $T$-period Lease PV")
+plot!(plt, T, y_2, label=L"$T$-period Lease First-order Approx.")
+plot!(plt, T, y_3, label=L"$T$-period Lease First-order Approx. adj.")
 ```
 
 Evidently our approximations perform well for small values of $T$.
@@ -712,17 +701,15 @@ over different lease lengths $T$.
 
 ```{code-cell} julia
 # Convergence of infinite and finite
-T_max = 1000
-T = 0:T_max
+T = 0:1000
+y_1 = finite_lease_pv_true.(T, g, r, x_0) # broadcast
+plt = plot(title= L"Infinite and Finite Lease PV $T$ Periods Ahead",
+           xlabel = L"$T$ Periods Ahead", ylabel = L"Present Value, $p_0$",
+           legend = :bottomright)
 
-plt = plot(xlim=(-50, 1050),ylim= (-4.1, 108.1), title= "Infinite and Finite Lease Present Value T Periods Ahead", xlabel = "T Periods Ahead", ylabel = "Present Value, p0")
-
-y_1 = finite_lease_pv_true(T, g, r, x_0)
-y_2 = ones(T_max + 1) .* infinite_lease(g, r, x_0)
-
-plot!(plt, T, y_1, label="T-period lease PV")
-plot!(plt, T, y_2, linestyle = :dash, label="Infinite lease PV")
-plot!(plt, legend = :bottomright)
+plot!(plt, T, y_1, label=L"$T$-period lease PV")
+hline!(plt,  [infinite_lease(g, r, x_0)], linestyle = :dash,
+       label="Infinite lease PV")
 ```
 
 The graph above shows how as duration $T \rightarrow +\infty$,
@@ -733,34 +720,16 @@ Now we consider two different views of what happens as $r$ and
 $g$ covary
 
 ```{code-cell} julia
-# First view
-# Changing r and g
-plt = plot(xlim=(-0.5, 10.5),ylim= (-0.26, 16.7), title= "Value of lease of length T", xlabel = "T periods ahead", ylabel = "Present Value, p0")
+T=0:10
 
-T_max = 10
-T=0:T_max
-
-# r >> g, much bigger than g
-r = 0.9
-g = 0.4
-plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.9) >> g(=0.4)")
-
-# r > g
-r = 0.5
-g = 0.4
-plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.5) > g(=0.4)", color="green")
-
-# r ~ g, not defined when r = g, but approximately goes to straight
-# line with slope 1
-r = 0.4001
-g = 0.4
-plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.4001) ~ g(=0.4)", color="orange")
-
-# r < g
-r = 0.4
-g = 0.5
-plot!(plt, finite_lease_pv_true(T, g, r, x_0), label="r(=0.4) < g(=0.5)", color="red")
-plot!(plt, legend = :topleft)
+plt = plot(title= L"Value of lease of length $T$", legend = :topleft,
+           xlabel = L"$T$ periods ahead", ylabel = L"Present Value, $p_0$")
+plot!(plt, finite_lease_pv_true.(T, 0.4, 0.9, x_0),
+      label=L"r=0.9 \gg 0.4 = g")
+plot!(plt, finite_lease_pv_true.(T, 0.4, 0.5, x_0), label=L"r=0.5 > 0.4 = g")
+plot!(plt, finite_lease_pv_true.(T, 0.4, 0.4001, x_0),
+     label=L"r=0.4001 \approx 0.4 = g")
+plot!(plt, finite_lease_pv_true.(T, 0.5, 0.4, x_0), label=L"r=0.4 < 0.5 = g")
 ```
 
 This graph gives a big hint for why the condition $r > g$ is
@@ -822,7 +791,6 @@ of national income, and investment is fixed.
 ```{code-cell} julia
 # Function that calculates a path of y
 function calculate_y(i, b, g, T, y_init)
-    
     y = zeros(T+1)
     y[1] = i + b * y_init + g
     for t = 2:(T+1)
@@ -834,15 +802,16 @@ end
 # Initial values
 i_0 = 0.3
 g_0 = 0.3
-# 2/3 of income goes towards consumption
-b = 2/3
+b = 2/3 # proportion of income to consumption
 y_init = 0
 T = 100
 
-plt = plot(xlim=(-6, 107),ylim= (0.5, 1.9), title= "Path of Aggregate Output Over Time", xlabel = "t", ylabel = "yt")
-plot!(plt, 0:T, calculate_y(i_0, b, g_0, T, y_init))
+plt = plot(0:T, calculate_y(i_0, b, g_0, T, y_init),
+           title= "Path of Aggregate Output Over Time",
+           ylim= (0.5, 1.9), xlabel = L"t", ylabel = L"y_t")
 # Output predicted by geometric series
-hline!([i_0 / (1 - b) + g_0 / (1 - b)], linestyle=:dash, seriestype="hline", legend = false)
+hline!([i_0 / (1 - b) + g_0 / (1 - b)], linestyle=:dash, seriestype="hline",
+       legend = false)
 ```
 
 In this model, income grows over time, until it gradually converges to
@@ -854,14 +823,13 @@ i.e., the fraction of income that is consumed
 
 ```{code-cell} julia
 # Changing fraction of consumption
-bs = [1/3, 2/3, 5/6, 0.9]
+bs = round.([1/3, 2/3, 5/6, 0.9], digits = 2)
 
-plt = plot(xlim=(-6, 107),ylim= (0.25, 6.5), title= "Changing Consumption as a Fraction of Income", xlabel = "t", ylabel = "yt")
-for b in bs
-    b = round(b, digits = 2)
-    plot!(plt, 0:T, calculate_y(i_0, b, g_0, T, y_init), label="b = $b")
-end
-plot!(plt, legend = :topleft)
+plt = plot(title= "Changing Consumption as a Fraction of Income",
+           xlabel = L"t", ylabel = L"y_t", legend = :topleft)
+[plot!(plt, 0:T, calculate_y(i_0, b, g_0, T, y_init), label=L"b = %$b")
+ for b in bs]
+plt
 ```
 
 Increasing the marginal propensity to consume $b$ increases the
@@ -877,17 +845,18 @@ l = @layout [a ; b]
 # Changing initial investment:
 i_1 = 0.4
 y_1 = calculate_y(i_1, b, g_0, T, y_init)
-plt_1 = plot(x,y_0, label = "i=0.3", linestyle= :dash, title= "An Increase in Investment on Output", xlabel = "t", ylabel = "y_t")
-plot!(plt_1, x, y_1, label = "i=0.4")
-plot!(plt_1, legend = :bottomright)
+plt_1 = plot(x,y_0, label = L"i=0.3", linestyle= :dash,
+             title= "An Increase in Investment on Output",
+             xlabel = L"t", ylabel = L"y_t", legend = :bottomright)
+plot!(plt_1, x, y_1, label = L"i=0.4")
 
 # Changing government spending
 g_1 = 0.4
 y_1 = calculate_y(i_0, b, g_1, T, y_init)
-plt_2 = plot(x,y_0, label = "g=0.3", linestyle= :dash, title= "An Increase in Government Spending on Output", xlabel = "t", ylabel = "y_t")
-plot!(plt_2, x, y_1, label="g=0.4")
-plot!(plt_2, legend = :bottomright)
-
+plt_2 = plot(x,y_0, label = L"g=0.3", linestyle= :dash,
+             title= "An Increase in Government Spending on Output",
+             xlabel = L"t", ylabel = L"y_t", legend = :bottomright)
+plot!(plt_2, x, y_1, label=L"g=0.4")
 plot(plt_1, plt_2, layout = l)
 ```
 

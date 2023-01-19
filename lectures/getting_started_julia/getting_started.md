@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (getting_started)=
@@ -80,18 +80,27 @@ If you have not previously installed Conda or Jupyter, then
 2. If given the option for your operating system, let Conda add Python to your PATH environment variables.
 
 ```{note}
-While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.  Alternatively you can let `IJulia` install its own version of Conda by following [these instructions](https://julialang.github.io/IJulia.jl/dev/manual/running/), or use the experimental support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) - which does no Python installation at all.
+While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.  Alternatively you can let `IJulia` install its own version of Conda by following [these instructions](https://julialang.github.io/IJulia.jl/dev/manual/running/), or use the direct support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) - which does no Python installation at all.
 ```
 
 (intro_repl)=
 ### Install Julia
 After Conda is installed, you can install Julia.
 
-1. Download and install Julia, from [download page](http://julialang.org/downloads/), accepting all default options.
+```{note}
+The semi-official installation method for Windows is to use [Juliaup](https://github.com/JuliaLang/juliaup), which makes it easier to upgrade and manage concurrent Julia versions.  Support on Mac and Linux is prerelease.  See [here](https://github.com/JuliaLang/juliaup#using-juliaup) for a list of commands, such as `juliaup update` to upgrade to the latest available Julia version after installation, or ways to switch to newer Julia versions after they are released.
+```
+
+
+1. Download and install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation) or manually installing from [download page](http://julialang.org/downloads/), accepting all default options.  That is,
+    - Easiest method may be executing `winget install julia -s msstore` in a Windows terminal, or
+    - `curl -fsSL https://install.julialang.org | sh` on a Mac terminal.
+    - We recommend installing [manually](https://julialang.org/downloads/platform/#linux_and_freebsd) on Linux.
+    - If you have previously installed Julia manually, you will need to uninstall previous versions before switching to Juliaup.
 
 2. Open Julia, by either
     - Navigating to Julia through your menus or desktop icons (Windows, Mac), or
-    - Opening a terminal and type `julia` (Linux; to set this up on macOS, see [here](https://julialang.org/downloads/platform/#macos)).
+    - Opening a terminal and type `julia` (Windows; to set this up on macOS, see [here](https://julialang.org/downloads/platform/#macos); to set this up on Linux, see [here](https://julialang.org/downloads/platform/#linux_and_freebsd)).
 
    You should now be looking at something like this
    
@@ -242,7 +251,7 @@ Recall that you can start this directly from the [command palette](command_palet
 This process will take several minutes to download and compile all of the files used by the lectures.
 
 ```{attention}
-If the cursor is instead `(@v1.6) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
+If the cursor is instead `(@v1.8) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
 
 One benefit of using the integrated REPL is that it will set important options for launching Julia (e.g. the number of threads) and activate the local project files (i.e. the `Project.toml` file in the notebooks directory) automatically.  If you use an external REPL, you will need to set these manually.  Here you would want to run the REPL with `julia --project --threads auto`  to tell Julia to set the number of threads equal to your local machine's number of cores, and to activate the existing project.  See [here](repl_main) for more details.
 ```

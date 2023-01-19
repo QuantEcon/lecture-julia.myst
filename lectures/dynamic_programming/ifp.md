@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (ifp)=
@@ -34,8 +34,8 @@ This is an essential sub-problem for many representative macroeconomic models
 * {cite}`Huggett1993`
 * etc.
 
-It is related to the decision problem in the {doc}`stochastic optimal growth
-model <../dynamic_programming/optgrowth>` and yet differs in important ways.
+It is related to the decision problem in the {doc}`stochastic optimal growth model <../dynamic_programming/optgrowth>` 
+and yet differs in important ways.
 
 For example, the choice problem for the agent includes an additive income term that leads to an occasionally binding constraint.
 
@@ -376,7 +376,7 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using BenchmarkTools, Optim, Parameters, Plots, QuantEcon, Random
+using BenchmarkTools, LaTeXStrings, Optim, Parameters, Plots, QuantEcon, Random
 using Optim: converged, maximum, maximizer, minimizer, iterations
 
 ```
@@ -403,7 +403,7 @@ end
 function T!(cp, V, out; ret_policy = false)
 
     # unpack input, set up arrays
-    @unpack R, Π, β, b, asset_grid, z_vals = cp
+    (;R, Π, β, b, asset_grid, z_vals) = cp
     z_idx = 1:length(z_vals)
 
     # value function when the shock index is z_i
@@ -444,7 +444,7 @@ get_greedy(cp, V) =
 
 function K!(cp, c, out)
     # simplify names, set up arrays
-    @unpack R, Π, β, b, asset_grid, z_vals = cp
+    (;R, Π, β, b, asset_grid, z_vals) = cp
     z_idx = 1:length(z_vals)
     gam = R * β
 
@@ -474,7 +474,7 @@ K(cp, c) = K!(cp, c, similar(c))
 
 function initialize(cp)
     # simplify names, set up arrays
-    @unpack R, β, b, asset_grid, z_vals = cp
+    (;R, β, b, asset_grid, z_vals) = cp
     shape = length(asset_grid), length(z_vals)
     V, c = zeros(shape...), zeros(shape...)
 
@@ -721,7 +721,7 @@ for r_val in r_vals
                             max_iter = 150,
                             verbose = false)
     traces = push!(traces, c[:, 1])
-    legends = push!(legends, "r = $(round(r_val, digits = 3))")
+    legends = push!(legends, L"r = %$(round(r_val, digits = 3))")
 end
 
 plot(traces, label = reshape(legends, 1, length(legends)))
@@ -743,7 +743,7 @@ end
 
 ```{code-cell} julia
 function compute_asset_series(cp, T = 500_000; verbose = false)
-    @unpack Π, z_vals, R = cp  # simplify names
+    (;Π, z_vals, R) = cp  # simplify names
     z_idx = 1:length(z_vals)
     v_init, c_init = initialize(cp)
     c = compute_fixed_point(x -> K(cp, x), c_init,
@@ -791,7 +791,7 @@ for b in [1.0, 3.0]
     end
     xs = push!(xs, asset_mean)
     ys = push!(ys, r_vals)
-    legends = push!(legends, "b = $b")
+    legends = push!(legends, L"b = %$b")
     println("Finished iteration b = $b")
 end
 plot(xs, ys, label = reshape(legends, 1, length(legends)))

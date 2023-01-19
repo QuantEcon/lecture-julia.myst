@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (testing)=
@@ -27,8 +27,6 @@ kernelspec:
 ```{epigraph}
 A complex system that works is invariably found to have evolved from a simple system that worked. The inverse proposition also appears to be true: A complex system designed from scratch never works and cannot be made to work. You have to start over, beginning with a working simple system -- [Gall's Law](https://en.wikipedia.org/wiki/John_Gall_%28author%29#Gall%27s_law).
 ```
-
-Co-authored with Arnav Sood
 
 This lecture discusses structuring a project as a Julia module, and testing it with tools from GitHub.
 
@@ -139,7 +137,7 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 We will create this with a number of useful options, but see [the documentation](https://invenia.github.io/PkgTemplates.jl/stable/user/#A-More-Complicated-Example-1) for more.
 
 ```{code-block} julia
-t = Template(;dir = ".", julia = v"1.6",
+t = Template(;dir = ".", julia = v"1.8",
               plugins = [
                 Git(; manifest=true, branch = "main"),
                 Codecov(),
@@ -150,7 +148,7 @@ t = Template(;dir = ".", julia = v"1.6",
 ```
 
 ```{note}
-If you did not set the `github.user` in the setup, you may need to pass in `user = YOURUSERNAME` as an additional argument.  In addition, this turns off some important features (e.g. `CompatHelper` and `TagBot`) and leaves out others (e.g. `Documenter{GitHubActions}`) which you would want for a more formal package.
+If you did not set the `github.user` in the setup, you may need to pass in `user = "YOURUSERNAME"` as an additional argument in the first line.  In addition, this turns off some important features (e.g. `CompatHelper` and `TagBot`) and leaves out others (e.g. `Documenter{GitHubActions}`) which you would want for a more formal package.
 
 Alternatively, `PkgTemplates` has an interactive mode, which you can prompt with `t = Template(;interactive = true)` to choose all of your selections within the terminal.
 ```
@@ -227,7 +225,7 @@ Given this, other julia code can use `using MyProject` and, because the global e
 You can see the change reflected in our default package list by running `] st`
 
 ```{code-block} bash
-      Status `C:\Users\jesse\.julia\environments\v1.6\Project.toml`
+      Status `C:\Users\jesse\.julia\environments\v1.8\Project.toml`
   [7073ff75] IJulia v1.23.2
   [a361046e] MyProject v0.1.0 `..\..\..\Documents\GitHub\MyProject`
   [14b8a8f1] PkgTemplates v0.7.18
@@ -290,7 +288,7 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - '1.6'
+          - '1.8'
           - 'nightly'
         os:
           - ubuntu-latest
@@ -353,7 +351,7 @@ See the [Pkg docs](https://docs.julialang.org/en/v1/stdlib/Pkg/) for more inform
 
 For now, let's just try adding a dependency.  Recall the package operations described in the {doc}`tools and editors <../software_engineering/tools_editors>` lecture.
 
-* Within VS Code, start a REPL (e.g. `> Julia: Start REPL`), type `]` to enter the Pkg mode.  Verify that the cursor says `(My Project) pkg>` to ensure that it has activated your particular project.  Otherwise, if it says `(@1.6) pkg>`, then you have launched Julia outside of VSCode or through a different mechanism, and you might need to ensure you are in the correct directory and then `] activate .` to activate the project file in it.
+* Within VS Code, start a REPL (e.g. `> Julia: Start REPL`), type `]` to enter the Pkg mode.  Verify that the cursor says `(My Project) pkg>` to ensure that it has activated your particular project.  Otherwise, if it says `(@1.8) pkg>`, then you have launched Julia outside of VSCode or through a different mechanism, and you might need to ensure you are in the correct directory and then `] activate .` to activate the project file in it.
 * Then, add in the `Expectations.jl` package
 
 ```{figure} /_static/figures/vscode_add_package.png

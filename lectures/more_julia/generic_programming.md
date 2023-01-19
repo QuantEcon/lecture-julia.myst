@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (generic_programming)=
@@ -363,7 +363,7 @@ struct OurTruncatedExponential <: Distribution{Univariate,Continuous}
     α::Float64
     xmax::Float64
 end
-Distributions.pdf(d::OurTruncatedExponential, x) = d.α *exp(-d.α * x)/exp(-d.α * d.xmax)
+Distributions.pdf(d::OurTruncatedExponential, x::Real) = d.α *exp(-d.α * x)/exp(-d.α * d.xmax)
 Distributions.minimum(d::OurTruncatedExponential) = 0
 Distributions.maximum(d::OurTruncatedExponential) = d.xmax
 # ... more to have a complete type

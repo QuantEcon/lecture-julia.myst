@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (egm_policy_iter)=
@@ -143,7 +143,7 @@ Here's an implementation of $K$ using EGM as described above.
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using BenchmarkTools, Interpolations, Parameters, Plots, QuantEcon, Random, Roots
+using BenchmarkTools, Interpolations, LaTeXStrings, Parameters, Plots, Random, Roots
 
 ```
 
@@ -286,8 +286,8 @@ function verify_true_policy(m, shocks, c_star)
     c_star_new = coleman_egm(c_star, k_grid, m.β, m.u′, m.u′, m.f, m.f′, shocks)
 
     plt = plot()
-    plot!(plt, k_grid, c_star.(k_grid), lw = 2, label = "optimal policy c*")
-    plot!(plt, k_grid, c_star_new.(k_grid), lw = 2, label = "Kc*")
+    plot!(plt, k_grid, c_star.(k_grid), lw = 2, label = L"optimal policy $c^*$")
+    plot!(plt, k_grid, c_star_new.(k_grid), lw = 2, label = L"Kc^*")
     plot!(plt, legend = :topleft)
 end
 ```
@@ -343,7 +343,7 @@ function check_convergence(m, shocks, c_star, g_init, n_iter)
     g = g_init
     plt = plot()
     plot!(plt, m.grid, g.(m.grid),
-          color = RGBA(0,0,0,1), lw = 2, alpha = 0.6, label = "initial condition c(y) = y")
+          color = RGBA(0,0,0,1), lw = 2, alpha = 0.6, label = L"initial condition $c(y) = y$")
     for i in 1:n_iter
         new_g = coleman_egm(g, k_grid, m.β, m.u′, m.u′, m.f, m.f′, shocks)
         g = new_g
@@ -352,7 +352,7 @@ function check_convergence(m, shocks, c_star, g_init, n_iter)
     end
 
     plot!(plt, k_grid, c_star.(k_grid),
-          color = :black, lw = 2, alpha = 0.8, label = "true policy function c*")
+          color = :black, lw = 2, alpha = 0.8, label = L"true policy function $c^*$")
     plot!(plt, legend = :topleft)
 end
 ```

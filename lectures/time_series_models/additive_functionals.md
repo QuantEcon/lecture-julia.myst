@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (additive_functionals)=
@@ -101,7 +101,7 @@ systematic but random *arithmetic growth*.
 
 ### A linear state space representation
 
-One way to represent the overall dynamics is to use a {doc}`linear state space system <../tools_and_techniques/linear_models>`.
+One way to represent the overall dynamics is to use a {doc}`linear state space system <../introduction_dynamics/linear_models>`.
 
 To do this, we set up state and observation vectors
 
@@ -219,7 +219,7 @@ using Test, Random
 ```
 
 ```{code-cell} julia
-using Distributions, Parameters, Plots, QuantEcon
+using Distributions, LaTeXStrings, Parameters, Plots, QuantEcon
 
 ```
 
@@ -558,7 +558,7 @@ function plot_martingales(amf, T, npaths = 25)
         push!(mart_figs,
             plot_martingale_paths(T, mpath_mult[li + 1:ui, :],
                                                     mbounds_mult[LI + 1:UI, :], horline = 1))
-        plot!(mart_figs[ii + 1], title = "Martingale components for many paths of y_(ii + 1)")
+        plot!(mart_figs[ii + 1], title = L"Martingale components for many paths of $y_{ii + 1}$")
     end
 
     return mart_figs
@@ -578,11 +578,11 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
 
     # plot all paths together
 
-    plot!(plots[1], trange, ypath[1, :], label = "y_t", color = :black)
-    plot!(plots[1], trange, mpath[1, :], label = "m_t", color = :magenta)
-    plot!(plots[1], trange, spath[1, :], label = "s_t", color = :green)
+    plot!(plots[1], trange, ypath[1, :], label = L"y_t", color = :black)
+    plot!(plots[1], trange, mpath[1, :], label = L"m_t", color = :magenta)
+    plot!(plots[1], trange, spath[1, :], label = L"s_t", color = :green)
     if show_trend
-        plot!(plots[1], trange, tpath[1, :], label = "t_t", color = :red)
+        plot!(plots[1], trange, tpath[1, :], label = L"t_t", color = :red)
     end
     plot!(plots[1], seriestype = :hline, [horline], color = :black, linestyle=:dash, label = "")
     plot!(plots[1], title = "One Path of All Variables", legend=:topleft)
@@ -592,7 +592,7 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
     plot!(plots[2], trange, mpathᵀ, alpha = 0.45, color = :magenta, label = "")
     ub = mbounds[2, :]
     lb = mbounds[1, :]
-    plot!(plots[2], ub, fillrange = [lb, ub], alpha = 0.25, color = :magenta, label = "")
+    plot!(plots[2], ub, fillrange = lb, alpha = 0.25, color = :magenta, label = "")
     plot!(plots[2], seriestype = :hline, [horline], color = :black, linestyle =:dash, label = "")
     plot!(plots[2], title = "Martingale Components for Many Paths")
 
@@ -601,7 +601,7 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
     plot!(plots[3], Matrix(spath'), alpha = 0.25, color = :green, label = "")
     ub = sbounds[2, :]
     lb = sbounds[1, :]
-    plot!(plots[3], ub, fillrange = [lb, ub], alpha = 0.25, color = :green, label = "")
+    plot!(plots[3], ub, fillrange = lb, alpha = 0.25, color = :green, label = "")
     plot!(plots[3], seriestype = :hline, [horline], color = :black, linestyle=:dash, label = "")
     plot!(plots[3], title = "Stationary Components for Many Paths")
 
@@ -626,7 +626,7 @@ function plot_martingale_paths(T, mpath, mbounds;
     # plot martingale component
     ub = mbounds[2, :]
     lb = mbounds[1, :]
-    plot!(plt, lb, fillrange = [lb, ub], alpha = 0.25, color = :magenta, label = "")
+    #plot!(plt, lb, fillrange = ub, alpha = 0.25, color = :magenta, label = "")
     plot!(plt, seriestype = :hline, [horline], color = :black, linestyle =:dash, label = "")
     plot!(plt, trange, Matrix(mpath'), linewidth=0.25, color = :black, label = "")
 
@@ -672,11 +672,11 @@ plots = [plt_1, plt_2]
 # plots = plot(layout = (2, 1))
 
 plot!(plots[1], 1:T, y[amf.nx + 1, :], color = :black, lw = 2, label = "")
-plot!(plots[1], title =  "A particular path of y_t")
+plot!(plots[1], title =  L"A particular path of $y_t$")
 plot!(plots[2], 1:T, y[1, :], color = :green, lw = 2, label = "")
 plot!(plots[2], seriestype = :hline, [0], color = :black, lw = 2, linestyle=:dashdot,
       label = "")
-plot!(plots[2], title = "Associated path of x_t")
+plot!(plots[2], title = L"Associated path of $x_t$")
 # plot(plots)
 plot(plots[1], plots[2], layout=(2,1), size=(700,500))
 ```
@@ -737,7 +737,7 @@ It is convenient for us to introduce the following notation:
 
 We want to characterize and simulate components $\tau_t, m_t, s_t$ of the decomposition.
 
-A convenient way to do this is to construct an appropriate instance of a {doc}`linear state space system <../tools_and_techniques/linear_models>` by using [LSS](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl) from [QuantEcon.jl](http://quantecon.org/quantecon-jl).
+A convenient way to do this is to construct an appropriate instance of a {doc}`linear state space system <../introduction_dynamics/linear_models>` by using [LSS](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl) from [QuantEcon.jl](http://quantecon.org/quantecon-jl).
 
 This will allow us to use the routines in [LSS](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lss.jl) to study dynamics.
 

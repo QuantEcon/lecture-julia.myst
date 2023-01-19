@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (lucas_asset)=
@@ -387,7 +387,7 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Interpolations, Parameters, Plots, QuantEcon, Random
+using Distributions, Interpolations, LaTeXStrings, Parameters, Plots, Random
 
 ```
 
@@ -420,7 +420,7 @@ end
 function lucas_operator(lt, f)
 
     # unpack input
-    @unpack grid, α, β, h = lt
+    (;grid, α, β, h) = lt
     z = lt.shocks
 
     Af = LinearInterpolation(grid, f, extrapolation_bc=Line())
@@ -434,7 +434,7 @@ function solve_lucas_model(lt;
                            tol = 1e-6,
                            max_iter = 500)
 
-    @unpack grid, γ = lt
+    (;grid, γ) = lt
 
     i = 0
     f = zero(grid)  # Initial guess of f
@@ -477,8 +477,8 @@ end
 Here's the resulting price function
 
 ```{code-cell} julia
-plot(tree.grid, price_vals, lw = 2, label = "p*(y)")
-plot!(xlabel = "y", ylabel = "price", legend = :topleft)
+plot(tree.grid, price_vals, lw = 2, label = L"p^*(y)")
+plot!(xlabel = L"y", ylabel = "price", legend = :topleft)
 ```
 
 The price is increasing, even if we remove all serial correlation from the endowment process.
@@ -523,10 +523,10 @@ for β in (.95, 0.98)
     tree = LucasTree(;β = β)
     grid = tree.grid
     price_vals = solve_lucas_model(tree)
-    plot!(grid, price_vals, lw = 2, label = "beta = beta_var")
+    plot!(grid, price_vals, lw = 2, label = L"\beta = %$β")
 end
 
-plot!(xlabel = "y", ylabel = "price", legend = :topleft)
+plot!(xlabel = L"y", ylabel = "price", legend = :topleft)
 ```
 
 ```{code-cell} julia

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (arma)=
@@ -42,7 +42,7 @@ We will focus much of our attention on linear covariance stationary models with 
 
 In particular, we will study stationary ARMA processes, which form a cornerstone of the standard theory of time series analysis.
 
-Every ARMA processes can be represented in {doc}`linear state space <../tools_and_techniques/linear_models>` form.
+Every ARMA processes can be represented in {doc}`linear state space <../introduction_dynamics/linear_models>` form.
 
 However, ARMA have some important structure that makes it valuable to study them separately.
 
@@ -230,7 +230,7 @@ using Test
 ```
 
 ```{code-cell} julia
-using Plots
+using LaTeXStrings, Plots
 
 
 plt_1=plot()
@@ -240,7 +240,7 @@ plots = [plt_1, plt_2]
 for (i, ϕ) in enumerate((0.8, -0.8))
     times = 0:16
     acov = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
-    label = "autocovariance, phi = $ϕ"
+    label = L"autocovariance, $\phi = %$ϕ$"
     plot!(plots[i], times, acov, color=:blue, lw=2, marker=:circle, markersize=3,
           alpha=0.6, label=label)
     plot!(plots[i], legend=:topright, xlabel="time", xlim=(0,15))
@@ -490,7 +490,7 @@ plots=[plt_1, plt_2]
 
 for (i, ϕ) in enumerate((0.8, -0.8))
     sd = ar1_sd(ϕ, ω_s)
-    label = "spectral density, phi = $ϕ"
+    label = L"spectral density, $\phi = %$ϕ$"
     plot!(plots[i], ω_s, sd, color=:blue, alpha=0.6, lw=2, label=label)
     plot!(plots[i], legend=:top, xlabel="frequency", xlim=(0,π))
 end
@@ -544,21 +544,21 @@ y3 = [a * b for (a, b) in zip(y1, y2)]
 
 # Autocovariance when ϕ = -0.8
 plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=3,
-             alpha=0.6, label="gamma(k)")
+             alpha=0.6, label=L"\gamma(k)")
 plot!(plt_1, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
       lw=2, label="")
 plot!(plt_1, legend=:topright, xlim=(0,15), yticks=[-2, 0, 2])
 
 # Cycles at frequence π
 plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=3,
-             alpha=0.6, label="cos(pi k)")
+             alpha=0.6, label=L"cos(\pi k)")
 plot!(plt_2, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
       lw=2, label="")
 plot!(plt_2, legend=:topright, xlim=(0,15), yticks=[-1, 0, 1])
 
 # Product
 plt_3 = plot(times, y3, seriestype=:sticks, marker=:circle, markersize=3,
-             lw=2, label="gamma(k) cos(pi k)")
+             lw=2, label=L"\gamma(k) cos(\pi k)")
 plot!(plt_3, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
       lw=2, label="")
 plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3), yticks=[-1, 0, 1, 2, 3])
@@ -591,21 +591,21 @@ y3 = [a * b for (a, b) in zip(y1, y2)]
 
 # Autocovariance when ϕ = -0.8
 plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=3,
-             alpha=0.6, label="gamma(k)")
+             alpha=0.6, label=L"\gamma(k)")
 plot!(plt_1, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
       lw=2, label="")
 plot!(plt_1, legend=:topright, xlim=(0,15), yticks=[-2, 0, 2])
 
 # Cycles at frequence π
 plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=3,
-             alpha=0.6, label="cos(pi k/3)")
+             alpha=0.6, label=L"cos(\pi k/3)")
 plot!(plt_2, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
       lw=2, label="")
 plot!(plt_2, legend=:topright, xlim=(0,15), yticks=[-1, 0, 1])
 
 # Product
 plt_3 = plot(times, y3, seriestype=:sticks, marker=:circle, markersize=3,
-             lw=2, label="gamma(k) cos(pi k/3)")
+             lw=2, label=L"\gamma(k) cos(\pi k/3)")
 plot!(plt_3, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
       lw=2, label="")
 plot!(plt_3, legend=:topright, xlim=(0,15), ylim=(-3,3), yticks=[-1, 0, 1, 2, 3])

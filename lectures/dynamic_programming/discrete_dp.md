@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.6
+  name: julia-1.8
 ---
 
 (discrete_dp)=
@@ -56,7 +56,7 @@ This lecture covers
 
 We use dynamic programming many applied lectures, such as
 
-* The {doc}`shortest path lecture <../dynamic_programming/short_path>`
+* The {doc}`shortest path lecture <../introduction_dynamics/short_path>`
 * The {doc}`McCall search model lecture <../dynamic_programming/mccall_model>`
 * The {doc}`optimal growth lecture <../dynamic_programming/optgrowth>`
 
@@ -283,7 +283,7 @@ By the definition of greedy policies given above, this means that
 $$
 \sigma^*(s) \in \operatorname*{arg\,max}_{a \in A(s)}
     \left\{
-    r(s, a) + \beta \sum_{s' \in S} v^*(s') Q(s, \sigma(s), s')
+    r(s, a) + \beta \sum_{s' \in S} v^*(s') Q(s, a, s')
     \right\}
 \qquad (s \in S)
 $$
@@ -415,7 +415,7 @@ The following code sets up these objects for us.
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics, BenchmarkTools, Plots, QuantEcon
+using BenchmarkTools, LaTeXStrings, LinearAlgebra, Plots, QuantEcon, Statistics
 using SparseArrays
 ```
 
@@ -435,7 +435,7 @@ using BenchmarkTools, Plots, QuantEcon, Parameters
 SimpleOG = @with_kw (B = 10, M = 5, α = 0.5, β = 0.9)
 
 function transition_matrices(g)
-    @unpack B, M, α, β = g
+    (;B, M, α, β) = g
     u(c) = c^α
     n = B + M + 1
     m = M + 1
@@ -468,7 +468,7 @@ In case the preceding code was too concise, we can see a more verbose form
 tags: [output_scroll]
 ---
 function verbose_matrices(g)
-    @unpack B, M, α, β = g
+    (;B, M, α, β) = g
     u(c) = c^α
 
     #Matrix dimensions. The +1 is due to the 0 state.
@@ -579,7 +579,7 @@ Another interesting object is `results.mc`, which is the controlled chain define
 
 In other words, it gives the dynamics of the state when the agent follows the optimal policy.
 
-Since this object is an instance of MarkovChain from  [QuantEcon.jl](http://quantecon.org/quantecon-jl) (see {doc}`this lecture <../tools_and_techniques/finite_markov>` for more discussion), we
+Since this object is an instance of MarkovChain from  [QuantEcon.jl](http://quantecon.org/quantecon-jl) (see {doc}`this lecture <../introduction_dynamics/finite_markov>` for more discussion), we
 can easily simulate it, compute its stationary distribution and so on
 
 ```{code-cell} julia
@@ -907,7 +907,7 @@ end
 
 Let's try different solution methods. The results below show that policy
 function iteration and modified policy function iteration are much
-faster that value function iteration.
+faster than value function iteration.
 
 ```{code-cell} julia
 @benchmark results = solve(ddp, PFI)
@@ -998,7 +998,7 @@ end
 ```
 
 We next plot the consumption policies along the value iteration. First
-we write a function to generate the and record the policies at given
+we write a function to generate and record the policies at given
 stages of iteration.
 
 ```{code-cell} julia
@@ -1075,7 +1075,7 @@ for β in discount_factors
     k_path_ind = simulate(res0.mc, sample_size, init=k_init_ind)
     k_path = grid[k_path_ind.+1]
     push!(k_paths, k_path)
-    push!(labels, "β = $β")
+    push!(labels, L"\beta = %$β")
 end
 
 plot(k_paths,
