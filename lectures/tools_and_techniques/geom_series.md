@@ -47,7 +47,7 @@ Below we'll use the following packages:
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, LaTeXStrings, Plots, Random, Symbolics
+using Distributions, LaTeXStrings, Plots, Random, Symbolics, Latexify
 ```
 
 ## Key Formulas
@@ -550,9 +550,11 @@ For a reason soon to be revealed, we assume that $G < R$.
 The **present value** of the lease is
 
 $$
-\begin{aligned} p_0  & = x_0 + x_1/R + x_2/(R^2) + \ddots \\
-                 & = x_0 (1 + G R^{-1} + G^2 R^{-2} + \cdots ) \\
-                 & = x_0 \frac{1}{1 - G R^{-1}} \end{aligned}
+\begin{aligned} 
+p_0  & = x_0 + x_1/R + x_2/(R^2) + \ddots \\
+& = x_0 (1 + G R^{-1} + G^2 R^{-2} + \cdots ) \\
+& = x_0 \frac{1}{1 - G R^{-1}} 
+\end{aligned}
 $$
 
 where the last line uses the formula for an infinite geometric series.
@@ -605,7 +607,11 @@ $$
 The present value of this lease is:
 
 $$
-\begin{aligned} \begin{split}p_0&=x_0 + x_1/R  + \dots +x_T/R^T \\ &= x_0(1+GR^{-1}+\dots +G^{T}R^{-T}) \\ &= \frac{x_0(1-G^{T+1}R^{-(T+1)})}{1-GR^{-1}}  \end{split}\end{aligned}
+\begin{aligned}
+\begin{split}
+p_0&=x_0 + x_1/R  + \dots +x_T/R^T \\ &= x_0(1+GR^{-1}+\dots +G^{T}R^{-T}) \\ &= \frac{x_0(1-G^{T+1}R^{-(T+1)})}{1-GR^{-1}}
+\end{split}
+\end{aligned}
 $$
 
 Applying the Taylor series to $R^{-(T+1)}$ about $r=0$ we get:
@@ -629,7 +635,9 @@ $$
 Expanding:
 
 $$
-\begin{aligned} p_0 &=\frac{x_0(1-1+(T+1)^2 rg -r(T+1)+g(T+1))}{1-1+r-g+rg}  \\&=\frac{x_0(T+1)((T+1)rg+r-g)}{r-g+rg} \\ &\approx \frac{x_0(T+1)(r-g)}{r-g}+\frac{x_0rg(T+1)}{r-g}\\ &= x_0(T+1) + \frac{x_0rg(T+1)}{r-g}  \end{aligned}
+\begin{aligned} 
+p_0 &=\frac{x_0(1-1+(T+1)^2 rg -r(T+1)+g(T+1))}{1-1+r-g+rg}  \\&=\frac{x_0(T+1)((T+1)rg+r-g)}{r-g+rg} \\ &\approx \frac{x_0(T+1)(r-g)}{r-g}+\frac{x_0rg(T+1)}{r-g}\\ &= x_0(T+1) + \frac{x_0rg(T+1)}{r-g}  
+\end{aligned}
 $$
 
 We could have also approximated by removing the second term
@@ -756,7 +764,7 @@ G = (1 + g)
 R = (1 + r)
 p0 = x0 / (1 - G * R ^ (-1))
 print("Our formula is")
-p0
+latexify(p0) |> s -> render(s, MIME("image/png"))
 ```
 
 ```{code-cell} julia
@@ -764,7 +772,7 @@ p0
 dg = Differential(g)
 dp_dg = expand_derivatives(dg(p0))
 print("dp0 / dg is")
-dp_dg
+latexify(dp_dg) |> s -> render(s, MIME("image/png"))
 ```
 
 ```{code-cell} julia
@@ -772,7 +780,7 @@ dp_dg
 dr = Differential(r)
 dp_dr = expand_derivatives(dr(p0))
 print("dp0 / dr is")
-dp_dr
+latexify(dp_dr) |> s -> render(s, MIME("image/png"))
 ```
 
 We can see that for $\frac{\partial p_0}{\partial r}<0$ as long as
