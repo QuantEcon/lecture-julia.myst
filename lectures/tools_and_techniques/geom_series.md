@@ -47,7 +47,7 @@ Below we'll use the following packages:
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, LaTeXStrings, Plots, Random, Symbolics
+using Distributions, LaTeXStrings, Plots, Random, Symbolics, Latexify
 ```
 
 ## Key Formulas
@@ -607,8 +607,10 @@ $$
 The present value of this lease is:
 
 $$
-\begin{aligned} 
+\begin{aligned}
+\begin{split}
 p_0&=x_0 + x_1/R  + \dots +x_T/R^T \\ &= x_0(1+GR^{-1}+\dots +G^{T}R^{-T}) \\ &= \frac{x_0(1-G^{T+1}R^{-(T+1)})}{1-GR^{-1}}
+\end{split}
 \end{aligned}
 $$
 
@@ -762,7 +764,7 @@ G = (1 + g)
 R = (1 + r)
 p0 = x0 / (1 - G * R ^ (-1))
 print("Our formula is")
-p0
+latexify(p0) |> s -> render(s, MIME("image/png"))
 ```
 
 ```{code-cell} julia
@@ -770,7 +772,7 @@ p0
 dg = Differential(g)
 dp_dg = expand_derivatives(dg(p0))
 print("dp0 / dg is")
-dp_dg
+latexify(dp_dg) |> s -> render(s, MIME("image/png"))
 ```
 
 ```{code-cell} julia
@@ -778,7 +780,7 @@ dp_dg
 dr = Differential(r)
 dp_dr = expand_derivatives(dr(p0))
 print("dp0 / dr is")
-dp_dr
+latexify(dp_dr) |> s -> render(s, MIME("image/png"))
 ```
 
 We can see that for $\frac{\partial p_0}{\partial r}<0$ as long as
