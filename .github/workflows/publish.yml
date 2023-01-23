@@ -27,11 +27,15 @@ jobs:
             texlive-fonts-extra       \
             texlive-xetex             \
             latexmk                   \
-            xindy
+            xindy                     \
+            texlive-luatex            \
+            dvipng                    \
+            ghostscript               \
+            cm-super 
       - name: Set up Julia
         uses: julia-actions/setup-julia@v1
         with:
-          version: 1.8.5
+          version: 1.8
       - name: Install IJulia and Setup Project
         shell: bash
         run: |
@@ -45,7 +49,13 @@ jobs:
           branch: main
           name: build-cache
           path: _build
-      # Build Assets for Julia site
+      # Build Assets (Download Notebooks and PDF via LaTeX)
+      - name: Build PDF from LaTeX
+        shell: bash -l {0}
+        run: |
+          jb build lectures --builder pdflatex --path-output ./ -n --keep-going
+          mkdir -p _build/html/_pdf
+          cp -u _build/latex/*.pdf _build/html/_pdf
       - name: Build Download Notebooks (sphinx-tojupyter)
         shell: bash -l {0}
         run: |
@@ -77,29 +87,29 @@ jobs:
           name: build-publish
           path: _build
       # Sync Download Notebooks
-      - name: Prepare lecture-julia.notebooks sync
-        shell: bash
-        run: |
-          mkdir -p _build/lecture-julia.notebooks
-          cp -a _notebook_repo/. _build/lecture-julia.notebooks
-          cp -a _build/jupyter/. _build/lecture-julia.notebooks
-          rm -r _build/lecture-julia.notebooks/_static
-          rm -r _build/lecture-julia.notebooks/_panels_static
-          cp lectures/Project.toml _build/lecture-julia.notebooks
-          cp lectures/Manifest.toml _build/lecture-julia.notebooks
-          ls -a _build/lecture-julia.notebooks
-      - name: Commit notebooks to lecture-julia.notebooks
-        shell: bash -l {0}
-        env:
-          QE_SERVICES_PAT: ${{ secrets.QUANTECON_SERVICES_PAT }}
-        run: |
-          git clone https://quantecon-services:$QE_SERVICES_PAT@github.com/quantecon/lecture-julia.notebooks
+      # - name: Prepare lecture-julia.notebooks sync
+      #   shell: bash
+      #   run: |
+      #     mkdir -p _build/lecture-julia.notebooks
+      #     cp -a _notebook_repo/. _build/lecture-julia.notebooks
+      #     cp -a _build/jupyter/. _build/lecture-julia.notebooks
+      #     rm -r _build/lecture-julia.notebooks/_static
+      #     rm -r _build/lecture-julia.notebooks/_panels_static
+      #     cp lectures/Project.toml _build/lecture-julia.notebooks
+      #     cp lectures/Manifest.toml _build/lecture-julia.notebooks
+      #     ls -a _build/lecture-julia.notebooks
+      # - name: Commit notebooks to lecture-julia.notebooks
+      #   shell: bash -l {0}
+      #   env:
+      #     QE_SERVICES_PAT: ${{ secrets.QUANTECON_SERVICES_PAT }}
+      #   run: |
+      #     git clone https://quantecon-services:$QE_SERVICES_PAT@github.com/quantecon/lecture-julia.notebooks
 
-          cp _build/lecture-julia.notebooks/*.ipynb lecture-julia.notebooks
+      #     cp _build/lecture-julia.notebooks/*.ipynb lecture-julia.notebooks
 
-          cd lecture-julia.notebooks
-          git config user.name "QuantEcon Services"
-          git config user.email "admin@quantecon.org"
-          git add *.ipynb
-          git commit -m "auto publishing updates to notebooks"
-          git push origin main
+      #     cd lecture-julia.notebooks
+      #     git config user.name "QuantEcon Services"
+      #     git config user.email "admin@quantecon.org"
+      #     git add *.ipynb
+      #     git commit -m "auto publishing updates to notebooks"
+      #     git push origin main
