@@ -317,7 +317,7 @@ systems</p></li>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
-<span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">Symbolics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">Symbolics</span><span class="p">,</span><span class="w"> </span><span class="n">Latexify</span>
 </pre></div>
 </div>
 </div>
@@ -727,9 +727,11 @@ x_t = G^t x_0
 <p>The <strong>present value</strong> of the lease is</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\begin{aligned} p_0  &amp; = x_0 + x_1/R + x_2/(R^2) + \ddots \\
-                 &amp; = x_0 (1 + G R^{-1} + G^2 R^{-2} + \cdots ) \\
-                 &amp; = x_0 \frac{1}{1 - G R^{-1}} \end{aligned}
+\begin{aligned} 
+p_0  &amp; = x_0 + x_1/R + x_2/(R^2) + \ddots \\
+&amp; = x_0 (1 + G R^{-1} + G^2 R^{-2} + \cdots ) \\
+&amp; = x_0 \frac{1}{1 - G R^{-1}} 
+\end{aligned}
 \end{split}\]</div>
 <p>where the last line uses the formula for an infinite geometric series.</p>
 <p>Recall that <span class="math notranslate nohighlight">\(R = 1+r\)</span> and <span class="math notranslate nohighlight">\(G = 1+g\)</span> and that <span class="math notranslate nohighlight">\(R &gt; G\)</span>
@@ -771,7 +773,11 @@ x_t = G^t x_0
 <p>The present value of this lease is:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\begin{aligned} \begin{split}p_0&amp;=x_0 + x_1/R  + \dots +x_T/R^T \\ &amp;= x_0(1+GR^{-1}+\dots +G^{T}R^{-T}) \\ &amp;= \frac{x_0(1-G^{T+1}R^{-(T+1)})}{1-GR^{-1}}  \end{split}\end{aligned}
+\begin{aligned}
+\begin{split}
+p_0&amp;=x_0 + x_1/R  + \dots +x_T/R^T \\ &amp;= x_0(1+GR^{-1}+\dots +G^{T}R^{-T}) \\ &amp;= \frac{x_0(1-G^{T+1}R^{-(T+1)})}{1-GR^{-1}}
+\end{split}
+\end{aligned}
 \end{split}\]</div>
 <p>Applying the Taylor series to <span class="math notranslate nohighlight">\(R^{-(T+1)}\)</span> about <span class="math notranslate nohighlight">\(r=0\)</span> we get:</p>
 <div class="math notranslate nohighlight">
@@ -791,7 +797,9 @@ p_0 =\frac{x_0(1-(1+(T+1)g)(1-r(T+1)))}{1-(1-r)(1+g) }
 <p>Expanding:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}
-\begin{aligned} p_0 &amp;=\frac{x_0(1-1+(T+1)^2 rg -r(T+1)+g(T+1))}{1-1+r-g+rg}  \\&amp;=\frac{x_0(T+1)((T+1)rg+r-g)}{r-g+rg} \\ &amp;\approx \frac{x_0(T+1)(r-g)}{r-g}+\frac{x_0rg(T+1)}{r-g}\\ &amp;= x_0(T+1) + \frac{x_0rg(T+1)}{r-g}  \end{aligned}
+\begin{aligned} 
+p_0 &amp;=\frac{x_0(1-1+(T+1)^2 rg -r(T+1)+g(T+1))}{1-1+r-g+rg}  \\&amp;=\frac{x_0(T+1)((T+1)rg+r-g)}{r-g+rg} \\ &amp;\approx \frac{x_0(T+1)(r-g)}{r-g}+\frac{x_0rg(T+1)}{r-g}\\ &amp;= x_0(T+1) + \frac{x_0rg(T+1)}{r-g}  
+\end{aligned}
 \end{split}\]</div>
 <p>We could have also approximated by removing the second term
 <span class="math notranslate nohighlight">\(rgx_0(T+1)\)</span> when <span class="math notranslate nohighlight">\(T\)</span> is relatively small compared to
@@ -821,11 +829,6 @@ below</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>infinite_lease (generic function with 1 method)
-</pre></div>
-</div>
-</div>
 </div>
 <p>Now that we have defined our functions, we can plot some outcomes.</p>
 <p>First we study the quality of our approximations</p>
@@ -850,8 +853,6 @@ below</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/geom_series_6_0.svg" src="../_images/geom_series_6_0.svg" /></div>
 </div>
 <p>Evidently our approximations perform well for small values of <span class="math notranslate nohighlight">\(T\)</span>.</p>
 <p>However, holding <span class="math notranslate nohighlight">\(g\)</span> and r fixed, our approximations deteriorate as <span class="math notranslate nohighlight">\(T\)</span> increases.</p>
@@ -872,8 +873,6 @@ over different lease lengths <span class="math notranslate nohighlight">\(T\)</s
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/geom_series_8_0.svg" src="../_images/geom_series_8_0.svg" /></div>
 </div>
 <p>The graph above shows how as duration <span class="math notranslate nohighlight">\(T \rightarrow +\infty\)</span>,
 the value of a lease of duration <span class="math notranslate nohighlight">\(T\)</span> approaches the value of a
@@ -895,8 +894,6 @@ perpetual lease.</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/geom_series_10_0.svg" src="../_images/geom_series_10_0.svg" /></div>
 </div>
 <p>This graph gives a big hint for why the condition <span class="math notranslate nohighlight">\(r &gt; g\)</span> is
 necessary if a lease of length <span class="math notranslate nohighlight">\(T = +\infty\)</span> is to have finite
@@ -917,19 +914,9 @@ represents our present value formula for an infinite lease.</p>
 <span class="n">R</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">r</span><span class="p">)</span>
 <span class="n">p0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x0</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">G</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">R</span><span class="w"> </span><span class="o">^</span><span class="w"> </span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 <span class="n">print</span><span class="p">(</span><span class="s">&quot;Our formula is&quot;</span><span class="p">)</span>
-<span class="n">p0</span>
+<span class="n">latexify</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">render</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">MIME</span><span class="p">(</span><span class="s">&quot;image/png&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Our formula is
-</pre></div>
-</div>
-<div class="output text_latex math notranslate nohighlight">
-\[ \begin{equation}
-\frac{x0}{1 + \frac{-1 - g}{1 + r}}
-\end{equation}
- \]</div>
 </div>
 </div>
 <div class="cell docutils container">
@@ -938,19 +925,9 @@ represents our present value formula for an infinite lease.</p>
 <span class="n">dg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Differential</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 <span class="n">dp_dg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expand_derivatives</span><span class="p">(</span><span class="n">dg</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span>
 <span class="n">print</span><span class="p">(</span><span class="s">&quot;dp0 / dg is&quot;</span><span class="p">)</span>
-<span class="n">dp_dg</span>
+<span class="n">latexify</span><span class="p">(</span><span class="n">dp_dg</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">render</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">MIME</span><span class="p">(</span><span class="s">&quot;image/png&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dp0 / dg is
-</pre></div>
-</div>
-<div class="output text_latex math notranslate nohighlight">
-\[ \begin{equation}
-\frac{x0}{\left( 1 + \frac{-1 - g}{1 + r} \right)^{2} \left( 1 + r \right)}
-\end{equation}
- \]</div>
 </div>
 </div>
 <div class="cell docutils container">
@@ -959,19 +936,9 @@ represents our present value formula for an infinite lease.</p>
 <span class="n">dr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Differential</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 <span class="n">dp_dr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expand_derivatives</span><span class="p">(</span><span class="n">dr</span><span class="p">(</span><span class="n">p0</span><span class="p">))</span>
 <span class="n">print</span><span class="p">(</span><span class="s">&quot;dp0 / dr is&quot;</span><span class="p">)</span>
-<span class="n">dp_dr</span>
+<span class="n">latexify</span><span class="p">(</span><span class="n">dp_dr</span><span class="p">)</span><span class="w"> </span><span class="o">|&gt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">render</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">MIME</span><span class="p">(</span><span class="s">&quot;image/png&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dp0 / dr is
-</pre></div>
-</div>
-<div class="output text_latex math notranslate nohighlight">
-\[ \begin{equation}
-\frac{x0}{\left( 1 + \frac{-1 - g}{1 + r} \right)^{2}} \frac{-1 - g}{\left( 1 + r \right)^{2}}
-\end{equation}
- \]</div>
 </div>
 </div>
 <p>We can see that for <span class="math notranslate nohighlight">\(\frac{\partial p_0}{\partial r}&lt;0\)</span> as long as
@@ -1014,8 +981,6 @@ of national income, and investment is fixed.</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/geom_series_16_0.svg" src="../_images/geom_series_16_0.svg" /></div>
 </div>
 <p>In this model, income grows over time, until it gradually converges to
 the infinite geometric series sum of income.</p>
@@ -1035,8 +1000,6 @@ i.e., the fraction of income that is consumed</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/geom_series_18_0.svg" src="../_images/geom_series_18_0.svg" /></div>
 </div>
 <p>Increasing the marginal propensity to consume <span class="math notranslate nohighlight">\(b\)</span> increases the
 path of output over time.</p>
@@ -1066,8 +1029,6 @@ path of output over time.</p>
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<img alt="../_images/geom_series_20_0.svg" src="../_images/geom_series_20_0.svg" /></div>
 </div>
 <p>Notice here, whether government spending increases from 0.3 to 0.4 or
 investment increases from 0.3 to 0.4, the shifts in the graphs are
