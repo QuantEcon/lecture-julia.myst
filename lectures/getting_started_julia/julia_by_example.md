@@ -104,7 +104,7 @@ using LinearAlgebra, Statistics, Plots, LaTeXStrings
 ```
 
 ```{warning}
-If these packages were not in your project file or global package environment, you will see an error requiring installation.  To reinforce the point aove: Ideally you should be using a local `Project.toml` with these in them, in which case you might simply need to `] instantiate` it.  Without a project file, you can manually add them as required (e.g. `] add Plots`).  See [here](install_packages) for more on instantiation and activation of projects.
+If these packages were not in your project file or global package environment, you will see an error requiring installation.  To reinforce the point above: Ideally you should be using a local `Project.toml` with these in them, in which case you might simply need to `] instantiate` it.  Without a project file, you can manually add them as required (e.g. `] add Plots`).  See [here](install_packages) for more on instantiation and activation of projects.
 ```
 
 (import)=
