@@ -101,7 +101,7 @@ While you can create your Julia package manually, using a template will ensure t
 If you have activated the notebook repositories, then `PkgTemplates.jl` will already be installed.
 
 Otherwise, start a `julia` REPL outside of a particular project (or do an `] activate` to deactivate the existing project, and use the global environment) and
-* Install [PkgTemplates](https://github.com/invenia/PkgTemplates.jl/) and [Revise](https://github.com/timholy/Revise.jl) with 
+* Install [PkgTemplates](https://juliaci.github.io/PkgTemplates.jl/stable/) and [Revise](https://github.com/timholy/Revise.jl) with 
 ```{code-block} julia
 ] add PkgTemplates Revise
 ```
@@ -134,7 +134,7 @@ using PkgTemplates
 This specifies metadata like the license we'll be using (MIT by default), the location, etc.
 
 
-We will create this with a number of useful options, but see [the documentation](https://invenia.github.io/PkgTemplates.jl/stable/user/#A-More-Complicated-Example-1) for more.
+We will create this with a number of useful options, but see [the documentation](https://juliaci.github.io/PkgTemplates.jl/stable/user/#A-More-Complicated-Example-1) for more.
 
 ```{code-block} julia
 t = Template(;dir = ".", julia = v"1.8",
