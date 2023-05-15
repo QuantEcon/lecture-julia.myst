@@ -58,10 +58,10 @@ These concepts will help us build an equilibrium model of ex ante homogeneous wo
 
 ### Prerequisites
 
-Before working through what follows, we recommend you read the {doc}`lecture
-on finite Markov chains <../introduction_dynamics/finite_markov>`.
+Before working through what follows, we recommend you read the {doc}`lecture on finite Markov chains <../introduction_dynamics/finite_markov>`.
 
-You will also need some basic {doc}`linear algebra <../tools_and_techniques/linear_algebra>` and probability.
+You will also need some basic {doc}`linear algebra <../tools_and_techniques/linear_algebra>` and probability. 
+
 
 ## The Model
 
