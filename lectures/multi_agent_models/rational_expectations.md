@@ -598,8 +598,7 @@ using Test
 using QuantEcon, Printf, LinearAlgebra
 ```
 
-To map a problem into a [discounted optimal linear control
-problem](http://quant-econ.net/jl/lqcontrol.html), we need to define
+To map a problem into a [discounted optimal linear control problem](http://quant-econ.net/jl/lqcontrol.html), we need to define
 
 - state vector $x_t$ and control vector $u_t$
 - matrices $A, B, Q, R$ that define preferences and the law of
