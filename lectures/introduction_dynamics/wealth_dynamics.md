@@ -329,31 +329,31 @@ First, we will write a function which collects all of the parameters into a name
 
 ```{code-cell} julia
 function wealth_dynamics_model(; # all named arguments
-                 w_hat=1.0, # savings parameter
-                 s_0=0.75, # savings parameter
-                 c_y=1.0, # labor income parameter
-                 μ_y=1.0, # labor income parameter
-                 σ_y=0.2, # labor income parameter
-                 c_r=0.05, # rate of return parameter
-                 μ_r=0.1, # rate of return parameter
-                 σ_r=0.5, # rate of return parameter
-                 a=0.5, # aggregate shock parameter
-                 b=0.0, # aggregate shock parameter
-                 σ_z=0.1 # aggregate shock parameter
-                 )
-    z_mean = b / (1 - a)
-    z_var = σ_z^2 / (1 - a^2)
-    exp_z_mean = exp(z_mean + z_var / 2)
-    R_mean = c_r * exp_z_mean + exp(μ_r + σ_r^2 / 2)
-    y_mean = c_y * exp_z_mean + exp(μ_y + σ_y^2 / 2)
-    α = R_mean * s_0
+    w_hat=1.0, # savings parameter
+    s_0=0.75, # savings parameter
+    c_y=1.0, # labor income parameter
+    μ_y=1.0, # labor income parameter
+    σ_y=0.2, # labor income parameter
+    c_r=0.05, # rate of return parameter
+    μ_r=0.1, # rate of return parameter
+    σ_r=0.5, # rate of return parameter
+    a=0.5, # aggregate shock parameter
+    b=0.0, # aggregate shock parameter
+    σ_z=0.1 # aggregate shock parameter
+    )
+z_mean = b / (1 - a)
+z_var = σ_z^2 / (1 - a^2)
+exp_z_mean = exp(z_mean + z_var / 2)
+R_mean = c_r * exp_z_mean + exp(μ_r + σ_r^2 / 2)
+y_mean = c_y * exp_z_mean + exp(μ_y + σ_y^2 / 2)
+α = R_mean * s_0
 
-    # Distributions
-    z_stationary_dist = Normal(z_mean, sqrt(z_var))
+# Distributions
+z_stationary_dist = Normal(z_mean, sqrt(z_var))
 
-    @assert α <= 1 # check stability condition that wealth does not diverge
-    return (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z, z_mean,
-             z_var,z_stationary_dist, exp_z_mean, R_mean, y_mean, α)
+@assert α <= 1 # check stability condition that wealth does not diverge
+return (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z, z_mean,
+z_var,z_stationary_dist, exp_z_mean, R_mean, y_mean, α)
 end
 ```
 
