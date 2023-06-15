@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.8
+  name: julia-1.9
 ---
 
 (types_methods)=
