@@ -43,7 +43,7 @@ We also demonstrate how the LLN and CLT break down when the assumptions they are
 
 In addition, we examine several useful extensions of the classical theorems, such as
 
-* The delta method, for smooth functions of random variables
+* The delta method, for smooth ss of random variables
 * The multivariate case
 
 Some of these extensions are presented as exercises.
@@ -225,7 +225,7 @@ using LaTeXStrings, Plots, Distributions, Random, Statistics
 ```
 
 ```{code-cell} julia
-function ksl(distribution, n = 100)
+function ksl(distribution; n = 100)
     title = nameof(typeof(distribution))
     observations = rand(distribution, n)
     sample_means = cumsum(observations) ./ (1:n)
@@ -295,7 +295,7 @@ Random.seed!(0); # reproducible results
 ```
 
 ```{code-cell} julia
-function plot_means(n = 1000)
+function plot_means(;n = 1000)
     sample_mean = cumsum(rand(Cauchy(), n)) ./ (1:n)
     plot(1:n, sample_mean, color = :red, alpha = 0.6, label = "Sample Mean", linewidth = 3)
     return hline!([0], color = :black, linestyle = :dash, label = "", grid = false)
@@ -448,7 +448,7 @@ $F(x) = 1 - e^{- \lambda x}$.
 ```{code-cell} julia
 using StatsPlots
 
-function simulation1(distribution, n = 250, k = 10_000)
+function simulation1(distribution; n = 250, k = 10_000)
     σ = std(distribution)
     y = rand(distribution, n, k)
     y .-= mean(distribution)
@@ -489,7 +489,7 @@ specified as the convex combination of three different beta densities.
 (Taking a convex combination is an easy way to produce an irregular shape for $f$)
 
 ```{code-cell} julia
-function simulation2(distribution = Beta(2, 2), n = 5, k = 10_000)
+function simulation2(distribution = Beta(2, 2); n = 5, k = 10_000)
     y = rand(distribution, k, n)
     for col in 1:n
         y[:,col] += rand([-0.5, 0.6, -1.1], k)

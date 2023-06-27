@@ -236,17 +236,20 @@ using DataFrames, LaTeXStrings, Parameters, Plots
 ```
 
 ```{code-cell} julia
-UncertaintyTrapEcon = @with_kw (a = 1.5, # risk aversion
-                                γ_x = 0.5, # production shock precision
-                                ρ = 0.99, # correlation coefficient for θ
-                                σ_θ = 0.5, # standard dev. of θ shock
-                                num_firms = 100, # number of firms
-                                σ_F = 1.5, # standard dev. of fixed costs
-                                c = -420.0, # external opportunity cost
-                                μ_init = 0.0, # initial value for μ
-                                γ_init = 4.0, # initial value for γ
-                                θ_init = 0.0, # initial value for θ
-                                σ_x = sqrt(a / γ_x)) # standard dev. of shock
+function UncertaintyTrapEcon(;a = 1.5, # risk aversion
+                    γ_x = 0.5, # production shock precision
+                    ρ = 0.99, # correlation coefficient for θ
+                    σ_θ = 0.5, # standard dev. of θ shock
+                    num_firms = 100, # number of firms
+                    σ_F = 1.5, # standard dev. of fixed costs
+                    c = -420.0, # external opportunity cost
+                    μ_init = 0.0, # initial value for μ
+                    γ_init = 4.0, # initial value for γ
+                    θ_init = 0.0, # initial value for θ
+                    σ_x = sqrt(a / γ_x)) # standard dev. of shock
+                    
+    return (;a, γ_x ,ρ, σ_θ,num_firms,σ_F,c,μ_init,γ_init,θ_init,σ_x)
+end 
 ```
 
 In the results below we use this code to simulate time series for the major variables.
@@ -360,7 +363,7 @@ different values of $M$
 
 ```{code-cell} julia
 econ = UncertaintyTrapEcon()
-@unpack ρ, σ_θ, γ_x = econ # simplify names
+(;ρ, σ_θ, γ_x) = econ # simplify names
 
 # grid for γ and γ_{t+1}
 γ = range(1e-10, 3, length = 200)
@@ -394,9 +397,9 @@ Next let's generate time series for beliefs and the aggregates -- that
 is, the number of active firms and average output
 
 ```{code-cell} julia
-function simulate(uc, capT = 2_000)
+function simulate(uc; capT = 2_000)
     # unpack parameters
-    @unpack a, γ_x, ρ, σ_θ, num_firms, σ_F, c, μ_init, γ_init, θ_init, σ_x = uc
+    (;a, γ_x, ρ, σ_θ, num_firms, σ_F, c, μ_init, γ_init, θ_init, σ_x) = uc
 
     # draw standard normal shocks
     w_shocks = randn(capT)

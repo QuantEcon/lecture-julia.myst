@@ -287,14 +287,17 @@ We'll use the default parameterizations found in the code above.
 u(c, σ) = (c^(1 - σ) - 1) / (1 - σ)
 
 # model constructor
-McCallModel = @with_kw (α = 0.2,
+function McCallModel(;α = 0.2,
     β = 0.98, # discount rate
     γ = 0.7,
     c = 6.0, # unemployment compensation
     σ = 2.0,
     u = u, # utility function
     w = range(10, 20, length = 60), # wage values
-    dist = BetaBinomial(59, 600, 400)) # distribution over wage values
+    dist = BetaBinomial(59, 600, 400) ) # distribution over wage values 
+    
+    return  (;β,γ,c,σ,u,w,dist)
+end 
 ```
 
 ```{code-cell} julia

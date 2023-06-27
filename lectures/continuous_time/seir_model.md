@@ -312,9 +312,9 @@ The only confusing part of the notation is the `R̄₀(t, p)` which evaluates th
 The baseline parameters are put into a named tuple generator (see previous lectures using [Parameters.jl](https://github.com/mauro3/Parameters.jl)) with default values discussed above.
 
 ```{code-cell} julia
-p_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
+p_gen(;T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
                 R₀_n = 1.6, δ = 0.01, N = 3.3E8,
-                R̄₀ = (t, p) -> p.R₀_n);
+                R̄₀ = (t, p) -> p.R₀_n) =  (T, γ, σ, η,R₀_n, δ, N, R̄₀ )
 ```
 
 Note that the default $\bar{R}_0(t)$ function always equals $R_{0n}$ -- a parameterizable natural level of $R_0$ used only by the `R̄₀` function

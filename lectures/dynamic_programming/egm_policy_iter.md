@@ -215,19 +215,23 @@ The first step is to bring in the model that we used in the {doc}`Coleman policy
 ```{code-cell} julia
 # model
 
-Model = @with_kw (α = 0.65, # productivity parameter
-                  β = 0.95, # discount factor
-                  γ = 1.0,  # risk aversion
-                  μ = 0.0,  # lognorm(μ, σ)
-                  s = 0.1,  # lognorm(μ, σ)
-                  grid_min = 1e-6, # smallest grid point
-                  grid_max = 4.0,  # largest grid point
-                  grid_size = 200, # grid size
-                  u = γ == 1 ? log : c->(c^(1-γ)-1)/(1-γ), # utility function
-                  u′ = c-> c^(-γ), # u'
-                  f = k-> k^α, # production function
-                  f′ = k -> α*k^(α-1), # f'
-                  grid = range(grid_min, grid_max, length = grid_size)) # grid
+function Model(α = 0.65, # productivity parameter
+                β = 0.95, # discount factor
+                γ = 1.0,  # risk aversion
+                μ = 0.0,  # lognorm(μ, σ)
+                s = 0.1,  # lognorm(μ, σ)
+                grid_min = 1e-6, # smallest grid point
+                grid_max = 4.0,  # largest grid point
+                grid_size = 200, # grid size
+                f = k-> k^α, # production function
+                f′ = k -> α*k^(α-1) )  # f'
+    #calculations 
+    u = γ == 1 ? log : c->(c^(1-γ)-1)/(1-γ) # utility function
+    u′ = c-> c^(-γ)  # u' 
+    grid = range(grid_min, grid_max, length = grid_size) # grid
+
+    return (;α,β,γ,μ,s,grid_min,grid_max,grid_size,u,u′,f,f′,grid)
+end 
 ```
 
 Next we generate an instance

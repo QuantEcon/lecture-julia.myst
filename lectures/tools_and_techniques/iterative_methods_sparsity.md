@@ -1060,9 +1060,9 @@ parameters in a named tuple generator
 
 ```{code-cell} julia
 using Parameters, BenchmarkTools
-default_params = @with_kw (θ = 0.1, ζ = 0.05, ρ = 0.03, N = 10, M = 6,
-                           shape = Tuple(fill(N, M)),  # for reshaping vector to M-d array
-                           e_m = ([CartesianIndex((1:M .== i)*1...)  for i in 1:M]))
+default_params(;θ = 0.1, ζ = 0.05, ρ = 0.03, N = 10, M = 6,
+shape = Tuple(fill(N, M)),  # for reshaping vector to M-d array
+e_m = ([CartesianIndex((1:M .== i)*1...)  for i in 1:M]) ) = (;θ,ζ,ρ,N,M,shape,e_m )
 ```
 
 Next, implement the in-place matrix-free product
@@ -1121,7 +1121,7 @@ Below, we create a linear operator and compare the algorithm for a few different
 of only 10,000 possible states.
 
 ```{code-cell} julia
-p = default_params(N=10, M=4)
+p = default_params(;N=10, M=4)
 Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
 A = p.ρ * I - Q
 A_sparse = sparse(A)  # expensive: use only in tests
@@ -1156,7 +1156,7 @@ function solve_bellman(p; iv = zeros(p.N^p.M))
     sol = gmres!(iv, A, r, log = false)  # iterative solver, matrix-free
     return sol
 end
-p = default_params(N=10, M=6)
+p = default_params(;N=10, M=6)
 @btime solve_bellman($p);
 ```
 
@@ -1216,7 +1216,7 @@ The `sparse` function for the operator is useful for testing that the function i
 our `Q` operator.
 
 ```{code-cell} julia
-p = default_params(N=5, M=4)  # sparse is too slow for the full matrix
+p = default_params(;N=5, M=4)  # sparse is too slow for the full matrix
 Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
 Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
 @show norm(sparse(Q)' - sparse(Q_T));  # reminder: use sparse only for testing!
@@ -1226,7 +1226,7 @@ As discussed previously, the steady state can be found as the eigenvector associ
 do this with a dense eigenvalue solution for relatively small matrices
 
 ```{code-cell} julia
-p = default_params(N=5, M=4)
+p = default_params(;N=5, M=4)
 eig_Q_T = eigen(Matrix(Q_T))
 vec = real(eig_Q_T.vectors[:,end])
 direct_ψ = vec ./ sum(vec)
@@ -1248,7 +1248,7 @@ We can use various Krylov methods for this trick (e.g., if the matrix is symmetr
 use GMRES since we do not have any structure.
 
 ```{code-cell} julia
-p = default_params(N=5, M=4)  # sparse is too slow for the full matrix
+p = default_params(;N=5, M=4)  # sparse is too slow for the full matrix
 Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
 ψ = fill(1/(p.N^p.M), p.N^p.M) # can't use 0 as initial guess
 sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
@@ -1259,7 +1259,7 @@ sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
 The speed and memory differences between these methods can be orders of magnitude.
 
 ```{code-cell} julia
-p = default_params(N=4, M=4)  # Dense and sparse matrices are too slow for the full dataset.
+p = default_params(;N=4, M=4)  # Dense and sparse matrices are too slow for the full dataset.
 Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
 Q_T_dense = Matrix(Q_T)
 Q_T_sparse = sparse(Q_T)
@@ -1280,7 +1280,7 @@ function stationary_ψ(p)
     sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
     return ψ / sum(ψ)
 end
-p = default_params(N=10, M=5)
+p = default_params(;N=10, M=5)
 @btime stationary_ψ($p);
 ```
 
@@ -1306,7 +1306,7 @@ function solve_transition_dynamics(p, t)
     return solve(prob, LinearExponential(krylov=:simple), tstops = t)
 end
 t = 0.0:5.0:100.0
-p = default_params(N=10, M=6)
+p = default_params(;N=10, M=6)
 sol = solve_transition_dynamics(p, t)
 v = solve_bellman(p)
 plot(t, [dot(sol(tval), v) for tval in t], xlabel = L"t", label = L"E_t(v)")

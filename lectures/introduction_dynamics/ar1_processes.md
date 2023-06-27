@@ -177,7 +177,7 @@ Notice that, in the figure above, the sequence $\{ \psi_t \}$ seems to be conver
 This is even clearer if we project forward further into the future:
 
 ```{code-cell} julia
-function plot_density_seq(mu_0=-3.0, v_0=0.6; sim_length=60)
+function plot_density_seq(;mu_0=-3.0, v_0=0.6, sim_length=60)
     mu = mu_0
     v = v_0
     plt = plot()
@@ -198,7 +198,7 @@ Moreover, the limit does not depend on the initial condition.
 For example, this alternative density sequence also converges to the same limit.
 
 ```{code-cell} julia
-plot_density_seq(3.0)
+plot_density_seq(;mu_0=3.0)
 ```
 
 In fact it's easy to show that such convergence will occur, regardless of the initial condition, whenever $|a| < 1$.
@@ -231,7 +231,7 @@ t \to \infty
 We can confirm this is valid for the sequence above using the following code.
 
 ```{code-cell} julia
-plt = plot_density_seq(3.0)
+plt = plot_density_seq(;mu_0=3.0)
 
 mu_star = b / (1 - a)
 std_star = sqrt(c^2 / (1 - a^2))  # square root of v_star
@@ -447,7 +447,7 @@ c = 0.5
 mu_star = b / (1 - a)
 std_star = sqrt(c^2 / (1 - a^2))  # square root of v_star
 
-function sample_moments_ar1(k, m=100_000, mu_0=0.0, sigma_0=1.0; seed=1234)
+function sample_moments_ar1(k; m=100_000, mu_0=0.0, sigma_0=1.0, seed=1234)
     Random.seed!(seed)
     sample_sum = 0.0
     x = mu_0 + sigma_0 * randn()
