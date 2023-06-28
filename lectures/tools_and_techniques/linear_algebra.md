@@ -1125,9 +1125,9 @@ Exercise 1 below asks you to apply these formulas.
 
 ### Further Reading
 
-The documentation of the linear algebra features built into Julia can be found [here](https://docs.julialang.org/en/stable/manual/linear-algebra/).
+The documentation of the linear algebra features built into Julia can be found [here](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/).
 
-Chapters 2 and 3 of the [Econometric Theory](http://www.johnstachurski.net/emet.html) contains
+Chapters 2 and 3 of [A Primer in Econometric Theory](http://www.johnstachurski.net/emet.html) contains
 a discussion of linear algebra along the same lines as above, with solved exercises.
 
 If you don't mind a slightly abstract approach, a nice intermediate-level text on linear algebra
