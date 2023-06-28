@@ -280,7 +280,7 @@ Combining this result with {eq}`pob` verifies the claim.
 
 ### Projection onto an Orthonormal Basis
 
-When the subspace onto which are projecting is orthonormal, computing the projection simplifies:
+When the subspace onto which we are projecting is orthonormal, computing the projection simplifies:
 
 **Theorem** If $\{u_1, \ldots, u_k\}$ is an orthonormal basis for $S$, then
 
