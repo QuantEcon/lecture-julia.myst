@@ -237,16 +237,16 @@ using DataFrames, LaTeXStrings, Parameters, Plots
 
 ```{code-cell} julia
 UncertaintyTrapEcon = @with_kw (a = 1.5, # risk aversion
-                                γ_x = 0.5, # production shock precision
-                                ρ = 0.99, # correlation coefficient for θ
-                                σ_θ = 0.5, # standard dev. of θ shock
-                                num_firms = 100, # number of firms
-                                σ_F = 1.5, # standard dev. of fixed costs
-                                c = -420.0, # external opportunity cost
-                                μ_init = 0.0, # initial value for μ
-                                γ_init = 4.0, # initial value for γ
-                                θ_init = 0.0, # initial value for θ
-                                σ_x = sqrt(a / γ_x)) # standard dev. of shock
+    γ_x = 0.5, # production shock precision
+    ρ = 0.99, # correlation coefficient for θ
+    σ_θ = 0.5, # standard dev. of θ shock
+    num_firms = 100, # number of firms
+    σ_F = 1.5, # standard dev. of fixed costs
+    c = -420.0, # external opportunity cost
+    μ_init = 0.0, # initial value for μ
+    γ_init = 4.0, # initial value for γ
+    θ_init = 0.0, # initial value for θ
+    σ_x = sqrt(a / γ_x)) # standard dev. of shock
 ```
 
 In the results below we use this code to simulate time series for the major variables.
@@ -371,7 +371,10 @@ labels = ["0" "1" "2" "3" "4" "5" "6"]
 
 plot(γ, γ, lw = 2, label = "45 Degree")
 plot!(γ, γp, lw = 2, label = labels)
-plot!(xlabel = L"\gamma", ylabel = L"\gamma^\prime", legend_title = L"M", legend = :bottomright)
+plot!(xlabel = L"\gamma",
+    ylabel = L"\gamma^\prime",
+    legend_title = L"M",
+    legend = :bottomright)
 ```
 
 ```{code-cell} julia
@@ -429,11 +432,15 @@ function simulate(uc, capT = 2_000)
     # update dataframe
     for t in 2:capT
         # unpack old variables
-        θ_old, γ_old, μ_old, X_old, M_old = (df.θ[end], df.γ[end], df.μ[end], df.X[end], df.M[end])
+        θ_old, γ_old, μ_old, X_old, M_old = (df.θ[end],
+            df.γ[end],
+            df.μ[end],
+            df.X[end],
+            df.M[end])
 
         # define new beliefs
-        θ = ρ * θ_old + σ_θ * w_shocks[t-1]
-        μ = (ρ * (γ_old * μ_old + M_old * γ_x * X_old))/(γ_old + M_old * γ_x)
+        θ = ρ * θ_old + σ_θ * w_shocks[t - 1]
+        μ = (ρ * (γ_old * μ_old + M_old * γ_x * X_old)) / (γ_old + M_old * γ_x)
         γ = 1 / (ρ^2 / (γ_old + M_old * γ_x) + σ_θ^2)
 
         # compute new aggregates
@@ -471,7 +478,7 @@ len = eachindex(df.θ)
 yvals = [df.θ, df.μ, df.γ, df.M]
 vars = [L"\theta", L"\mu", L"\gamma", L"M"]
 
-plt = plot(layout = (4,1), size = (600, 600))
+plt = plot(layout = (4, 1), size = (600, 600))
 
 for i in 1:4
     plot!(plt[i], len, yvals[i], xlabel = L"t", ylabel = vars[i], label = "")

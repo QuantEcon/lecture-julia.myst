@@ -219,7 +219,7 @@ preference = 0.5 # Want their kind to make at least this share of the neighborho
 
 # Create a list of agents
 agents = vcat([Agent(kind = 0) for i in 1:num_of_type_0],
-              [Agent(kind = 1) for i in 1:num_of_type_1])
+    [Agent(kind = 1) for i in 1:num_of_type_1])
 
 plot_array = Any[]
 
@@ -240,9 +240,9 @@ while true
 end
 n = length(plot_array)
 plot(plot_array...,
-     layout = (n, 1),
-     size = (600, 400n),
-     title = reshape(["Cycle $i" for i in 1:n], 1, n))
+    layout = (n, 1),
+    size = (600, 400n),
+    title = reshape(["Cycle $i" for i in 1:n], 1, n))
 ```
 
 ```{code-cell} julia

@@ -183,11 +183,10 @@ begin
     base_dist = [Beta(1, 1), Beta(3, 3)]
     mixed_dist = MixtureModel.(Ref(base_dist), (p -> [p, one(p) - p]).(0.25:0.25:0.75))
     plot(plot(base_dist, labels = [L"f_0" L"f_1"], title = "Original Distributions"),
-         plot(mixed_dist, labels = [L"1/4-3/4" L"1/2-1/2" L"3/4-1/4"],
-              title = "Distribution Mixtures"),
-         # Global settings across both plots
-         ylab = "Density", ylim = (0, 2), layout = (2, 1)
-         )
+        plot(mixed_dist, labels = [L"1/4-3/4" L"1/2-1/2" L"3/4-1/4"],
+            title = "Distribution Mixtures"),
+        # Global settings across both plots
+        ylab = "Density", ylim = (0, 2), layout = (2, 1))
 end
 ```
 
@@ -470,7 +469,7 @@ We can simulate an agent facing a problem and the outcome with the following fun
 
 ```{code-cell} julia
 function simulation(problem)
-    (;d0, d1, L0, L1, c, p, n, return_output) = problem
+    (; d0, d1, L0, L1, c, p, n, return_output) = problem
     α, β = decision_rule(d0, d1, L0, L1, c)
     outcomes = fill(false, n)
     costs = fill(0.0, n)
@@ -500,14 +499,14 @@ function simulation(problem)
         trials[trial] = t
     end
     @printf("\nCorrect: %.2f\nAverage Cost: %.2f\nAverage number of trials: %.2f",
-            mean(outcomes), mean(costs), mean(trials))
+        mean(outcomes), mean(costs), mean(trials))
     return return_output ? (α, β, outcomes, costs, trials) : nothing
 end
 
-Problem = @with_kw (d0 = Beta(1,1), d1 = Beta(9,9),
-                    L0 = 2, L1 = 2,
-                    c = 0.2, p = 0.5,
-                    n = 100, return_output = false);
+Problem = @with_kw (d0 = Beta(1, 1), d1 = Beta(9, 9),
+    L0 = 2, L1 = 2,
+    c = 0.2, p = 0.5,
+    n = 100, return_output = false);
 ```
 
 ```{code-cell} julia

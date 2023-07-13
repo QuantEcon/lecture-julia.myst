@@ -409,15 +409,15 @@ mc = tauchen(n, 0.96, 0.02)
 
 K = mc.p .* exp.(mc.state_values)'
 
-v = (I - β * K) \  (β * K * ones(n, 1))
+v = (I - β * K) \ (β * K * ones(n, 1))
 
 plot(mc.state_values,
-     v,
-     lw = 2,
-     ylabel = "price-dividend ratio",
-     xlabel = "state",
-     alpha = 0.7,
-     label = L"v")
+    v,
+    lw = 2,
+    ylabel = "price-dividend ratio",
+    xlabel = "state",
+    alpha = 0.7,
+    label = L"v")
 ```
 
 ```{code-cell} julia
@@ -547,10 +547,10 @@ n = 25
 default_mc = tauchen(n, ρ, σ)
 
 AssetPriceModel = @with_kw (β = 0.96,
-                            γ = 2.0,
-                            mc = default_mc,
-                            n = size(mc.p)[1],
-                            g = exp)
+    γ = 2.0,
+    mc = default_mc,
+    n = size(mc.p)[1],
+    g = exp)
 
 # test stability of matrix Q
 function test_stability(ap, Q)
@@ -564,10 +564,10 @@ end
 # price/dividend ratio of the Lucas tree
 function tree_price(ap; γ = ap.γ)
     # Simplify names, set up matrices
-    (;β, mc) = ap
+    (; β, mc) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, ap.n)
-    J = P .* ap.g.(y).^(1 - γ)
+    J = P .* ap.g.(y) .^ (1 - γ)
 
     # Make sure that a unique solution exists
     test_stability(ap, J)
@@ -598,10 +598,10 @@ for γ in γs
 end
 
 plot(lines,
-     labels = reshape(labels, 1, length(labels)),
-     title = "Price-dividend ratio as a function of the state",
-     ylabel = "price-dividend ratio",
-     xlabel = "state")
+    labels = reshape(labels, 1, length(labels)),
+    title = "Price-dividend ratio as a function of the state",
+    ylabel = "price-dividend ratio",
+    xlabel = "state")
 ```
 
 ```{code-cell} julia
@@ -692,10 +692,10 @@ The above is implemented in the function consol_price
 ```{code-cell} julia
 function consol_price(ap, ζ)
     # Simplify names, set up matrices
-    (;β, γ, mc, g, n) = ap
+    (; β, γ, mc, g, n) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, n)
-    M = P .* g.(y).^(-γ)
+    M = P .* g.(y) .^ (-γ)
 
     # Make sure that a unique solution exists
     test_stability(ap, M)
@@ -780,10 +780,10 @@ We can find the solution with the following function call_option
 function call_option(ap, ζ, p_s, ϵ = 1e-7)
 
     # Simplify names, set up matrices
-    (;β, γ, mc, g, n) = ap
+    (; β, γ, mc, g, n) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, n)
-    M = P .* g.(y).^(-γ)
+    M = P .* g.(y) .^ (-γ)
 
     # Make sure that a unique console price exists
     test_stability(ap, M)
@@ -807,7 +807,7 @@ end
 Here's a plot of $w$ compared to the consol price when $P_S = 40$
 
 ```{code-cell} julia
-ap = AssetPriceModel(β=0.9)
+ap = AssetPriceModel(β = 0.9)
 ζ = 1.0
 strike_price = 40.0
 
@@ -1018,10 +1018,10 @@ Here's a suitable function:
 function finite_horizon_call_option(ap, ζ, p_s, k)
 
     # Simplify names, set up matrices
-    (;β, γ, mc) = ap
+    (; β, γ, mc) = ap
     P, y = mc.p, mc.state_values
     y = y'
-    M = P .* ap.g.(y).^(- γ)
+    M = P .* ap.g.(y) .^ (-γ)
 
     # Make sure that a unique console price exists
     test_stability(ap, M)

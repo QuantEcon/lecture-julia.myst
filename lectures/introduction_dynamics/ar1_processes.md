@@ -149,7 +149,7 @@ c = 0.5
 
 # initial conditions mu_0, v_0
 mu = -3.0
-v = 0.6 
+v = 0.6
 ```
 
 Here's the sequence of distributions:
@@ -165,7 +165,7 @@ for t in 1:sim_length
     mu = a * mu + b
     v = a^2 * v + c^2
     dist = Normal(mu, sqrt(v))
-    plot!(plt, x_grid, pdf.(dist, x_grid), label=L"\psi_{%$t}", linealpha=0.7)
+    plot!(plt, x_grid, pdf.(dist, x_grid), label = L"\psi_{%$t}", linealpha = 0.7)
 end
 plt
 ```
@@ -177,7 +177,7 @@ Notice that, in the figure above, the sequence $\{ \psi_t \}$ seems to be conver
 This is even clearer if we project forward further into the future:
 
 ```{code-cell} julia
-function plot_density_seq(mu_0=-3.0, v_0=0.6; sim_length=60)
+function plot_density_seq(mu_0 = -3.0, v_0 = 0.6; sim_length = 60)
     mu = mu_0
     v = v_0
     plt = plot()
@@ -185,7 +185,7 @@ function plot_density_seq(mu_0=-3.0, v_0=0.6; sim_length=60)
         mu = a * mu + b
         v = a^2 * v + c^2
         dist = Normal(mu, sqrt(v))
-        plot!(plt, x_grid, pdf.(dist, x_grid), label=nothing, linealpha=0.5)
+        plot!(plt, x_grid, pdf.(dist, x_grid), label = nothing, linealpha = 0.5)
     end
     return plt
 end
@@ -236,7 +236,7 @@ plt = plot_density_seq(3.0)
 mu_star = b / (1 - a)
 std_star = sqrt(c^2 / (1 - a^2))  # square root of v_star
 psi_star = Normal(mu_star, std_star)
-plot!(plt, x_grid, psi_star, color = :black, label=L"\psi^*", linewidth=2)
+plot!(plt, x_grid, psi_star, color = :black, label = L"\psi^*", linewidth = 2)
 plt
 ```
 
@@ -447,7 +447,7 @@ c = 0.5
 mu_star = b / (1 - a)
 std_star = sqrt(c^2 / (1 - a^2))  # square root of v_star
 
-function sample_moments_ar1(k, m=100_000, mu_0=0.0, sigma_0=1.0; seed=1234)
+function sample_moments_ar1(k, m = 100_000, mu_0 = 0.0, sigma_0 = 1.0; seed = 1234)
     Random.seed!(seed)
     sample_sum = 0.0
     x = mu_0 + sigma_0 * randn()
@@ -480,8 +480,8 @@ for (k_idx, k) in enumerate(k_vals)
 end
 
 plt = plot()
-plot!(plt, k_vals, true_moments, label="true moments")
-plot!(plt, k_vals, sample_moments, label="sample moments")
+plot!(plt, k_vals, true_moments, label = "true moments")
+plot!(plt, k_vals, sample_moments, label = "sample moments")
 plt
 ```
 
@@ -498,13 +498,13 @@ end
 ```
 
 ```{code-cell} julia
-function plot_kde(ϕ, n, plt, idx; x_min=-0.2, x_max=1.2)
+function plot_kde(ϕ, n, plt, idx; x_min = -0.2, x_max = 1.2)
     x_data = rand(ϕ, n)
     x_grid = range(-0.2, 1.2, length = 100)
     c = std(x_data)
-    h = 1.06 * c * n^(-1/5)
-    plot!(plt[idx], x_grid, f.(x_grid, Ref(x_data), h), label="estimate")
-    plot!(plt[idx], x_grid, pdf.(ϕ, x_grid), label="true density")
+    h = 1.06 * c * n^(-1 / 5)
+    plot!(plt[idx], x_grid, f.(x_grid, Ref(x_data), h), label = "estimate")
+    plot!(plt[idx], x_grid, pdf.(ϕ, x_grid), label = "true density")
     return plt
 end
 ```
@@ -553,14 +553,14 @@ n = 2000
 x_draws = rand(ψ, n)
 x_draws_next = a * x_draws .+ b + c * randn(n)
 c = std(x_draws_next)
-h = 1.06 * c * n^(-1/5)
+h = 1.06 * c * n^(-1 / 5)
 
 x_grid = range(μ - 1, μ + 1, length = 100)
 plt = plot()
 
-plot!(plt, x_grid, pdf.(ψ, x_grid), label=L"$\psi_t$")
-plot!(plt, x_grid, pdf.(ψ_next, x_grid), label=L"$\psi_{t+1}$")
-plot!(plt, x_grid, f.(x_grid, Ref(x_draws_next), h), label=L"estimate of $\psi_{t+1}$")
+plot!(plt, x_grid, pdf.(ψ, x_grid), label = L"$\psi_t$")
+plot!(plt, x_grid, pdf.(ψ_next, x_grid), label = L"$\psi_{t+1}$")
+plot!(plt, x_grid, f.(x_grid, Ref(x_draws_next), h), label = L"estimate of $\psi_{t+1}$")
 
 plt
 ```

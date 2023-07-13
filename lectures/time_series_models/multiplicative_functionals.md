@@ -171,10 +171,10 @@ function loglikelihood_path(amf, x, y)
     T = length(y)
     FF = F^2
     FFinv = inv(FF)
-    temp = y[2:end] - y[1:end-1] - D*x[1:end-1]
-    obs =  temp .* FFinv .* temp
+    temp = y[2:end] - y[1:(end - 1)] - D * x[1:(end - 1)]
+    obs = temp .* FFinv .* temp
     obssum = cumsum(obs)
-    scalar = (log(FF) + log(2pi)) * (1:T-1)
+    scalar = (log(FF) + log(2pi)) * (1:(T - 1))
     return -0.5 * (obssum + scalar)
 end
 
@@ -220,7 +220,7 @@ function population_means(amf, T = 150)
 
     # Pull out moment generator
     moment_generator = moment_sequence(amf.lss)
-    for (tt, x) = enumerate(moment_generator)
+    for (tt, x) in enumerate(moment_generator)
         ymeans = x[2]
         xmean[tt] = ymeans[1]
         ymean[tt] = ymeans[2]
@@ -272,7 +272,7 @@ plt_2 = plot(Ymean_t', color = :blue, label = L"(1/I) \sum_i x_t^i")
 plot!(plt_2, Ymean_pop, color = :black, label = L"E y_t")
 plot!(plt_2, title = L"y_t", xlim = (0, T), legend = :bottomleft)
 
-plot(plt_1, plt_2, layout = (2, 1), size = (800,500))
+plot(plt_1, plt_2, layout = (2, 1), size = (800, 500))
 ```
 
 ### Simulating log-likelihoods
@@ -303,7 +303,7 @@ function simulate_likelihood(amf, Xit, Yit)
     I, T = size(Xit)
 
     # Allocate space
-    LLit = zeros(I, T-1)
+    LLit = zeros(I, T - 1)
 
     for i in 1:I
         LLit[i, :] = loglikelihood_path(amf, Xit[i, :], Yit[i, :])
@@ -347,13 +347,13 @@ Let's see this in a simulation
 normdist = Normal(0, F)
 mult = 1.175
 println("The pdf at +/- $mult sigma takes the value: $(pdf(normdist,mult*F))")
-println("Probability of dL being larger than 1 is approx: "*
+println("Probability of dL being larger than 1 is approx: " *
         "$(cdf(normdist,mult*F)-cdf(normdist,-mult*F))")
 
 # Compare this to the sample analogue:
-L_increment = LLit[:,2:end] - LLit[:,1:end-1]
-r,c = size(L_increment)
-frac_nonegative = sum(L_increment.>=0)/(c*r)
+L_increment = LLit[:, 2:end] - LLit[:, 1:(end - 1)]
+r, c = size(L_increment)
+frac_nonegative = sum(L_increment .>= 0) / (c * r)
 print("Fraction of dlogL being nonnegative in the sample is: $(frac_nonegative)")
 ```
 
@@ -370,7 +370,7 @@ end
 Let's also plot the conditional pdf of $\Delta y_{t+1}$
 
 ```{code-cell} julia
-xgrid = range(-1,  1, length = 100)
+xgrid = range(-1, 1, length = 100)
 println("The pdf at +/- one sigma takes the value: $(pdf(normdist, F)) ")
 plot(xgrid, pdf.(normdist, xgrid), label = "")
 plot!(title = L"Conditional pdf $f(\Delta y_{t+1} | x_t)$")
@@ -423,7 +423,7 @@ amf2 = AMF_LSS_VAR(A = 0.9, B = 1.0, D = 0.55, F = 0.25) # parameters for θ_1 c
 # Get likelihood from each path x^{i}, y^{i}
 LLit2 = simulate_likelihood(amf2, Xit, Yit)
 
-LLT2 = 1/(T-1) * LLit2[:, end]
+LLT2 = 1 / (T - 1) * LLit2[:, end]
 LLmean_t2 = mean(LLT2)
 
 plot(seriestype = :histogram, LLT2, label = "")
@@ -446,7 +446,7 @@ Let's see a histogram of the log-likelihoods under the true and the alternative 
 ```{code-cell} julia
 plot(seriestype = :histogram, LLT, bin = 50, alpha = 0.5, label = "True", normed = true)
 plot!(seriestype = :histogram, LLT2, bin = 50, alpha = 0.5, label = "Alternative",
-      normed = true)
+    normed = true)
 vline!([mean(LLT)], color = :black, lw = 2, linestyle = :dash, label = "")
 vline!([mean(LLT2)], color = :black, lw = 2, linestyle = :dash, label = "")
 ```
@@ -585,7 +585,7 @@ function simulate_martingale_components(amf, T = 1_000, I = 5_000)
         add_mart_comp[i, :] = bar[3, :]
     end
 
-    mul_mart_comp = exp.(add_mart_comp' .- (0:T-1) * H^2 / 2)'
+    mul_mart_comp = exp.(add_mart_comp' .- (0:(T - 1)) * H^2 / 2)'
 
     return add_mart_comp, mul_mart_comp
 end
@@ -669,13 +669,12 @@ Here is some code that tackles these tasks
 function Mtilde_t_density(amf, t; xmin = 1e-8, xmax = 5.0, npts = 5000)
 
     # Pull out the multiplicative decomposition
-    νtilde, H, g =
-        multiplicative_decomp(amf.A, amf.B, amf.D, amf.F, amf.ν)
-    H2 = H*H
+    νtilde, H, g = multiplicative_decomp(amf.A, amf.B, amf.D, amf.F, amf.ν)
+    H2 = H * H
 
     # The distribution
     mdist = LogNormal(-t * H2 / 2, sqrt(t * H2))
-    x = range(xmin,  xmax, length = npts)
+    x = range(xmin, xmax, length = npts)
     p = pdf.(mdist, x)
 
     return x, p
@@ -690,19 +689,20 @@ function logMtilde_t_density(amf, t; xmin = -15.0, xmax = 15.0, npts = 5000)
 
     # The distribution
     lmdist = Normal(-t * H2 / 2, sqrt(t * H2))
-    x = range(xmin,  xmax, length = npts)
+    x = range(xmin, xmax, length = npts)
     p = pdf.(lmdist, x)
 
     return x, p
 end
 
 times_to_plot = [10, 100, 500, 1000, 2500, 5000]
-dens_to_plot = [Mtilde_t_density(amf_2, t, xmin=1e-8, xmax=6.0) for t in times_to_plot]
-ldens_to_plot = [logMtilde_t_density(amf_2, t, xmin=-10.0, xmax=10.0) for t in times_to_plot]
+dens_to_plot = [Mtilde_t_density(amf_2, t, xmin = 1e-8, xmax = 6.0) for t in times_to_plot]
+ldens_to_plot = [logMtilde_t_density(amf_2, t, xmin = -10.0, xmax = 10.0)
+                 for t in times_to_plot]
 
 # plot_title = "Densities of M_t^tilda" is required, however, plot_title is not yet
 # supported in Plots
-plots = plot(layout = (3,2), size = (600,800))
+plots = plot(layout = (3, 2), size = (600, 800))
 
 for (it, dens_t) in enumerate(dens_to_plot)
     x, pdf = dens_t
@@ -750,7 +750,7 @@ function Uu(amf, δ, γ)
     u_risky = exp(-δ) / (1 - exp(-δ)) * (ν + 0.5 * (1 - γ) * (vect^2))
 
     U_det = 0
-    u_det = exp(-δ) / (1 - exp(-δ))  * ν_tilde
+    u_det = exp(-δ) / (1 - exp(-δ)) * ν_tilde
 
     return U_risky, u_risky, U_det, u_det
 end

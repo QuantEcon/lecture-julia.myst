@@ -584,14 +584,12 @@ using Test
 ```{code-cell} julia
 using LaTeXStrings, QuantEcon, Plots, LinearAlgebra, Parameters
 
-
 abstract type AbstractStochProcess end
 
 struct ContStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
     A::Matrix{TF}
     C::Matrix{TF}
 end
-
 
 struct DiscreteStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
     P::Matrix{TF}
@@ -621,7 +619,6 @@ function compute_exog_sequences(econ, x)
     return g, d, b, s, Sm
 end
 
-
 function compute_allocation(econ, Sm, ν, x, b)
     Sg, Sd, Sb, Ss = econ.Sg, econ.Sd, econ.Sb, econ.Ss
 
@@ -637,12 +634,11 @@ function compute_allocation(econ, Sm, ν, x, b)
     return Sc, Sl, c, l, p, τ, rvn
 end
 
-
 function compute_ν(a0, b0)
     disc = a0^2 - 4a0 * b0
 
     if disc ≥ 0
-        ν = 0.5 *(a0 - sqrt(disc)) / a0
+        ν = 0.5 * (a0 - sqrt(disc)) / a0
     else
         println("There is no Ramsey equilibrium for these parameters.")
         error("Government spending (economy.g) too low")
@@ -657,13 +653,11 @@ function compute_ν(a0, b0)
     return ν
 end
 
-
 function compute_Π(B, R, rvn, g, ξ)
-    π = B[2:end] - R[1:end-1] .* B[1:end-1] - rvn[1:end-1] + g[1:end-1]
+    π = B[2:end] - R[1:(end - 1)] .* B[1:(end - 1)] - rvn[1:(end - 1)] + g[1:(end - 1)]
     Π = cumsum(π .* ξ)
     return π, Π
 end
-
 
 function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T)
     # simplify notation
@@ -671,7 +665,7 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T
     @unpack P, x_vals = econ.proc
 
     mc = MarkovChain(P)
-    state = simulate(mc, T, init=1)
+    state = simulate(mc, T, init = 1)
     x = x_vals[:, state]
 
     # Compute exogenous sequence
@@ -679,9 +673,9 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T
 
     # compute a0, b0
     ns = size(P, 1)
-    F = I - β.*P
-    a0 = (F \ ((Sm * x_vals)'.^2))[1] ./ 2
-    H = ((Sb - Sd + Sg) * x_vals) .* ((Sg - Ss)*x_vals)
+    F = I - β .* P
+    a0 = (F \ ((Sm * x_vals)' .^ 2))[1] ./ 2
+    H = ((Sb - Sd + Sg) * x_vals) .* ((Sg - Ss) * x_vals)
     b0 = (F \ H')[1] ./ 2
 
     # compute lagrange multiplier
@@ -691,20 +685,20 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T
     Sc, Sl, c, l, p, τ, rvn = compute_allocation(econ, Sm, ν, x, b)
 
     # compute remaining variables
-    H = ((Sb - Sc) * x_vals) .* ((Sl - Sg) * x_vals) - (Sl * x_vals).^2
+    H = ((Sb - Sc) * x_vals) .* ((Sl - Sg) * x_vals) - (Sl * x_vals) .^ 2
     temp = dropdims(F * H', dims = 2)
     B = temp[state] ./ p
     H = dropdims(P[state, :] * ((Sb - Sc) * x_vals)', dims = 2)
     R = p ./ (β .* H)
-    temp = dropdims(P[state, :] *((Sb - Sc) * x_vals)', dims = 2)
-    ξ = p[2:end] ./ temp[1:end-1]
+    temp = dropdims(P[state, :] * ((Sb - Sc) * x_vals)', dims = 2)
+    ξ = p[2:end] ./ temp[1:(end - 1)]
 
     # compute π
     π, Π = compute_Π(B, R, rvn, g, ξ)
 
     return (g = g, d = d, b = b, s = s, c = c,
-            l = l, p = p, τ = τ, rvn = rvn, B = B,
-            R = R, π = π, Π = Π, ξ = ξ)
+        l = l, p = p, τ = τ, rvn = rvn, B = B,
+        R = R, π = π, Π = Π, ξ = ξ)
 end
 
 function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
@@ -725,7 +719,7 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
     w = randn(nw, T)
     x[:, 1] = x0
     for t in 2:T
-        x[:, t] = A *x[:, t-1] + C * w[:, t]
+        x[:, t] = A * x[:, t - 1] + C * w[:, t]
     end
 
     # compute exogenous sequence
@@ -734,7 +728,7 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
     # compute a0 and b0
     H = Sm'Sm
     a0 = 0.5 * var_quadratic_sum(A, C, H, β, x0)
-    H = (Sb - Sd + Sg)'*(Sg + Ss)
+    H = (Sb - Sd + Sg)' * (Sg + Ss)
     b0 = 0.5 * var_quadratic_sum(A, C, H, β, x0)
 
     # compute lagrange multiplier
@@ -744,54 +738,53 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
     Sc, Sl, c, l, p, τ, rvn = compute_allocation(econ, Sm, ν, x, b)
 
     # compute remaining variables
-    H = Sl'Sl - (Sb - Sc)' *(Sl - Sg)
+    H = Sl'Sl - (Sb - Sc)' * (Sl - Sg)
     L = zeros(T)
     for t in eachindex(L)
         L[t] = var_quadratic_sum(A, C, H, β, x[:, t])
     end
     B = L ./ p
-    Rinv = dropdims(β .* (Sb- Sc)*A*x, dims = 1) ./ p
+    Rinv = dropdims(β .* (Sb - Sc) * A * x, dims = 1) ./ p
     R = 1 ./ Rinv
     AF1 = (Sb - Sc) * x[:, 2:end]
-    AF2 = (Sb - Sc) * A * x[:, 1:end-1]
-    ξ =  AF1 ./ AF2
+    AF2 = (Sb - Sc) * A * x[:, 1:(end - 1)]
+    ξ = AF1 ./ AF2
     ξ = dropdims(ξ, dims = 1)
 
     # compute π
     π, Π = compute_Π(B, R, rvn, g, ξ)
 
     return (g = g, d = d, b = b, s = s,
-            c = c, l = l, p = p, τ = τ,
-            rvn = rvn, B = B, R = R,
-            π = π, Π = Π, ξ = ξ)
+        c = c, l = l, p = p, τ = τ,
+        rvn = rvn, B = B, R = R,
+        π = π, Π = Π, ξ = ξ)
 end
 
 function gen_fig_1(path)
     T = length(path.c)
 
-    plt_1 = plot(path.rvn, lw=2, label = L"\tau_t l_t")
-    plot!(plt_1, path.g, lw=2, label= L"g_t")
-    plot!(plt_1, path.c, lw=2, label= L"c_t")
-    plot!(xlabel="Time", grid=true)
+    plt_1 = plot(path.rvn, lw = 2, label = L"\tau_t l_t")
+    plot!(plt_1, path.g, lw = 2, label = L"g_t")
+    plot!(plt_1, path.c, lw = 2, label = L"c_t")
+    plot!(xlabel = "Time", grid = true)
 
-    plt_2 = plot(path.rvn, lw=2, label=L"\tau_t l_t")
-    plot!(plt_2, path.g, lw=2, label=L"g_t")
-    plot!(plt_2, path.B[2:end], lw=2, label=L"B_{t+1}")
-    plot!(xlabel="Time", grid=true)
+    plt_2 = plot(path.rvn, lw = 2, label = L"\tau_t l_t")
+    plot!(plt_2, path.g, lw = 2, label = L"g_t")
+    plot!(plt_2, path.B[2:end], lw = 2, label = L"B_{t+1}")
+    plot!(xlabel = "Time", grid = true)
 
-    plt_3 = plot(path.R, lw=2, label=L"R_{t-1}")
-    plot!(plt_3, xlabel="Time", grid=true)
+    plt_3 = plot(path.R, lw = 2, label = L"R_{t-1}")
+    plot!(plt_3, xlabel = "Time", grid = true)
 
-    plt_4 = plot(path.rvn, lw=2, label=L"\tau_t l_t")
-    plot!(plt_4, path.g, lw=2, label=L"g_t")
-    plot!(plt_4, path.π, lw=2, label=L"\pi_t")
-    plot!(plt_4, xlabel="Time", grid=true)
+    plt_4 = plot(path.rvn, lw = 2, label = L"\tau_t l_t")
+    plot!(plt_4, path.g, lw = 2, label = L"g_t")
+    plot!(plt_4, path.π, lw = 2, label = L"\pi_t")
+    plot!(plt_4, xlabel = "Time", grid = true)
 
-    plot(plt_1, plt_2, plt_3, plt_4, layout=(2,2), size = (800,600))
+    plot(plt_1, plt_2, plt_3, plt_4, layout = (2, 2), size = (800, 600))
 end
 
 function gen_fig_2(path)
-
     T = length(path.c)
 
     paths = [path.ξ, path.Π]
@@ -801,9 +794,9 @@ function gen_fig_2(path)
     plots = [plt_1, plt_2]
 
     for (plot, path, label) in zip(plots, paths, labels)
-        plot!(plot, 2:T, path, lw=2, label=label, xlabel="Time", grid=true)
+        plot!(plot, 2:T, path, lw = 2, label = label, xlabel = "Time", grid = true)
     end
-    plot(plt_1, plt_2, layout=(2,1), size = (600,500))
+    plot(plt_1, plt_2, layout = (2, 1), size = (600, 500))
 end
 ```
 
@@ -848,9 +841,9 @@ Random.seed!(42)
 
 # parameters
 β = 1 / 1.05
-ρ, mg = .7, .35
+ρ, mg = 0.7, 0.35
 A = [ρ mg*(1 - ρ); 0.0 1.0]
-C = [sqrt(1 - ρ^2) * mg / 10 0.0; 0 0]
+C = [sqrt(1 - ρ^2) * mg/10 0.0; 0 0]
 Sg = [1.0 0.0]
 Sd = [0.0 0.0]
 Sb = [0 2.135]
@@ -919,10 +912,10 @@ P = [0.8 0.2 0.0
 # Possible states of the world
 # Each column is a state of the world. The rows are [g d b s 1]
 x_vals = [0.5 0.5 0.25;
-        0.0 0.0  0.0;
-        2.2 2.2  2.2;
-        0.0 0.0  0.0;
-        1.0 1.0  1.0]
+    0.0 0.0 0.0;
+    2.2 2.2 2.2;
+    0.0 0.0 0.0;
+    1.0 1.0 1.0]
 Sg = [1.0 0.0 0.0 0.0 0.0]
 Sd = [0.0 1.0 0.0 0.0 0.0]
 Sb = [0.0 0.0 1.0 0.0 0.0]

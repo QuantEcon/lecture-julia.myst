@@ -170,7 +170,7 @@ function coleman_egm(g, k_grid, β, u′, u′_inv, f, f′, shocks)
     y = k_grid + c  # y_i = k_i + c_i
 
     # Update policy function and return
-    Kg = LinearInterpolation(y,c, extrapolation_bc=Line())
+    Kg = LinearInterpolation(y, c, extrapolation_bc = Line())
     Kg_f(x) = Kg(x)
     return Kg_f
 end
@@ -200,8 +200,7 @@ function K!(Kg, g, grid, β, u′, f, f′, shocks)
 end
 
 # The following function does NOT require the container of the output value as argument
-K(g, grid, β, u′, f, f′, shocks) =
-    K!(similar(g), g, grid, β, u′, f, f′, shocks)
+K(g, grid, β, u′, f, f′, shocks) = K!(similar(g), g, grid, β, u′, f, f′, shocks)
 ```
 
 Let's test out the code above on some example parameterizations, after the following imports.
@@ -216,18 +215,18 @@ The first step is to bring in the model that we used in the {doc}`Coleman policy
 # model
 
 Model = @with_kw (α = 0.65, # productivity parameter
-                  β = 0.95, # discount factor
-                  γ = 1.0,  # risk aversion
-                  μ = 0.0,  # lognorm(μ, σ)
-                  s = 0.1,  # lognorm(μ, σ)
-                  grid_min = 1e-6, # smallest grid point
-                  grid_max = 4.0,  # largest grid point
-                  grid_size = 200, # grid size
-                  u = γ == 1 ? log : c->(c^(1-γ)-1)/(1-γ), # utility function
-                  u′ = c-> c^(-γ), # u'
-                  f = k-> k^α, # production function
-                  f′ = k -> α*k^(α-1), # f'
-                  grid = range(grid_min, grid_max, length = grid_size)) # grid
+    β = 0.95, # discount factor
+    γ = 1.0,  # risk aversion
+    μ = 0.0,  # lognorm(μ, σ)
+    s = 0.1,  # lognorm(μ, σ)
+    grid_min = 1e-6, # smallest grid point
+    grid_max = 4.0,  # largest grid point
+    grid_size = 200, # grid size
+    u = γ == 1 ? log : c -> (c^(1 - γ) - 1) / (1 - γ), # utility function
+    u′ = c -> c^(-γ), # u'
+    f = k -> k^α, # production function
+    f′ = k -> α * k^(α - 1), # f'
+    grid = range(grid_min, grid_max, length = grid_size)) # grid
 ```
 
 Next we generate an instance
@@ -315,7 +314,7 @@ In fact it's easy to see that the difference is essentially zero:
 
 ```{code-cell} julia
 c_star_new = coleman_egm(c_star, mlog.grid, mlog.β, mlog.u′,
-                         mlog.u′, mlog.f, mlog.f′, shocks)
+    mlog.u′, mlog.f, mlog.f′, shocks)
 maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid)
 ```
 
@@ -343,16 +342,17 @@ function check_convergence(m, shocks, c_star, g_init, n_iter)
     g = g_init
     plt = plot()
     plot!(plt, m.grid, g.(m.grid),
-          color = RGBA(0,0,0,1), lw = 2, alpha = 0.6, label = L"initial condition $c(y) = y$")
+        color = RGBA(0, 0, 0, 1), lw = 2, alpha = 0.6,
+        label = L"initial condition $c(y) = y$")
     for i in 1:n_iter
         new_g = coleman_egm(g, k_grid, m.β, m.u′, m.u′, m.f, m.f′, shocks)
         g = new_g
-        plot!(plt, k_grid, new_g.(k_grid), alpha = 0.6, color = RGBA(0,0,(i / n_iter), 1),
-              lw = 2, label = "")
+        plot!(plt, k_grid, new_g.(k_grid), alpha = 0.6, color = RGBA(0, 0, (i / n_iter), 1),
+            lw = 2, label = "")
     end
 
     plot!(plt, k_grid, c_star.(k_grid),
-          color = :black, lw = 2, alpha = 0.8, label = L"true policy function $c^*$")
+        color = :black, lw = 2, alpha = 0.8, label = L"true policy function $c^*$")
     plot!(plt, legend = :topleft)
 end
 ```
@@ -391,8 +391,10 @@ Here's the result
 
 ```{code-cell} julia
 crra_coleman(g, m, shocks) = K(g, m.grid, m.β, m.u′, m.f, m.f′, shocks)
-crra_coleman_egm(g, m, shocks) = coleman_egm(g, m.grid, m.β, m.u′,
-                                             u′_inv, m.f, m.f′, shocks)
+function crra_coleman_egm(g, m, shocks)
+    coleman_egm(g, m.grid, m.β, m.u′,
+        u′_inv, m.f, m.f′, shocks)
+end
 function coleman(m = m, shocks = shocks; sim_length = 20)
     g = m.grid
     for i in 1:sim_length

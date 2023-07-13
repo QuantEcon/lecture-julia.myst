@@ -236,7 +236,7 @@ using Test
 using Distributions, LinearAlgebra, Expectations, Parameters, NLsolve, Plots
 
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
-                            iter = 2_000)
+    iter = 2_000)
     (; α, β, σ, c, γ, w, dist, u) = mcm
 
     # parameter validation
@@ -250,7 +250,7 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1
 
     # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
     function T(x)
-        V = x[1:end-1]
+        V = x[1:(end - 1)]
         U = x[end]
         [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
     end
@@ -258,7 +258,7 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1
     # value function iteration
     x_iv = [V_iv; U_iv] # initial x val
     xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol, m = 0).zero
-    V = xstar[1:end-1]
+    V = xstar[1:(end - 1)]
     U = xstar[end]
 
     # compute the reservation wage
@@ -299,7 +299,6 @@ McCallModel = @with_kw (α = 0.2,
 
 ```{code-cell} julia
 # plots setting
-
 
 mcm = McCallModel()
 (; V, U) = solve_mccall_model(mcm)
@@ -406,7 +405,7 @@ Plot the reservation wage against the job offer rate $\gamma$.
 Use
 
 ```{code-cell} julia
-γ_vals = range(0.05,  0.95, length = 25)
+γ_vals = range(0.05, 0.95, length = 25)
 ```
 
 Interpret your results.
@@ -420,7 +419,7 @@ we can create an array for reservation wages for different values of $c$,
 $\beta$ and $\alpha$ and plot the results like so
 
 ```{code-cell} julia
-c_vals = range(2,  12, length = 25)
+c_vals = range(2, 12, length = 25)
 
 models = [McCallModel(c = cval) for cval in c_vals]
 sols = solve_mccall_model.(models)
@@ -459,14 +458,14 @@ end
 Similar to above, we can plot $\bar w$ against $\gamma$ as follows
 
 ```{code-cell} julia
-γ_vals = range(0.05,  0.95, length = 25)
+γ_vals = range(0.05, 0.95, length = 25)
 
 models = [McCallModel(γ = γval) for γval in γ_vals]
 sols = solve_mccall_model.(models)
 w̄_vals = [sol.w̄ for sol in sols]
 
 plot(γ_vals, w̄_vals, lw = 2, α = 0.7, xlabel = "job offer rate",
-     ylabel = "reservation wage", label = L"$\overline{w}$ as a function of $\gamma$")
+    ylabel = "reservation wage", label = L"$\overline{w}$ as a function of $\gamma$")
 ```
 
 ```{code-cell} julia

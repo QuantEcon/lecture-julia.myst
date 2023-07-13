@@ -395,10 +395,10 @@ using BenchmarkTools, Interpolations, Parameters, Plots, Roots
 
 ```{code-cell} julia
 function K!(Kg, g, grid, β, ∂u∂c, f, f′, shocks)
-# This function requires the container of the output value as argument Kg
+    # This function requires the container of the output value as argument Kg
 
     # Construct linear interpolation object
-    g_func = LinearInterpolation(grid, g, extrapolation_bc=Line())
+    g_func = LinearInterpolation(grid, g, extrapolation_bc = Line())
 
     # solve for updated consumption value
     for (i, y) in enumerate(grid)
@@ -412,8 +412,7 @@ function K!(Kg, g, grid, β, ∂u∂c, f, f′, shocks)
 end
 
 # The following function does NOT require the container of the output value as argument
-K(g, grid, β, ∂u∂c, f, f′, shocks) =
-    K!(similar(g), g, grid, β, ∂u∂c, f, f′, shocks)
+K(g, grid, β, ∂u∂c, f, f′, shocks) = K!(similar(g), g, grid, β, ∂u∂c, f, f′, shocks)
 ```
 
 It has some similarities to the code for the Bellman operator in our {doc}`optimal growth lecture <../dynamic_programming/optgrowth>`.
@@ -426,10 +425,10 @@ Here's that Bellman operator code again, which needs to be executed because we'l
 using Optim
 
 function T(w, grid, β, u, f, shocks, Tw = similar(w);
-                          compute_policy = false)
+    compute_policy = false)
 
     # apply linear interpolation to w
-    w_func = LinearInterpolation(grid, w, extrapolation_bc=Line())
+    w_func = LinearInterpolation(grid, w, extrapolation_bc = Line())
 
     if compute_policy
         σ = similar(w)
@@ -437,7 +436,7 @@ function T(w, grid, β, u, f, shocks, Tw = similar(w);
 
     # set Tw[i] = max_c { u(c) + β E w(f(y  - c) z)}
     for (i, y) in enumerate(grid)
-        objective(c) =  u(c) + β * mean(w_func.(f(y - c) .* shocks))
+        objective(c) = u(c) + β * mean(w_func.(f(y - c) .* shocks))
         res = maximize(objective, 1e-10, y)
 
         if compute_policy
@@ -465,19 +464,18 @@ Here's an object containing data from the log-linear growth model we used in the
 ```{code-cell} julia
 isoelastic(c, γ) = isone(γ) ? log(c) : (c^(1 - γ) - 1) / (1 - γ)
 Model = @with_kw (α = 0.65,                            # Productivity parameter
-                  β = 0.95,                            # Discount factor
-                  γ = 1.0,                             # Risk aversion
-                  μ = 0.0,                             # First parameter in lognorm(μ, σ)
-                  s = 0.1,                             # Second parameter in lognorm(μ, σ)
-                  grid = range(1e-6, 4, length = 200), # Grid
-                  grid_min = 1e-6,                     # Smallest grid point
-                  grid_max = 4.0,                      # Largest grid point
-                  grid_size = 200,                     # Number of grid points
-                  u = (c, γ = γ) -> isoelastic(c, γ),  # utility function
-                  ∂u∂c = c -> c^(-γ),                  # u′
-                  f = k -> k^α,                        # production function
-                  f′ = k -> α * k^(α - 1),             # f′
-                  )
+    β = 0.95,                            # Discount factor
+    γ = 1.0,                             # Risk aversion
+    μ = 0.0,                             # First parameter in lognorm(μ, σ)
+    s = 0.1,                             # Second parameter in lognorm(μ, σ)
+    grid = range(1e-6, 4, length = 200), # Grid
+    grid_min = 1e-6,                     # Smallest grid point
+    grid_max = 4.0,                      # Largest grid point
+    grid_size = 200,                     # Number of grid points
+    u = (c, γ = γ) -> isoelastic(c, γ),  # utility function
+    ∂u∂c = c -> c^(-γ),                  # u′
+    f = k -> k^α,                        # production function
+    f′ = k -> α * k^(α - 1))
 ```
 
 Next we generate an instance
@@ -512,7 +510,7 @@ end
 ```{code-cell} julia
 function verify_true_policy(m, shocks, c_star)
     # compute (Kc_star)
-    (;grid, β, ∂u∂c, f, f′) = m
+    (; grid, β, ∂u∂c, f, f′) = m
     c_star_new = K(c_star, grid, β, ∂u∂c, f, f′, shocks)
 
     # plot c_star and Kc_star
@@ -548,8 +546,8 @@ The initial condition we'll use is the one that eats the whole pie: $c(y) = y$
 
 ```{code-cell} julia
 function check_convergence(m, shocks, c_star, g_init; n_iter = 15)
-    (;grid, β, ∂u∂c, f, f′) = m
-    g = g_init;
+    (; grid, β, ∂u∂c, f, f′) = m
+    g = g_init
     plot(m.grid, g, lw = 2, alpha = 0.6, label = L"intial condition $c(y) = y$")
     for i in 1:n_iter
         new_g = K(g, grid, β, ∂u∂c, f, f′, shocks)
@@ -557,7 +555,7 @@ function check_convergence(m, shocks, c_star, g_init; n_iter = 15)
         plot!(grid, g, lw = 2, alpha = 0.6, label = "")
     end
     plot!(grid, c_star, color = :black, lw = 2, alpha = 0.8,
-          label = L"true policy function $c^*$")
+        label = L"true policy function $c^*$")
     plot!(legend = :topleft)
 end
 ```
@@ -585,7 +583,7 @@ discussed above
 
 ```{code-cell} julia
 function iterate_updating(func, arg_init; sim_length = 20)
-    arg = arg_init;
+    arg = arg_init
     for i in 1:sim_length
         new_arg = func(arg)
         arg = new_arg
@@ -594,7 +592,7 @@ function iterate_updating(func, arg_init; sim_length = 20)
 end
 
 function compare_error(m, shocks, g_init, w_init; sim_length = 20)
-    (;grid, β, u, ∂u∂c, f, f′) = m
+    (; grid, β, u, ∂u∂c, f, f′) = m
     g, w = g_init, w_init
 
     # two functions for simplification
@@ -616,7 +614,7 @@ end
 ```
 
 ```{code-cell} julia
-compare_error(m, shocks, m.grid, m.u.(m.grid), sim_length=20)
+compare_error(m, shocks, m.grid, m.u.(m.grid), sim_length = 20)
 ```
 
 As you can see, time iteration is much more accurate for a given
@@ -740,8 +738,7 @@ m_ex = Model(γ = 1.5);
 
 ```{code-cell} julia
 function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid); sim_length = 20)
-
-    (;grid, β, u, ∂u∂c, f, f′) = m
+    (; grid, β, u, ∂u∂c, f, f′) = m
     # initial policy and value
     g, w = g_init, w_init
     # iteration
@@ -759,7 +756,7 @@ end
 ```
 
 ```{code-cell} julia
-exercise2(m_ex, shocks, m.grid, m.u.(m.grid), sim_length=20)
+exercise2(m_ex, shocks, m.grid, m.u.(m.grid), sim_length = 20)
 ```
 
 The policies are indeed close.
@@ -772,12 +769,12 @@ It assumes that you've just run the code from the previous exercise
 
 ```{code-cell} julia
 function bellman(m, shocks)
-    (;grid, β, u, ∂u∂c, f, f′) = m
+    (; grid, β, u, ∂u∂c, f, f′) = m
     bellman_single_arg(w) = T(w, grid, β, u, f, shocks)
     iterate_updating(bellman_single_arg, u.(grid), sim_length = 20)
 end
 function coleman(m, shocks)
-    (;grid, β, ∂u∂c, f, f′) = m
+    (; grid, β, ∂u∂c, f, f′) = m
     coleman_single_arg(g) = K(g, grid, β, ∂u∂c, f, f′, shocks)
     iterate_updating(coleman_single_arg, grid, sim_length = 20)
 end

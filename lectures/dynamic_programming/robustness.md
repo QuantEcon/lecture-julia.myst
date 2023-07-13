@@ -935,7 +935,6 @@ using Test
 ```{code-cell} julia
 using QuantEcon, Plots, LinearAlgebra, Interpolations
 
-
 # model parameters
 a_0 = 100
 a_1 = 0.5
@@ -948,16 +947,16 @@ c = 2
 ac = (a_0 - c) / 2.0
 
 # Define LQ matrices
-R = [ 0   ac    0;
-    ac -a_1  0.5;
-    0.  0.5    0]
+R = [0 ac 0;
+    ac -a_1 0.5;
+    0.0 0.5 0]
 R = -R  # For minimization
 Q = Matrix([γ / 2.0]')
-A = [1. 0. 0.;
-    0. 1. 0.;
-    0. 0.  ρ]
-B = [0. 1. 0.]'
-C = [0. 0. σ_d]'
+A = [1.0 0.0 0.0;
+    0.0 1.0 0.0;
+    0.0 0.0 ρ]
+B = [0.0 1.0 0.0]'
+C = [0.0 0.0 σ_d]'
 
 ## Functions
 
@@ -965,16 +964,16 @@ function evaluate_policy(θ, F)
     rlq = RBLQ(Q, R, A, B, C, β, θ)
     K_F, P_F, d_F, O_F, o_F = evaluate_F(rlq, F)
     x0 = [1.0 0.0 0.0]'
-    value = - x0' * P_F * x0 .- d_F
+    value = -x0' * P_F * x0 .- d_F
     entropy = x0' * O_F * x0 .+ o_F
     return value[1], entropy[1]    # return scalars
 end
 
 function value_and_entropy(emax, F, bw, grid_size = 1000)
     if lowercase(bw) == "worst"
-        θs = 1 ./ range(1e-8,  1000, length = grid_size)
+        θs = 1 ./ range(1e-8, 1000, length = grid_size)
     else
-        θs = -1 ./ range(1e-8,  1000, length = grid_size)
+        θs = -1 ./ range(1e-8, 1000, length = grid_size)
     end
 
     data = zeros(grid_size, 2)
@@ -992,7 +991,7 @@ end
 ## Main
 
 # compute optimal rule
-optimal_lq = QuantEcon.LQ(Q, R, A, B, C, zero(B'A), bet=β)
+optimal_lq = QuantEcon.LQ(Q, R, A, B, C, zero(B'A), bet = β)
 Po, Fo, Do = stationary_values(optimal_lq)
 
 # compute robust rule for our θ
@@ -1015,9 +1014,9 @@ robust_worst_case = value_and_entropy(emax, Fb, "worst")
 
 # we reverse order of "worst_case"s so values are ascending
 data_pairs = ((optimal_best_case, optimal_worst_case),
-              (robust_best_case, robust_worst_case))
+    (robust_best_case, robust_worst_case))
 
-egrid = range(0,  emax, length = 100)
+egrid = range(0, emax, length = 100)
 egrid_data = []
 for data_pair in data_pairs
     for data in data_pair
@@ -1026,12 +1025,12 @@ for data_pair in data_pairs
         push!(egrid_data, curve.(egrid))
     end
 end
-plot(egrid, egrid_data, color=[:red :red :blue :blue])
-plot!(egrid, egrid_data[1], fillrange=egrid_data[2],
-    fillcolor=:red, fillalpha=0.1, color=:red, legend=:none)
-plot!(egrid, egrid_data[3], fillrange=egrid_data[4],
-    fillcolor=:blue, fillalpha=0.1, color=:blue, legend=:none)
-plot!(xlabel="Entropy", ylabel="Value")
+plot(egrid, egrid_data, color = [:red :red :blue :blue])
+plot!(egrid, egrid_data[1], fillrange = egrid_data[2],
+    fillcolor = :red, fillalpha = 0.1, color = :red, legend = :none)
+plot!(egrid, egrid_data[3], fillrange = egrid_data[4],
+    fillcolor = :blue, fillalpha = 0.1, color = :blue, legend = :none)
+plot!(xlabel = "Entropy", ylabel = "Value")
 ```
 
 ```{code-cell} julia

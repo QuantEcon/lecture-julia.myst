@@ -231,22 +231,21 @@ First, construct our $F$ from {eq}`dfcvsde` and $G$ from {eq}`dG`
 ```{code-cell} julia
 function F(x, p, t)
     s, i, r, d, R₀, δ = x
-    (;γ, R̄₀, η, σ, ξ, θ, δ_bar) = p
+    (; γ, R̄₀, η, σ, ξ, θ, δ_bar) = p
 
-    return [-γ*R₀*s*i;        # ds/dt
-            γ*R₀*s*i - γ*i;   # di/dt
-            (1-δ)*γ*i;        # dr/dt
-            δ*γ*i;            # dd/dt
-            η*(R̄₀(t, p) - R₀);# dR₀/dt
-            θ*(δ_bar - δ);    # dδ/dt
-            ]
+    return [-γ * R₀ * s * i;        # ds/dt
+        γ * R₀ * s * i - γ * i;   # di/dt
+        (1 - δ) * γ * i;        # dr/dt
+        δ * γ * i;            # dd/dt
+        η * (R̄₀(t, p) - R₀);# dR₀/dt
+        θ * (δ_bar - δ)]
 end
 
 function G(x, p, t)
     s, i, r, d, R₀, δ = x
-    (;γ, R̄₀, η, σ, ξ, θ, δ_bar) = p
+    (; γ, R̄₀, η, σ, ξ, θ, δ_bar) = p
 
-    return [0; 0; 0; 0; σ*sqrt(R₀); ξ*sqrt(δ * (1-δ))]
+    return [0; 0; 0; 0; σ * sqrt(R₀); ξ * sqrt(δ * (1 - δ))]
 end
 ```
 
@@ -254,9 +253,9 @@ Next create a settings generator, and then define a [SDEProblem](https://docs.sc
 
 ```{code-cell} julia
 p_gen = @with_kw (T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
-                  R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, δ_bar = 0.01,
-                  σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8)
-p =  p_gen()  # use all defaults
+    R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, δ_bar = 0.01,
+    σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8)
+p = p_gen()  # use all defaults
 i_0 = 25000 / p.N
 r_0 = 0.0
 d_0 = 0.0
@@ -283,26 +282,29 @@ If we take two solutions and plot the number of infections, we will see differen
 
 ```{code-cell} julia
 sol_2 = solve(prob, SOSRI())
-plot(sol_1, vars=[2], title = "Number of Infections", label = "Trajectory 1",
-     lm = 2, xlabel = L"t", ylabel = L"i(t)")
-plot!(sol_2, vars=[2], label = "Trajectory 2", lm = 2, xlabel = L"t", ylabel = L"i(t)")
+plot(sol_1, vars = [2], title = "Number of Infections", label = "Trajectory 1",
+    lm = 2, xlabel = L"t", ylabel = L"i(t)")
+plot!(sol_2, vars = [2], label = "Trajectory 2", lm = 2, xlabel = L"t", ylabel = L"i(t)")
 ```
 
 The same holds for other variables such as the cumulative deaths, mortality, and $R_0$:
 
 ```{code-cell} julia
-plot_1 = plot(sol_1, vars=[4], title = "Cumulative Death Proportion", label = "Trajectory 1",
-              lw = 2, xlabel = L"t", ylabel = L"d(t)", legend = :topleft)
-plot!(plot_1, sol_2, vars=[4], label = "Trajectory 2", lw = 2, xlabel = L"t")
-plot_2 = plot(sol_1, vars=[3], title = "Cumulative Recovered Proportion", label = "Trajectory 1",
-              lw = 2, xlabel = L"t", ylabel = L"d(t)", legend = :topleft)
-plot!(plot_2, sol_2, vars=[3], label = "Trajectory 2", lw = 2, xlabel = L"t")
-plot_3 = plot(sol_1, vars=[5], title = L"$R_0$ transition from lockdown", label = "Trajectory 1",
-              lw = 2, xlabel = L"t", ylabel = L"R_0(t)")
-plot!(plot_3, sol_2, vars=[5], label = "Trajectory 2", lw = 2, xlabel = L"t")
-plot_4 = plot(sol_1, vars=[6], title = "Mortality Rate", label = "Trajectory 1",
-              lw = 2, xlabel = L"t", ylabel = L"\delta(t)", ylim = (0.006, 0.014))
-plot!(plot_4, sol_2, vars=[6], label = "Trajectory 2", lw = 2, xlabel = L"t")
+plot_1 = plot(sol_1, vars = [4], title = "Cumulative Death Proportion",
+    label = "Trajectory 1",
+    lw = 2, xlabel = L"t", ylabel = L"d(t)", legend = :topleft)
+plot!(plot_1, sol_2, vars = [4], label = "Trajectory 2", lw = 2, xlabel = L"t")
+plot_2 = plot(sol_1, vars = [3], title = "Cumulative Recovered Proportion",
+    label = "Trajectory 1",
+    lw = 2, xlabel = L"t", ylabel = L"d(t)", legend = :topleft)
+plot!(plot_2, sol_2, vars = [3], label = "Trajectory 2", lw = 2, xlabel = L"t")
+plot_3 = plot(sol_1, vars = [5], title = L"$R_0$ transition from lockdown",
+    label = "Trajectory 1",
+    lw = 2, xlabel = L"t", ylabel = L"R_0(t)")
+plot!(plot_3, sol_2, vars = [5], label = "Trajectory 2", lw = 2, xlabel = L"t")
+plot_4 = plot(sol_1, vars = [6], title = "Mortality Rate", label = "Trajectory 1",
+    lw = 2, xlabel = L"t", ylabel = L"\delta(t)", ylim = (0.006, 0.014))
+plot!(plot_4, sol_2, vars = [6], label = "Trajectory 2", lw = 2, xlabel = L"t")
 plot(plot_1, plot_2, plot_3, plot_4, size = (900, 600))
 ```
 
@@ -324,7 +326,12 @@ For example:
 ```{code-cell} julia
 ensembleprob = EnsembleProblem(prob)
 sol = solve(ensembleprob, SOSRI(), EnsembleSerial(), trajectories = 10)
-plot(sol, vars = [2], title = "Infection Simulations", ylabel = L"i(t)", xlabel = L"t", lm = 2)
+plot(sol,
+    vars = [2],
+    title = "Infection Simulations",
+    ylabel = L"i(t)",
+    xlabel = L"t",
+    lm = 2)
 ```
 
 Or, more frequently, you may want to run many trajectories and plot quantiles, which can be automatically run in [parallel](https://docs.sciml.ai/stable/features/ensemble/) using multiple threads, processes, or GPUs. Here we showcase `EnsembleSummary` which calculates summary information from an ensemble and plots the mean of the solution along with calculated quantiles of the simulation:
@@ -334,7 +341,7 @@ trajectories = 100  # choose larger for smoother quantiles
 sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), trajectories = trajectories)
 summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.95 quantiles
 plot(summ, idxs = (2,), title = "Quantiles of Infections Ensemble", ylabel = L"i(t)",
-     xlabel = L"t", labels = "Middle 95% Quantile", legend = :topright)
+    xlabel = L"t", labels = "Middle 95% Quantile", legend = :topright)
 ```
 
 In addition, you can calculate more quantiles and stack graphs
@@ -344,13 +351,13 @@ sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), trajectories = trajectorie
 summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.95 quantiles
 summ2 = EnsembleSummary(sol, quantiles = (0.25, 0.75))
 
-plot(summ, idxs = (2,4,5,6),
+plot(summ, idxs = (2, 4, 5, 6),
     title = ["Proportion Infected" "Proportion Dead" L"R_0" L"\delta"],
     ylabel = [L"i(t)" L"d(t)" L"R_0(t)" L"\delta(t)"], xlabel = L"t",
     legend = [:topleft :topleft :bottomright :bottomright],
     labels = "Middle 95% Quantile", layout = (2, 2), size = (900, 600))
-plot!(summ2, idxs = (2,4,5,6),
-    labels = "Middle 50% Quantile", legend =  [:topleft :topleft :bottomright :bottomright])
+plot!(summ2, idxs = (2, 4, 5, 6),
+    labels = "Middle 50% Quantile", legend = [:topleft :topleft :bottomright :bottomright])
 ```
 
 Some additional features of the ensemble and SDE infrastructure are
@@ -371,26 +378,26 @@ Consider $\eta = 1/50$ and $\eta = 1/20$, where we start at the same initial con
 
 ```{code-cell} julia
 function generate_η_experiment(η; p_gen = p_gen, trajectories = 100,
-                              saveat = 1.0, x_0 = x_0, T = 120.0)
+    saveat = 1.0, x_0 = x_0, T = 120.0)
     p = p_gen(η = η, ξ = 0.0)
     ensembleprob = EnsembleProblem(SDEProblem(F, G, x_0, (0, T), p))
     sol = solve(ensembleprob, SOSRI(), EnsembleThreads(),
-                trajectories = trajectories, saveat = saveat)
+        trajectories = trajectories, saveat = saveat)
     return EnsembleSummary(sol)
 end
 
 # Evaluate two different lockdown scenarios
-η_1 = 1/50
-η_2 = 1/20
+η_1 = 1 / 50
+η_2 = 1 / 20
 summ_1 = generate_η_experiment(η_1)
 summ_2 = generate_η_experiment(η_2)
-plot(summ_1, idxs = (4,5),
+plot(summ_1, idxs = (4, 5),
     title = ["Proportion Dead" L"R_0"],
     ylabel = [L"d(t)" L"R_0(t)"], xlabel = L"t",
     legend = [:topleft :bottomright],
     labels = L"Middle 95% Quantile, $\eta = %$η_1$",
     layout = (2, 1), size = (900, 900), fillalpha = 0.5)
-plot!(summ_2, idxs = (4,5),
+plot!(summ_2, idxs = (4, 5),
     legend = [:topleft :bottomright],
     labels = L"Middle 95% Quantile, $\eta = %$η_2$", size = (900, 900), fillalpha = 0.5)
 ```
@@ -412,14 +419,13 @@ We start the model with 100,000 active infections.
 
 ```{code-cell} julia
 R₀_L = 0.5  # lockdown
-η_experiment = 1.0/10
+η_experiment = 1.0 / 10
 σ_experiment = 0.04
 R̄₀_lift_early(t, p) = t < 30.0 ? R₀_L : 2.0
 R̄₀_lift_late(t, p) = t < 120.0 ? R₀_L : 2.0
 
 p_early = p_gen(R̄₀ = R̄₀_lift_early, η = η_experiment, σ = σ_experiment)
 p_late = p_gen(R̄₀ = R̄₀_lift_late, η = η_experiment, σ = σ_experiment)
-
 
 # initial conditions
 i_0 = 100000 / p_early.N
@@ -438,15 +444,15 @@ Simulating for a single realization of the shocks, we see the results are qualit
 ```{code-cell} julia
 sol_early = solve(prob_early, SOSRI())
 sol_late = solve(prob_late, SOSRI())
-plot(sol_early, vars = [5, 1,2,4],
+plot(sol_early, vars = [5, 1, 2, 4],
     title = [L"R_0" "Susceptible" "Infected" "Dead"],
     layout = (2, 2), size = (900, 600),
     ylabel = [L"R_0(t)" L"s(t)" L"i(t)" L"d(t)"], xlabel = L"t",
-        legend = [:bottomright :topright :topright :topleft],
-        label = ["Early" "Early" "Early" "Early"])
-plot!(sol_late, vars = [5, 1,2,4],
-        legend = [:bottomright :topright :topright :topleft],
-        label = ["Late" "Late" "Late" "Late"], xlabel = L"t")
+    legend = [:bottomright :topright :topright :topleft],
+    label = ["Early" "Early" "Early" "Early"])
+plot!(sol_late, vars = [5, 1, 2, 4],
+    legend = [:bottomright :topright :topright :topleft],
+    label = ["Late" "Late" "Late" "Late"], xlabel = L"t")
 ```
 
 However, note that this masks highly volatile values induced by the in $R_0$ variation, as seen in the ensemble
@@ -455,9 +461,9 @@ However, note that this masks highly volatile values induced by the in $R_0$ var
 trajectories = 400
 saveat = 1.0
 ensemble_sol_early = solve(EnsembleProblem(prob_early), SOSRI(),
-                           EnsembleThreads(), trajectories = trajectories, saveat = saveat)
+    EnsembleThreads(), trajectories = trajectories, saveat = saveat)
 ensemble_sol_late = solve(EnsembleProblem(prob_late), SOSRI(),
-                          EnsembleThreads(), trajectories = trajectories, saveat = saveat)
+    EnsembleThreads(), trajectories = trajectories, saveat = saveat)
 summ_early = EnsembleSummary(ensemble_sol_early)
 summ_late = EnsembleSummary(ensemble_sol_late)
 
@@ -466,7 +472,7 @@ plot(summ_early, idxs = (5, 1, 2, 4),
     ylabel = [L"R_0(t)" L"s(t)" L"i(t)" L"d(t)"], xlabel = L"t",
     legend = [:bottomright :topright :topright :topleft],
     label = ["Early" "Early" "Early" "Early"])
-plot!(summ_late, idxs = (5, 1,2,4),
+plot!(summ_late, idxs = (5, 1, 2, 4),
     legend = [:bottomright :topright :topright :topleft],
     label = ["Late" "Late" "Late" "Late"])
 ```
@@ -483,17 +489,17 @@ bins_1 = range(0.000, 0.009, length = 30)
 bins_2 = 30  # number rather than grid.
 
 hist_1 = histogram([ensemble_sol_early.u[i](t_1)[4] for i in 1:trajectories],
-                   fillalpha = 0.5, normalize = :probability,
-                   legend = :topleft, bins = bins_1,
-                   label = "Early", title = L"Death Proportion at $t = %$t_1$")
+    fillalpha = 0.5, normalize = :probability,
+    legend = :topleft, bins = bins_1,
+    label = "Early", title = L"Death Proportion at $t = %$t_1$")
 histogram!(hist_1, [ensemble_sol_late.u[i](t_1)[4] for i in 1:trajectories],
-           label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_1)
+    label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_1)
 hist_2 = histogram([ensemble_sol_early.u[i][4, end] for i in 1:trajectories],
-                   fillalpha = 0.5, normalize = :probability, bins = bins_2,
-                   label = "Early", title = L"Death Proportion at $t = %$t_2$")
+    fillalpha = 0.5, normalize = :probability, bins = bins_2,
+    label = "Early", title = L"Death Proportion at $t = %$t_2$")
 histogram!(hist_2, [ensemble_sol_late.u[i][4, end] for i in 1:trajectories],
-           label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_2)
-plot(hist_1, hist_2, size = (600,600), layout = (2, 1))
+    label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_2)
+plot(hist_1, hist_2, size = (600, 600), layout = (2, 1))
 ```
 
 This shows that there are significant differences after a year, but by 550 days the graphs largely coincide.
@@ -536,20 +542,19 @@ We will redo the "Ending Lockdown" simulation from above, where the only differe
 ```{code-cell} julia
 function F_reinfect(x, p, t)
     s, i, r, d, R₀, δ = x
-    (;γ, R̄₀, η, σ, ξ, θ, δ_bar, ν) = p
+    (; γ, R̄₀, η, σ, ξ, θ, δ_bar, ν) = p
 
-    return [-γ*R₀*s*i + ν*r;  # ds/dt
-            γ*R₀*s*i - γ*i;   # di/dt
-            (1-δ)*γ*i - ν*r   # dr/dt
-            δ*γ*i;            # dd/dt
-            η*(R̄₀(t, p) - R₀);# dR₀/dt
-            θ*(δ_bar - δ);    # dδ/dt
-            ]
+    return [-γ * R₀ * s * i + ν * r;  # ds/dt
+        γ * R₀ * s * i - γ * i;   # di/dt
+        (1 - δ) * γ * i - ν * r   # dr/dt
+        δ * γ * i;            # dd/dt
+        η * (R̄₀(t, p) - R₀);# dR₀/dt
+        θ * (δ_bar - δ)]
 end
 
-p_re_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
-                R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n,
-                δ_bar = 0.01, σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8, ν = 1/360)
+p_re_gen = @with_kw (T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
+    R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n,
+    δ_bar = 0.01, σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8, ν = 1 / 360)
 
 p_re_early = p_re_gen(R̄₀ = R̄₀_lift_early, η = η_experiment, σ = σ_experiment)
 p_re_late = p_re_gen(R̄₀ = R̄₀_lift_late, η = η_experiment, σ = σ_experiment)
@@ -559,9 +564,9 @@ saveat = 1.0
 prob_re_early = SDEProblem(F_reinfect, G, x_0, (0, p_re_early.T), p_re_early)
 prob_re_late = SDEProblem(F_reinfect, G, x_0, (0, p_re_late.T), p_re_late)
 ensemble_sol_re_early = solve(EnsembleProblem(prob_re_early), SOSRI(), EnsembleThreads(),
-                              trajectories = trajectories, saveat = saveat)
+    trajectories = trajectories, saveat = saveat)
 ensemble_sol_re_late = solve(EnsembleProblem(prob_re_late), SOSRI(), EnsembleThreads(),
-                              trajectories = trajectories, saveat = saveat)
+    trajectories = trajectories, saveat = saveat)
 summ_re_early = EnsembleSummary(ensemble_sol_re_early)
 summ_re_late = EnsembleSummary(ensemble_sol_re_late)
 ```
@@ -575,7 +580,7 @@ plot(summ_late, idxs = (1, 2, 3, 4),
     ylabel = [L"s(t)" L"i(t)" L"r(t)" L"d(t)"], xlabel = L"t",
     legend = :topleft,
     label = [L"s(t)" L"i(t)" L"r(t)" L"d(t)"])
-plot!(summ_re_late, idxs =  (1, 2, 3, 4),
+plot!(summ_re_late, idxs = (1, 2, 3, 4),
     legend = :topleft,
     label = [L"s(t); \nu > 0" L"i(t); \nu > 0" L"r(t); \nu > 0" L"d(t); \nu > 0"])
 ```
@@ -586,18 +591,18 @@ Finally, we can examine the same early vs. late lockdown histogram
 bins_re_1 = range(0.003, 0.010, length = 50)
 bins_re_2 = range(0.0085, 0.0102, length = 50)
 hist_re_1 = histogram([ensemble_sol_re_early.u[i](t_1)[4] for i in 1:trajectories],
-                    fillalpha = 0.5, normalize = :probability,
-                    legend = :topleft, bins = bins_re_1,
-                    label = "Early", title = L"Death Proportion at $t = %$t_1$")
+    fillalpha = 0.5, normalize = :probability,
+    legend = :topleft, bins = bins_re_1,
+    label = "Early", title = L"Death Proportion at $t = %$t_1$")
 histogram!(hist_re_1, [ensemble_sol_re_late.u[i](t_1)[4] for i in 1:trajectories],
-        label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_re_1)
+    label = "Late", fillalpha = 0.5, normalize = :probability, bins = bins_re_1)
 hist_re_2 = histogram([ensemble_sol_re_early.u[i][4, end] for i in 1:trajectories],
-                    fillalpha = 0.5, normalize = :probability, bins = bins_re_2,
-                    label = "Early", title = L"Death Proportion at $t = %$t_2$")
+    fillalpha = 0.5, normalize = :probability, bins = bins_re_2,
+    label = "Early", title = L"Death Proportion at $t = %$t_2$")
 histogram!(hist_re_2, [ensemble_sol_re_late.u[i][4, end] for i in 1:trajectories],
-        label = "Late", fillalpha = 0.5, normalize = :probability,
-        bins =  bins = bins_re_2)
-plot(hist_re_1, hist_re_2, size = (600,600), layout = (2, 1))
+    label = "Late", fillalpha = 0.5, normalize = :probability,
+    bins = bins = bins_re_2)
+plot(hist_re_1, hist_re_2, size = (600, 600), layout = (2, 1))
 ```
 
 In this case, there are significant differences between the early and late deaths and high variance.

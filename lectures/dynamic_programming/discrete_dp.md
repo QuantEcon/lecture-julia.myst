@@ -435,7 +435,7 @@ using BenchmarkTools, Plots, QuantEcon, Parameters
 SimpleOG = @with_kw (B = 10, M = 5, α = 0.5, β = 0.9)
 
 function transition_matrices(g)
-    (;B, M, α, β) = g
+    (; B, M, α, β) = g
     u(c) = c^α
     n = B + M + 1
     m = M + 1
@@ -446,7 +446,7 @@ function transition_matrices(g)
     for a in 0:M
         Q[:, a + 1, (a:(a + B)) .+ 1] .= 1 / (B + 1)
         for s in 0:(B + M)
-            R[s + 1, a + 1] = (a≤s ? u(s - a) : -Inf)
+            R[s + 1, a + 1] = (a ≤ s ? u(s - a) : -Inf)
         end
     end
 
@@ -606,7 +606,7 @@ Here's the same information in a bar graph
 What happens if the agent is more patient?
 
 ```{code-cell} julia
-g_2 = SimpleOG(β=0.99);
+g_2 = SimpleOG(β = 0.99);
 Q_2, R_2 = transition_matrices(g_2);
 
 ddp_2 = DiscreteDP(R_2, Q_2, g_2.β)
@@ -670,7 +670,7 @@ for s in 0:(M + B)
         q = zeros(1, n)
         q[(a + 1):((a + B) + 1)] .= b
         Q = [Q; q]
-        R = [R; u(s-a)]
+        R = [R; u(s - a)]
     end
 end
 
@@ -708,7 +708,7 @@ $u(c) = \log c$, and $\beta = 0.95$.
 
 ```{code-cell} julia
 α = 0.65
-f(k) = k.^α
+f(k) = k .^ α
 u_log(x) = log(x)
 β = 0.95
 ```
@@ -766,7 +766,7 @@ end
 Now let's set up $R$ and $Q$
 
 ```{code-cell} julia
-R = u_log.(C[C.>0]);
+R = u_log.(C[C .> 0]);
 ```
 
 ```{code-cell} julia
@@ -826,7 +826,7 @@ c1 = (log(1 - α * β) + log(α * β) * α * β / (1 - α * β)) / (1 - β)
 c2 = α / (1 - α * β)
 
 v_star(k) = c1 + c2 * log(k)
-c_star(k) = (1 - α * β) * k.^α
+c_star(k) = (1 - α * β) * k .^ α
 ```
 
 ```{code-cell} julia
@@ -970,20 +970,20 @@ n = 50
 ws = []
 colors = []
 w = w_init
-for i in 0:n-1
+for i in 0:(n - 1)
     w = bellman_operator(ddp, w)
     push!(ws, w)
-    push!(colors, RGBA(0, 0, 0, i/n))
+    push!(colors, RGBA(0, 0, 0, i / n))
 end
 
 plot(grid,
-     w_init,
-     ylims = (-40, -20),
-     lw = 2,
-     xlims = extrema(grid),
-     label = "initial condition")
+    w_init,
+    ylims = (-40, -20),
+    lw = 2,
+    xlims = extrema(grid),
+    label = "initial condition")
 
-plot!(grid, ws,  label = "", color = reshape(colors, 1, length(colors)), lw = 2)
+plot!(grid, ws, label = "", color = reshape(colors, 1, length(colors)), lw = 2)
 plot!(grid, v_star.(grid), label = "true value function", color = :red, lw = 2)
 ```
 
@@ -1027,14 +1027,14 @@ l1 = "approximate optimal policy"
 l2 = "optimal consumption policy"
 labels = [l1 l1 l1 l2 l2 l2]
 plot(grid,
-     plot_vecs,
-     xlim = (0, 2),
-     ylim = (0, 1),
-     layout = (3, 1),
-     lw = 2,
-     label = labels,
-     size = (600, 800),
-     title = ["2 iterations" "4 iterations" "6 iterations"])
+    plot_vecs,
+    xlim = (0, 2),
+    ylim = (0, 1),
+    layout = (3, 1),
+    lw = 2,
+    label = labels,
+    size = (600, 800),
+    title = ["2 iterations" "4 iterations" "6 iterations"])
 ```
 
 ```{code-cell} julia
@@ -1072,19 +1072,19 @@ labels = []
 for β in discount_factors
     ddp0.beta = β
     res0 = solve(ddp0, PFI)
-    k_path_ind = simulate(res0.mc, sample_size, init=k_init_ind)
-    k_path = grid[k_path_ind.+1]
+    k_path_ind = simulate(res0.mc, sample_size, init = k_init_ind)
+    k_path = grid[k_path_ind .+ 1]
     push!(k_paths, k_path)
     push!(labels, L"\beta = %$β")
 end
 
 plot(k_paths,
-     xlabel = "time",
-     ylabel = "capital",
-     ylim = (0.1, 0.3),
-     lw = 2,
-     markershape = :circle,
-     label = reshape(labels, 1, length(labels)))
+    xlabel = "time",
+    ylabel = "capital",
+    ylim = (0.1, 0.3),
+    lw = 2,
+    markershape = :circle,
+    label = reshape(labels, 1, length(labels)))
 ```
 
 ```{code-cell} julia

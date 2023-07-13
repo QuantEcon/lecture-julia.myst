@@ -363,17 +363,15 @@ function h_j(j, nk, s1, s2, θ, δ, ρ)
     return root
 end
 
-DLL(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
-    (n1 ≤ s1_ρ) && (n2 ≤ s2_ρ)
+DLL(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) = (n1 ≤ s1_ρ) && (n2 ≤ s2_ρ)
 
-DHH(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
+function DHH(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
     (n1 ≥ h_j(1, n2, s1, s2, θ, δ, ρ)) && (n2 ≥ h_j(2, n1, s1, s2, θ, δ, ρ))
+end
 
-DHL(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
-    (n1 ≥ s1_ρ) && (n2 ≤ h_j(2, n1, s1, s2, θ, δ, ρ))
+DHL(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) = (n1 ≥ s1_ρ) && (n2 ≤ h_j(2, n1, s1, s2, θ, δ, ρ))
 
-DLH(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
-    (n1 ≤ h_j(1, n2, s1, s2, θ, δ, ρ)) && (n2 ≥ s2_ρ)
+DLH(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) = (n1 ≤ h_j(1, n2, s1, s2, θ, δ, ρ)) && (n2 ≥ s2_ρ)
 
 function one_step(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
     # Depending on where we are, evaluate the right branch
@@ -394,11 +392,12 @@ function one_step(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
     return n1_tp1, n2_tp1
 end
 
-new_n1n2(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
+function new_n1n2(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
     one_step(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
+end
 
 function pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
-                        maxiter, npers)
+    maxiter, npers)
 
     # Initialize the status of synchronization
     synchronized = false
@@ -416,7 +415,7 @@ function pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
         # Check whether same in this period
         if abs(n1_t - n2_t) < 1e-8
             nsync += 1
-        # If not, then reset the nsync counter
+            # If not, then reset the nsync counter
         else
             nsync = 0
         end
@@ -433,10 +432,10 @@ function pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
 end
 
 function create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
-                                 maxiter, npers, npts)
+    maxiter, npers, npts)
     # Create unit range with npts
     synchronized, pers_2_sync = false, 0
-    unit_range = range(0.0,  1.0, length = npts)
+    unit_range = range(0.0, 1.0, length = npts)
 
     # Allocate space to store time to sync
     time_2_sync = zeros(npts, npts)
@@ -444,8 +443,8 @@ function create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
     for (i, n1_0) in enumerate(unit_range)
         for (j, n2_0) in enumerate(unit_range)
             synchronized, pers_2_sync = pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ,
-                                                       s1, s2, θ, δ, ρ,
-                                                       maxiter, npers)
+                s1, s2, θ, δ, ρ,
+                maxiter, npers)
             time_2_sync[i, j] = pers_2_sync
         end
     end
@@ -481,23 +480,23 @@ function simulate_n(model, n1_0, n2_0, T)
 end
 
 function pers_till_sync(model, n1_0, n2_0,
-                        maxiter = 500, npers = 3)
+    maxiter = 500, npers = 3)
     # Unpack parameters
     @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
 
     return pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2,
-                        θ, δ, ρ, maxiter, npers)
+        θ, δ, ρ, maxiter, npers)
 end
 
 function create_attraction_basis(model;
-                                 maxiter = 250,
-                                 npers = 3,
-                                 npts = 50)
+    maxiter = 250,
+    npers = 3,
+    npts = 50)
     # Unpack parameters
     @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
 
     ab = create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ,
-                                 ρ, maxiter, npers, npts)
+        ρ, maxiter, npers, npts)
     return ab
 end
 ```
@@ -571,18 +570,18 @@ Replicate the figure {ref}`shown above <matsrep>` by coloring initial conditions
 ```{code-cell} julia
 function plot_attraction_basis(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2; npts = 250)
     # Create attraction basis
-    unitrange = range(0,  1, length = npts)
+    unitrange = range(0, 1, length = npts)
     model = MSGSync(s1, θ, δ, ρ)
-    ab = create_attraction_basis(model,npts=npts)
+    ab = create_attraction_basis(model, npts = npts)
     plt = Plots.heatmap(ab, legend = false)
 end
 ```
 
 ```{code-cell} julia
 params = [[0.5, 2.5, 0.7, 0.2],
-          [0.5, 2.5, 0.7, 0.4],
-          [0.5, 2.5, 0.7, 0.6],
-          [0.5, 2.5, 0.7, 0.8]]
+    [0.5, 2.5, 0.7, 0.4],
+    [0.5, 2.5, 0.7, 0.6],
+    [0.5, 2.5, 0.7, 0.8]]
 
 plots = (plot_attraction_basis(p...) for p in params)
 plot(plots..., size = (1000, 1000))

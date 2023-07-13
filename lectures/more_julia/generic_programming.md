@@ -107,15 +107,15 @@ Using the `subtypes` function, we can write an algorithm to traverse the type tr
 
 ```{code-cell} julia
 #  from https://github.com/JuliaLang/julia/issues/24741
-function subtypetree(t, level=1, indent=4)
-        if level == 1
-            println(t)
-        end
-        for s in subtypes(t)
-            println(join(fill(" ", level * indent)) * string(s))  # print type
-            subtypetree(s, level+1, indent)  # recursively print the next type, indenting
-        end
+function subtypetree(t, level = 1, indent = 4)
+    if level == 1
+        println(t)
     end
+    for s in subtypes(t)
+        println(join(fill(" ", level * indent)) * string(s))  # print type
+        subtypetree(s, level + 1, indent)  # recursively print the next type, indenting
+    end
+end
 ```
 
 Applying this to `Number`, we see the tree of types currently loaded
@@ -304,15 +304,15 @@ For example, to simulate $x_{t+1} = a x_t + b \epsilon_{t+1}$ where
 $\epsilon \sim D$ for some $D$, which allows drawing random values.
 
 ```{code-cell} julia
-function simulateprocess(x₀; a = 1.0, b = 1.0, N = 5, d::Sampleable{Univariate,Continuous})
-    x = zeros(typeof(x₀), N+1) # preallocate vector, careful on the type
+function simulateprocess(x₀; a = 1.0, b = 1.0, N = 5, d::Sampleable{Univariate, Continuous})
+    x = zeros(typeof(x₀), N + 1) # preallocate vector, careful on the type
     x[1] = x₀
-    for t in 2:N+1
-        x[t] = a * x[t-1] + b * rand(d) # draw
+    for t in 2:(N + 1)
+        x[t] = a * x[t - 1] + b * rand(d) # draw
     end
     return x
 end
-@show simulateprocess(0.0, d=Normal(0.2, 2.0));
+@show simulateprocess(0.0, d = Normal(0.2, 2.0));
 ```
 
 The `Sampleable{Univariate,Continuous}` and, especially, the `Sampleable{Multivariate,Continuous}` abstract types are useful generic interfaces for Monte-Carlo and Bayesian methods.
@@ -359,11 +359,13 @@ displays the `pdf` and uses `minimum` and `maximum` to determine the range.
 Let's create our own distribution type
 
 ```{code-cell} julia
-struct OurTruncatedExponential <: Distribution{Univariate,Continuous}
+struct OurTruncatedExponential <: Distribution{Univariate, Continuous}
     α::Float64
     xmax::Float64
 end
-Distributions.pdf(d::OurTruncatedExponential, x::Real) = d.α *exp(-d.α * x)/exp(-d.α * d.xmax)
+function Distributions.pdf(d::OurTruncatedExponential, x::Real)
+    d.α * exp(-d.α * x) / exp(-d.α * d.xmax)
+end
 Distributions.minimum(d::OurTruncatedExponential) = 0
 Distributions.maximum(d::OurTruncatedExponential) = d.xmax
 # ... more to have a complete type
@@ -372,7 +374,7 @@ Distributions.maximum(d::OurTruncatedExponential) = d.xmax
 To demonstrate this
 
 ```{code-cell} julia
-d = OurTruncatedExponential(1.0,2.0)
+d = OurTruncatedExponential(1.0, 2.0)
 @show minimum(d), maximum(d)
 @show support(d) # why does this work?
 ```
@@ -502,7 +504,7 @@ storage type, so as long as `+`, `*` etc. are defined -- as they should be
 for any `Number` -- the complex operation can be defined
 
 ```{code-cell} julia
-@which +(x,x)
+@which +(x, x)
 ```
 
 Following that link, the implementation of `+` for complex numbers is
@@ -672,8 +674,8 @@ function plotfunctions(f)
 
     x = 0:0.1:1.0
     f_x = f.(x)
-    plot(x, f_x, label="f")
-    plot!(x, intf.(x), label="int_f")
+    plot(x, f_x, label = "f")
+    plot!(x, intf.(x), label = "int_f")
 end
 plotfunctions(f)  # call with our f
 ```

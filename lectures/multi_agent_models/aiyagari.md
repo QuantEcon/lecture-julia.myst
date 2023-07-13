@@ -211,22 +211,22 @@ using LaTeXStrings, Parameters, Plots, QuantEcon
 
 ```{code-cell} julia
 Household = @with_kw (r = 0.01,
-                      w = 1.0,
-                      σ = 1.0,
-                      β = 0.96,
-                      z_chain = MarkovChain([0.9 0.1; 0.1 0.9], [0.1; 1.0]),
-                      a_min = 1e-10,
-                      a_max = 18.0,
-                      a_size = 200,
-                      a_vals = range(a_min, a_max, length = a_size),
-                      z_size = length(z_chain.state_values),
-                      n = a_size * z_size,
-                      s_vals = gridmake(a_vals, z_chain.state_values),
-                      s_i_vals = gridmake(1:a_size, 1:z_size),
-                      u = σ == 1 ? x -> log(x) : x -> (x^(1 - σ) - 1) / (1 - σ),
-                      R = setup_R!(fill(-Inf, n, a_size), a_vals, s_vals, r, w, u),
-                      # -Inf is the utility of dying (0 consumption)
-                      Q = setup_Q!(zeros(n, a_size, n), s_i_vals, z_chain))
+    w = 1.0,
+    σ = 1.0,
+    β = 0.96,
+    z_chain = MarkovChain([0.9 0.1; 0.1 0.9], [0.1; 1.0]),
+    a_min = 1e-10,
+    a_max = 18.0,
+    a_size = 200,
+    a_vals = range(a_min, a_max, length = a_size),
+    z_size = length(z_chain.state_values),
+    n = a_size * z_size,
+    s_vals = gridmake(a_vals, z_chain.state_values),
+    s_i_vals = gridmake(1:a_size, 1:z_size),
+    u = σ == 1 ? x -> log(x) : x -> (x^(1 - σ) - 1) / (1 - σ),
+    R = setup_R!(fill(-Inf, n, a_size), a_vals, s_vals, r, w, u),
+    # -Inf is the utility of dying (0 consumption)
+    Q = setup_Q!(zeros(n, a_size, n), s_i_vals, z_chain))
 
 function setup_Q!(Q, s_i_vals, z_chain)
     for next_s_i in 1:size(Q, 3)
@@ -280,7 +280,7 @@ am_ddp = DiscreteDP(am.R, am.Q, am.β)
 results = solve(am_ddp, PFI)
 
 # Simplify names
-(;z_size, a_size, n, a_vals) = am
+(; z_size, a_size, n, a_vals) = am
 z_vals = am.z_chain.state_values
 
 # Get all optimal actions across the set of
@@ -331,18 +331,18 @@ const β = 0.96
 const δ = 0.05
 
 function r_to_w(r)
-    return A * (1 - α) * (A * α / (r + δ)) ^ (α / (1 - α))
+    return A * (1 - α) * (A * α / (r + δ))^(α / (1 - α))
 end
 
 function rd(K)
-    return A * α * (N / K) ^ (1 - α) - δ
+    return A * α * (N / K)^(1 - α) - δ
 end
 
 function prices_to_capital_stock(am, r)
 
     # Set up problem
     w = r_to_w(r)
-    (;a_vals, s_vals, u) = am
+    (; a_vals, s_vals, u) = am
     setup_R!(am.R, a_vals, s_vals, r, w, u)
 
     aiyagari_ddp = DiscreteDP(am.R, am.Q, am.β)
@@ -368,7 +368,7 @@ k_vals = prices_to_capital_stock.(Ref(am), r_vals)
 
 # Plot against demand for capital by firms
 demand = rd.(k_vals)
-labels =  ["demand for capital" "supply of capital"]
+labels = ["demand for capital" "supply of capital"]
 plot(k_vals, [demand r_vals], label = labels, lw = 2, alpha = 0.6)
 plot!(xlabel = "capital", ylabel = "interest rate", xlim = (2, 14), ylim = (0.0, 0.1))
 ```
