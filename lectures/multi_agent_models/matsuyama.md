@@ -453,7 +453,7 @@ function create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
 end
 
 # model
-function MSGSync(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
+function MSGSync(;s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
     # Store other cutoffs and parameters we use
     s2 = 1 - s1
     s1_ρ = min((s1 - ρ * s2) / (1 - ρ), 1)
@@ -464,7 +464,7 @@ end
 
 function simulate_n(model, n1_0, n2_0, T)
     # Unpack parameters
-    @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
+    (;s1, s2, θ, δ, ρ, s1_ρ, s2_ρ)= model
 
     # Allocate space
     n1 = zeros(T)
@@ -483,7 +483,7 @@ end
 function pers_till_sync(model, n1_0, n2_0,
                         maxiter = 500, npers = 3)
     # Unpack parameters
-    @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
+    (;s1, s2, θ, δ, ρ, s1_ρ, s2_ρ) = model
 
     return pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2,
                         θ, δ, ρ, maxiter, npers)
@@ -494,7 +494,7 @@ function create_attraction_basis(model;
                                  npers = 3,
                                  npts = 50)
     # Unpack parameters
-    @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
+    (;s1, s2, θ, δ, ρ, s1_ρ, s2_ρ) = model
 
     ab = create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ,
                                  ρ, maxiter, npers, npts)
@@ -513,8 +513,8 @@ The time series share parameters but differ in their initial condition.
 Here's the function
 
 ```{code-cell} julia
-function plot_timeseries(n1_0, n2_0, s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
-    model = MSGSync(s1, θ, δ, ρ)
+function plot_timeseries(n1_0, n2_0; s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
+    model = MSGSync(;s1, θ, δ, ρ)
     n1, n2 = simulate_n(model, n1_0, n2_0, 25)
     return [n1 n2]
 end
@@ -569,10 +569,10 @@ Replicate the figure {ref}`shown above <matsrep>` by coloring initial conditions
 ### Exercise 1
 
 ```{code-cell} julia
-function plot_attraction_basis(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2; npts = 250)
+function plot_attraction_basis(;s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2; npts = 250)
     # Create attraction basis
     unitrange = range(0,  1, length = npts)
-    model = MSGSync(s1, θ, δ, ρ)
+    model = MSGSync(;s1, θ, δ, ρ)
     ab = create_attraction_basis(model,npts=npts)
     plt = Plots.heatmap(ab, legend = false)
 end
@@ -592,14 +592,14 @@ plot(plots..., size = (1000, 1000))
 ---
 tags: [remove-cell]
 ---
-function plot_attraction_basis(s1 = 0.5,
+function plot_attraction_basis(;s1 = 0.5,
                             θ = 2.5,
                             δ = 0.7,
                             ρ = 0.2;
                             npts = 250)
     # Create attraction basis
     unitrange = range(0,  1, length = npts)
-    model = MSGSync(s1, θ, δ, ρ)
+    model = MSGSync(;s1, θ, δ, ρ)
     ab = create_attraction_basis(model, npts = npts)
 end
 

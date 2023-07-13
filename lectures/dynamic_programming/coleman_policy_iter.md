@@ -464,7 +464,7 @@ Here's an object containing data from the log-linear growth model we used in the
 
 ```{code-cell} julia
 isoelastic(c, γ) = isone(γ) ? log(c) : (c^(1 - γ) - 1) / (1 - γ)
-Model = @with_kw (α = 0.65,                            # Productivity parameter
+Model = (;        α = 0.65,                            # Productivity parameter
                   β = 0.95,                            # Discount factor
                   γ = 1.0,                             # Risk aversion
                   μ = 0.0,                             # First parameter in lognorm(μ, σ)
@@ -739,7 +739,7 @@ m_ex = Model(γ = 1.5);
 ```
 
 ```{code-cell} julia
-function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid); sim_length = 20)
+function exercise2(m, shocks, g_init = m.grid; w_init = m.u.(m.grid), sim_length = 20)
 
     (;grid, β, u, ∂u∂c, f, f′) = m
     # initial policy and value
@@ -759,7 +759,7 @@ end
 ```
 
 ```{code-cell} julia
-exercise2(m_ex, shocks, m.grid, m.u.(m.grid), sim_length=20)
+exercise2(m_ex, shocks, m.grid; m.u.(m.grid), sim_length=20)
 ```
 
 The policies are indeed close.

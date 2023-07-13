@@ -546,11 +546,11 @@ the AssetPriceModel objects
 n = 25
 default_mc = tauchen(n, ρ, σ)
 
-AssetPriceModel = @with_kw (β = 0.96,
-                            γ = 2.0,
-                            mc = default_mc,
-                            n = size(mc.p)[1],
-                            g = exp)
+AssetPriceModel(;β = 0.96,
+                γ = 2.0,
+                mc = default_mc,
+                n = size(mc.p)[1],
+                g = exp)=(;β,γ,mc,n,g)
 
 # test stability of matrix Q
 function test_stability(ap, Q)
@@ -777,7 +777,7 @@ We can find the solution with the following function call_option
 
 ```{code-cell} julia
 # price of perpetual call on consol bond
-function call_option(ap, ζ, p_s, ϵ = 1e-7)
+function call_option(ap, ζ, p_s; ϵ = 1e-7)
 
     # Simplify names, set up matrices
     (;β, γ, mc, g, n) = ap
@@ -807,7 +807,7 @@ end
 Here's a plot of $w$ compared to the consol price when $P_S = 40$
 
 ```{code-cell} julia
-ap = AssetPriceModel(β=0.9)
+ap = AssetPriceModel(;β=0.9)
 ζ = 1.0
 strike_price = 40.0
 
@@ -974,7 +974,7 @@ p_s = 150.0
 Next we'll create an instance of AssetPriceModel to feed into the functions.
 
 ```{code-cell} julia
-ap = AssetPriceModel(β = β, mc = mc, γ = γ, g = x -> x)
+ap = AssetPriceModel(;β = β, mc = mc, γ = γ, g = x -> x)
 ```
 
 ```{code-cell} julia

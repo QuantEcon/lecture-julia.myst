@@ -119,7 +119,7 @@ import Distributions: loglikelihood
 ```
 
 ```{code-cell} julia
-AMF_LSS_VAR = @with_kw (A, B, D, F = 0.0, ν = 0.0, lss = construct_ss(A, B, D, F, ν))
+AMF_LSS_VAR(A, B, D; F = 0.0, ν = 0.0, lss = construct_ss(A, B, D, F, ν)) = (;A,B,D,F,v,lss)
 
 function construct_ss(A, B, D, F, ν)
     H, g = additive_decomp(A, B, D, F)
@@ -196,7 +196,7 @@ function simulate_xy(amf, T)
     return x, y
 end
 
-function simulate_paths(amf, T = 150, I = 5000)
+function simulate_paths(amf; T = 150, I = 5000)
     # Allocate space
     storeX = zeros(I, T)
     storeY = zeros(I, T)
@@ -213,7 +213,7 @@ function simulate_paths(amf, T = 150, I = 5000)
     return storeX, storeY
 end
 
-function population_means(amf, T = 150)
+function population_means(amf; T = 150)
     # Allocate Space
     xmean = zeros(T)
     ymean = zeros(T)
@@ -250,18 +250,18 @@ Random.seed!(42);
 
 ```{code-cell} julia
 F = 0.2
-amf = AMF_LSS_VAR(A = 0.8, B = 1.0, D = 0.5, F = F)
+amf = AMF_LSS_VAR(0.8,1.0,0.5; F)
 
 T = 150
 I = 5000
 
 # Simulate and compute sample means
-Xit, Yit = simulate_paths(amf, T, I)
+Xit, Yit = simulate_paths(amf; T, I)
 Xmean_t = mean(Xit, dims = 1)
 Ymean_t = mean(Yit, dims = 1)
 
 # Compute population means
-Xmean_pop, Ymean_pop = population_means(amf, T)
+Xmean_pop, Ymean_pop = population_means(amf; T)
 
 # Plot sample means vs population means
 plt_1 = plot(Xmean_t', color = :blue, label = L"(1/I) \sum_i x_t^i")
@@ -418,7 +418,7 @@ Random.seed!(42);
 
 ```{code-cell} julia
 # Create the second (wrong) alternative model
-amf2 = AMF_LSS_VAR(A = 0.9, B = 1.0, D = 0.55, F = 0.25) # parameters for θ_1 closer to θ_0
+amf2 = AMF_LSS_VAR(0.9,1.0,0.55; F = 0.25) # parameters for θ_1 closer to θ_0
 
 # Get likelihood from each path x^{i}, y^{i}
 LLit2 = simulate_likelihood(amf2, Xit, Yit)
@@ -570,9 +570,9 @@ Random.seed!(42);
 ```
 
 ```{code-cell} julia
-function simulate_martingale_components(amf, T = 1_000, I = 5_000)
+function simulate_martingale_components(amf; T = 1_000, I = 5_000)
     # Get the multiplicative decomposition
-    @unpack A, B, D, F, ν, lss = amf
+    (;A, B, D, F, ν, lss) = amf
     ν, H, g = multiplicative_decomp(A, B, D, F, ν)
 
     # Allocate space
@@ -591,9 +591,9 @@ function simulate_martingale_components(amf, T = 1_000, I = 5_000)
 end
 
 # Build model
-amf_2 = AMF_LSS_VAR(A = 0.8, B = 0.001, D = 1.0, F = 0.01, ν = 0.005)
+amf_2 = AMF_LSS_VAR(0.8,0.001,1.0; F = 0.01, ν = 0.005)
 
-amc, mmc = simulate_martingale_components(amf_2, 1_000, 5_000)
+amc, mmc = simulate_martingale_components(amf_2;T= 1_000, I=5_000)
 
 amcT = amc[:, end]
 mmcT = mmc[:, end]
@@ -684,7 +684,7 @@ end
 function logMtilde_t_density(amf, t; xmin = -15.0, xmax = 15.0, npts = 5000)
 
     # Pull out the multiplicative decomposition
-    @unpack A, B, D, F, ν = amf
+    (;A, B, D, F, ν) = amf
     νtilde, H, g = multiplicative_decomp(A, B, D, F, ν)
     H2 = H * H
 
@@ -740,7 +740,7 @@ Here's our code
 
 ```{code-cell} julia
 function Uu(amf, δ, γ)
-    @unpack A, B, D, F, ν = amf
+    (;A, B, D, F, ν) = amf
     ν_tilde, H, g = multiplicative_decomp(A, B, D, F, ν)
 
     resolv = 1 / (1 - exp(-δ) * A)

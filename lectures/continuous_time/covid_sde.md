@@ -253,9 +253,10 @@ end
 Next create a settings generator, and then define a [SDEProblem](https://docs.sciml.ai/stable/tutorials/sde_example/#Example-2:-Systems-of-SDEs-with-Diagonal-Noise-1)  with Diagonal Noise.
 
 ```{code-cell} julia
-p_gen = @with_kw (T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
-                  R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, δ_bar = 0.01,
-                  σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8)
+function p_gen(;T = 550.0, γ = 1.0 / 18, η = 1.0 / 20, R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, 
+                    δ_bar = 0.01, σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8) 
+     return (;T, γ , η ,R₀_n, R̄₀= (t, p) -> p.R₀_n , δ_bar ,σ, ξ, θ, N)
+end 
 p =  p_gen()  # use all defaults
 i_0 = 25000 / p.N
 r_0 = 0.0
@@ -547,9 +548,9 @@ function F_reinfect(x, p, t)
             ]
 end
 
-p_re_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
+p_re_gen(; T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
                 R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n,
-                δ_bar = 0.01, σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8, ν = 1/360)
+                δ_bar = 0.01, σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8, ν = 1/360) = (;T,γ,η, R₀_n = 1.6, R̄₀,δ_bar,σ,ξ,θ ,N, ν)
 
 p_re_early = p_re_gen(R̄₀ = R̄₀_lift_early, η = η_experiment, σ = σ_experiment)
 p_re_late = p_re_gen(R̄₀ = R̄₀_lift_late, η = η_experiment, σ = σ_experiment)

@@ -352,8 +352,8 @@ function one_step_update!(ae,
                           EVc)
 
     # unpack stuff
-    @unpack β, γ, r, ρ, η, θ, ny, nB = ae
-    @unpack ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = ae
+    (;β, γ, r, ρ, η, θ, ny, nB) = ae
+    (;ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob) = ae
     zero_ind = searchsortedfirst(Bgrid, 0.)
 
     for iy in 1:ny
@@ -390,7 +390,7 @@ end
 
 function compute_prices!(ae)
     # unpack parameters
-    @unpack β, γ, r, ρ, η, θ, ny, nB = ae
+    (;β, γ, r, ρ, η, θ, ny, nB) = ae
 
     # create default values with a matching size
     vd_compat = repeat(ae.vd, nB)
@@ -405,8 +405,8 @@ end
 function vfi!(ae; tol = 1e-8, maxit = 10000)
 
     # unpack stuff
-    @unpack β, γ, r, ρ, η, θ, ny, nB = ae
-    @unpack ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = ae
+    (;β, γ, r, ρ, η, θ, ny, nB) = ae
+    (;ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob) = ae
     Πt = Π'
 
     # Iteration stuff

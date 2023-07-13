@@ -861,7 +861,7 @@ function Τ(model, c, n)
     return 1 .+ Un ./ (model.Θ .* Uc)
 end
 
-function simulate(pas::SequentialAllocation, B_, s_0, T, sHist = nothing)
+function simulate(pas::SequentialAllocation, B_, s_0, T; sHist = nothing)
 
     model = pas.model
     Π, β, Uc = model.Π, model.β, model.Uc
@@ -1407,7 +1407,7 @@ function time0_allocation(pab::RecursiveAllocation, B_, s0)
     return c0, n0, xprime0
 end
 
-function simulate(pab::RecursiveAllocation, B_, s_0, T,
+function simulate(pab::RecursiveAllocation, B_, s_0, T;
                   sHist = QuantEcon.simulate(mc, s_0, T))
     model, S, policies = pab.model, pab.S, pab.policies
     β, Π, Uc = model.β, model.Π, model.Uc
@@ -1543,8 +1543,8 @@ PP_seq_time = SequentialAllocation(M_time_example)  # Solve sequential problem
 sHist_h = [1, 2, 3, 4, 6, 6, 6]
 sHist_l = [1, 2, 3, 5, 6, 6, 6]
 
-sim_seq_h = simulate(PP_seq_time, 1.0, 1, 7, sHist_h)
-sim_seq_l = simulate(PP_seq_time, 1.0, 1, 7, sHist_l)
+sim_seq_h = simulate(PP_seq_time, 1.0, 1, 7;sHist = sHist_h)
+sim_seq_l = simulate(PP_seq_time, 1.0, 1, 7;sHist = sHist_l)
 
 using LaTeXStrings, Plots
 
@@ -1861,8 +1861,8 @@ T = 20
 sHist = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1]
 
 # Simulate
-sim_seq = simulate(PP_seq, 0.5, 1, T, sHist)
-sim_bel = simulate(PP_bel, 0.5, 1, T, sHist)
+sim_seq = simulate(PP_seq, 0.5, 1, T;sHist= sHist)
+sim_bel = simulate(PP_bel, 0.5, 1, T;sHist= sHist)
 
 # Plot policies
 sim_seq_plot = [sim_seq[1:4]..., M1.G[sHist], M1.Θ[sHist].*sim_seq[2]]

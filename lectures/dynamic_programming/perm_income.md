@@ -837,7 +837,7 @@ const σ1 = 0.15
 const σ2 = 0.15
 
 
-function time_path(permanent = false)
+function time_path(;permanent = false)
     w1 = zeros(T2+1)
     w2 = similar(w1)
     b = similar(w1)
@@ -859,8 +859,8 @@ end
 
 L = 0.175
 
-b1, c1 = time_path(false)
-b2, c2 = time_path(true)
+b1, c1 = time_path(;permanent = false)
+b2, c2 = time_path(;permanent = true)
 p = plot(0:T2, [c1 c2 b1 b2], layout = (2, 1),
         color = [:green :green :blue :blue],
         label = ["consumption" "consumption" "debt" "debt"])
