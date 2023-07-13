@@ -30,7 +30,7 @@ jobs:
 
       - name: Format Markdown Files
         run: |
-          for file in ${{ steps.changed_files.outputs.files }}; do
+          for file in ${{ steps.changed_files.outputs.all_changed_files }}; do
             julia format_myst.jl "$file"
           done
         env:
@@ -49,3 +49,4 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.head_ref }}          
