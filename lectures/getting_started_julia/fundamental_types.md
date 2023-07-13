@@ -45,7 +45,6 @@ In this lecture we give more details on
 * ranges
 * nothing, missing, and unions
 
-
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 ```
