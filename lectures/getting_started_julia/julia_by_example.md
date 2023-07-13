@@ -120,7 +120,7 @@ Other functions require importing all of the names from an external library
 
 ```{code-cell} julia
 n = 100
-ϵ = randn(n  )
+ϵ = randn(n )
 plot(1:n, ϵ)
 ```
 
