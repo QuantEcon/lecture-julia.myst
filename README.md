@@ -50,14 +50,12 @@ It is straightforward to install the Jupyter Book and Julia software necessary f
      julia --project=lectures --threads auto -e "using Pkg; Pkg.instantiate();"
      ```
 
-
-In order to push code to the repository, you should install the pre-commit hooks which will automatically format the Julia code.  In a terminal, run
-
-```bash
-pip install pre-commit
-pre-commit install
+## Formatting code
+Julia code blocks in the myst `.md` files can be formatted using a script in this folder.  To do so, insure you have the `] add JuliaFormatter` within your default julia environment, then call on the commandline like
+    
+```bash 
+julia format_myst.jl lectures/getting_started_julia/getting_started.md
 ```
-
 
 **(Optional) REPL Integration**
 With [MyST-Markdown](https://github.com/executablebooks/myst-vs-code) and [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) installed, you can ensure that pressing `<Ctrl-Enter>` on lines of code are sent to a Julia REPL.

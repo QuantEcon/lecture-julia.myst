@@ -397,7 +397,7 @@ Run the following cell
 
 ```{code-cell} julia
 using Plots
-plot(sin, -2π, 2π, label="sin(x)")
+plot(sin, -2π, 2π, label = "sin(x)")
 ```
 
 You'll see something like this (although the style of plot depends on your
@@ -480,7 +480,7 @@ using LinearAlgebra
 x = [1, 2]
 y = [3, 4]
 @show dot(x, y)
-@show x⋅y;
+@show x ⋅ y;
 ```
 
 #### Shell Commands
