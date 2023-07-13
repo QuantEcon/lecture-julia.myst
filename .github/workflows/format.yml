@@ -25,14 +25,15 @@ jobs:
         id: changed_files
         uses: tj-actions/changed-files@v37.1.1
         with:
-            files_yaml: |
-              lectures:
-                - **.md
+            files: |
+              *.md
+              **/*.md
 
       - name: Format Markdown Files
         run: |
           for file in ${{ steps.changed_files.outputs.files }}; do
-            julia format_myst.jl "$file"
+            # julia format_myst.jl "$file"
+            echo $file
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
