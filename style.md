@@ -5,11 +5,15 @@ The following guidelines are used for code in the lecture notes (i.e., not to th
 For the most part, we will try to follow the formatting with the [SciMLStyle](https://github.com/SciML/SciMLStyle).  Some of the details suggestions in that are for more advanced usage intended for generic package code will be avoided.
 
 ## Code Formatting
-The repo now has a [JuliaFormatter.jl](https://github.com/domluna/JuliaFormatter.jl) file (i.e., the `.JuliaFormatter.toml`) which will help impose code-formatting style.  This is built into the VS Code extension.  All new code should be run through the formatter, which require some manual steps:
-1. **TODO**: Somehow tell it to use Julia as formatter? Maybe start built-in terminal?
-2. Select the block of code (e.g. within the `{code-cell} julia` block)
-3. In VS Code choose `> Format Selection` which may be bound  `Ctrl-K, Ctrl-F` 
-  - Repeat for each code block in the file
+The repo now has a [JuliaFormatter.jl](https://github.com/domluna/JuliaFormatter.jl) file (i.e., the `.JuliaFormatter.toml`) which will help impose code-formatting style.  All new code should be run through the formatter, which require some manual steps until Julia for VS Code supports formatting myst files.  You will need to ensure you have added `] add JuliaFormatter` in your default environment, as discussed in the setup instructions.
+
+To format code, on the commandline with the root directory installed, execute the following on the commandline (replacing the path as required)
+```
+julia format_myst.jl lectures/getting_started_julia/getting_started.md
+```
+
+This should be executed before any pull request is made.
+
 ## Basic Principles
 
 Keep in mind that these lectures are targeted at students with (at most!) some self-taught Matlab or Python experience.  Consequently, we want to ensure that the code is clear and simple to focus on the Economics/Math and only expect them to write code using a simplified subset of Julia features.  Outside of standard rules such as those in [SciMLStyle Rules](https://github.com/SciML/SciMLStyle#specific-rules) a few guiding principles.
@@ -31,33 +35,26 @@ We want users to be able to say _"the code is clearer than Matlab, and even clos
 
 ## Naming Conventions
 See [here](https://github.com/SciML/SciMLStyle#general-naming-principles) and a few additional points.
-- **Use unicode for math, ascii for control flow** where possible in names so that symbols match the math in the document
 - **Use ascii for control flow** That is,
     - Use `in` instead of `∈`, `!=` instead of `≠`, and `<=` instead of `≤` when writing code.
-    - Use `∈` and `∉` when implementing math for sets
 - **Be careful** about unicode glyphs and symbols which may not be available in the default REPL, Jupyter, etc. for all platforms.
 - **Do not** use docstrings in any lecture code - except when explaining packages and the `?` environment.
 
 ## Comment Spacing
 The Code Formatter will impose much of these, but a few points:
 
-- Comments on their own lines, which are generally prefered, and without capitalization unless intending emphasis
+- Comments on their own lines, which are generally preferred, and without capitalization unless intending emphasis
 ```julia
 x = 1
 
 # comment1
 x = 2
 ```
-- Comments on the same line of code (note the two spaced before the `#`
+- Comments on the same line of code
+
 ```julia
 x = 1  # comment2
 ```
-- **Add comment for equation to code correspondence whenever possible**.  That is, if there was a formula in the document at some point, say `b = a x^2 (14)` where the `14` is the equation number when rendering, then the code which implements it should be
-```julia
-# GOOD!
-b = a * x^2 # (14)
-```
-  - The exception to this rule is if it is immediately clear that a line of code represents a formula due to immediate proximity in the document.  Always err on the side of extra equation numbers, and add it to the `myst` as required.
 
 ## Type Annotations, Parameters, and Generic Programming
 
@@ -74,17 +71,14 @@ MyParams(a::TF = 10.0, b::TAV = [1.0, 2.0, 3.0]) where {TF, TAV} = MyParams{TF, 
 params = MyParams(2.0)
 
 # GOOD!
-params = (a = 2.0, b = [1.0 2.0 3.0])
-
-# BETTER!
-myparams = @with_kw (a = 10.0, b = [1 2 3]) # generates new named tuples with defaults
+MyParams(a = 10.0, b = [1 2 3]) = (;a, b)
 params = myparams(a = 2.0) # -> (a=2.0, b=[1.0 2.0 3.0])
 myparamsdefaults = myparams() # -> (a = 10.0, b = [1.0 2.0 3.0])
 ```
 - **Unpack structs** instead of manually unpacking variables from structures and/or named tuples.
-Prefer the new unpacking notation `(;a, b)` to the `@unpack` macro.
+Prefer the new unpacking notation `(;a, b)` 
 ```julia
-param = (a=2, b=1.0, c = [1, 2, 3])
+param = (;a=2, b=1.0, c = [1, 2, 3])
 
 # BAD!
 function f2(p)
@@ -338,7 +332,7 @@ r = 0.0:0.22:1.0 # note the end isn't a multiple of the step...
 - **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
 
 - **Square directly instead of abs2**. There are times where `abs2(x)` is faster than `x^2`, but they are rare, and it is harder to read.
-- **Do not use compehensions or generators simply to avoid a temporary**. That is
+- **Do not use comprehensions or generators simply to avoid a temporary**. That is
 ```julia
 x = 1:3
 f(x) = x^2
@@ -351,7 +345,7 @@ mean(f(xval) for xval in x)
 sum(f.(x))
 mean(f.(x))
 ```
-- **Only use comprehension syntax when it makes code clearer**.  Code using single comprehensions can help code clarity and the connection to the mathematica, or it can obfuscate things.  repeated use of `for` in the same comprehension is the hardest to understand.  A few examples
+- **Only use comprehension syntax when it makes code clearer**.  Code using single comprehensions can help code clarity and the connection to the mathematics, or it can obfuscate things.  repeated use of `for` in the same comprehension is the hardest to understand.  A few examples
 ```julia
 # BAD! Tough to mentally parse that this is a nested loop creating a single vector vs. a matrix
 [i + j for i in 1:3 for j in 1:3]
@@ -471,23 +465,9 @@ fmax = maximum(result)
 
 ## Dependencies
 
-- **Use external packages** whenever possible, and never rewrite code that is available in a well-maintained external package (even if it is imperfect)
+- **Use well-supported external packages** whenever possible, and never rewrite code that is available in a well-maintained external package (even if it is imperfect)
 - **Do** use `using` where possible (i.e. not `import`), and include the whole package as opposed to selecting only particular functions or types.
 - **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters`)  but packages used only in a single may have the `using` local to that use to ensure students know which package it comes from
     - If `Plots` is only used lower down in the lecture, then try to have it local to that section to ensure faster loading time.
 - **Always seed random numbers** in order for automated testing to function using `seed!(...)`
 - **No Dependencies that Require Python**  it is just too fragile.
-
-## Object Creation
-
-Avoid defining objects that exist solely in the computation. For example, say we have some `model` (i.e., a named tuple that holds parameters) from which we compute some transition objects.
-
-```
-# BAD!
-transition = transition_objects(model)
-some_operation(transition.obj1, transition.obj2)
-
-# Better
-obj1, obj2 = transition_objects(model)
-some_operation(obj1, obj2)
-```
