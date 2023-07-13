@@ -970,7 +970,7 @@ function evaluate_policy(θ, F)
     return value[1], entropy[1]    # return scalars
 end
 
-function value_and_entropy(emax, F, bw; grid_size = 1000)
+function value_and_entropy(emax, F, bw, grid_size = 1000)
     if lowercase(bw) == "worst"
         θs = 1 ./ range(1e-8,  1000, length = grid_size)
     else

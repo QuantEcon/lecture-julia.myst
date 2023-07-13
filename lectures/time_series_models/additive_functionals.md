@@ -328,7 +328,7 @@ function additive_decomp(A, B, D, F, nx)
 end
 
 function multiplicative_decomp(A, B, D, F, ν, nx)
-    H; g = additive_decomp(A, B, D, F, nx)
+    H, g = additive_decomp(A, B, D, F, nx)
     ν_tilde = ν .+ 0.5 * diag(H * H')
 
     return H, g, ν_tilde
@@ -426,7 +426,7 @@ function plot_additive(amf, T; npaths = 25, show_trend = true)
     return add_figs
 end
 
-function plot_multiplicative(amf, T; npaths = 25, show_trend = true)
+function plot_multiplicative(amf, T, npaths = 25, show_trend = true)
     # pull out right sizes so we know how to increment
     @unpack nx, nk, nm = amf
     # matrices for the multiplicative decomposition
@@ -505,7 +505,7 @@ function plot_multiplicative(amf, T; npaths = 25, show_trend = true)
     return mult_figs
 end
 
-function plot_martingales(amf, T; npaths = 25)
+function plot_martingales(amf, T, npaths = 25)
 
     # pull out right sizes so we know how to increment
     @unpack A, B, D, F, ν, nx, nk, nm = amf

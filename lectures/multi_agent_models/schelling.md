@@ -160,7 +160,7 @@ Random.seed!(42);
 ```
 
 ```{code-cell} julia
-Agent(;kind, location = rand(2)) = (;kind,location)
+Agent = @with_kw (kind, location = rand(2))
 
 draw_location!(a) = a.location .= rand(2)
 
@@ -218,8 +218,8 @@ neighborhood_size = 10 # Number of agents regarded as neighbors
 preference = 0.5 # Want their kind to make at least this share of the neighborhood
 
 # Create a list of agents
-agents = vcat([Agent(;kind = 0) for i in 1:num_of_type_0],
-              [Agent(;kind = 1) for i in 1:num_of_type_1])
+agents = vcat([Agent(kind = 0) for i in 1:num_of_type_0],
+              [Agent(kind = 1) for i in 1:num_of_type_1])
 
 plot_array = Any[]
 

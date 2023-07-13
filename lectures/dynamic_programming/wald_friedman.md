@@ -504,10 +504,10 @@ function simulation(problem)
     return return_output ? (α, β, outcomes, costs, trials) : nothing
 end
 
-Problem(;d0 = Beta(1,1), d1 = Beta(9,9),
+Problem = @with_kw (d0 = Beta(1,1), d1 = Beta(9,9),
                     L0 = 2, L1 = 2,
                     c = 0.2, p = 0.5,
-                    n = 100, return_output = false) =  (;d0,d1,L0,L1,c,p,n,return_output)
+                    n = 100, return_output = false);
 ```
 
 ```{code-cell} julia

@@ -929,12 +929,16 @@ We define named tuples and default values for the model and solver settings, and
 instantiate one copy of each
 
 ```{code-cell} julia
-model(;a0 = 10, a1 = 2,
-    β = 0.96, γ = 120.,
-    n = 300) = (;a0,a1,β,γ,n)
+model = @with_kw (a0 = 10,
+                  a1 = 2,
+                  β = 0.96,
+                  γ = 120.,
+                  n = 300)
 
 # things like tolerances, etc.
-settings(;tol0 = 1e-8,tol1 = 1e-16,tol2 = 1e-2)=(;tol0,tol1,tol2)
+settings = @with_kw (tol0 = 1e-8,
+                     tol1 = 1e-16,
+                     tol2 = 1e-2)
 
 defaultModel = model();
 defaultSettings = settings();
@@ -943,8 +947,8 @@ defaultSettings = settings();
 Now we can compute the actual policy using the LQ routine from QuantEcon.jl
 
 ```{code-cell} julia
-(;a0, a1, β, γ, n) = defaultModel
-(;tol0, tol1, tol2) = defaultSettings
+@unpack a0, a1, β, γ, n = defaultModel
+@unpack tol0, tol1, tol2 = defaultSettings
 
 βs = [β^x for x = 0:n-1]
 Alhs = I + zeros(4, 4);

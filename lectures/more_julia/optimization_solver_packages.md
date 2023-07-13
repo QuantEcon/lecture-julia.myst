@@ -459,7 +459,7 @@ And this is an example of a quadratic objective
 
 ```{code-cell} julia
 # solve
-# min (1-x)^2 + (100(y-x^2)^2)
+# min (1-x)^2 + 100(y-x^2)^2)
 # st x + y >= 10
 
 using JuMP,Ipopt

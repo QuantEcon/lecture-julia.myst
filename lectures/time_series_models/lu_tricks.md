@@ -945,7 +945,7 @@ end
 
 function construct_W_and_Wm(lqf, N)
 
-    (;d, m) = lqf
+    @unpack d, m = lqf
     W = zeros(N + 1, N + 1)
     W_m = zeros(N + 1, m)
 
@@ -974,7 +974,7 @@ function construct_W_and_Wm(lqf, N)
     M
 
     # Euler equations for t = 0, 1, ..., N-(m+1)
-    (;ϕ, h) = lqf
+    @unpack ϕ, h = lqf
 
     W[1:(m + 1), 1:(m + 1)] = D_m1 + h * I
     W[1:(m + 1), (m + 2):(2m + 1)] = M
@@ -995,7 +995,7 @@ function construct_W_and_Wm(lqf, N)
 end
 
 function roots_of_characteristic(lqf)
-    (;m, ϕ) = lqf
+    @unpack m, ϕ = lqf
 
     # Calculate the roots of the 2m-polynomial
     ϕ_poly=Polynomial(ϕ[end:-1:1])
@@ -1029,7 +1029,7 @@ function solution(lqf)
 end
 
 function construct_V(lqf; N=nothing)
-    (;ϕ_r, k) = lqf
+    @unpack ϕ_r, k = lqf
     V = zeros(N, N)
     for i in 1:N
         for j in 1:N
@@ -1059,8 +1059,8 @@ function predict(lqf, a_hist, t)
     return Ea_hist
 end
 
-function optimal_y(lqf, a_hist; t = nothing)
-    (;β, y_m, m) = lqf
+function optimal_y(lqf, a_hist, t = nothing)
+    @unpack β, y_m, m = lqf
 
     N = length(a_hist) - 1
     W, W_m = construct_W_and_Wm(lqf, N)
