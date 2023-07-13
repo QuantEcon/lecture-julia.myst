@@ -13,24 +13,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-    #   - name: Setup Julia
-    #     uses: julia-actions/setup-julia@v1
-    #     with:
-    #       version: 1.9
+      - name: Setup Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: 1.9
 
-    #   - name: Install JuliaFormatter.jl
-    #     run: julia -e 'import Pkg; Pkg.add("JuliaFormatter")'
+      - name: Install JuliaFormatter.jl
+        run: julia -e 'import Pkg; Pkg.add("JuliaFormatter")'
 
       - name: Get Changed Files
         id: changed_files
         uses: tj-actions/changed-files@v37.1.1
-      
+        with:
+            files: |
+              **/*.md
+
       - name: Format Markdown Files
         run: |
           for file in ${{ steps.changed_files.outputs.files }}; do
-            if [[ "$file" == *.md ]]; then
-              julia format_myst.jl "$file"
-            fi
+            julia format_myst.jl "$file"
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
