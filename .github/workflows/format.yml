@@ -24,13 +24,14 @@ jobs:
       - name: Get Changed Files
         id: changed_files
         uses: tj-actions/changed-files@v37.1.1
-
+        with:
+            files: |
+              **/*.md
 
       - name: Format Markdown Files
         run: |
-          for file in ${{ steps.changed_files.outputs.files }}; do
-            # julia format_myst.jl "$file"
-            echo $file
+          for file in ${{ steps.changed_files.outputs.all_changed_files }}; do
+            julia format_myst.jl "$file"
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
