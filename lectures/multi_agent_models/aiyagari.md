@@ -210,30 +210,23 @@ using LaTeXStrings, Parameters, Plots, QuantEcon
 ```
 
 ```{code-cell} julia
-function Household(;
-    r = 0.01,
-    w = 1.0,
-    σ = 1.0,
-    β = 0.96,
-    z_chain = MarkovChain([0.9 0.1; 0.1 0.9], [0.1; 1.0]),
-    a_min = 1e-10,
-    a_max = 18.0,
-    a_size = 200,
-    a_vals = range(a_min, a_max, length = a_size),
-    z_size = length(z_chain.state_values),
-    n = a_size * z_size,
-    s_vals = gridmake(a_vals, z_chain.state_values),
-    
-    s_i_vals = gridmake(1:a_size, 1:z_size),
-    
+Household = @with_kw (r = 0.01,
+                      w = 1.0,
+                      σ = 1.0,
+                      β = 0.96,
+                      z_chain = MarkovChain([0.9 0.1; 0.1 0.9], [0.1; 1.0]),
+                      a_min = 1e-10,
+                      a_max = 18.0,
+                      a_size = 200,
+                      a_vals = range(a_min, a_max, length = a_size),
+                      z_size = length(z_chain.state_values),
+                      n = a_size * z_size,
+                      s_vals = gridmake(a_vals, z_chain.state_values),
+                      s_i_vals = gridmake(1:a_size, 1:z_size),
                       u = σ == 1 ? x -> log(x) : x -> (x^(1 - σ) - 1) / (1 - σ),
-    
-    R = setup_R!(fill(-Inf, n, a_size), a_vals, s_vals, r, w, u), # -Inf is the utility of dying (0 consumption)
-                      
-    Q = setup_Q!(zeros(n, a_size, n), s_i_vals, z_chain)) 
-
-    return (;r,w,σ,β,z_chain,a_min,a_max,a_size,a_vals,z_size,n,s_vals,s_i_vals,u,R,Q )
-end
+                      R = setup_R!(fill(-Inf, n, a_size), a_vals, s_vals, r, w, u),
+                      # -Inf is the utility of dying (0 consumption)
+                      Q = setup_Q!(zeros(n, a_size, n), s_i_vals, z_chain))
 
 function setup_Q!(Q, s_i_vals, z_chain)
     for next_s_i in 1:size(Q, 3)
@@ -278,7 +271,7 @@ Random.seed!(42);
 
 ```{code-cell} julia
 # Create an instance of Household
-am = Household(;a_max = 20.0, r = 0.03, w = 0.956)
+am = Household(a_max = 20.0, r = 0.03, w = 0.956)
 
 # Use the instance to build a discrete dynamic program
 am_ddp = DiscreteDP(am.R, am.Q, am.β)
@@ -365,7 +358,7 @@ function prices_to_capital_stock(am, r)
 end
 
 # Create an instance of Household
-am = Household(;β, a_max = 20.0)
+am = Household(β = β, a_max = 20.0)
 
 # Create a grid of r values at which to compute demand and supply of capital
 r_vals = range(0.005, 0.04, length = 20)

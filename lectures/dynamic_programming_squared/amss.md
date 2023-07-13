@@ -1112,7 +1112,7 @@ function Tau(pab::RecursiveAllocation,
             c::AbstractArray,
         n::AbstractArray)
     model = pab.model
-    Uc;  Un = model.Uc(c, n), model.Un(c, n)
+    Uc, Un = model.Uc(c, n), model.Un(c, n)
     return 1. .+ Un ./ (model.Θ .* Uc)
 end
 

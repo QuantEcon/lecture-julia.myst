@@ -667,8 +667,8 @@ end
 
 function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T)
     # simplify notation
-    (;β, Sg, Sd, Sb, Ss) = econ
-    (;P, x_vals) = econ.proc
+    @unpack β, Sg, Sd, Sb, Ss = econ
+    @unpack P, x_vals = econ.proc
 
     mc = MarkovChain(P)
     state = simulate(mc, T, init=1)
@@ -709,8 +709,8 @@ end
 
 function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
     # simplify notation
-    (;β, Sg, Sd, Sb, Ss) = econ
-    (;A, C) = econ.proc
+    @unpack β, Sg, Sd, Sb, Ss = econ
+    @unpack A, C = econ.proc
 
     # generate an initial condition x0 satisfying x0 = A x0
     nx, nx = size(A)

@@ -427,7 +427,7 @@ This coding pattern, where `expression || error("failure)` first checks the expr
 Let's compute the reservation wage at the default parameters
 
 ```{code-cell} julia
-mcm(;c=25.0, β=0.99, w=w) = (;c, β, w) # named tuples
+mcm = @with_kw (c=25.0, β=0.99, w=w) # named tuples
 
 compute_reservation_wage(mcm()) # call with default parameters
 ```

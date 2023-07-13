@@ -565,10 +565,11 @@ In addition to the model parameters, we need a grid and some shock draws for Mon
 Random.seed!(42) # for reproducible results
 u(c;p) = log(c) # utility
 f(k;p) = k^p.α # deterministic part of production function
-OptimalGrowthModel(;α = 0.4, β = 0.96, μ = 0.0, s = 0.1,
+OptimalGrowthModel = @with_kw (α = 0.4, β = 0.96, μ = 0.0, s = 0.1,
                   u = u, f = f, # defaults defined above
                   y = range(1e-5, 4.0, length = 200), # grid on y
-                  ξ = exp.(μ .+ s * randn(250))) = (;α,β,μ,s,u,f,y,ξ)
+                  ξ = exp.(μ .+ s * randn(250)) # monte carlo shocks
+) # named tuples defaults
 
 # True value and policy function
 function v_star(y;p)

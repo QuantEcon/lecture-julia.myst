@@ -213,7 +213,7 @@ using Test
 ```
 
 ```{code-cell} julia
-LakeModel(;λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)=(;λ, α, b, d)
+LakeModel = @with_kw (λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
 
 function transition_matrices(lm)
     (;λ, α, b, d) = lm
@@ -269,7 +269,7 @@ Â
 And a revised model
 
 ```{code-cell} julia
-lm = LakeModel(;α = 2.0)
+lm = LakeModel(α = 2.0)
 A, Â = transition_matrices(lm)
 A
 ```
@@ -484,7 +484,7 @@ using QuantEcon, Roots, Random
 ```
 
 ```{code-cell} julia
-lm = LakeModel(;d = 0, b = 0)
+lm = LakeModel(d = 0, b = 0)
 T = 5000                        # Simulation length
 
 (;α, λ) = lm
@@ -671,15 +671,14 @@ And the McCall object
 u(c, σ) = c > 0 ? (c^(1 - σ) - 1) / (1 - σ) : -10e-6
 
 # model constructor
-McCallModel(;α = 0.2,
-            β = 0.98, # discount rate
-            γ = 0.7,
-            c = 6.0, # unemployment compensation
-            σ = 2.0,
-            u = u, # utility function
-            w = range(10, 20, length = 60), # wage values
-            E = Expectation(BetaBinomial(59, 600, 400))) # distribution over wage values 
-            =(;α,β, γ,c, σ,u, w,E)
+McCallModel = @with_kw (α = 0.2,
+                        β = 0.98, # discount rate
+                        γ = 0.7,
+                        c = 6.0, # unemployment compensation
+                        σ = 2.0,
+                        u = u, # utility function
+                        w = range(10, 20, length = 60), # wage values
+                        E = Expectation(BetaBinomial(59, 600, 400))) # distribution over wage values
 ```
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
@@ -709,7 +708,7 @@ w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
 E = expectation(Categorical(p_vec)) # expectation object
 
 function compute_optimal_quantities(c, τ)
-    mcm = McCallModel(;α = α_q,
+    mcm = McCallModel(α = α_q,
                       β = β,
                       γ = γ,
                       c = c - τ, # post-tax compensation
@@ -728,7 +727,7 @@ function compute_steady_state_quantities(c, τ)
     w̄, λ_param, V, U = compute_optimal_quantities(c, τ)
 
     # compute steady state employment and unemployment rates
-    lm = LakeModel(;λ = λ_param, α = α_q, b = b_param, d = d_param)
+    lm = LakeModel(λ = λ_param, α = α_q, b = b_param, d = d_param)
     x = rate_steady_state(lm)
     u_rate, e_rate = x
 
@@ -845,7 +844,7 @@ T = 50
 New legislation changes $\lambda$ to $0.2$
 
 ```{code-cell} julia
-lm = LakeModel(;λ = 0.2)
+lm = LakeModel(λ = 0.2)
 ```
 
 ```{code-cell} julia
@@ -944,7 +943,7 @@ T̂ = 20
 Let's increase $b$ to the new value and simulate for 20 periods
 
 ```{code-cell} julia
-lm = LakeModel(;b=b̂)
+lm = LakeModel(b=b̂)
 X_path1 = simulate_stock_path(lm, x0 * N0, T̂)   # simulate stocks
 x_path1 = simulate_rate_path(lm, x0, T̂)         # simulate rates
 ```
@@ -954,7 +953,7 @@ after 20 periods for the new initial conditions, we simulate for the
 additional 30 periods
 
 ```{code-cell} julia
-lm = LakeModel(;b = 0.0124)
+lm = LakeModel(b = 0.0124)
 X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T̂+1)    # simulate stocks
 x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T̂+1)     # simulate rates
 ```
