@@ -16,14 +16,16 @@ jobs:
       - name: Setup Julia
         uses: julia-actions/setup-julia@v1
         with:
-          version: 1
+          version: 1.9
 
       - name: Install JuliaFormatter.jl
         run: julia -e 'import Pkg; Pkg.add("JuliaFormatter")'
 
       - name: Format Markdown Files
         run: |
-          base_sha=${{ github.event.pull_request.base.sha }}
+          base_sha=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" | \
+          jq -r '.base.sha')
           modified_files=$(git diff --name-only $base_sha ${{ github.sha }} | grep -E '\.md$')
           for file in $modified_files; do
             julia format_myst.jl "$file"
