@@ -13,20 +13,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Setup Julia
-        uses: julia-actions/setup-julia@v1
-        with:
-          version: 1.9
+    #   - name: Setup Julia
+    #     uses: julia-actions/setup-julia@v1
+    #     with:
+    #       version: 1.9
 
-      - name: Install JuliaFormatter.jl
-        run: julia -e 'import Pkg; Pkg.add("JuliaFormatter")'
+    #   - name: Install JuliaFormatter.jl
+    #     run: julia -e 'import Pkg; Pkg.add("JuliaFormatter")'
 
       - name: Get Changed Files
         id: changed_files
         uses: tj-actions/changed-files@v37.1.1
         with:
-            files: |
-              **/*.md
+            files_yaml: |
+              lectures:
+                - **.md
 
       - name: Format Markdown Files
         run: |
@@ -36,17 +37,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit changes
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git diff-index --quiet HEAD || git commit -m "Apply formatting to Markdown files"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   - name: Commit changes
+    #     run: |
+    #       git config --local user.email "action@github.com"
+    #       git config --local user.name "GitHub Action"
+    #       git add .
+    #       git diff-index --quiet HEAD || git commit -m "Apply formatting to Markdown files"
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.head_ref }}          
+    #   - name: Push changes
+    #     uses: ad-m/github-push-action@master
+    #     with:
+    #       github_token: ${{ secrets.GITHUB_TOKEN }}
+    #       branch: ${{ github.head_ref }}          
