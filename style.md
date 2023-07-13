@@ -2,11 +2,21 @@
 
 The following guidelines are used for code in the lecture notes (i.e., not to the `QuantEcon.jl` package).  See [Julia Style Guide](https://docs.julialang.org/en/v1/manual/style-guide/) for the baseline guidelines, which this supplements.
 
-We will be moving towards the [YAS Style](https://github.com/jrevels/YASGuide) as soon as possible.
+For the most part, we will try to follow the formatting with the [SciMLStyle](https://github.com/SciML/SciMLStyle).  Some of the details suggestions in that are for more advanced usage intended for generic package code will be avoided.
+
+## Code Formatting
+The repo now has a [JuliaFormatter.jl](https://github.com/domluna/JuliaFormatter.jl) file (i.e., the `.JuliaFormatter.toml`) which will help impose code-formatting style.  All new code should be run through the formatter, which require some manual steps until Julia for VS Code supports formatting myst files.  You will need to ensure you have added `] add JuliaFormatter` in your default environment, as discussed in the setup instructions.
+
+To format code, on the commandline with the root directory installed, execute the following on the commandline (replacing the path as required)
+```
+julia format_myst.jl lectures/getting_started_julia/getting_started.md
+```
+
+This should be executed before any pull request is made.
 
 ## Basic Principles
 
-Keep in mind that these lectures are targeted at students with (at most!) some self-taught Matlab or Python experience.  Consequently, we want to ensure that the code is clear and simple to focus on the Economics/Math and only expect them to write code using a simplified subset of Julia features.  Some guiding principles:
+Keep in mind that these lectures are targeted at students with (at most!) some self-taught Matlab or Python experience.  Consequently, we want to ensure that the code is clear and simple to focus on the Economics/Math and only expect them to write code using a simplified subset of Julia features.  Outside of standard rules such as those in [SciMLStyle Rules](https://github.com/SciML/SciMLStyle#specific-rules) a few guiding principles.
 
 1. Assume this may be the **first programming language** students learn
 2. Use **compact, script-style** code, organized into functions only when it is natural.  Best practices for writing packages and expository/exploratory/interactive code can be different.
@@ -24,65 +34,27 @@ Keep in mind that these lectures are targeted at students with (at most!) some s
 We want users to be able to say _"the code is clearer than Matlab, and even closer to the math"_.
 
 ## Naming Conventions
-
-- **Use unicode for math, ascii for control flow** where possible in names so that symbols match the math in the document
+See [here](https://github.com/SciML/SciMLStyle#general-naming-principles) and a few additional points.
 - **Use ascii for control flow** That is,
     - Use `in` instead of `∈`, `!=` instead of `≠`, and `<=` instead of `≤` when writing code.
-    - Use `∈` and `∉` when implementing math for sets
 - **Be careful** about unicode glyphs and symbols which may not be available in the default REPL, Jupyter, etc. for all platforms.
-- **Do not** use extra whitespace, use comment headers, or redundant comments.  For example, **do not**
-```julia
-# BAD!
-foo(a) #Calls the foo function
-
-# == Parameters == #
-
-bar = 2.0
-
-# GOOD!
-foo(a)
-
-# parameters
-bar = 2.0
-```
-- **Do not** align the `=` sign for construction of variables (though acceptable for matrices).  i.e.
-```julia
-# BAD!
-var1       =  1.0
-variable2  =  2.0
-
-# GOOD!
-var1 = 1.0
-variable2 = 2.0
-
-# ACCEPTABLE BUT OFTEN UNNECESSARY
-A = [1 2;
-     3 4]
-```
 - **Do not** use docstrings in any lecture code - except when explaining packages and the `?` environment.
-- **Feel free** to use the `⋅` unicode symbol, i.e. `\cdot<TAB>` instead of `dot( , )`
-- **Careful with the use of LaTeX** as it does not work fully in the graphics backends, but is getting better.
-  - But if you do, *use `LaTeXStrings.jl`** for all latex literals, i.e. `L"\hat{\alpha}"` instead of `""\$\\hat{\\alpha}\$""`
-- **Prefer** `in` to `∈`
 
 ## Comment Spacing
-- Comments on their own lines, which are generally prefered, and without capitalization unless intending emphasis
+The Code Formatter will impose much of these, but a few points:
+
+- Comments on their own lines, which are generally preferred, and without capitalization unless intending emphasis
 ```julia
 x = 1
 
 # comment1
 x = 2
 ```
-- Comments on the same line of code (note the two spaced before the `#`
+- Comments on the same line of code
+
 ```julia
 x = 1  # comment2
 ```
-- **Add comment for equation to code correspondence whenever possible**.  That is, if there was a formula in the document at some point, say `b = a x^2 (14)` where the `14` is the equation number when rendering, then the code which implements it should be
-```julia
-# GOOD!
-b = a * x^2 # (14)
-```
-  - The exception to this rule is if it is immediately clear that a line of code represents a formula due to immediate proximity in the document.  Always err on the side of extra equation numbers, and add it to the `myst` as required.
 
 ## Type Annotations, Parameters, and Generic Programming
 
@@ -99,16 +71,14 @@ MyParams(a::TF = 10.0, b::TAV = [1.0, 2.0, 3.0]) where {TF, TAV} = MyParams{TF, 
 params = MyParams(2.0)
 
 # GOOD!
-params = (a = 2.0, b = [1.0 2.0 3.0])
-
-# BETTER!
-myparams = @with_kw (a = 10.0, b = [1 2 3]) # generates new named tuples with defaults
+MyParams(a = 10.0, b = [1 2 3]) = (;a, b)
 params = myparams(a = 2.0) # -> (a=2.0, b=[1.0 2.0 3.0])
 myparamsdefaults = myparams() # -> (a = 10.0, b = [1.0 2.0 3.0])
 ```
-- **Use `@unpack`** instead of manually unpacking variables from structures and/or named tuples.
+- **Unpack structs** instead of manually unpacking variables from structures and/or named tuples.
+Prefer the new unpacking notation `(;a, b)` 
 ```julia
-param = (a=2, b=1.0, c = [1, 2, 3])
+param = (;a=2, b=1.0, c = [1, 2, 3])
 
 # BAD!
 function f2(p)
@@ -119,7 +89,7 @@ f2(param)
 
 # GOOD!
 function f(p)
-    @unpack a, b, c = p
+    (;a, b, c) = p
     return a + b
 end
 f(param)
@@ -134,20 +104,19 @@ f(param)
 function foo(x, y, z)
     return (x, y, z) # Julia does this anyway
 end
-
 ~, ~, z = foo(x, y, z) # when we want z
 
 # GOOD
 function foo(x, y, z)
-    return (x = x, y = y, z = z)
+    return (;x, y, z)
 end
 
 # when we want z
-@unpack z = foo(x, y, z)
+(; z) = foo(x, y, z)
 z = foo(x, y, z).z
 ```
 
-- **Avoid inplace functions if possible** unless the library requires it, or the vectors are enormous.  That is,
+- **Avoid inplace functions if possible** unless the library requires it, the vectors are enormous, or you are demonstrating code optimization.  That is,
 ```julia
 # BAD! (unless out is a preallocated and very large vector)
 function f!(out, x)
@@ -363,7 +332,7 @@ r = 0.0:0.22:1.0 # note the end isn't a multiple of the step...
 - **Minimize use of the ternary operator**.  It is confusing for new users, so use it judiciously, and never purely to make code more terse.
 
 - **Square directly instead of abs2**. There are times where `abs2(x)` is faster than `x^2`, but they are rare, and it is harder to read.
-- **Do not use compehensions or generators simply to avoid a temporary**. That is
+- **Do not use comprehensions or generators simply to avoid a temporary**. That is
 ```julia
 x = 1:3
 f(x) = x^2
@@ -376,7 +345,7 @@ mean(f(xval) for xval in x)
 sum(f.(x))
 mean(f.(x))
 ```
-- **Only use comprehension syntax when it makes code clearer**.  Code using single comprehensions can help code clarity and the connection to the mathematica, or it can obfuscate things.  repeated use of `for` in the same comprehension is the hardest to understand.  A few examples
+- **Only use comprehension syntax when it makes code clearer**.  Code using single comprehensions can help code clarity and the connection to the mathematics, or it can obfuscate things.  repeated use of `for` in the same comprehension is the hardest to understand.  A few examples
 ```julia
 # BAD! Tough to mentally parse that this is a nested loop creating a single vector vs. a matrix
 [i + j for i in 1:3 for j in 1:3]
@@ -496,23 +465,9 @@ fmax = maximum(result)
 
 ## Dependencies
 
-- **Use external packages** whenever possible, and never rewrite code that is available in a well-maintained external package (even if it is imperfect)
+- **Use well-supported external packages** whenever possible, and never rewrite code that is available in a well-maintained external package (even if it is imperfect)
 - **Do** use `using` where possible (i.e. not `import`), and include the whole package as opposed to selecting only particular functions or types.
 - **Prefer** to keep packages used throughout the lecture at the top of the first block (e.g. `using LinearAlgebra, Parameters`)  but packages used only in a single may have the `using` local to that use to ensure students know which package it comes from
     - If `Plots` is only used lower down in the lecture, then try to have it local to that section to ensure faster loading time.
 - **Always seed random numbers** in order for automated testing to function using `seed!(...)`
 - **No Dependencies that Require Python**  it is just too fragile.
-
-## Object Creation
-
-Avoid defining objects that exist solely in the computation. For example, say we have some `model` (i.e., a named tuple that holds parameters) from which we compute some transition objects.
-
-```
-# BAD!
-transition = transition_objects(model)
-some_operation(transition.obj1, transition.obj2)
-
-# Better
-obj1, obj2 = transition_objects(model)
-some_operation(obj1, obj2)
-```

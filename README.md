@@ -10,7 +10,7 @@ See https://github.com/QuantEcon/lecture-julia.myst/blob/main/style.md for some 
 
 On this website hit `.` to enter into the web editor.  From this, you can submit suggested patches and fix typos.  This will help you create a [pull request](https://quantecon.github.io/lecture-julia.myst/software_engineering/version_control.html#collaboration-via-pull-request) for maintainers here to examine.
 
-## Local Development 
+## Local Development
 
 It is straightforward to install the Jupyter Book and Julia software necessary for more significant changes.
 
@@ -43,18 +43,29 @@ It is straightforward to install the Jupyter Book and Julia software necessary f
      ```bash
      julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
      ```
-     
+
      On Windows, run the following instead:
-     
+
      ```bash
      julia --project=lectures --threads auto -e "using Pkg; Pkg.instantiate();"
      ```
+
+## Formatting code
+Julia code blocks in the myst `.md` files can be formatted using a script in this folder.  To manually do so, insure you have the `] add JuliaFormatter` within your default julia environment, then call on the commandline like
+    
+```bash 
+julia format_myst.jl lectures/getting_started_julia/getting_started.md
+```
+
+Alternatively, the formatter will run automatically when a pull-request is made
+
 
 **(Optional) REPL Integration**
 With [MyST-Markdown](https://github.com/executablebooks/myst-vs-code) and [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) installed, you can ensure that pressing `<Ctrl-Enter>` on lines of code are sent to a Julia REPL.
 1.  Open Key Bindings with `<Ctrl-K Ctrl-S>`.
 2.  Search for the `Julia: Send Current Line or Selection to REPL` binding.
 3.  Right Click on the key binding with `juliamarkdown` on it, and choose `Change When Expression`, and change `juliamarkdown` to just `markdown`.
+
 
 ## Executing Code in Markdown Files
 If you installed the REPL Integration above, then in a `.md` file,
@@ -78,7 +89,7 @@ or
 jb build lectures
 ```
 
-This will take a while. But it will populate your cache, so future iteration is faster. 
+This will take a while. But it will populate your cache, so future iteration is faster.
 
 On Windows, if you get the following error:
 
@@ -97,7 +108,7 @@ To clean up (i.e., delete the build)
 jupyter-book clean lectures
 ```
 
-or 
+or
 
 ```bash
 jb clean lectures
