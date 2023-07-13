@@ -16,16 +16,31 @@ jobs:
       - name: Setup Julia
         uses: julia-actions/setup-julia@v1
         with:
-          version: 1.6
+          version: 1
 
       - name: Install JuliaFormatter.jl
         run: julia -e 'import Pkg; Pkg.add("JuliaFormatter")'
 
       - name: Format Markdown Files
         run: |
-          modified_files=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -E '\.md$')
+          base_sha=${{ github.event.pull_request.base.sha }}
+          modified_files=$(git diff --name-only $base_sha ${{ github.sha }} | grep -E '\.md$')
           for file in $modified_files; do
             julia format_myst.jl "$file"
           done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Apply formatting to Markdown files"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
