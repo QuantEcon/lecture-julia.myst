@@ -21,13 +21,13 @@ jobs:
       - name: Install JuliaFormatter.jl
         run: julia -e 'import Pkg; Pkg.add("JuliaFormatter")'
 
+      - name: Get Changed Files
+        id: changed_files
+        uses: tj-actions/get-changed-files@v5
+
       - name: Format Markdown Files
         run: |
-          base_sha=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" | \
-          jq -r '.base.sha')
-          modified_files=$(git diff --name-only $base_sha ${{ github.sha }} | grep -E '\.md$')
-          for file in $modified_files; do
+          for file in ${{ steps.changed_files.outputs.files_modified_by_type.md }}; do
             julia format_myst.jl "$file"
           done
         env:
