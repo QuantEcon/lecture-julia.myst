@@ -242,7 +242,6 @@ Given the information on the type, the compiler can work through the sequence of
 ```{code-cell} julia
 f(y) = 2y # define some function
 
-
 x = [1, 2, 3]
 z = f(x) # call with an integer array - compiler deduces type
 ```
@@ -356,9 +355,9 @@ Let's start with a trivial example where the `struct` we build has fields named 
 
 ```{code-cell} julia
 struct FooNotTyped  # immutable by default, use `mutable struct` otherwise
-    a # BAD! not typed
-    b
-    c
+    a::Any # BAD! not typed
+    b::Any
+    c::Any
 end
 ```
 
@@ -502,7 +501,7 @@ foo2 = Foo5(c = [1.0, 2.0, 3.0], b = 2)  # rearrange order, uses default values
 @show foo2
 
 function f(x)
-    (;a, b, c) = x # unpacks any struct or named tuple
+    (; a, b, c) = x # unpacks any struct or named tuple
     return a + b + sum(c)
 end
 
@@ -751,7 +750,7 @@ end
 Note that in the above, `x` works for any type of `Real`, including `Int64`, `Float64`, and ones you may not have realized exist
 
 ```{code-cell} julia
-x = -2//3  # `Rational` number, -2/3
+x = -2 // 3  # `Rational` number, -2/3
 @show typeof(x)
 @show ourabs(x);
 ```
@@ -856,7 +855,6 @@ We can use auto-differentiation to compare the results.
 ```{code-cell} julia
 using Plots, ForwardDiff
 
-
 # operator to get the derivative of this function using AD
 D(f) = x -> ForwardDiff.derivative(f, x)
 
@@ -868,8 +866,8 @@ q_slopes_x = slopes(q_x, x)
 
 D_q_x = D(q).(x)  # broadcasts AD across vector
 
-plot(x[1:end-1], D_q_x[1:end-1], label = "q' with AD")
-plot!(x[1:end-1], q_slopes_x, label = "q slopes")
+plot(x[1:(end - 1)], D_q_x[1:(end - 1)], label = "q' with AD")
+plot!(x[1:(end - 1)], q_slopes_x, label = "q slopes")
 ```
 
 Consider a variation where we pass a function instead of an `AbstractArray`
@@ -929,8 +927,8 @@ A key step in the calculation of the Kalman Filter is calculation of the Kalman 
 Using what you learned from Exercise 1, benchmark this using Static Arrays
 
 ```{code-cell} julia
-Σ = [0.4  0.3;
-     0.3  0.45]
+Σ = [0.4 0.3;
+    0.3 0.45]
 G = I
 R = 0.5 * Σ
 
@@ -1018,8 +1016,8 @@ follow the {ref}`rules for generic programming <generic_tips_tricks>`.
 using ForwardDiff
 
 function f(a, b; N = 50)
-    r = range(a, b, length=N) # one
-return mean(r)
+    r = range(a, b, length = N) # one
+    return mean(r)
 end
 
 Df(x) = ForwardDiff.derivative(y -> f(0.0, y), x)
