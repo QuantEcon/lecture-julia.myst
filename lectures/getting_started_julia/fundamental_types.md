@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.9    
 ---
 
 (fundamental_types)=
@@ -44,6 +44,7 @@ In this lecture we give more details on
 * tuples and named tuples
 * ranges
 * nothing, missing, and unions
+
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
