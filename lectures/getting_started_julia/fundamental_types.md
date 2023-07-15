@@ -285,7 +285,7 @@ Finally, we can see how to create multidimensional arrays from literals with the
 First, we can create a vector
 
 ```{code-cell} julia
-[1; 2;]
+[1; 2]
 ```
 
 Next, by appending an additional `;` we can tell it to use a 2 dimensional array
@@ -315,7 +315,7 @@ We've already seen the basics of array indexing
 
 ```{code-cell} julia
 a = [10 20 30 40]
-a[end-1]
+a[end - 1]
 ```
 
 ```{code-cell} julia
@@ -452,7 +452,7 @@ In every important sense, matrix types such as `Diagonal` are just as much a "ma
 
 ```{code-cell} julia
 @show 2a
-b = rand(2,2)
+b = rand(2, 2)
 @show b * a;
 ```
 
@@ -760,7 +760,7 @@ A = -ones(2, 2)
 ```
 
 ```{code-cell} julia
-A.^2  # square every element
+A .^ 2  # square every element
 ```
 
 However in practice some operations are mathematically valid without broadcasting, and hence the `.` can be omitted.
@@ -895,7 +895,7 @@ log.(1:4)
 Note that we can get the same result as with a comprehension or more explicit loop
 
 ```{code-cell} julia
-[ log(x) for x in 1:4 ]
+[log(x) for x in 1:4]
 ```
 
 Nonetheless the syntax is convenient.
@@ -960,7 +960,7 @@ To evenly space points where the maximum value is important, i.e., `linspace` in
 maxval = 1.0
 minval = 0.0
 numpoints = 10
-a = range(minval, maxval, length=numpoints)
+a = range(minval, maxval, length = numpoints)
 # or range(minval, stop=maxval, length=numpoints)
 
 maximum(a) == maxval
@@ -983,17 +983,17 @@ println("a = $a and b = $b")
 As well as **named tuples**, which extend tuples with names for each argument.
 
 ```{code-cell} julia
-t = (;val1 = 1.0, val2 = "test") # ; is optional but good form
+t = (; val1 = 1.0, val2 = "test") # ; is optional but good form
 t.val1      # access by index
 println("val1 = $(t.val1) and val2 = $(t.val2)") # access by name
-(;val1, val2) = t  # unpacking notation (note the ;)
+(; val1, val2) = t  # unpacking notation (note the ;)
 println("val1 = $val1 and val2 = $val2")
 ```
 
 While immutable, it is possible to manipulate tuples and generate new ones
 
 ```{code-cell} julia
-t2 = (;val3 = 4, val4 = "test!!")
+t2 = (; val3 = 4, val4 = "test!!")
 t3 = merge(t, t2)  # new tuple
 ```
 
@@ -1005,7 +1005,7 @@ function f(parameters)
     return α + β
 end
 
-parameters = (;α = 0.1, β = 0.2)
+parameters = (; α = 0.1, β = 0.2)
 f(parameters)
 ```
 
@@ -1013,11 +1013,11 @@ This functionality is aided by the unpacking notation
 
 ```{code-cell} julia
 function f(parameters)
-    (;α, β) = parameters  # good style, less sensitive to errors
+    (; α, β) = parameters  # good style, less sensitive to errors
     return α + β
 end
 
-parameters = (;α = 0.1, β = 0.2)
+parameters = (; α = 0.1, β = 0.2)
 f(parameters)
 ```
 
@@ -1035,11 +1035,11 @@ paramgen = @with_kw (α = 0.1, β = 0.2)  # create named tuples with defaults
 
 Or create a function which returns the named tuple with defaults, which can also do intermediate calculations
 ```{code-cell} julia
-function paramgen2(;α = 0.1, β = 0.2)
-    return (;α, β)
+function paramgen2(; α = 0.1, β = 0.2)
+    return (; α, β)
 end
 @show paramgen2()
-@show paramgen2(;α = 0.2)
+@show paramgen2(; α = 0.2)
 ```
 
 An alternative approach, defining a new type using `struct` tends to be more prone to accidental misuse, and leads to a great deal of boilerplate code.
@@ -1108,7 +1108,7 @@ y2 = f(x2)
 if isnothing(y1)
     println("f($x2) successful")
 else
-    println("f($x2) failed");
+    println("f($x2) failed")
 end
 ```
 
@@ -1162,7 +1162,6 @@ Finally, `nothing` is a good way to indicate an optional parameter in a function
 
 ```{code-cell} julia
 function f(x; z = nothing)
-
     if isnothing(z)
         println("No z given with $x")
     else
@@ -1171,7 +1170,7 @@ function f(x; z = nothing)
 end
 
 f(1.0)
-f(1.0, z=3.0)
+f(1.0, z = 3.0)
 ```
 
 An alternative to `nothing`, which can be useful and sometimes higher performance,
@@ -1215,7 +1214,11 @@ An example of an exception is a `DomainError`, which signifies that a value pass
 # sqrt(-1.0)
 
 # to see the error
-try sqrt(-1.0); catch err; err end  # catches the exception and prints it
+try
+    sqrt(-1.0)
+catch err
+    err
+end  # catches the exception and prints it
 ```
 
 Another example you will see is when the compiler cannot convert between types.
@@ -1225,7 +1228,11 @@ Another example you will see is when the compiler cannot convert between types.
 # convert(Int64, 3.12)
 
 # to see the error
-try convert(Int64, 3.12); catch err; err end  # catches the exception and prints it.
+try
+    convert(Int64, 3.12)
+catch err
+    err
+end  # catches the exception and prints it.
 ```
 
 If these exceptions are generated from unexpected cases in your code, it may be appropriate simply let them occur and ensure you can read the error.
@@ -1448,9 +1455,9 @@ Here's the iterative approach
 
 ```{code-cell} julia
 function compute_asymptotic_var(A, Σ;
-                                S0 = Σ * Σ',
-                                tolerance = 1e-6,
-                                maxiter = 500)
+    S0 = Σ * Σ',
+    tolerance = 1e-6,
+    maxiter = 500)
     V = Σ * Σ'
     S = S0
     err = tolerance + 1
@@ -1466,11 +1473,11 @@ end
 ```
 
 ```{code-cell} julia
-A = [0.8  -0.2;
-     -0.1  0.7]
+A = [0.8 -0.2;
+    -0.1 0.7]
 
 Σ = [0.5 0.4;
-     0.4 0.6]
+    0.4 0.6]
 ```
 
 Note that all eigenvalues of $A$ lie inside the unit disc.
