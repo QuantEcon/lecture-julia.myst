@@ -1,1499 +1,1508 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-kernelspec:
-  display_name: Julia
-  language: julia
-  name: julia-1.9
----
-
-(fundamental_types)=
-```{raw} html
-<div id="qe-notebook-header" style="text-align:right;">
-        <a href="https://quantecon.org/" title="quantecon.org">
-                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
-        </a>
-</div>
-```
-
-# Arrays, Tuples, Ranges, and Other Fundamental Types
-
-```{contents} Contents
-:depth: 2
-```
-
-```{epigraph}
-"Let's be clear: the work of science has nothing whatever to do with consensus.
-Consensus is the business of politics. Science, on the contrary, requires only
-one investigator who happens to be right, which means that he or she has
-results that are verifiable by reference to the real world. In science
-consensus is irrelevant. What is relevant is reproducible results." -- Michael Crichton
-```
-
-## Overview
-
-In Julia, arrays and tuples are the most important data type for working with numerical data.
-
-In this lecture we give more details on
-
-* creating and manipulating Julia arrays
-* fundamental array processing operations
-* basic matrix algebra
-* tuples and named tuples
-* ranges
-* nothing, missing, and unions
-
-```{code-cell} julia
-using LinearAlgebra, Statistics
-```
-
-## Array Basics
-
-([See multi-dimensional arrays documentation](https://docs.julialang.org/en/v1/manual/arrays/))
-
-Since it is one of the most important types, we will start with arrays.
-
-Later, we will see how arrays (and all other types in Julia) are handled in a generic and extensible way.
-
-### Shape and Dimension
-
-We've already seen some Julia arrays in action
-
-```{code-cell} julia
-a = [10, 20, 30]
-```
-
-```{code-cell} julia
-a = [1.0, 2.0, 3.0]
-```
-
-The output tells us that the arrays are of types `Array{Int64,1}` and `Array{Float64,1}` respectively.
-
-Here `Int64` and `Float64` are types for the elements inferred by the compiler.
-
-We'll talk more about types later.
-
-The `1` in `Array{Int64,1}` and `Array{Any,1}` indicates that the array is
-one dimensional (i.e., a `Vector`).
-
-This is the default for many Julia functions that create arrays
-
-```{code-cell} julia
-typeof(randn(100))
-```
-
-In Julia, one dimensional vectors are best interpreted as column vectors, which we will see when we take transposes.
-
-We can check the dimensions of `a` using `size()` and `ndims()`
-functions
-
-```{code-cell} julia
-ndims(a)
-```
-
-```{code-cell} julia
-size(a)
-```
-
-The syntax `(3,)` displays a tuple containing one element -- the size along the one dimension that exists.
-
-#### Array vs Vector vs Matrix
-
-In Julia, `Vector` and `Matrix` are just aliases for one- and two-dimensional arrays
-respectively
-
-```{code-cell} julia
-Array{Int64, 1} == Vector{Int64}
-Array{Int64, 2} == Matrix{Int64}
-```
-
-Vector construction with `,` is then interpreted as a column vector.
-
-To see this, we can create a column vector and row vector more directly
-
-```{code-cell} julia
-[1, 2, 3] == [1; 2; 3]  # both column vectors
-```
-
-```{code-cell} julia
-[1 2 3]  # a row vector is 2-dimensional
-```
-
-As we've seen, in Julia we have both
-
-* one-dimensional arrays (i.e., flat arrays)
-* arrays of size `(1, n)` or `(n, 1)` that represent row and column vectors respectively
-
-Why do we need both?
-
-On one hand, dimension matters for matrix algebra.
-
-* Multiplying by a row vector is different to multiplying by a column vector.
-
-On the other, we use arrays in many settings that don't involve matrix algebra.
-
-In such cases, we don't care about the distinction between row and column vectors.
-
-This is why many Julia functions return flat arrays by default.
-
-(creating_arrays)=
-### Creating Arrays
-
-#### Functions that Create Arrays
-
-We've already seen some functions for creating a vector filled with `0.0`
-
-```{code-cell} julia
-zeros(3)
-```
-
-This generalizes to matrices and higher dimensional arrays
-
-```{code-cell} julia
-zeros(2, 2)
-```
-
-To return an array filled with a single value, use `fill`
-
-```{code-cell} julia
-fill(5.0, 2, 2)
-```
-
-Finally, you can create an empty array using the `Array()` constructor
-
-```{code-cell} julia
-x = Array{Float64}(undef, 2, 2)
-```
-
-The printed values you see here are just garbage values.
-
-(the existing contents of the allocated memory slots being interpreted as 64 bit floats)
-
-If you need more control over the types, fill with a non-floating point
-
-```{code-cell} julia
-fill(0, 2, 2)  # fills with 0, not 0.0
-```
-
-Or fill with a boolean type
-
-```{code-cell} julia
-fill(false, 2, 2)  # produces a boolean matrix
-```
-
-#### Creating Arrays from Existing Arrays
-
-For the most part, we will avoid directly specifying the types of arrays, and let the compiler deduce the optimal types on its own.
-
-The reasons for this, discussed in more detail in {doc}`this lecture <../more_julia/generic_programming>`, are to ensure both clarity and generality.
-
-One place this can be inconvenient is when we need to create an array based on an existing array.
-
-First, note that assignment in Julia binds a name to a value, but does not make a copy of that type
-
-```{code-cell} julia
-x = [1, 2, 3]
-y = x
-y[1] = 2
-x
-```
-
-In the above, `y = x` simply creates a new named binding called `y` which refers to whatever `x` currently binds to.
-
-To copy the data, you need to be more explicit
-
-```{code-cell} julia
-x = [1, 2, 3]
-y = copy(x)
-y[1] = 2
-x
-```
-
-However, rather than making a copy of `x`, you may want to just have a similarly sized array
-
-```{code-cell} julia
-x = [1, 2, 3]
-y = similar(x)
-y
-```
-
-We can also use `similar` to pre-allocate a vector with a different size, but the same shape
-
-```{code-cell} julia
-x = [1, 2, 3]
-y = similar(x, 4)  # make a vector of length 4
-```
-
-Which generalizes to higher dimensions
-
-```{code-cell} julia
-x = [1, 2, 3]
-y = similar(x, 2, 2)  # make a 2x2 matrix
-```
-
-#### Array Definitions from Literals
-
-As we've seen, you can create one dimensional arrays from manually specified data like so
-
-```{code-cell} julia
-a = [10, 20, 30, 40]
-```
-
-In two dimensions we can proceed as follows
-
-```{code-cell} julia
-a = [10 20 30 40]  # two dimensional, shape is 1 x n
-```
-
-```{code-cell} julia
-ndims(a)
-```
-
-```{code-cell} julia
-a = [10 20; 30 40]  # 2 x 2
-```
-
-You might then assume that `a = [10; 20; 30; 40]` creates a two dimensional column vector but this isn't the case.
-
-```{code-cell} julia
-a = [10; 20; 30; 40]
-```
-
-```{code-cell} julia
-ndims(a)
-```
-
-Instead transpose the matrix (or adjoint if complex)
-
-```{code-cell} julia
-a = [10 20 30 40]'
-```
-
-```{code-cell} julia
-ndims(a)
-```
-
-Note, however, that the transformed array is not a matrix but rather a special type (e.g., `adjoint(::Matrix{Int64}) with eltype Int64`).
-
-Keeping the special structure of a transposed array can let Julia use more efficient algorithms in some cases.
-
-Finally, we can see how to create multidimensional arrays from literals with the `;` separator.
-
-First, we can create a vector
-
-```{code-cell} julia
-[1; 2;]
-```
-
-Next, by appending an additional `;` we can tell it to use a 2 dimensional array
-
-```{code-cell} julia
-[1; 2;;]
-``` 
-
-Or 3 dimensions
-```{code-cell} julia
-[1; 2;;;]
-``` 
-
-Or a 1x1 matrix with a single value
-```{code-cell} julia
-[1;;]
-```
-
-Or a 2x2x1 array
-```{code-cell} julia
-[1 2; 3 4;;;]
-```
-
-### Array Indexing
-
-We've already seen the basics of array indexing
-
-```{code-cell} julia
-a = [10 20 30 40]
-a[end-1]
-```
-
-```{code-cell} julia
-a[1:3]
-```
-
-For 2D arrays the index syntax is straightforward
-
-```{code-cell} julia
-a = randn(2, 2)
-a[1, 1]
-```
-
-```{code-cell} julia
-a[1, :]  # first row
-```
-
-```{code-cell} julia
-a[:, 1]  # first column
-```
-
-Booleans can be used to extract elements
-
-```{code-cell} julia
-a = randn(2, 2)
-```
-
-```{code-cell} julia
-b = [true false; false true]
-```
-
-```{code-cell} julia
-a[b]
-```
-
-This is useful for conditional extraction, as we'll see below.
-
-An aside: some or all elements of an array can be set equal to one number using slice notation.
-
-```{code-cell} julia
-a = zeros(4)
-```
-
-```{code-cell} julia
-a[2:end] .= 42
-```
-
-```{code-cell} julia
-a
-```
-
-### Views and Slices
-
-Using the `:` notation provides a slice of an array, copying the sub-array to a new array with a similar type.
-
-```{code-cell} julia
-a = [1 2; 3 4]
-b = a[:, 2]
-@show b
-a[:, 2] = [4, 5] # modify a
-@show a
-@show b;
-```
-
-A **view** on the other hand does not copy the value
-
-```{code-cell} julia
-a = [1 2; 3 4]
-@views b = a[:, 2]
-@show b
-a[:, 2] = [4, 5]
-@show a
-@show b;
-```
-
-Note that the only difference is the `@views` macro, which will replace any slices with views in the expression.
-
-An alternative is to call the `view` function directly -- though it is generally discouraged since it is a step away from the math.
-
-```{code-cell} julia
-@views b = a[:, 2]
-view(a, :, 2) == b
-```
-
-As with most programming in Julia, it is best to avoid prematurely assuming that `@views` will have a significant impact on performance, and stress code clarity above all else.
-
-Another important lesson about `@views` is that they **are not** normal, dense arrays.
-
-```{code-cell} julia
-a = [1 2; 3 4]
-b_slice = a[:, 2]
-@show typeof(b_slice)
-@show typeof(a)
-@views b = a[:, 2]
-@show typeof(b);
-```
-
-The type of `b` is a good example of how types are not as they may seem.
-
-Similarly
-
-```{code-cell} julia
-a = [1 2; 3 4]
-b = a'   # transpose
-typeof(b)
-```
-
-To copy into a dense array
-
-```{code-cell} julia
-a = [1 2; 3 4]
-b = a' # transpose
-c = Matrix(b)  # convert to matrix
-d = collect(b) # also `collect` works on any iterable
-c == d
-```
-
-### Special Matrices
-
-As we saw with `transpose`, sometimes types that look like matrices are not stored as a dense array.
-
-As an example, consider creating a diagonal matrix
-
-```{code-cell} julia
-d = [1.0, 2.0]
-a = Diagonal(d)
-```
-
-As you can see, the type is `2×2 Diagonal{Float64,Array{Float64,1}}`, which is not a 2-dimensional array.
-
-The reasons for this are both efficiency in storage, as well as efficiency in arithmetic and matrix operations.
-
-In every important sense, matrix types such as `Diagonal` are just as much a "matrix" as the dense matrices we have using (see the {doc}`introduction to types lecture <../getting_started_julia/introduction_to_types>` for more)
-
-```{code-cell} julia
-@show 2a
-b = rand(2,2)
-@show b * a;
-```
-
-Another example is in the construction of an identity matrix, where a naive implementation is
-
-```{code-cell} julia
-b = [1.0 2.0; 3.0 4.0]
-b - Diagonal([1.0, 1.0])  # poor style, inefficient code
-```
-
-Whereas you should instead use
-
-```{code-cell} julia
-b = [1.0 2.0; 3.0 4.0]
-b - I  # good style, and note the lack of dimensions of I
-```
-
-While the implementation of `I` is a little abstract to go into at this point, a hint is:
-
-```{code-cell} julia
-typeof(I)
-```
-
-This is a `UniformScaling` type rather than an identity matrix, making it much more powerful and general.
-
-### Assignment and Passing Arrays
-
-As discussed above, in Julia, the left hand side of an assignment is a "binding" or a label to a value.
-
-```{code-cell} julia
-x = [1 2 3]
-y = x  # name `y` binds to whatever value `x` bound to
-```
-
-The consequence of this, is that you can re-bind that name.
-
-```{code-cell} julia
-x = [1 2 3]
-y = x        # name `y` binds to whatever `x` bound to
-z = [2 3 4]
-y = z        # only changes name binding, not value!
-@show (x, y, z);
-```
-
-What this means is that if `a` is an array and we set `b = a` then `a` and `b` point to exactly the same data.
-
-In the above, suppose you had meant to change the value of `x` to the values of `y`, you need to assign the values rather than the name.
-
-```{code-cell} julia
-x = [1 2 3]
-y = x       # name `y` binds to whatever `x` bound to
-z = [2 3 4]
-y .= z      # now dispatches the assignment of each element
-@show (x, y, z);
-```
-
-Alternatively, you could have used `y[:] = z`.
-
-This applies to in-place functions as well.
-
-First, define a simple function for a linear map
-
-```{code-cell} julia
-function f(x)
-    return [1 2; 3 4] * x  # matrix * column vector
-end
-
-val = [1, 2]
-f(val)
-```
-
-In general, these "out-of-place" functions are preferred to "in-place" functions, which modify the arguments.
-
-```{code-cell} julia
-function f(x)
-    return [1 2; 3 4] * x # matrix * column vector
-end
-
-val = [1, 2]
-y = similar(val)
-
-function f!(out, x)
-    out .= [1 2; 3 4] * x
-end
-
-f!(y, val)
-y
-```
-
-This demonstrates a key convention in Julia: functions which modify any of the arguments have the name ending with `!` (e.g. `push!`).
-
-We can also see a common mistake, where instead of modifying the arguments, the name binding is swapped
-
-```{code-cell} julia
-function f(x)
-    return [1 2; 3 4] * x  # matrix * column vector
-end
-
-val = [1, 2]
-y = similar(val)
-
-function f!(out, x)
-    out = [1 2; 3 4] * x   # MISTAKE! Should be .=
-end
-f!(y, val)
-y
-```
-
-The frequency of making this mistake is one of the reasons to avoid in-place functions, unless proven to be necessary by benchmarking.
-
-### In-place and Immutable Types
-
-Note that scalars are always immutable, such that
-
-```{code-cell} julia
-y = [1 2]
-y .-= 2    # y .= y .- 2, no problem
-
-x = 5
-# x .-= 2  # Fails!
-x = x - 2  # subtle difference - creates a new value and rebinds the variable
-```
-
-In particular, there is no way to pass any immutable into a function and have it modified
-
-```{code-cell} julia
-x = 2
-
-function f(x)
-    x = 3     # MISTAKE! does not modify x, creates a new value!
-end
-
-f(x)          # cannot modify immutables in place
-@show x;
-```
-
-This is also true for other immutable types such as tuples, as well as some vector types
-
-```{code-cell} julia
-using StaticArrays
-xdynamic = [1, 2]
-xstatic = @SVector [1, 2]  # turns it into a highly optimized static vector
-
-f(x) = 2x
-@show f(xdynamic)
-@show f(xstatic)
-
-# inplace version
-function g(x)
-    x .= 2x
-    return "Success!"
-end
-@show xdynamic
-@show g(xdynamic)
-@show xdynamic;
-
-# g(xstatic) # fails, static vectors are immutable
-```
-
-## Operations on Arrays
-
-### Array Methods
-
-Julia provides standard functions for acting on arrays, some of which we've
-already seen
-
-```{code-cell} julia
-a = [-1, 0, 1]
-
-@show length(a)
-@show sum(a)
-@show mean(a)
-@show std(a)      # standard deviation
-@show var(a)      # variance
-@show maximum(a)
-@show minimum(a)
-@show extrema(a)  # (mimimum(a), maximum(a))
-```
-
-To sort an array
-
-```{code-cell} julia
-b = sort(a, rev = true)  # returns new array, original not modified
-```
-
-```{code-cell} julia
-b = sort!(a, rev = true)  # returns *modified original* array
-```
-
-```{code-cell} julia
-b == a  # tests if have the same values
-```
-
-```{code-cell} julia
-b === a  # tests if arrays are identical (i.e share same memory)
-```
-
-### Matrix Algebra
-
-For two dimensional arrays, `*` means matrix multiplication
-
-```{code-cell} julia
-a = ones(1, 2)
-```
-
-```{code-cell} julia
-b = ones(2, 2)
-```
-
-```{code-cell} julia
-a * b
-```
-
-```{code-cell} julia
-b * a'
-```
-
-To solve the linear system $A X = B$ for $X$ use `A \ B`
-
-```{code-cell} julia
-A = [1 2; 2 3]
-```
-
-```{code-cell} julia
-B = ones(2, 2)
-```
-
-```{code-cell} julia
-A \ B
-```
-
-```{code-cell} julia
-inv(A) * B
-```
-
-Although the last two operations give the same result, the first one is numerically more stable and should be preferred in most cases.
-
-Multiplying two **one** dimensional vectors gives an error -- which is reasonable since the meaning is ambiguous.
-
-More precisely, the error is that there isn't an implementation of `*` for two one dimensional vectors.
-
-The output explains this, and lists some other methods of `*` which Julia thinks are close to what we want.
-
-```{code-cell} julia
----
-tags: [raises-exception]
----
-ones(2) * ones(2)  # does not conform, expect error
-```
-
-Instead, you could take the transpose to form a row vector
-
-```{code-cell} julia
-ones(2)' * ones(2)
-```
-
-Alternatively, for inner product in this setting use `dot()` or the unicode `\cdot<TAB>`
-
-```{code-cell} julia
-@show dot(ones(2), ones(2))
-@show ones(2) ⋅ ones(2);
-```
-
-Matrix multiplication using one dimensional vectors similarly follows from treating them as
-column vectors.  Post-multiplication requires a transpose
-
-```{code-cell} julia
-b = ones(2, 2)
-b * ones(2)
-```
-
-```{code-cell} julia
-ones(2)' * b
-```
-
-Note that the type of the returned value in this case is not `Array{Float64,1}` but rather
-`Adjoint{Float64,Array{Float64,1}}`.
-
-This is since the left multiplication by a row vector should also be a row-vector.  It also hints
-that the types in Julia more complicated than first appears in the surface notation, as we will explore
-further in the {doc}`introduction to types lecture <../getting_started_julia/introduction_to_types>`.
-
-### Elementwise Operations
-
-#### Algebraic Operations
-
-Suppose that we wish to multiply every element of matrix `A` with the corresponding element of matrix `B`.
-
-In that case we need to replace `*` (matrix multiplication) with `.*` (elementwise multiplication).
-
-For example, compare
-
-```{code-cell} julia
-ones(2, 2) * ones(2, 2)   # matrix multiplication
-```
-
-```{code-cell} julia
-ones(2, 2) .* ones(2, 2)   # element by element multiplication
-```
-
-This is a general principle: `.x` means apply operator `x` elementwise
-
-```{code-cell} julia
-A = -ones(2, 2)
-```
-
-```{code-cell} julia
-A.^2  # square every element
-```
-
-However in practice some operations are mathematically valid without broadcasting, and hence the `.` can be omitted.
-
-```{code-cell} julia
-ones(2, 2) + ones(2, 2)  # same as ones(2, 2) .+ ones(2, 2)
-```
-
-Scalar multiplication is similar
-
-```{code-cell} julia
-A = ones(2, 2)
-```
-
-```{code-cell} julia
-2 * A  # same as 2 .* A
-```
-
-In fact you can omit the `*` altogether and just write `2A`.
-
-Unlike MATLAB and other languages, scalar addition requires the `.+` in order to correctly broadcast
-
-```{code-cell} julia
-x = [1, 2]
-x .+ 1     # not x + 1
-x .- 1     # not x - 1
-```
-
-#### Elementwise Comparisons
-
-Elementwise comparisons also use the `.x` style notation
-
-```{code-cell} julia
-a = [10, 20, 30]
-```
-
-```{code-cell} julia
-b = [-100, 0, 100]
-```
-
-```{code-cell} julia
-b .> a
-```
-
-```{code-cell} julia
-a .== b
-```
-
-We can also do comparisons against scalars with parallel syntax
-
-```{code-cell} julia
-b
-```
-
-```{code-cell} julia
-b .> 1
-```
-
-This is particularly useful for *conditional extraction* -- extracting the elements of an array that satisfy a condition
-
-```{code-cell} julia
-a = randn(4)
-```
-
-```{code-cell} julia
-a .< 0
-```
-
-```{code-cell} julia
-a[a .< 0]
-```
-
-#### Changing Dimensions
-
-The primary function for changing the dimensions of an array is `reshape()`
-
-```{code-cell} julia
-a = [10, 20, 30, 40]
-```
-
-```{code-cell} julia
-b = reshape(a, 2, 2)
-```
-
-```{code-cell} julia
-b
-```
-
-Notice that this function returns a view on the existing array.
-
-This means that changing the data in the new array will modify the data in the
-old one.
-
-```{code-cell} julia
-b[1, 1] = 100  # continuing the previous example
-```
-
-```{code-cell} julia
-b
-```
-
-```{code-cell} julia
-a
-```
-
-To collapse an array along one dimension you can use `dropdims()`
-
-```{code-cell} julia
-a = [1 2 3 4]  # two dimensional
-```
-
-```{code-cell} julia
-dropdims(a, dims = 1)
-```
-
-The return value is an array with the specified dimension "flattened".
-
-### Broadcasting Functions
-
-Julia provides standard mathematical functions such as `log`, `exp`, `sin`, etc.
-
-```{code-cell} julia
-log(1.0)
-```
-
-By default, these functions act *elementwise* on arrays
-
-```{code-cell} julia
-log.(1:4)
-```
-
-Note that we can get the same result as with a comprehension or more explicit loop
-
-```{code-cell} julia
-[ log(x) for x in 1:4 ]
-```
-
-Nonetheless the syntax is convenient.
-
-### Linear Algebra
-
-([See linear algebra documentation](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/))
-
-Julia provides some a great deal of additional functionality related to linear operations
-
-```{code-cell} julia
-A = [1 2; 3 4]
-```
-
-```{code-cell} julia
-det(A)
-```
-
-```{code-cell} julia
-tr(A)
-```
-
-```{code-cell} julia
-eigvals(A)
-```
-
-```{code-cell} julia
-rank(A)
-```
-
-## Ranges
-
-As with many other types, a `Range` can act as a vector.
-
-```{code-cell} julia
-a = 10:12        # a range, equivalent to 10:1:12
-@show Vector(a)  # can convert, but shouldn't
-
-b = Diagonal([1.0, 2.0, 3.0])
-b * a .- [1.0; 2.0; 3.0]
-```
-
-Ranges can also be created with floating point numbers using the same notation.
-
-```{code-cell} julia
-a = 0.0:0.1:1.0  # 0.0, 0.1, 0.2, ... 1.0
-```
-
-But care should be taken if the terminal node is not a multiple of the set sizes.
-
-```{code-cell} julia
-maxval = 1.0
-minval = 0.0
-stepsize = 0.15
-a = minval:stepsize:maxval # 0.0, 0.15, 0.3, ...
-maximum(a) == maxval
-```
-
-To evenly space points where the maximum value is important, i.e., `linspace` in other languages
-
-```{code-cell} julia
-maxval = 1.0
-minval = 0.0
-numpoints = 10
-a = range(minval, maxval, length=numpoints)
-# or range(minval, stop=maxval, length=numpoints)
-
-maximum(a) == maxval
-```
-
-## Tuples and Named Tuples
-
-([See tuples](https://docs.julialang.org/en/v1/manual/functions/#Tuples-1) and [named tuples documentation](https://docs.julialang.org/en/v1/manual/functions/#Named-Tuples-1))
-
-We were introduced to tuples earlier, which provide high-performance immutable sets of distinct types.
-
-```{code-cell} julia
-t = (1.0, "test")
-t[1]            # access by index
-a, b = t        # unpack
-# t[1] = 3.0    # would fail as tuples are immutable
-println("a = $a and b = $b")
-```
-
-As well as **named tuples**, which extend tuples with names for each argument.
-
-```{code-cell} julia
-t = (;val1 = 1.0, val2 = "test") # ; is optional but good form
-t.val1      # access by index
-println("val1 = $(t.val1) and val2 = $(t.val2)") # access by name
-(;val1, val2) = t  # unpacking notation (note the ;)
-println("val1 = $val1 and val2 = $val2")
-```
-
-While immutable, it is possible to manipulate tuples and generate new ones
-
-```{code-cell} julia
-t2 = (;val3 = 4, val4 = "test!!")
-t3 = merge(t, t2)  # new tuple
-```
-
-Named tuples are a convenient and high-performance way to manage and unpack sets of parameters
-
-```{code-cell} julia
-function f(parameters)
-    α, β = parameters.α, parameters.β # poor style, error prone
-    return α + β
-end
-
-parameters = (;α = 0.1, β = 0.2)
-f(parameters)
-```
-
-This functionality is aided by the unpacking notation
-
-```{code-cell} julia
-function f(parameters)
-    (;α, β) = parameters  # good style, less sensitive to errors
-    return α + β
-end
-
-parameters = (;α = 0.1, β = 0.2)
-f(parameters)
-```
-
-In order to manage default values, use the `@with_kw` from the `Parameters.jl` package
-
-```{code-cell} julia
-using Parameters
-paramgen = @with_kw (α = 0.1, β = 0.2)  # create named tuples with defaults
-
-# creates named tuples, replacing defaults
-@show paramgen()  # calling without arguments gives all defaults
-@show paramgen(α = 0.2)
-@show paramgen(α = 0.2, β = 0.5);
-```
-
-Or create a function which returns the named tuple with defaults, which can also do intermediate calculations
-```{code-cell} julia
-function paramgen2(;α = 0.1, β = 0.2)
-    return (;α, β)
-end
-@show paramgen2()
-@show paramgen2(;α = 0.2)
-```
-
-An alternative approach, defining a new type using `struct` tends to be more prone to accidental misuse, and leads to a great deal of boilerplate code.
-
-For that, and other reasons of generality, we will use named tuples for collections of parameters where possible.
-
-## Nothing, Missing, and Unions
-
-Sometimes a variable, return type from a function, or value in an array needs to represent the absence of a value rather than a particular value.
-
-There are two distinct use cases for this
-
-1. `nothing` ("software engineers null"): used where no value makes sense in a particular context due to a failure in the code, a function parameter not passed in, etc.
-1. `missing` ("data scientists null"): used when a value would make conceptual sense, but it isn't available.
-
-(error_handling)=
-### Nothing and Basic Error Handling
-
-The value `nothing` is a single value of type `Nothing`
-
-```{code-cell} julia
-typeof(nothing)
-```
-
-An example of a reasonable use of `nothing` is if you need to have a variable defined in an outer scope, which may or may not be set in an inner one
-
-```{code-cell} julia
-function f(y)
-    x = nothing
-    if y > 0.0
-        # calculations to set `x`
-        x = y
-    end
-
-    # later, can check `x`
-    if isnothing(x)
-        println("x was not set")
-    else
-        println("x = $x")
-    end
-    x
-end
-
-@show f(1.0)
-@show f(-1.0);
-```
-
-While in general you want to keep a variable name bound to a single type in Julia, this is a notable exception.
-
-Similarly, if needed, you can return a `nothing` from a function to indicate that it did not calculate as expected.
-
-```{code-cell} julia
-function f(x)
-    if x > 0.0
-        return sqrt(x)
-    else
-        return nothing
-    end
-end
-x1 = 1.0
-x2 = -1.0
-y1 = f(x1)
-y2 = f(x2)
-
-# check results with isnothing
-if isnothing(y1)
-    println("f($x2) successful")
-else
-    println("f($x2) failed");
-end
-```
-
-As an aside, an equivalent way to write the above function is to use the
-[ternary operator](https://docs.julialang.org/en/v1/manual/control-flow/index.html#man-conditional-evaluation-1),
-which gives a compact if/then/else structure
-
-```{code-cell} julia
-function f(x)
-    x > 0.0 ? sqrt(x) : nothing  # the "a ? b : c" pattern is the ternary
-end
-
-f(1.0)
-```
-
-We will sometimes use this form when it makes the code more clear (and it will occasionally make the code higher performance).
-
-Regardless of how `f(x)` is written,  the return type is an example of a union, where the result could be one of an explicit set of types.
-
-In this particular case, the compiler would deduce that the type would be a `Union{Nothing,Float64}` -- that is, it returns either a floating point or a `nothing`.
-
-You will see this type directly if you use an array containing both types
-
-```{code-cell} julia
-x = [1.0, nothing]
-```
-
-When considering error handling, whether you want a function to return `nothing` or simply fail depends on whether the code calling `f(x)` is carefully checking the results.
-
-For example, if you were calling on an array of parameters where a priori you were not sure which ones will succeed, then
-
-```{code-cell} julia
-x = [0.1, -1.0, 2.0, -2.0]
-y = f.(x)
-
-# presumably check `y`
-```
-
-On the other hand, if the parameter passed is invalid and you would prefer not to handle a graceful failure, then using an assertion is more appropriate.
-
-```{code-cell} julia
-function f(x)
-    @assert x > 0.0
-    sqrt(x)
-end
-
-f(1.0)
-```
-
-Finally, `nothing` is a good way to indicate an optional parameter in a function
-
-```{code-cell} julia
-function f(x; z = nothing)
-
-    if isnothing(z)
-        println("No z given with $x")
-    else
-        println("z = $z given with $x")
-    end
-end
-
-f(1.0)
-f(1.0, z=3.0)
-```
-
-An alternative to `nothing`, which can be useful and sometimes higher performance,
-is to use `NaN` to signal that a value is invalid returning from a function.
-
-```{code-cell} julia
-function f(x)
-    if x > 0.0
-        return x
-    else
-        return NaN
-    end
-end
-
-f(0.1)
-f(-1.0)
-
-@show typeof(f(-1.0))
-@show f(-1.0) == NaN  # note, this fails!
-@show isnan(f(-1.0))  # check with this
-```
-
-Note that in this case, the return type is `Float64` regardless of the input for `Float64` input.
-
-Keep in mind, though, that this only works if the return type of a function is `Float64`.
-
-### Exceptions
-
-(See [exceptions documentation](https://docs.julialang.org/en/v1/manual/control-flow/index.html#Exception-Handling-1))
-
-While returning a `nothing` can be a good way to deal with functions which may or may not return values, a more robust error handling method is to use exceptions.
-
-Unless you are writing a package, you will rarely want to define and throw your own exceptions, but will need to deal with them from other libraries.
-
-The key distinction for when to use an exceptions vs. return a `nothing` is whether an error is unexpected rather than a normal path of execution.
-
-An example of an exception is a `DomainError`, which signifies that a value passed to a function is invalid.
-
-```{code-cell} julia
-# throws exception, turned off to prevent breaking notebook
-# sqrt(-1.0)
-
-# to see the error
-try sqrt(-1.0); catch err; err end  # catches the exception and prints it
-```
-
-Another example you will see is when the compiler cannot convert between types.
-
-```{code-cell} julia
-# throws exception, turned off to prevent breaking notebook
-# convert(Int64, 3.12)
-
-# to see the error
-try convert(Int64, 3.12); catch err; err end  # catches the exception and prints it.
-```
-
-If these exceptions are generated from unexpected cases in your code, it may be appropriate simply let them occur and ensure you can read the error.
-
-Occasionally you will want to catch these errors and try to recover, as we did above in the `try` block.
-
-```{code-cell} julia
-function f(x)
-    try
-        sqrt(x)
-    catch err                # enters if exception thrown
-        sqrt(complex(x, 0))  # convert to complex number
-    end
-end
-
-f(0.0)
-f(-1.0)
-```
-
-(missing)=
-### Missing
-
-(see ["missing" documentation](https://docs.julialang.org/en/v1/manual/missing/))
-
-The value `missing` of type `Missing` is used to represent missing value in a statistical sense.
-
-For example, if you loaded data from a panel, and gaps existed
-
-```{code-cell} julia
-x = [3.0, missing, 5.0, missing, missing]
-```
-
-A key feature of `missing` is that it propagates through other function calls - unlike `nothing`
-
-```{code-cell} julia
-f(x) = x^2
-
-@show missing + 1.0
-@show missing * 2
-@show missing * "test"
-@show f(missing);      # even user-defined functions
-@show mean(x);
-```
-
-The purpose of this is to ensure that failures do not silently fail and provide meaningless numerical results.
-
-This even applies for the comparison of values, which
-
-```{code-cell} julia
-x = missing
-
-@show x == missing
-@show x === missing  # an exception
-@show ismissing(x);
-```
-
-Where `ismissing` is the canonical way to test the value.
-
-In the case where you would like to calculate a value without the missing values, you can use `skipmissing`.
-
-```{code-cell} julia
-x = [1.0, missing, 2.0, missing, missing, 5.0]
-
-@show mean(x)
-@show mean(skipmissing(x))
-@show coalesce.(x, 0.0);  # replace missing with 0.0;
-```
-
-As `missing` is similar to R's `NA` type, we will see more of `missing` when we cover `DataFrames`.
-
-## Exercises
-
-(np_ex1)=
-### Exercise 1
-
-This exercise uses matrix operations that arise in certain problems,
-including when dealing with linear stochastic difference equations.
-
-If you aren't familiar with all the terminology don't be concerned -- you can
-skim read the background discussion and focus purely on the matrix exercise.
-
-With that said, consider the stochastic difference equation
-
-```{math}
-:label: ja_sde
-
-X_{t+1} = A X_t + b + \Sigma W_{t+1}
-```
-
-Here
-
-* $X_t, b$ and $X_{t+1}$ are $n \times 1$
-* $A$ is $n \times n$
-* $\Sigma$ is $n \times k$
-* $W_t$ is $k \times 1$ and $\{W_t\}$ is iid with zero mean and variance-covariance matrix equal to the identity matrix
-
-Let $S_t$ denote the $n \times n$ variance-covariance matrix of $X_t$.
-
-Using the rules for computing variances in matrix expressions, it can be shown from {eq}`ja_sde` that $\{S_t\}$ obeys
-
-```{math}
-:label: ja_sde_v
-
-S_{t+1} = A S_t A' + \Sigma \Sigma'
-```
-
-It can be shown that, provided all eigenvalues of $A$ lie within the unit circle, the sequence $\{S_t\}$ converges to a unique limit $S$.
-
-This is the **unconditional variance** or **asymptotic variance** of the stochastic difference equation.
-
-As an exercise, try writing a simple function that solves for the limit $S$ by iterating on {eq}`ja_sde_v` given $A$ and $\Sigma$.
-
-To test your solution, observe that the limit $S$ is a solution to the matrix equation
-
-```{math}
-:label: ja_dle
-
-S = A S A' + Q
-\quad \text{where} \quad Q := \Sigma \Sigma'
-```
-
-This kind of equation is known as a **discrete time Lyapunov equation**.
-
-The [QuantEcon package](http://quantecon.org/quantecon-jl)
-provides a function called `solve_discrete_lyapunov` that implements a fast
-"doubling" algorithm to solve this equation.
-
-Test your iterative method against `solve_discrete_lyapunov` using matrices
-
-$$
-A =
-\begin{bmatrix}
-    0.8 & -0.2  \\
-    -0.1 & 0.7
-\end{bmatrix}
-\qquad
-\Sigma =
-\begin{bmatrix}
-    0.5 & 0.4 \\
-    0.4 & 0.6
-\end{bmatrix}
-$$
-
-### Exercise 2
-
-Take a stochastic process for $\{y_t\}_{t=0}^T$
-
-$$
-y_{t+1} = \gamma + \theta y_t + \sigma w_{t+1}
-$$
-
-where
-
-* $w_{t+1}$ is distributed `Normal(0,1)`
-* $\gamma=1, \sigma=1, y_0 = 0$
-* $\theta \in \Theta \equiv \{0.8, 0.9, 0.98\}$
-
-Given these parameters
-
-* Simulate a single $y_t$ series for each $\theta \in \Theta$
-  for $T = 150$.  Feel free to experiment with different $T$.
-* Overlay plots of the rolling mean of the process for each $\theta \in \Theta$,
-  i.e. for each $1 \leq \tau \leq T$ plot
-
-$$
-\frac{1}{\tau}\sum_{t=1}^{\tau}y_T
-$$
-
-* Simulate $N=200$ paths of the stochastic process above to the $T$,
-  for each $\theta \in \Theta$, where we refer to an element of a particular
-  simulation as $y^n_t$.
-* Overlay plots a histogram of the stationary distribution of the final
-  $y^n_T$ for each $\theta \in \Theta$.  Hint: pass `alpha`
-  to a plot to make it transparent (e.g. `histogram(vals, alpha = 0.5)`) or
-  use `stephist(vals)` to show just the step function for the histogram.
-* Numerically find the mean and variance of this as an ensemble average, i.e.
-  $\sum_{n=1}^N\frac{y^n_T}{N}$ and
-  $\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\left(\sum_{n=1}^N\frac{y^n_T}{N}\right)^2$.
-
-Later, we will interpret some of these in {doc}`this lecture <../tools_and_techniques/lln_clt>`.
-
-### Exercise 3
-
-Let the data generating process for a variable be
-
-$$
-y = a x_1 + b x_1^2 + c x_2 + d + \sigma w
-$$
-
-where $y, x_1, x_2$ are scalar observables, $a,b,c,d$ are parameters to estimate, and $w$ are iid normal with mean 0 and variance 1.
-
-First, let's simulate data we can use to estimate the parameters
-
-* Draw $N=50$ values for $x_1, x_2$ from iid normal distributions.
-
-Then, simulate with different $w$
-* Draw a $w$ vector for the `N` values and then `y` from this simulated data if the parameters were $a = 0.1, b = 0.2 c = 0.5, d = 1.0, \sigma = 0.1$.
-* Repeat that so you have `M = 20` different simulations of the `y` for the `N` values.
-
-Finally, calculate order least squares manually (i.e., put the observables
-into matrices and vectors, and directly use the equations for
-[OLS](https://en.wikipedia.org/wiki/Ordinary_least_squares) rather than a package).
-
-* For each of the `M=20` simulations, calculate the OLS estimates for $a, b, c, d, \sigma$.
-* Plot a histogram of these estimates for each variable.
-
-### Exercise 4
-
-Redo Exercise 1 using the `fixedpoint` function from `NLsolve` {doc}`this lecture <julia_by_example>`.
-
-Compare the number of iterations of the NLsolve's Anderson Acceleration to the handcoded iteration used in Exercise 1.
-
-Hint: Convert the matrix to a vector to use `fixedpoint`. e.g. `A = [1 2; 3 4]` then `x = reshape(A, 4)` turns it into a vector.  To reverse, `reshape(x, 2, 2)`.
-
-## Solutions
-
-### Exercise 1
-
-Here's the iterative approach
-
-```{code-cell} julia
-function compute_asymptotic_var(A, Σ;
-                                S0 = Σ * Σ',
-                                tolerance = 1e-6,
-                                maxiter = 500)
-    V = Σ * Σ'
-    S = S0
-    err = tolerance + 1
-    i = 1
-    while err > tolerance && i ≤ maxiter
-        next_S = A * S * A' + V
-        err = norm(S - next_S)
-        S = next_S
-        i += 1
-    end
-    return S
-end
-```
-
-```{code-cell} julia
-A = [0.8  -0.2;
-     -0.1  0.7]
-
-Σ = [0.5 0.4;
-     0.4 0.6]
-```
-
-Note that all eigenvalues of $A$ lie inside the unit disc.
-
-```{code-cell} julia
-maximum(abs, eigvals(A))
-```
-
-Let's compute the asymptotic variance
-
-```{code-cell} julia
-our_solution = compute_asymptotic_var(A, Σ)
-```
-
-Now let's do the same thing using QuantEcon's `solve_discrete_lyapunov()` function and check we get the same result.
-
-```{code-cell} julia
----
-tags: [hide-output]
----
-using QuantEcon
-```
-
-```{code-cell} julia
-norm(our_solution - solve_discrete_lyapunov(A, Σ * Σ'))
-```
-
+Sigma-Sigma-Sigma-Sigma
+SigmajSigmauSigmapSigmaySigmatSigmaeSigmaxSigmatSigma:Sigma
+Sigma Sigma SigmatSigmaeSigmaxSigmatSigma_SigmarSigmaeSigmapSigmarSigmaeSigmasSigmaeSigmanSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma:Sigma
+Sigma Sigma Sigma Sigma SigmaeSigmaxSigmatSigmaeSigmanSigmasSigmaiSigmaoSigmanSigma:Sigma Sigma.SigmamSigmadSigma
+Sigma Sigma Sigma Sigma SigmafSigmaoSigmarSigmamSigmaaSigmatSigma_SigmanSigmaaSigmamSigmaeSigma:Sigma SigmamSigmaySigmasSigmatSigma
+SigmakSigmaeSigmarSigmanSigmaeSigmalSigmasSigmapSigmaeSigmacSigma:Sigma
+Sigma Sigma SigmadSigmaiSigmasSigmapSigmalSigmaaSigmaySigma_SigmanSigmaaSigmamSigmaeSigma:Sigma SigmaJSigmauSigmalSigmaiSigmaaSigma
+Sigma Sigma SigmalSigmaaSigmanSigmagSigmauSigmaaSigmagSigmaeSigma:Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma Sigma SigmanSigmaaSigmamSigmaeSigma:Sigma SigmajSigmauSigmalSigmaiSigmaaSigma-Sigma1Sigma.Sigma9Sigma Sigma Sigma Sigma Sigma
+Sigma-Sigma-Sigma-Sigma
+Sigma
+Sigma(SigmafSigmauSigmanSigmadSigmaaSigmamSigmaeSigmanSigmatSigmaaSigmalSigma_SigmatSigmaySigmapSigmaeSigmasSigma)Sigma=Sigma
+Sigma`Sigma`Sigma`Sigma{SigmarSigmaaSigmawSigma}Sigma SigmahSigmatSigmamSigmalSigma
+Sigma<SigmadSigmaiSigmavSigma SigmaiSigmadSigma=Sigma"SigmaqSigmaeSigma-SigmanSigmaoSigmatSigmaeSigmabSigmaoSigmaoSigmakSigma-SigmahSigmaeSigmaaSigmadSigmaeSigmarSigma"Sigma SigmasSigmatSigmaySigmalSigmaeSigma=Sigma"SigmatSigmaeSigmaxSigmatSigma-SigmaaSigmalSigmaiSigmagSigmanSigma:SigmarSigmaiSigmagSigmahSigmatSigma;Sigma"Sigma>Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma<SigmaaSigma SigmahSigmarSigmaeSigmafSigma=Sigma"SigmahSigmatSigmatSigmapSigmasSigma:Sigma/Sigma/SigmaqSigmauSigmaaSigmanSigmatSigmaeSigmacSigmaoSigmanSigma.SigmaoSigmarSigmagSigma/Sigma"Sigma SigmatSigmaiSigmatSigmalSigmaeSigma=Sigma"SigmaqSigmauSigmaaSigmanSigmatSigmaeSigmacSigmaoSigmanSigma.SigmaoSigmarSigmagSigma"Sigma>Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma<SigmaiSigmamSigmagSigma SigmasSigmatSigmaySigmalSigmaeSigma=Sigma"SigmawSigmaiSigmadSigmatSigmahSigma:Sigma2Sigma5Sigma0SigmapSigmaxSigma;SigmadSigmaiSigmasSigmapSigmalSigmaaSigmaySigma:SigmaiSigmanSigmalSigmaiSigmanSigmaeSigma;Sigma"Sigma SigmasSigmarSigmacSigma=Sigma"SigmahSigmatSigmatSigmapSigmasSigma:Sigma/Sigma/SigmaaSigmasSigmasSigmaeSigmatSigmasSigma.SigmaqSigmauSigmaaSigmanSigmatSigmaeSigmacSigmaoSigmanSigma.SigmaoSigmarSigmagSigma/SigmaiSigmamSigmagSigma/SigmaqSigmaeSigma-SigmamSigmaeSigmanSigmauSigmabSigmaaSigmarSigma-SigmalSigmaoSigmagSigmaoSigma.SigmasSigmavSigmagSigma"Sigma SigmaaSigmalSigmatSigma=Sigma"SigmaQSigmauSigmaaSigmanSigmatSigmaESigmacSigmaoSigmanSigma"Sigma>Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma<Sigma/SigmaaSigma>Sigma
+Sigma<Sigma/SigmadSigmaiSigmavSigma>Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma SigmaASigmarSigmarSigmaaSigmaySigmasSigma,Sigma SigmaTSigmauSigmapSigmalSigmaeSigmasSigma,Sigma SigmaRSigmaaSigmanSigmagSigmaeSigmasSigma,Sigma SigmaaSigmanSigmadSigma SigmaOSigmatSigmahSigmaeSigmarSigma SigmaFSigmauSigmanSigmadSigmaaSigmamSigmaeSigmanSigmatSigmaaSigmalSigma SigmaTSigmaySigmapSigmaeSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmanSigmatSigmaeSigmanSigmatSigmasSigma}Sigma SigmaCSigmaoSigmanSigmatSigmaeSigmanSigmatSigmasSigma
+Sigma:SigmadSigmaeSigmapSigmatSigmahSigma:Sigma Sigma2Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmaeSigmapSigmaiSigmagSigmarSigmaaSigmapSigmahSigma}Sigma
+Sigma"SigmaLSigmaeSigmatSigma'SigmasSigma SigmabSigmaeSigma SigmacSigmalSigmaeSigmaaSigmarSigma:Sigma SigmatSigmahSigmaeSigma SigmawSigmaoSigmarSigmakSigma SigmaoSigmafSigma SigmasSigmacSigmaiSigmaeSigmanSigmacSigmaeSigma SigmahSigmaaSigmasSigma SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma SigmawSigmahSigmaaSigmatSigmaeSigmavSigmaeSigmarSigma SigmatSigmaoSigma SigmadSigmaoSigma SigmawSigmaiSigmatSigmahSigma SigmacSigmaoSigmanSigmasSigmaeSigmanSigmasSigmauSigmasSigma.Sigma
+SigmaCSigmaoSigmanSigmasSigmaeSigmanSigmasSigmauSigmasSigma SigmaiSigmasSigma SigmatSigmahSigmaeSigma SigmabSigmauSigmasSigmaiSigmanSigmaeSigmasSigmasSigma SigmaoSigmafSigma SigmapSigmaoSigmalSigmaiSigmatSigmaiSigmacSigmasSigma.Sigma SigmaSSigmacSigmaiSigmaeSigmanSigmacSigmaeSigma,Sigma SigmaoSigmanSigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmanSigmatSigmarSigmaaSigmarSigmaySigma,Sigma SigmarSigmaeSigmaqSigmauSigmaiSigmarSigmaeSigmasSigma SigmaoSigmanSigmalSigmaySigma
+SigmaoSigmanSigmaeSigma SigmaiSigmanSigmavSigmaeSigmasSigmatSigmaiSigmagSigmaaSigmatSigmaoSigmarSigma SigmawSigmahSigmaoSigma SigmahSigmaaSigmapSigmapSigmaeSigmanSigmasSigma SigmatSigmaoSigma SigmabSigmaeSigma SigmarSigmaiSigmagSigmahSigmatSigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmamSigmaeSigmaaSigmanSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmahSigmaeSigma SigmaoSigmarSigma SigmasSigmahSigmaeSigma SigmahSigmaaSigmasSigma
+SigmarSigmaeSigmasSigmauSigmalSigmatSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmaaSigmarSigmaeSigma SigmavSigmaeSigmarSigmaiSigmafSigmaiSigmaaSigmabSigmalSigmaeSigma SigmabSigmaySigma SigmarSigmaeSigmafSigmaeSigmarSigmaeSigmanSigmacSigmaeSigma SigmatSigmaoSigma SigmatSigmahSigmaeSigma SigmarSigmaeSigmaaSigmalSigma SigmawSigmaoSigmarSigmalSigmadSigma.Sigma SigmaISigmanSigma SigmasSigmacSigmaiSigmaeSigmanSigmacSigmaeSigma
+SigmacSigmaoSigmanSigmasSigmaeSigmanSigmasSigmauSigmasSigma SigmaiSigmasSigma SigmaiSigmarSigmarSigmaeSigmalSigmaeSigmavSigmaaSigmanSigmatSigma.Sigma SigmaWSigmahSigmaaSigmatSigma SigmaiSigmasSigma SigmarSigmaeSigmalSigmaeSigmavSigmaaSigmanSigmatSigma SigmaiSigmasSigma SigmarSigmaeSigmapSigmarSigmaoSigmadSigmauSigmacSigmaiSigmabSigmalSigmaeSigma SigmarSigmaeSigmasSigmauSigmalSigmatSigmasSigma.Sigma"Sigma Sigma-Sigma-Sigma SigmaMSigmaiSigmacSigmahSigmaaSigmaeSigmalSigma SigmaCSigmarSigmaiSigmacSigmahSigmatSigmaoSigmanSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma SigmaOSigmavSigmaeSigmarSigmavSigmaiSigmaeSigmawSigma
+Sigma
+SigmaISigmanSigma SigmaJSigmauSigmalSigmaiSigmaaSigma,Sigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma SigmaaSigmanSigmadSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma SigmaaSigmarSigmaeSigma SigmatSigmahSigmaeSigma SigmamSigmaoSigmasSigmatSigma SigmaiSigmamSigmapSigmaoSigmarSigmatSigmaaSigmanSigmatSigma SigmadSigmaaSigmatSigmaaSigma SigmatSigmaySigmapSigmaeSigma SigmafSigmaoSigmarSigma SigmawSigmaoSigmarSigmakSigmaiSigmanSigmagSigma SigmawSigmaiSigmatSigmahSigma SigmanSigmauSigmamSigmaeSigmarSigmaiSigmacSigmaaSigmalSigma SigmadSigmaaSigmatSigmaaSigma.Sigma
+Sigma
+SigmaISigmanSigma SigmatSigmahSigmaiSigmasSigma SigmalSigmaeSigmacSigmatSigmauSigmarSigmaeSigma SigmawSigmaeSigma SigmagSigmaiSigmavSigmaeSigma SigmamSigmaoSigmarSigmaeSigma SigmadSigmaeSigmatSigmaaSigmaiSigmalSigmasSigma SigmaoSigmanSigma
+Sigma
+Sigma*Sigma SigmacSigmarSigmaeSigmaaSigmatSigmaiSigmanSigmagSigma SigmaaSigmanSigmadSigma SigmamSigmaaSigmanSigmaiSigmapSigmauSigmalSigmaaSigmatSigmaiSigmanSigmagSigma SigmaJSigmauSigmalSigmaiSigmaaSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma
+Sigma*Sigma SigmafSigmauSigmanSigmadSigmaaSigmamSigmaeSigmanSigmatSigmaaSigmalSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmapSigmarSigmaoSigmacSigmaeSigmasSigmasSigmaiSigmanSigmagSigma SigmaoSigmapSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma
+Sigma*Sigma SigmabSigmaaSigmasSigmaiSigmacSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmaaSigmalSigmagSigmaeSigmabSigmarSigmaaSigma
+Sigma*Sigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma SigmaaSigmanSigmadSigma SigmanSigmaaSigmamSigmaeSigmadSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma
+Sigma*Sigma SigmarSigmaaSigmanSigmagSigmaeSigmasSigma
+Sigma*Sigma SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma,Sigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma,Sigma SigmaaSigmanSigmadSigma SigmauSigmanSigmaiSigmaoSigmanSigmasSigma
+Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmauSigmasSigmaiSigmanSigmagSigma SigmaLSigmaiSigmanSigmaeSigmaaSigmarSigmaASigmalSigmagSigmaeSigmabSigmarSigmaaSigma,Sigma SigmaSSigmatSigmaaSigmatSigmaiSigmasSigmatSigmaiSigmacSigmasSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma SigmaASigmarSigmarSigmaaSigmaySigma SigmaBSigmaaSigmasSigmaiSigmacSigmasSigma
+Sigma
+Sigma(Sigma[SigmaSSigmaeSigmaeSigma SigmamSigmauSigmalSigmatSigmaiSigma-SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma SigmadSigmaoSigmacSigmauSigmamSigmaeSigmanSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma]Sigma(SigmahSigmatSigmatSigmapSigmasSigma:Sigma/Sigma/SigmadSigmaoSigmacSigmasSigma.SigmajSigmauSigmalSigmaiSigmaaSigmalSigmaaSigmanSigmagSigma.SigmaoSigmarSigmagSigma/SigmaeSigmanSigma/SigmavSigma1Sigma/SigmamSigmaaSigmanSigmauSigmaaSigmalSigma/SigmaaSigmarSigmarSigmaaSigmaySigmasSigma/Sigma)Sigma)Sigma
+Sigma
+SigmaSSigmaiSigmanSigmacSigmaeSigma SigmaiSigmatSigma SigmaiSigmasSigma SigmaoSigmanSigmaeSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmamSigmaoSigmasSigmatSigma SigmaiSigmamSigmapSigmaoSigmarSigmatSigmaaSigmanSigmatSigma SigmatSigmaySigmapSigmaeSigmasSigma,Sigma SigmawSigmaeSigma SigmawSigmaiSigmalSigmalSigma SigmasSigmatSigmaaSigmarSigmatSigma SigmawSigmaiSigmatSigmahSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma.Sigma
+Sigma
+SigmaLSigmaaSigmatSigmaeSigmarSigma,Sigma SigmawSigmaeSigma SigmawSigmaiSigmalSigmalSigma SigmasSigmaeSigmaeSigma SigmahSigmaoSigmawSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma Sigma(SigmaaSigmanSigmadSigma SigmaaSigmalSigmalSigma SigmaoSigmatSigmahSigmaeSigmarSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmaiSigmanSigma SigmaJSigmauSigmalSigmaiSigmaaSigma)Sigma SigmaaSigmarSigmaeSigma SigmahSigmaaSigmanSigmadSigmalSigmaeSigmadSigma SigmaiSigmanSigma SigmaaSigma SigmagSigmaeSigmanSigmaeSigmarSigmaiSigmacSigma SigmaaSigmanSigmadSigma SigmaeSigmaxSigmatSigmaeSigmanSigmasSigmaiSigmabSigmalSigmaeSigma SigmawSigmaaSigmaySigma.Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaSSigmahSigmaaSigmapSigmaeSigma SigmaaSigmanSigmadSigma SigmaDSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigma
+Sigma
+SigmaWSigmaeSigma'SigmavSigmaeSigma SigmaaSigmalSigmarSigmaeSigmaaSigmadSigmaySigma SigmasSigmaeSigmaeSigmanSigma SigmasSigmaoSigmamSigmaeSigma SigmaJSigmauSigmalSigmaiSigmaaSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma SigmaiSigmanSigma SigmaaSigmacSigmatSigmaiSigmaoSigmanSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma0Sigma,Sigma Sigma2Sigma0Sigma,Sigma Sigma3Sigma0Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma.Sigma0Sigma,Sigma Sigma2Sigma.Sigma0Sigma,Sigma Sigma3Sigma.Sigma0Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmaoSigmauSigmatSigmapSigmauSigmatSigma SigmatSigmaeSigmalSigmalSigmasSigma SigmauSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaeSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma SigmaaSigmarSigmaeSigma SigmaoSigmafSigma SigmatSigmaySigmapSigmaeSigmasSigma Sigma`SigmaASigmarSigmarSigmaaSigmaySigma{SigmaISigmanSigmatSigma6Sigma4Sigma,Sigma1Sigma}Sigma`Sigma SigmaaSigmanSigmadSigma Sigma`SigmaASigmarSigmarSigmaaSigmaySigma{SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma,Sigma1Sigma}Sigma`Sigma SigmarSigmaeSigmasSigmapSigmaeSigmacSigmatSigmaiSigmavSigmaeSigmalSigmaySigma.Sigma
+Sigma
+SigmaHSigmaeSigmarSigmaeSigma Sigma`SigmaISigmanSigmatSigma6Sigma4Sigma`Sigma SigmaaSigmanSigmadSigma Sigma`SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma`Sigma SigmaaSigmarSigmaeSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmafSigmaoSigmarSigma SigmatSigmahSigmaeSigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigmasSigma SigmaiSigmanSigmafSigmaeSigmarSigmarSigmaeSigmadSigma SigmabSigmaySigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmamSigmapSigmaiSigmalSigmaeSigmarSigma.Sigma
+Sigma
+SigmaWSigmaeSigma'SigmalSigmalSigma SigmatSigmaaSigmalSigmakSigma SigmamSigmaoSigmarSigmaeSigma SigmaaSigmabSigmaoSigmauSigmatSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmalSigmaaSigmatSigmaeSigmarSigma.Sigma
+Sigma
+SigmaTSigmahSigmaeSigma Sigma`Sigma1Sigma`Sigma SigmaiSigmanSigma Sigma`SigmaASigmarSigmarSigmaaSigmaySigma{SigmaISigmanSigmatSigma6Sigma4Sigma,Sigma1Sigma}Sigma`Sigma SigmaaSigmanSigmadSigma Sigma`SigmaASigmarSigmarSigmaaSigmaySigma{SigmaASigmanSigmaySigma,Sigma1Sigma}Sigma`Sigma SigmaiSigmanSigmadSigmaiSigmacSigmaaSigmatSigmaeSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaeSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmaiSigmasSigma
+SigmaoSigmanSigmaeSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma Sigma(SigmaiSigma.SigmaeSigma.Sigma,Sigma SigmaaSigma Sigma`SigmaVSigmaeSigmacSigmatSigmaoSigmarSigma`Sigma)Sigma.Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaiSigmasSigma SigmatSigmahSigmaeSigma SigmadSigmaeSigmafSigmaaSigmauSigmalSigmatSigma SigmafSigmaoSigmarSigma SigmamSigmaaSigmanSigmaySigma SigmaJSigmauSigmalSigmaiSigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmatSigmaySigmapSigmaeSigmaoSigmafSigma(SigmarSigmaaSigmanSigmadSigmanSigma(Sigma1Sigma0Sigma0Sigma)Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaISigmanSigma SigmaJSigmauSigmalSigmaiSigmaaSigma,Sigma SigmaoSigmanSigmaeSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigmasSigma SigmaaSigmarSigmaeSigma SigmabSigmaeSigmasSigmatSigma SigmaiSigmanSigmatSigmaeSigmarSigmapSigmarSigmaeSigmatSigmaeSigmadSigma SigmaaSigmasSigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigmasSigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmawSigmaeSigma SigmawSigmaiSigmalSigmalSigma SigmasSigmaeSigmaeSigma SigmawSigmahSigmaeSigmanSigma SigmawSigmaeSigma SigmatSigmaaSigmakSigmaeSigma SigmatSigmarSigmaaSigmanSigmasSigmapSigmaoSigmasSigmaeSigmasSigma.Sigma
+Sigma
+SigmaWSigmaeSigma SigmacSigmaaSigmanSigma SigmacSigmahSigmaeSigmacSigmakSigma SigmatSigmahSigmaeSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmasSigma SigmaoSigmafSigma Sigma`SigmaaSigma`Sigma SigmauSigmasSigmaiSigmanSigmagSigma Sigma`SigmasSigmaiSigmazSigmaeSigma(Sigma)Sigma`Sigma SigmaaSigmanSigmadSigma Sigma`SigmanSigmadSigmaiSigmamSigmasSigma(Sigma)Sigma`Sigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmanSigmadSigmaiSigmamSigmasSigma(SigmaaSigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmasSigmaiSigmazSigmaeSigma(SigmaaSigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmasSigmaySigmanSigmatSigmaaSigmaxSigma Sigma`Sigma(Sigma3Sigma,Sigma)Sigma`Sigma SigmadSigmaiSigmasSigmapSigmalSigmaaSigmaySigmasSigma SigmaaSigma SigmatSigmauSigmapSigmalSigmaeSigma SigmacSigmaoSigmanSigmatSigmaaSigmaiSigmanSigmaiSigmanSigmagSigma SigmaoSigmanSigmaeSigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigma Sigma-Sigma-Sigma SigmatSigmahSigmaeSigma SigmasSigmaiSigmazSigmaeSigma SigmaaSigmalSigmaoSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmaoSigmanSigmaeSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigma SigmatSigmahSigmaaSigmatSigma SigmaeSigmaxSigmaiSigmasSigmatSigmasSigma.Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma#Sigma SigmaASigmarSigmarSigmaaSigmaySigma SigmavSigmasSigma SigmaVSigmaeSigmacSigmatSigmaoSigmarSigma SigmavSigmasSigma SigmaMSigmaaSigmatSigmarSigmaiSigmaxSigma
+Sigma
+SigmaISigmanSigma SigmaJSigmauSigmalSigmaiSigmaaSigma,Sigma Sigma`SigmaVSigmaeSigmacSigmatSigmaoSigmarSigma`Sigma SigmaaSigmanSigmadSigma Sigma`SigmaMSigmaaSigmatSigmarSigmaiSigmaxSigma`Sigma SigmaaSigmarSigmaeSigma SigmajSigmauSigmasSigmatSigma SigmaaSigmalSigmaiSigmaaSigmasSigmaeSigmasSigma SigmafSigmaoSigmarSigma SigmaoSigmanSigmaeSigma-Sigma SigmaaSigmanSigmadSigma SigmatSigmawSigmaoSigma-SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma
+SigmarSigmaeSigmasSigmapSigmaeSigmacSigmatSigmaiSigmavSigmaeSigmalSigmaySigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaASigmarSigmarSigmaaSigmaySigma{SigmaISigmanSigmatSigma6Sigma4Sigma,Sigma Sigma1Sigma}Sigma Sigma=Sigma=Sigma SigmaVSigmaeSigmacSigmatSigmaoSigmarSigma{SigmaISigmanSigmatSigma6Sigma4Sigma}Sigma
+SigmaASigmarSigmarSigmaaSigmaySigma{SigmaISigmanSigmatSigma6Sigma4Sigma,Sigma Sigma2Sigma}Sigma Sigma=Sigma=Sigma SigmaMSigmaaSigmatSigmarSigmaiSigmaxSigma{SigmaISigmanSigmatSigma6Sigma4Sigma}Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaVSigmaeSigmacSigmatSigmaoSigmarSigma SigmacSigmaoSigmanSigmasSigmatSigmarSigmauSigmacSigmatSigmaiSigmaoSigmanSigma SigmawSigmaiSigmatSigmahSigma Sigma`Sigma,Sigma`Sigma SigmaiSigmasSigma SigmatSigmahSigmaeSigmanSigma SigmaiSigmanSigmatSigmaeSigmarSigmapSigmarSigmaeSigmatSigmaeSigmadSigma SigmaaSigmasSigma SigmaaSigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma.Sigma
+Sigma
+SigmaTSigmaoSigma SigmasSigmaeSigmaeSigma SigmatSigmahSigmaiSigmasSigma,Sigma SigmawSigmaeSigma SigmacSigmaaSigmanSigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigma SigmaaSigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmaaSigmanSigmadSigma SigmarSigmaoSigmawSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmamSigmaoSigmarSigmaeSigma SigmadSigmaiSigmarSigmaeSigmacSigmatSigmalSigmaySigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma[Sigma1Sigma,Sigma Sigma2Sigma,Sigma Sigma3Sigma]Sigma Sigma=Sigma=Sigma Sigma[Sigma1Sigma;Sigma Sigma2Sigma;Sigma Sigma3Sigma]Sigma Sigma Sigma#Sigma SigmabSigmaoSigmatSigmahSigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigmasSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma[Sigma1Sigma Sigma2Sigma Sigma3Sigma]Sigma Sigma Sigma#Sigma SigmaaSigma SigmarSigmaoSigmawSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmaiSigmasSigma Sigma2Sigma-SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmasSigma SigmawSigmaeSigma'SigmavSigmaeSigma SigmasSigmaeSigmaeSigmanSigma,Sigma SigmaiSigmanSigma SigmaJSigmauSigmalSigmaiSigmaaSigma SigmawSigmaeSigma SigmahSigmaaSigmavSigmaeSigma SigmabSigmaoSigmatSigmahSigma
+Sigma
+Sigma*Sigma SigmaoSigmanSigmaeSigma-SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma Sigma(SigmaiSigma.SigmaeSigma.Sigma,Sigma SigmafSigmalSigmaaSigmatSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma)Sigma
+Sigma*Sigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma SigmaoSigmafSigma SigmasSigmaiSigmazSigmaeSigma Sigma`Sigma(Sigma1Sigma,Sigma SigmanSigma)Sigma`Sigma SigmaoSigmarSigma Sigma`Sigma(SigmanSigma,Sigma Sigma1Sigma)Sigma`Sigma SigmatSigmahSigmaaSigmatSigma SigmarSigmaeSigmapSigmarSigmaeSigmasSigmaeSigmanSigmatSigma SigmarSigmaoSigmawSigma SigmaaSigmanSigmadSigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigmasSigma SigmarSigmaeSigmasSigmapSigmaeSigmacSigmatSigmaiSigmavSigmaeSigmalSigmaySigma
+Sigma
+SigmaWSigmahSigmaySigma SigmadSigmaoSigma SigmawSigmaeSigma SigmanSigmaeSigmaeSigmadSigma SigmabSigmaoSigmatSigmahSigma?Sigma
+Sigma
+SigmaOSigmanSigma SigmaoSigmanSigmaeSigma SigmahSigmaaSigmanSigmadSigma,Sigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigma SigmamSigmaaSigmatSigmatSigmaeSigmarSigmasSigma SigmafSigmaoSigmarSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmaaSigmalSigmagSigmaeSigmabSigmarSigmaaSigma.Sigma
+Sigma
+Sigma*Sigma SigmaMSigmauSigmalSigmatSigmaiSigmapSigmalSigmaySigmaiSigmanSigmagSigma SigmabSigmaySigma SigmaaSigma SigmarSigmaoSigmawSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmaiSigmasSigma SigmadSigmaiSigmafSigmafSigmaeSigmarSigmaeSigmanSigmatSigma SigmatSigmaoSigma SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaySigmaiSigmanSigmagSigma SigmabSigmaySigma SigmaaSigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma.Sigma
+Sigma
+SigmaOSigmanSigma SigmatSigmahSigmaeSigma SigmaoSigmatSigmahSigmaeSigmarSigma,Sigma SigmawSigmaeSigma SigmauSigmasSigmaeSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma SigmaiSigmanSigma SigmamSigmaaSigmanSigmaySigma SigmasSigmaeSigmatSigmatSigmaiSigmanSigmagSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmadSigmaoSigmanSigma'SigmatSigma SigmaiSigmanSigmavSigmaoSigmalSigmavSigmaeSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmaaSigmalSigmagSigmaeSigmabSigmarSigmaaSigma.Sigma
+Sigma
+SigmaISigmanSigma SigmasSigmauSigmacSigmahSigma SigmacSigmaaSigmasSigmaeSigmasSigma,Sigma SigmawSigmaeSigma SigmadSigmaoSigmanSigma'SigmatSigma SigmacSigmaaSigmarSigmaeSigma SigmaaSigmabSigmaoSigmauSigmatSigma SigmatSigmahSigmaeSigma SigmadSigmaiSigmasSigmatSigmaiSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmabSigmaeSigmatSigmawSigmaeSigmaeSigmanSigma SigmarSigmaoSigmawSigma SigmaaSigmanSigmadSigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigmasSigma.Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaiSigmasSigma SigmawSigmahSigmaySigma SigmamSigmaaSigmanSigmaySigma SigmaJSigmauSigmalSigmaiSigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmafSigmalSigmaaSigmatSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma SigmabSigmaySigma SigmadSigmaeSigmafSigmaaSigmauSigmalSigmatSigma.Sigma
+Sigma
+Sigma(SigmacSigmarSigmaeSigmaaSigmatSigmaiSigmanSigmagSigma_SigmaaSigmarSigmarSigmaaSigmaySigmasSigma)Sigma=Sigma
+Sigma#Sigma#Sigma#Sigma SigmaCSigmarSigmaeSigmaaSigmatSigmaiSigmanSigmagSigma SigmaASigmarSigmarSigmaaSigmaySigmasSigma
+Sigma
+Sigma#Sigma#Sigma#Sigma#Sigma SigmaFSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmaCSigmarSigmaeSigmaaSigmatSigmaeSigma SigmaASigmarSigmarSigmaaSigmaySigmasSigma
+Sigma
+SigmaWSigmaeSigma'SigmavSigmaeSigma SigmaaSigmalSigmarSigmaeSigmaaSigmadSigmaySigma SigmasSigmaeSigmaeSigmanSigma SigmasSigmaoSigmamSigmaeSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmafSigmaoSigmarSigma SigmacSigmarSigmaeSigmaaSigmatSigmaiSigmanSigmagSigma SigmaaSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmafSigmaiSigmalSigmalSigmaeSigmadSigma SigmawSigmaiSigmatSigmahSigma Sigma`Sigma0Sigma.Sigma0Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmazSigmaeSigmarSigmaoSigmasSigma(Sigma3Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmalSigmaiSigmazSigmaeSigmasSigma SigmatSigmaoSigma SigmamSigmaaSigmatSigmarSigmaiSigmacSigmaeSigmasSigma SigmaaSigmanSigmadSigma SigmahSigmaiSigmagSigmahSigmaeSigmarSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmazSigmaeSigmarSigmaoSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmaoSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmafSigmaiSigmalSigmalSigmaeSigmadSigma SigmawSigmaiSigmatSigmahSigma SigmaaSigma SigmasSigmaiSigmanSigmagSigmalSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigma,Sigma SigmauSigmasSigmaeSigma Sigma`SigmafSigmaiSigmalSigmalSigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmaiSigmalSigmalSigma(Sigma5Sigma.Sigma0Sigma,Sigma Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaFSigmaiSigmanSigmaaSigmalSigmalSigmaySigma,Sigma SigmaySigmaoSigmauSigma SigmacSigmaaSigmanSigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigma SigmaaSigmanSigma SigmaeSigmamSigmapSigmatSigmaySigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmauSigmasSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma Sigma`SigmaASigmarSigmarSigmaaSigmaySigma(Sigma)Sigma`Sigma SigmacSigmaoSigmanSigmasSigmatSigmarSigmauSigmacSigmatSigmaoSigmarSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma SigmaASigmarSigmarSigmaaSigmaySigma{SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma}Sigma(SigmauSigmanSigmadSigmaeSigmafSigma,Sigma Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmapSigmarSigmaiSigmanSigmatSigmaeSigmadSigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma SigmaySigmaoSigmauSigma SigmasSigmaeSigmaeSigma SigmahSigmaeSigmarSigmaeSigma SigmaaSigmarSigmaeSigma SigmajSigmauSigmasSigmatSigma SigmagSigmaaSigmarSigmabSigmaaSigmagSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma.Sigma
+Sigma
+Sigma(SigmatSigmahSigmaeSigma SigmaeSigmaxSigmaiSigmasSigmatSigmaiSigmanSigmagSigma SigmacSigmaoSigmanSigmatSigmaeSigmanSigmatSigmasSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmaaSigmalSigmalSigmaoSigmacSigmaaSigmatSigmaeSigmadSigma SigmamSigmaeSigmamSigmaoSigmarSigmaySigma SigmasSigmalSigmaoSigmatSigmasSigma SigmabSigmaeSigmaiSigmanSigmagSigma SigmaiSigmanSigmatSigmaeSigmarSigmapSigmarSigmaeSigmatSigmaeSigmadSigma SigmaaSigmasSigma Sigma6Sigma4Sigma SigmabSigmaiSigmatSigma SigmafSigmalSigmaoSigmaaSigmatSigmasSigma)Sigma
+Sigma
+SigmaISigmafSigma SigmaySigmaoSigmauSigma SigmanSigmaeSigmaeSigmadSigma SigmamSigmaoSigmarSigmaeSigma SigmacSigmaoSigmanSigmatSigmarSigmaoSigmalSigma SigmaoSigmavSigmaeSigmarSigma SigmatSigmahSigmaeSigma SigmatSigmaySigmapSigmaeSigmasSigma,Sigma SigmafSigmaiSigmalSigmalSigma SigmawSigmaiSigmatSigmahSigma SigmaaSigma SigmanSigmaoSigmanSigma-SigmafSigmalSigmaoSigmaaSigmatSigmaiSigmanSigmagSigma SigmapSigmaoSigmaiSigmanSigmatSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmaiSigmalSigmalSigma(Sigma0Sigma,Sigma Sigma2Sigma,Sigma Sigma2Sigma)Sigma Sigma Sigma#Sigma SigmafSigmaiSigmalSigmalSigmasSigma SigmawSigmaiSigmatSigmahSigma Sigma0Sigma,Sigma SigmanSigmaoSigmatSigma Sigma0Sigma.Sigma0Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaOSigmarSigma SigmafSigmaiSigmalSigmalSigma SigmawSigmaiSigmatSigmahSigma SigmaaSigma SigmabSigmaoSigmaoSigmalSigmaeSigmaaSigmanSigma SigmatSigmaySigmapSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmaiSigmalSigmalSigma(SigmafSigmaaSigmalSigmasSigmaeSigma,Sigma Sigma2Sigma,Sigma Sigma2Sigma)Sigma Sigma Sigma#Sigma SigmapSigmarSigmaoSigmadSigmauSigmacSigmaeSigmasSigma SigmaaSigma SigmabSigmaoSigmaoSigmalSigmaeSigmaaSigmanSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma#Sigma SigmaCSigmarSigmaeSigmaaSigmatSigmaiSigmanSigmagSigma SigmaASigmarSigmarSigmaaSigmaySigmasSigma SigmafSigmarSigmaoSigmamSigma SigmaESigmaxSigmaiSigmasSigmatSigmaiSigmanSigmagSigma SigmaASigmarSigmarSigmaaSigmaySigmasSigma
+Sigma
+SigmaFSigmaoSigmarSigma SigmatSigmahSigmaeSigma SigmamSigmaoSigmasSigmatSigma SigmapSigmaaSigmarSigmatSigma,Sigma SigmawSigmaeSigma SigmawSigmaiSigmalSigmalSigma SigmaaSigmavSigmaoSigmaiSigmadSigma SigmadSigmaiSigmarSigmaeSigmacSigmatSigmalSigmaySigma SigmasSigmapSigmaeSigmacSigmaiSigmafSigmaySigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmaoSigmafSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma,Sigma SigmaaSigmanSigmadSigma SigmalSigmaeSigmatSigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmamSigmapSigmaiSigmalSigmaeSigmarSigma SigmadSigmaeSigmadSigmauSigmacSigmaeSigma SigmatSigmahSigmaeSigma SigmaoSigmapSigmatSigmaiSigmamSigmaaSigmalSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmaoSigmanSigma SigmaiSigmatSigmasSigma SigmaoSigmawSigmanSigma.Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmarSigmaeSigmaaSigmasSigmaoSigmanSigmasSigma SigmafSigmaoSigmarSigma SigmatSigmahSigmaiSigmasSigma,Sigma SigmadSigmaiSigmasSigmacSigmauSigmasSigmasSigmaeSigmadSigma SigmaiSigmanSigma SigmamSigmaoSigmarSigmaeSigma SigmadSigmaeSigmatSigmaaSigmaiSigmalSigma SigmaiSigmanSigma Sigma{SigmadSigmaoSigmacSigma}Sigma`SigmatSigmahSigmaiSigmasSigma SigmalSigmaeSigmacSigmatSigmauSigmarSigmaeSigma Sigma<Sigma.Sigma.Sigma/SigmamSigmaoSigmarSigmaeSigma_SigmajSigmauSigmalSigmaiSigmaaSigma/SigmagSigmaeSigmanSigmaeSigmarSigmaiSigmacSigma_SigmapSigmarSigmaoSigmagSigmarSigmaaSigmamSigmamSigmaiSigmanSigmagSigma>Sigma`Sigma,Sigma SigmaaSigmarSigmaeSigma SigmatSigmaoSigma SigmaeSigmanSigmasSigmauSigmarSigmaeSigma SigmabSigmaoSigmatSigmahSigma SigmacSigmalSigmaaSigmarSigmaiSigmatSigmaySigma SigmaaSigmanSigmadSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmalSigmaiSigmatSigmaySigma.Sigma
+Sigma
+SigmaOSigmanSigmaeSigma SigmapSigmalSigmaaSigmacSigmaeSigma SigmatSigmahSigmaiSigmasSigma SigmacSigmaaSigmanSigma SigmabSigmaeSigma SigmaiSigmanSigmacSigmaoSigmanSigmavSigmaeSigmanSigmaiSigmaeSigmanSigmatSigma SigmaiSigmasSigma SigmawSigmahSigmaeSigmanSigma SigmawSigmaeSigma SigmanSigmaeSigmaeSigmadSigma SigmatSigmaoSigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmabSigmaaSigmasSigmaeSigmadSigma SigmaoSigmanSigma SigmaaSigmanSigma SigmaeSigmaxSigmaiSigmasSigmatSigmaiSigmanSigmagSigma SigmaaSigmarSigmarSigmaaSigmaySigma.Sigma
+Sigma
+SigmaFSigmaiSigmarSigmasSigmatSigma,Sigma SigmanSigmaoSigmatSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmaaSigmasSigmasSigmaiSigmagSigmanSigmamSigmaeSigmanSigmatSigma SigmaiSigmanSigma SigmaJSigmauSigmalSigmaiSigmaaSigma SigmabSigmaiSigmanSigmadSigmasSigma SigmaaSigma SigmanSigmaaSigmamSigmaeSigma SigmatSigmaoSigma SigmaaSigma SigmavSigmaaSigmalSigmauSigmaeSigma,Sigma SigmabSigmauSigmatSigma SigmadSigmaoSigmaeSigmasSigma SigmanSigmaoSigmatSigma SigmamSigmaaSigmakSigmaeSigma SigmaaSigma SigmacSigmaoSigmapSigmaySigma SigmaoSigmafSigma SigmatSigmahSigmaaSigmatSigma SigmatSigmaySigmapSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma1Sigma,Sigma Sigma2Sigma,Sigma Sigma3Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmaxSigma
+SigmaySigma[Sigma1Sigma]Sigma Sigma=Sigma Sigma2Sigma
+SigmaxSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaISigmanSigma SigmatSigmahSigmaeSigma SigmaaSigmabSigmaoSigmavSigmaeSigma,Sigma Sigma`SigmaySigma Sigma=Sigma SigmaxSigma`Sigma SigmasSigmaiSigmamSigmapSigmalSigmaySigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigmasSigma SigmaaSigma SigmanSigmaeSigmawSigma SigmanSigmaaSigmamSigmaeSigmadSigma SigmabSigmaiSigmanSigmadSigmaiSigmanSigmagSigma SigmacSigmaaSigmalSigmalSigmaeSigmadSigma Sigma`SigmaySigma`Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmarSigmaeSigmafSigmaeSigmarSigmasSigma SigmatSigmaoSigma SigmawSigmahSigmaaSigmatSigmaeSigmavSigmaeSigmarSigma Sigma`SigmaxSigma`Sigma SigmacSigmauSigmarSigmarSigmaeSigmanSigmatSigmalSigmaySigma SigmabSigmaiSigmanSigmadSigmasSigma SigmatSigmaoSigma.Sigma
+Sigma
+SigmaTSigmaoSigma SigmacSigmaoSigmapSigmaySigma SigmatSigmahSigmaeSigma SigmadSigmaaSigmatSigmaaSigma,Sigma SigmaySigmaoSigmauSigma SigmanSigmaeSigmaeSigmadSigma SigmatSigmaoSigma SigmabSigmaeSigma SigmamSigmaoSigmarSigmaeSigma SigmaeSigmaxSigmapSigmalSigmaiSigmacSigmaiSigmatSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma1Sigma,Sigma Sigma2Sigma,Sigma Sigma3Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmacSigmaoSigmapSigmaySigma(SigmaxSigma)Sigma
+SigmaySigma[Sigma1Sigma]Sigma Sigma=Sigma Sigma2Sigma
+SigmaxSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaHSigmaoSigmawSigmaeSigmavSigmaeSigmarSigma,Sigma SigmarSigmaaSigmatSigmahSigmaeSigmarSigma SigmatSigmahSigmaaSigmanSigma SigmamSigmaaSigmakSigmaiSigmanSigmagSigma SigmaaSigma SigmacSigmaoSigmapSigmaySigma SigmaoSigmafSigma Sigma`SigmaxSigma`Sigma,Sigma SigmaySigmaoSigmauSigma SigmamSigmaaSigmaySigma SigmawSigmaaSigmanSigmatSigma SigmatSigmaoSigma SigmajSigmauSigmasSigmatSigma SigmahSigmaaSigmavSigmaeSigma SigmaaSigma SigmasSigmaiSigmamSigmaiSigmalSigmaaSigmarSigmalSigmaySigma SigmasSigmaiSigmazSigmaeSigmadSigma SigmaaSigmarSigmarSigmaaSigmaySigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma1Sigma,Sigma Sigma2Sigma,Sigma Sigma3Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmasSigmaiSigmamSigmaiSigmalSigmaaSigmarSigma(SigmaxSigma)Sigma
+SigmaySigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaWSigmaeSigma SigmacSigmaaSigmanSigma SigmaaSigmalSigmasSigmaoSigma SigmauSigmasSigmaeSigma Sigma`SigmasSigmaiSigmamSigmaiSigmalSigmaaSigmarSigma`Sigma SigmatSigmaoSigma SigmapSigmarSigmaeSigma-SigmaaSigmalSigmalSigmaoSigmacSigmaaSigmatSigmaeSigma SigmaaSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmawSigmaiSigmatSigmahSigma SigmaaSigma SigmadSigmaiSigmafSigmafSigmaeSigmarSigmaeSigmanSigmatSigma SigmasSigmaiSigmazSigmaeSigma,Sigma SigmabSigmauSigmatSigma SigmatSigmahSigmaeSigma SigmasSigmaaSigmamSigmaeSigma SigmasSigmahSigmaaSigmapSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma1Sigma,Sigma Sigma2Sigma,Sigma Sigma3Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmasSigmaiSigmamSigmaiSigmalSigmaaSigmarSigma(SigmaxSigma,Sigma Sigma4Sigma)Sigma Sigma Sigma#Sigma SigmamSigmaaSigmakSigmaeSigma SigmaaSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmaoSigmafSigma SigmalSigmaeSigmanSigmagSigmatSigmahSigma Sigma4Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaWSigmahSigmaiSigmacSigmahSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmalSigmaiSigmazSigmaeSigmasSigma SigmatSigmaoSigma SigmahSigmaiSigmagSigmahSigmaeSigmarSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma1Sigma,Sigma Sigma2Sigma,Sigma Sigma3Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmasSigmaiSigmamSigmaiSigmalSigmaaSigmarSigma(SigmaxSigma,Sigma Sigma2Sigma,Sigma Sigma2Sigma)Sigma Sigma Sigma#Sigma SigmamSigmaaSigmakSigmaeSigma SigmaaSigma Sigma2SigmaxSigma2Sigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma#Sigma SigmaASigmarSigmarSigmaaSigmaySigma SigmaDSigmaeSigmafSigmaiSigmanSigmaiSigmatSigmaiSigmaoSigmanSigmasSigma SigmafSigmarSigmaoSigmamSigma SigmaLSigmaiSigmatSigmaeSigmarSigmaaSigmalSigmasSigma
+Sigma
+SigmaASigmasSigma SigmawSigmaeSigma'SigmavSigmaeSigma SigmasSigmaeSigmaeSigmanSigma,Sigma SigmaySigmaoSigmauSigma SigmacSigmaaSigmanSigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigma SigmaoSigmanSigmaeSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma SigmafSigmarSigmaoSigmamSigma SigmamSigmaaSigmanSigmauSigmaaSigmalSigmalSigmaySigma SigmasSigmapSigmaeSigmacSigmaiSigmafSigmaiSigmaeSigmadSigma SigmadSigmaaSigmatSigmaaSigma SigmalSigmaiSigmakSigmaeSigma SigmasSigmaoSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma0Sigma,Sigma Sigma2Sigma0Sigma,Sigma Sigma3Sigma0Sigma,Sigma Sigma4Sigma0Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaISigmanSigma SigmatSigmawSigmaoSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmasSigma SigmawSigmaeSigma SigmacSigmaaSigmanSigma SigmapSigmarSigmaoSigmacSigmaeSigmaeSigmadSigma SigmaaSigmasSigma SigmafSigmaoSigmalSigmalSigmaoSigmawSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma0Sigma Sigma2Sigma0Sigma Sigma3Sigma0Sigma Sigma4Sigma0Sigma]Sigma Sigma Sigma#Sigma SigmatSigmawSigmaoSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma,Sigma SigmasSigmahSigmaaSigmapSigmaeSigma SigmaiSigmasSigma Sigma1Sigma SigmaxSigma SigmanSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmanSigmadSigmaiSigmamSigmasSigma(SigmaaSigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma0Sigma Sigma2Sigma0Sigma;Sigma Sigma3Sigma0Sigma Sigma4Sigma0Sigma]Sigma Sigma Sigma#Sigma Sigma2Sigma SigmaxSigma Sigma2Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaYSigmaoSigmauSigma SigmamSigmaiSigmagSigmahSigmatSigma SigmatSigmahSigmaeSigmanSigma SigmaaSigmasSigmasSigmauSigmamSigmaeSigma SigmatSigmahSigmaaSigmatSigma Sigma`SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma0Sigma;Sigma Sigma2Sigma0Sigma;Sigma Sigma3Sigma0Sigma;Sigma Sigma4Sigma0Sigma]Sigma`Sigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigmasSigma SigmaaSigma SigmatSigmawSigmaoSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmabSigmauSigmatSigma SigmatSigmahSigmaiSigmasSigma SigmaiSigmasSigmanSigma'SigmatSigma SigmatSigmahSigmaeSigma SigmacSigmaaSigmasSigmaeSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma0Sigma;Sigma Sigma2Sigma0Sigma;Sigma Sigma3Sigma0Sigma;Sigma Sigma4Sigma0Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmanSigmadSigmaiSigmamSigmasSigma(SigmaaSigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaISigmanSigmasSigmatSigmaeSigmaaSigmadSigma SigmatSigmarSigmaaSigmanSigmasSigmapSigmaoSigmasSigmaeSigma SigmatSigmahSigmaeSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma Sigma(SigmaoSigmarSigma SigmaaSigmadSigmajSigmaoSigmaiSigmanSigmatSigma SigmaiSigmafSigma SigmacSigmaoSigmamSigmapSigmalSigmaeSigmaxSigma)Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma0Sigma Sigma2Sigma0Sigma Sigma3Sigma0Sigma Sigma4Sigma0Sigma]Sigma'Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmanSigmadSigmaiSigmamSigmasSigma(SigmaaSigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaNSigmaoSigmatSigmaeSigma,Sigma SigmahSigmaoSigmawSigmaeSigmavSigmaeSigmarSigma,Sigma SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaeSigma SigmatSigmarSigmaaSigmanSigmasSigmafSigmaoSigmarSigmamSigmaeSigmadSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmaiSigmasSigma SigmanSigmaoSigmatSigma SigmaaSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmabSigmauSigmatSigma SigmarSigmaaSigmatSigmahSigmaeSigmarSigma SigmaaSigma SigmasSigmapSigmaeSigmacSigmaiSigmaaSigmalSigma SigmatSigmaySigmapSigmaeSigma Sigma(SigmaeSigma.SigmagSigma.Sigma,Sigma Sigma`SigmaaSigmadSigmajSigmaoSigmaiSigmanSigmatSigma(Sigma:Sigma:SigmaMSigmaaSigmatSigmarSigmaiSigmaxSigma{SigmaISigmanSigmatSigma6Sigma4Sigma}Sigma)Sigma SigmawSigmaiSigmatSigmahSigma SigmaeSigmalSigmatSigmaySigmapSigmaeSigma SigmaISigmanSigmatSigma6Sigma4Sigma`Sigma)Sigma.Sigma
+Sigma
+SigmaKSigmaeSigmaeSigmapSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmasSigmapSigmaeSigmacSigmaiSigmaaSigmalSigma SigmasSigmatSigmarSigmauSigmacSigmatSigmauSigmarSigmaeSigma SigmaoSigmafSigma SigmaaSigma SigmatSigmarSigmaaSigmanSigmasSigmapSigmaoSigmasSigmaeSigmadSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmacSigmaaSigmanSigma SigmalSigmaeSigmatSigma SigmaJSigmauSigmalSigmaiSigmaaSigma SigmauSigmasSigmaeSigma SigmamSigmaoSigmarSigmaeSigma SigmaeSigmafSigmafSigmaiSigmacSigmaiSigmaeSigmanSigmatSigma SigmaaSigmalSigmagSigmaoSigmarSigmaiSigmatSigmahSigmamSigmasSigma SigmaiSigmanSigma SigmasSigmaoSigmamSigmaeSigma SigmacSigmaaSigmasSigmaeSigmasSigma.Sigma
+Sigma
+SigmaFSigmaiSigmanSigmaaSigmalSigmalSigmaySigma,Sigma SigmawSigmaeSigma SigmacSigmaaSigmanSigma SigmasSigmaeSigmaeSigma SigmahSigmaoSigmawSigma SigmatSigmaoSigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigma SigmamSigmauSigmalSigmatSigmaiSigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma SigmafSigmarSigmaoSigmamSigma SigmalSigmaiSigmatSigmaeSigmarSigmaaSigmalSigmasSigma SigmawSigmaiSigmatSigmahSigma SigmatSigmahSigmaeSigma Sigma`Sigma;Sigma`Sigma SigmasSigmaeSigmapSigmaaSigmarSigmaaSigmatSigmaoSigmarSigma.Sigma
+Sigma
+SigmaFSigmaiSigmarSigmasSigmatSigma,Sigma SigmawSigmaeSigma SigmacSigmaaSigmanSigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigma SigmaaSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma[Sigma1Sigma;Sigma Sigma2Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaNSigmaeSigmaxSigmatSigma,Sigma SigmabSigmaySigma SigmaaSigmapSigmapSigmaeSigmanSigmadSigmaiSigmanSigmagSigma SigmaaSigmanSigma SigmaaSigmadSigmadSigmaiSigmatSigmaiSigmaoSigmanSigmaaSigmalSigma Sigma`Sigma;Sigma`Sigma SigmawSigmaeSigma SigmacSigmaaSigmanSigma SigmatSigmaeSigmalSigmalSigma SigmaiSigmatSigma SigmatSigmaoSigma SigmauSigmasSigmaeSigma SigmaaSigma Sigma2Sigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmaaSigmarSigmarSigmaaSigmaySigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma[Sigma1Sigma;Sigma Sigma2Sigma;Sigma;Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma Sigma
+Sigma
+SigmaOSigmarSigma Sigma3Sigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmasSigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma[Sigma1Sigma;Sigma Sigma2Sigma;Sigma;Sigma;Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma Sigma
+Sigma
+SigmaOSigmarSigma SigmaaSigma Sigma1SigmaxSigma1Sigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmawSigmaiSigmatSigmahSigma SigmaaSigma SigmasSigmaiSigmanSigmagSigmalSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma[Sigma1Sigma;Sigma;Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaOSigmarSigma SigmaaSigma Sigma2SigmaxSigma2SigmaxSigma1Sigma SigmaaSigmarSigmarSigmaaSigmaySigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma;Sigma;Sigma;Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaASigmarSigmarSigmaaSigmaySigma SigmaISigmanSigmadSigmaeSigmaxSigmaiSigmanSigmagSigma
+Sigma
+SigmaWSigmaeSigma'SigmavSigmaeSigma SigmaaSigmalSigmarSigmaeSigmaaSigmadSigmaySigma SigmasSigmaeSigmaeSigmanSigma SigmatSigmahSigmaeSigma SigmabSigmaaSigmasSigmaiSigmacSigmasSigma SigmaoSigmafSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmaiSigmanSigmadSigmaeSigmaxSigmaiSigmanSigmagSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma0Sigma Sigma2Sigma0Sigma Sigma3Sigma0Sigma Sigma4Sigma0Sigma]Sigma
+SigmaaSigma[SigmaeSigmanSigmadSigma Sigma-Sigma Sigma1Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma[Sigma1Sigma:Sigma3Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaFSigmaoSigmarSigma Sigma2SigmaDSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma SigmatSigmahSigmaeSigma SigmaiSigmanSigmadSigmaeSigmaxSigma SigmasSigmaySigmanSigmatSigmaaSigmaxSigma SigmaiSigmasSigma SigmasSigmatSigmarSigmaaSigmaiSigmagSigmahSigmatSigmafSigmaoSigmarSigmawSigmaaSigmarSigmadSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma SigmarSigmaaSigmanSigmadSigmanSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+SigmaaSigma[Sigma1Sigma,Sigma Sigma1Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma[Sigma1Sigma,Sigma Sigma:Sigma]Sigma Sigma Sigma#Sigma SigmafSigmaiSigmarSigmasSigmatSigma SigmarSigmaoSigmawSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma[Sigma:Sigma,Sigma Sigma1Sigma]Sigma Sigma Sigma#Sigma SigmafSigmaiSigmarSigmasSigmatSigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaBSigmaoSigmaoSigmalSigmaeSigmaaSigmanSigmasSigma SigmacSigmaaSigmanSigma SigmabSigmaeSigma SigmauSigmasSigmaeSigmadSigma SigmatSigmaoSigma SigmaeSigmaxSigmatSigmarSigmaaSigmacSigmatSigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma SigmarSigmaaSigmanSigmadSigmanSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma=Sigma Sigma[SigmatSigmarSigmauSigmaeSigma SigmafSigmaaSigmalSigmasSigmaeSigma;Sigma SigmafSigmaaSigmalSigmasSigmaeSigma SigmatSigmarSigmauSigmaeSigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma[SigmabSigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaiSigmasSigma SigmauSigmasSigmaeSigmafSigmauSigmalSigma SigmafSigmaoSigmarSigma SigmacSigmaoSigmanSigmadSigmaiSigmatSigmaiSigmaoSigmanSigmaaSigmalSigma SigmaeSigmaxSigmatSigmarSigmaaSigmacSigmatSigmaiSigmaoSigmanSigma,Sigma SigmaaSigmasSigma SigmawSigmaeSigma'SigmalSigmalSigma SigmasSigmaeSigmaeSigma SigmabSigmaeSigmalSigmaoSigmawSigma.Sigma
+Sigma
+SigmaASigmanSigma SigmaaSigmasSigmaiSigmadSigmaeSigma:Sigma SigmasSigmaoSigmamSigmaeSigma SigmaoSigmarSigma SigmaaSigmalSigmalSigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigmasSigma SigmaoSigmafSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmacSigmaaSigmanSigma SigmabSigmaeSigma SigmasSigmaeSigmatSigma SigmaeSigmaqSigmauSigmaaSigmalSigma SigmatSigmaoSigma SigmaoSigmanSigmaeSigma SigmanSigmauSigmamSigmabSigmaeSigmarSigma SigmauSigmasSigmaiSigmanSigmagSigma SigmasSigmalSigmaiSigmacSigmaeSigma SigmanSigmaoSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma SigmazSigmaeSigmarSigmaoSigmasSigma(Sigma4Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma[Sigma2Sigma:SigmaeSigmanSigmadSigma]Sigma Sigma.Sigma=Sigma Sigma4Sigma2Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaVSigmaiSigmaeSigmawSigmasSigma SigmaaSigmanSigmadSigma SigmaSSigmalSigmaiSigmacSigmaeSigmasSigma
+Sigma
+SigmaUSigmasSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma Sigma`Sigma:Sigma`Sigma SigmanSigmaoSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma SigmapSigmarSigmaoSigmavSigmaiSigmadSigmaeSigmasSigma SigmaaSigma SigmasSigmalSigmaiSigmacSigmaeSigma SigmaoSigmafSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma,Sigma SigmacSigmaoSigmapSigmaySigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmasSigmauSigmabSigma-SigmaaSigmarSigmarSigmaaSigmaySigma SigmatSigmaoSigma SigmaaSigma SigmanSigmaeSigmawSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmawSigmaiSigmatSigmahSigma SigmaaSigma SigmasSigmaiSigmamSigmaiSigmalSigmaaSigmarSigma SigmatSigmaySigmapSigmaeSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma
+SigmabSigma Sigma=Sigma SigmaaSigma[Sigma:Sigma,Sigma Sigma2Sigma]Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmabSigma
+SigmaaSigma[Sigma:Sigma,Sigma Sigma2Sigma]Sigma Sigma=Sigma Sigma[Sigma4Sigma,Sigma Sigma5Sigma]Sigma Sigma#Sigma SigmamSigmaoSigmadSigmaiSigmafSigmaySigma SigmaaSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaaSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmabSigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigma Sigma*Sigma*SigmavSigmaiSigmaeSigmawSigma*Sigma*Sigma SigmaoSigmanSigma SigmatSigmahSigmaeSigma SigmaoSigmatSigmahSigmaeSigmarSigma SigmahSigmaaSigmanSigmadSigma SigmadSigmaoSigmaeSigmasSigma SigmanSigmaoSigmatSigma SigmacSigmaoSigmapSigmaySigma SigmatSigmahSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma
+Sigma@SigmavSigmaiSigmaeSigmawSigmasSigma SigmabSigma Sigma=Sigma SigmaaSigma[Sigma:Sigma,Sigma Sigma2Sigma]Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmabSigma
+SigmaaSigma[Sigma:Sigma,Sigma Sigma2Sigma]Sigma Sigma=Sigma Sigma[Sigma4Sigma,Sigma Sigma5Sigma]Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaaSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmabSigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaNSigmaoSigmatSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaeSigma SigmaoSigmanSigmalSigmaySigma SigmadSigmaiSigmafSigmafSigmaeSigmarSigmaeSigmanSigmacSigmaeSigma SigmaiSigmasSigma SigmatSigmahSigmaeSigma Sigma`Sigma@SigmavSigmaiSigmaeSigmawSigmasSigma`Sigma SigmamSigmaaSigmacSigmarSigmaoSigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmawSigmaiSigmalSigmalSigma SigmarSigmaeSigmapSigmalSigmaaSigmacSigmaeSigma SigmaaSigmanSigmaySigma SigmasSigmalSigmaiSigmacSigmaeSigmasSigma SigmawSigmaiSigmatSigmahSigma SigmavSigmaiSigmaeSigmawSigmasSigma SigmaiSigmanSigma SigmatSigmahSigmaeSigma SigmaeSigmaxSigmapSigmarSigmaeSigmasSigmasSigmaiSigmaoSigmanSigma.Sigma
+Sigma
+SigmaASigmanSigma SigmaaSigmalSigmatSigmaeSigmarSigmanSigmaaSigmatSigmaiSigmavSigmaeSigma SigmaiSigmasSigma SigmatSigmaoSigma SigmacSigmaaSigmalSigmalSigma SigmatSigmahSigmaeSigma Sigma`SigmavSigmaiSigmaeSigmawSigma`Sigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmadSigmaiSigmarSigmaeSigmacSigmatSigmalSigmaySigma Sigma-Sigma-Sigma SigmatSigmahSigmaoSigmauSigmagSigmahSigma SigmaiSigmatSigma SigmaiSigmasSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmalSigmalSigmaySigma SigmadSigmaiSigmasSigmacSigmaoSigmauSigmarSigmaaSigmagSigmaeSigmadSigma SigmasSigmaiSigmanSigmacSigmaeSigma SigmaiSigmatSigma SigmaiSigmasSigma SigmaaSigma SigmasSigmatSigmaeSigmapSigma SigmaaSigmawSigmaaSigmaySigma SigmafSigmarSigmaoSigmamSigma SigmatSigmahSigmaeSigma SigmamSigmaaSigmatSigmahSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma@SigmavSigmaiSigmaeSigmawSigmasSigma SigmabSigma Sigma=Sigma SigmaaSigma[Sigma:Sigma,Sigma Sigma2Sigma]Sigma
+SigmavSigmaiSigmaeSigmawSigma(SigmaaSigma,Sigma Sigma:Sigma,Sigma Sigma2Sigma)Sigma Sigma=Sigma=Sigma SigmabSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmasSigma SigmawSigmaiSigmatSigmahSigma SigmamSigmaoSigmasSigmatSigma SigmapSigmarSigmaoSigmagSigmarSigmaaSigmamSigmamSigmaiSigmanSigmagSigma SigmaiSigmanSigma SigmaJSigmauSigmalSigmaiSigmaaSigma,Sigma SigmaiSigmatSigma SigmaiSigmasSigma SigmabSigmaeSigmasSigmatSigma SigmatSigmaoSigma SigmaaSigmavSigmaoSigmaiSigmadSigma SigmapSigmarSigmaeSigmamSigmaaSigmatSigmauSigmarSigmaeSigmalSigmaySigma SigmaaSigmasSigmasSigmauSigmamSigmaiSigmanSigmagSigma SigmatSigmahSigmaaSigmatSigma Sigma`Sigma@SigmavSigmaiSigmaeSigmawSigmasSigma`Sigma SigmawSigmaiSigmalSigmalSigma SigmahSigmaaSigmavSigmaeSigma SigmaaSigma SigmasSigmaiSigmagSigmanSigmaiSigmafSigmaiSigmacSigmaaSigmanSigmatSigma SigmaiSigmamSigmapSigmaaSigmacSigmatSigma SigmaoSigmanSigma SigmapSigmaeSigmarSigmafSigmaoSigmarSigmamSigmaaSigmanSigmacSigmaeSigma,Sigma SigmaaSigmanSigmadSigma SigmasSigmatSigmarSigmaeSigmasSigmasSigma SigmacSigmaoSigmadSigmaeSigma SigmacSigmalSigmaaSigmarSigmaiSigmatSigmaySigma SigmaaSigmabSigmaoSigmavSigmaeSigma SigmaaSigmalSigmalSigma SigmaeSigmalSigmasSigmaeSigma.Sigma
+Sigma
+SigmaASigmanSigmaoSigmatSigmahSigmaeSigmarSigma SigmaiSigmamSigmapSigmaoSigmarSigmatSigmaaSigmanSigmatSigma SigmalSigmaeSigmasSigmasSigmaoSigmanSigma SigmaaSigmabSigmaoSigmauSigmatSigma Sigma`Sigma@SigmavSigmaiSigmaeSigmawSigmasSigma`Sigma SigmaiSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaeSigmaySigma Sigma*Sigma*SigmaaSigmarSigmaeSigma SigmanSigmaoSigmatSigma*Sigma*Sigma SigmanSigmaoSigmarSigmamSigmaaSigmalSigma,Sigma SigmadSigmaeSigmanSigmasSigmaeSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma
+SigmabSigma_SigmasSigmalSigmaiSigmacSigmaeSigma Sigma=Sigma SigmaaSigma[Sigma:Sigma,Sigma Sigma2Sigma]Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmatSigmaySigmapSigmaeSigmaoSigmafSigma(SigmabSigma_SigmasSigmalSigmaiSigmacSigmaeSigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmatSigmaySigmapSigmaeSigmaoSigmafSigma(SigmaaSigma)Sigma
+Sigma@SigmavSigmaiSigmaeSigmawSigmasSigma SigmabSigma Sigma=Sigma SigmaaSigma[Sigma:Sigma,Sigma Sigma2Sigma]Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmatSigmaySigmapSigmaeSigmaoSigmafSigma(SigmabSigma)Sigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmatSigmaySigmapSigmaeSigma SigmaoSigmafSigma Sigma`SigmabSigma`Sigma SigmaiSigmasSigma SigmaaSigma SigmagSigmaoSigmaoSigmadSigma SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma SigmaoSigmafSigma SigmahSigmaoSigmawSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmaaSigmarSigmaeSigma SigmanSigmaoSigmatSigma SigmaaSigmasSigma SigmatSigmahSigmaeSigmaySigma SigmamSigmaaSigmaySigma SigmasSigmaeSigmaeSigmamSigma.Sigma
+Sigma
+SigmaSSigmaiSigmamSigmaiSigmalSigmaaSigmarSigmalSigmaySigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma
+SigmabSigma Sigma=Sigma SigmaaSigma'Sigma Sigma Sigma Sigma#Sigma SigmatSigmarSigmaaSigmanSigmasSigmapSigmaoSigmasSigmaeSigma
+SigmatSigmaySigmapSigmaeSigmaoSigmafSigma(SigmabSigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmaoSigma SigmacSigmaoSigmapSigmaySigma SigmaiSigmanSigmatSigmaoSigma SigmaaSigma SigmadSigmaeSigmanSigmasSigmaeSigma SigmaaSigmarSigmarSigmaaSigmaySigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma
+SigmabSigma Sigma=Sigma SigmaaSigma'Sigma Sigma#Sigma SigmatSigmarSigmaaSigmanSigmasSigmapSigmaoSigmasSigmaeSigma
+SigmacSigma Sigma=Sigma SigmaMSigmaaSigmatSigmarSigmaiSigmaxSigma(SigmabSigma)Sigma Sigma Sigma#Sigma SigmacSigmaoSigmanSigmavSigmaeSigmarSigmatSigma SigmatSigmaoSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma
+SigmadSigma Sigma=Sigma SigmacSigmaoSigmalSigmalSigmaeSigmacSigmatSigma(SigmabSigma)Sigma Sigma#Sigma SigmaaSigmalSigmasSigmaoSigma Sigma`SigmacSigmaoSigmalSigmalSigmaeSigmacSigmatSigma`Sigma SigmawSigmaoSigmarSigmakSigmasSigma SigmaoSigmanSigma SigmaaSigmanSigmaySigma SigmaiSigmatSigmaeSigmarSigmaaSigmabSigmalSigmaeSigma
+SigmacSigma Sigma=Sigma=Sigma SigmadSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaSSigmapSigmaeSigmacSigmaiSigmaaSigmalSigma SigmaMSigmaaSigmatSigmarSigmaiSigmacSigmaeSigmasSigma
+Sigma
+SigmaASigmasSigma SigmawSigmaeSigma SigmasSigmaaSigmawSigma SigmawSigmaiSigmatSigmahSigma Sigma`SigmatSigmarSigmaaSigmanSigmasSigmapSigmaoSigmasSigmaeSigma`Sigma,Sigma SigmasSigmaoSigmamSigmaeSigmatSigmaiSigmamSigmaeSigmasSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmalSigmaoSigmaoSigmakSigma SigmalSigmaiSigmakSigmaeSigma SigmamSigmaaSigmatSigmarSigmaiSigmacSigmaeSigmasSigma SigmaaSigmarSigmaeSigma SigmanSigmaoSigmatSigma SigmasSigmatSigmaoSigmarSigmaeSigmadSigma SigmaaSigmasSigma SigmaaSigma SigmadSigmaeSigmanSigmasSigmaeSigma SigmaaSigmarSigmarSigmaaSigmaySigma.Sigma
+Sigma
+SigmaASigmasSigma SigmaaSigmanSigma SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma,Sigma SigmacSigmaoSigmanSigmasSigmaiSigmadSigmaeSigmarSigma SigmacSigmarSigmaeSigmaaSigmatSigmaiSigmanSigmagSigma SigmaaSigma SigmadSigmaiSigmaaSigmagSigmaoSigmanSigmaaSigmalSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmadSigma Sigma=Sigma Sigma[Sigma1Sigma.Sigma0Sigma,Sigma Sigma2Sigma.Sigma0Sigma]Sigma
+SigmaaSigma Sigma=Sigma SigmaDSigmaiSigmaaSigmagSigmaoSigmanSigmaaSigmalSigma(SigmadSigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmasSigma SigmaySigmaoSigmauSigma SigmacSigmaaSigmanSigma SigmasSigmaeSigmaeSigma,Sigma SigmatSigmahSigmaeSigma SigmatSigmaySigmapSigmaeSigma SigmaiSigmasSigma Sigma`Sigma2Sigma×Sigma2Sigma SigmaDSigmaiSigmaaSigmagSigmaoSigmanSigmaaSigmalSigma{SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma,SigmaASigmarSigmarSigmaaSigmaySigma{SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma,Sigma1Sigma}Sigma}Sigma`Sigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmaiSigmasSigma SigmanSigmaoSigmatSigma SigmaaSigma Sigma2Sigma-SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmaaSigmarSigmarSigmaaSigmaySigma.Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmarSigmaeSigmaaSigmasSigmaoSigmanSigmasSigma SigmafSigmaoSigmarSigma SigmatSigmahSigmaiSigmasSigma SigmaaSigmarSigmaeSigma SigmabSigmaoSigmatSigmahSigma SigmaeSigmafSigmafSigmaiSigmacSigmaiSigmaeSigmanSigmacSigmaySigma SigmaiSigmanSigma SigmasSigmatSigmaoSigmarSigmaaSigmagSigmaeSigma,Sigma SigmaaSigmasSigma SigmawSigmaeSigmalSigmalSigma SigmaaSigmasSigma SigmaeSigmafSigmafSigmaiSigmacSigmaiSigmaeSigmanSigmacSigmaySigma SigmaiSigmanSigma SigmaaSigmarSigmaiSigmatSigmahSigmamSigmaeSigmatSigmaiSigmacSigma SigmaaSigmanSigmadSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmaoSigmapSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma.Sigma
+Sigma
+SigmaISigmanSigma SigmaeSigmavSigmaeSigmarSigmaySigma SigmaiSigmamSigmapSigmaoSigmarSigmatSigmaaSigmanSigmatSigma SigmasSigmaeSigmanSigmasSigmaeSigma,Sigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmasSigmauSigmacSigmahSigma SigmaaSigmasSigma Sigma`SigmaDSigmaiSigmaaSigmagSigmaoSigmanSigmaaSigmalSigma`Sigma SigmaaSigmarSigmaeSigma SigmajSigmauSigmasSigmatSigma SigmaaSigmasSigma SigmamSigmauSigmacSigmahSigma SigmaaSigma Sigma"SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma"Sigma SigmaaSigmasSigma SigmatSigmahSigmaeSigma SigmadSigmaeSigmanSigmasSigmaeSigma SigmamSigmaaSigmatSigmarSigmaiSigmacSigmaeSigmasSigma SigmawSigmaeSigma SigmahSigmaaSigmavSigmaeSigma SigmauSigmasSigmaiSigmanSigmagSigma Sigma(SigmasSigmaeSigmaeSigma SigmatSigmahSigmaeSigma Sigma{SigmadSigmaoSigmacSigma}Sigma`SigmaiSigmanSigmatSigmarSigmaoSigmadSigmauSigmacSigmatSigmaiSigmaoSigmanSigma SigmatSigmaoSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmalSigmaeSigmacSigmatSigmauSigmarSigmaeSigma Sigma<Sigma.Sigma.Sigma/SigmagSigmaeSigmatSigmatSigmaiSigmanSigmagSigma_SigmasSigmatSigmaaSigmarSigmatSigmaeSigmadSigma_SigmajSigmauSigmalSigmaiSigmaaSigma/SigmaiSigmanSigmatSigmarSigmaoSigmadSigmauSigmacSigmatSigmaiSigmaoSigmanSigma_SigmatSigmaoSigma_SigmatSigmaySigmapSigmaeSigmasSigma>Sigma`Sigma SigmafSigmaoSigmarSigma SigmamSigmaoSigmarSigmaeSigma)Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma Sigma2SigmaaSigma
+SigmabSigma Sigma=Sigma SigmarSigmaaSigmanSigmadSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmabSigma Sigma*Sigma SigmaaSigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmanSigmaoSigmatSigmahSigmaeSigmarSigma SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma SigmaiSigmasSigma SigmaiSigmanSigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmanSigmasSigmatSigmarSigmauSigmacSigmatSigmaiSigmaoSigmanSigma SigmaoSigmafSigma SigmaaSigmanSigma SigmaiSigmadSigmaeSigmanSigmatSigmaiSigmatSigmaySigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma,Sigma SigmawSigmahSigmaeSigmarSigmaeSigma SigmaaSigma SigmanSigmaaSigmaiSigmavSigmaeSigma SigmaiSigmamSigmapSigmalSigmaeSigmamSigmaeSigmanSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma SigmaiSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma=Sigma Sigma[Sigma1Sigma.Sigma0Sigma Sigma2Sigma.Sigma0Sigma;Sigma Sigma3Sigma.Sigma0Sigma Sigma4Sigma.Sigma0Sigma]Sigma
+SigmabSigma Sigma-Sigma SigmaDSigmaiSigmaaSigmagSigmaoSigmanSigmaaSigmalSigma(Sigma[Sigma1Sigma.Sigma0Sigma,Sigma Sigma1Sigma.Sigma0Sigma]Sigma)Sigma Sigma Sigma#Sigma SigmapSigmaoSigmaoSigmarSigma SigmasSigmatSigmaySigmalSigmaeSigma,Sigma SigmaiSigmanSigmaeSigmafSigmafSigmaiSigmacSigmaiSigmaeSigmanSigmatSigma SigmacSigmaoSigmadSigmaeSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaWSigmahSigmaeSigmarSigmaeSigmaaSigmasSigma SigmaySigmaoSigmauSigma SigmasSigmahSigmaoSigmauSigmalSigmadSigma SigmaiSigmanSigmasSigmatSigmaeSigmaaSigmadSigma SigmauSigmasSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma=Sigma Sigma[Sigma1Sigma.Sigma0Sigma Sigma2Sigma.Sigma0Sigma;Sigma Sigma3Sigma.Sigma0Sigma Sigma4Sigma.Sigma0Sigma]Sigma
+SigmabSigma Sigma-Sigma SigmaISigma Sigma Sigma#Sigma SigmagSigmaoSigmaoSigmadSigma SigmasSigmatSigmaySigmalSigmaeSigma,Sigma SigmaaSigmanSigmadSigma SigmanSigmaoSigmatSigmaeSigma SigmatSigmahSigmaeSigma SigmalSigmaaSigmacSigmakSigma SigmaoSigmafSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmasSigma SigmaoSigmafSigma SigmaISigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaWSigmahSigmaiSigmalSigmaeSigma SigmatSigmahSigmaeSigma SigmaiSigmamSigmapSigmalSigmaeSigmamSigmaeSigmanSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma SigmaoSigmafSigma Sigma`SigmaISigma`Sigma SigmaiSigmasSigma SigmaaSigma SigmalSigmaiSigmatSigmatSigmalSigmaeSigma SigmaaSigmabSigmasSigmatSigmarSigmaaSigmacSigmatSigma SigmatSigmaoSigma SigmagSigmaoSigma SigmaiSigmanSigmatSigmaoSigma SigmaaSigmatSigma SigmatSigmahSigmaiSigmasSigma SigmapSigmaoSigmaiSigmanSigmatSigma,Sigma SigmaaSigma SigmahSigmaiSigmanSigmatSigma SigmaiSigmasSigma:Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmatSigmaySigmapSigmaeSigmaoSigmafSigma(SigmaISigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaiSigmasSigma SigmaaSigma Sigma`SigmaUSigmanSigmaiSigmafSigmaoSigmarSigmamSigmaSSigmacSigmaaSigmalSigmaiSigmanSigmagSigma`Sigma SigmatSigmaySigmapSigmaeSigma SigmarSigmaaSigmatSigmahSigmaeSigmarSigma SigmatSigmahSigmaaSigmanSigma SigmaaSigmanSigma SigmaiSigmadSigmaeSigmanSigmatSigmaiSigmatSigmaySigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma,Sigma SigmamSigmaaSigmakSigmaiSigmanSigmagSigma SigmaiSigmatSigma SigmamSigmauSigmacSigmahSigma SigmamSigmaoSigmarSigmaeSigma SigmapSigmaoSigmawSigmaeSigmarSigmafSigmauSigmalSigma SigmaaSigmanSigmadSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmalSigma.Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaASigmasSigmasSigmaiSigmagSigmanSigmamSigmaeSigmanSigmatSigma SigmaaSigmanSigmadSigma SigmaPSigmaaSigmasSigmasSigmaiSigmanSigmagSigma SigmaASigmarSigmarSigmaaSigmaySigmasSigma
+Sigma
+SigmaASigmasSigma SigmadSigmaiSigmasSigmacSigmauSigmasSigmasSigmaeSigmadSigma SigmaaSigmabSigmaoSigmavSigmaeSigma,Sigma SigmaiSigmanSigma SigmaJSigmauSigmalSigmaiSigmaaSigma,Sigma SigmatSigmahSigmaeSigma SigmalSigmaeSigmafSigmatSigma SigmahSigmaaSigmanSigmadSigma SigmasSigmaiSigmadSigmaeSigma SigmaoSigmafSigma SigmaaSigmanSigma SigmaaSigmasSigmasSigmaiSigmagSigmanSigmamSigmaeSigmanSigmatSigma SigmaiSigmasSigma SigmaaSigma Sigma"SigmabSigmaiSigmanSigmadSigmaiSigmanSigmagSigma"Sigma SigmaoSigmarSigma SigmaaSigma SigmalSigmaaSigmabSigmaeSigmalSigma SigmatSigmaoSigma SigmaaSigma SigmavSigmaaSigmalSigmauSigmaeSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma Sigma3Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmaxSigma Sigma Sigma#Sigma SigmanSigmaaSigmamSigmaeSigma Sigma`SigmaySigma`Sigma SigmabSigmaiSigmanSigmadSigmasSigma SigmatSigmaoSigma SigmawSigmahSigmaaSigmatSigmaeSigmavSigmaeSigmarSigma SigmavSigmaaSigmalSigmauSigmaeSigma Sigma`SigmaxSigma`Sigma SigmabSigmaoSigmauSigmanSigmadSigma SigmatSigmaoSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmacSigmaoSigmanSigmasSigmaeSigmaqSigmauSigmaeSigmanSigmacSigmaeSigma SigmaoSigmafSigma SigmatSigmahSigmaiSigmasSigma,Sigma SigmaiSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmaySigmaoSigmauSigma SigmacSigmaaSigmanSigma SigmarSigmaeSigma-SigmabSigmaiSigmanSigmadSigma SigmatSigmahSigmaaSigmatSigma SigmanSigmaaSigmamSigmaeSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma Sigma3Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmaxSigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmanSigmaaSigmamSigmaeSigma Sigma`SigmaySigma`Sigma SigmabSigmaiSigmanSigmadSigmasSigma SigmatSigmaoSigma SigmawSigmahSigmaaSigmatSigmaeSigmavSigmaeSigmarSigma Sigma`SigmaxSigma`Sigma SigmabSigmaoSigmauSigmanSigmadSigma SigmatSigmaoSigma
+SigmazSigma Sigma=Sigma Sigma[Sigma2Sigma Sigma3Sigma Sigma4Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmazSigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmaoSigmanSigmalSigmaySigma SigmacSigmahSigmaaSigmanSigmagSigmaeSigmasSigma SigmanSigmaaSigmamSigmaeSigma SigmabSigmaiSigmanSigmadSigmaiSigmanSigmagSigma,Sigma SigmanSigmaoSigmatSigma SigmavSigmaaSigmalSigmauSigmaeSigma!Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma Sigma(SigmaxSigma,Sigma SigmaySigma,Sigma SigmazSigma)Sigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaWSigmahSigmaaSigmatSigma SigmatSigmahSigmaiSigmasSigma SigmamSigmaeSigmaaSigmanSigmasSigma SigmaiSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmaiSigmafSigma Sigma`SigmaaSigma`Sigma SigmaiSigmasSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmaaSigmanSigmadSigma SigmawSigmaeSigma SigmasSigmaeSigmatSigma Sigma`SigmabSigma Sigma=Sigma SigmaaSigma`Sigma SigmatSigmahSigmaeSigmanSigma Sigma`SigmaaSigma`Sigma SigmaaSigmanSigmadSigma Sigma`SigmabSigma`Sigma SigmapSigmaoSigmaiSigmanSigmatSigma SigmatSigmaoSigma SigmaeSigmaxSigmaaSigmacSigmatSigmalSigmaySigma SigmatSigmahSigmaeSigma SigmasSigmaaSigmamSigmaeSigma SigmadSigmaaSigmatSigmaaSigma.Sigma
+Sigma
+SigmaISigmanSigma SigmatSigmahSigmaeSigma SigmaaSigmabSigmaoSigmavSigmaeSigma,Sigma SigmasSigmauSigmapSigmapSigmaoSigmasSigmaeSigma SigmaySigmaoSigmauSigma SigmahSigmaaSigmadSigma SigmamSigmaeSigmaaSigmanSigmatSigma SigmatSigmaoSigma SigmacSigmahSigmaaSigmanSigmagSigmaeSigma SigmatSigmahSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmaoSigmafSigma Sigma`SigmaxSigma`Sigma SigmatSigmaoSigma SigmatSigmahSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma SigmaoSigmafSigma Sigma`SigmaySigma`Sigma,Sigma SigmaySigmaoSigmauSigma SigmanSigmaeSigmaeSigmadSigma SigmatSigmaoSigma SigmaaSigmasSigmasSigmaiSigmagSigmanSigma SigmatSigmahSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma SigmarSigmaaSigmatSigmahSigmaeSigmarSigma SigmatSigmahSigmaaSigmanSigma SigmatSigmahSigmaeSigma SigmanSigmaaSigmamSigmaeSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma Sigma3Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmaxSigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmanSigmaaSigmamSigmaeSigma Sigma`SigmaySigma`Sigma SigmabSigmaiSigmanSigmadSigmasSigma SigmatSigmaoSigma SigmawSigmahSigmaaSigmatSigmaeSigmavSigmaeSigmarSigma Sigma`SigmaxSigma`Sigma SigmabSigmaoSigmauSigmanSigmadSigma SigmatSigmaoSigma
+SigmazSigma Sigma=Sigma Sigma[Sigma2Sigma Sigma3Sigma Sigma4Sigma]Sigma
+SigmaySigma Sigma.Sigma=Sigma SigmazSigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmanSigmaoSigmawSigma SigmadSigmaiSigmasSigmapSigmaaSigmatSigmacSigmahSigmaeSigmasSigma SigmatSigmahSigmaeSigma SigmaaSigmasSigmasSigmaiSigmagSigmanSigmamSigmaeSigmanSigmatSigma SigmaoSigmafSigma SigmaeSigmaaSigmacSigmahSigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma Sigma(SigmaxSigma,Sigma SigmaySigma,Sigma SigmazSigma)Sigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmalSigmatSigmaeSigmarSigmanSigmaaSigmatSigmaiSigmavSigmaeSigmalSigmaySigma,Sigma SigmaySigmaoSigmauSigma SigmacSigmaoSigmauSigmalSigmadSigma SigmahSigmaaSigmavSigmaeSigma SigmauSigmasSigmaeSigmadSigma Sigma`SigmaySigma[Sigma:Sigma]Sigma Sigma=Sigma SigmazSigma`Sigma.Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaaSigmapSigmapSigmalSigmaiSigmaeSigmasSigma SigmatSigmaoSigma SigmaiSigmanSigma-SigmapSigmalSigmaaSigmacSigmaeSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmaaSigmasSigma SigmawSigmaeSigmalSigmalSigma.Sigma
+Sigma
+SigmaFSigmaiSigmarSigmasSigmatSigma,Sigma SigmadSigmaeSigmafSigmaiSigmanSigmaeSigma SigmaaSigma SigmasSigmaiSigmamSigmapSigmalSigmaeSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigmaoSigmarSigma SigmaaSigma SigmalSigmaiSigmanSigmaeSigmaaSigmarSigma SigmamSigmaaSigmapSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma Sigma*Sigma SigmaxSigma Sigma Sigma#Sigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma Sigma*Sigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmavSigmaaSigmalSigma Sigma=Sigma Sigma[Sigma1Sigma,Sigma Sigma2Sigma]Sigma
+SigmafSigma(SigmavSigmaaSigmalSigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaISigmanSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmalSigma,Sigma SigmatSigmahSigmaeSigmasSigmaeSigma Sigma"SigmaoSigmauSigmatSigma-SigmaoSigmafSigma-SigmapSigmalSigmaaSigmacSigmaeSigma"Sigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmaaSigmarSigmaeSigma SigmapSigmarSigmaeSigmafSigmaeSigmarSigmarSigmaeSigmadSigma SigmatSigmaoSigma Sigma"SigmaiSigmanSigma-SigmapSigmalSigmaaSigmacSigmaeSigma"Sigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmamSigmaoSigmadSigmaiSigmafSigmaySigma SigmatSigmahSigmaeSigma SigmaaSigmarSigmagSigmauSigmamSigmaeSigmanSigmatSigmasSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma Sigma*Sigma SigmaxSigma Sigma#Sigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma Sigma*Sigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmavSigmaaSigmalSigma Sigma=Sigma Sigma[Sigma1Sigma,Sigma Sigma2Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmasSigmaiSigmamSigmaiSigmalSigmaaSigmarSigma(SigmavSigmaaSigmalSigma)Sigma
+Sigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma!Sigma(SigmaoSigmauSigmatSigma,Sigma SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmaoSigmauSigmatSigma Sigma.Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma Sigma*Sigma SigmaxSigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmafSigma!Sigma(SigmaySigma,Sigma SigmavSigmaaSigmalSigma)Sigma
+SigmaySigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmadSigmaeSigmamSigmaoSigmanSigmasSigmatSigmarSigmaaSigmatSigmaeSigmasSigma SigmaaSigma SigmakSigmaeSigmaySigma SigmacSigmaoSigmanSigmavSigmaeSigmanSigmatSigmaiSigmaoSigmanSigma SigmaiSigmanSigma SigmaJSigmauSigmalSigmaiSigmaaSigma:Sigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmawSigmahSigmaiSigmacSigmahSigma SigmamSigmaoSigmadSigmaiSigmafSigmaySigma SigmaaSigmanSigmaySigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmaaSigmarSigmagSigmauSigmamSigmaeSigmanSigmatSigmasSigma SigmahSigmaaSigmavSigmaeSigma SigmatSigmahSigmaeSigma SigmanSigmaaSigmamSigmaeSigma SigmaeSigmanSigmadSigmaiSigmanSigmagSigma SigmawSigmaiSigmatSigmahSigma Sigma`Sigma!Sigma`Sigma Sigma(SigmaeSigma.SigmagSigma.Sigma Sigma`SigmapSigmauSigmasSigmahSigma!Sigma`Sigma)Sigma.Sigma
+Sigma
+SigmaWSigmaeSigma SigmacSigmaaSigmanSigma SigmaaSigmalSigmasSigmaoSigma SigmasSigmaeSigmaeSigma SigmaaSigma SigmacSigmaoSigmamSigmamSigmaoSigmanSigma SigmamSigmaiSigmasSigmatSigmaaSigmakSigmaeSigma,Sigma SigmawSigmahSigmaeSigmarSigmaeSigma SigmaiSigmanSigmasSigmatSigmaeSigmaaSigmadSigma SigmaoSigmafSigma SigmamSigmaoSigmadSigmaiSigmafSigmaySigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmaaSigmarSigmagSigmauSigmamSigmaeSigmanSigmatSigmasSigma,Sigma SigmatSigmahSigmaeSigma SigmanSigmaaSigmamSigmaeSigma SigmabSigmaiSigmanSigmadSigmaiSigmanSigmagSigma SigmaiSigmasSigma SigmasSigmawSigmaaSigmapSigmapSigmaeSigmadSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma Sigma*Sigma SigmaxSigma Sigma Sigma#Sigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma Sigma*Sigma SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmavSigmaaSigmalSigma Sigma=Sigma Sigma[Sigma1Sigma,Sigma Sigma2Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmasSigmaiSigmamSigmaiSigmalSigmaaSigmarSigma(SigmavSigmaaSigmalSigma)Sigma
+Sigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma!Sigma(SigmaoSigmauSigmatSigma,Sigma SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmaoSigmauSigmatSigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma Sigma*Sigma SigmaxSigma Sigma Sigma Sigma#Sigma SigmaMSigmaISigmaSSigmaTSigmaASigmaKSigmaESigma!Sigma SigmaSSigmahSigmaoSigmauSigmalSigmadSigma SigmabSigmaeSigma Sigma.Sigma=Sigma
+SigmaeSigmanSigmadSigma
+SigmafSigma!Sigma(SigmaySigma,Sigma SigmavSigmaaSigmalSigma)Sigma
+SigmaySigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmafSigmarSigmaeSigmaqSigmauSigmaeSigmanSigmacSigmaySigma SigmaoSigmafSigma SigmamSigmaaSigmakSigmaiSigmanSigmagSigma SigmatSigmahSigmaiSigmasSigma SigmamSigmaiSigmasSigmatSigmaaSigmakSigmaeSigma SigmaiSigmasSigma SigmaoSigmanSigmaeSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmarSigmaeSigmaaSigmasSigmaoSigmanSigmasSigma SigmatSigmaoSigma SigmaaSigmavSigmaoSigmaiSigmadSigma SigmaiSigmanSigma-SigmapSigmalSigmaaSigmacSigmaeSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma,Sigma SigmauSigmanSigmalSigmaeSigmasSigmasSigma SigmapSigmarSigmaoSigmavSigmaeSigmanSigma SigmatSigmaoSigma SigmabSigmaeSigma SigmanSigmaeSigmacSigmaeSigmasSigmasSigmaaSigmarSigmaySigma SigmabSigmaySigma SigmabSigmaeSigmanSigmacSigmahSigmamSigmaaSigmarSigmakSigmaiSigmanSigmagSigma.Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaISigmanSigma-SigmapSigmalSigmaaSigmacSigmaeSigma SigmaaSigmanSigmadSigma SigmaISigmamSigmamSigmauSigmatSigmaaSigmabSigmalSigmaeSigma SigmaTSigmaySigmapSigmaeSigmasSigma
+Sigma
+SigmaNSigmaoSigmatSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmasSigmacSigmaaSigmalSigmaaSigmarSigmasSigma SigmaaSigmarSigmaeSigma SigmaaSigmalSigmawSigmaaSigmaySigmasSigma SigmaiSigmamSigmamSigmauSigmatSigmaaSigmabSigmalSigmaeSigma,Sigma SigmasSigmauSigmacSigmahSigma SigmatSigmahSigmaaSigmatSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaySigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma]Sigma
+SigmaySigma Sigma.Sigma-Sigma=Sigma Sigma2Sigma Sigma Sigma Sigma Sigma#Sigma SigmaySigma Sigma.Sigma=Sigma SigmaySigma Sigma.Sigma-Sigma Sigma2Sigma,Sigma SigmanSigmaoSigma SigmapSigmarSigmaoSigmabSigmalSigmaeSigmamSigma
+Sigma
+SigmaxSigma Sigma=Sigma Sigma5Sigma
+Sigma#Sigma SigmaxSigma Sigma.Sigma-Sigma=Sigma Sigma2Sigma Sigma Sigma#Sigma SigmaFSigmaaSigmaiSigmalSigmasSigma!Sigma
+SigmaxSigma Sigma=Sigma SigmaxSigma Sigma-Sigma Sigma2Sigma Sigma Sigma#Sigma SigmasSigmauSigmabSigmatSigmalSigmaeSigma SigmadSigmaiSigmafSigmafSigmaeSigmarSigmaeSigmanSigmacSigmaeSigma Sigma-Sigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigmasSigma SigmaaSigma SigmanSigmaeSigmawSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmaaSigmanSigmadSigma SigmarSigmaeSigmabSigmaiSigmanSigmadSigmasSigma SigmatSigmahSigmaeSigma SigmavSigmaaSigmarSigmaiSigmaaSigmabSigmalSigmaeSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaISigmanSigma SigmapSigmaaSigmarSigmatSigmaiSigmacSigmauSigmalSigmaaSigmarSigma,Sigma SigmatSigmahSigmaeSigmarSigmaeSigma SigmaiSigmasSigma SigmanSigmaoSigma SigmawSigmaaSigmaySigma SigmatSigmaoSigma SigmapSigmaaSigmasSigmasSigma SigmaaSigmanSigmaySigma SigmaiSigmamSigmamSigmauSigmatSigmaaSigmabSigmalSigmaeSigma SigmaiSigmanSigmatSigmaoSigma SigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmaaSigmanSigmadSigma SigmahSigmaaSigmavSigmaeSigma SigmaiSigmatSigma SigmamSigmaoSigmadSigmaiSigmafSigmaiSigmaeSigmadSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma2Sigma
+Sigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmaxSigma Sigma=Sigma Sigma3Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmaMSigmaISigmaSSigmaTSigmaASigmaKSigmaESigma!Sigma SigmadSigmaoSigmaeSigmasSigma SigmanSigmaoSigmatSigma SigmamSigmaoSigmadSigmaiSigmafSigmaySigma SigmaxSigma,Sigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigmasSigma SigmaaSigma SigmanSigmaeSigmawSigma SigmavSigmaaSigmalSigmauSigmaeSigma!Sigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmafSigma(SigmaxSigma)Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmacSigmaaSigmanSigmanSigmaoSigmatSigma SigmamSigmaoSigmadSigmaiSigmafSigmaySigma SigmaiSigmamSigmamSigmauSigmatSigmaaSigmabSigmalSigmaeSigmasSigma SigmaiSigmanSigma SigmapSigmalSigmaaSigmacSigmaeSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaxSigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaiSigmasSigma SigmaaSigmalSigmasSigmaoSigma SigmatSigmarSigmauSigmaeSigma SigmafSigmaoSigmarSigma SigmaoSigmatSigmahSigmaeSigmarSigma SigmaiSigmamSigmamSigmauSigmatSigmaaSigmabSigmalSigmaeSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmasSigmauSigmacSigmahSigma SigmaaSigmasSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma,Sigma SigmaaSigmasSigma SigmawSigmaeSigmalSigmalSigma SigmaaSigmasSigma SigmasSigmaoSigmamSigmaeSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmatSigmaySigmapSigmaeSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmauSigmasSigmaiSigmanSigmagSigma SigmaSSigmatSigmaaSigmatSigmaiSigmacSigmaASigmarSigmarSigmaaSigmaySigmasSigma
+SigmaxSigmadSigmaySigmanSigmaaSigmamSigmaiSigmacSigma Sigma=Sigma Sigma[Sigma1Sigma,Sigma Sigma2Sigma]Sigma
+SigmaxSigmasSigmatSigmaaSigmatSigmaiSigmacSigma Sigma=Sigma Sigma@SigmaSSigmaVSigmaeSigmacSigmatSigmaoSigmarSigma Sigma[Sigma1Sigma,Sigma Sigma2Sigma]Sigma Sigma Sigma#Sigma SigmatSigmauSigmarSigmanSigmasSigma SigmaiSigmatSigma SigmaiSigmanSigmatSigmaoSigma SigmaaSigma SigmahSigmaiSigmagSigmahSigmalSigmaySigma SigmaoSigmapSigmatSigmaiSigmamSigmaiSigmazSigmaeSigmadSigma SigmasSigmatSigmaaSigmatSigmaiSigmacSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma
+Sigma
+SigmafSigma(SigmaxSigma)Sigma Sigma=Sigma Sigma2SigmaxSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmafSigma(SigmaxSigmadSigmaySigmanSigmaaSigmamSigmaiSigmacSigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmafSigma(SigmaxSigmasSigmatSigmaaSigmatSigmaiSigmacSigma)Sigma
+Sigma
+Sigma#Sigma SigmaiSigmanSigmapSigmalSigmaaSigmacSigmaeSigma SigmavSigmaeSigmarSigmasSigmaiSigmaoSigmanSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmagSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmaxSigma Sigma.Sigma=Sigma Sigma2SigmaxSigma
+Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma Sigma"SigmaSSigmauSigmacSigmacSigmaeSigmasSigmasSigma!Sigma"Sigma
+SigmaeSigmanSigmadSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaxSigmadSigmaySigmanSigmaaSigmamSigmaiSigmacSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmagSigma(SigmaxSigmadSigmaySigmanSigmaaSigmamSigmaiSigmacSigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaxSigmadSigmaySigmanSigmaaSigmamSigmaiSigmacSigma;Sigma
+Sigma
+Sigma#Sigma SigmagSigma(SigmaxSigmasSigmatSigmaaSigmatSigmaiSigmacSigma)Sigma Sigma#Sigma SigmafSigmaaSigmaiSigmalSigmasSigma,Sigma SigmasSigmatSigmaaSigmatSigmaiSigmacSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigmasSigma SigmaaSigmarSigmaeSigma SigmaiSigmamSigmamSigmauSigmatSigmaaSigmabSigmalSigmaeSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma SigmaOSigmapSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma SigmaoSigmanSigma SigmaASigmarSigmarSigmaaSigmaySigmasSigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaASigmarSigmarSigmaaSigmaySigma SigmaMSigmaeSigmatSigmahSigmaoSigmadSigmasSigma
+Sigma
+SigmaJSigmauSigmalSigmaiSigmaaSigma SigmapSigmarSigmaoSigmavSigmaiSigmadSigmaeSigmasSigma SigmasSigmatSigmaaSigmanSigmadSigmaaSigmarSigmadSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmafSigmaoSigmarSigma SigmaaSigmacSigmatSigmaiSigmanSigmagSigma SigmaoSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma,Sigma SigmasSigmaoSigmamSigmaeSigma SigmaoSigmafSigma SigmawSigmahSigmaiSigmacSigmahSigma SigmawSigmaeSigma'SigmavSigmaeSigma
+SigmaaSigmalSigmarSigmaeSigmaaSigmadSigmaySigma SigmasSigmaeSigmaeSigmanSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma-Sigma1Sigma,Sigma Sigma0Sigma,Sigma Sigma1Sigma]Sigma
+Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmalSigmaeSigmanSigmagSigmatSigmahSigma(SigmaaSigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmasSigmauSigmamSigma(SigmaaSigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmamSigmaeSigmaaSigmanSigma(SigmaaSigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmasSigmatSigmadSigma(SigmaaSigma)Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmasSigmatSigmaaSigmanSigmadSigmaaSigmarSigmadSigma SigmadSigmaeSigmavSigmaiSigmaaSigmatSigmaiSigmaoSigmanSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmavSigmaaSigmarSigma(SigmaaSigma)Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmavSigmaaSigmarSigmaiSigmaaSigmanSigmacSigmaeSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmamSigmaaSigmaxSigmaiSigmamSigmauSigmamSigma(SigmaaSigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmamSigmaiSigmanSigmaiSigmamSigmauSigmamSigma(SigmaaSigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaeSigmaxSigmatSigmarSigmaeSigmamSigmaaSigma(SigmaaSigma)Sigma Sigma Sigma#Sigma Sigma(SigmamSigmaiSigmamSigmaiSigmamSigmauSigmamSigma(SigmaaSigma)Sigma,Sigma SigmamSigmaaSigmaxSigmaiSigmamSigmauSigmamSigma(SigmaaSigma)Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmaoSigma SigmasSigmaoSigmarSigmatSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma=Sigma SigmasSigmaoSigmarSigmatSigma(SigmaaSigma,Sigma SigmarSigmaeSigmavSigma Sigma=Sigma SigmatSigmarSigmauSigmaeSigma)Sigma Sigma Sigma#Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigmasSigma SigmanSigmaeSigmawSigma SigmaaSigmarSigmarSigmaaSigmaySigma,Sigma SigmaoSigmarSigmaiSigmagSigmaiSigmanSigmaaSigmalSigma SigmanSigmaoSigmatSigma SigmamSigmaoSigmadSigmaiSigmafSigmaiSigmaeSigmadSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma=Sigma SigmasSigmaoSigmarSigmatSigma!Sigma(SigmaaSigma,Sigma SigmarSigmaeSigmavSigma Sigma=Sigma SigmatSigmarSigmauSigmaeSigma)Sigma Sigma Sigma#Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigmasSigma Sigma*SigmamSigmaoSigmadSigmaiSigmafSigmaiSigmaeSigmadSigma SigmaoSigmarSigmaiSigmagSigmaiSigmanSigmaaSigmalSigma*Sigma SigmaaSigmarSigmarSigmaaSigmaySigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma=Sigma=Sigma SigmaaSigma Sigma Sigma#Sigma SigmatSigmaeSigmasSigmatSigmasSigma SigmaiSigmafSigma SigmahSigmaaSigmavSigmaeSigma SigmatSigmahSigmaeSigma SigmasSigmaaSigmamSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma=Sigma=Sigma=Sigma SigmaaSigma Sigma Sigma#Sigma SigmatSigmaeSigmasSigmatSigmasSigma SigmaiSigmafSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma SigmaaSigmarSigmaeSigma SigmaiSigmadSigmaeSigmanSigmatSigmaiSigmacSigmaaSigmalSigma Sigma(SigmaiSigma.SigmaeSigma SigmasSigmahSigmaaSigmarSigmaeSigma SigmasSigmaaSigmamSigmaeSigma SigmamSigmaeSigmamSigmaoSigmarSigmaySigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaMSigmaaSigmatSigmarSigmaiSigmaxSigma SigmaASigmalSigmagSigmaeSigmabSigmarSigmaaSigma
+Sigma
+SigmaFSigmaoSigmarSigma SigmatSigmawSigmaoSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma,Sigma Sigma`Sigma*Sigma`Sigma SigmamSigmaeSigmaaSigmanSigmasSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaiSigmacSigmaaSigmatSigmaiSigmaoSigmanSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma1Sigma,Sigma Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma=Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma*Sigma SigmabSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma*Sigma SigmaaSigma'Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmaoSigma SigmasSigmaoSigmalSigmavSigmaeSigma SigmatSigmahSigmaeSigma SigmalSigmaiSigmanSigmaeSigmaaSigmarSigma SigmasSigmaySigmasSigmatSigmaeSigmamSigma Sigma$SigmaASigma SigmaXSigma Sigma=Sigma SigmaBSigma$Sigma SigmafSigmaoSigmarSigma Sigma$SigmaXSigma$Sigma SigmauSigmasSigmaeSigma Sigma`SigmaASigma Sigma\Sigma SigmaBSigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaASigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma2Sigma Sigma3Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaBSigma Sigma=Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaASigma Sigma\Sigma SigmaBSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaiSigmanSigmavSigma(SigmaASigma)Sigma Sigma*Sigma SigmaBSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmalSigmatSigmahSigmaoSigmauSigmagSigmahSigma SigmatSigmahSigmaeSigma SigmalSigmaaSigmasSigmatSigma SigmatSigmawSigmaoSigma SigmaoSigmapSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma SigmagSigmaiSigmavSigmaeSigma SigmatSigmahSigmaeSigma SigmasSigmaaSigmamSigmaeSigma SigmarSigmaeSigmasSigmauSigmalSigmatSigma,Sigma SigmatSigmahSigmaeSigma SigmafSigmaiSigmarSigmasSigmatSigma SigmaoSigmanSigmaeSigma SigmaiSigmasSigma SigmanSigmauSigmamSigmaeSigmarSigmaiSigmacSigmaaSigmalSigmalSigmaySigma SigmamSigmaoSigmarSigmaeSigma SigmasSigmatSigmaaSigmabSigmalSigmaeSigma SigmaaSigmanSigmadSigma SigmasSigmahSigmaoSigmauSigmalSigmadSigma SigmabSigmaeSigma SigmapSigmarSigmaeSigmafSigmaeSigmarSigmarSigmaeSigmadSigma SigmaiSigmanSigma SigmamSigmaoSigmasSigmatSigma SigmacSigmaaSigmasSigmaeSigmasSigma.Sigma
+Sigma
+SigmaMSigmauSigmalSigmatSigmaiSigmapSigmalSigmaySigmaiSigmanSigmagSigma SigmatSigmawSigmaoSigma Sigma*Sigma*SigmaoSigmanSigmaeSigma*Sigma*Sigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigmasSigma SigmagSigmaiSigmavSigmaeSigmasSigma SigmaaSigmanSigma SigmaeSigmarSigmarSigmaoSigmarSigma Sigma-Sigma-Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmaiSigmasSigma SigmarSigmaeSigmaaSigmasSigmaoSigmanSigmaaSigmabSigmalSigmaeSigma SigmasSigmaiSigmanSigmacSigmaeSigma SigmatSigmahSigmaeSigma SigmamSigmaeSigmaaSigmanSigmaiSigmanSigmagSigma SigmaiSigmasSigma SigmaaSigmamSigmabSigmaiSigmagSigmauSigmaoSigmauSigmasSigma.Sigma
+Sigma
+SigmaMSigmaoSigmarSigmaeSigma SigmapSigmarSigmaeSigmacSigmaiSigmasSigmaeSigmalSigmaySigma,Sigma SigmatSigmahSigmaeSigma SigmaeSigmarSigmarSigmaoSigmarSigma SigmaiSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaeSigmarSigmaeSigma SigmaiSigmasSigmanSigma'SigmatSigma SigmaaSigmanSigma SigmaiSigmamSigmapSigmalSigmaeSigmamSigmaeSigmanSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma SigmaoSigmafSigma Sigma`Sigma*Sigma`Sigma SigmafSigmaoSigmarSigma SigmatSigmawSigmaoSigma SigmaoSigmanSigmaeSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigmasSigma.Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmaoSigmauSigmatSigmapSigmauSigmatSigma SigmaeSigmaxSigmapSigmalSigmaaSigmaiSigmanSigmasSigma SigmatSigmahSigmaiSigmasSigma,Sigma SigmaaSigmanSigmadSigma SigmalSigmaiSigmasSigmatSigmasSigma SigmasSigmaoSigmamSigmaeSigma SigmaoSigmatSigmahSigmaeSigmarSigma SigmamSigmaeSigmatSigmahSigmaoSigmadSigmasSigma SigmaoSigmafSigma Sigma`Sigma*Sigma`Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmaJSigmauSigmalSigmaiSigmaaSigma SigmatSigmahSigmaiSigmanSigmakSigmasSigma SigmaaSigmarSigmaeSigma SigmacSigmalSigmaoSigmasSigmaeSigma SigmatSigmaoSigma SigmawSigmahSigmaaSigmatSigma SigmawSigmaeSigma SigmawSigmaaSigmanSigmatSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma-Sigma-Sigma-Sigma
+SigmatSigmaaSigmagSigmasSigma:Sigma Sigma[SigmarSigmaaSigmaiSigmasSigmaeSigmasSigma-SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigma]Sigma
+Sigma-Sigma-Sigma-Sigma
+SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma)Sigma Sigma*Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma)Sigma Sigma Sigma#Sigma SigmadSigmaoSigmaeSigmasSigma SigmanSigmaoSigmatSigma SigmacSigmaoSigmanSigmafSigmaoSigmarSigmamSigma,Sigma SigmaeSigmaxSigmapSigmaeSigmacSigmatSigma SigmaeSigmarSigmarSigmaoSigmarSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaISigmanSigmasSigmatSigmaeSigmaaSigmadSigma,Sigma SigmaySigmaoSigmauSigma SigmacSigmaoSigmauSigmalSigmadSigma SigmatSigmaaSigmakSigmaeSigma SigmatSigmahSigmaeSigma SigmatSigmarSigmaaSigmanSigmasSigmapSigmaoSigmasSigmaeSigma SigmatSigmaoSigma SigmafSigmaoSigmarSigmamSigma SigmaaSigma SigmarSigmaoSigmawSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma)Sigma'Sigma Sigma*Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmalSigmatSigmaeSigmarSigmanSigmaaSigmatSigmaiSigmavSigmaeSigmalSigmaySigma,Sigma SigmafSigmaoSigmarSigma SigmaiSigmanSigmanSigmaeSigmarSigma SigmapSigmarSigmaoSigmadSigmauSigmacSigmatSigma SigmaiSigmanSigma SigmatSigmahSigmaiSigmasSigma SigmasSigmaeSigmatSigmatSigmaiSigmanSigmagSigma SigmauSigmasSigmaeSigma Sigma`SigmadSigmaoSigmatSigma(Sigma)Sigma`Sigma SigmaoSigmarSigma SigmatSigmahSigmaeSigma SigmauSigmanSigmaiSigmacSigmaoSigmadSigmaeSigma Sigma`Sigma\SigmacSigmadSigmaoSigmatSigma<SigmaTSigmaASigmaBSigma>Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmadSigmaoSigmatSigma(SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma)Sigma,Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma)Sigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma)Sigma Sigma⋅Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma)Sigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaMSigmaaSigmatSigmarSigmaiSigmaxSigma SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaiSigmacSigmaaSigmatSigmaiSigmaoSigmanSigma SigmauSigmasSigmaiSigmanSigmagSigma SigmaoSigmanSigmaeSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigmasSigma SigmasSigmaiSigmamSigmaiSigmalSigmaaSigmarSigmalSigmaySigma SigmafSigmaoSigmalSigmalSigmaoSigmawSigmasSigma SigmafSigmarSigmaoSigmamSigma SigmatSigmarSigmaeSigmaaSigmatSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigmamSigma SigmaaSigmasSigma
+SigmacSigmaoSigmalSigmauSigmamSigmanSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigmasSigma.Sigma Sigma SigmaPSigmaoSigmasSigmatSigma-SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaiSigmacSigmaaSigmatSigmaiSigmaoSigmanSigma SigmarSigmaeSigmaqSigmauSigmaiSigmarSigmaeSigmasSigma SigmaaSigma SigmatSigmarSigmaaSigmanSigmasSigmapSigmaoSigmasSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma=Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+SigmabSigma Sigma*Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma)Sigma'Sigma Sigma*Sigma SigmabSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaNSigmaoSigmatSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaeSigma SigmatSigmaySigmapSigmaeSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigmaeSigmadSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmaiSigmanSigma SigmatSigmahSigmaiSigmasSigma SigmacSigmaaSigmasSigmaeSigma SigmaiSigmasSigma SigmanSigmaoSigmatSigma Sigma`SigmaASigmarSigmarSigmaaSigmaySigma{SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma,Sigma1Sigma}Sigma`Sigma SigmabSigmauSigmatSigma SigmarSigmaaSigmatSigmahSigmaeSigmarSigma
+Sigma`SigmaASigmadSigmajSigmaoSigmaiSigmanSigmatSigma{SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma,SigmaASigmarSigmarSigmaaSigmaySigma{SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma,Sigma1Sigma}Sigma}Sigma`Sigma.Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaiSigmasSigma SigmasSigmaiSigmanSigmacSigmaeSigma SigmatSigmahSigmaeSigma SigmalSigmaeSigmafSigmatSigma SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaiSigmacSigmaaSigmatSigmaiSigmaoSigmanSigma SigmabSigmaySigma SigmaaSigma SigmarSigmaoSigmawSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmasSigmahSigmaoSigmauSigmalSigmadSigma SigmaaSigmalSigmasSigmaoSigma SigmabSigmaeSigma SigmaaSigma SigmarSigmaoSigmawSigma-SigmavSigmaeSigmacSigmatSigmaoSigmarSigma.Sigma Sigma SigmaISigmatSigma SigmaaSigmalSigmasSigmaoSigma SigmahSigmaiSigmanSigmatSigmasSigma
+SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaeSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmaiSigmanSigma SigmaJSigmauSigmalSigmaiSigmaaSigma SigmamSigmaoSigmarSigmaeSigma SigmacSigmaoSigmamSigmapSigmalSigmaiSigmacSigmaaSigmatSigmaeSigmadSigma SigmatSigmahSigmaaSigmanSigma SigmafSigmaiSigmarSigmasSigmatSigma SigmaaSigmapSigmapSigmaeSigmaaSigmarSigmasSigma SigmaiSigmanSigma SigmatSigmahSigmaeSigma SigmasSigmauSigmarSigmafSigmaaSigmacSigmaeSigma SigmanSigmaoSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma,Sigma SigmaaSigmasSigma SigmawSigmaeSigma SigmawSigmaiSigmalSigmalSigma SigmaeSigmaxSigmapSigmalSigmaoSigmarSigmaeSigma
+SigmafSigmauSigmarSigmatSigmahSigmaeSigmarSigma SigmaiSigmanSigma SigmatSigmahSigmaeSigma Sigma{SigmadSigmaoSigmacSigma}Sigma`SigmaiSigmanSigmatSigmarSigmaoSigmadSigmauSigmacSigmatSigmaiSigmaoSigmanSigma SigmatSigmaoSigma SigmatSigmaySigmapSigmaeSigmasSigma SigmalSigmaeSigmacSigmatSigmauSigmarSigmaeSigma Sigma<Sigma.Sigma.Sigma/SigmagSigmaeSigmatSigmatSigmaiSigmanSigmagSigma_SigmasSigmatSigmaaSigmarSigmatSigmaeSigmadSigma_SigmajSigmauSigmalSigmaiSigmaaSigma/SigmaiSigmanSigmatSigmarSigmaoSigmadSigmauSigmacSigmatSigmaiSigmaoSigmanSigma_SigmatSigmaoSigma_SigmatSigmaySigmapSigmaeSigmasSigma>Sigma`Sigma.Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaESigmalSigmaeSigmamSigmaeSigmanSigmatSigmawSigmaiSigmasSigmaeSigma SigmaOSigmapSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma
+Sigma
+Sigma#Sigma#Sigma#Sigma#Sigma SigmaASigmalSigmagSigmaeSigmabSigmarSigmaaSigmaiSigmacSigma SigmaOSigmapSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma
+Sigma
+SigmaSSigmauSigmapSigmapSigmaoSigmasSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmawSigmaeSigma SigmawSigmaiSigmasSigmahSigma SigmatSigmaoSigma SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaySigma SigmaeSigmavSigmaeSigmarSigmaySigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigma SigmaoSigmafSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma Sigma`SigmaASigma`Sigma SigmawSigmaiSigmatSigmahSigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmarSigmarSigmaeSigmasSigmapSigmaoSigmanSigmadSigmaiSigmanSigmagSigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigma SigmaoSigmafSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma Sigma`SigmaBSigma`Sigma.Sigma
+Sigma
+SigmaISigmanSigma SigmatSigmahSigmaaSigmatSigma SigmacSigmaaSigmasSigmaeSigma SigmawSigmaeSigma SigmanSigmaeSigmaeSigmadSigma SigmatSigmaoSigma SigmarSigmaeSigmapSigmalSigmaaSigmacSigmaeSigma Sigma`Sigma*Sigma`Sigma Sigma(SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaiSigmacSigmaaSigmatSigmaiSigmaoSigmanSigma)Sigma SigmawSigmaiSigmatSigmahSigma Sigma`Sigma.Sigma*Sigma`Sigma Sigma(SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigmawSigmaiSigmasSigmaeSigma SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaiSigmacSigmaaSigmatSigmaiSigmaoSigmanSigma)Sigma.Sigma
+Sigma
+SigmaFSigmaoSigmarSigma SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma,Sigma SigmacSigmaoSigmamSigmapSigmaaSigmarSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma Sigma*Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma Sigma Sigma Sigma#Sigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaiSigmacSigmaaSigmatSigmaiSigmaoSigmanSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma Sigma.Sigma*Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma Sigma Sigma Sigma#Sigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigma SigmabSigmaySigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigma SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaiSigmacSigmaaSigmatSigmaiSigmaoSigmanSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaiSigmasSigma SigmaaSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmalSigma SigmapSigmarSigmaiSigmanSigmacSigmaiSigmapSigmalSigmaeSigma:Sigma Sigma`Sigma.SigmaxSigma`Sigma SigmamSigmaeSigmaaSigmanSigmasSigma SigmaaSigmapSigmapSigmalSigmaySigma SigmaoSigmapSigmaeSigmarSigmaaSigmatSigmaoSigmarSigma Sigma`SigmaxSigma`Sigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigmawSigmaiSigmasSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaASigma Sigma=Sigma Sigma-SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaASigma Sigma.Sigma^Sigma Sigma2Sigma Sigma Sigma#Sigma SigmasSigmaqSigmauSigmaaSigmarSigmaeSigma SigmaeSigmavSigmaeSigmarSigmaySigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaHSigmaoSigmawSigmaeSigmavSigmaeSigmarSigma SigmaiSigmanSigma SigmapSigmarSigmaaSigmacSigmatSigmaiSigmacSigmaeSigma SigmasSigmaoSigmamSigmaeSigma SigmaoSigmapSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma SigmaaSigmarSigmaeSigma SigmamSigmaaSigmatSigmahSigmaeSigmamSigmaaSigmatSigmaiSigmacSigmaaSigmalSigmalSigmaySigma SigmavSigmaaSigmalSigmaiSigmadSigma SigmawSigmaiSigmatSigmahSigmaoSigmauSigmatSigma SigmabSigmarSigmaoSigmaaSigmadSigmacSigmaaSigmasSigmatSigmaiSigmanSigmagSigma,Sigma SigmaaSigmanSigmadSigma SigmahSigmaeSigmanSigmacSigmaeSigma SigmatSigmahSigmaeSigma Sigma`Sigma.Sigma`Sigma SigmacSigmaaSigmanSigma SigmabSigmaeSigma SigmaoSigmamSigmaiSigmatSigmatSigmaeSigmadSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma Sigma+Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma Sigma Sigma#Sigma SigmasSigmaaSigmamSigmaeSigma SigmaaSigmasSigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma Sigma.Sigma+Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaSSigmacSigmaaSigmalSigmaaSigmarSigma SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaiSigmacSigmaaSigmatSigmaiSigmaoSigmanSigma SigmaiSigmasSigma SigmasSigmaiSigmamSigmaiSigmalSigmaaSigmarSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaASigma Sigma=Sigma SigmaoSigmanSigmaeSigmasSigma(Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma2Sigma Sigma*Sigma SigmaASigma Sigma Sigma#Sigma SigmasSigmaaSigmamSigmaeSigma SigmaaSigmasSigma Sigma2Sigma Sigma.Sigma*Sigma SigmaASigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaISigmanSigma SigmafSigmaaSigmacSigmatSigma SigmaySigmaoSigmauSigma SigmacSigmaaSigmanSigma SigmaoSigmamSigmaiSigmatSigma SigmatSigmahSigmaeSigma Sigma`Sigma*Sigma`Sigma SigmaaSigmalSigmatSigmaoSigmagSigmaeSigmatSigmahSigmaeSigmarSigma SigmaaSigmanSigmadSigma SigmajSigmauSigmasSigmatSigma SigmawSigmarSigmaiSigmatSigmaeSigma Sigma`Sigma2SigmaASigma`Sigma.Sigma
+Sigma
+SigmaUSigmanSigmalSigmaiSigmakSigmaeSigma SigmaMSigmaASigmaTSigmaLSigmaASigmaBSigma SigmaaSigmanSigmadSigma SigmaoSigmatSigmahSigmaeSigmarSigma SigmalSigmaaSigmanSigmagSigmauSigmaaSigmagSigmaeSigmasSigma,Sigma SigmasSigmacSigmaaSigmalSigmaaSigmarSigma SigmaaSigmadSigmadSigmaiSigmatSigmaiSigmaoSigmanSigma SigmarSigmaeSigmaqSigmauSigmaiSigmarSigmaeSigmasSigma SigmatSigmahSigmaeSigma Sigma`Sigma.Sigma+Sigma`Sigma SigmaiSigmanSigma SigmaoSigmarSigmadSigmaeSigmarSigma SigmatSigmaoSigma SigmacSigmaoSigmarSigmarSigmaeSigmacSigmatSigmalSigmaySigma SigmabSigmarSigmaoSigmaaSigmadSigmacSigmaaSigmasSigmatSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma1Sigma,Sigma Sigma2Sigma]Sigma
+SigmaxSigma Sigma.Sigma+Sigma Sigma1Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmanSigmaoSigmatSigma SigmaxSigma Sigma+Sigma Sigma1Sigma
+SigmaxSigma Sigma.Sigma-Sigma Sigma1Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmanSigmaoSigmatSigma SigmaxSigma Sigma-Sigma Sigma1Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma#Sigma SigmaESigmalSigmaeSigmamSigmaeSigmanSigmatSigmawSigmaiSigmasSigmaeSigma SigmaCSigmaoSigmamSigmapSigmaaSigmarSigmaiSigmasSigmaoSigmanSigmasSigma
+Sigma
+SigmaESigmalSigmaeSigmamSigmaeSigmanSigmatSigmawSigmaiSigmasSigmaeSigma SigmacSigmaoSigmamSigmapSigmaaSigmarSigmaiSigmasSigmaoSigmanSigmasSigma SigmaaSigmalSigmasSigmaoSigma SigmauSigmasSigmaeSigma SigmatSigmahSigmaeSigma Sigma`Sigma.SigmaxSigma`Sigma SigmasSigmatSigmaySigmalSigmaeSigma SigmanSigmaoSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma0Sigma,Sigma Sigma2Sigma0Sigma,Sigma Sigma3Sigma0Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma=Sigma Sigma[Sigma-Sigma1Sigma0Sigma0Sigma,Sigma Sigma0Sigma,Sigma Sigma1Sigma0Sigma0Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma.Sigma>Sigma SigmaaSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma.Sigma=Sigma=Sigma SigmabSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaWSigmaeSigma SigmacSigmaaSigmanSigma SigmaaSigmalSigmasSigmaoSigma SigmadSigmaoSigma SigmacSigmaoSigmamSigmapSigmaaSigmarSigmaiSigmasSigmaoSigmanSigmasSigma SigmaaSigmagSigmaaSigmaiSigmanSigmasSigmatSigma SigmasSigmacSigmaaSigmalSigmaaSigmarSigmasSigma SigmawSigmaiSigmatSigmahSigma SigmapSigmaaSigmarSigmaaSigmalSigmalSigmaeSigmalSigma SigmasSigmaySigmanSigmatSigmaaSigmaxSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma.Sigma>Sigma Sigma1Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaiSigmasSigma SigmapSigmaaSigmarSigmatSigmaiSigmacSigmauSigmalSigmaaSigmarSigmalSigmaySigma SigmauSigmasSigmaeSigmafSigmauSigmalSigma SigmafSigmaoSigmarSigma Sigma*SigmacSigmaoSigmanSigmadSigmaiSigmatSigmaiSigmaoSigmanSigmaaSigmalSigma SigmaeSigmaxSigmatSigmarSigmaaSigmacSigmatSigmaiSigmaoSigmanSigma*Sigma Sigma-Sigma-Sigma SigmaeSigmaxSigmatSigmarSigmaaSigmacSigmatSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigmasSigma SigmaoSigmafSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmatSigmahSigmaaSigmatSigma SigmasSigmaaSigmatSigmaiSigmasSigmafSigmaySigma SigmaaSigma SigmacSigmaoSigmanSigmadSigmaiSigmatSigmaiSigmaoSigmanSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma SigmarSigmaaSigmanSigmadSigmanSigma(Sigma4Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma.Sigma<Sigma Sigma0Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma[SigmaaSigma Sigma.Sigma<Sigma Sigma0Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma#Sigma SigmaCSigmahSigmaaSigmanSigmagSigmaiSigmanSigmagSigma SigmaDSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmasSigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmapSigmarSigmaiSigmamSigmaaSigmarSigmaySigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigmaoSigmarSigma SigmacSigmahSigmaaSigmanSigmagSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmasSigma SigmaoSigmafSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmaiSigmasSigma Sigma`SigmarSigmaeSigmasSigmahSigmaaSigmapSigmaeSigma(Sigma)Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma0Sigma,Sigma Sigma2Sigma0Sigma,Sigma Sigma3Sigma0Sigma,Sigma Sigma4Sigma0Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma Sigma=Sigma SigmarSigmaeSigmasSigmahSigmaaSigmapSigmaeSigma(SigmaaSigma,Sigma Sigma2Sigma,Sigma Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaNSigmaoSigmatSigmaiSigmacSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaiSigmasSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigmasSigma SigmaaSigma SigmavSigmaiSigmaeSigmawSigma SigmaoSigmanSigma SigmatSigmahSigmaeSigma SigmaeSigmaxSigmaiSigmasSigmatSigmaiSigmanSigmagSigma SigmaaSigmarSigmarSigmaaSigmaySigma.Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmamSigmaeSigmaaSigmanSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmacSigmahSigmaaSigmanSigmagSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmadSigmaaSigmatSigmaaSigma SigmaiSigmanSigma SigmatSigmahSigmaeSigma SigmanSigmaeSigmawSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmawSigmaiSigmalSigmalSigma SigmamSigmaoSigmadSigmaiSigmafSigmaySigma SigmatSigmahSigmaeSigma SigmadSigmaaSigmatSigmaaSigma SigmaiSigmanSigma SigmatSigmahSigmaeSigma
+SigmaoSigmalSigmadSigma SigmaoSigmanSigmaeSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma[Sigma1Sigma,Sigma Sigma1Sigma]Sigma Sigma=Sigma Sigma1Sigma0Sigma0Sigma Sigma Sigma#Sigma SigmacSigmaoSigmanSigmatSigmaiSigmanSigmauSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmapSigmarSigmaeSigmavSigmaiSigmaoSigmauSigmasSigma SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmabSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmaoSigma SigmacSigmaoSigmalSigmalSigmaaSigmapSigmasSigmaeSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmaaSigmalSigmaoSigmanSigmagSigma SigmaoSigmanSigmaeSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigma SigmaySigmaoSigmauSigma SigmacSigmaaSigmanSigma SigmauSigmasSigmaeSigma Sigma`SigmadSigmarSigmaoSigmapSigmadSigmaiSigmamSigmasSigma(Sigma)Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma Sigma3Sigma Sigma4Sigma]Sigma Sigma Sigma#Sigma SigmatSigmawSigmaoSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigmaaSigmalSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmadSigmarSigmaoSigmapSigmadSigmaiSigmamSigmasSigma(SigmaaSigma,Sigma SigmadSigmaiSigmamSigmasSigma Sigma=Sigma Sigma1Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmaiSigmasSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmawSigmaiSigmatSigmahSigma SigmatSigmahSigmaeSigma SigmasSigmapSigmaeSigmacSigmaiSigmafSigmaiSigmaeSigmadSigma SigmadSigmaiSigmamSigmaeSigmanSigmasSigmaiSigmaoSigmanSigma Sigma"SigmafSigmalSigmaaSigmatSigmatSigmaeSigmanSigmaeSigmadSigma"Sigma.Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaBSigmarSigmaoSigmaaSigmadSigmacSigmaaSigmasSigmatSigmaiSigmanSigmagSigma SigmaFSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma
+Sigma
+SigmaJSigmauSigmalSigmaiSigmaaSigma SigmapSigmarSigmaoSigmavSigmaiSigmadSigmaeSigmasSigma SigmasSigmatSigmaaSigmanSigmadSigmaaSigmarSigmadSigma SigmamSigmaaSigmatSigmahSigmaeSigmamSigmaaSigmatSigmaiSigmacSigmaaSigmalSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmasSigmauSigmacSigmahSigma SigmaaSigmasSigma Sigma`SigmalSigmaoSigmagSigma`Sigma,Sigma Sigma`SigmaeSigmaxSigmapSigma`Sigma,Sigma Sigma`SigmasSigmaiSigmanSigma`Sigma,Sigma SigmaeSigmatSigmacSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmalSigmaoSigmagSigma(Sigma1Sigma.Sigma0Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaBSigmaySigma SigmadSigmaeSigmafSigmaaSigmauSigmalSigmatSigma,Sigma SigmatSigmahSigmaeSigmasSigmaeSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmaaSigmacSigmatSigma Sigma*SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigmawSigmaiSigmasSigmaeSigma*Sigma SigmaoSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmalSigmaoSigmagSigma.Sigma(Sigma1Sigma:Sigma4Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaNSigmaoSigmatSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmawSigmaeSigma SigmacSigmaaSigmanSigma SigmagSigmaeSigmatSigma SigmatSigmahSigmaeSigma SigmasSigmaaSigmamSigmaeSigma SigmarSigmaeSigmasSigmauSigmalSigmatSigma SigmaaSigmasSigma SigmawSigmaiSigmatSigmahSigma SigmaaSigma SigmacSigmaoSigmamSigmapSigmarSigmaeSigmahSigmaeSigmanSigmasSigmaiSigmaoSigmanSigma SigmaoSigmarSigma SigmamSigmaoSigmarSigmaeSigma SigmaeSigmaxSigmapSigmalSigmaiSigmacSigmaiSigmatSigma SigmalSigmaoSigmaoSigmapSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma[SigmalSigmaoSigmagSigma(SigmaxSigma)Sigma SigmafSigmaoSigmarSigma SigmaxSigma SigmaiSigmanSigma Sigma1Sigma:Sigma4Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaNSigmaoSigmanSigmaeSigmatSigmahSigmaeSigmalSigmaeSigmasSigmasSigma SigmatSigmahSigmaeSigma SigmasSigmaySigmanSigmatSigmaaSigmaxSigma SigmaiSigmasSigma SigmacSigmaoSigmanSigmavSigmaeSigmanSigmaiSigmaeSigmanSigmatSigma.Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaLSigmaiSigmanSigmaeSigmaaSigmarSigma SigmaASigmalSigmagSigmaeSigmabSigmarSigmaaSigma
+Sigma
+Sigma(Sigma[SigmaSSigmaeSigmaeSigma SigmalSigmaiSigmanSigmaeSigmaaSigmarSigma SigmaaSigmalSigmagSigmaeSigmabSigmarSigmaaSigma SigmadSigmaoSigmacSigmauSigmamSigmaeSigmanSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma]Sigma(SigmahSigmatSigmatSigmapSigmasSigma:Sigma/Sigma/SigmadSigmaoSigmacSigmasSigma.SigmajSigmauSigmalSigmaiSigmaaSigmalSigmaaSigmanSigmagSigma.SigmaoSigmarSigmagSigma/SigmaeSigmanSigma/SigmavSigma1Sigma/SigmasSigmatSigmadSigmalSigmaiSigmabSigma/SigmaLSigmaiSigmanSigmaeSigmaaSigmarSigmaASigmalSigmagSigmaeSigmabSigmarSigmaaSigma/Sigma)Sigma)Sigma
+Sigma
+SigmaJSigmauSigmalSigmaiSigmaaSigma SigmapSigmarSigmaoSigmavSigmaiSigmadSigmaeSigmasSigma SigmasSigmaoSigmamSigmaeSigma SigmaaSigma SigmagSigmarSigmaeSigmaaSigmatSigma SigmadSigmaeSigmaaSigmalSigma SigmaoSigmafSigma SigmaaSigmadSigmadSigmaiSigmatSigmaiSigmaoSigmanSigmaaSigmalSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmaaSigmalSigmaiSigmatSigmaySigma SigmarSigmaeSigmalSigmaaSigmatSigmaeSigmadSigma SigmatSigmaoSigma SigmalSigmaiSigmanSigmaeSigmaaSigmarSigma SigmaoSigmapSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaASigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmadSigmaeSigmatSigma(SigmaASigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmatSigmarSigma(SigmaASigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaeSigmaiSigmagSigmavSigmaaSigmalSigmasSigma(SigmaASigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmarSigmaaSigmanSigmakSigma(SigmaASigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma SigmaRSigmaaSigmanSigmagSigmaeSigmasSigma
+Sigma
+SigmaASigmasSigma SigmawSigmaiSigmatSigmahSigma SigmamSigmaaSigmanSigmaySigma SigmaoSigmatSigmahSigmaeSigmarSigma SigmatSigmaySigmapSigmaeSigmasSigma,Sigma SigmaaSigma Sigma`SigmaRSigmaaSigmanSigmagSigmaeSigma`Sigma SigmacSigmaaSigmanSigma SigmaaSigmacSigmatSigma SigmaaSigmasSigma SigmaaSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma1Sigma0Sigma:Sigma1Sigma2Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmaaSigma SigmarSigmaaSigmanSigmagSigmaeSigma,Sigma SigmaeSigmaqSigmauSigmaiSigmavSigmaaSigmalSigmaeSigmanSigmatSigma SigmatSigmaoSigma Sigma1Sigma0Sigma:Sigma1Sigma:Sigma1Sigma2Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaVSigmaeSigmacSigmatSigmaoSigmarSigma(SigmaaSigma)Sigma Sigma Sigma#Sigma SigmacSigmaaSigmanSigma SigmacSigmaoSigmanSigmavSigmaeSigmarSigmatSigma,Sigma SigmabSigmauSigmatSigma SigmasSigmahSigmaoSigmauSigmalSigmadSigmanSigma'SigmatSigma
+Sigma
+SigmabSigma Sigma=Sigma SigmaDSigmaiSigmaaSigmagSigmaoSigmanSigmaaSigmalSigma(Sigma[Sigma1Sigma.Sigma0Sigma,Sigma Sigma2Sigma.Sigma0Sigma,Sigma Sigma3Sigma.Sigma0Sigma]Sigma)Sigma
+SigmabSigma Sigma*Sigma SigmaaSigma Sigma.Sigma-Sigma Sigma[Sigma1Sigma.Sigma0Sigma;Sigma Sigma2Sigma.Sigma0Sigma;Sigma Sigma3Sigma.Sigma0Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaRSigmaaSigmanSigmagSigmaeSigmasSigma SigmacSigmaaSigmanSigma SigmaaSigmalSigmasSigmaoSigma SigmabSigmaeSigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigmadSigma SigmawSigmaiSigmatSigmahSigma SigmafSigmalSigmaoSigmaaSigmatSigmaiSigmanSigmagSigma SigmapSigmaoSigmaiSigmanSigmatSigma SigmanSigmauSigmamSigmabSigmaeSigmarSigmasSigma SigmauSigmasSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmasSigmaaSigmamSigmaeSigma SigmanSigmaoSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaaSigma Sigma=Sigma Sigma0Sigma.Sigma0Sigma:Sigma0Sigma.Sigma1Sigma:Sigma1Sigma.Sigma0Sigma Sigma Sigma#Sigma Sigma0Sigma.Sigma0Sigma,Sigma Sigma0Sigma.Sigma1Sigma,Sigma Sigma0Sigma.Sigma2Sigma,Sigma Sigma.Sigma.Sigma.Sigma Sigma1Sigma.Sigma0Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaBSigmauSigmatSigma SigmacSigmaaSigmarSigmaeSigma SigmasSigmahSigmaoSigmauSigmalSigmadSigma SigmabSigmaeSigma SigmatSigmaaSigmakSigmaeSigmanSigma SigmaiSigmafSigma SigmatSigmahSigmaeSigma SigmatSigmaeSigmarSigmamSigmaiSigmanSigmaaSigmalSigma SigmanSigmaoSigmadSigmaeSigma SigmaiSigmasSigma SigmanSigmaoSigmatSigma SigmaaSigma SigmamSigmauSigmalSigmatSigmaiSigmapSigmalSigmaeSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmasSigmaeSigmatSigma SigmasSigmaiSigmazSigmaeSigmasSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmamSigmaaSigmaxSigmavSigmaaSigmalSigma Sigma=Sigma Sigma1Sigma.Sigma0Sigma
+SigmamSigmaiSigmanSigmavSigmaaSigmalSigma Sigma=Sigma Sigma0Sigma.Sigma0Sigma
+SigmasSigmatSigmaeSigmapSigmasSigmaiSigmazSigmaeSigma Sigma=Sigma Sigma0Sigma.Sigma1Sigma5Sigma
+SigmaaSigma Sigma=Sigma SigmamSigmaiSigmanSigmavSigmaaSigmalSigma:SigmasSigmatSigmaeSigmapSigmasSigmaiSigmazSigmaeSigma:SigmamSigmaaSigmaxSigmavSigmaaSigmalSigma Sigma#Sigma Sigma0Sigma.Sigma0Sigma,Sigma Sigma0Sigma.Sigma1Sigma5Sigma,Sigma Sigma0Sigma.Sigma3Sigma,Sigma Sigma.Sigma.Sigma.Sigma
+SigmamSigmaaSigmaxSigmaiSigmamSigmauSigmamSigma(SigmaaSigma)Sigma Sigma=Sigma=Sigma SigmamSigmaaSigmaxSigmavSigmaaSigmalSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmaoSigma SigmaeSigmavSigmaeSigmanSigmalSigmaySigma SigmasSigmapSigmaaSigmacSigmaeSigma SigmapSigmaoSigmaiSigmanSigmatSigmasSigma SigmawSigmahSigmaeSigmarSigmaeSigma SigmatSigmahSigmaeSigma SigmamSigmaaSigmaxSigmaiSigmamSigmauSigmamSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmaiSigmasSigma SigmaiSigmamSigmapSigmaoSigmarSigmatSigmaaSigmanSigmatSigma,Sigma SigmaiSigma.SigmaeSigma.Sigma,Sigma Sigma`SigmalSigmaiSigmanSigmasSigmapSigmaaSigmacSigmaeSigma`Sigma SigmaiSigmanSigma SigmaoSigmatSigmahSigmaeSigmarSigma SigmalSigmaaSigmanSigmagSigmauSigmaaSigmagSigmaeSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmamSigmaaSigmaxSigmavSigmaaSigmalSigma Sigma=Sigma Sigma1Sigma.Sigma0Sigma
+SigmamSigmaiSigmanSigmavSigmaaSigmalSigma Sigma=Sigma Sigma0Sigma.Sigma0Sigma
+SigmanSigmauSigmamSigmapSigmaoSigmaiSigmanSigmatSigmasSigma Sigma=Sigma Sigma1Sigma0Sigma
+SigmaaSigma Sigma=Sigma SigmarSigmaaSigmanSigmagSigmaeSigma(SigmamSigmaiSigmanSigmavSigmaaSigmalSigma,Sigma SigmamSigmaaSigmaxSigmavSigmaaSigmalSigma,Sigma SigmalSigmaeSigmanSigmagSigmatSigmahSigma Sigma=Sigma SigmanSigmauSigmamSigmapSigmaoSigmaiSigmanSigmatSigmasSigma)Sigma
+Sigma#Sigma SigmaoSigmarSigma SigmarSigmaaSigmanSigmagSigmaeSigma(SigmamSigmaiSigmanSigmavSigmaaSigmalSigma,Sigma SigmasSigmatSigmaoSigmapSigma=SigmamSigmaaSigmaxSigmavSigmaaSigmalSigma,Sigma SigmalSigmaeSigmanSigmagSigmatSigmahSigma=SigmanSigmauSigmamSigmapSigmaoSigmaiSigmanSigmatSigmasSigma)Sigma
+Sigma
+SigmamSigmaaSigmaxSigmaiSigmamSigmauSigmamSigma(SigmaaSigma)Sigma Sigma=Sigma=Sigma SigmamSigmaaSigmaxSigmavSigmaaSigmalSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma#Sigma#Sigma SigmaTSigmauSigmapSigmalSigmaeSigmasSigma SigmaaSigmanSigmadSigma SigmaNSigmaaSigmamSigmaeSigmadSigma SigmaTSigmauSigmapSigmalSigmaeSigmasSigma
+Sigma
+Sigma(Sigma[SigmaSSigmaeSigmaeSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma]Sigma(SigmahSigmatSigmatSigmapSigmasSigma:Sigma/Sigma/SigmadSigmaoSigmacSigmasSigma.SigmajSigmauSigmalSigmaiSigmaaSigmalSigmaaSigmanSigmagSigma.SigmaoSigmarSigmagSigma/SigmaeSigmanSigma/SigmavSigma1Sigma/SigmamSigmaaSigmanSigmauSigmaaSigmalSigma/SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma/Sigma#SigmaTSigmauSigmapSigmalSigmaeSigmasSigma-Sigma1Sigma)Sigma SigmaaSigmanSigmadSigma Sigma[SigmanSigmaaSigmamSigmaeSigmadSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma SigmadSigmaoSigmacSigmauSigmamSigmaeSigmanSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma]Sigma(SigmahSigmatSigmatSigmapSigmasSigma:Sigma/Sigma/SigmadSigmaoSigmacSigmasSigma.SigmajSigmauSigmalSigmaiSigmaaSigmalSigmaaSigmanSigmagSigma.SigmaoSigmarSigmagSigma/SigmaeSigmanSigma/SigmavSigma1Sigma/SigmamSigmaaSigmanSigmauSigmaaSigmalSigma/SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma/Sigma#SigmaNSigmaaSigmamSigmaeSigmadSigma-SigmaTSigmauSigmapSigmalSigmaeSigmasSigma-Sigma1Sigma)Sigma)Sigma
+Sigma
+SigmaWSigmaeSigma SigmawSigmaeSigmarSigmaeSigma SigmaiSigmanSigmatSigmarSigmaoSigmadSigmauSigmacSigmaeSigmadSigma SigmatSigmaoSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma SigmaeSigmaaSigmarSigmalSigmaiSigmaeSigmarSigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmapSigmarSigmaoSigmavSigmaiSigmadSigmaeSigma SigmahSigmaiSigmagSigmahSigma-SigmapSigmaeSigmarSigmafSigmaoSigmarSigmamSigmaaSigmanSigmacSigmaeSigma SigmaiSigmamSigmamSigmauSigmatSigmaaSigmabSigmalSigmaeSigma SigmasSigmaeSigmatSigmasSigma SigmaoSigmafSigma SigmadSigmaiSigmasSigmatSigmaiSigmanSigmacSigmatSigma SigmatSigmaySigmapSigmaeSigmasSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmatSigma Sigma=Sigma Sigma(Sigma1Sigma.Sigma0Sigma,Sigma Sigma"SigmatSigmaeSigmasSigmatSigma"Sigma)Sigma
+SigmatSigma[Sigma1Sigma]Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmaaSigmacSigmacSigmaeSigmasSigmasSigma SigmabSigmaySigma SigmaiSigmanSigmadSigmaeSigmaxSigma
+SigmaaSigma,Sigma SigmabSigma Sigma=Sigma SigmatSigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmauSigmanSigmapSigmaaSigmacSigmakSigma
+Sigma#Sigma SigmatSigma[Sigma1Sigma]Sigma Sigma=Sigma Sigma3Sigma.Sigma0Sigma Sigma Sigma Sigma Sigma#Sigma SigmawSigmaoSigmauSigmalSigmadSigma SigmafSigmaaSigmaiSigmalSigma SigmaaSigmasSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma SigmaaSigmarSigmaeSigma SigmaiSigmamSigmamSigmauSigmatSigmaaSigmabSigmalSigmaeSigma
+SigmapSigmarSigmaiSigmanSigmatSigmalSigmanSigma(Sigma"SigmaaSigma Sigma=Sigma Sigma$SigmaaSigma SigmaaSigmanSigmadSigma SigmabSigma Sigma=Sigma Sigma$SigmabSigma"Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmasSigma SigmawSigmaeSigmalSigmalSigma SigmaaSigmasSigma Sigma*Sigma*SigmanSigmaaSigmamSigmaeSigmadSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma*Sigma*Sigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmaeSigmaxSigmatSigmaeSigmanSigmadSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma SigmawSigmaiSigmatSigmahSigma SigmanSigmaaSigmamSigmaeSigmasSigma SigmafSigmaoSigmarSigma SigmaeSigmaaSigmacSigmahSigma SigmaaSigmarSigmagSigmauSigmamSigmaeSigmanSigmatSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmatSigma Sigma=Sigma Sigma(Sigma;Sigma SigmavSigmaaSigmalSigma1Sigma Sigma=Sigma Sigma1Sigma.Sigma0Sigma,Sigma SigmavSigmaaSigmalSigma2Sigma Sigma=Sigma Sigma"SigmatSigmaeSigmasSigmatSigma"Sigma)Sigma Sigma#Sigma Sigma;Sigma SigmaiSigmasSigma SigmaoSigmapSigmatSigmaiSigmaoSigmanSigmaaSigmalSigma SigmabSigmauSigmatSigma SigmagSigmaoSigmaoSigmadSigma SigmafSigmaoSigmarSigmamSigma
+SigmatSigma.SigmavSigmaaSigmalSigma1Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmaaSigmacSigmacSigmaeSigmasSigmasSigma SigmabSigmaySigma SigmaiSigmanSigmadSigmaeSigmaxSigma
+SigmapSigmarSigmaiSigmanSigmatSigmalSigmanSigma(Sigma"SigmavSigmaaSigmalSigma1Sigma Sigma=Sigma Sigma$Sigma(SigmatSigma.SigmavSigmaaSigmalSigma1Sigma)Sigma SigmaaSigmanSigmadSigma SigmavSigmaaSigmalSigma2Sigma Sigma=Sigma Sigma$Sigma(SigmatSigma.SigmavSigmaaSigmalSigma2Sigma)Sigma"Sigma)Sigma Sigma#Sigma SigmaaSigmacSigmacSigmaeSigmasSigmasSigma SigmabSigmaySigma SigmanSigmaaSigmamSigmaeSigma
+Sigma(Sigma;Sigma SigmavSigmaaSigmalSigma1Sigma,Sigma SigmavSigmaaSigmalSigma2Sigma)Sigma Sigma=Sigma SigmatSigma Sigma Sigma#Sigma SigmauSigmanSigmapSigmaaSigmacSigmakSigmaiSigmanSigmagSigma SigmanSigmaoSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma Sigma(SigmanSigmaoSigmatSigmaeSigma SigmatSigmahSigmaeSigma Sigma;Sigma)Sigma
+SigmapSigmarSigmaiSigmanSigmatSigmalSigmanSigma(Sigma"SigmavSigmaaSigmalSigma1Sigma Sigma=Sigma Sigma$SigmavSigmaaSigmalSigma1Sigma SigmaaSigmanSigmadSigma SigmavSigmaaSigmalSigma2Sigma Sigma=Sigma Sigma$SigmavSigmaaSigmalSigma2Sigma"Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaWSigmahSigmaiSigmalSigmaeSigma SigmaiSigmamSigmamSigmauSigmatSigmaaSigmabSigmalSigmaeSigma,Sigma SigmaiSigmatSigma SigmaiSigmasSigma SigmapSigmaoSigmasSigmasSigmaiSigmabSigmalSigmaeSigma SigmatSigmaoSigma SigmamSigmaaSigmanSigmaiSigmapSigmauSigmalSigmaaSigmatSigmaeSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma SigmaaSigmanSigmadSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmatSigmaeSigma SigmanSigmaeSigmawSigma SigmaoSigmanSigmaeSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmatSigma2Sigma Sigma=Sigma Sigma(Sigma;Sigma SigmavSigmaaSigmalSigma3Sigma Sigma=Sigma Sigma4Sigma,Sigma SigmavSigmaaSigmalSigma4Sigma Sigma=Sigma Sigma"SigmatSigmaeSigmasSigmatSigma!Sigma!Sigma"Sigma)Sigma
+SigmatSigma3Sigma Sigma=Sigma SigmamSigmaeSigmarSigmagSigmaeSigma(SigmatSigma,Sigma SigmatSigma2Sigma)Sigma Sigma Sigma#Sigma SigmanSigmaeSigmawSigma SigmatSigmauSigmapSigmalSigmaeSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaNSigmaaSigmamSigmaeSigmadSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma SigmaaSigmarSigmaeSigma SigmaaSigma SigmacSigmaoSigmanSigmavSigmaeSigmanSigmaiSigmaeSigmanSigmatSigma SigmaaSigmanSigmadSigma SigmahSigmaiSigmagSigmahSigma-SigmapSigmaeSigmarSigmafSigmaoSigmarSigmamSigmaaSigmanSigmacSigmaeSigma SigmawSigmaaSigmaySigma SigmatSigmaoSigma SigmamSigmaaSigmanSigmaaSigmagSigmaeSigma SigmaaSigmanSigmadSigma SigmauSigmanSigmapSigmaaSigmacSigmakSigma SigmasSigmaeSigmatSigmasSigma SigmaoSigmafSigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma)Sigma
+Sigma Sigma Sigma Sigma alpha,Sigma SigmaβSigma Sigma=Sigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma.alpha,Sigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma.SigmaβSigma Sigma#Sigma SigmapSigmaoSigmaoSigmarSigma SigmasSigmatSigmaySigmalSigmaeSigma,Sigma SigmaeSigmarSigmarSigmaoSigmarSigma SigmapSigmarSigmaoSigmanSigmaeSigma
+Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma alpha Sigma+Sigma SigmaβSigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma Sigma=Sigma Sigma(Sigma;Sigma alpha Sigma=Sigma Sigma0Sigma.Sigma1Sigma,Sigma SigmaβSigma Sigma=Sigma Sigma0Sigma.Sigma2Sigma)Sigma
+SigmafSigma(SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmaaSigmalSigmaiSigmatSigmaySigma SigmaiSigmasSigma SigmaaSigmaiSigmadSigmaeSigmadSigma SigmabSigmaySigma SigmatSigmahSigmaeSigma SigmauSigmanSigmapSigmaaSigmacSigmakSigmaiSigmanSigmagSigma SigmanSigmaoSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma)Sigma
+Sigma Sigma Sigma Sigma Sigma(Sigma;Sigma alpha,Sigma SigmaβSigma)Sigma Sigma=Sigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma Sigma Sigma#Sigma SigmagSigmaoSigmaoSigmadSigma SigmasSigmatSigmaySigmalSigmaeSigma,Sigma SigmalSigmaeSigmasSigmasSigma SigmasSigmaeSigmanSigmasSigmaiSigmatSigmaiSigmavSigmaeSigma SigmatSigmaoSigma SigmaeSigmarSigmarSigmaoSigmarSigmasSigma
+Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma alpha Sigma+Sigma SigmaβSigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma Sigma=Sigma Sigma(Sigma;Sigma alpha Sigma=Sigma Sigma0Sigma.Sigma1Sigma,Sigma SigmaβSigma Sigma=Sigma Sigma0Sigma.Sigma2Sigma)Sigma
+SigmafSigma(SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaISigmanSigma SigmaoSigmarSigmadSigmaeSigmarSigma SigmatSigmaoSigma SigmamSigmaaSigmanSigmaaSigmagSigmaeSigma SigmadSigmaeSigmafSigmaaSigmauSigmalSigmatSigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma,Sigma SigmauSigmasSigmaeSigma SigmatSigmahSigmaeSigma Sigma`Sigma@SigmawSigmaiSigmatSigmahSigma_SigmakSigmawSigma`Sigma SigmafSigmarSigmaoSigmamSigma SigmatSigmahSigmaeSigma Sigma`SigmaPSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma.SigmajSigmalSigma`Sigma SigmapSigmaaSigmacSigmakSigmaaSigmagSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmauSigmasSigmaiSigmanSigmagSigma SigmaPSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma
+SigmapSigmaaSigmarSigmaaSigmamSigmagSigmaeSigmanSigma Sigma=Sigma Sigma@SigmawSigmaiSigmatSigmahSigma_SigmakSigmawSigma Sigma(alpha Sigma=Sigma Sigma0Sigma.Sigma1Sigma,Sigma SigmaβSigma Sigma=Sigma Sigma0Sigma.Sigma2Sigma)Sigma Sigma Sigma#Sigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigma SigmanSigmaaSigmamSigmaeSigmadSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma SigmawSigmaiSigmatSigmahSigma SigmadSigmaeSigmafSigmaaSigmauSigmalSigmatSigmasSigma
+Sigma
+Sigma#Sigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigmasSigma SigmanSigmaaSigmamSigmaeSigmadSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma,Sigma SigmarSigmaeSigmapSigmalSigmaaSigmacSigmaiSigmanSigmagSigma SigmadSigmaeSigmafSigmaaSigmauSigmalSigmatSigmasSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmapSigmaaSigmarSigmaaSigmamSigmagSigmaeSigmanSigma(Sigma)Sigma Sigma Sigma#Sigma SigmacSigmaaSigmalSigmalSigmaiSigmanSigmagSigma SigmawSigmaiSigmatSigmahSigmaoSigmauSigmatSigma SigmaaSigmarSigmagSigmauSigmamSigmaeSigmanSigmatSigmasSigma SigmagSigmaiSigmavSigmaeSigmasSigma SigmaaSigmalSigmalSigma SigmadSigmaeSigmafSigmaaSigmauSigmalSigmatSigmasSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmapSigmaaSigmarSigmaaSigmamSigmagSigmaeSigmanSigma(alpha Sigma=Sigma Sigma0Sigma.Sigma2Sigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmapSigmaaSigmarSigmaaSigmamSigmagSigmaeSigmanSigma(alpha Sigma=Sigma Sigma0Sigma.Sigma2Sigma,Sigma SigmaβSigma Sigma=Sigma Sigma0Sigma.Sigma5Sigma)Sigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaOSigmarSigma SigmacSigmarSigmaeSigmaaSigmatSigmaeSigma SigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmawSigmahSigmaiSigmacSigmahSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigmasSigma SigmatSigmahSigmaeSigma SigmanSigmaaSigmamSigmaeSigmadSigma SigmatSigmauSigmapSigmalSigmaeSigma SigmawSigmaiSigmatSigmahSigma SigmadSigmaeSigmafSigmaaSigmauSigmalSigmatSigmasSigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmacSigmaaSigmanSigma SigmaaSigmalSigmasSigmaoSigma SigmadSigmaoSigma SigmaiSigmanSigmatSigmaeSigmarSigmamSigmaeSigmadSigmaiSigmaaSigmatSigmaeSigma SigmacSigmaaSigmalSigmacSigmauSigmalSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmapSigmaaSigmarSigmaaSigmamSigmagSigmaeSigmanSigma2Sigma(Sigma;Sigma alpha Sigma=Sigma Sigma0Sigma.Sigma1Sigma,Sigma SigmaβSigma Sigma=Sigma Sigma0Sigma.Sigma2Sigma)Sigma
+Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma Sigma(Sigma;Sigma alpha,Sigma SigmaβSigma)Sigma
+SigmaeSigmanSigmadSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmapSigmaaSigmarSigmaaSigmamSigmagSigmaeSigmanSigma2Sigma(Sigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmapSigmaaSigmarSigmaaSigmamSigmagSigmaeSigmanSigma2Sigma(Sigma;Sigma alpha Sigma=Sigma Sigma0Sigma.Sigma2Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmanSigma SigmaaSigmalSigmatSigmaeSigmarSigmanSigmaaSigmatSigmaiSigmavSigmaeSigma SigmaaSigmapSigmapSigmarSigmaoSigmaaSigmacSigmahSigma,Sigma SigmadSigmaeSigmafSigmaiSigmanSigmaiSigmanSigmagSigma SigmaaSigma SigmanSigmaeSigmawSigma SigmatSigmaySigmapSigmaeSigma SigmauSigmasSigmaiSigmanSigmagSigma Sigma`SigmasSigmatSigmarSigmauSigmacSigmatSigma`Sigma SigmatSigmaeSigmanSigmadSigmasSigma SigmatSigmaoSigma SigmabSigmaeSigma SigmamSigmaoSigmarSigmaeSigma SigmapSigmarSigmaoSigmanSigmaeSigma SigmatSigmaoSigma SigmaaSigmacSigmacSigmaiSigmadSigmaeSigmanSigmatSigmaaSigmalSigma SigmamSigmaiSigmasSigmauSigmasSigmaeSigma,Sigma SigmaaSigmanSigmadSigma SigmalSigmaeSigmaaSigmadSigmasSigma SigmatSigmaoSigma SigmaaSigma SigmagSigmarSigmaeSigmaaSigmatSigma SigmadSigmaeSigmaaSigmalSigma SigmaoSigmafSigma SigmabSigmaoSigmaiSigmalSigmaeSigmarSigmapSigmalSigmaaSigmatSigmaeSigma SigmacSigmaoSigmadSigmaeSigma.Sigma
+Sigma
+SigmaFSigmaoSigmarSigma SigmatSigmahSigmaaSigmatSigma,Sigma SigmaaSigmanSigmadSigma SigmaoSigmatSigmahSigmaeSigmarSigma SigmarSigmaeSigmaaSigmasSigmaoSigmanSigmasSigma SigmaoSigmafSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmalSigmaiSigmatSigmaySigma,Sigma SigmawSigmaeSigma SigmawSigmaiSigmalSigmalSigma SigmauSigmasSigmaeSigma SigmanSigmaaSigmamSigmaeSigmadSigma SigmatSigmauSigmapSigmalSigmaeSigmasSigma SigmafSigmaoSigmarSigma SigmacSigmaoSigmalSigmalSigmaeSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmaoSigmafSigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma SigmawSigmahSigmaeSigmarSigmaeSigma SigmapSigmaoSigmasSigmasSigmaiSigmabSigmalSigmaeSigma.Sigma
+Sigma
+Sigma#Sigma#Sigma SigmaNSigmaoSigmatSigmahSigmaiSigmanSigmagSigma,Sigma SigmaMSigmaiSigmasSigmasSigmaiSigmanSigmagSigma,Sigma SigmaaSigmanSigmadSigma SigmaUSigmanSigmaiSigmaoSigmanSigmasSigma
+Sigma
+SigmaSSigmaoSigmamSigmaeSigmatSigmaiSigmamSigmaeSigmasSigma SigmaaSigma SigmavSigmaaSigmarSigmaiSigmaaSigmabSigmalSigmaeSigma,Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmatSigmaySigmapSigmaeSigma SigmafSigmarSigmaoSigmamSigma SigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma,Sigma SigmaoSigmarSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmaiSigmanSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmanSigmaeSigmaeSigmadSigmasSigma SigmatSigmaoSigma SigmarSigmaeSigmapSigmarSigmaeSigmasSigmaeSigmanSigmatSigma SigmatSigmahSigmaeSigma SigmaaSigmabSigmasSigmaeSigmanSigmacSigmaeSigma SigmaoSigmafSigma SigmaaSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmarSigmaaSigmatSigmahSigmaeSigmarSigma SigmatSigmahSigmaaSigmanSigma SigmaaSigma SigmapSigmaaSigmarSigmatSigmaiSigmacSigmauSigmalSigmaaSigmarSigma SigmavSigmaaSigmalSigmauSigmaeSigma.Sigma
+Sigma
+SigmaTSigmahSigmaeSigmarSigmaeSigma SigmaaSigmarSigmaeSigma SigmatSigmawSigmaoSigma SigmadSigmaiSigmasSigmatSigmaiSigmanSigmacSigmatSigma SigmauSigmasSigmaeSigma SigmacSigmaaSigmasSigmaeSigmasSigma SigmafSigmaoSigmarSigma SigmatSigmahSigmaiSigmasSigma
+Sigma
+Sigma1Sigma.Sigma Sigma`SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma Sigma(Sigma"SigmasSigmaoSigmafSigmatSigmawSigmaaSigmarSigmaeSigma SigmaeSigmanSigmagSigmaiSigmanSigmaeSigmaeSigmarSigmasSigma SigmanSigmauSigmalSigmalSigma"Sigma)Sigma:Sigma SigmauSigmasSigmaeSigmadSigma SigmawSigmahSigmaeSigmarSigmaeSigma SigmanSigmaoSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmamSigmaaSigmakSigmaeSigmasSigma SigmasSigmaeSigmanSigmasSigmaeSigma SigmaiSigmanSigma SigmaaSigma SigmapSigmaaSigmarSigmatSigmaiSigmacSigmauSigmalSigmaaSigmarSigma SigmacSigmaoSigmanSigmatSigmaeSigmaxSigmatSigma SigmadSigmauSigmaeSigma SigmatSigmaoSigma SigmaaSigma SigmafSigmaaSigmaiSigmalSigmauSigmarSigmaeSigma SigmaiSigmanSigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmadSigmaeSigma,Sigma SigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigma SigmanSigmaoSigmatSigma SigmapSigmaaSigmasSigmasSigmaeSigmadSigma SigmaiSigmanSigma,Sigma SigmaeSigmatSigmacSigma.Sigma
+Sigma1Sigma.Sigma Sigma`SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma`Sigma Sigma(Sigma"SigmadSigmaaSigmatSigmaaSigma SigmasSigmacSigmaiSigmaeSigmanSigmatSigmaiSigmasSigmatSigmasSigma SigmanSigmauSigmalSigmalSigma"Sigma)Sigma:Sigma SigmauSigmasSigmaeSigmadSigma SigmawSigmahSigmaeSigmanSigma SigmaaSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmawSigmaoSigmauSigmalSigmadSigma SigmamSigmaaSigmakSigmaeSigma SigmacSigmaoSigmanSigmacSigmaeSigmapSigmatSigmauSigmaaSigmalSigma SigmasSigmaeSigmanSigmasSigmaeSigma,Sigma SigmabSigmauSigmatSigma SigmaiSigmatSigma SigmaiSigmasSigmanSigma'SigmatSigma SigmaaSigmavSigmaaSigmaiSigmalSigmaaSigmabSigmalSigmaeSigma.Sigma
+Sigma
+Sigma(SigmaeSigmarSigmarSigmaoSigmarSigma_SigmahSigmaaSigmanSigmadSigmalSigmaiSigmanSigmagSigma)Sigma=Sigma
+Sigma#Sigma#Sigma#Sigma SigmaNSigmaoSigmatSigmahSigmaiSigmanSigmagSigma SigmaaSigmanSigmadSigma SigmaBSigmaaSigmasSigmaiSigmacSigma SigmaESigmarSigmarSigmaoSigmarSigma SigmaHSigmaaSigmanSigmadSigmalSigmaiSigmanSigmagSigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigma Sigma`SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma SigmaiSigmasSigma SigmaaSigma SigmasSigmaiSigmanSigmagSigmalSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmaoSigmafSigma SigmatSigmaySigmapSigmaeSigma Sigma`SigmaNSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmatSigmaySigmapSigmaeSigmaoSigmafSigma(SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmanSigma SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma SigmaoSigmafSigma SigmaaSigma SigmarSigmaeSigmaaSigmasSigmaoSigmanSigmaaSigmabSigmalSigmaeSigma SigmauSigmasSigmaeSigma SigmaoSigmafSigma Sigma`SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma SigmaiSigmasSigma SigmaiSigmafSigma SigmaySigmaoSigmauSigma SigmanSigmaeSigmaeSigmadSigma SigmatSigmaoSigma SigmahSigmaaSigmavSigmaeSigma SigmaaSigma SigmavSigmaaSigmarSigmaiSigmaaSigmabSigmalSigmaeSigma SigmadSigmaeSigmafSigmaiSigmanSigmaeSigmadSigma SigmaiSigmanSigma SigmaaSigmanSigma SigmaoSigmauSigmatSigmaeSigmarSigma SigmasSigmacSigmaoSigmapSigmaeSigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmamSigmaaSigmaySigma SigmaoSigmarSigma SigmamSigmaaSigmaySigma SigmanSigmaoSigmatSigma SigmabSigmaeSigma SigmasSigmaeSigmatSigma SigmaiSigmanSigma SigmaaSigmanSigma SigmaiSigmanSigmanSigmaeSigmarSigma SigmaoSigmanSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmaySigma)Sigma
+Sigma Sigma Sigma Sigma SigmaxSigma Sigma=Sigma SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma
+Sigma Sigma Sigma Sigma SigmaiSigmafSigma SigmaySigma Sigma>Sigma Sigma0Sigma.Sigma0Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmacSigmaaSigmalSigmacSigmauSigmalSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma SigmatSigmaoSigma SigmasSigmaeSigmatSigma Sigma`SigmaxSigma`Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmaxSigma Sigma=Sigma SigmaySigma
+Sigma Sigma Sigma Sigma SigmaeSigmanSigmadSigma
+Sigma
+Sigma Sigma Sigma Sigma Sigma#Sigma SigmalSigmaaSigmatSigmaeSigmarSigma,Sigma SigmacSigmaaSigmanSigma SigmacSigmahSigmaeSigmacSigmakSigma Sigma`SigmaxSigma`Sigma
+Sigma Sigma Sigma Sigma SigmaiSigmafSigma SigmaiSigmasSigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmapSigmarSigmaiSigmanSigmatSigmalSigmanSigma(Sigma"SigmaxSigma SigmawSigmaaSigmasSigma SigmanSigmaoSigmatSigma SigmasSigmaeSigmatSigma"Sigma)Sigma
+Sigma Sigma Sigma Sigma SigmaeSigmalSigmasSigmaeSigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmapSigmarSigmaiSigmanSigmatSigmalSigmanSigma(Sigma"SigmaxSigma Sigma=Sigma Sigma$SigmaxSigma"Sigma)Sigma
+Sigma Sigma Sigma Sigma SigmaeSigmanSigmadSigma
+Sigma Sigma Sigma Sigma SigmaxSigma
+SigmaeSigmanSigmadSigma
+Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmafSigma(Sigma1Sigma.Sigma0Sigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmafSigma(Sigma-Sigma1Sigma.Sigma0Sigma)Sigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaWSigmahSigmaiSigmalSigmaeSigma SigmaiSigmanSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmalSigma SigmaySigmaoSigmauSigma SigmawSigmaaSigmanSigmatSigma SigmatSigmaoSigma SigmakSigmaeSigmaeSigmapSigma SigmaaSigma SigmavSigmaaSigmarSigmaiSigmaaSigmabSigmalSigmaeSigma SigmanSigmaaSigmamSigmaeSigma SigmabSigmaoSigmauSigmanSigmadSigma SigmatSigmaoSigma SigmaaSigma SigmasSigmaiSigmanSigmagSigmalSigmaeSigma SigmatSigmaySigmapSigmaeSigma SigmaiSigmanSigma SigmaJSigmauSigmalSigmaiSigmaaSigma,Sigma SigmatSigmahSigmaiSigmasSigma SigmaiSigmasSigma SigmaaSigma SigmanSigmaoSigmatSigmaaSigmabSigmalSigmaeSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigma.Sigma
+Sigma
+SigmaSSigmaiSigmamSigmaiSigmalSigmaaSigmarSigmalSigmaySigma,Sigma SigmaiSigmafSigma SigmanSigmaeSigmaeSigmadSigmaeSigmadSigma,Sigma SigmaySigmaoSigmauSigma SigmacSigmaaSigmanSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmaaSigma Sigma`SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma SigmafSigmarSigmaoSigmamSigma SigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmatSigmaoSigma SigmaiSigmanSigmadSigmaiSigmacSigmaaSigmatSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmaiSigmatSigma SigmadSigmaiSigmadSigma SigmanSigmaoSigmatSigma SigmacSigmaaSigmalSigmacSigmauSigmalSigmaaSigmatSigmaeSigma SigmaaSigmasSigma SigmaeSigmaxSigmapSigmaeSigmacSigmatSigmaeSigmadSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmaiSigmafSigma SigmaxSigma Sigma>Sigma Sigma0Sigma.Sigma0Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmasSigmaqSigmarSigmatSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmaeSigmalSigmasSigmaeSigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma
+Sigma Sigma Sigma Sigma SigmaeSigmanSigmadSigma
+SigmaeSigmanSigmadSigma
+SigmaxSigma1Sigma Sigma=Sigma Sigma1Sigma.Sigma0Sigma
+SigmaxSigma2Sigma Sigma=Sigma Sigma-Sigma1Sigma.Sigma0Sigma
+SigmaySigma1Sigma Sigma=Sigma SigmafSigma(SigmaxSigma1Sigma)Sigma
+SigmaySigma2Sigma Sigma=Sigma SigmafSigma(SigmaxSigma2Sigma)Sigma
+Sigma
+Sigma#Sigma SigmacSigmahSigmaeSigmacSigmakSigma SigmarSigmaeSigmasSigmauSigmalSigmatSigmasSigma SigmawSigmaiSigmatSigmahSigma SigmaiSigmasSigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma
+SigmaiSigmafSigma SigmaiSigmasSigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma(SigmaySigma1Sigma)Sigma
+Sigma Sigma Sigma Sigma SigmapSigmarSigmaiSigmanSigmatSigmalSigmanSigma(Sigma"SigmafSigma(Sigma$SigmaxSigma2Sigma)Sigma SigmasSigmauSigmacSigmacSigmaeSigmasSigmasSigmafSigmauSigmalSigma"Sigma)Sigma
+SigmaeSigmalSigmasSigmaeSigma
+Sigma Sigma Sigma Sigma SigmapSigmarSigmaiSigmanSigmatSigmalSigmanSigma(Sigma"SigmafSigma(Sigma$SigmaxSigma2Sigma)Sigma SigmafSigmaaSigmaiSigmalSigmaeSigmadSigma"Sigma)Sigma
+SigmaeSigmanSigmadSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmasSigma SigmaaSigmanSigma SigmaaSigmasSigmaiSigmadSigmaeSigma,Sigma SigmaaSigmanSigma SigmaeSigmaqSigmauSigmaiSigmavSigmaaSigmalSigmaeSigmanSigmatSigma SigmawSigmaaSigmaySigma SigmatSigmaoSigma SigmawSigmarSigmaiSigmatSigmaeSigma SigmatSigmahSigmaeSigma SigmaaSigmabSigmaoSigmavSigmaeSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmaiSigmasSigma SigmatSigmaoSigma SigmauSigmasSigmaeSigma SigmatSigmahSigmaeSigma
+Sigma[SigmatSigmaeSigmarSigmanSigmaaSigmarSigmaySigma SigmaoSigmapSigmaeSigmarSigmaaSigmatSigmaoSigmarSigma]Sigma(SigmahSigmatSigmatSigmapSigmasSigma:Sigma/Sigma/SigmadSigmaoSigmacSigmasSigma.SigmajSigmauSigmalSigmaiSigmaaSigmalSigmaaSigmanSigmagSigma.SigmaoSigmarSigmagSigma/SigmaeSigmanSigma/SigmavSigma1Sigma/SigmamSigmaaSigmanSigmauSigmaaSigmalSigma/SigmacSigmaoSigmanSigmatSigmarSigmaoSigmalSigma-SigmafSigmalSigmaoSigmawSigma/SigmaiSigmanSigmadSigmaeSigmaxSigma.SigmahSigmatSigmamSigmalSigma#SigmamSigmaaSigmanSigma-SigmacSigmaoSigmanSigmadSigmaiSigmatSigmaiSigmaoSigmanSigmaaSigmalSigma-SigmaeSigmavSigmaaSigmalSigmauSigmaaSigmatSigmaiSigmaoSigmanSigma-Sigma1Sigma)Sigma,Sigma
+SigmawSigmahSigmaiSigmacSigmahSigma SigmagSigmaiSigmavSigmaeSigmasSigma SigmaaSigma SigmacSigmaoSigmamSigmapSigmaaSigmacSigmatSigma SigmaiSigmafSigma/SigmatSigmahSigmaeSigmanSigma/SigmaeSigmalSigmasSigmaeSigma SigmasSigmatSigmarSigmauSigmacSigmatSigmauSigmarSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmaxSigma Sigma>Sigma Sigma0Sigma.Sigma0Sigma Sigma?Sigma SigmasSigmaqSigmarSigmatSigma(SigmaxSigma)Sigma Sigma:Sigma SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma Sigma Sigma#Sigma SigmatSigmahSigmaeSigma Sigma"SigmaaSigma Sigma?Sigma SigmabSigma Sigma:Sigma SigmacSigma"Sigma SigmapSigmaaSigmatSigmatSigmaeSigmarSigmanSigma SigmaiSigmasSigma SigmatSigmahSigmaeSigma SigmatSigmaeSigmarSigmanSigmaaSigmarSigmaySigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmafSigma(Sigma1Sigma.Sigma0Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaWSigmaeSigma SigmawSigmaiSigmalSigmalSigma SigmasSigmaoSigmamSigmaeSigmatSigmaiSigmamSigmaeSigmasSigma SigmauSigmasSigmaeSigma SigmatSigmahSigmaiSigmasSigma SigmafSigmaoSigmarSigmamSigma SigmawSigmahSigmaeSigmanSigma SigmaiSigmatSigma SigmamSigmaaSigmakSigmaeSigmasSigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmadSigmaeSigma SigmamSigmaoSigmarSigmaeSigma SigmacSigmalSigmaeSigmaaSigmarSigma Sigma(SigmaaSigmanSigmadSigma SigmaiSigmatSigma SigmawSigmaiSigmalSigmalSigma SigmaoSigmacSigmacSigmaaSigmasSigmaiSigmaoSigmanSigmaaSigmalSigmalSigmaySigma SigmamSigmaaSigmakSigmaeSigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmadSigmaeSigma SigmahSigmaiSigmagSigmahSigmaeSigmarSigma SigmapSigmaeSigmarSigmafSigmaoSigmarSigmamSigmaaSigmanSigmacSigmaeSigma)Sigma.Sigma
+Sigma
+SigmaRSigmaeSigmagSigmaaSigmarSigmadSigmalSigmaeSigmasSigmasSigma SigmaoSigmafSigma SigmahSigmaoSigmawSigma Sigma`SigmafSigma(SigmaxSigma)Sigma`Sigma SigmaiSigmasSigma SigmawSigmarSigmaiSigmatSigmatSigmaeSigmanSigma,Sigma Sigma SigmatSigmahSigmaeSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmatSigmaySigmapSigmaeSigma SigmaiSigmasSigma SigmaaSigmanSigma SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma SigmaoSigmafSigma SigmaaSigma SigmauSigmanSigmaiSigmaoSigmanSigma,Sigma SigmawSigmahSigmaeSigmarSigmaeSigma SigmatSigmahSigmaeSigma SigmarSigmaeSigmasSigmauSigmalSigmatSigma SigmacSigmaoSigmauSigmalSigmadSigma SigmabSigmaeSigma SigmaoSigmanSigmaeSigma SigmaoSigmafSigma SigmaaSigmanSigma SigmaeSigmaxSigmapSigmalSigmaiSigmacSigmaiSigmatSigma SigmasSigmaeSigmatSigma SigmaoSigmafSigma SigmatSigmaySigmapSigmaeSigmasSigma.Sigma
+Sigma
+SigmaISigmanSigma SigmatSigmahSigmaiSigmasSigma SigmapSigmaaSigmarSigmatSigmaiSigmacSigmauSigmalSigmaaSigmarSigma SigmacSigmaaSigmasSigmaeSigma,Sigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmamSigmapSigmaiSigmalSigmaeSigmarSigma SigmawSigmaoSigmauSigmalSigmadSigma SigmadSigmaeSigmadSigmauSigmacSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaeSigma SigmatSigmaySigmapSigmaeSigma SigmawSigmaoSigmauSigmalSigmadSigma SigmabSigmaeSigma SigmaaSigma Sigma`SigmaUSigmanSigmaiSigmaoSigmanSigma{SigmaNSigmaoSigmatSigmahSigmaiSigmanSigmagSigma,SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma}Sigma`Sigma Sigma-Sigma-Sigma SigmatSigmahSigmaaSigmatSigma SigmaiSigmasSigma,Sigma SigmaiSigmatSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigmasSigma SigmaeSigmaiSigmatSigmahSigmaeSigmarSigma SigmaaSigma SigmafSigmalSigmaoSigmaaSigmatSigmaiSigmanSigmagSigma SigmapSigmaoSigmaiSigmanSigmatSigma SigmaoSigmarSigma SigmaaSigma Sigma`SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma.Sigma
+Sigma
+SigmaYSigmaoSigmauSigma SigmawSigmaiSigmalSigmalSigma SigmasSigmaeSigmaeSigma SigmatSigmahSigmaiSigmasSigma SigmatSigmaySigmapSigmaeSigma SigmadSigmaiSigmarSigmaeSigmacSigmatSigmalSigmaySigma SigmaiSigmafSigma SigmaySigmaoSigmauSigma SigmauSigmasSigmaeSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmacSigmaoSigmanSigmatSigmaaSigmaiSigmanSigmaiSigmanSigmagSigma SigmabSigmaoSigmatSigmahSigma SigmatSigmaySigmapSigmaeSigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma1Sigma.Sigma0Sigma,Sigma SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaWSigmahSigmaeSigmanSigma SigmacSigmaoSigmanSigmasSigmaiSigmadSigmaeSigmarSigmaiSigmanSigmagSigma SigmaeSigmarSigmarSigmaoSigmarSigma SigmahSigmaaSigmanSigmadSigmalSigmaiSigmanSigmagSigma,Sigma SigmawSigmahSigmaeSigmatSigmahSigmaeSigmarSigma SigmaySigmaoSigmauSigma SigmawSigmaaSigmanSigmatSigma SigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmatSigmaoSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma Sigma`SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma SigmaoSigmarSigma SigmasSigmaiSigmamSigmapSigmalSigmaySigma SigmafSigmaaSigmaiSigmalSigma SigmadSigmaeSigmapSigmaeSigmanSigmadSigmasSigma SigmaoSigmanSigma SigmawSigmahSigmaeSigmatSigmahSigmaeSigmarSigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmadSigmaeSigma SigmacSigmaaSigmalSigmalSigmaiSigmanSigmagSigma Sigma`SigmafSigma(SigmaxSigma)Sigma`Sigma SigmaiSigmasSigma SigmacSigmaaSigmarSigmaeSigmafSigmauSigmalSigmalSigmaySigma SigmacSigmahSigmaeSigmacSigmakSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmarSigmaeSigmasSigmauSigmalSigmatSigmasSigma.Sigma
+Sigma
+SigmaFSigmaoSigmarSigma SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma,Sigma SigmaiSigmafSigma SigmaySigmaoSigmauSigma SigmawSigmaeSigmarSigmaeSigma SigmacSigmaaSigmalSigmalSigmaiSigmanSigmagSigma SigmaoSigmanSigma SigmaaSigmanSigma SigmaaSigmarSigmarSigmaaSigmaySigma SigmaoSigmafSigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma SigmawSigmahSigmaeSigmarSigmaeSigma SigmaaSigma SigmapSigmarSigmaiSigmaoSigmarSigmaiSigma SigmaySigmaoSigmauSigma SigmawSigmaeSigmarSigmaeSigma SigmanSigmaoSigmatSigma SigmasSigmauSigmarSigmaeSigma SigmawSigmahSigmaiSigmacSigmahSigma SigmaoSigmanSigmaeSigmasSigma SigmawSigmaiSigmalSigmalSigma SigmasSigmauSigmacSigmacSigmaeSigmaeSigmadSigma,Sigma SigmatSigmahSigmaeSigmanSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma0Sigma.Sigma1Sigma,Sigma Sigma-Sigma1Sigma.Sigma0Sigma,Sigma Sigma2Sigma.Sigma0Sigma,Sigma Sigma-Sigma2Sigma.Sigma0Sigma]Sigma
+SigmaySigma Sigma=Sigma SigmafSigma.Sigma(SigmaxSigma)Sigma
+Sigma
+Sigma#Sigma SigmapSigmarSigmaeSigmasSigmauSigmamSigmaaSigmabSigmalSigmaySigma SigmacSigmahSigmaeSigmacSigmakSigma Sigma`SigmaySigma`Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaOSigmanSigma SigmatSigmahSigmaeSigma SigmaoSigmatSigmahSigmaeSigmarSigma SigmahSigmaaSigmanSigmadSigma,Sigma SigmaiSigmafSigma SigmatSigmahSigmaeSigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigma SigmapSigmaaSigmasSigmasSigmaeSigmadSigma SigmaiSigmasSigma SigmaiSigmanSigmavSigmaaSigmalSigmaiSigmadSigma SigmaaSigmanSigmadSigma SigmaySigmaoSigmauSigma SigmawSigmaoSigmauSigmalSigmadSigma SigmapSigmarSigmaeSigmafSigmaeSigmarSigma SigmanSigmaoSigmatSigma SigmatSigmaoSigma SigmahSigmaaSigmanSigmadSigmalSigmaeSigma SigmaaSigma SigmagSigmarSigmaaSigmacSigmaeSigmafSigmauSigmalSigma SigmafSigmaaSigmaiSigmalSigmauSigmarSigmaeSigma,Sigma SigmatSigmahSigmaeSigmanSigma SigmauSigmasSigmaiSigmanSigmagSigma SigmaaSigmanSigma SigmaaSigmasSigmasSigmaeSigmarSigmatSigmaiSigmaoSigmanSigma SigmaiSigmasSigma SigmamSigmaoSigmarSigmaeSigma SigmaaSigmapSigmapSigmarSigmaoSigmapSigmarSigmaiSigmaaSigmatSigmaeSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma Sigma@SigmaaSigmasSigmasSigmaeSigmarSigmatSigma SigmaxSigma Sigma>Sigma Sigma0Sigma.Sigma0Sigma
+Sigma Sigma Sigma Sigma SigmasSigmaqSigmarSigmatSigma(SigmaxSigma)Sigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmafSigma(Sigma1Sigma.Sigma0Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaFSigmaiSigmanSigmaaSigmalSigmalSigmaySigma,Sigma Sigma`SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma SigmaiSigmasSigma SigmaaSigma SigmagSigmaoSigmaoSigmadSigma SigmawSigmaaSigmaySigma SigmatSigmaoSigma SigmaiSigmanSigmadSigmaiSigmacSigmaaSigmatSigmaeSigma SigmaaSigmanSigma SigmaoSigmapSigmatSigmaiSigmaoSigmanSigmaaSigmalSigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigma SigmaiSigmanSigma SigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmaxSigma;Sigma SigmazSigma Sigma=Sigma SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma)Sigma
+Sigma Sigma Sigma Sigma SigmaiSigmafSigma SigmaiSigmasSigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma(SigmazSigma)Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmapSigmarSigmaiSigmanSigmatSigmalSigmanSigma(Sigma"SigmaNSigmaoSigma SigmazSigma SigmagSigmaiSigmavSigmaeSigmanSigma SigmawSigmaiSigmatSigmahSigma Sigma$SigmaxSigma"Sigma)Sigma
+Sigma Sigma Sigma Sigma SigmaeSigmalSigmasSigmaeSigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmapSigmarSigmaiSigmanSigmatSigmalSigmanSigma(Sigma"SigmazSigma Sigma=Sigma Sigma$SigmazSigma SigmagSigmaiSigmavSigmaeSigmanSigma SigmawSigmaiSigmatSigmahSigma Sigma$SigmaxSigma"Sigma)Sigma
+Sigma Sigma Sigma Sigma SigmaeSigmanSigmadSigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmafSigma(Sigma1Sigma.Sigma0Sigma)Sigma
+SigmafSigma(Sigma1Sigma.Sigma0Sigma,Sigma SigmazSigma Sigma=Sigma Sigma3Sigma.Sigma0Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmanSigma SigmaaSigmalSigmatSigmaeSigmarSigmanSigmaaSigmatSigmaiSigmavSigmaeSigma SigmatSigmaoSigma Sigma`SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmacSigmaaSigmanSigma SigmabSigmaeSigma SigmauSigmasSigmaeSigmafSigmauSigmalSigma SigmaaSigmanSigmadSigma SigmasSigmaoSigmamSigmaeSigmatSigmaiSigmamSigmaeSigmasSigma SigmahSigmaiSigmagSigmahSigmaeSigmarSigma SigmapSigmaeSigmarSigmafSigmaoSigmarSigmamSigmaaSigmanSigmacSigmaeSigma,Sigma
+SigmaiSigmasSigma SigmatSigmaoSigma SigmauSigmasSigmaeSigma Sigma`SigmaNSigmaaSigmaNSigma`Sigma SigmatSigmaoSigma SigmasSigmaiSigmagSigmanSigmaaSigmalSigma SigmatSigmahSigmaaSigmatSigma SigmaaSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmaiSigmasSigma SigmaiSigmanSigmavSigmaaSigmalSigmaiSigmadSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigmaiSigmanSigmagSigma SigmafSigmarSigmaoSigmamSigma SigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmaiSigmafSigma SigmaxSigma Sigma>Sigma Sigma0Sigma.Sigma0Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmaxSigma
+Sigma Sigma Sigma Sigma SigmaeSigmalSigmasSigmaeSigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmaNSigmaaSigmaNSigma
+Sigma Sigma Sigma Sigma SigmaeSigmanSigmadSigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmafSigma(Sigma0Sigma.Sigma1Sigma)Sigma
+SigmafSigma(Sigma-Sigma1Sigma.Sigma0Sigma)Sigma
+Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmatSigmaySigmapSigmaeSigmaoSigmafSigma(SigmafSigma(Sigma-Sigma1Sigma.Sigma0Sigma)Sigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmafSigma(Sigma-Sigma1Sigma.Sigma0Sigma)Sigma Sigma=Sigma=Sigma SigmaNSigmaaSigmaNSigma Sigma Sigma#Sigma SigmanSigmaoSigmatSigmaeSigma,Sigma SigmatSigmahSigmaiSigmasSigma SigmafSigmaaSigmaiSigmalSigmasSigma!Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaiSigmasSigmanSigmaaSigmanSigma(SigmafSigma(Sigma-Sigma1Sigma.Sigma0Sigma)Sigma)Sigma Sigma Sigma#Sigma SigmacSigmahSigmaeSigmacSigmakSigma SigmawSigmaiSigmatSigmahSigma SigmatSigmahSigmaiSigmasSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaNSigmaoSigmatSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmaiSigmanSigma SigmatSigmahSigmaiSigmasSigma SigmacSigmaaSigmasSigmaeSigma,Sigma SigmatSigmahSigmaeSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmatSigmaySigmapSigmaeSigma SigmaiSigmasSigma Sigma`SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma`Sigma SigmarSigmaeSigmagSigmaaSigmarSigmadSigmalSigmaeSigmasSigmasSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmaiSigmanSigmapSigmauSigmatSigma SigmafSigmaoSigmarSigma Sigma`SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma`Sigma SigmaiSigmanSigmapSigmauSigmatSigma.Sigma
+Sigma
+SigmaKSigmaeSigmaeSigmapSigma SigmaiSigmanSigma SigmamSigmaiSigmanSigmadSigma,Sigma SigmatSigmahSigmaoSigmauSigmagSigmahSigma,Sigma SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaiSigmasSigma SigmaoSigmanSigmalSigmaySigma SigmawSigmaoSigmarSigmakSigmasSigma SigmaiSigmafSigma SigmatSigmahSigmaeSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmatSigmaySigmapSigmaeSigma SigmaoSigmafSigma SigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmaiSigmasSigma Sigma`SigmaFSigmalSigmaoSigmaaSigmatSigma6Sigma4Sigma`Sigma.Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaESigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigmasSigma
+Sigma
+Sigma(SigmaSSigmaeSigmaeSigma Sigma[SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigmasSigma SigmadSigmaoSigmacSigmauSigmamSigmaeSigmanSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma]Sigma(SigmahSigmatSigmatSigmapSigmasSigma:Sigma/Sigma/SigmadSigmaoSigmacSigmasSigma.SigmajSigmauSigmalSigmaiSigmaaSigmalSigmaaSigmanSigmagSigma.SigmaoSigmarSigmagSigma/SigmaeSigmanSigma/SigmavSigma1Sigma/SigmamSigmaaSigmanSigmauSigmaaSigmalSigma/SigmacSigmaoSigmanSigmatSigmarSigmaoSigmalSigma-SigmafSigmalSigmaoSigmawSigma/SigmaiSigmanSigmadSigmaeSigmaxSigma.SigmahSigmatSigmamSigmalSigma#SigmaESigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigma-SigmaHSigmaaSigmanSigmadSigmalSigmaiSigmanSigmagSigma-Sigma1Sigma)Sigma)Sigma
+Sigma
+SigmaWSigmahSigmaiSigmalSigmaeSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigmaiSigmanSigmagSigma SigmaaSigma Sigma`SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma SigmacSigmaaSigmanSigma SigmabSigmaeSigma SigmaaSigma SigmagSigmaoSigmaoSigmadSigma SigmawSigmaaSigmaySigma SigmatSigmaoSigma SigmadSigmaeSigmaaSigmalSigma SigmawSigmaiSigmatSigmahSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma SigmawSigmahSigmaiSigmacSigmahSigma SigmamSigmaaSigmaySigma SigmaoSigmarSigma SigmamSigmaaSigmaySigma SigmanSigmaoSigmatSigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma,Sigma SigmaaSigma SigmamSigmaoSigmarSigmaeSigma SigmarSigmaoSigmabSigmauSigmasSigmatSigma SigmaeSigmarSigmarSigmaoSigmarSigma SigmahSigmaaSigmanSigmadSigmalSigmaiSigmanSigmagSigma SigmamSigmaeSigmatSigmahSigmaoSigmadSigma SigmaiSigmasSigma SigmatSigmaoSigma SigmauSigmasSigmaeSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigmasSigma.Sigma
+Sigma
+SigmaUSigmanSigmalSigmaeSigmasSigmasSigma SigmaySigmaoSigmauSigma SigmaaSigmarSigmaeSigma SigmawSigmarSigmaiSigmatSigmaiSigmanSigmagSigma SigmaaSigma SigmapSigmaaSigmacSigmakSigmaaSigmagSigmaeSigma,Sigma SigmaySigmaoSigmauSigma SigmawSigmaiSigmalSigmalSigma SigmarSigmaaSigmarSigmaeSigmalSigmaySigma SigmawSigmaaSigmanSigmatSigma SigmatSigmaoSigma SigmadSigmaeSigmafSigmaiSigmanSigmaeSigma SigmaaSigmanSigmadSigma SigmatSigmahSigmarSigmaoSigmawSigma SigmaySigmaoSigmauSigmarSigma SigmaoSigmawSigmanSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigmasSigma,Sigma SigmabSigmauSigmatSigma SigmawSigmaiSigmalSigmalSigma SigmanSigmaeSigmaeSigmadSigma SigmatSigmaoSigma SigmadSigmaeSigmaaSigmalSigma SigmawSigmaiSigmatSigmahSigma SigmatSigmahSigmaeSigmamSigma SigmafSigmarSigmaoSigmamSigma SigmaoSigmatSigmahSigmaeSigmarSigma SigmalSigmaiSigmabSigmarSigmaaSigmarSigmaiSigmaeSigmasSigma.Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmakSigmaeSigmaySigma SigmadSigmaiSigmasSigmatSigmaiSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigmaoSigmarSigma SigmawSigmahSigmaeSigmanSigma SigmatSigmaoSigma SigmauSigmasSigmaeSigma SigmaaSigmanSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigmasSigma SigmavSigmasSigma.Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmaaSigma Sigma`SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma SigmaiSigmasSigma SigmawSigmahSigmaeSigmatSigmahSigmaeSigmarSigma SigmaaSigmanSigma SigmaeSigmarSigmarSigmaoSigmarSigma SigmaiSigmasSigma SigmauSigmanSigmaeSigmaxSigmapSigmaeSigmacSigmatSigmaeSigmadSigma SigmarSigmaaSigmatSigmahSigmaeSigmarSigma SigmatSigmahSigmaaSigmanSigma SigmaaSigma SigmanSigmaoSigmarSigmamSigmaaSigmalSigma SigmapSigmaaSigmatSigmahSigma SigmaoSigmafSigma SigmaeSigmaxSigmaeSigmacSigmauSigmatSigmaiSigmaoSigmanSigma.Sigma
+Sigma
+SigmaASigmanSigma SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma SigmaoSigmafSigma SigmaaSigmanSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigma SigmaiSigmasSigma SigmaaSigma Sigma`SigmaDSigmaoSigmamSigmaaSigmaiSigmanSigmaESigmarSigmarSigmaoSigmarSigma`Sigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma SigmasSigmaiSigmagSigmanSigmaiSigmafSigmaiSigmaeSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmaaSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmapSigmaaSigmasSigmasSigmaeSigmadSigma SigmatSigmaoSigma SigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmaiSigmasSigma SigmaiSigmanSigmavSigmaaSigmalSigmaiSigmadSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma#Sigma SigmatSigmahSigmarSigmaoSigmawSigmasSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigma,Sigma SigmatSigmauSigmarSigmanSigmaeSigmadSigma SigmaoSigmafSigmafSigma SigmatSigmaoSigma SigmapSigmarSigmaeSigmavSigmaeSigmanSigmatSigma SigmabSigmarSigmaeSigmaaSigmakSigmaiSigmanSigmagSigma SigmanSigmaoSigmatSigmaeSigmabSigmaoSigmaoSigmakSigma
+Sigma#Sigma SigmasSigmaqSigmarSigmatSigma(Sigma-Sigma1Sigma.Sigma0Sigma)Sigma
+Sigma
+Sigma#Sigma SigmatSigmaoSigma SigmasSigmaeSigmaeSigma SigmatSigmahSigmaeSigma SigmaeSigmarSigmarSigmaoSigmarSigma
+SigmatSigmarSigmaySigma
+Sigma Sigma Sigma Sigma SigmasSigmaqSigmarSigmatSigma(Sigma-Sigma1Sigma.Sigma0Sigma)Sigma
+SigmacSigmaaSigmatSigmacSigmahSigma SigmaeSigmarSigmarSigma
+Sigma Sigma Sigma Sigma SigmaeSigmarSigmarSigma
+SigmaeSigmanSigmadSigma Sigma Sigma#Sigma SigmacSigmaaSigmatSigmacSigmahSigmaeSigmasSigma SigmatSigmahSigmaeSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigma SigmaaSigmanSigmadSigma SigmapSigmarSigmaiSigmanSigmatSigmasSigma SigmaiSigmatSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmanSigmaoSigmatSigmahSigmaeSigmarSigma SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma SigmaySigmaoSigmauSigma SigmawSigmaiSigmalSigmalSigma SigmasSigmaeSigmaeSigma SigmaiSigmasSigma SigmawSigmahSigmaeSigmanSigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmamSigmapSigmaiSigmalSigmaeSigmarSigma SigmacSigmaaSigmanSigmanSigmaoSigmatSigma SigmacSigmaoSigmanSigmavSigmaeSigmarSigmatSigma SigmabSigmaeSigmatSigmawSigmaeSigmaeSigmanSigma SigmatSigmaySigmapSigmaeSigmasSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma#Sigma SigmatSigmahSigmarSigmaoSigmawSigmasSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigma,Sigma SigmatSigmauSigmarSigmanSigmaeSigmadSigma SigmaoSigmafSigmafSigma SigmatSigmaoSigma SigmapSigmarSigmaeSigmavSigmaeSigmanSigmatSigma SigmabSigmarSigmaeSigmaaSigmakSigmaiSigmanSigmagSigma SigmanSigmaoSigmatSigmaeSigmabSigmaoSigmaoSigmakSigma
+Sigma#Sigma SigmacSigmaoSigmanSigmavSigmaeSigmarSigmatSigma(SigmaISigmanSigmatSigma6Sigma4Sigma,Sigma Sigma3Sigma.Sigma1Sigma2Sigma)Sigma
+Sigma
+Sigma#Sigma SigmatSigmaoSigma SigmasSigmaeSigmaeSigma SigmatSigmahSigmaeSigma SigmaeSigmarSigmarSigmaoSigmarSigma
+SigmatSigmarSigmaySigma
+Sigma Sigma Sigma Sigma SigmacSigmaoSigmanSigmavSigmaeSigmarSigmatSigma(SigmaISigmanSigmatSigma6Sigma4Sigma,Sigma Sigma3Sigma.Sigma1Sigma2Sigma)Sigma
+SigmacSigmaaSigmatSigmacSigmahSigma SigmaeSigmarSigmarSigma
+Sigma Sigma Sigma Sigma SigmaeSigmarSigmarSigma
+SigmaeSigmanSigmadSigma Sigma Sigma#Sigma SigmacSigmaaSigmatSigmacSigmahSigmaeSigmasSigma SigmatSigmahSigmaeSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigma SigmaaSigmanSigmadSigma SigmapSigmarSigmaiSigmanSigmatSigmasSigma SigmaiSigmatSigma.Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaISigmafSigma SigmatSigmahSigmaeSigmasSigmaeSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigmasSigma SigmaaSigmarSigmaeSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmatSigmaeSigmadSigma SigmafSigmarSigmaoSigmamSigma SigmauSigmanSigmaeSigmaxSigmapSigmaeSigmacSigmatSigmaeSigmadSigma SigmacSigmaaSigmasSigmaeSigmasSigma SigmaiSigmanSigma SigmaySigmaoSigmauSigmarSigma SigmacSigmaoSigmadSigmaeSigma,Sigma SigmaiSigmatSigma SigmamSigmaaSigmaySigma SigmabSigmaeSigma SigmaaSigmapSigmapSigmarSigmaoSigmapSigmarSigmaiSigmaaSigmatSigmaeSigma SigmasSigmaiSigmamSigmapSigmalSigmaySigma SigmalSigmaeSigmatSigma SigmatSigmahSigmaeSigmamSigma SigmaoSigmacSigmacSigmauSigmarSigma SigmaaSigmanSigmadSigma SigmaeSigmanSigmasSigmauSigmarSigmaeSigma SigmaySigmaoSigmauSigma SigmacSigmaaSigmanSigma SigmarSigmaeSigmaaSigmadSigma SigmatSigmahSigmaeSigma SigmaeSigmarSigmarSigmaoSigmarSigma.Sigma
+Sigma
+SigmaOSigmacSigmacSigmaaSigmasSigmaiSigmaoSigmanSigmaaSigmalSigmalSigmaySigma SigmaySigmaoSigmauSigma SigmawSigmaiSigmalSigmalSigma SigmawSigmaaSigmanSigmatSigma SigmatSigmaoSigma SigmacSigmaaSigmatSigmacSigmahSigma SigmatSigmahSigmaeSigmasSigmaeSigma SigmaeSigmarSigmarSigmaoSigmarSigmasSigma SigmaaSigmanSigmadSigma SigmatSigmarSigmaySigma SigmatSigmaoSigma SigmarSigmaeSigmacSigmaoSigmavSigmaeSigmarSigma,Sigma SigmaaSigmasSigma SigmawSigmaeSigma SigmadSigmaiSigmadSigma SigmaaSigmabSigmaoSigmavSigmaeSigma SigmaiSigmanSigma SigmatSigmahSigmaeSigma Sigma`SigmatSigmarSigmaySigma`Sigma SigmabSigmalSigmaoSigmacSigmakSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmatSigmarSigmaySigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmasSigmaqSigmarSigmatSigma(SigmaxSigma)Sigma
+Sigma Sigma Sigma Sigma SigmacSigmaaSigmatSigmacSigmahSigma SigmaeSigmarSigmarSigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmaeSigmanSigmatSigmaeSigmarSigmasSigma SigmaiSigmafSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigma SigmatSigmahSigmarSigmaoSigmawSigmanSigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmasSigmaqSigmarSigmatSigma(SigmacSigmaoSigmamSigmapSigmalSigmaeSigmaxSigma(SigmaxSigma,Sigma Sigma0Sigma)Sigma)Sigma Sigma Sigma#Sigma SigmacSigmaoSigmanSigmavSigmaeSigmarSigmatSigma SigmatSigmaoSigma SigmacSigmaoSigmamSigmapSigmalSigmaeSigmaxSigma SigmanSigmauSigmamSigmabSigmaeSigmarSigma
+Sigma Sigma Sigma Sigma SigmaeSigmanSigmadSigma
+SigmaeSigmanSigmadSigma
+Sigma
+SigmafSigma(Sigma0Sigma.Sigma0Sigma)Sigma
+SigmafSigma(Sigma-Sigma1Sigma.Sigma0Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma(SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma)Sigma=Sigma
+Sigma#Sigma#Sigma#Sigma SigmaMSigmaiSigmasSigmasSigmaiSigmanSigmagSigma
+Sigma
+Sigma(SigmasSigmaeSigmaeSigma Sigma[Sigma"SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma"Sigma SigmadSigmaoSigmacSigmauSigmamSigmaeSigmanSigmatSigmaaSigmatSigmaiSigmaoSigmanSigma]Sigma(SigmahSigmatSigmatSigmapSigmasSigma:Sigma/Sigma/SigmadSigmaoSigmacSigmasSigma.SigmajSigmauSigmalSigmaiSigmaaSigmalSigmaaSigmanSigmagSigma.SigmaoSigmarSigmagSigma/SigmaeSigmanSigma/SigmavSigma1Sigma/SigmamSigmaaSigmanSigmauSigmaaSigmalSigma/SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma/Sigma)Sigma)Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigma Sigma`SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma`Sigma SigmaoSigmafSigma SigmatSigmaySigmapSigmaeSigma Sigma`SigmaMSigmaiSigmasSigmasSigmaiSigmanSigmagSigma`Sigma SigmaiSigmasSigma SigmauSigmasSigmaeSigmadSigma SigmatSigmaoSigma SigmarSigmaeSigmapSigmarSigmaeSigmasSigmaeSigmanSigmatSigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmaiSigmanSigma SigmaaSigma SigmasSigmatSigmaaSigmatSigmaiSigmasSigmatSigmaiSigmacSigmaaSigmalSigma SigmasSigmaeSigmanSigmasSigmaeSigma.Sigma
+Sigma
+SigmaFSigmaoSigmarSigma SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma,Sigma SigmaiSigmafSigma SigmaySigmaoSigmauSigma SigmalSigmaoSigmaaSigmadSigmaeSigmadSigma SigmadSigmaaSigmatSigmaaSigma SigmafSigmarSigmaoSigmamSigma SigmaaSigma SigmapSigmaaSigmanSigmaeSigmalSigma,Sigma SigmaaSigmanSigmadSigma SigmagSigmaaSigmapSigmasSigma SigmaeSigmaxSigmaiSigmasSigmatSigmaeSigmadSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma3Sigma.Sigma0Sigma,Sigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma,Sigma Sigma5Sigma.Sigma0Sigma,Sigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma,Sigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigma SigmakSigmaeSigmaySigma SigmafSigmaeSigmaaSigmatSigmauSigmarSigmaeSigma SigmaoSigmafSigma Sigma`SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma`Sigma SigmaiSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmaiSigmatSigma SigmapSigmarSigmaoSigmapSigmaaSigmagSigmaaSigmatSigmaeSigmasSigma SigmatSigmahSigmarSigmaoSigmauSigmagSigmahSigma SigmaoSigmatSigmahSigmaeSigmarSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmacSigmaaSigmalSigmalSigmasSigma Sigma-Sigma SigmauSigmanSigmalSigmaiSigmakSigmaeSigma Sigma`SigmanSigmaoSigmatSigmahSigmaiSigmanSigmagSigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigma(SigmaxSigma)Sigma Sigma=Sigma SigmaxSigma^Sigma2Sigma
+Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma Sigma+Sigma Sigma1Sigma.Sigma0Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma Sigma*Sigma Sigma2Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma Sigma*Sigma Sigma"SigmatSigmaeSigmasSigmatSigma"Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmafSigma(SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma)Sigma;Sigma Sigma Sigma Sigma Sigma Sigma Sigma#Sigma SigmaeSigmavSigmaeSigmanSigma SigmauSigmasSigmaeSigmarSigma-SigmadSigmaeSigmafSigmaiSigmanSigmaeSigmadSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigmasSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmamSigmaeSigmaaSigmanSigma(SigmaxSigma)Sigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaeSigma SigmapSigmauSigmarSigmapSigmaoSigmasSigmaeSigma SigmaoSigmafSigma SigmatSigmahSigmaiSigmasSigma SigmaiSigmasSigma SigmatSigmaoSigma SigmaeSigmanSigmasSigmauSigmarSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmafSigmaaSigmaiSigmalSigmauSigmarSigmaeSigmasSigma SigmadSigmaoSigma SigmanSigmaoSigmatSigma SigmasSigmaiSigmalSigmaeSigmanSigmatSigmalSigmaySigma SigmafSigmaaSigmaiSigmalSigma SigmaaSigmanSigmadSigma SigmapSigmarSigmaoSigmavSigmaiSigmadSigmaeSigma SigmamSigmaeSigmaaSigmanSigmaiSigmanSigmagSigmalSigmaeSigmasSigmasSigma SigmanSigmauSigmamSigmaeSigmarSigmaiSigmacSigmaaSigmalSigma SigmarSigmaeSigmasSigmauSigmalSigmatSigmasSigma.Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaeSigmavSigmaeSigmanSigma SigmaaSigmapSigmapSigmalSigmaiSigmaeSigmasSigma SigmafSigmaoSigmarSigma SigmatSigmahSigmaeSigma SigmacSigmaoSigmamSigmapSigmaaSigmarSigmaiSigmasSigmaoSigmanSigma SigmaoSigmafSigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma,Sigma SigmawSigmahSigmaiSigmacSigmahSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma
+Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaxSigma Sigma=Sigma=Sigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaxSigma Sigma=Sigma=Sigma=Sigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma Sigma Sigma#Sigma SigmaaSigmanSigma SigmaeSigmaxSigmacSigmaeSigmapSigmatSigmaiSigmaoSigmanSigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmaiSigmasSigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma(SigmaxSigma)Sigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaWSigmahSigmaeSigmarSigmaeSigma Sigma`SigmaiSigmasSigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma`Sigma SigmaiSigmasSigma SigmatSigmahSigmaeSigma SigmacSigmaaSigmanSigmaoSigmanSigmaiSigmacSigmaaSigmalSigma SigmawSigmaaSigmaySigma SigmatSigmaoSigma SigmatSigmaeSigmasSigmatSigma SigmatSigmahSigmaeSigma SigmavSigmaaSigmalSigmauSigmaeSigma.Sigma
+Sigma
+SigmaISigmanSigma SigmatSigmahSigmaeSigma SigmacSigmaaSigmasSigmaeSigma SigmawSigmahSigmaeSigmarSigmaeSigma SigmaySigmaoSigmauSigma SigmawSigmaoSigmauSigmalSigmadSigma SigmalSigmaiSigmakSigmaeSigma SigmatSigmaoSigma SigmacSigmaaSigmalSigmacSigmauSigmalSigmaaSigmatSigmaeSigma SigmaaSigma SigmavSigmaaSigmalSigmauSigmaeSigma SigmawSigmaiSigmatSigmahSigmaoSigmauSigmatSigma SigmatSigmahSigmaeSigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma,Sigma SigmaySigmaoSigmauSigma SigmacSigmaaSigmanSigma SigmauSigmasSigmaeSigma Sigma`SigmasSigmakSigmaiSigmapSigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma`Sigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaxSigma Sigma=Sigma Sigma[Sigma1Sigma.Sigma0Sigma,Sigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma,Sigma Sigma2Sigma.Sigma0Sigma,Sigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma,Sigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma,Sigma Sigma5Sigma.Sigma0Sigma]Sigma
+Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmamSigmaeSigmaaSigmanSigma(SigmaxSigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmamSigmaeSigmaaSigmanSigma(SigmasSigmakSigmaiSigmapSigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma(SigmaxSigma)Sigma)Sigma
+Sigma@SigmasSigmahSigmaoSigmawSigma SigmacSigmaoSigmaaSigmalSigmaeSigmasSigmacSigmaeSigma.Sigma(SigmaxSigma,Sigma Sigma0Sigma.Sigma0Sigma)Sigma;Sigma Sigma Sigma#Sigma SigmarSigmaeSigmapSigmalSigmaaSigmacSigmaeSigma SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma SigmawSigmaiSigmatSigmahSigma Sigma0Sigma.Sigma0Sigma;Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaASigmasSigma Sigma`SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma`Sigma SigmaiSigmasSigma SigmasSigmaiSigmamSigmaiSigmalSigmaaSigmarSigma SigmatSigmaoSigma SigmaRSigma'SigmasSigma Sigma`SigmaNSigmaASigma`Sigma SigmatSigmaySigmapSigmaeSigma,Sigma SigmawSigmaeSigma SigmawSigmaiSigmalSigmalSigma SigmasSigmaeSigmaeSigma SigmamSigmaoSigmarSigmaeSigma SigmaoSigmafSigma Sigma`SigmamSigmaiSigmasSigmasSigmaiSigmanSigmagSigma`Sigma SigmawSigmahSigmaeSigmanSigma SigmawSigmaeSigma SigmacSigmaoSigmavSigmaeSigmarSigma Sigma`SigmaDSigmaaSigmatSigmaaSigmaFSigmarSigmaaSigmamSigmaeSigmasSigma`Sigma.Sigma
+Sigma
+Sigma#Sigma#Sigma SigmaESigmaxSigmaeSigmarSigmacSigmaiSigmasSigmaeSigmasSigma
+Sigma
+Sigma(SigmanSigmapSigma_SigmaeSigmaxSigma1Sigma)Sigma=Sigma
+Sigma#Sigma#Sigma#Sigma SigmaESigmaxSigmaeSigmarSigmacSigmaiSigmasSigmaeSigma Sigma1Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaeSigmaxSigmaeSigmarSigmacSigmaiSigmasSigmaeSigma SigmauSigmasSigmaeSigmasSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmaoSigmapSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma SigmatSigmahSigmaaSigmatSigma SigmaaSigmarSigmaiSigmasSigmaeSigma SigmaiSigmanSigma SigmacSigmaeSigmarSigmatSigmaaSigmaiSigmanSigma SigmapSigmarSigmaoSigmabSigmalSigmaeSigmamSigmasSigma,Sigma
+SigmaiSigmanSigmacSigmalSigmauSigmadSigmaiSigmanSigmagSigma SigmawSigmahSigmaeSigmanSigma SigmadSigmaeSigmaaSigmalSigmaiSigmanSigmagSigma SigmawSigmaiSigmatSigmahSigma SigmalSigmaiSigmanSigmaeSigmaaSigmarSigma SigmasSigmatSigmaoSigmacSigmahSigmaaSigmasSigmatSigmaiSigmacSigma SigmadSigmaiSigmafSigmafSigmaeSigmarSigmaeSigmanSigmacSigmaeSigma SigmaeSigmaqSigmauSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma.Sigma
+Sigma
+SigmaISigmafSigma SigmaySigmaoSigmauSigma SigmaaSigmarSigmaeSigmanSigma'SigmatSigma SigmafSigmaaSigmamSigmaiSigmalSigmaiSigmaaSigmarSigma SigmawSigmaiSigmatSigmahSigma SigmaaSigmalSigmalSigma SigmatSigmahSigmaeSigma SigmatSigmaeSigmarSigmamSigmaiSigmanSigmaoSigmalSigmaoSigmagSigmaySigma SigmadSigmaoSigmanSigma'SigmatSigma SigmabSigmaeSigma SigmacSigmaoSigmanSigmacSigmaeSigmarSigmanSigmaeSigmadSigma Sigma-Sigma-Sigma SigmaySigmaoSigmauSigma SigmacSigmaaSigmanSigma
+SigmasSigmakSigmaiSigmamSigma SigmarSigmaeSigmaaSigmadSigma SigmatSigmahSigmaeSigma SigmabSigmaaSigmacSigmakSigmagSigmarSigmaoSigmauSigmanSigmadSigma SigmadSigmaiSigmasSigmacSigmauSigmasSigmasSigmaiSigmaoSigmanSigma SigmaaSigmanSigmadSigma SigmafSigmaoSigmacSigmauSigmasSigma SigmapSigmauSigmarSigmaeSigmalSigmaySigma SigmaoSigmanSigma SigmatSigmahSigmaeSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmaeSigmaxSigmaeSigmarSigmacSigmaiSigmasSigmaeSigma.Sigma
+Sigma
+SigmaWSigmaiSigmatSigmahSigma SigmatSigmahSigmaaSigmatSigma SigmasSigmaaSigmaiSigmadSigma,Sigma SigmacSigmaoSigmanSigmasSigmaiSigmadSigmaeSigmarSigma SigmatSigmahSigmaeSigma SigmasSigmatSigmaoSigmacSigmahSigmaaSigmasSigmatSigmaiSigmacSigma SigmadSigmaiSigmafSigmafSigmaeSigmarSigmaeSigmanSigmacSigmaeSigma SigmaeSigmaqSigmauSigmaaSigmatSigmaiSigmaoSigmanSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmamSigmaaSigmatSigmahSigma}Sigma
+Sigma:SigmalSigmaaSigmabSigmaeSigmalSigma:Sigma SigmajSigmaaSigma_SigmasSigmadSigmaeSigma
+Sigma
+SigmaXSigma_Sigma{SigmatSigma+Sigma1Sigma}Sigma Sigma=Sigma SigmaASigma SigmaXSigma_SigmatSigma Sigma+Sigma SigmabSigma Sigma+Sigma Sigma\SigmaSSigmaiSigmagSigmamSigmaaSigma SigmaWSigma_Sigma{SigmatSigma+Sigma1Sigma}Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaHSigmaeSigmarSigmaeSigma
+Sigma
+Sigma*Sigma Sigma$SigmaXSigma_SigmatSigma,Sigma SigmabSigma$Sigma SigmaaSigmanSigmadSigma Sigma$SigmaXSigma_Sigma{SigmatSigma+Sigma1Sigma}Sigma$Sigma SigmaaSigmarSigmaeSigma Sigma$SigmanSigma Sigma\SigmatSigmaiSigmamSigmaeSigmasSigma Sigma1Sigma$Sigma
+Sigma*Sigma Sigma$SigmaASigma$Sigma SigmaiSigmasSigma Sigma$SigmanSigma Sigma\SigmatSigmaiSigmamSigmaeSigmasSigma SigmanSigma$Sigma
+Sigma*Sigma Sigma$Sigma\SigmaSSigmaiSigmagSigmamSigmaaSigma$Sigma SigmaiSigmasSigma Sigma$SigmanSigma Sigma\SigmatSigmaiSigmamSigmaeSigmasSigma SigmakSigma$Sigma
+Sigma*Sigma Sigma$SigmaWSigma_SigmatSigma$Sigma SigmaiSigmasSigma Sigma$SigmakSigma Sigma\SigmatSigmaiSigmamSigmaeSigmasSigma Sigma1Sigma$Sigma SigmaaSigmanSigmadSigma Sigma$Sigma\Sigma{SigmaWSigma_SigmatSigma\Sigma}Sigma$Sigma SigmaiSigmasSigma SigmaiSigmaiSigmadSigma SigmawSigmaiSigmatSigmahSigma SigmazSigmaeSigmarSigmaoSigma SigmamSigmaeSigmaaSigmanSigma SigmaaSigmanSigmadSigma SigmavSigmaaSigmarSigmaiSigmaaSigmanSigmacSigmaeSigma-SigmacSigmaoSigmavSigmaaSigmarSigmaiSigmaaSigmanSigmacSigmaeSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmaeSigmaqSigmauSigmaaSigmalSigma SigmatSigmaoSigma SigmatSigmahSigmaeSigma SigmaiSigmadSigmaeSigmanSigmatSigmaiSigmatSigmaySigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma
+Sigma
+SigmaLSigmaeSigmatSigma Sigma$SigmaSSigma_SigmatSigma$Sigma SigmadSigmaeSigmanSigmaoSigmatSigmaeSigma SigmatSigmahSigmaeSigma Sigma$SigmanSigma Sigma\SigmatSigmaiSigmamSigmaeSigmasSigma SigmanSigma$Sigma SigmavSigmaaSigmarSigmaiSigmaaSigmanSigmacSigmaeSigma-SigmacSigmaoSigmavSigmaaSigmarSigmaiSigmaaSigmanSigmacSigmaeSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmaoSigmafSigma Sigma$SigmaXSigma_SigmatSigma$Sigma.Sigma
+Sigma
+SigmaUSigmasSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma SigmarSigmauSigmalSigmaeSigmasSigma SigmafSigmaoSigmarSigma SigmacSigmaoSigmamSigmapSigmauSigmatSigmaiSigmanSigmagSigma SigmavSigmaaSigmarSigmaiSigmaaSigmanSigmacSigmaeSigmasSigma SigmaiSigmanSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmaeSigmaxSigmapSigmarSigmaeSigmasSigmasSigmaiSigmaoSigmanSigmasSigma,Sigma SigmaiSigmatSigma SigmacSigmaaSigmanSigma SigmabSigmaeSigma SigmasSigmahSigmaoSigmawSigmanSigma SigmafSigmarSigmaoSigmamSigma Sigma{SigmaeSigmaqSigma}Sigma`SigmajSigmaaSigma_SigmasSigmadSigmaeSigma`Sigma SigmatSigmahSigmaaSigmatSigma Sigma$Sigma\Sigma{SigmaSSigma_SigmatSigma\Sigma}Sigma$Sigma SigmaoSigmabSigmaeSigmaySigmasSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmamSigmaaSigmatSigmahSigma}Sigma
+Sigma:SigmalSigmaaSigmabSigmaeSigmalSigma:Sigma SigmajSigmaaSigma_SigmasSigmadSigmaeSigma_SigmavSigma
+Sigma
+SigmaSSigma_Sigma{SigmatSigma+Sigma1Sigma}Sigma Sigma=Sigma SigmaASigma SigmaSSigma_SigmatSigma SigmaASigma'Sigma Sigma+Sigma Sigma\SigmaSSigmaiSigmagSigmamSigmaaSigma Sigma\SigmaSSigmaiSigmagSigmamSigmaaSigma'Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaISigmatSigma SigmacSigmaaSigmanSigma SigmabSigmaeSigma SigmasSigmahSigmaoSigmawSigmanSigma SigmatSigmahSigmaaSigmatSigma,Sigma SigmapSigmarSigmaoSigmavSigmaiSigmadSigmaeSigmadSigma SigmaaSigmalSigmalSigma SigmaeSigmaiSigmagSigmaeSigmanSigmavSigmaaSigmalSigmauSigmaeSigmasSigma SigmaoSigmafSigma Sigma$SigmaASigma$Sigma SigmalSigmaiSigmaeSigma SigmawSigmaiSigmatSigmahSigmaiSigmanSigma SigmatSigmahSigmaeSigma SigmauSigmanSigmaiSigmatSigma SigmacSigmaiSigmarSigmacSigmalSigmaeSigma,Sigma SigmatSigmahSigmaeSigma SigmasSigmaeSigmaqSigmauSigmaeSigmanSigmacSigmaeSigma Sigma$Sigma\Sigma{SigmaSSigma_SigmatSigma\Sigma}Sigma$Sigma SigmacSigmaoSigmanSigmavSigmaeSigmarSigmagSigmaeSigmasSigma SigmatSigmaoSigma SigmaaSigma SigmauSigmanSigmaiSigmaqSigmauSigmaeSigma SigmalSigmaiSigmamSigmaiSigmatSigma Sigma$SigmaSSigma$Sigma.Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmaiSigmasSigma SigmatSigmahSigmaeSigma Sigma*Sigma*SigmauSigmanSigmacSigmaoSigmanSigmadSigmaiSigmatSigmaiSigmaoSigmanSigmaaSigmalSigma SigmavSigmaaSigmarSigmaiSigmaaSigmanSigmacSigmaeSigma*Sigma*Sigma SigmaoSigmarSigma Sigma*Sigma*SigmaaSigmasSigmaySigmamSigmapSigmatSigmaoSigmatSigmaiSigmacSigma SigmavSigmaaSigmarSigmaiSigmaaSigmanSigmacSigmaeSigma*Sigma*Sigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmasSigmatSigmaoSigmacSigmahSigmaaSigmasSigmatSigmaiSigmacSigma SigmadSigmaiSigmafSigmafSigmaeSigmarSigmaeSigmanSigmacSigmaeSigma SigmaeSigmaqSigmauSigmaaSigmatSigmaiSigmaoSigmanSigma.Sigma
+Sigma
+SigmaASigmasSigma SigmaaSigmanSigma SigmaeSigmaxSigmaeSigmarSigmacSigmaiSigmasSigmaeSigma,Sigma SigmatSigmarSigmaySigma SigmawSigmarSigmaiSigmatSigmaiSigmanSigmagSigma SigmaaSigma SigmasSigmaiSigmamSigmapSigmalSigmaeSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmatSigmahSigmaaSigmatSigma SigmasSigmaoSigmalSigmavSigmaeSigmasSigma SigmafSigmaoSigmarSigma SigmatSigmahSigmaeSigma SigmalSigmaiSigmamSigmaiSigmatSigma Sigma$SigmaSSigma$Sigma SigmabSigmaySigma SigmaiSigmatSigmaeSigmarSigmaaSigmatSigmaiSigmanSigmagSigma SigmaoSigmanSigma Sigma{SigmaeSigmaqSigma}Sigma`SigmajSigmaaSigma_SigmasSigmadSigmaeSigma_SigmavSigma`Sigma SigmagSigmaiSigmavSigmaeSigmanSigma Sigma$SigmaASigma$Sigma SigmaaSigmanSigmadSigma Sigma$Sigma\SigmaSSigmaiSigmagSigmamSigmaaSigma$Sigma.Sigma
+Sigma
+SigmaTSigmaoSigma SigmatSigmaeSigmasSigmatSigma SigmaySigmaoSigmauSigmarSigma SigmasSigmaoSigmalSigmauSigmatSigmaiSigmaoSigmanSigma,Sigma SigmaoSigmabSigmasSigmaeSigmarSigmavSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmatSigmahSigmaeSigma SigmalSigmaiSigmamSigmaiSigmatSigma Sigma$SigmaSSigma$Sigma SigmaiSigmasSigma SigmaaSigma SigmasSigmaoSigmalSigmauSigmatSigmaiSigmaoSigmanSigma SigmatSigmaoSigma SigmatSigmahSigmaeSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmaeSigmaqSigmauSigmaaSigmatSigmaiSigmaoSigmanSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmamSigmaaSigmatSigmahSigma}Sigma
+Sigma:SigmalSigmaaSigmabSigmaeSigmalSigma:Sigma SigmajSigmaaSigma_SigmadSigmalSigmaeSigma
+Sigma
+SigmaSSigma Sigma=Sigma SigmaASigma SigmaSSigma SigmaASigma'Sigma Sigma+Sigma SigmaQSigma
+Sigma\SigmaqSigmauSigmaaSigmadSigma Sigma\SigmatSigmaeSigmaxSigmatSigma{SigmawSigmahSigmaeSigmarSigmaeSigma}Sigma Sigma\SigmaqSigmauSigmaaSigmadSigma SigmaQSigma Sigma:Sigma=Sigma Sigma\SigmaSSigmaiSigmagSigmamSigmaaSigma Sigma\SigmaSSigmaiSigmagSigmamSigmaaSigma'Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaTSigmahSigmaiSigmasSigma SigmakSigmaiSigmanSigmadSigma SigmaoSigmafSigma SigmaeSigmaqSigmauSigmaaSigmatSigmaiSigmaoSigmanSigma SigmaiSigmasSigma SigmakSigmanSigmaoSigmawSigmanSigma SigmaaSigmasSigma SigmaaSigma Sigma*Sigma*SigmadSigmaiSigmasSigmacSigmarSigmaeSigmatSigmaeSigma SigmatSigmaiSigmamSigmaeSigma SigmaLSigmaySigmaaSigmapSigmauSigmanSigmaoSigmavSigma SigmaeSigmaqSigmauSigmaaSigmatSigmaiSigmaoSigmanSigma*Sigma*Sigma.Sigma
+Sigma
+SigmaTSigmahSigmaeSigma Sigma[SigmaQSigmauSigmaaSigmanSigmatSigmaESigmacSigmaoSigmanSigma SigmapSigmaaSigmacSigmakSigmaaSigmagSigmaeSigma]Sigma(SigmahSigmatSigmatSigmapSigma:Sigma/Sigma/SigmaqSigmauSigmaaSigmanSigmatSigmaeSigmacSigmaoSigmanSigma.SigmaoSigmarSigmagSigma/SigmaqSigmauSigmaaSigmanSigmatSigmaeSigmacSigmaoSigmanSigma-SigmajSigmalSigma)Sigma
+SigmapSigmarSigmaoSigmavSigmaiSigmadSigmaeSigmasSigma SigmaaSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmacSigmaaSigmalSigmalSigmaeSigmadSigma Sigma`SigmasSigmaoSigmalSigmavSigmaeSigma_SigmadSigmaiSigmasSigmacSigmarSigmaeSigmatSigmaeSigma_SigmalSigmaySigmaaSigmapSigmauSigmanSigmaoSigmavSigma`Sigma SigmatSigmahSigmaaSigmatSigma SigmaiSigmamSigmapSigmalSigmaeSigmamSigmaeSigmanSigmatSigmasSigma SigmaaSigma SigmafSigmaaSigmasSigmatSigma
+Sigma"SigmadSigmaoSigmauSigmabSigmalSigmaiSigmanSigmagSigma"Sigma SigmaaSigmalSigmagSigmaoSigmarSigmaiSigmatSigmahSigmamSigma SigmatSigmaoSigma SigmasSigmaoSigmalSigmavSigmaeSigma SigmatSigmahSigmaiSigmasSigma SigmaeSigmaqSigmauSigmaaSigmatSigmaiSigmaoSigmanSigma.Sigma
+Sigma
+SigmaTSigmaeSigmasSigmatSigma SigmaySigmaoSigmauSigmarSigma SigmaiSigmatSigmaeSigmarSigmaaSigmatSigmaiSigmavSigmaeSigma SigmamSigmaeSigmatSigmahSigmaoSigmadSigma SigmaaSigmagSigmaaSigmaiSigmanSigmasSigmatSigma Sigma`SigmasSigmaoSigmalSigmavSigmaeSigma_SigmadSigmaiSigmasSigmacSigmarSigmaeSigmatSigmaeSigma_SigmalSigmaySigmaaSigmapSigmauSigmanSigmaoSigmavSigma`Sigma SigmauSigmasSigmaiSigmanSigmagSigma SigmamSigmaaSigmatSigmarSigmaiSigmacSigmaeSigmasSigma
+Sigma
+Sigma$Sigma$Sigma
+SigmaASigma Sigma=Sigma
+Sigma\SigmabSigmaeSigmagSigmaiSigmanSigma{SigmabSigmamSigmaaSigmatSigmarSigmaiSigmaxSigma}Sigma
+Sigma Sigma Sigma Sigma Sigma0Sigma.Sigma8Sigma Sigma&Sigma Sigma-Sigma0Sigma.Sigma2Sigma Sigma Sigma\Sigma\Sigma
+Sigma Sigma Sigma Sigma Sigma-Sigma0Sigma.Sigma1Sigma Sigma&Sigma Sigma0Sigma.Sigma7Sigma
+Sigma\SigmaeSigmanSigmadSigma{SigmabSigmamSigmaaSigmatSigmarSigmaiSigmaxSigma}Sigma
+Sigma\SigmaqSigmaqSigmauSigmaaSigmadSigma
+Sigma\SigmaSSigmaiSigmagSigmamSigmaaSigma Sigma=Sigma
+Sigma\SigmabSigmaeSigmagSigmaiSigmanSigma{SigmabSigmamSigmaaSigmatSigmarSigmaiSigmaxSigma}Sigma
+Sigma Sigma Sigma Sigma Sigma0Sigma.Sigma5Sigma Sigma&Sigma Sigma0Sigma.Sigma4Sigma Sigma\Sigma\Sigma
+Sigma Sigma Sigma Sigma Sigma0Sigma.Sigma4Sigma Sigma&Sigma Sigma0Sigma.Sigma6Sigma
+Sigma\SigmaeSigmanSigmadSigma{SigmabSigmamSigmaaSigmatSigmarSigmaiSigmaxSigma}Sigma
+Sigma$Sigma$Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaESigmaxSigmaeSigmarSigmacSigmaiSigmasSigmaeSigma Sigma2Sigma
+Sigma
+SigmaTSigmaaSigmakSigmaeSigma SigmaaSigma SigmasSigmatSigmaoSigmacSigmahSigmaaSigmasSigmatSigmaiSigmacSigma SigmapSigmarSigmaoSigmacSigmaeSigmasSigmasSigma SigmafSigmaoSigmarSigma Sigma$Sigma\Sigma{SigmaySigma_SigmatSigma\Sigma}Sigma_Sigma{SigmatSigma=Sigma0Sigma}Sigma^SigmaTSigma$Sigma
+Sigma
+Sigma$Sigma$Sigma
+SigmaySigma_Sigma{SigmatSigma+Sigma1Sigma}Sigma Sigma=Sigma Sigma\SigmagSigmaaSigmamSigmamSigmaaSigma Sigma+Sigma Sigma\SigmatSigmahSigmaeSigmatSigmaaSigma SigmaySigma_SigmatSigma Sigma+Sigma Sigma\SigmasSigmaiSigmagSigmamSigmaaSigma SigmawSigma_Sigma{SigmatSigma+Sigma1Sigma}Sigma
+Sigma$Sigma$Sigma
+Sigma
+SigmawSigmahSigmaeSigmarSigmaeSigma
+Sigma
+Sigma*Sigma Sigma$SigmawSigma_Sigma{SigmatSigma+Sigma1Sigma}Sigma$Sigma SigmaiSigmasSigma SigmadSigmaiSigmasSigmatSigmarSigmaiSigmabSigmauSigmatSigmaeSigmadSigma Sigma`SigmaNSigmaoSigmarSigmamSigmaaSigmalSigma(Sigma0Sigma,Sigma1Sigma)Sigma`Sigma
+Sigma*Sigma Sigma$Sigma\SigmagSigmaaSigmamSigmamSigmaaSigma=Sigma1Sigma,Sigma Sigma\SigmasSigmaiSigmagSigmamSigmaaSigma=Sigma1Sigma,Sigma SigmaySigma_Sigma0Sigma Sigma=Sigma Sigma0Sigma$Sigma
+Sigma*Sigma Sigma$Sigma\SigmatSigmahSigmaeSigmatSigmaaSigma Sigma\SigmaiSigmanSigma Sigma\SigmaTSigmahSigmaeSigmatSigmaaSigma Sigma\SigmaeSigmaqSigmauSigmaiSigmavSigma Sigma\Sigma{Sigma0Sigma.Sigma8Sigma,Sigma Sigma0Sigma.Sigma9Sigma,Sigma Sigma0Sigma.Sigma9Sigma8Sigma\Sigma}Sigma$Sigma
+Sigma
+SigmaGSigmaiSigmavSigmaeSigmanSigma SigmatSigmahSigmaeSigmasSigmaeSigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma
+Sigma
+Sigma*Sigma SigmaSSigmaiSigmamSigmauSigmalSigmaaSigmatSigmaeSigma SigmaaSigma SigmasSigmaiSigmanSigmagSigmalSigmaeSigma Sigma$SigmaySigma_SigmatSigma$Sigma SigmasSigmaeSigmarSigmaiSigmaeSigmasSigma SigmafSigmaoSigmarSigma SigmaeSigmaaSigmacSigmahSigma Sigma$Sigma\SigmatSigmahSigmaeSigmatSigmaaSigma Sigma\SigmaiSigmanSigma Sigma\SigmaTSigmahSigmaeSigmatSigmaaSigma$Sigma
+Sigma Sigma SigmafSigmaoSigmarSigma Sigma$SigmaTSigma Sigma=Sigma Sigma1Sigma5Sigma0Sigma$Sigma.Sigma Sigma SigmaFSigmaeSigmaeSigmalSigma SigmafSigmarSigmaeSigmaeSigma SigmatSigmaoSigma SigmaeSigmaxSigmapSigmaeSigmarSigmaiSigmamSigmaeSigmanSigmatSigma SigmawSigmaiSigmatSigmahSigma SigmadSigmaiSigmafSigmafSigmaeSigmarSigmaeSigmanSigmatSigma Sigma$SigmaTSigma$Sigma.Sigma
+Sigma*Sigma SigmaOSigmavSigmaeSigmarSigmalSigmaaSigmaySigma SigmapSigmalSigmaoSigmatSigmasSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmarSigmaoSigmalSigmalSigmaiSigmanSigmagSigma SigmamSigmaeSigmaaSigmanSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmapSigmarSigmaoSigmacSigmaeSigmasSigmasSigma SigmafSigmaoSigmarSigma SigmaeSigmaaSigmacSigmahSigma Sigma$Sigma\SigmatSigmahSigmaeSigmatSigmaaSigma Sigma\SigmaiSigmanSigma Sigma\SigmaTSigmahSigmaeSigmatSigmaaSigma$Sigma,Sigma
+Sigma Sigma SigmaiSigma.SigmaeSigma.Sigma SigmafSigmaoSigmarSigma SigmaeSigmaaSigmacSigmahSigma Sigma$Sigma1Sigma Sigma\SigmalSigmaeSigmaqSigma Sigma\SigmatSigmaaSigmauSigma Sigma\SigmalSigmaeSigmaqSigma SigmaTSigma$Sigma SigmapSigmalSigmaoSigmatSigma
+Sigma
+Sigma$Sigma$Sigma
+Sigma\SigmafSigmarSigmaaSigmacSigma{Sigma1Sigma}Sigma{Sigma\SigmatSigmaaSigmauSigma}Sigma\SigmasSigmauSigmamSigma_Sigma{SigmatSigma=Sigma1Sigma}Sigma^Sigma{Sigma\SigmatSigmaaSigmauSigma}SigmaySigma_SigmaTSigma
+Sigma$Sigma$Sigma
+Sigma
+Sigma*Sigma SigmaSSigmaiSigmamSigmauSigmalSigmaaSigmatSigmaeSigma Sigma$SigmaNSigma=Sigma2Sigma0Sigma0Sigma$Sigma SigmapSigmaaSigmatSigmahSigmasSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmasSigmatSigmaoSigmacSigmahSigmaaSigmasSigmatSigmaiSigmacSigma SigmapSigmarSigmaoSigmacSigmaeSigmasSigmasSigma SigmaaSigmabSigmaoSigmavSigmaeSigma SigmatSigmaoSigma SigmatSigmahSigmaeSigma Sigma$SigmaTSigma$Sigma,Sigma
+Sigma Sigma SigmafSigmaoSigmarSigma SigmaeSigmaaSigmacSigmahSigma Sigma$Sigma\SigmatSigmahSigmaeSigmatSigmaaSigma Sigma\SigmaiSigmanSigma Sigma\SigmaTSigmahSigmaeSigmatSigmaaSigma$Sigma,Sigma SigmawSigmahSigmaeSigmarSigmaeSigma SigmawSigmaeSigma SigmarSigmaeSigmafSigmaeSigmarSigma SigmatSigmaoSigma SigmaaSigmanSigma SigmaeSigmalSigmaeSigmamSigmaeSigmanSigmatSigma SigmaoSigmafSigma SigmaaSigma SigmapSigmaaSigmarSigmatSigmaiSigmacSigmauSigmalSigmaaSigmarSigma
+Sigma Sigma SigmasSigmaiSigmamSigmauSigmalSigmaaSigmatSigmaiSigmaoSigmanSigma SigmaaSigmasSigma Sigma$SigmaySigma^SigmanSigma_SigmatSigma$Sigma.Sigma
+Sigma*Sigma SigmaOSigmavSigmaeSigmarSigmalSigmaaSigmaySigma SigmapSigmalSigmaoSigmatSigmasSigma SigmaaSigma SigmahSigmaiSigmasSigmatSigmaoSigmagSigmarSigmaaSigmamSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmasSigmatSigmaaSigmatSigmaiSigmaoSigmanSigmaaSigmarSigmaySigma SigmadSigmaiSigmasSigmatSigmarSigmaiSigmabSigmauSigmatSigmaiSigmaoSigmanSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmafSigmaiSigmanSigmaaSigmalSigma
+Sigma Sigma Sigma$SigmaySigma^SigmanSigma_SigmaTSigma$Sigma SigmafSigmaoSigmarSigma SigmaeSigmaaSigmacSigmahSigma Sigma$Sigma\SigmatSigmahSigmaeSigmatSigmaaSigma Sigma\SigmaiSigmanSigma Sigma\SigmaTSigmahSigmaeSigmatSigmaaSigma$Sigma.Sigma Sigma SigmaHSigmaiSigmanSigmatSigma:Sigma SigmapSigmaaSigmasSigmasSigma Sigma`SigmaaSigmalSigmapSigmahSigmaaSigma`Sigma
+Sigma Sigma SigmatSigmaoSigma SigmaaSigma SigmapSigmalSigmaoSigmatSigma SigmatSigmaoSigma SigmamSigmaaSigmakSigmaeSigma SigmaiSigmatSigma SigmatSigmarSigmaaSigmanSigmasSigmapSigmaaSigmarSigmaeSigmanSigmatSigma Sigma(SigmaeSigma.SigmagSigma.Sigma Sigma`SigmahSigmaiSigmasSigmatSigmaoSigmagSigmarSigmaaSigmamSigma(SigmavSigmaaSigmalSigmasSigma,Sigma SigmaaSigmalSigmapSigmahSigmaaSigma Sigma=Sigma Sigma0Sigma.Sigma5Sigma)Sigma`Sigma)Sigma SigmaoSigmarSigma
+Sigma Sigma SigmauSigmasSigmaeSigma Sigma`SigmasSigmatSigmaeSigmapSigmahSigmaiSigmasSigmatSigma(SigmavSigmaaSigmalSigmasSigma)Sigma`Sigma SigmatSigmaoSigma SigmasSigmahSigmaoSigmawSigma SigmajSigmauSigmasSigmatSigma SigmatSigmahSigmaeSigma SigmasSigmatSigmaeSigmapSigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigmaoSigmarSigma SigmatSigmahSigmaeSigma SigmahSigmaiSigmasSigmatSigmaoSigmagSigmarSigmaaSigmamSigma.Sigma
+Sigma*Sigma SigmaNSigmauSigmamSigmaeSigmarSigmaiSigmacSigmaaSigmalSigmalSigmaySigma SigmafSigmaiSigmanSigmadSigma SigmatSigmahSigmaeSigma SigmamSigmaeSigmaaSigmanSigma SigmaaSigmanSigmadSigma SigmavSigmaaSigmarSigmaiSigmaaSigmanSigmacSigmaeSigma SigmaoSigmafSigma SigmatSigmahSigmaiSigmasSigma SigmaaSigmasSigma SigmaaSigmanSigma SigmaeSigmanSigmasSigmaeSigmamSigmabSigmalSigmaeSigma SigmaaSigmavSigmaeSigmarSigmaaSigmagSigmaeSigma,Sigma SigmaiSigma.SigmaeSigma.Sigma
+Sigma Sigma Sigma$Sigma\SigmasSigmauSigmamSigma_Sigma{SigmanSigma=Sigma1Sigma}Sigma^SigmaNSigma\SigmafSigmarSigmaaSigmacSigma{SigmaySigma^SigmanSigma_SigmaTSigma}Sigma{SigmaNSigma}Sigma$Sigma SigmaaSigmanSigmadSigma
+Sigma Sigma Sigma$Sigma\SigmasSigmauSigmamSigma_Sigma{SigmanSigma=Sigma1Sigma}Sigma^SigmaNSigma\SigmafSigmarSigmaaSigmacSigma{Sigma(SigmaySigma_SigmaTSigma^SigmanSigma)Sigma^Sigma2Sigma}Sigma{SigmaNSigma}Sigma Sigma-Sigma\SigmalSigmaeSigmafSigmatSigma(Sigma\SigmasSigmauSigmamSigma_Sigma{SigmanSigma=Sigma1Sigma}Sigma^SigmaNSigma\SigmafSigmarSigmaaSigmacSigma{SigmaySigma^SigmanSigma_SigmaTSigma}Sigma{SigmaNSigma}Sigma\SigmarSigmaiSigmagSigmahSigmatSigma)Sigma^Sigma2Sigma$Sigma.Sigma
+Sigma
+SigmaLSigmaaSigmatSigmaeSigmarSigma,Sigma SigmawSigmaeSigma SigmawSigmaiSigmalSigmalSigma SigmaiSigmanSigmatSigmaeSigmarSigmapSigmarSigmaeSigmatSigma SigmasSigmaoSigmamSigmaeSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigmasSigmaeSigma SigmaiSigmanSigma Sigma{SigmadSigmaoSigmacSigma}Sigma`SigmatSigmahSigmaiSigmasSigma SigmalSigmaeSigmacSigmatSigmauSigmarSigmaeSigma Sigma<Sigma.Sigma.Sigma/SigmatSigmaoSigmaoSigmalSigmasSigma_SigmaaSigmanSigmadSigma_SigmatSigmaeSigmacSigmahSigmanSigmaiSigmaqSigmauSigmaeSigmasSigma/SigmalSigmalSigmanSigma_SigmacSigmalSigmatSigma>Sigma`Sigma.Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaESigmaxSigmaeSigmarSigmacSigmaiSigmasSigmaeSigma Sigma3Sigma
+Sigma
+SigmaLSigmaeSigmatSigma SigmatSigmahSigmaeSigma SigmadSigmaaSigmatSigmaaSigma SigmagSigmaeSigmanSigmaeSigmarSigmaaSigmatSigmaiSigmanSigmagSigma SigmapSigmarSigmaoSigmacSigmaeSigmasSigmasSigma SigmafSigmaoSigmarSigma SigmaaSigma SigmavSigmaaSigmarSigmaiSigmaaSigmabSigmalSigmaeSigma SigmabSigmaeSigma
+Sigma
+Sigma$Sigma$Sigma
+SigmaySigma Sigma=Sigma SigmaaSigma SigmaxSigma_Sigma1Sigma Sigma+Sigma SigmabSigma SigmaxSigma_Sigma1Sigma^Sigma2Sigma Sigma+Sigma SigmacSigma SigmaxSigma_Sigma2Sigma Sigma+Sigma SigmadSigma Sigma+Sigma Sigma\SigmasSigmaiSigmagSigmamSigmaaSigma SigmawSigma
+Sigma$Sigma$Sigma
+Sigma
+SigmawSigmahSigmaeSigmarSigmaeSigma Sigma$SigmaySigma,Sigma SigmaxSigma_Sigma1Sigma,Sigma SigmaxSigma_Sigma2Sigma$Sigma SigmaaSigmarSigmaeSigma SigmasSigmacSigmaaSigmalSigmaaSigmarSigma SigmaoSigmabSigmasSigmaeSigmarSigmavSigmaaSigmabSigmalSigmaeSigmasSigma,Sigma Sigma$SigmaaSigma,SigmabSigma,SigmacSigma,SigmadSigma$Sigma SigmaaSigmarSigmaeSigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma SigmatSigmaoSigma SigmaeSigmasSigmatSigmaiSigmamSigmaaSigmatSigmaeSigma,Sigma SigmaaSigmanSigmadSigma Sigma$SigmawSigma$Sigma SigmaaSigmarSigmaeSigma SigmaiSigmaiSigmadSigma SigmanSigmaoSigmarSigmamSigmaaSigmalSigma SigmawSigmaiSigmatSigmahSigma SigmamSigmaeSigmaaSigmanSigma Sigma0Sigma SigmaaSigmanSigmadSigma SigmavSigmaaSigmarSigmaiSigmaaSigmanSigmacSigmaeSigma Sigma1Sigma.Sigma
+Sigma
+SigmaFSigmaiSigmarSigmasSigmatSigma,Sigma SigmalSigmaeSigmatSigma'SigmasSigma SigmasSigmaiSigmamSigmauSigmalSigmaaSigmatSigmaeSigma SigmadSigmaaSigmatSigmaaSigma SigmawSigmaeSigma SigmacSigmaaSigmanSigma SigmauSigmasSigmaeSigma SigmatSigmaoSigma SigmaeSigmasSigmatSigmaiSigmamSigmaaSigmatSigmaeSigma SigmatSigmahSigmaeSigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma
+Sigma
+Sigma*Sigma SigmaDSigmarSigmaaSigmawSigma Sigma$SigmaNSigma=Sigma5Sigma0Sigma$Sigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma SigmafSigmaoSigmarSigma Sigma$SigmaxSigma_Sigma1Sigma,Sigma SigmaxSigma_Sigma2Sigma$Sigma SigmafSigmarSigmaoSigmamSigma SigmaiSigmaiSigmadSigma SigmanSigmaoSigmarSigmamSigmaaSigmalSigma SigmadSigmaiSigmasSigmatSigmarSigmaiSigmabSigmauSigmatSigmaiSigmaoSigmanSigmasSigma.Sigma
+Sigma
+SigmaTSigmahSigmaeSigmanSigma,Sigma SigmasSigmaiSigmamSigmauSigmalSigmaaSigmatSigmaeSigma SigmawSigmaiSigmatSigmahSigma SigmadSigmaiSigmafSigmafSigmaeSigmarSigmaeSigmanSigmatSigma Sigma$SigmawSigma$Sigma
+Sigma*Sigma SigmaDSigmarSigmaaSigmawSigma SigmaaSigma Sigma$SigmawSigma$Sigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmafSigmaoSigmarSigma SigmatSigmahSigmaeSigma Sigma`SigmaNSigma`Sigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma SigmaaSigmanSigmadSigma SigmatSigmahSigmaeSigmanSigma Sigma`SigmaySigma`Sigma SigmafSigmarSigmaoSigmamSigma SigmatSigmahSigmaiSigmasSigma SigmasSigmaiSigmamSigmauSigmalSigmaaSigmatSigmaeSigmadSigma SigmadSigmaaSigmatSigmaaSigma SigmaiSigmafSigma SigmatSigmahSigmaeSigma SigmapSigmaaSigmarSigmaaSigmamSigmaeSigmatSigmaeSigmarSigmasSigma SigmawSigmaeSigmarSigmaeSigma Sigma$SigmaaSigma Sigma=Sigma Sigma0Sigma.Sigma1Sigma,Sigma SigmabSigma Sigma=Sigma Sigma0Sigma.Sigma2Sigma SigmacSigma Sigma=Sigma Sigma0Sigma.Sigma5Sigma,Sigma SigmadSigma Sigma=Sigma Sigma1Sigma.Sigma0Sigma,Sigma Sigma\SigmasSigmaiSigmagSigmamSigmaaSigma Sigma=Sigma Sigma0Sigma.Sigma1Sigma$Sigma.Sigma
+Sigma*Sigma SigmaRSigmaeSigmapSigmaeSigmaaSigmatSigma SigmatSigmahSigmaaSigmatSigma SigmasSigmaoSigma SigmaySigmaoSigmauSigma SigmahSigmaaSigmavSigmaeSigma Sigma`SigmaMSigma Sigma=Sigma Sigma2Sigma0Sigma`Sigma SigmadSigmaiSigmafSigmafSigmaeSigmarSigmaeSigmanSigmatSigma SigmasSigmaiSigmamSigmauSigmalSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma Sigma`SigmaySigma`Sigma SigmafSigmaoSigmarSigma SigmatSigmahSigmaeSigma Sigma`SigmaNSigma`Sigma SigmavSigmaaSigmalSigmauSigmaeSigmasSigma.Sigma
+Sigma
+SigmaFSigmaiSigmanSigmaaSigmalSigmalSigmaySigma,Sigma SigmacSigmaaSigmalSigmacSigmauSigmalSigmaaSigmatSigmaeSigma SigmaoSigmarSigmadSigmaeSigmarSigma SigmalSigmaeSigmaaSigmasSigmatSigma SigmasSigmaqSigmauSigmaaSigmarSigmaeSigmasSigma SigmamSigmaaSigmanSigmauSigmaaSigmalSigmalSigmaySigma Sigma(SigmaiSigma.SigmaeSigma.Sigma,Sigma SigmapSigmauSigmatSigma SigmatSigmahSigmaeSigma SigmaoSigmabSigmasSigmaeSigmarSigmavSigmaaSigmabSigmalSigmaeSigmasSigma
+SigmaiSigmanSigmatSigmaoSigma SigmamSigmaaSigmatSigmarSigmaiSigmacSigmaeSigmasSigma SigmaaSigmanSigmadSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigmasSigma,Sigma SigmaaSigmanSigmadSigma SigmadSigmaiSigmarSigmaeSigmacSigmatSigmalSigmaySigma SigmauSigmasSigmaeSigma SigmatSigmahSigmaeSigma SigmaeSigmaqSigmauSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma SigmafSigmaoSigmarSigma
+Sigma[SigmaOSigmaLSigmaSSigma]Sigma(SigmahSigmatSigmatSigmapSigmasSigma:Sigma/Sigma/SigmaeSigmanSigma.SigmawSigmaiSigmakSigmaiSigmapSigmaeSigmadSigmaiSigmaaSigma.SigmaoSigmarSigmagSigma/SigmawSigmaiSigmakSigmaiSigma/SigmaOSigmarSigmadSigmaiSigmanSigmaaSigmarSigmaySigma_SigmalSigmaeSigmaaSigmasSigmatSigma_SigmasSigmaqSigmauSigmaaSigmarSigmaeSigmasSigma)Sigma SigmarSigmaaSigmatSigmahSigmaeSigmarSigma SigmatSigmahSigmaaSigmanSigma SigmaaSigma SigmapSigmaaSigmacSigmakSigmaaSigmagSigmaeSigma)Sigma.Sigma
+Sigma
+Sigma*Sigma SigmaFSigmaoSigmarSigma SigmaeSigmaaSigmacSigmahSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma Sigma`SigmaMSigma=Sigma2Sigma0Sigma`Sigma SigmasSigmaiSigmamSigmauSigmalSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma,Sigma SigmacSigmaaSigmalSigmacSigmauSigmalSigmaaSigmatSigmaeSigma SigmatSigmahSigmaeSigma SigmaOSigmaLSigmaSSigma SigmaeSigmasSigmatSigmaiSigmamSigmaaSigmatSigmaeSigmasSigma SigmafSigmaoSigmarSigma Sigma$SigmaaSigma,Sigma SigmabSigma,Sigma SigmacSigma,Sigma SigmadSigma,Sigma Sigma\SigmasSigmaiSigmagSigmamSigmaaSigma$Sigma.Sigma
+Sigma*Sigma SigmaPSigmalSigmaoSigmatSigma SigmaaSigma SigmahSigmaiSigmasSigmatSigmaoSigmagSigmarSigmaaSigmamSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigmasSigmaeSigma SigmaeSigmasSigmatSigmaiSigmamSigmaaSigmatSigmaeSigmasSigma SigmafSigmaoSigmarSigma SigmaeSigmaaSigmacSigmahSigma SigmavSigmaaSigmarSigmaiSigmaaSigmabSigmalSigmaeSigma.Sigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaESigmaxSigmaeSigmarSigmacSigmaiSigmasSigmaeSigma Sigma4Sigma
+Sigma
+SigmaRSigmaeSigmadSigmaoSigma SigmaESigmaxSigmaeSigmarSigmacSigmaiSigmasSigmaeSigma Sigma1Sigma SigmauSigmasSigmaiSigmanSigmagSigma SigmatSigmahSigmaeSigma Sigma`SigmafSigmaiSigmaxSigmaeSigmadSigmapSigmaoSigmaiSigmanSigmatSigma`Sigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmafSigmarSigmaoSigmamSigma Sigma`SigmaNSigmaLSigmasSigmaoSigmalSigmavSigmaeSigma`Sigma Sigma{SigmadSigmaoSigmacSigma}Sigma`SigmatSigmahSigmaiSigmasSigma SigmalSigmaeSigmacSigmatSigmauSigmarSigmaeSigma Sigma<SigmajSigmauSigmalSigmaiSigmaaSigma_SigmabSigmaySigma_SigmaeSigmaxSigmaaSigmamSigmapSigmalSigmaeSigma>Sigma`Sigma.Sigma
+Sigma
+SigmaCSigmaoSigmamSigmapSigmaaSigmarSigmaeSigma SigmatSigmahSigmaeSigma SigmanSigmauSigmamSigmabSigmaeSigmarSigma SigmaoSigmafSigma SigmaiSigmatSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigmasSigma SigmaoSigmafSigma SigmatSigmahSigmaeSigma SigmaNSigmaLSigmasSigmaoSigmalSigmavSigmaeSigma'SigmasSigma SigmaASigmanSigmadSigmaeSigmarSigmasSigmaoSigmanSigma SigmaASigmacSigmacSigmaeSigmalSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigma SigmatSigmaoSigma SigmatSigmahSigmaeSigma SigmahSigmaaSigmanSigmadSigmacSigmaoSigmadSigmaeSigmadSigma SigmaiSigmatSigmaeSigmarSigmaaSigmatSigmaiSigmaoSigmanSigma SigmauSigmasSigmaeSigmadSigma SigmaiSigmanSigma SigmaESigmaxSigmaeSigmarSigmacSigmaiSigmasSigmaeSigma Sigma1Sigma.Sigma
+Sigma
+SigmaHSigmaiSigmanSigmatSigma:Sigma SigmaCSigmaoSigmanSigmavSigmaeSigmarSigmatSigma SigmatSigmahSigmaeSigma SigmamSigmaaSigmatSigmarSigmaiSigmaxSigma SigmatSigmaoSigma SigmaaSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma SigmatSigmaoSigma SigmauSigmasSigmaeSigma Sigma`SigmafSigmaiSigmaxSigmaeSigmadSigmapSigmaoSigmaiSigmanSigmatSigma`Sigma.Sigma SigmaeSigma.SigmagSigma.Sigma Sigma`SigmaASigma Sigma=Sigma Sigma[Sigma1Sigma Sigma2Sigma;Sigma Sigma3Sigma Sigma4Sigma]Sigma`Sigma SigmatSigmahSigmaeSigmanSigma Sigma`SigmaxSigma Sigma=Sigma SigmarSigmaeSigmasSigmahSigmaaSigmapSigmaeSigma(SigmaASigma,Sigma Sigma4Sigma)Sigma`Sigma SigmatSigmauSigmarSigmanSigmasSigma SigmaiSigmatSigma SigmaiSigmanSigmatSigmaoSigma SigmaaSigma SigmavSigmaeSigmacSigmatSigmaoSigmarSigma.Sigma Sigma SigmaTSigmaoSigma SigmarSigmaeSigmavSigmaeSigmarSigmasSigmaeSigma,Sigma Sigma`SigmarSigmaeSigmasSigmahSigmaaSigmapSigmaeSigma(SigmaxSigma,Sigma Sigma2Sigma,Sigma Sigma2Sigma)Sigma`Sigma.Sigma
+Sigma
+Sigma#Sigma#Sigma SigmaSSigmaoSigmalSigmauSigmatSigmaiSigmaoSigmanSigmasSigma
+Sigma
+Sigma#Sigma#Sigma#Sigma SigmaESigmaxSigmaeSigmarSigmacSigmaiSigmasSigmaeSigma Sigma1Sigma
+Sigma
+SigmaHSigmaeSigmarSigmaeSigma'SigmasSigma SigmatSigmahSigmaeSigma SigmaiSigmatSigmaeSigmarSigmaaSigmatSigmaiSigmavSigmaeSigma SigmaaSigmapSigmapSigmarSigmaoSigmaaSigmacSigmahSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmacSigmaoSigmamSigmapSigmauSigmatSigmaeSigma_SigmaaSigmasSigmaySigmamSigmapSigmatSigmaoSigmatSigmaiSigmacSigma_SigmavSigmaaSigmarSigma(SigmaASigma,Sigma Sigma;Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmaSSigma0Sigma Sigma=Sigma Sigma Sigma*Sigma Sigma'Sigma,Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmatSigmaoSigmalSigmaeSigmarSigmaaSigmanSigmacSigmaeSigma Sigma=Sigma Sigma1SigmaeSigma-Sigma6Sigma,Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmamSigmaaSigmaxSigmaiSigmatSigmaeSigmarSigma Sigma=Sigma Sigma5Sigma0Sigma0Sigma)Sigma
+Sigma Sigma Sigma Sigma SigmaVSigma Sigma=Sigma Sigma Sigma*Sigma Sigma'Sigma
+Sigma Sigma Sigma Sigma SigmaSSigma Sigma=Sigma SigmaSSigma0Sigma
+Sigma Sigma Sigma Sigma SigmaeSigmarSigmarSigma Sigma=Sigma SigmatSigmaoSigmalSigmaeSigmarSigmaaSigmanSigmacSigmaeSigma Sigma+Sigma Sigma1Sigma
+Sigma Sigma Sigma Sigma SigmaiSigma Sigma=Sigma Sigma1Sigma
+Sigma Sigma Sigma Sigma SigmawSigmahSigmaiSigmalSigmaeSigma SigmaeSigmarSigmarSigma Sigma>Sigma SigmatSigmaoSigmalSigmaeSigmarSigmaaSigmanSigmacSigmaeSigma Sigma&Sigma&Sigma SigmaiSigma <= SigmamSigmaaSigmaxSigmaiSigmatSigmaeSigmarSigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmanSigmaeSigmaxSigmatSigma_SigmaSSigma Sigma=Sigma SigmaASigma Sigma*Sigma SigmaSSigma Sigma*Sigma SigmaASigma'Sigma Sigma+Sigma SigmaVSigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmaeSigmarSigmarSigma Sigma=Sigma SigmanSigmaoSigmarSigmamSigma(SigmaSSigma Sigma-Sigma SigmanSigmaeSigmaxSigmatSigma_SigmaSSigma)Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmaSSigma Sigma=Sigma SigmanSigmaeSigmaxSigmatSigma_SigmaSSigma
+Sigma Sigma Sigma Sigma Sigma Sigma Sigma Sigma SigmaiSigma Sigma+Sigma=Sigma Sigma1Sigma
+Sigma Sigma Sigma Sigma SigmaeSigmanSigmadSigma
+Sigma Sigma Sigma Sigma SigmarSigmaeSigmatSigmauSigmarSigmanSigma SigmaSSigma
+SigmaeSigmanSigmadSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaASigma Sigma=Sigma Sigma[Sigma0Sigma.Sigma8Sigma Sigma-Sigma0Sigma.Sigma2Sigma;Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma-Sigma0Sigma.Sigma1Sigma Sigma0Sigma.Sigma7Sigma]Sigma
+Sigma
+Sigma Sigma=Sigma Sigma[Sigma0Sigma.Sigma5Sigma Sigma0Sigma.Sigma4Sigma;Sigma
+Sigma Sigma Sigma Sigma Sigma Sigma0Sigma.Sigma4Sigma Sigma0Sigma.Sigma6Sigma]Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaNSigmaoSigmatSigmaeSigma SigmatSigmahSigmaaSigmatSigma SigmaaSigmalSigmalSigma SigmaeSigmaiSigmagSigmaeSigmanSigmavSigmaaSigmalSigmauSigmaeSigmasSigma SigmaoSigmafSigma Sigma$SigmaASigma$Sigma SigmalSigmaiSigmaeSigma SigmaiSigmanSigmasSigmaiSigmadSigmaeSigma SigmatSigmahSigmaeSigma SigmauSigmanSigmaiSigmatSigma SigmadSigmaiSigmasSigmacSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmamSigmaaSigmaxSigmaiSigmamSigmauSigmamSigma(SigmaaSigmabSigmasSigma,Sigma SigmaeSigmaiSigmagSigmavSigmaaSigmalSigmasSigma(SigmaASigma)Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaLSigmaeSigmatSigma'SigmasSigma SigmacSigmaoSigmamSigmapSigmauSigmatSigmaeSigma SigmatSigmahSigmaeSigma SigmaaSigmasSigmaySigmamSigmapSigmatSigmaoSigmatSigmaiSigmacSigma SigmavSigmaaSigmarSigmaiSigmaaSigmanSigmacSigmaeSigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmaoSigmauSigmarSigma_SigmasSigmaoSigmalSigmauSigmatSigmaiSigmaoSigmanSigma Sigma=Sigma SigmacSigmaoSigmamSigmapSigmauSigmatSigmaeSigma_SigmaaSigmasSigmaySigmamSigmapSigmatSigmaoSigmatSigmaiSigmacSigma_SigmavSigmaaSigmarSigma(SigmaASigma,Sigma Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+SigmaNSigmaoSigmawSigma SigmalSigmaeSigmatSigma'SigmasSigma SigmadSigmaoSigma SigmatSigmahSigmaeSigma SigmasSigmaaSigmamSigmaeSigma SigmatSigmahSigmaiSigmanSigmagSigma SigmauSigmasSigmaiSigmanSigmagSigma SigmaQSigmauSigmaaSigmanSigmatSigmaESigmacSigmaoSigmanSigma'SigmasSigma Sigma`SigmasSigmaoSigmalSigmavSigmaeSigma_SigmadSigmaiSigmasSigmacSigmarSigmaeSigmatSigmaeSigma_SigmalSigmaySigmaaSigmapSigmauSigmanSigmaoSigmavSigma(Sigma)Sigma`Sigma SigmafSigmauSigmanSigmacSigmatSigmaiSigmaoSigmanSigma SigmaaSigmanSigmadSigma SigmacSigmahSigmaeSigmacSigmakSigma SigmawSigmaeSigma SigmagSigmaeSigmatSigma SigmatSigmahSigmaeSigma SigmasSigmaaSigmamSigmaeSigma SigmarSigmaeSigmasSigmauSigmalSigmatSigma.Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+Sigma-Sigma-Sigma-Sigma
+SigmatSigmaaSigmagSigmasSigma:Sigma Sigma[SigmahSigmaiSigmadSigmaeSigma-SigmaoSigmauSigmatSigmapSigmauSigmatSigma]Sigma
+Sigma-Sigma-Sigma-Sigma
+SigmauSigmasSigmaiSigmanSigmagSigma SigmaQSigmauSigmaaSigmanSigmatSigmaESigmacSigmaoSigmanSigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma`Sigma`Sigma`Sigma{SigmacSigmaoSigmadSigmaeSigma-SigmacSigmaeSigmalSigmalSigma}Sigma SigmajSigmauSigmalSigmaiSigmaaSigma
+SigmanSigmaoSigmarSigmamSigma(SigmaoSigmauSigmarSigma_SigmasSigmaoSigmalSigmauSigmatSigmaiSigmaoSigmanSigma Sigma-Sigma SigmasSigmaoSigmalSigmavSigmaeSigma_SigmadSigmaiSigmasSigmacSigmarSigmaeSigmatSigmaeSigma_SigmalSigmaySigmaaSigmapSigmauSigmanSigmaoSigmavSigma(SigmaASigma,Sigma Sigma Sigma*Sigma Sigma'Sigma)Sigma)Sigma
+Sigma`Sigma`Sigma`Sigma
+Sigma
+Sigma
