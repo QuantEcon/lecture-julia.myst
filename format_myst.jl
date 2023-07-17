@@ -87,6 +87,6 @@ if length(ARGS) == 0
 else
     use_extra_replacements = length(ARGS) > 1 && ARGS[2] == "true"
     print("Replacing file at $(ARGS[1]) with formatted version.  Additional replacements = $use_extra_replacements\n")
-    success = format_myst!(ARGS[1])
+    success = format_myst!(ARGS[1],use_extra_replacements)
     success || exit(1)
 end
