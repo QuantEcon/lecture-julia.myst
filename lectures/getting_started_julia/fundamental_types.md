@@ -2987,7 +2987,7 @@ A = [0.8 -0.2;
      -0.1 0.7]
 
 Sigma = [0.5 0.4;
-     0.4 0.6]
+         0.4 0.6]
 ```
 
 Note that all eigenvalues of $A$ lie inside the unit disc.
