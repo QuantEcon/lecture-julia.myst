@@ -476,7 +476,7 @@ Now we `Shift + Enter` to produce this
 #### Inserting Unicode (e.g. Greek letters)
 
 Julia supports the use of [unicode characters](https://docs.julialang.org/en/v1/manual/unicode-input/)
-such as `α` and `β` in your code.
+such as `alpha` and `beta` in your code.
 
 Unicode characters can be typed quickly in Jupyter using the `tab` key.
 
@@ -524,3 +524,4 @@ The Jupyter organization has a site for sharing notebooks called [nbviewer](http
 which provides a static HTML representations of notebooks.
 
 QuantEcon also hosts the [QuantEcon Notes](http://notes.quantecon.org/) website, where you can upload and share your notebooks with other economists and the QuantEcon community.
+
