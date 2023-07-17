@@ -524,3 +524,4 @@ The Jupyter organization has a site for sharing notebooks called [nbviewer](http
 which provides a static HTML representations of notebooks.
 
 QuantEcon also hosts the [QuantEcon Notes](http://notes.quantecon.org/) website, where you can upload and share your notebooks with other economists and the QuantEcon community.
+
