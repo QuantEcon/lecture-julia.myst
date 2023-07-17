@@ -1192,7 +1192,7 @@ In particular, write a function `linapprox` that takes as arguments
 * A function `f` mapping some interval $[a, b]$ into $\mathbb R$.
 * two scalars `a` and `b` providing the limits of this interval.
 * An integer `n` determining the number of grid points.
-* A number `x` satisfying `a <= x <= b`.
+* A number `x` satisfying `a ≤ x ≤ b`.
 
 and returns the [piecewise linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation) of `f` at `x`, based on `n` evenly spaced grid points `a = point[1] < point[2] < ... < point[n] = b`.
 
