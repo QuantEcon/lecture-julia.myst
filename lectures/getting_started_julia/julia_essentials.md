@@ -87,7 +87,8 @@ If you're running a 32 bit system you'll still see `Float64`, but you will see `
 Arithmetic operations are fairly standard.
 
 ```{code-cell} julia
-x = 2; y = 1.0;
+x = 2;
+y = 1.0;
 ```
 
 The `;` can be used to suppress output from a line of code, or to combine two lines of code together (as above), but is otherwise not necessary.
@@ -153,7 +154,8 @@ typeof(x)
 You've already seen examples of Julia's simple string formatting operations.
 
 ```{code-cell} julia
-x = 10; y = 20
+x = 10;
+y = 20;
 ```
 
 The `$` inside of a string is used to interpolate a variable.
@@ -250,7 +252,7 @@ println("word = $word, val = $val")
 Tuples can be created with a hanging `,` -- this is useful to create a tuple with one element.
 
 ```{code-cell} julia
-x = ("foo", 1,)
+x = ("foo", 1)
 y = ("foo",)
 typeof(x), typeof(y)
 ```
@@ -268,7 +270,7 @@ x[end]
 ```
 
 ```{code-cell} julia
-x[end-1]
+x[end - 1]
 ```
 
 To access multiple elements of an array or tuple, you can use slice notation.
@@ -281,10 +283,11 @@ x[1:3]
 x[2:end]
 ```
 
-The same slice notation works on strings.
+The same slice notation works on strings (but be careful with unicode strings, where a single element may not be a single character)
 
 ```{code-cell} julia
-"foobar"[3:end]
+str = "foobar"
+str[3:end]
 ```
 
 #### Dictionaries
@@ -427,7 +430,7 @@ Comprehensions are an elegant tool for creating new arrays, dictionaries, etc. f
 Here are some examples
 
 ```{code-cell} julia
-doubles = [ 2i for i in 1:4 ]
+doubles = [2i for i in 1:4]
 ```
 
 ```{code-cell} julia
@@ -435,25 +438,25 @@ animals = ["dog", "cat", "bird"];   # Semicolon suppresses output
 ```
 
 ```{code-cell} julia
-plurals = [ animal * "s" for animal in animals ]
+plurals = [animal * "s" for animal in animals]
 ```
 
 ```{code-cell} julia
-[ i + j for i in 1:3, j in 4:6 ]
+[i + j for i in 1:3, j in 4:6]
 ```
 
 ```{code-cell} julia
-[ i + j + k for i in 1:3, j in 4:6, k in 7:9 ]
+[i + j + k for i in 1:3, j in 4:6, k in 7:9]
 ```
 
 Comprehensions can also create arrays of tuples or named tuples
 
 ```{code-cell} julia
-[ (i, j) for i in 1:2, j in animals]
+[(i, j) for i in 1:2, j in animals]
 ```
 
 ```{code-cell} julia
-[ (num = i, animal = j) for i in 1:2, j in animals]
+[(num = i, animal = j) for i in 1:2, j in animals]
 ```
 
 ### Generators
@@ -689,7 +692,7 @@ If you see an argument in in julia to the right of the `;` assume it is a keywor
 The automatic naming of keyword arguments is also picked up automatically when they are fields in named tuples or structs.
 
 ```{code-cell} julia
-nt = (;a = 2, b = 10)
+nt = (; a = 2, b = 10)
 f(pi; nt.a) # equivalent to f(pi; a = nt.a)
 ```
 
@@ -850,7 +853,6 @@ This would be roughly equivalent to
 
 ```{code-cell} julia
 function g() # scope within the `g` function
-
     f(x) = x^2 # local `x` in scope
 
     # x is not bound to anything in this outer scope
@@ -894,16 +896,16 @@ Similarly to named arguments, the local scope also works with named tuples.
 ```{code-cell} julia
 xval = 0.1
 yval = 2
-@show (;x = xval, y = yval)  # named tuple with names `x` and `y`
+@show (; x = xval, y = yval)  # named tuple with names `x` and `y`
 
 x = 0.1
 y = 2
 
 # create a named tuple with names `x` and `y` local to the tuple
-@show (;x = x, y = y)
+@show (; x = x, y = y)
 
 # better yet
-@show (;x, y);
+@show (; x, y);
 ```
 
 As you use Julia, you will find that scoping is very natural and that there is no reason to avoid using `x` and `y` in both places.
@@ -964,20 +966,20 @@ One place where this can be helpful is in a string of dependent calculations.
 For example, if you wanted to calculate a `(a, b, c)` from $a = f(x), b = g(a), c = h(a, b)$ where $f(x) = x^2, g(a) = 2 a, h(a, b) = a + b$
 
 ```{code-cell} julia
-function solvemodel(x)
+function solve_model(x)
     a = x^2
     b = 2 * a
     c = a + b
-    return (;a, b, c)  # note local scope of tuples!
+    return (; a, b, c)  # note local scope of tuples!
 end
 
-solvemodel(0.1)
+solve_model(0.1)
 ```
 
 Named tuple and structure parameters can then be unpacked using the reverse notation,
 
 ```{code-cell} julia
-(;a, b, c) = solvemodel(0.1)
+(; a, b, c) = solve_model(0.1)
 println("a = $a, b = $b, c = $c")
 ```
 
@@ -1209,9 +1211,7 @@ Copy this text into a text file called `us_cities.txt` and save it in your prese
 This can also be achieved by running the following Julia code:
 
 ```{code-cell} julia
-open("us_cities.txt", "w") do f
-  write(f,
-"new york: 8244910
+data = "new york: 8244910
 los angeles: 3819702
 chicago: 2707120
 houston: 2145146
@@ -1219,7 +1219,9 @@ philadelphia: 1536471
 phoenix: 1469471
 san antonio: 1359758
 san diego: 1326179
-dallas: 1223229")
+dallas: 1223229"
+open("us_cities.txt", "w") do f
+    write(f, data)
 end
 ```
 
@@ -1277,7 +1279,7 @@ sum(xy -> all(iseven, xy), pairs)
 ### Exercise 2
 
 ```{code-cell} julia
-p(x, coeff) = sum(a * x^(i-1) for (i, a) in enumerate(coeff))
+p(x, coeff) = sum(a * x^(i - 1) for (i, a) in enumerate(coeff))
 ```
 
 ```{code-cell} julia
@@ -1344,7 +1346,7 @@ function linapprox(f, a, b, n, x)
 
     # find first grid point larger than x
     point = a
-    while point ≤ x
+    while point <= x
         point += step
     end
 
@@ -1382,4 +1384,5 @@ end
 close(f_ex6)
 println("Total population = $total_pop")
 ```
+
 
