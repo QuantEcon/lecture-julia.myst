@@ -1211,17 +1211,17 @@ Copy this text into a text file called `us_cities.txt` and save it in your prese
 This can also be achieved by running the following Julia code:
 
 ```{code-cell} julia
+data = "new york: 8244910
+los angeles: 3819702
+chicago: 2707120
+houston: 2145146
+philadelphia: 1536471
+phoenix: 1469471
+san antonio: 1359758
+san diego: 1326179
+dallas: 1223229"
 open("us_cities.txt", "w") do f
-    write(f,
-          "new york: 8244910
-          los angeles: 3819702
-          chicago: 2707120
-          houston: 2145146
-          philadelphia: 1536471
-          phoenix: 1469471
-          san antonio: 1359758
-          san diego: 1326179
-          dallas: 1223229")
+    write(f, data)
 end
 ```
 
