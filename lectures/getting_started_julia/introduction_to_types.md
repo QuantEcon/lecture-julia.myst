@@ -928,7 +928,7 @@ Using what you learned from Exercise 1, benchmark this using Static Arrays
 
 ```{code-cell} julia
 Σ = [0.4 0.3;
-    0.3 0.45]
+     0.3 0.45]
 G = I
 R = 0.5 * Σ
 
