@@ -11,7 +11,8 @@ using JuliaFormatter
 substring(str, start, stop) = str[nextind(str, 0, start):nextind(str, 0, stop)]
 
 # inplace modification
-function format_myst!(input_file_path, extra_replacements = false, ignore_errors = false)
+function format_myst!(input_file_path, extra_replacements = false,
+                      ignore_errors = false)
     format_myst(input_file_path, input_file_path, extra_replacements, ignore_errors)
 end
 function format_myst(input_file_path, output_file_path, extra_replacements = false,

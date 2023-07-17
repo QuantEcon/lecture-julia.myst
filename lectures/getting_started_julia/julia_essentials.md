@@ -283,10 +283,11 @@ x[1:3]
 x[2:end]
 ```
 
-The same slice notation works on strings.
+The same slice notation works on strings (but be careful with unicode strings, where a single element may not be a single character)
 
 ```{code-cell} julia
-"foobar"[3:end]
+str = "foobar"
+str[3:end]
 ```
 
 #### Dictionaries
@@ -1212,15 +1213,15 @@ This can also be achieved by running the following Julia code:
 ```{code-cell} julia
 open("us_cities.txt", "w") do f
     write(f,
-        "new york: 8244910
-        los angeles: 3819702
-        chicago: 2707120
-        houston: 2145146
-        philadelphia: 1536471
-        phoenix: 1469471
-        san antonio: 1359758
-        san diego: 1326179
-        dallas: 1223229")
+          "new york: 8244910
+          los angeles: 3819702
+          chicago: 2707120
+          houston: 2145146
+          philadelphia: 1536471
+          phoenix: 1469471
+          san antonio: 1359758
+          san diego: 1326179
+          dallas: 1223229")
 end
 ```
 

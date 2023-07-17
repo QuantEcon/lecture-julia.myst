@@ -1455,9 +1455,9 @@ Here's the iterative approach
 
 ```{code-cell} julia
 function compute_asymptotic_var(A, Σ;
-    S0 = Σ * Σ',
-    tolerance = 1e-6,
-    maxiter = 500)
+                                S0 = Σ * Σ',
+                                tolerance = 1e-6,
+                                maxiter = 500)
     V = Σ * Σ'
     S = S0
     err = tolerance + 1
@@ -1474,10 +1474,10 @@ end
 
 ```{code-cell} julia
 A = [0.8 -0.2;
-    -0.1 0.7]
+     -0.1 0.7]
 
 Σ = [0.5 0.4;
-    0.4 0.6]
+     0.4 0.6]
 ```
 
 Note that all eigenvalues of $A$ lie inside the unit disc.
