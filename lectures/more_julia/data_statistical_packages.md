@@ -192,8 +192,8 @@ To give an example directly from the source of the LINQ inspired [Query.jl](http
 using Query
 
 df = DataFrame(name = ["John", "Sally", "Kirk"],
-    age = [23.0, 42.0, 59.0],
-    children = [3, 5, 2])
+               age = [23.0, 42.0, 59.0],
+               children = [3, 5, 2])
 
 x = @from i in df begin
     @where i.age > 50
@@ -209,9 +209,9 @@ using RDatasets, VegaLite
 iris = dataset("datasets", "iris")
 
 iris |> @vlplot(:point,
-    x=:PetalLength,
-    y=:PetalWidth,
-    color=:Species)
+                x=:PetalLength,
+                y=:PetalWidth,
+                color=:Species)
 ```
 -->
 ## Statistics and Econometrics
@@ -261,8 +261,9 @@ cigar = dataset("plm", "Cigar")
 cigar.StateCategorical = categorical(cigar.State)
 cigar.YearCategorical = categorical(cigar.Year)
 fixedeffectresults = reg(cigar,
-    @formula(Sales~NDI + fe(StateCategorical) + fe(YearCategorical)),
-    weights = :Pop, Vcov.cluster(:State))
+                         @formula(Sales~NDI + fe(StateCategorical) +
+                                        fe(YearCategorical)),
+                         weights = :Pop, Vcov.cluster(:State))
 regtable(fixedeffectresults)
 ```
 

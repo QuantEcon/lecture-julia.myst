@@ -536,7 +536,7 @@ From the documentation, to solve for a system of equations without providing a J
 using NLsolve
 
 f(x) = [(x[1] + 3) * (x[2]^3 - 7) + 18
-    sin(x[2] * exp(x[1]) - 1)] # returns an array
+        sin(x[2] * exp(x[1]) - 1)] # returns an array
 
 results = nlsolve(f, [0.1; 1.2])
 ```
@@ -607,7 +607,8 @@ function rosenbrock_f!(out, x)
     out[2] = 100 * (x[2] - x[1]^2)
 end
 LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2),
-    f! = rosenbrock_f!, output_length = 2))
+                                                f! = rosenbrock_f!,
+                                                output_length = 2))
 
 # if you want to use gradient
 function rosenbrock_g!(J, x)
@@ -617,7 +618,9 @@ function rosenbrock_g!(J, x)
     J[2, 2] = 100
 end
 LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2),
-    f! = rosenbrock_f!, g! = rosenbrock_g!, output_length = 2))
+                                                f! = rosenbrock_f!,
+                                                g! = rosenbrock_g!,
+                                                output_length = 2))
 ```
 
 ## Additional Notes

@@ -304,9 +304,10 @@ For example, to simulate $x_{t+1} = a x_t + b \epsilon_{t+1}$ where
 $\epsilon \sim D$ for some $D$, which allows drawing random values.
 
 ```{code-cell} julia
-function simulateprocess(x₀; a = 1.0, b = 1.0, N = 5, d::Sampleable{Univariate, Continuous})
-    x = zeros(typeof(x₀), N + 1) # preallocate vector, careful on the type
-    x[1] = x₀
+function simulateprocess(x_0; a = 1.0, b = 1.0, N = 5,
+                         d::Sampleable{Univariate, Continuous})
+    x = zeros(typeof(x_0), N + 1) # preallocate vector, careful on the type
+    x[1] = x_0
     for t in 2:(N + 1)
         x[t] = a * x[t - 1] + b * rand(d) # draw
     end
@@ -360,11 +361,11 @@ Let's create our own distribution type
 
 ```{code-cell} julia
 struct OurTruncatedExponential <: Distribution{Univariate, Continuous}
-    α::Float64
+    alpha::Float64
     xmax::Float64
 end
 function Distributions.pdf(d::OurTruncatedExponential, x::Real)
-    d.α * exp(-d.α * x) / exp(-d.α * d.xmax)
+    d.alpha * exp(-d.alpha * x) / exp(-d.alpha * d.xmax)
 end
 Distributions.minimum(d::OurTruncatedExponential) = 0
 Distributions.maximum(d::OurTruncatedExponential) = d.xmax

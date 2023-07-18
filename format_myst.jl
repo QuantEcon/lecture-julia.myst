@@ -55,7 +55,7 @@ function format_myst(input_file_path, output_file_path, extra_replacements = fal
     end
 
     # Additional replacements are optional.  This may be useful when replacing variable names to make it easier to type in ascii
-    replacements = Dict("α" => "alpha", "β" => "beta", "γ" => "gamma", "≤" => "<=",
+    replacements = Dict("α" => "alpha", "β" => "beta", "γ" => "gamma", "x₀" => "x_0", "≤" => "<=",
     "≥" => ">=", "Σ" => "Sigma", "σ" => "sigma")
 
     # Replace the code blocks in the content and handle exceptions
