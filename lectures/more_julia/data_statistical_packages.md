@@ -91,7 +91,7 @@ DataFrames.describe(df)
 While often data will be generated all at once, or read from a file, you can add to a `DataFrame` by providing the key parameters.
 
 ```{code-cell} julia
-nt = (commod = "nickel", price= 5.1)
+nt = (commod = "nickel", price = 5.1)
 push!(df, nt)
 ```
 
@@ -100,7 +100,7 @@ Named tuples can also be used to construct a `DataFrame`, and have it properly d
 ```{code-cell} julia
 nt = (t = 1, col1 = 3.0)
 df2 = DataFrame([nt])
-push!(df2, (t=2, col1 = 4.0))
+push!(df2, (t = 2, col1 = 4.0))
 ```
 
 In order to modify a column, access the mutating version by the symbol `df[!, :col]`.
@@ -126,8 +126,8 @@ from a source with `missing`'s, or call `allowmissing!` on a column.
 
 ```{code-cell} julia
 allowmissing!(df2, :col1) # necessary to add in a for col1
-push!(df2, (t=3, col1 = missing))
-push!(df2, (t=4, col1 = 5.1))
+push!(df2, (t = 3, col1 = missing))
+push!(df2, (t = 4, col1 = 5.1))
 ```
 
 We can see the propagation of `missing` to caller functions, as well as a way to efficiently calculate with non-missing data.
@@ -140,7 +140,7 @@ We can see the propagation of `missing` to caller functions, as well as a way to
 And to replace the `missing`
 
 ```{code-cell} julia
-df2.col1  .= coalesce.(df2.col1, 0.0) # replace all missing with 0.0
+df2.col1 .= coalesce.(df2.col1, 0.0) # replace all missing with 0.0
 ```
 
 ### Manipulating and Transforming DataFrames
@@ -150,7 +150,7 @@ One way to do an additional calculation with a `DataFrame` is to tuse the `@tran
 ```{code-cell} julia
 using DataFramesMeta
 f(x) = x^2
-df2 = @transform(df2, :col2 = f.(:col1))
+df2 = @transform(df2, :col2=f.(:col1))
 ```
 
 ### Categorical Data
@@ -162,7 +162,7 @@ using CategoricalArrays
 id = [1, 2, 3, 4]
 y = ["old", "young", "young", "old"]
 y = CategoricalArray(y)
-df = DataFrame(id=id, y=y)
+df = DataFrame(id = id, y = y)
 ```
 
 ```{code-cell} julia
@@ -191,10 +191,12 @@ To give an example directly from the source of the LINQ inspired [Query.jl](http
 ```{code-cell} julia
 using Query
 
-df = DataFrame(name=["John", "Sally", "Kirk"], age=[23., 42., 59.], children=[3,5,2])
+df = DataFrame(name = ["John", "Sally", "Kirk"],
+    age = [23.0, 42.0, 59.0],
+    children = [3, 5, 2])
 
 x = @from i in df begin
-    @where i.age>50
+    @where i.age > 50
     @select {i.name, i.children}
     @collect DataFrame
 end
@@ -206,12 +208,10 @@ While it is possible to just use the `Plots.jl` library, there are other options
 using RDatasets, VegaLite
 iris = dataset("datasets", "iris")
 
-iris |> @vlplot(
-    :point,
+iris |> @vlplot(:point,
     x=:PetalLength,
     y=:PetalWidth,
-    color=:Species
-)
+    color=:Species)
 ```
 -->
 ## Statistics and Econometrics
@@ -234,8 +234,8 @@ using GLM
 
 x = randn(100)
 y = 0.9 .* x + 0.5 * rand(100)
-df = DataFrame(x=x, y=y)
-ols = lm(@formula(y ~ x), df) # R-style notation
+df = DataFrame(x = x, y = y)
+ols = lm(@formula(y~x), df) # R-style notation
 ```
 
 To display the results in a useful tables for LaTeX and the REPL, use
@@ -258,10 +258,11 @@ For a 2-way fixed-effect, taking the example directly from the documentation usi
 ```{code-cell} julia
 using FixedEffectModels
 cigar = dataset("plm", "Cigar")
-cigar.StateCategorical =  categorical(cigar.State)
-cigar.YearCategorical =  categorical(cigar.Year)
-fixedeffectresults = reg(cigar, @formula(Sales ~ NDI + fe(StateCategorical) + fe(YearCategorical)),
-                            weights = :Pop, Vcov.cluster(:State))
+cigar.StateCategorical = categorical(cigar.State)
+cigar.YearCategorical = categorical(cigar.Year)
+fixedeffectresults = reg(cigar,
+    @formula(Sales~NDI + fe(StateCategorical) + fe(YearCategorical)),
+    weights = :Pop, Vcov.cluster(:State))
 regtable(fixedeffectresults)
 ```
 
