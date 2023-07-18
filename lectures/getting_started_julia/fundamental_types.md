@@ -1021,30 +1021,19 @@ parameters = (; alpha = 0.1, beta = 0.2)
 f(parameters)
 ```
 
-In order to manage default values, use the `@with_kw` from the `Parameters.jl` package
+To generate parameters with defaults, you can create a function---which can also do intermediate calculations
 
 ```{code-cell} julia
-using Parameters
-paramgen = @with_kw (alpha = 0.1, beta = 0.2)  # create named tuples with defaults
-
-# creates named tuples, replacing defaults
-@show paramgen()  # calling without arguments gives all defaults
-@show paramgen(alpha = 0.2)
-@show paramgen(alpha = 0.2, beta = 0.5);
-```
-
-Or create a function which returns the named tuple with defaults, which can also do intermediate calculations
-```{code-cell} julia
-function paramgen2(; alpha = 0.1, beta = 0.2)
+function param_gen(; alpha = 0.1, beta = 0.2)
     return (; alpha, beta)
 end
-@show paramgen2()
-@show paramgen2(; alpha = 0.2)
+@show param_gen()
+@show param_gen(; alpha = 0.2)
 ```
 
-An alternative approach, defining a new type using `struct` tends to be more prone to accidental misuse, and leads to a great deal of boilerplate code.
-
-For that, and other reasons of generality, we will use named tuples for collections of parameters where possible.
+For alternative approches:
+- An alternative approach, defining a new type using `struct` tends to be more prone to accidental misuse, leads to a great deal of boilerplate code, and requires a julia restart after every update.
+- You can also use the `@with_kw` in the `Parameters.jl` package, which automatically creates a function.  e.g., `param_gen = @with_kw (alpha = 0.1, beta = 0.2)` would be roughly equivalent to the above.
 
 ## Nothing, Missing, and Unions
 
