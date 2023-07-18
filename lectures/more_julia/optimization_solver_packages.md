@@ -276,8 +276,8 @@ with 1 million dimensions, solved in a few seconds.
 using Optim, LinearAlgebra
 N = 1000000
 y = rand(N)
-λ = 0.01
-obj(x) = sum((x .- y) .^ 2) + λ * norm(x)
+lambda = 0.01
+obj(x) = sum((x .- y) .^ 2) + lambda * norm(x)
 
 x_iv = rand(N)
 function g!(G, x)
