@@ -435,8 +435,8 @@ module MyProject
 
 using Expectations, Distributions
 
-function foo(;μ = 1., sigma = 2.)
-    d = Normal(μ, sigma)
+function foo(;mu = 1., sigma = 2.)
+    d = Normal(mu, sigma)
     E = expectation(d)
     return E(x -> sin(x))
 end
@@ -465,9 +465,9 @@ Then calling `foo()` with the default arguments in the REPL.  This should lead t
 Next, we will change the function in the package and call it again in the REPL:
 * Modify the `foo` function definition to add `println("Modified foo definition")` inside the function
 ```{code-block} julia
-function foo(;μ = 1., sigma = 2.)
+function foo(;mu = 1., sigma = 2.)
     println("Modified foo definition")
-    d = Normal(μ, sigma)
+    d = Normal(mu, sigma)
     E = expectation(d)
     return E(x -> sin(x))
 end
@@ -493,7 +493,7 @@ To check this, we can use the `Test` package built-into julia, and added to our 
 In the REPL, use the `Test` package and then check that `foo(0)` is close to 0.
 ```{code-block} julia
 using Test, MyProject
-@test foo(;μ = 0) < 1E-16
+@test foo(;mu = 0) < 1E-16
 ```
 
 Which should show that the "Test Passed".
@@ -510,7 +510,7 @@ For this reason, the change to this workflow means moving much of the code you w
 
 The `@testset` are just optional ways to group the tests, and are not required for organization.
 
-- In `test/runtests.jl`, move the `@test foo(;μ = 0) < 1E-16`  inside of the `@testset`, which you can rename.  The testsets are optional, but can provide easy ways to group tests and execute many at once within VS Code.
+- In `test/runtests.jl`, move the `@test foo(;mu = 0) < 1E-16`  inside of the `@testset`, which you can rename.  The testsets are optional, but can provide easy ways to group tests and execute many at once within VS Code.
 - Then `<Shift-Enter>` through each line of the `runtests.jl` file.  As you execute each line of code, it will provide the result or a checkmark to indicate success
 
 At the end, you should have output within the REPL that the test you added passed.
@@ -581,7 +581,7 @@ To demonstrate this
 
 * Create a new branch on VS Code called `my-feature` (i.e., click on the `main` branch at the bottom of the screen to enter the branch selection, then choose to make a new one).
 
-* In `MyProject.jl`, change the function in `foo` from `sin(x)` to `cos(x)`.  Note that this will change the result of `foo(;μ = 0)`.
+* In `MyProject.jl`, change the function in `foo` from `sin(x)` to `cos(x)`.  Note that this will change the result of `foo(;mu = 0)`.
 
 ```{figure} /_static/figures/ci_5.png
 :width: 100%
@@ -681,9 +681,9 @@ While you would typically modify the Jupyter notebooks after the core code is st
 
 To do this
 - Execute `using Revise` prior to the `using MyProject` (note that VS Code's REPL does the `using Revise` automatically, if it is available).
-- Then run `foo(;μ = 0)` to see the old code
+- Then run `foo(;mu = 0)` to see the old code
 - Then modify the text of the package itself, such as changing the string in the `foo` function
-- Run `foo(;μ = 0)` again to see the change.
+- Run `foo(;mu = 0)` again to see the change.
 
 
 ```{figure} /_static/figures/vscode_jupyter_3.png
