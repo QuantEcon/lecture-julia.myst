@@ -435,8 +435,8 @@ module MyProject
 
 using Expectations, Distributions
 
-function foo(μ = 1., σ = 2.)
-    d = Normal(μ, σ)
+function foo(mu = 1., sigma = 2.)
+    d = Normal(mu, sigma)
     E = expectation(d)
     return E(x -> sin(x))
 end
@@ -465,9 +465,9 @@ Then calling `foo()` with the default arguments in the REPL.  This should lead t
 Next, we will change the function in the package and call it again in the REPL:
 * Modify the `foo` function definition to add `println("Modified foo definition")` inside the function
 ```{code-block} julia
-function foo(μ = 1., σ = 2.)
+function foo(mu = 1., sigma = 2.)
     println("Modified foo definition")
-    d = Normal(μ, σ)
+    d = Normal(mu, sigma)
     E = expectation(d)
     return E(x -> sin(x))
 end
@@ -729,9 +729,9 @@ For example,
 For cases where you want to change the relative tolerance or add in an absolute tolerance (i.e. $\|x - y\| \leq atol$) use the appropriate keywords
 ```{code-cell} julia
 x = 100.0 + 1E-6  # within the tolerance
-@test x ≈ 100.0 rtol=1E-7  # note < the 1E-6 difference passes due to relative scaling
+@test x≈100.0 rtol=1E-7  # note < the 1E-6 difference passes due to relative scaling
 y = 1E-7
-@test 0.0 ≈ y atol=1E-6  # absolute tolerance!
+@test 0.0≈y atol=1E-6  # absolute tolerance!
 ```
 
 ```{note}
@@ -777,9 +777,9 @@ This is useful for organizing different batches of tests, and executing them all
 
 ```{code-cell} julia
 @testset "my tests" begin
-  @test 1 == 1
-  @test 2 == 2
-  @test_broken 1 == 2
+    @test 1 == 1
+    @test 2 == 2
+    @test_broken 1 == 2
 end;
 ```
 By using `<Shift+Enter>` in VS Code or Jupyter on the testset, you will execute them all.  You may want to execute only parts of them during development by commenting out the `@testset` and `end` and execute sequentially until the suite passes.
