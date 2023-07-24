@@ -137,7 +137,7 @@ This specifies metadata like the license we'll be using (MIT by default), the lo
 We will create this with a number of useful options, but see [the documentation](https://juliaci.github.io/PkgTemplates.jl/stable/user/#A-More-Complicated-Example-1) for more.
 
 ```{code-block} julia
-t = Template(;dir = ".", julia = v"1.8",
+t = Template(;dir = ".", julia = v"1.9",
               plugins = [
                 Git(; manifest=true, branch = "main"),
                 Codecov(),
@@ -225,7 +225,7 @@ Given this, other julia code can use `using MyProject` and, because the global e
 You can see the change reflected in our default package list by running `] st`
 
 ```{code-block} bash
-      Status `C:\Users\jesse\.julia\environments\v1.8\Project.toml`
+      Status `C:\Users\jesse\.julia\environments\v1.9\Project.toml`
   [7073ff75] IJulia v1.23.2
   [a361046e] MyProject v0.1.0 `..\..\..\Documents\GitHub\MyProject`
   [14b8a8f1] PkgTemplates v0.7.18
@@ -288,7 +288,7 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - '1.8'
+          - '1.9'
           - 'nightly'
         os:
           - ubuntu-latest
@@ -351,7 +351,7 @@ See the [Pkg docs](https://docs.julialang.org/en/v1/stdlib/Pkg/) for more inform
 
 For now, let's just try adding a dependency.  Recall the package operations described in the {doc}`tools and editors <../software_engineering/tools_editors>` lecture.
 
-* Within VS Code, start a REPL (e.g. `> Julia: Start REPL`), type `]` to enter the Pkg mode.  Verify that the cursor says `(My Project) pkg>` to ensure that it has activated your particular project.  Otherwise, if it says `(@1.8) pkg>`, then you have launched Julia outside of VSCode or through a different mechanism, and you might need to ensure you are in the correct directory and then `] activate .` to activate the project file in it.
+* Within VS Code, start a REPL (e.g. `> Julia: Start REPL`), type `]` to enter the Pkg mode.  Verify that the cursor says `(My Project) pkg>` to ensure that it has activated your particular project.  Otherwise, if it says `(@1.9) pkg>`, then you have launched Julia outside of VSCode or through a different mechanism, and you might need to ensure you are in the correct directory and then `] activate .` to activate the project file in it.
 * Then, add in the `Expectations.jl` package
 
 ```{figure} /_static/figures/vscode_add_package.png
@@ -435,8 +435,8 @@ module MyProject
 
 using Expectations, Distributions
 
-function foo(μ = 1., σ = 2.)
-    d = Normal(μ, σ)
+function foo(mu = 1., sigma = 2.)
+    d = Normal(mu, sigma)
     E = expectation(d)
     return E(x -> sin(x))
 end
@@ -465,9 +465,9 @@ Then calling `foo()` with the default arguments in the REPL.  This should lead t
 Next, we will change the function in the package and call it again in the REPL:
 * Modify the `foo` function definition to add `println("Modified foo definition")` inside the function
 ```{code-block} julia
-function foo(μ = 1., σ = 2.)
+function foo(mu = 1., sigma = 2.)
     println("Modified foo definition")
-    d = Normal(μ, σ)
+    d = Normal(mu, sigma)
     E = expectation(d)
     return E(x -> sin(x))
 end
@@ -729,9 +729,9 @@ For example,
 For cases where you want to change the relative tolerance or add in an absolute tolerance (i.e. $\|x - y\| \leq atol$) use the appropriate keywords
 ```{code-cell} julia
 x = 100.0 + 1E-6  # within the tolerance
-@test x ≈ 100.0 rtol=1E-7  # note < the 1E-6 difference passes due to relative scaling
+@test x≈100.0 rtol=1E-7  # note < the 1E-6 difference passes due to relative scaling
 y = 1E-7
-@test 0.0 ≈ y atol=1E-6  # absolute tolerance!
+@test 0.0≈y atol=1E-6  # absolute tolerance!
 ```
 
 ```{note}
@@ -777,9 +777,9 @@ This is useful for organizing different batches of tests, and executing them all
 
 ```{code-cell} julia
 @testset "my tests" begin
-  @test 1 == 1
-  @test 2 == 2
-  @test_broken 1 == 2
+    @test 1 == 1
+    @test 2 == 2
+    @test_broken 1 == 2
 end;
 ```
 By using `<Shift+Enter>` in VS Code or Jupyter on the testset, you will execute them all.  You may want to execute only parts of them during development by commenting out the `@testset` and `end` and execute sequentially until the suite passes.
