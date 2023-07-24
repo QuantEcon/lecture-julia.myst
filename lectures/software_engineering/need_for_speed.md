@@ -750,7 +750,7 @@ end
 Calls to this function run very quickly
 
 ```{code-cell} julia
-x_range = range(0,  1, length = 100_000)
+x_range = range(0, 1, length = 100_000)
 x = collect(x_range)
 typeof(x)
 ```
@@ -824,7 +824,7 @@ Things get tougher for the interpreter when the data type within the array is im
 For example, the following snippet creates an array where the element type is `Any`
 
 ```{code-cell} julia
-x = Any[ 1/i for i in 1:1e6 ];
+x = Any[1 / i for i in 1:1e6];
 ```
 
 ```{code-cell} julia
