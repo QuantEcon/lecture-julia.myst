@@ -213,26 +213,20 @@ using Test
 ```
 
 ```{code-cell} julia
-LakeModel = @with_kw (λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
-
-function transition_matrices(lm)
-    (;λ, α, b, d) = lm
+function lake_model(λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
     g = b - d
     A = [(1 - λ) * (1 - d) + b      (1 - d) * α + b
         (1 - d) * λ                 (1 - d) * (1 - α)]
     Â = A ./ (1 + g)
-    return (A = A, Â = Â)
+    sol = fixedpoint(x -> Â * x, fill(0.5, 2))
+    converged(sol) || error("Failed to converge in $(sol.iterations) iterations")
+    x_bar = sol.zero
+    return (;A, Â, λ, α, b, d, x_bar)
 end
 
-function rate_steady_state(lm)
-    (;Â) = transition_matrices(lm)
-    sol = fixedpoint(x -> Â * x, fill(0.5, 2))
-    converged(sol) || error("Failed to converge in $(result.iterations) iterations")
-    return sol.zero
-end
 
 function simulate_stock_path(lm, X0, T)
-    (;A) = transition_matrices(lm)
+    (;A) = lm
     X_path = zeros(eltype(X0), 2, T)
     X = copy(X0)
     for t in 1:T
@@ -257,25 +251,22 @@ end
 Let's observe these matrices for the baseline model
 
 ```{code-cell} julia
-lm = LakeModel()
-A, Â = transition_matrices(lm)
-A
+lm.A
 ```
 
 ```{code-cell} julia
-Â
+lm.Â
 ```
 
 And a revised model
 
 ```{code-cell} julia
-lm = LakeModel(α = 2.0)
-A, Â = transition_matrices(lm)
-A
+lm = lake_model(α = 2.0)
+lm.A
 ```
 
 ```{code-cell} julia
-Â
+lm.Â
 ```
 
 ```{code-cell} julia
@@ -293,7 +284,7 @@ end
 Let's run a simulation under the default parameters (see above) starting from $X_0 = (12, 138)$
 
 ```{code-cell} julia
-lm = LakeModel()
+lm = lake_model()
 N_0 = 150      # population
 e_0 = 0.92     # initial employment rate
 u_0 = 1 - e_0  # initial unemployment rate
@@ -342,9 +333,8 @@ We also have $x_t \to \bar x$ as $t \to \infty$ provided that the remaining eige
 This is the case for our default parameters:
 
 ```{code-cell} julia
-lm = LakeModel()
-A, Â = transition_matrices(lm)
-e, f = eigvals(Â)
+lm = lake_model()
+e, f = eigvals(lm.Â)
 abs(e), abs(f)
 ```
 
@@ -361,7 +351,7 @@ end
 Let's look at the convergence of the unemployment and employment rate to steady state levels (dashed red line)
 
 ```{code-cell} julia
-lm = LakeModel()
+lm = lake_model()
 e_0 = 0.92     # initial employment rate
 u_0 = 1 - e_0  # initial unemployment rate
 T = 50         # simulation length
@@ -484,10 +474,10 @@ using QuantEcon, Roots, Random
 ```
 
 ```{code-cell} julia
-lm = LakeModel(d = 0, b = 0)
+lm = lake_model(;d = 0, b = 0)
 T = 5000                        # Simulation length
 
-(;α, λ) = lm
+(;α, λ, x_bar) = lm
 P = [(1 - λ)     λ
      α      (1 - α)]
 ```
@@ -495,7 +485,6 @@ P = [(1 - λ)     λ
 ```{code-cell} julia
 Random.seed!(42)
 mc = MarkovChain(P, [0; 1])     # 0=unemployed, 1=employed
-xbar = rate_steady_state(lm)
 
 s_path = simulate(mc, T; init=2)
 s̄_e = cumsum(s_path) ./ (1:T)
@@ -671,7 +660,7 @@ And the McCall object
 u(c, σ) = c > 0 ? (c^(1 - σ) - 1) / (1 - σ) : -10e-6
 
 # model constructor
-McCallModel = @with_kw (α = 0.2,
+function mccall_model(;α = 0.2,
                         β = 0.98, # discount rate
                         γ = 0.7,
                         c = 6.0, # unemployment compensation
@@ -679,6 +668,7 @@ McCallModel = @with_kw (α = 0.2,
                         u = u, # utility function
                         w = range(10, 20, length = 60), # wage values
                         E = Expectation(BetaBinomial(59, 600, 400))) # distribution over wage values
+    return (;α, β, σ, c, γ, w, E, u)
 ```
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
@@ -708,13 +698,10 @@ w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
 E = expectation(Categorical(p_vec)) # expectation object
 
 function compute_optimal_quantities(c, τ)
-    mcm = McCallModel(α = α_q,
-                      β = β,
-                      γ = γ,
-                      c = c - τ, # post-tax compensation
-                      σ = σ,
+    mcm = mccall_model(;α = α_q,β,γ,c = c - τ, # post-tax compensation
+                      σ,
                       w = w_vec .- τ, # post-tax wages
-                      E = E) # expectation operator
+                      E) # expectation operator
 
     (;V, U, w̄) = solve_mccall_model(mcm)
     indicator = wage -> wage > w̄
@@ -727,9 +714,8 @@ function compute_steady_state_quantities(c, τ)
     w̄, λ_param, V, U = compute_optimal_quantities(c, τ)
 
     # compute steady state employment and unemployment rates
-    lm = LakeModel(λ = λ_param, α = α_q, b = b_param, d = d_param)
-    x = rate_steady_state(lm)
-    u_rate, e_rate = x
+    lm = lake_model(;λ = λ_param, α = α_q, b = b_param, d = d_param)
+    u_rate, e_rate = lm.x_bar
 
     # compute steady state welfare
     indicator(wage) = wage > w̄
@@ -829,9 +815,8 @@ We begin by constructing an object containing the default parameters and assigni
 steady state values to x0
 
 ```{code-cell} julia
-lm = LakeModel()
-x0 = rate_steady_state(lm)
-println("Initial Steady State: $x0")
+lm = lake_model()
+println("Initial Steady State: $(lm.x_bar)")
 ```
 
 Initialize the simulation values
@@ -844,14 +829,13 @@ T = 50
 New legislation changes $\lambda$ to $0.2$
 
 ```{code-cell} julia
-lm = LakeModel(λ = 0.2)
+lm = lake_model(;λ = 0.2)
 ```
 
 ```{code-cell} julia
-xbar = rate_steady_state(lm) # new steady state
 X_path = simulate_stock_path(lm, x0 * N0, T)
 x_path = simulate_rate_path(lm, x0, T)
-println("New Steady State: $xbar")
+println("New Steady State: $(lm.xbar)")
 ```
 
 Now plot stocks
@@ -920,8 +904,8 @@ Let's start off at the baseline parameterization and record the steady
 state
 
 ```{code-cell} julia
-lm = LakeModel()
-x0 = rate_steady_state(lm)
+lm = lake_model()
+x0 = lm.x_bar
 ```
 
 ```{code-cell} julia
@@ -943,7 +927,7 @@ T̂ = 20
 Let's increase $b$ to the new value and simulate for 20 periods
 
 ```{code-cell} julia
-lm = LakeModel(b=b̂)
+lm = lake_model(;b=b̂)
 X_path1 = simulate_stock_path(lm, x0 * N0, T̂)   # simulate stocks
 x_path1 = simulate_rate_path(lm, x0, T̂)         # simulate rates
 ```
@@ -953,7 +937,7 @@ after 20 periods for the new initial conditions, we simulate for the
 additional 30 periods
 
 ```{code-cell} julia
-lm = LakeModel(b = 0.0124)
+lm = lake_model(;b = 0.0124)
 X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T̂+1)    # simulate stocks
 x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T̂+1)     # simulate rates
 ```
