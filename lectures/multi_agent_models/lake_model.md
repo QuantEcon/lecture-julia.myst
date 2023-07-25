@@ -213,7 +213,7 @@ using Test
 ```
 
 ```{code-cell} julia
-function lake_model(λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
+function lake_model(;λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
     g = b - d
     A = [(1 - λ) * (1 - d) + b      (1 - d) * α + b
         (1 - d) * λ                 (1 - d) * (1 - α)]
@@ -261,7 +261,7 @@ lm.Â
 And a revised model
 
 ```{code-cell} julia
-lm = lake_model(α = 2.0)
+lm = lake_model(;α = 2.0)
 lm.A
 ```
 
