@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.8
+  name: julia-1.9
 ---
 
 (scalar_dynam)=
@@ -214,42 +214,41 @@ The function of the code is to produce 45 degree diagrams and time series
 plots.
 
 ```{code-cell} julia
-function plot45(f, xmin, xmax, x0; num_arrows=6)
-    x = x0
-    xgrid = range(xmin, xmax, 200)
-    xticks = zeros(num_arrows+1)
-    arrow_kwargs = (arrow=:closed, linecolor=:black, alpha=0.5)
-    dash_kwargs = (linestyle=:dash, linecolor=:black, alpha=0.5)
-    plt = plot(xgrid, xgrid, xlim=(xmin, xmax), ylim=(xmin, xmax), linecolor=:black, lw=2)
-    plot!(plt, xgrid, f.(xgrid), linecolor=:blue, lw=2)
-    arrow_iterator = 0:(num_arrows-1)
-    for (i, j) in enumerate(arrow_iterator)
-        xticks[i] = x
-        if i == 1
-            plot!([x, x], [0, f(x)]; arrow_kwargs...)
-            plot!([x, f(x)], [f(x), f(x)]; arrow_kwargs...)
-        else
-            plot!([x, x], [x, f(x)]; arrow_kwargs...)
-            plot!([x, x], [0, x]; dash_kwargs...)
-            plot!([x, f(x)], [f(x), f(x)]; arrow_kwargs...)
-        end
-        x = f(x)
-        plot!([x, x], [0, x], xticks=(xticks, [L"k_%$j" for j in 0:num_arrows]), yticks=(xticks, [L"k_%$j" for j in 0:num_arrows]); dash_kwargs...)
+# Iterates a function from an initial condition 
+function iterate_map(f, x0, T)
+    x = zeros(T+1)
+    x[1] = x0
+    for t in 2:(T+1)
+        x[t] = f(x[t-1])
     end
-    xticks[num_arrows+1] = x
-    plot!([x, x], [0, x], legend=false; dash_kwargs...)
-    hline!([0], color=:green, lw=2)
-    vline!([0], color=:green, lw=2)
+    return x
+end
+
+function plot45(f, xmin, xmax, x0, T; num_points = 100, label = L"g(k)", xlabel = "k")
+    # Plot the function and the 45 degree line
+    x_grid = range(xmin, xmax, num_points)
+    plt = plot(x_grid, f.(x_grid); xlim=(xmin, xmax), ylim=(xmin, xmax), linecolor=:black, lw=2, label)
+    plot!(x_grid, x_grid; linecolor=:blue, lw=2, label = nothing)
+
+    # Iterate map and add ticks
+    x = iterate_map(f, x0, T)
+    xticks!(x, [L"%$(xlabel)_{%$i}" for i in 0:T])
+    yticks!(x, [L"%$(xlabel)_{%$i}" for i in 0:T])    
+    
+    # Plot arrows and dashes
+    for i in 1:T
+        plot!([x[i], x[i]], [x[i], x[i+1]], arrow=:closed, linecolor=:black, alpha=0.5, label = nothing)
+        plot!([x[i], x[i+1]], [x[i+1], x[i+1]], arrow=:closed, linecolor=:black, alpha=0.5, label = nothing)
+        plot!([x[i+1], x[i+1]], [0, x[i+1]], linestyle=:dash, linecolor=:black, alpha=0.5, label = nothing)
+    end
+    plot!([x[1], x[1]], [0, x[1]], linestyle=:dash, linecolor=:black, alpha=0.5, label = nothing)
 end  
 
-function ts_plot(f, xmin, xmax, x0; ts_length=6)
-    x = zeros(ts_length)
-    x[1] = x0
-    for t in 1:(ts_length-1)
-        x[t+1] = f(x[t])
-    end
-    plot(1:ts_length, x, ylim=(xmin, xmax), linecolor=:blue, lw=2, alpha=0.7)
-    scatter!(x, mc=:blue, alpha=0.7, legend=false)
+
+function ts_plot(f, x0, T; xlabel=L"t", label=L"k_t")
+    x = iterate_map(f, x0, T)
+    plot(0:T, x; xlabel, label)
+    plot!(0:T, x; seriestype=:scatter, mc=:blue, alpha=0.7, label=nothing)
 end
 ```
 
@@ -269,7 +268,7 @@ g(k; p) = p.A * p.s * k^p.α + (1 - p.δ) * k
 Here is the 45 degree plot.
 
 ```{code-cell} julia
-plot45(k -> g(k; p), p.xmin, p.xmax, 0, num_arrows=0)
+plot45(k -> g(k; p), p.xmin, p.xmax, 0,6)
 ```
 
 The plot shows the function $g$ and the 45 degree line.
@@ -307,20 +306,20 @@ The initial condition is $k_0 = 0.25$.
 
 ```{code-cell} julia
 k0 = 0.25
-plot45(k -> g(k; p), p.xmin, p.xmax, k0, num_arrows=5)
+plot45(k -> g(k; p), p.xmin, p.xmax, k0, 5)
 ```
 
 We can plot the time series of capital corresponding to the figure above as
 follows:
 
 ```{code-cell} julia
-ts_plot(k -> g(k; p), p.xmin, p.xmax, k0)
+ts_plot(k -> g(k; p), k0,5)
 ```
 
 Here's a somewhat longer view:
 
 ```{code-cell} julia
-ts_plot(k -> g(k; p), p.xmin, p.xmax, k0, ts_length=20)
+ts_plot(k -> g(k; p), k0,20)
 ```
 
 When capital stock is higher than the unique positive steady state, we see that
@@ -328,13 +327,13 @@ it declines:
 
 ```{code-cell} julia
 k0 = 2.95
-plot45(k -> g(k; p), p.xmin, p.xmax, k0, num_arrows=5)
+plot45(k -> g(k; p), p.xmin, p.xmax, k0, 5)
 ```
 
 Here is the time series:
 
 ```{code-cell} julia
-ts_plot(k -> g(k; p), p.xmin, p.xmax, k0)
+ts_plot(k -> g(k; p), k0,8)
 ```
 
 ### Complex Dynamics
@@ -354,13 +353,13 @@ Let's have a look at the 45 degree diagram.
 xmin, xmax = 0, 1
 g(k) = 4 * k * (1 - k)
 x0 = 0.3
-plot45(g, xmin, xmax, 0, num_arrows=0)
+plot45(g, xmin, xmax, 0.1,0)
 ```
 
 Now let's look at a typical trajectory.
 
 ```{code-cell} julia
-plot45(g, xmin, xmax, x0, num_arrows=6)
+plot45(g, xmin, xmax, 0.1,6)
 ```
 
 Notice how irregular it is.
@@ -368,13 +367,13 @@ Notice how irregular it is.
 Here is the corresponding time series plot.
 
 ```{code-cell} julia
-ts_plot(g, xmin, xmax, x0)
+ts_plot(g, x0,6)
 ```
 
 The irregularity is even clearer over a longer time horizon:
 
 ```{code-cell} julia
-ts_plot(g, xmin, xmax, x0, ts_length=20)
+ts_plot(g,x0,20)
 ```
 
 ## Exercises
@@ -412,14 +411,14 @@ Now let's plot a trajectory:
 
 ```{code-cell} julia
 x0 = -0.5
-plot45(k -> g(k; q), q.xmin, q.xmax, x0, num_arrows=5)
+plot45(k -> g(k; q), q.xmin, q.xmax, x0,5)
 ```
 
 Here is the corresponding time series, which converges towards the steady
 state.
 
 ```{code-cell} julia
-ts_plot(k -> g(k; q), q.xmin, q.xmax, x0, ts_length=10)
+ts_plot(k -> g(k; q), x0, 10)
 ```
 
 Now let's try $a=-0.5$ and see what differences we observe.
@@ -435,14 +434,14 @@ Now let's plot a trajectory:
 
 ```{code-cell} julia
 x0 = -0.5
-plot45(k -> g(k; r), r.xmin, r.xmax, x0, num_arrows=5)
+plot45(k -> g(k; r), r.xmin, r.xmax, x0, 5)
 ```
 
 Here is the corresponding time series, which converges towards the steady
 state.
 
 ```{code-cell} julia
-ts_plot(k -> g(k; r), r.xmin, r.xmax, x0, ts_length=10)
+ts_plot(k -> g(k; r),x0, 10)
 ```
 
 Once again, we have convergence to the steady state but the nature of

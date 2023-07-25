@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.8
+  name: julia-1.9
 ---
 
 (general_packages)=
@@ -73,7 +73,7 @@ For example, using [FastGaussQuadrature.jl](https://github.com/ajt60gaibb/FastGa
 
 ```{code-cell} julia
 using FastGaussQuadrature
-x, w = gausslegendre( 100_000 ); # i.e. find 100,000 nodes
+x, w = gausslegendre(100_000); # i.e. find 100,000 nodes
 
 # integrates f(x) = x^2 from -1 to 1
 f(x) = x^2
@@ -120,7 +120,6 @@ We begin by creating some data points, using a sine function
 using Interpolations
 using Plots
 
-
 x = -7:7 # x points, coase grid
 y = sin.(x) # corresponding y points
 
@@ -155,7 +154,7 @@ y = log.(x) # corresponding y points
 
 interp = LinearInterpolation(x, y)
 
-xf = log.(range(1,  exp(4), length = 100)) .+ 1 # finer grid
+xf = log.(range(1, exp(4), length = 100)) .+ 1 # finer grid
 
 plot(xf, interp.(xf), label = "linear")
 scatter!(x, y, label = "sampled data", markersize = 4, size = (800, 400))
@@ -168,10 +167,10 @@ At this point, `Interpolations.jl` does not have support for cubic splines with 
 Interpolating a regular multivariate function uses the same function
 
 ```{code-cell} julia
-f(x,y) = log(x+y)
+f(x, y) = log(x + y)
 xs = 1:0.2:5
 ys = 2:0.1:5
-A = [f(x,y) for x in xs, y in ys]
+A = [f(x, y) for x in xs, y in ys]
 
 # linear interpolation
 interp_linear = LinearInterpolation((xs, ys), A)

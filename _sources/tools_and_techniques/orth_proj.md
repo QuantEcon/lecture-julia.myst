@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.8
+  name: julia-1.9
 ---
 
 (orth_proj)=
@@ -280,7 +280,7 @@ Combining this result with {eq}`pob` verifies the claim.
 
 ### Projection onto an Orthonormal Basis
 
-When the subspace onto which are projecting is orthonormal, computing the projection simplifies:
+When the subspace onto which we are projecting is orthonormal, computing the projection simplifies:
 
 **Theorem** If $\{u_1, \ldots, u_k\}$ is an orthonormal basis for $S$, then
 
@@ -322,7 +322,7 @@ Evidently  $Py$ is a linear function from $y \in \mathbb{R}^n$ to $P y \in \math
 
 This reference is useful [https://en.wikipedia.org/wiki/Linear_map#Matrices](https://en.wikipedia.org/wiki/Linear_map#Matrices).
 
-**Theorem.** Let the columns of $n \times k$ matrix $X$ form a basis of $S$.  Then
+**Theorem.** Let the columns of the $n \times k$ matrix $X$ form a basis of $S$.  Then
 
 $$
 P = X (X'X)^{-1} X'
@@ -365,10 +365,10 @@ The proof is now complete.
 
 ### Starting with $X$
 
-It is common in applications to start with $n \times k$ matrix $X$  with linearly independent columns and let
+It is common in applications to start with an $n \times k$ matrix $X$  with linearly independent columns and let
 
 $$
-S := \mathop{\mathrm{span}} X := \mathop{\mathrm{span}} \{\mathop{\mathrm{col}}_1 X, \ldots, \mathop{\mathrm{col}}_k X \}
+S := \mathop{\mathrm{span}} X := \mathop{\mathrm{span}} \{\mathop{\mathrm{col}_1} X, \ldots, \mathop{\mathrm{col}_k} X \}
 $$
 
 Then the columns of $X$ form a basis of $S$.
@@ -383,7 +383,7 @@ In this context, $P$ is often called the **projection matrix**.
 
 Suppose that $U$ is $n \times k$ with orthonormal columns.
 
-Let $u_i := \mathop{\mathrm{col}} U_i$ for each $i$, let $S := \mathop{\mathrm{span}} U$ and let $y \in \mathbb{R}^n$.
+Let $u_i := \mathop{\mathrm{col}_i} U$ for each $i$, let $S := \mathop{\mathrm{span}} U$ and let $y \in \mathbb{R}^n$.
 
 We know that the projection of $y$ onto $S$ is
 
@@ -485,7 +485,7 @@ The set $\mathcal{F}$ is sometimes called the hypothesis space.
 
 The theory of statistical learning tells us that to prevent overfitting we should take the set $\mathcal{F}$ to be relatively simple.
 
-If we let $\mathcal{F}$ be the class of linear functions $1/N$, the problem is
+If we let $\mathcal{F}$ be the class of linear functions $f \colon x \mapsto b'x$, the problem is
 
 $$
 \min_{b \in \mathbb{R}^K} \;
@@ -544,7 +544,7 @@ X :=
 \right)
 $$
 
-We assume throughout that $N > K$ and $X$ is full column rank.
+We assume throughout that $N > K$ and $X$ has full column rank.
 
 If you work through the algebra, you will be able to verify that $\| y - X b \|^2 = \sum_{n=1}^N (y_n - b' x_n)^2$.
 
@@ -642,7 +642,7 @@ The following result uses the preceding algorithm to produce a useful decomposit
 
 Proof sketch: Let
 
-* $x_j := \mathop{\mathrm{col}}_j (X)$
+* $x_j := \mathop{\mathrm{col}_j} (X)$
 * $\{u_1, \ldots, u_k\}$ be orthonormal with same span as $\{x_1, \ldots, x_k\}$ (to be constructed using Gram--Schmidt)
 * $Q$ be formed from cols $u_i$
 
@@ -657,7 +657,7 @@ Some rearranging gives $X = Q R$.
 
 ### Linear Regression via QR Decomposition
 
-For matrices $X$ and $y$ that overdetermine $beta$ in the linear
+For matrices $X$ and $y$ that overdetermine $\beta$ in the linear
 equation system $y = X \beta$, we found  the least squares approximator $\hat \beta = (X' X)^{-1} X' y$.
 
 Using the QR decomposition $X = Q R$ gives
@@ -719,6 +719,7 @@ $$
 
 ### Exercise 1
 
+Clearly, $0 \in S$ and $0 \in S^\perp$.
 If $x \in S$ and $x \in S^\perp$, then we have in particular
 that $\langle x, x \rangle = 0$. But then $x = 0$.
 

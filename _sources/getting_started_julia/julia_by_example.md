@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.8
+  name: julia-1.9
 ---
 
 (julia_by_example)=
@@ -104,7 +104,7 @@ using LinearAlgebra, Statistics, Plots, LaTeXStrings
 ```
 
 ```{warning}
-If these packages were not in your project file or global package environment, you will see an error requiring installation.  To reinforce the point aove: Ideally you should be using a local `Project.toml` with these in them, in which case you might simply need to `] instantiate` it.  Without a project file, you can manually add them as required (e.g. `] add Plots`).  See [here](install_packages) for more on instantiation and activation of projects.
+If these packages were not in your project file or global package environment, you will see an error requiring installation.  To reinforce the point above: Ideally you should be using a local `Project.toml` with these in them, in which case you might simply need to `] instantiate` it.  Without a project file, you can manually add them as required (e.g. `] add Plots`).  See [here](install_packages) for more on instantiation and activation of projects.
 ```
 
 (import)=
@@ -315,8 +315,8 @@ Loops of this sort are at least as efficient as vectorized approach in compiled 
 # better style
 function generatedata(n)
     ϵ = randn(n) # use built in function
-    return ϵ.^2
- end
+    return ϵ .^ 2
+end
 data = generatedata(5)
 ```
 
@@ -324,7 +324,7 @@ We can even drop the `function` if we define it on a single line.
 
 ```{code-cell} julia
 # good style
-generatedata(n) = randn(n).^2
+generatedata(n) = randn(n) .^ 2
 data = generatedata(5)
 ```
 
@@ -357,8 +357,8 @@ n = 100
 f(x) = x^2
 
 x = randn(n)
-plot(f.(x), label=L"x^2")
-plot!(x, label=L"x") # layer on the same plot
+plot(f.(x), label = L"x^2")
+plot!(x, label = L"x") # layer on the same plot
 ```
 
 While broadcasting above superficially looks like vectorizing functions in MATLAB, or Python ufuncs, it is much richer and built on core foundations of the language.
@@ -491,7 +491,7 @@ The syntax for the while loop contains no surprises, and looks nearly identical 
 ```{code-cell} julia
 # poor style
 p = 1.0 # note 1.0 rather than 1
-β = 0.9
+beta = 0.9
 maxiter = 1000
 tolerance = 1.0E-7
 v_iv = 0.8 # initial condition
@@ -501,7 +501,7 @@ v_old = v_iv
 normdiff = Inf
 iter = 1
 while normdiff > tolerance && iter <= maxiter
-    v_new = p + β * v_old # the f(v) map
+    v_new = p + beta * v_old # the f(v) map
     normdiff = norm(v_new - v_old)
 
     # replace and continue
@@ -526,7 +526,7 @@ v_old = v_iv
 normdiff = Inf
 iter = 1
 for i in 1:maxiter
-    v_new = p + β * v_old # the f(v) map
+    v_new = p + beta * v_old # the f(v) map
     normdiff = norm(v_new - v_old)
     if normdiff < tolerance # check convergence
         iter = i
@@ -547,13 +547,13 @@ The first problem with this setup is that it depends on being sequentially run -
 
 ```{code-cell} julia
 # better, but still poor style
-function v_fp(β, ρ, v_iv, tolerance, maxiter)
+function v_fp(beta, ρ, v_iv, tolerance, maxiter)
     # setup the algorithm
     v_old = v_iv
     normdiff = Inf
     iter = 1
     while normdiff > tolerance && iter <= maxiter
-        v_new = p + β * v_old # the f(v) map
+        v_new = p + beta * v_old # the f(v) map
         normdiff = norm(v_new - v_old)
 
         # replace and continue
@@ -565,12 +565,12 @@ end
 
 # some values
 p = 1.0 # note 1.0 rather than 1
-β = 0.9
+beta = 0.9
 maxiter = 1000
 tolerance = 1.0E-7
 v_initial = 0.8 # initial condition
 
-v_star, normdiff, iter = v_fp(β, p, v_initial, tolerance, maxiter)
+v_star, normdiff, iter = v_fp(beta, p, v_initial, tolerance, maxiter)
 println("Fixed point = $v_star
   |f(x) - x| = $normdiff in $iter iterations")
 ```
@@ -579,7 +579,7 @@ While better, there could still be improvements.
 
 ### Passing a Function
 
-The chief issue is that the algorithm (finding a fixed point) is reusable and generic, while the function we calculate `p + β * v` is specific to our problem.
+The chief issue is that the algorithm (finding a fixed point) is reusable and generic, while the function we calculate `p + beta * v` is specific to our problem.
 
 A key feature of languages like Julia, is the ability to efficiently handle functions passed to other functions.
 
@@ -601,8 +601,8 @@ end
 
 # define a map and parameters
 p = 1.0
-β = 0.9
-f(v) = p + β * v # note that p and β are used in the function!
+beta = 0.9
+f(v) = p + beta * v # note that p and beta are used in the function!
 
 maxiter = 1000
 tolerance = 1.0E-7
@@ -621,7 +621,7 @@ To enable this, Julia has two features:  named function parameters, and named tu
 
 ```{code-cell} julia
 # good style
-function fixedpointmap(f, iv; tolerance=1E-7, maxiter=1000)
+function fixedpointmap(f, iv; tolerance = 1E-7, maxiter = 1000)
     # setup the algorithm
     x_old = iv
     normdiff = Inf
@@ -632,15 +632,15 @@ function fixedpointmap(f, iv; tolerance=1E-7, maxiter=1000)
         x_old = x_new
         iter = iter + 1
     end
-    return (;value = x_old, normdiff, iter) # A named tuple
+    return (; value = x_old, normdiff, iter) # A named tuple
 end
 
 # define a map and parameters
 p = 1.0
-β = 0.9
-f(v) = p + β * v # note that p and β are used in the function!
+beta = 0.9
+f(v) = p + beta * v # note that p and beta are used in the function!
 
-sol = fixedpointmap(f, 0.8; tolerance=1.0E-8) # don't need to pass
+sol = fixedpointmap(f, 0.8; tolerance = 1.0E-8) # don't need to pass
 println("Fixed point = $(sol.value)
   |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
 ```
@@ -655,7 +655,7 @@ Finally, this shows how named tuples and keyword arguments are constructed from 
 
 The named tuple notation is also used for unpacking values.  In particular we could have written the execution of this with
 ```{code-cell} julia
-(;value, normdiff, iter) = fixedpointmap(f, 0.8; tolerance=1.0E-8)
+(; value, normdiff, iter) = fixedpointmap(f, 0.8; tolerance = 1.0E-8)
 println("Fixed point = $value
   |f(x) - x| = $normdiff in $iter iterations")
 ```
@@ -682,8 +682,8 @@ But best of all is to avoid writing code altogether.
 using NLsolve
 
 p = 1.0
-β = 0.9
-f(v) = p .+ β * v # broadcast the +
+beta = 0.9
+f(v) = p .+ beta * v # broadcast the +
 sol = fixedpoint(f, [0.8]; m = 0)
 normdiff = norm(f(sol.zero) - sol.zero)
 println("Fixed point = $(sol.zero)
@@ -699,9 +699,9 @@ While a key benefit of using a package is that the code is clearer, and the impl
 ```{code-cell} julia
 # best style
 p = 1.0
-β = 0.9
+beta = 0.9
 iv = [0.8]
-sol = fixedpoint(v -> p .+ β * v, iv)
+sol = fixedpoint(v -> p .+ beta * v, iv)
 fnorm = norm(f(sol.zero) - sol.zero)
 println("Fixed point = $(sol.zero)
   |f(x) - x| = $fnorm  in $(sol.iterations) iterations
@@ -718,7 +718,7 @@ The only other change in this function is the move from directly defining `f(v)`
 
 Similar to anonymous functions in MATLAB, and lambda functions in Python, Julia enables the creation of small functions without any names.
 
-The code `v -> p .+ β * v` defines a function of a dummy argument, `v` with the same body as our `f(x)`.
+The code `v -> p .+ beta * v` defines a function of a dummy argument, `v` with the same body as our `f(x)`.
 
 ### Composing Packages
 
@@ -739,11 +739,11 @@ The only change we will need to our model in order to use a different floating p
 ```{code-cell} julia
 # use arbitrary precision floating points
 p = 1.0
-β = 0.9
+beta = 0.9
 iv = [BigFloat(0.8)] # higher precision
 
 # otherwise identical
-sol = fixedpoint(v -> p .+ β * v, iv)
+sol = fixedpoint(v -> p .+ beta * v, iv)
 normdiff = norm(f(sol.zero) - sol.zero)
 println("Fixed point = $(sol.zero)
   |f(x) - x| = $normdiff in $(sol.iterations) iterations")
@@ -761,9 +761,9 @@ Using our own, homegrown iteration and simply passing in a bivariate map:
 
 ```{code-cell} julia
 p = [1.0, 2.0]
-β = 0.9
+beta = 0.9
 iv = [0.8, 2.0]
-f(v) = p .+ β * v # note that p and β are used in the function!
+f(v) = p .+ beta * v # note that p and beta are used in the function!
 
 sol = fixedpointmap(f, iv; tolerance = 1.0E-8)
 println("Fixed point = $(sol.value)
@@ -776,11 +776,11 @@ This also works without any modifications with the `fixedpoint` library function
 using NLsolve
 
 p = [1.0, 2.0, 0.1]
-β = 0.9
-iv =[0.8, 2.0, 51.0]
-f(v) = p .+ β * v
+beta = 0.9
+iv = [0.8, 2.0, 51.0]
+f(v) = p .+ beta * v
 
-sol = fixedpoint(v -> p .+ β * v, iv)
+sol = fixedpoint(v -> p .+ beta * v, iv)
 normdiff = norm(f(sol.zero) - sol.zero)
 println("Fixed point = $(sol.zero)
   |f(x) - x| = $normdiff in $(sol.iterations) iterations")
@@ -791,11 +791,11 @@ Finally, to demonstrate the importance of composing different libraries, use a `
 ```{code-cell} julia
 using NLsolve, StaticArrays
 p = @SVector [1.0, 2.0, 0.1]
-β = 0.9
+beta = 0.9
 iv = [0.8, 2.0, 51.0]
-f(v) = p .+ β * v
+f(v) = p .+ beta * v
 
-sol = fixedpoint(v -> p .+ β * v, iv)
+sol = fixedpoint(v -> p .+ beta * v, iv)
 normdiff = norm(f(sol.zero) - sol.zero)
 println("Fixed point = $(sol.zero)
   |f(x) - x| = $normdiff in $(sol.iterations) iterations")
@@ -1043,7 +1043,7 @@ We can simplify this somewhat using the **ternary operator**. Here are
 some examples
 
 ```{code-cell} julia
-a = 1  < 2 ? "foo" : "bar"
+a = 1 < 2 ? "foo" : "bar"
 ```
 
 ```{code-cell} julia
@@ -1075,12 +1075,12 @@ Here's one solution
 
 ```{code-cell} julia
 using Plots
-α = 0.9
+alpha = 0.9
 n = 200
 x = zeros(n + 1)
 
 for t in 1:n
-    x[t+1] = α * x[t] + randn()
+    x[t + 1] = alpha * x[t] + randn()
 end
 plot(x)
 ```
@@ -1088,17 +1088,17 @@ plot(x)
 ### Exercise 6
 
 ```{code-cell} julia
-αs = [0.0, 0.8, 0.98]
+alphas = [0.0, 0.8, 0.98]
 n = 200
 p = plot() # naming a plot to add to
 
-for α in αs
+for alpha in alphas
     x = zeros(n + 1)
     x[1] = 0.0
     for t in 1:n
-        x[t+1] = α * x[t] + randn()
+        x[t + 1] = alpha * x[t] + randn()
     end
-    plot!(p, x, label = "alpha = $α") # add to plot p
+    plot!(p, x, label = "alpha = $alpha") # add to plot p
 end
 p # display plot
 ```
@@ -1108,7 +1108,7 @@ p # display plot
 As a hint, notice the following pattern for finding the number of draws of a uniform random number until it is below a given threshold
 
 ```{code-cell} julia
-function drawsuntilthreshold(threshold; maxdraws=100)
+function drawsuntilthreshold(threshold; maxdraws = 100)
     for i in 1:maxdraws
         val = rand()
         if val < threshold # checks threshold
@@ -1118,7 +1118,7 @@ function drawsuntilthreshold(threshold; maxdraws=100)
     return Inf # if here, reached maxdraws
 end
 
-draws = drawsuntilthreshold(0.1; maxdraws=100)
+draws = drawsuntilthreshold(0.1; maxdraws = 100)
 ```
 
 Additionally, it is sometimes convenient to add to just push numbers onto an array without indexing it directly
@@ -1134,4 +1134,5 @@ for i in 1:100
 end
 println("There were $(length(vals)) below 0.5")
 ```
+
 

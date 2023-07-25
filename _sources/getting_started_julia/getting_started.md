@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.8
+  name: julia-1.9
 ---
 
 (getting_started)=
@@ -406,7 +406,7 @@ Run the following cell
 
 ```{code-cell} julia
 using Plots
-plot(sin, -2π, 2π, label="sin(x)")
+plot(sin, -2π, 2π, label = "sin(x)")
 ```
 
 You'll see something like this (although the style of plot depends on your
@@ -489,7 +489,7 @@ using LinearAlgebra
 x = [1, 2]
 y = [3, 4]
 @show dot(x, y)
-@show x⋅y;
+@show x ⋅ y;
 ```
 
 #### Shell Commands
@@ -524,3 +524,4 @@ The Jupyter organization has a site for sharing notebooks called [nbviewer](http
 which provides a static HTML representations of notebooks.
 
 QuantEcon also hosts the [QuantEcon Notes](http://notes.quantecon.org/) website, where you can upload and share your notebooks with other economists and the QuantEcon community.
+

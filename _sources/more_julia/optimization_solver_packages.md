@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.8
+  name: julia-1.9 
 ---
 
 (optimization_solver_packages)=
@@ -194,7 +194,7 @@ Dual-numbers are at the heart of one of the AD packages we have already seen.
 using ForwardDiff
 h(x) = sin(x[1]) + x[1] * x[2] + sinh(x[1] * x[2]) # multivariate.
 x = [1.4 2.2]
-@show ForwardDiff.gradient(h,x) # use AD, seeds from x
+@show ForwardDiff.gradient(h, x) # use AD, seeds from x
 
 #Or, can use complicated functions of many variables
 f(x) = sum(sin, x) + prod(tan, x) * sum(sqrt, x)
@@ -208,8 +208,8 @@ We can even auto-differentiate complicated functions with embedded iterations.
 ```{code-cell} julia
 function squareroot(x) #pretending we don't know sqrt()
     z = copy(x) # Initial starting point for Newton’s method
-    while abs(z*z - x) > 1e-13
-        z = z - (z*z-x)/(2z)
+    while abs(z * z - x) > 1e-13
+        z = z - (z * z - x) / (2z)
     end
     return z
 end
@@ -233,7 +233,7 @@ One recent package is [Zygote.jl](https://github.com/FluxML/Zygote.jl), which is
 ```{code-cell} julia
 using Zygote
 
-h(x, y) = 3x^2 + 2x + 1 + y*x - y
+h(x, y) = 3x^2 + 2x + 1 + y * x - y
 gradient(h, 3.0, 5.0)
 ```
 
@@ -242,7 +242,7 @@ Here we see that Zygote has a gradient function as the interface, which returns 
 You could create this as an operator if you wanted to.,
 
 ```{code-cell} julia
-D(f) = x-> gradient(f, x)[1]  # returns first in tuple
+D(f) = x -> gradient(f, x)[1]  # returns first in tuple
 
 D_sin = D(sin)
 D_sin(4.0)
@@ -265,7 +265,7 @@ squareroot'(2.0)
 Zygote supports combinations of vectors and scalars as the function parameters.
 
 ```{code-cell} julia
-h(x,n) = (sum(x.^n))^(1/n)
+h(x, n) = (sum(x .^ n))^(1 / n)
 gradient(h, [1.0, 4.0, 6.0], 2.0)
 ```
 
@@ -276,17 +276,17 @@ with 1 million dimensions, solved in a few seconds.
 using Optim, LinearAlgebra
 N = 1000000
 y = rand(N)
-λ = 0.01
-obj(x) = sum((x .- y).^2) + λ*norm(x)
+lambda = 0.01
+obj(x) = sum((x .- y) .^ 2) + lambda * norm(x)
 
 x_iv = rand(N)
 function g!(G, x)
-    G .=  obj'(x)
+    G .= obj'(x)
 end
 
 results = optimize(obj, g!, x_iv, LBFGS()) # or ConjugateGradient()
-println("minimum = $(results.minimum) with in "*
-"$(results.iterations) iterations")
+println("minimum = $(results.minimum) with in " *
+        "$(results.iterations) iterations")
 ```
 
 Caution: while Zygote is the most exciting reverse-mode AD implementation in Julia, it has many rough edges.
@@ -322,7 +322,7 @@ defaults to a robust hybrid optimization routine called [Brent's method](https:/
 using Optim
 using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
 
-result = optimize(x-> x^2, -2.0, 1.0)
+result = optimize(x -> x^2, -2.0, 1.0)
 ```
 
 Always check if the results converged, and throw errors otherwise
@@ -367,8 +367,8 @@ To change the algorithm type to [L-BFGS](http://julianlsolvers.github.io/Optim.j
 
 ```{code-cell} julia
 results = optimize(f, x_iv, LBFGS())
-println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
-"$(results.iterations) iterations")
+println("minimum = $(results.minimum) with argmin = $(results.minimizer) in " *
+        "$(results.iterations) iterations")
 ```
 
 Note that this has fewer iterations.
@@ -380,9 +380,9 @@ However, since most of the algorithms require derivatives, you will often want t
 ```{code-cell} julia
 f(x) = (1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2
 x_iv = [0.0, 0.0]
-results = optimize(f, x_iv, LBFGS(), autodiff=:forward) # i.e. use ForwardDiff.jl
-println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
-"$(results.iterations) iterations")
+results = optimize(f, x_iv, LBFGS(), autodiff = :forward) # i.e. use ForwardDiff.jl
+println("minimum = $(results.minimum) with argmin = $(results.minimizer) in " *
+        "$(results.iterations) iterations")
 ```
 
 Note that we did not need to use `ForwardDiff.jl` directly, as long as our `f(x)` function was written to be generic (see the {doc}`generic programming lecture <../more_julia/generic_programming>` ).
@@ -398,8 +398,8 @@ function g!(G, x)
 end
 
 results = optimize(f, g!, x_iv, LBFGS()) # or ConjugateGradient()
-println("minimum = $(results.minimum) with argmin = $(results.minimizer) in "*
-"$(results.iterations) iterations")
+println("minimum = $(results.minimum) with argmin = $(results.minimizer) in " *
+        "$(results.iterations) iterations")
 ```
 
 For derivative-free methods, you can change the algorithm -- and have no need to provide a gradient
@@ -440,18 +440,18 @@ using JuMP, Ipopt
 
 function squareroot(x) # pretending we don't know sqrt()
     z = x # Initial starting point for Newton’s method
-    while abs(z*z - x) > 1e-13
-        z = z - (z*z-x)/(2z)
+    while abs(z * z - x) > 1e-13
+        z = z - (z * z - x) / (2z)
     end
     return z
 end
 m = Model(Ipopt.Optimizer)
 # need to register user defined functions for AD
-JuMP.register(m,:squareroot, 1, squareroot, autodiff=true)
+JuMP.register(m, :squareroot, 1, squareroot, autodiff = true)
 
 @variable(m, x[1:2], start=0.5) # start is the initial condition
 @objective(m, Max, sum(x))
-@NLconstraint(m, squareroot(x[1]^2+x[2]^2) <= 1)
+@NLconstraint(m, squareroot(x[1]^2 + x[2]^2)<=1)
 @show JuMP.optimize!(m)
 ```
 
@@ -459,21 +459,21 @@ And this is an example of a quadratic objective
 
 ```{code-cell} julia
 # solve
-# min (1-x)^2 + 100(y-x^2)^2)
+# min (1-x)^2 + (100(y-x^2)^2)
 # st x + y >= 10
 
-using JuMP,Ipopt
+using JuMP, Ipopt
 m = Model(Ipopt.Optimizer) # settings for the solver
-@variable(m, x, start = 0.0)
-@variable(m, y, start = 0.0)
+@variable(m, x, start=0.0)
+@variable(m, y, start=0.0)
 
-@NLobjective(m, Min, (1-x)^2 + 100(y-x^2)^2)
+@NLobjective(m, Min, (1 - x)^2+100(y - x^2)^2)
 
 JuMP.optimize!(m)
 println("x = ", value(x), " y = ", value(y))
 
 # adding a (linear) constraint
-@constraint(m, x + y == 10)
+@constraint(m, x + y==10)
 JuMP.optimize!(m)
 println("x = ", value(x), " y = ", value(y))
 ```
@@ -488,7 +488,7 @@ To see an example from the documentation
 using BlackBoxOptim
 
 function rosenbrock2d(x)
-return (1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2
+    return (1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2
 end
 
 results = bboptimize(rosenbrock2d; SearchRange = (-5.0, 5.0), NumDimensions = 2);
@@ -522,7 +522,7 @@ The [Roots.jl](https://github.com/JuliaLang/Roots.jl) package offers `fzero()` t
 
 ```{code-cell} julia
 using Roots
-f(x) = sin(4 * (x - 1/4)) + x + x^20 - 1
+f(x) = sin(4 * (x - 1 / 4)) + x + x^20 - 1
 fzero(f, 0, 1)
 ```
 
@@ -535,10 +535,10 @@ From the documentation, to solve for a system of equations without providing a J
 ```{code-cell} julia
 using NLsolve
 
-f(x) = [(x[1]+3)*(x[2]^3-7)+18
-        sin(x[2]*exp(x[1])-1)] # returns an array
+f(x) = [(x[1] + 3) * (x[2]^3 - 7) + 18
+        sin(x[2] * exp(x[1]) - 1)] # returns an array
 
-results = nlsolve(f, [ 0.1; 1.2])
+results = nlsolve(f, [0.1; 1.2])
 ```
 
 In the above case, the algorithm used finite differences to calculate the Jacobian.
@@ -546,24 +546,24 @@ In the above case, the algorithm used finite differences to calculate the Jacobi
 Alternatively, if `f(x)` is written generically, you can use auto-differentiation with a single setting.
 
 ```{code-cell} julia
-results = nlsolve(f, [ 0.1; 1.2], autodiff=:forward)
+results = nlsolve(f, [0.1; 1.2], autodiff = :forward)
 
-println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in "*
-"$(results.iterations) iterations and $(results.f_calls) function calls")
+println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in " *
+        "$(results.iterations) iterations and $(results.f_calls) function calls")
 ```
 
 Providing a function which operates inplace (i.e., modifies an argument) may help performance for large systems of equations (and hurt it for small ones).
 
 ```{code-cell} julia
 function f!(F, x) # modifies the first argument
-    F[1] = (x[1]+3)*(x[2]^3-7)+18
-    F[2] = sin(x[2]*exp(x[1])-1)
+    F[1] = (x[1] + 3) * (x[2]^3 - 7) + 18
+    F[2] = sin(x[2] * exp(x[1]) - 1)
 end
 
-results = nlsolve(f!, [ 0.1; 1.2], autodiff=:forward)
+results = nlsolve(f!, [0.1; 1.2], autodiff = :forward)
 
-println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in "*
-"$(results.iterations) iterations and $(results.f_calls) function calls")
+println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in " *
+        "$(results.iterations) iterations and $(results.f_calls) function calls")
 ```
 
 ## LeastSquaresOptim.jl
@@ -591,7 +591,7 @@ From the documentation
 ```{code-cell} julia
 using LeastSquaresOptim
 function rosenbrock(x)
-    [1 - x[1], 100 * (x[2]-x[1]^2)]
+    [1 - x[1], 100 * (x[2] - x[1]^2)]
 end
 LeastSquaresOptim.optimize(rosenbrock, zeros(2), Dogleg())
 ```
@@ -604,10 +604,11 @@ but you could also provide your own calculation of the Jacobian (analytical or u
 ```{code-cell} julia
 function rosenbrock_f!(out, x)
     out[1] = 1 - x[1]
-    out[2] = 100 * (x[2]-x[1]^2)
+    out[2] = 100 * (x[2] - x[1]^2)
 end
 LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2),
-                                f! = rosenbrock_f!, output_length = 2))
+                                                f! = rosenbrock_f!,
+                                                output_length = 2))
 
 # if you want to use gradient
 function rosenbrock_g!(J, x)
@@ -617,7 +618,9 @@ function rosenbrock_g!(J, x)
     J[2, 2] = 100
 end
 LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2),
-                                f! = rosenbrock_f!, g! = rosenbrock_g!, output_length = 2))
+                                                f! = rosenbrock_f!,
+                                                g! = rosenbrock_g!,
+                                                output_length = 2))
 ```
 
 ## Additional Notes
@@ -659,9 +662,8 @@ f(x, y) = 3.0 + x + y
 x = DualNumber(2.0, 1.0)  # x -> 2.0 + 1.0\epsilon
 y = DualNumber(3.0, 0.0)  # i.e. y = 3.0, no derivative
 
-
 # seeded calculates both teh function and the d/dx gradient!
-f(x,y)
+f(x, y)
 ```
 
 For this assignment:
