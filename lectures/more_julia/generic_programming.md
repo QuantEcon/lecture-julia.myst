@@ -107,7 +107,7 @@ Using the `subtypes` function, we can write an algorithm to traverse the type tr
 
 ```{code-cell} julia
 #  from https://github.com/JuliaLang/julia/issues/24741
-function subtypetree(t; level = 1, indent = 4)
+function subtypetree(t, level = 1, indent = 4)
     if level == 1
         println(t)
     end
