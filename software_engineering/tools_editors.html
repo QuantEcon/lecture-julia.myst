@@ -1,114 +1,647 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>10. Visual Studio Code and Other Tools &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+        <script>
+            MathJax = {
+            loader: {load: ['[tex]/boldsymbol', '[tex]/textmacros']},
+            tex: {
+                packages: {'[+]': ['boldsymbol', 'textmacros']},
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true,
+                macros: {
+                    "argmax" : "arg\\,max",
+                    "argmin" : "arg\\,min",
+                    "col"    : "col",
+                    "Span"   :  "span",
+                    "epsilon": "\\varepsilon",
+                    "EE": "\\mathbb{E}",
+                    "PP": "\\mathbb{P}",
+                    "RR": "\\mathbb{R}",
+                    "NN": "\\mathbb{N}",
+                    "ZZ": "\\mathbb{Z}",
+                    "aA": "\\mathcal{A}",
+                    "bB": "\\mathcal{B}",
+                    "cC": "\\mathcal{C}",
+                    "dD": "\\mathcal{D}",
+                    "eE": "\\mathcal{E}",
+                    "fF": "\\mathcal{F}",
+                    "gG": "\\mathcal{G}",
+                    "hH": "\\mathcal{H}",
+                }
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 0.92,
+                displayAlign: "center",
+            },
+            };
+        </script>
+    
+    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/quantecon-book-theme.5378fd3a70a129d690fd5fc99fb75ef7.css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
-    
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script src="../_static/quantecon-book-theme.ef2ef6c3e8da75e1e736fb5fce08cde6.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-3PCWRLGWND"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-3PCWRLGWND');
+            </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'software_engineering/tools_editors';</script>
     <link rel="canonical" href="https://julia.quantecon.org/software_engineering/tools_editors.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="11. GitHub, Version Control and Collaboration" href="version_control.html" />
     <link rel="prev" title="9. Solvers, Optimizers, and Automatic Differentiation" href="../more_julia/optimization_solver_packages.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
 
-    <!-- Google Analytics -->
-    
-<script async="" src="https://www.google-analytics.com/analytics.js"></script>
-<script>
-                        window.ga = window.ga || function () {
-                            (ga.q = ga.q || []).push(arguments) };
-                        ga.l = +new Date;
-                        ga('create', 'UA-54984338-8', 'auto');
-                        ga('set', 'anonymizeIp', true);
-                        ga('send', 'pageview');
-                    </script>
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Visual Studio Code and Other Tools"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Visual Studio Code and Other Tools" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/software_engineering/tools_editors.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
+<body>
 
-    
 
-    <div class="container-xl">
-      <div class="row">
-          
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
-      
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
-        
-      
-      
-      <img src="../_static/qe-logo-large.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Quantitative Economics with Julia</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
+    <span id="top"></span>
+
+    <div class="qe-wrapper">
+
+        <div class="qe-main">
+
+            <div class="qe-page" id=software_engineering/tools_editors>
+
+                <div class="qe-page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="qe-page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="qe-page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installing-vs-code">10.1. Installing VS Code</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extensions-and-settings">10.1.1. Optional Extensions and Settings</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#integrated-terminals-in-vs-code">10.1.2. Integrated Terminals in VS Code</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-vs-code-with-julia">10.2. Using VS Code with Julia</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hello-world">10.2.1. Hello World</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-packages">10.2.2. Adding Packages</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#executing-files">10.2.3. Executing Files</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-debugger">10.2.4. Using the Debugger</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-repl">10.3. The REPL</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#starting-a-repl">10.3.1. Starting a REPL</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#more-features-and-modes">10.3.2. More Features and Modes</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#package-environments">10.4. Package Environments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#more-options-and-configuration-choices">10.5. More Options and Configuration Choices</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extensions">10.5.1. Optional Extensions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vs-code-as-a-latex-editor">10.5.2. VS Code as a LaTeX Editor</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#font-choices">10.5.3. Font Choices</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#remote-and-collaborative-extensions">10.5.4. Remote and Collaborative Extensions</a></li>
+</ul>
+</li>
+</ul>
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="qe-page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="qe-page__header">
+
+                    <div class="qe-page__header-copy">
+
+                        <p class="qe-page__header-heading"><a href="../intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="qe-page__header-subheading">Visual Studio Code and Other Tools</p>
+
+                    </div>
+
+                    <p class="qe-page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="qe-page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><section class="tex2jax_ignore mathjax_ignore" id="visual-studio-code-and-other-tools">
+<h1><a class="toc-backref" href="#id3" role="doc-backlink"><span class="section-number">10. </span>Visual Studio Code and Other Tools</a><a class="headerlink" href="#visual-studio-code-and-other-tools" title="Permalink to this heading">#</a></h1>
+<nav class="contents" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#visual-studio-code-and-other-tools" id="id3">Visual Studio Code and Other Tools</a></p>
+<ul>
+<li><p><a class="reference internal" href="#installing-vs-code" id="id4">Installing VS Code</a></p></li>
+<li><p><a class="reference internal" href="#using-vs-code-with-julia" id="id5">Using VS Code with Julia</a></p></li>
+<li><p><a class="reference internal" href="#the-repl" id="id6">The REPL</a></p></li>
+<li><p><a class="reference internal" href="#package-environments" id="id7">Package Environments</a></p></li>
+<li><p><a class="reference internal" href="#more-options-and-configuration-choices" id="id8">More Options and Configuration Choices</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.  Visual Studio Code (VS Code) in particular, is the most popular open source editor for programming - with a huge set of extensions and strong industry support.</p>
+<p>While you can use source code control, run terminals and the REPL (“Read-Evaluate-Print Loop”) without VS Code, we will concentrate on using it as a full IDE for all of these features.</p>
+<section id="installing-vs-code">
+<span id="install-vscode"></span><h2><a class="toc-backref" href="#id4" role="doc-backlink"><span class="section-number">10.1. </span>Installing VS Code</a><a class="headerlink" href="#installing-vs-code" title="Permalink to this heading">#</a></h2>
+<p>To install VS Code and the Julia Extension,</p>
+<ol class="arabic simple">
+<li><p>First, ensure you followed the instructions for setting up Julia <a class="reference internal" href="../getting_started_julia/getting_started.html#jl-jupyterlocal"><span class="std std-ref">on your local computer</span></a>.</p></li>
+<li><p>In particular, ensure you did the initial <a class="reference internal" href="../getting_started_julia/getting_started.html#initial-vscode-setup"><span class="std std-ref">VS Code setup</span></a></p></li>
+<li><p>Install <a class="reference external" href="https://code.visualstudio.com/">VS Code</a> for your platform and open it</p></li>
+</ol>
+<p>See the <a class="reference external" href="https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1">Julia VS Code Documentation</a> for more details.</p>
+<p>If you have done a typical Julia installation, then this may be all that is needed and no configuration may be necessary.  However, if you have installed Julia in a non-standard location you may need to manually set the executable path.  See <a class="reference external" href="https://www.julia-vscode.org/docs/dev/gettingstarted/#Configuring-the-Julia-extension-1">here</a> for instructions if it errors when starting Julia terminals.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>“Open in Code” on MacOS and Linux
+VS Code supports the “Open with Code” action in File Explorer if chosen during the installation.  This is convenient, but not necessary.  To support it on MacOS you need to install a <a class="reference external" href="https://stackoverflow.com/questions/64040393/open-a-folder-in-vscode-through-finder-in-macos">Automator script or separate package</a>.  Similarly, see <a class="reference external" href="https://github.com/vvanloc/Nautilus-OpenInVSCode">here</a> for support on linux.</p>
+</div>
+<p>While the general <a class="reference external" href="https://code.visualstudio.com/docs/getstarted/userinterface">VS Code documentation</a> is excellent, we will review a few of the key concepts directly.  In addition, see <a class="reference internal" href="#optional-extensions"><span class="std std-ref">here</span></a> for other useful extensions when using VS Code not directly connected to these lectures.</p>
+<section id="optional-extensions-and-settings">
+<h3><span class="section-number">10.1.1. </span>Optional Extensions and Settings<a class="headerlink" href="#optional-extensions-and-settings" title="Permalink to this heading">#</a></h3>
+<p>Open the settings with <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Preferences:</span> <span class="pre">Open</span> <span class="pre">User</span> <span class="pre">Settings</span></code> (see above for opening the command palette with <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl-Shift-P&gt;</span></code>).</p>
+<p>As a few optional suggestions for working with the settings,</p>
+<ul class="simple">
+<li><p>In the settings, search for <code class="docutils literal notranslate"><span class="pre">Tab</span> <span class="pre">Size</span></code> and you should find <code class="docutils literal notranslate"><span class="pre">Editor:</span> <span class="pre">Tab</span> <span class="pre">Size</span></code> which you can modify to 4.</p></li>
+<li><p>Search for <code class="docutils literal notranslate"><span class="pre">quick</span> <span class="pre">open</span></code> and change <code class="docutils literal notranslate"><span class="pre">Workbench</span> <span class="pre">&gt;</span> <span class="pre">Editor:</span> <span class="pre">Enable</span> <span class="pre">Preview</span> <span class="pre">from</span> <span class="pre">Quick</span> <span class="pre">Open</span></code> and consider setting it to false, though this is a matter of personal taste.</p></li>
+<li><p>If you are on Windows, search for <code class="docutils literal notranslate"><span class="pre">eol</span></code> and change <code class="docutils literal notranslate"><span class="pre">Files:</span> <span class="pre">Eol</span></code> to be <code class="docutils literal notranslate"><span class="pre">\n</span></code>.</p></li>
+<li><p>While it is a personal taste, consider enabling the <a class="reference external" href="https://code.visualstudio.com/updates/v1_60#_high-performance-bracket-pair-colorization">bracket colorizer</a> by finding the <code class="docutils literal notranslate"><span class="pre">bracketPairColorization</span></code> setting.</p></li>
+</ul>
+<p>A key feature of VS Code is that it can synchronize your extensions and settings across all of your computers, and even when used in-browser (e.g. with <a class="reference external" href="https://github.com/features/codespaces">GitHub CodeSpaces</a>).  To turn on,</p>
+<ul class="simple">
+<li><p>Ensure you have a <a class="reference external" href="https://github.com/">GitHub account</a>, which will be useful for <a class="reference internal" href="version_control.html"><span class="doc">further lectures</span></a></p></li>
+<li><p>Choose <code class="docutils literal notranslate"><span class="pre">Turn</span> <span class="pre">On</span> <span class="pre">Settings</span> <span class="pre">Sync...</span></code> in the gear icon at the bottom of the screen</p></li>
+</ul>
+<figure class="align-default">
+<a class="reference internal image-reference" href="https://code.visualstudio.com/assets/docs/editor/settings-sync/turn-on-sync.png"><img alt="https://code.visualstudio.com/assets/docs/editor/settings-sync/turn-on-sync.png" src="https://code.visualstudio.com/assets/docs/editor/settings-sync/turn-on-sync.png" style="width: 50%;" /></a>
+</figure>
+<ul class="simple">
+<li><p>You can stick with all of the defaults, and read more in the <a class="reference external" href="https://code.visualstudio.com/docs/editor/settings-sync">instructions</a></p></li>
+</ul>
+</section>
+<section id="integrated-terminals-in-vs-code">
+<span id="terminals"></span><h3><span class="section-number">10.1.2. </span>Integrated Terminals in VS Code<a class="headerlink" href="#integrated-terminals-in-vs-code" title="Permalink to this heading">#</a></h3>
+<p>A key benefit of VS Code is that you can use terminals and command-line interfaces directly within the editor, and starting in the convenient location relative to an opened project.</p>
+<p>Furthermore, in the case of julia (and other languages such as python) this will activate the project automatically.  See the <a class="reference external" href="https://code.visualstudio.com/docs/editor/integrated-terminal">documentation</a> for more details.</p>
+<p>You can open the terminal panel with  <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">View:</span> <span class="pre">Toggle</span> <span class="pre">Terminal</span></code> , typing <code class="docutils literal notranslate"><span class="pre">Ctrl+`</span> </code>, or by clicking on the list of warnings and errors bottom bar in VS Code.  If no existing terminal exists, it will create a new one.</p>
+</section>
+</section>
+<section id="using-vs-code-with-julia">
+<span id="vscode"></span><h2><a class="toc-backref" href="#id5" role="doc-backlink"><span class="section-number">10.2. </span>Using VS Code with Julia</a><a class="headerlink" href="#using-vs-code-with-julia" title="Permalink to this heading">#</a></h2>
+<p>The documentation for the VS Code extension provides many examples:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.julia-vscode.org/docs/dev/gettingstarted/#Creating-Your-First-Julia-Hello-World-program-1">Creating a Hello World</a></p></li>
+<li><p><a class="reference external" href="https://www.julia-vscode.org/docs/dev/userguide/debugging/">Debugging</a></p></li>
+<li><p><a class="reference external" href="https://www.julia-vscode.org/docs/dev/userguide/plotgallery/">Integrated Plots</a></p></li>
+<li><p><a class="reference external" href="https://www.julia-vscode.org/docs/dev/userguide/editingcode/">Code Completion</a></p></li>
+<li><p><a class="reference external" href="https://www.julia-vscode.org/docs/dev/userguide/codenavigation/">Code Navigation</a></p></li>
+</ul>
+<p>In addition, there are excellent youtube videos about provide more background.  For example, <a class="reference external" href="https://www.youtube.com/watch?v=F1R3ETaRQXY">Package Development in VSCode</a> shows advanced features.</p>
+<section id="hello-world">
+<h3><span class="section-number">10.2.1. </span>Hello World<a class="headerlink" href="#hello-world" title="Permalink to this heading">#</a></h3>
+<p>To walk through a simple, but complete example.</p>
+<p>Create a new directory on your computer, for example <code class="docutils literal notranslate"><span class="pre">hello_world</span></code> and then open VS Code in that folder  This can be done several ways,</p>
+<ul class="simple">
+<li><p>Within a terminal on your operating system, navigate that directory and type <code class="docutils literal notranslate"><span class="pre">code</span> <span class="pre">.</span></code></p></li>
+<li><p>On Windows, right click on the folder and choose <code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">with</span> <span class="pre">Code</span></code> - trusting the authors as required on opening the folder.</p></li>
+<li><p>In the VS Code Menu, choose <code class="docutils literal notranslate"><span class="pre">File/Open</span> <span class="pre">Folder...</span></code></p></li>
+</ul>
+<p>Next, in the left hand panel, under <code class="docutils literal notranslate"><span class="pre">HELLO_WORLD</span></code>, right click and choose <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">File</span></code> and create as <code class="docutils literal notranslate"><span class="pre">hello.jl</span></code>.  The screen should look something like</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vscode_file_created.png"><img alt="../_images/vscode_file_created.png" src="../_images/vscode_file_created.png" style="width: 100%;" /></a>
+</figure>
+<p>Type some code as such <code class="docutils literal notranslate"><span class="pre">f(x)</span> <span class="pre">=</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">1</span></code> into the file, into the <code class="docutils literal notranslate"><span class="pre">.jl</span></code> file, save it, and while your mouse curser is on the line of code do <code class="docutils literal notranslate"><span class="pre">&lt;Shift-Enter&gt;</span></code>.  If a julia REPL wasn’t already started, it will be started and the code will be run within its kernel</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vscode_jl_function.png"><img alt="../_images/vscode_jl_function.png" src="../_images/vscode_jl_function.png" style="width: 100%;" /></a>
+</figure>
+<p>At this point, the function is available for use within either the code or the REPL.  You can get inline results by adding more code to the file and executing each line with <code class="docutils literal notranslate"><span class="pre">&lt;Shift-Enter&gt;</span></code>.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vscode_jl_function_2.png"><img alt="../_images/vscode_jl_function_2.png" src="../_images/vscode_jl_function_2.png" style="width: 100%;" /></a>
+</figure>
+<p>That code is also accessible within the REPL.  Executing the function there,</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vscode_repl_1.png"><img alt="../_images/vscode_repl_1.png" src="../_images/vscode_repl_1.png" style="width: 100%;" /></a>
+</figure>
+<p>Because the REPL and the files are synchronized, you can modify functions and simple choose <code class="docutils literal notranslate"><span class="pre">&lt;shift-Enter&gt;</span></code> to update their definitions before analyzing the results in the REPL or in the file itself.</p>
+</section>
+<section id="adding-packages">
+<span id="id1"></span><h3><span class="section-number">10.2.2. </span>Adding Packages<a class="headerlink" href="#adding-packages" title="Permalink to this heading">#</a></h3>
+<p>Next we will go through simple use of the plotting and package management.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to <code class="docutils literal notranslate"><span class="pre">(&#64;v1.8)</span> <span class="pre">pkg&gt;</span></code> rather than <code class="docutils literal notranslate"><span class="pre">(hello_world)</span> <span class="pre">pkg</span> <span class="pre">&gt;</span></code> then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">activate</span> <span class="pre">.</span></code>.</p>
+<p>You can always see the current package location and details with <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">st</span></code>.  See <a class="reference internal" href="#jl-packages"><span class="std std-ref">Julia Environments</span></a> for more details.</p>
+</div>
+<p>The REPL.  First, type <code class="docutils literal notranslate"><span class="pre">]</span></code> to enter the package management mode, then <code class="docutils literal notranslate"><span class="pre">add</span> <span class="pre">Plots</span></code>.  Depending on whether you have done similar operations before, this may download a lot of dependencies.  See below for an example</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vscode_package_added.png"><img alt="../_images/vscode_package_added.png" src="../_images/vscode_package_added.png" style="width: 100%;" /></a>
+</figure>
+<p>Crucially, you will notice that two new files are created. <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code>.  These provide a snapshot of all of the packages used in this particular project.</p>
+<p>Add code in the <code class="docutils literal notranslate"><span class="pre">.jl</span></code> file for a simple plot, and it will be shown on a separate pane</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vscode_plots.png"><img alt="../_images/vscode_plots.png" src="../_images/vscode_plots.png" style="width: 100%;" /></a>
+</figure>
+<p>To exit package management mode and return to the REPL, type <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code>. To then go from the REPL back to the VS Code terminal, type <code class="docutils literal notranslate"><span class="pre">Ctrl+D</span></code>.</p>
+</section>
+<section id="executing-files">
+<h3><span class="section-number">10.2.3. </span>Executing Files<a class="headerlink" href="#executing-files" title="Permalink to this heading">#</a></h3>
+<p>First we will reorganize our file so that it is a set of functions with a call at the end rather than a script.  Replace the code with</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span>
+
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="k">function</span><span class="w"> </span><span class="n">plot_results</span><span class="p">()</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span>
+<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+<span class="w">    </span><span class="n">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="c"># execute main function</span>
+<span class="n">plot_results</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>While it is fine to use scripts with code not organized in functions for exploration, you will want to organize any serious computations inside of a function.  While this may not matter for every problem, this will let the compiler avoid global variables and highly optimize the results.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The behavior of global variables accessed in loops in the <code class="docutils literal notranslate"><span class="pre">REPL</span></code>, Debugger, inline code evaluations, and Jupyter notebooks is different from executed files.  See the documentation on <a class="reference external" href="https://docs.julialang.org/en/v1/manual/variables-and-scoping/#On-Soft-Scope">soft scoping</a> for more background.  A good heuristic which will avoid these issues is to (1) never use loops outside of a function when you write <code class="docutils literal notranslate"><span class="pre">.jl</span></code> files; and (2) if you ever use the <code class="docutils literal notranslate"><span class="pre">global</span></code> keyword, assume something is wrong and you should put something in a function.</p>
+</div>
+<p>You can execute a <code class="docutils literal notranslate"><span class="pre">.jl</span></code> file in several ways.</p>
+<p>Within a terminal, you can provide the path to the file.  For example,</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia<span class="w"> </span>--threads<span class="w"> </span>auto<span class="w"> </span>--project<span class="w"> </span>hello.jl
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="#repl-main"><span class="std std-ref">REPL</span></a> section for more details on the commandline options.</p>
+<p>Alternatively, within VS Code itself you can use the <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl-F5&gt;</span></code> to run the new file.</p>
+</section>
+<section id="using-the-debugger">
+<span id="debugger"></span><h3><span class="section-number">10.2.4. </span>Using the Debugger<a class="headerlink" href="#using-the-debugger" title="Permalink to this heading">#</a></h3>
+<p>To debug your function, first click to the left of a line of code to create a breakpoint (seen as a red dot).</p>
+<p>Next, use <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl-Shift-D&gt;</span></code> or select the run and debug tab on the left in Julia to see</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/debugger_1.png"><img alt="../_images/debugger_1.png" src="../_images/debugger_1.png" style="width: 100%;" /></a>
+</figure>
+<p>Then choose the <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">and</span> <span class="pre">Debug</span></code> option and it will execute <code class="docutils literal notranslate"><span class="pre">plot_results()</span></code> at the bottom of the file, and then stop inside at the breakpoint.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some users may see other options like <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">active</span> <span class="pre">Julia</span> <span class="pre">file</span></code> instead of <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">and</span> <span class="pre">Debug</span></code> in the run and debug tab.</p>
+</div>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/debugger_2.png"><img alt="../_images/debugger_2.png" src="../_images/debugger_2.png" style="width: 100%;" /></a>
+</figure>
+<p>You can use the toolbar at the top to step through the code, as described in the <a class="reference external" href="https://www.julia-vscode.org/docs/dev/userguide/debugging/">documentation</a>.</p>
+<p>As an alternative way to start the debugger, you can instead debug a call within the REPL with commands like <code class="docutils literal notranslate"><span class="pre">&#64;run</span> <span class="pre">plot_results()</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The Julia Debugger runs some of the code in an interpreted mode that might be far slower than typical  compiled and optimized code.  For this reason, it may not be possible to use it in all the same ways you might use something like the Matlab debugger.  However, if you organize your code appropriately, you may find that the <a class="reference external" href="https://www.julia-vscode.org/docs/stable/userguide/debugging/#Compile-mode-1">compile mode</a> enables you to concentrate on debugging only some of the functions, while letting slow functions remain compiled.</p>
+</div>
+</section>
+</section>
+<section id="the-repl">
+<span id="repl-main"></span><h2><a class="toc-backref" href="#id6" role="doc-backlink"><span class="section-number">10.3. </span>The REPL</a><a class="headerlink" href="#the-repl" title="Permalink to this heading">#</a></h2>
+<p>Even if you are working primarily in <code class="docutils literal notranslate"><span class="pre">.jl</span></code> and/or Jupyter Notebooks in Julia, you will need to become comfortable with the REPL.  We saw some initial use of this when <a class="reference internal" href="#adding-packages"><span class="std std-ref">adding packages</span></a> and exploring the code above, but the REPL has many <a class="reference external" href="https://docs.julialang.org/en/v1/stdlib/REPL/#The-Julia-REPL">more features</a>.</p>
+<section id="starting-a-repl">
+<h3><span class="section-number">10.3.1. </span>Starting a REPL<a class="headerlink" href="#starting-a-repl" title="Permalink to this heading">#</a></h3>
+<p>There are several ways to start the REPL.</p>
+<ul class="simple">
+<li><p>Within VS Code, executing code inline will start it as required.</p></li>
+<li><p>In the command palette of VS Code, choose  <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Julia:</span> <span class="pre">Start</span> <span class="pre">REPL</span></code></p></li>
+<li><p>Outside of VS Code, if julia was installed on your system path, you can simply type <code class="docutils literal notranslate"><span class="pre">julia</span></code> or with other options</p></li>
+</ul>
+<p>The command line options for starting Julia are set to decent defaults for terminals running within VS Code, but you will want to set them yourself if starting the REPL otherwise.</p>
+<p>As an example, the argument <code class="docutils literal notranslate"><span class="pre">--threads</span></code> determines the number of threads that Julia starts with.  If starting <code class="docutils literal notranslate"><span class="pre">julia</span></code> on the command line without specifying any arguments, it will default to 1 (or check an environment variable).  To have Julia automatically choose the number of threads based on the number of processors for your machine, pass the <code class="docutils literal notranslate"><span class="pre">--threads</span> <span class="pre">auto</span></code> argument.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>VS Code sets the number of threads automatically based on the number of cores on your machine, but the value can be modified in its <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Preferences:</span> <span class="pre">Open</span> <span class="pre">User</span> <span class="pre">Settings</span></code> and then search for <code class="docutils literal notranslate"><span class="pre">Julia:</span> <span class="pre">Num</span> <span class="pre">Threads</span></code>.</p>
+</div>
+<p>The most important choice is the <code class="docutils literal notranslate"><span class="pre">--project</span></code> toggle which determines whether you want to activate an existing project (or create a new one) when starting the interpreter.  Since a key feature of Julia is to have fully reproducible environments, you will want to do this whenever possible.</p>
+<p>To emphasize this point, this is an example of the <code class="docutils literal notranslate"><span class="pre">]st</span> </code> showing the global environment has only the bare minimum of packages installed.  With this workflow, all other packages are installed only when a given project is activated.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(@v1.8) pkg&gt; st
+      Status `C:\Users\jesse\.julia\environments\v1.8\Project.toml`
+[7073ff75] IJulia v1.23.2
+[14b8a8f1] PkgTemplates v0.7.18
+[295af30f] Revise v3.1.19
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A key difference between Julia and some other package managers is that it is capable of having different versions of each package for different projects - which ensures all projects are fully reproducible by you, your future self, and any other collaborators.  While there is a global set of packages available (e.g. <code class="docutils literal notranslate"><span class="pre">IJulia.jl</span></code> to ensure Jupyter support) you should try to keep the packages in different projects separated.  See the documentation on <a class="reference external" href="https://docs.julialang.org/en/v1/manual/code-loading/#Environments-1">environments</a> and the <a class="reference external" href="https://pkgdocs.julialang.org/v1/getting-started/">package manager</a> for more.</p>
+</div>
+<p>If you start the terminal without activating a project, you can activate it afterwards with <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">activate</span> <span class="pre">.</span></code> or <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">Pkg;</span> <span class="pre">Pkg.activate()</span></code>.</p>
+<p>To see this in action, within an external terminal we will open it using both methods, and then use <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">st</span></code> to see which project is activated and which packages are available.</p>
+<p>First, with <code class="docutils literal notranslate"><span class="pre">julia</span> <span class="pre">--threads</span> <span class="pre">auto</span></code> we see that the globally installed packages are available at first, but that the existing <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> in that folder are chosen after we choose <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">activate</span> <span class="pre">.</span></code></p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/repl_1.png"><img alt="../_images/repl_1.png" src="../_images/repl_1.png" style="width: 100%;" /></a>
+</figure>
+<p>Next, with <code class="docutils literal notranslate"><span class="pre">julia</span> <span class="pre">--threads</span> <span class="pre">auto</span> <span class="pre">--project</span></code> the project is automatically activated</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/repl_2.png"><img alt="../_images/repl_2.png" src="../_images/repl_2.png" style="width: 100%;" /></a>
+</figure>
+<p>Finally, if you choose the <code class="docutils literal notranslate"><span class="pre">--project</span></code> option in a folder which doesn’t have an existing project file, it will create them as required.</p>
+<p>A few other features of the REPL include,</p>
+</section>
+<section id="more-features-and-modes">
+<h3><span class="section-number">10.3.2. </span>More Features and Modes<a class="headerlink" href="#more-features-and-modes" title="Permalink to this heading">#</a></h3>
+<p>Hitting <code class="docutils literal notranslate"><span class="pre">;</span></code> brings you into shell mode, which lets you run bash commands (PowerShell on Windows)</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">;</span><span class="w"> </span><span class="n">pwd</span>
+</pre></div>
+</div>
+<p>In addition, <code class="docutils literal notranslate"><span class="pre">?</span></code> will bring you into help mode.</p>
+<p>The key use case is to find docstrings for functions and macros, e.g.</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="w"> </span><span class="n">print</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="package-environments">
+<span id="jl-packages"></span><h2><a class="toc-backref" href="#id7" role="doc-backlink"><span class="section-number">10.4. </span>Package Environments</a><a class="headerlink" href="#package-environments" title="Permalink to this heading">#</a></h2>
+<p>As discussed, the Julia package manager allowed you to create fully reproducible environments (in the same spirit as Python’s and Conda virtual environments).</p>
+<p>As we saw before, <code class="docutils literal notranslate"><span class="pre">]</span></code> brings you into package mode.  Some of the key choices are</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">instantiate</span></code> (or <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">Pkg;</span> <span class="pre">Pkg.instantiate()</span></code> in the normal julia mode) will check if you have all of the packages and versions mentioned in the <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> files, and install as required.</p>
+<ul>
+<li><p>This feature will let you reproduce the entire environment and, if a <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> is available, the exact package versions used for a project.  For example, these lecture notes use <a class="reference external" href="https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Project.toml">Project.toml</a> and <a class="reference external" href="https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Manifest.toml">Manifest.toml</a> - which you likely instantiated during installation after downloading these notebooks.</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">add</span> <span class="pre">Expectations</span></code> will add a package (here, <code class="docutils literal notranslate"><span class="pre">Expectations.jl</span></code>) to the activated project file (or the global environment if none is activated).</p></li>
+<li><p>Likewise, <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">rm</span> <span class="pre">Expectations</span></code> will remove that package.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">st</span></code> will show you a snapshot of what you have installed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">up</span></code> will upgrade versions of your packages to the latest versions possible given the graph of compatibility used in each.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit <code class="docutils literal notranslate"><span class="pre">]</span></code> first and then run your commands).</p>
+</div>
+</section>
+<section id="more-options-and-configuration-choices">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink"><span class="section-number">10.5. </span>More Options and Configuration Choices</a><a class="headerlink" href="#more-options-and-configuration-choices" title="Permalink to this heading">#</a></h2>
+<p>VS Code and the related ecosystem have an enormous number of features and additional options.</p>
+<p>The following are some optional choices, not all directly connected to Julia.</p>
+<section id="optional-extensions">
+<span id="id2"></span><h3><span class="section-number">10.5.1. </span>Optional Extensions<a class="headerlink" href="#optional-extensions" title="Permalink to this heading">#</a></h3>
+<p>While not required for these lectures, consider installing the following extensions.  As before, you can search for them on the Marketplace or choose <code class="docutils literal notranslate"><span class="pre">Install</span></code> from the webpages themselves.</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter">Jupyter</a>: VS Code increasingly supports Jupyter notebooks directly, and this extension provides the ability to open and edit <code class="docutils literal notranslate"><span class="pre">.ipynb</span></code> notebook files without installing Conda and running <code class="docutils literal notranslate"><span class="pre">jupyter</span> <span class="pre">lab</span></code>.</p></li>
+<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens">GitLens</a>: An extension that provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-">last modified</a> each line of code)</p></li>
+<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github">GitHub Pull Requests and Issues</a>: while VS Code supports the git <a class="reference internal" href="version_control.html"><span class="doc">version control</span></a> natively, these extension provides additional features for working with repositories on GitHub itself.</p></li>
+<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one">Markdown All in One</a>: For editing the markdown format, such as <code class="docutils literal notranslate"><span class="pre">README.md</span></code> and similar files.</p></li>
+</ol>
+</section>
+<section id="vs-code-as-a-latex-editor">
+<span id="vscode-latex"></span><h3><span class="section-number">10.5.2. </span>VS Code as a LaTeX Editor<a class="headerlink" href="#vs-code-as-a-latex-editor" title="Permalink to this heading">#</a></h3>
+<p>VS Code has an outstanding LaTeX editing extension, which provides a good way to become comfortable with the tool and managing source code online.</p>
+<ol class="arabic simple">
+<li><p>Install a recent copy of tex</p>
+<ul class="simple">
+<li><p>Typically Windows users would want <a class="reference external" href="https://miktex.org/download">MiKTeX</a></p></li>
+<li><p>macOS and Linux users can also use use either <a class="reference external" href="https://miktex.org/download">MiKTeX</a> or <a class="reference external" href="https://www.tug.org/texlive/">TeX Live</a></p></li>
+<li><p>If you install MiKTeX, ensure you choose the “Always install missing packages on-the-fly” option</p></li>
+</ul>
+</li>
+<li><p>With a new VS Code session, install the following extensions</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop">LaTeX Workshop</a></p></li>
+<li><p>(Optional) <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker">Code Spell Checker</a></p></li>
+</ul>
+</li>
+<li><p>(Optional) If you wish to have the editor automatically compile and display the document when you save your <code class="docutils literal notranslate"><span class="pre">.tex</span></code> file: Then open the VS Code settings, and search for <code class="docutils literal notranslate"><span class="pre">autobuild</span></code> to set the option <code class="docutils literal notranslate"><span class="pre">Latex-workshop</span> <span class="pre">&gt;</span> <span class="pre">Latex</span> <span class="pre">&gt;</span> <span class="pre">Auto</span> <span class="pre">Build:</span> <span class="pre">Run</span></code> to <code class="docutils literal notranslate"><span class="pre">onSave</span></code>.</p></li>
+</ol>
+<p>No further configuration should be required, but see <a class="reference external" href="https://github.com/James-Yu/LaTeX-Workshop/wiki/Install">the manual</a> if you have problems.</p>
+<p>While there many ways to execute a compilation workflow, one method is to use “magic comments” at the top of a latex file.  This is not specific to LaTeX Workshop, and can be used by other tools.</p>
+<ol class="arabic">
+<li><p>In VS Code, create a new file, such as <code class="docutils literal notranslate"><span class="pre">rough_notes.tex</span></code> and copy in the following</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span><span class="c">% !TEX program = pdflatex</span>
+<span class="c">% !TEX enableSynctex = true</span>
+
+<span class="k">\documentclass</span><span class="nb">{</span>article<span class="nb">}</span>
+<span class="k">\title</span><span class="nb">{</span>Rough Notes<span class="nb">}</span>
+<span class="k">\begin</span><span class="nb">{</span>document<span class="nb">}</span>
+   <span class="k">\maketitle</span>
+   Some rough notes
+<span class="k">\end</span><span class="nb">{</span>document<span class="nb">}</span>
+</pre></div>
+</div>
+</li>
+<li><p>Save the document.  If you enabled the automatic build option in your settings, this should compile it.  Otherwise, use <code class="docutils literal notranslate"><span class="pre">F5</span></code> or the command palette <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Latex</span> <span class="pre">Workshop:</span> <span class="pre">Build</span> <span class="pre">Latex</span> <span class="pre">Project</span></code>.</p>
+<p>If you hover over the magnifying glass icon near the top right hand corner, It should look something like,</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vscode_latex_1.png"><img alt="../_images/vscode_latex_1.png" src="../_images/vscode_latex_1.png" style="width: 100%;" /></a>
+</figure>
+</li>
+<li><p>Click on that link, or use <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl+Alt+V&gt;</span></code> to get display the PDF Preview.</p>
+<ul class="simple">
+<li><p>The first time you do this, it will ask you to choose the PDF display. Choose <code class="docutils literal notranslate"><span class="pre">VSCode</span> <span class="pre">tab</span></code></p></li>
+<li><p>If you modify the document and save (or manually rebuild) the view will update</p></li>
+<li><p>If you double-click on the PDF it can take you to the synced section of the latex.  Conversely, if you use the <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl+Alt+J&gt;</span></code> or the palette <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">TeX</span> <span class="pre">Workshop:</span> <span class="pre">SyncTex</span> <span class="pre">from</span> <span class="pre">Cursor</span></code> it will find the appropriate section of the PDF based on your current cursor position in the <code class="docutils literal notranslate"><span class="pre">.tex</span></code> file.</p></li>
+</ul>
+</li>
+<li><p>Select the Problems pane at the bottom of the screen (which likely shows 1 warning and no error) or open it with <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl+Shift+M&gt;</span></code></p></li>
+</ol>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vscode_latex_2.png"><img alt="../_images/vscode_latex_2.png" src="../_images/vscode_latex_2.png" style="width: 100%;" /></a>
+</figure>
+<p>In that screenshot, we have also selected the <code class="docutils literal notranslate"><span class="pre">TeX</span></code> pane on the left hand side, which provides additional options for you to explore.  All of them have command-palette equivalents.</p>
+<p>If you wanted to have a bibliography, you would add it into the tex file as normal, and just add in the additional magic comment <code class="docutils literal notranslate"><span class="pre">%</span> <span class="pre">!BIB</span> <span class="pre">program</span> <span class="pre">=</span> <span class="pre">bibtex</span></code></p>
+<p>Finally, when using source code control, you will want to make sure you add the intermediate files to your <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> (see <a class="reference internal" href="version_control.html#discarding-changes"><span class="std std-ref">here</span></a> for more).  Typically, you would want to ignore</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>*.aux
+*.log
+*.synctex.gz
+*.pdf
+</pre></div>
+</div>
+<p>Ignoring the <code class="docutils literal notranslate"><span class="pre">*.pdf</span></code> is optional but strongly encouraged as it will ensure you don’t clog the repository with the binary pdf files, and make collaboration easier by preventing clashes on this file.</p>
+</section>
+<section id="font-choices">
+<h3><span class="section-number">10.5.3. </span>Font Choices<a class="headerlink" href="#font-choices" title="Permalink to this heading">#</a></h3>
+<p>Beyond their general use, the integrated terminals will use fonts installed within VS Code.  Given that Julia code supports mathematical notation, the extra support in good fonts can be helpful.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://juliamono.netlify.app/download/">JuliaMono</a> and  <a class="reference external" href="https://github.com/microsoft/cascadia-code">Cascadia Code</a> and <a class="reference external" href="https://github.com/tonsky/FiraCode">Fira Code</a> are all good options.</p></li>
+<li><p>You can adapt <a class="reference external" href="https://juliamono.netlify.app/faq/#vs-code">these</a> or <a class="reference external" href="https://techstacker.com/change-vscode-code-font/">these</a> instructions depending on the font choice.</p></li>
+</ul>
+<p>If on Windows, for your external terminal consider installing <a class="reference external" href="https://aka.ms/terminal">Windows Terminal</a>, which is built to support <a class="reference external" href="https://docs.microsoft.com/en-us/windows/terminal/cascadia-code">Cascadia</a> and <a class="reference external" href="https://docs.microsoft.com/en-us/windows/terminal/tutorials/powerline-setup">Powerline</a> fonts.</p>
+</section>
+<section id="remote-and-collaborative-extensions">
+<h3><span class="section-number">10.5.4. </span>Remote and Collaborative Extensions<a class="headerlink" href="#remote-and-collaborative-extensions" title="Permalink to this heading">#</a></h3>
+<p>If you ever need to use clusters or work with reproducible <a class="reference external" href="https://code.visualstudio.com/docs/remote/containers">containers</a>, VS Code has strong support for those features.  Key extensions for these are:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare-pack">VS LiveShare</a>: Collaborative coding within VS Code.</p></li>
+<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">Remote Extensions Pack</a>: Tools to access remote servers, local containers.  Install <a class="reference external" href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse">OpenSSH</a> if required.</p></li>
+<li><p><a class="reference external" href="https://marketplace.visualstudio.com/iems?itemName=liximomo.sftp">SFTP</a>: Secure copying of files to supported cloud services.</p></li>
+</ul>
+<p>Windows users will find good support to access a local linux installation with the <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for Linux</a> and the associated <a class="reference external" href="https://code.visualstudio.com/docs/remote/wsl-tutorial">VS Code Extension</a>.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.9"
+        },
+        kernelOptions: {
+            name: "julia-1.9",
+            path: "./software_engineering"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.9'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="qe-page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+
+            
+            <div class="qe-sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="qe-sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="qe-sidebar__nav" id="qe-sidebar-nav" aria-label="Main navigation">
+                    <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Getting Started with Julia
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/getting_started.html">
    1. Setting up Your Julia Environment
@@ -140,7 +673,7 @@ const thebe_selector_output = ".output, .cell_output"
   Package Ecosystem
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/generic_programming.html">
    6. Generic Programming
@@ -167,8 +700,8 @@ const thebe_selector_output = ".output, .cell_output"
   Software Engineering
  </span>
 </p>
-<ul class="current nav bd-sidenav">
- <li class="toctree-l1 current active">
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
    10. Visual Studio Code and Other Tools
   </a>
@@ -194,7 +727,7 @@ const thebe_selector_output = ".output, .cell_output"
   Tools and Techniques
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/geom_series.html">
    14. Geometric Series for Elementary Economics
@@ -236,7 +769,7 @@ const thebe_selector_output = ".output, .cell_output"
   Introduction to Dynamics
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
    21. Dynamics in One Dimension
@@ -278,7 +811,7 @@ const thebe_selector_output = ".output, .cell_output"
   Dynamic Programming
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
    28. Job Search I: The McCall Search Model
@@ -365,7 +898,7 @@ const thebe_selector_output = ".output, .cell_output"
   Modeling in Continuous Time
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
    44. Modeling COVID 19 with Differential Equations
@@ -382,7 +915,7 @@ const thebe_selector_output = ".output, .cell_output"
   Multiple Agent Models
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
    46. Schelling’s Segregation Model
@@ -444,7 +977,7 @@ const thebe_selector_output = ".output, .cell_output"
   Time Series Models
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
    57. Covariance Stationary Processes
@@ -481,7 +1014,7 @@ const thebe_selector_output = ".output, .cell_output"
   Dynamic Programming Squared
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
    63. Dynamic Stackelberg Problems
@@ -508,7 +1041,7 @@ const thebe_selector_output = ".output, .cell_output"
   Other
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
    67. About these Lectures
@@ -531,701 +1064,165 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 
-    </div>
-</nav> <!-- To handle the deprecated key -->
+                </nav>
 
-<div class="navbar_extra_footer">
-  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
-</div>
+                <div class="qe-sidebar__footer">
 
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/software_engineering/tools_editors.md"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
-            </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installing-vs-code">
-   10.1. Installing VS Code
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#optional-extensions-and-settings">
-     10.1.1. Optional Extensions and Settings
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#integrated-terminals-in-vs-code">
-     10.1.2. Integrated Terminals in VS Code
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#using-vs-code-with-julia">
-   10.2. Using VS Code with Julia
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#hello-world">
-     10.2.1. Hello World
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#adding-packages">
-     10.2.2. Adding Packages
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#executing-files">
-     10.2.3. Executing Files
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#using-the-debugger">
-     10.2.4. Using the Debugger
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-repl">
-   10.3. The REPL
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#starting-a-repl">
-     10.3.1. Starting a REPL
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#more-features-and-modes">
-     10.3.2. More Features and Modes
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#package-environments">
-   10.4. Package Environments
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#more-options-and-configuration-choices">
-   10.5. More Options and Configuration Choices
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#optional-extensions">
-     10.5.1. Optional Extensions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#vs-code-as-a-latex-editor">
-     10.5.2. VS Code as a LaTeX Editor
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#font-choices">
-     10.5.3. Font Choices
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#remote-and-collaborative-extensions">
-     10.5.4. Remote and Collaborative Extensions
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-
-            </nav>
-        </div>
-    </div>
-</div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Visual Studio Code and Other Tools</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#installing-vs-code">
-   10.1. Installing VS Code
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#optional-extensions-and-settings">
-     10.1.1. Optional Extensions and Settings
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#integrated-terminals-in-vs-code">
-     10.1.2. Integrated Terminals in VS Code
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#using-vs-code-with-julia">
-   10.2. Using VS Code with Julia
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#hello-world">
-     10.2.1. Hello World
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#adding-packages">
-     10.2.2. Adding Packages
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#executing-files">
-     10.2.3. Executing Files
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#using-the-debugger">
-     10.2.4. Using the Debugger
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#the-repl">
-   10.3. The REPL
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#starting-a-repl">
-     10.3.1. Starting a REPL
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#more-features-and-modes">
-     10.3.2. More Features and Modes
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#package-environments">
-   10.4. Package Environments
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#more-options-and-configuration-choices">
-   10.5. More Options and Configuration Choices
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#optional-extensions">
-     10.5.1. Optional Extensions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#vs-code-as-a-latex-editor">
-     10.5.2. VS Code as a LaTeX Editor
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#font-choices">
-     10.5.3. Font Choices
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#remote-and-collaborative-extensions">
-     10.5.4. Remote and Collaborative Extensions
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
                 </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="qe-toolbar">
+
+            <div class="qe-toolbar__inner">
+
+                <ul class="qe-toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                </ul>
+
+                <ul class="qe-toolbar__links">
+                    <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search..." aria-label="Search..." autocomplete="off" accesskey="k">
+                            <i data-feather="search" id="search-icon"></i>
+                        </form>
+                    </li>
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="/_notebooks/software_engineering/tools_editors.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li class="settings-button" id="settingsButton"><div data-tippy-content="Launch Notebook"><i data-feather="play-circle"></i></div></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/quantecon/lecture-julia.myst/blob/main/lectures/software_engineering/tools_editors.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
             </div>
-            
-              <div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p>Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title"> Notebook Launcher </p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input">
                 
-  <div id="qe-notebook-header" style="text-align:right;">
-        <a href="https://quantecon.org/" title="quantecon.org">
-                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
-        </a>
-</div><div class="tex2jax_ignore mathjax_ignore section" id="visual-studio-code-and-other-tools">
-<h1><a class="toc-backref" href="#id3"><span class="section-number">10. </span>Visual Studio Code and Other Tools</a><a class="headerlink" href="#visual-studio-code-and-other-tools" title="Permalink to this headline">¶</a></h1>
-<div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#visual-studio-code-and-other-tools" id="id3">Visual Studio Code and Other Tools</a></p>
-<ul>
-<li><p><a class="reference internal" href="#installing-vs-code" id="id4">Installing VS Code</a></p></li>
-<li><p><a class="reference internal" href="#using-vs-code-with-julia" id="id5">Using VS Code with Julia</a></p></li>
-<li><p><a class="reference internal" href="#the-repl" id="id6">The REPL</a></p></li>
-<li><p><a class="reference internal" href="#package-environments" id="id7">Package Environments</a></p></li>
-<li><p><a class="reference internal" href="#more-options-and-configuration-choices" id="id8">More Options and Configuration Choices</a></p></li>
-</ul>
-</li>
-</ul>
-</div>
-<p>While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.  Visual Studio Code (VS Code) in particular, is the most popular open source editor for programming - with a huge set of extensions and strong industry support.</p>
-<p>While you can use source code control, run terminals and the REPL (“Read-Evaluate-Print Loop”) without VS Code, we will concentrate on using it as a full IDE for all of these features.</p>
-<div class="section" id="installing-vs-code">
-<span id="install-vscode"></span><h2><a class="toc-backref" href="#id4"><span class="section-number">10.1. </span>Installing VS Code</a><a class="headerlink" href="#installing-vs-code" title="Permalink to this headline">¶</a></h2>
-<p>To install VS Code and the Julia Extension,</p>
-<ol class="simple">
-<li><p>First, ensure you followed the instructions for setting up Julia <a class="reference internal" href="../getting_started_julia/getting_started.html#jl-jupyterlocal"><span class="std std-ref">on your local computer</span></a>.</p></li>
-<li><p>In particular, ensure you did the initial <a class="reference internal" href="../getting_started_julia/getting_started.html#initial-vscode-setup"><span class="std std-ref">VS Code setup</span></a></p></li>
-<li><p>Install <a class="reference external" href="https://code.visualstudio.com/">VS Code</a> for your platform and open it</p></li>
-</ol>
-<p>See the <a class="reference external" href="https://www.julia-vscode.org/docs/dev/gettingstarted/#Installation-and-Configuration-1">Julia VS Code Documentation</a> for more details.</p>
-<p>If you have done a typical Julia installation, then this may be all that is needed and no configuration may be necessary.  However, if you have installed Julia in a non-standard location you may need to manually set the executable path.  See <a class="reference external" href="https://www.julia-vscode.org/docs/dev/gettingstarted/#Configuring-the-Julia-extension-1">here</a> for instructions if it errors when starting Julia terminals.</p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>“Open in Code” on MacOS and Linux
-VS Code supports the “Open with Code” action in File Explorer if chosen during the installation.  This is convenient, but not necessary.  To support it on MacOS you need to install a <a class="reference external" href="https://stackoverflow.com/questions/64040393/open-a-folder-in-vscode-through-finder-in-macos">Automator script or separate package</a>.  Similarly, see <a class="reference external" href="https://github.com/vvanloc/Nautilus-OpenInVSCode">here</a> for support on linux.</p>
-</div>
-<p>While the general <a class="reference external" href="https://code.visualstudio.com/docs/getstarted/userinterface">VS Code documentation</a> is excellent, we will review a few of the key concepts directly.  In addition, see <a class="reference internal" href="#optional-extensions"><span class="std std-ref">here</span></a> for other useful extensions when using VS Code not directly connected to these lectures.</p>
-<div class="section" id="optional-extensions-and-settings">
-<h3><span class="section-number">10.1.1. </span>Optional Extensions and Settings<a class="headerlink" href="#optional-extensions-and-settings" title="Permalink to this headline">¶</a></h3>
-<p>Open the settings with <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Preferences:</span> <span class="pre">Open</span> <span class="pre">User</span> <span class="pre">Settings</span></code> (see above for opening the command palette with <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl-Shift-P&gt;</span></code>).</p>
-<p>As a few optional suggestions for working with the settings,</p>
-<ul class="simple">
-<li><p>In the settings, search for <code class="docutils literal notranslate"><span class="pre">Tab</span> <span class="pre">Size</span></code> and you should find <code class="docutils literal notranslate"><span class="pre">Editor:</span> <span class="pre">Tab</span> <span class="pre">Size</span></code> which you can modify to 4.</p></li>
-<li><p>Search for <code class="docutils literal notranslate"><span class="pre">quick</span> <span class="pre">open</span></code> and change <code class="docutils literal notranslate"><span class="pre">Workbench</span> <span class="pre">&gt;</span> <span class="pre">Editor:</span> <span class="pre">Enable</span> <span class="pre">Preview</span> <span class="pre">from</span> <span class="pre">Quick</span> <span class="pre">Open</span></code> and consider setting it to false, though this is a matter of personal taste.</p></li>
-<li><p>If you are on Windows, search for <code class="docutils literal notranslate"><span class="pre">eol</span></code> and change <code class="docutils literal notranslate"><span class="pre">Files:</span> <span class="pre">Eol</span></code> to be <code class="docutils literal notranslate"><span class="pre">\n</span></code>.</p></li>
-<li><p>While it is a personal taste, consider enabling the <a class="reference external" href="https://code.visualstudio.com/updates/v1_60#_high-performance-bracket-pair-colorization">bracket colorizer</a> by finding the <code class="docutils literal notranslate"><span class="pre">bracketPairColorization</span></code> setting.</p></li>
-</ul>
-<p>A key feature of VS Code is that it can synchronize your extensions and settings across all of your computers, and even when used in-browser (e.g. with <a class="reference external" href="https://github.com/features/codespaces">GitHub CodeSpaces</a>).  To turn on,</p>
-<ul class="simple">
-<li><p>Ensure you have a <a class="reference external" href="https://github.com/">GitHub account</a>, which will be useful for <a class="reference internal" href="version_control.html"><span class="doc">further lectures</span></a></p></li>
-<li><p>Choose <code class="docutils literal notranslate"><span class="pre">Turn</span> <span class="pre">On</span> <span class="pre">Settings</span> <span class="pre">Sync...</span></code> in the gear icon at the bottom of the screen</p></li>
-</ul>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="https://code.visualstudio.com/assets/docs/editor/settings-sync/turn-on-sync.png"><img alt="https://code.visualstudio.com/assets/docs/editor/settings-sync/turn-on-sync.png" src="https://code.visualstudio.com/assets/docs/editor/settings-sync/turn-on-sync.png" style="width: 50%;" /></a>
-</div>
-<ul class="simple">
-<li><p>You can stick with all of the defaults, and read more in the <a class="reference external" href="https://code.visualstudio.com/docs/editor/settings-sync">instructions</a></p></li>
-</ul>
-</div>
-<div class="section" id="integrated-terminals-in-vs-code">
-<span id="terminals"></span><h3><span class="section-number">10.1.2. </span>Integrated Terminals in VS Code<a class="headerlink" href="#integrated-terminals-in-vs-code" title="Permalink to this headline">¶</a></h3>
-<p>A key benefit of VS Code is that you can use terminals and command-line interfaces directly within the editor, and starting in the convenient location relative to an opened project.</p>
-<p>Furthermore, in the case of julia (and other languages such as python) this will activate the project automatically.  See the <a class="reference external" href="https://code.visualstudio.com/docs/editor/integrated-terminal">documentation</a> for more details.</p>
-<p>You can open the terminal panel with  <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">View:</span> <span class="pre">Toggle</span> <span class="pre">Terminal</span></code> , typing <code class="docutils literal notranslate"><span class="pre">Ctrl+`</span> </code>, or by clicking on the list of warnings and errors bottom bar in VS Code.  If no existing terminal exists, it will create a new one.</p>
-</div>
-</div>
-<div class="section" id="using-vs-code-with-julia">
-<span id="vscode"></span><h2><a class="toc-backref" href="#id5"><span class="section-number">10.2. </span>Using VS Code with Julia</a><a class="headerlink" href="#using-vs-code-with-julia" title="Permalink to this headline">¶</a></h2>
-<p>The documentation for the VS Code extension provides many examples:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://www.julia-vscode.org/docs/dev/gettingstarted/#Creating-Your-First-Julia-Hello-World-program-1">Creating a Hello World</a></p></li>
-<li><p><a class="reference external" href="https://www.julia-vscode.org/docs/dev/userguide/debugging/">Debugging</a></p></li>
-<li><p><a class="reference external" href="https://www.julia-vscode.org/docs/dev/userguide/plotgallery/">Integrated Plots</a></p></li>
-<li><p><a class="reference external" href="https://www.julia-vscode.org/docs/dev/userguide/editingcode/">Code Completion</a></p></li>
-<li><p><a class="reference external" href="https://www.julia-vscode.org/docs/dev/userguide/codenavigation/">Code Navigation</a></p></li>
-</ul>
-<p>In addition, there are excellent youtube videos about provide more background.  For example, <a class="reference external" href="https://www.youtube.com/watch?v=F1R3ETaRQXY">Package Development in VSCode</a> shows advanced features.</p>
-<div class="section" id="hello-world">
-<h3><span class="section-number">10.2.1. </span>Hello World<a class="headerlink" href="#hello-world" title="Permalink to this headline">¶</a></h3>
-<p>To walk through a simple, but complete example.</p>
-<p>Create a new directory on your computer, for example <code class="docutils literal notranslate"><span class="pre">hello_world</span></code> and then open VS Code in that folder  This can be done several ways,</p>
-<ul class="simple">
-<li><p>Within a terminal on your operating system, navigate that directory and type <code class="docutils literal notranslate"><span class="pre">code</span> <span class="pre">.</span></code></p></li>
-<li><p>On Windows, right click on the folder and choose <code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">with</span> <span class="pre">Code</span></code> - trusting the authors as required on opening the folder.</p></li>
-<li><p>In the VS Code Menu, choose <code class="docutils literal notranslate"><span class="pre">File/Open</span> <span class="pre">Folder...</span></code></p></li>
-</ul>
-<p>Next, in the left hand panel, under <code class="docutils literal notranslate"><span class="pre">HELLO_WORLD</span></code>, right click and choose <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">File</span></code> and create as <code class="docutils literal notranslate"><span class="pre">hello.jl</span></code>.  The screen should look something like</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vscode_file_created.png"><img alt="../_images/vscode_file_created.png" src="../_images/vscode_file_created.png" style="width: 100%;" /></a>
-</div>
-<p>Type some code as such <code class="docutils literal notranslate"><span class="pre">f(x)</span> <span class="pre">=</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">1</span></code> into the file, into the <code class="docutils literal notranslate"><span class="pre">.jl</span></code> file, save it, and while your mouse curser is on the line of code do <code class="docutils literal notranslate"><span class="pre">&lt;Shift-Enter&gt;</span></code>.  If a julia REPL wasn’t already started, it will be started and the code will be run within its kernel</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vscode_jl_function.png"><img alt="../_images/vscode_jl_function.png" src="../_images/vscode_jl_function.png" style="width: 100%;" /></a>
-</div>
-<p>At this point, the function is available for use within either the code or the REPL.  You can get inline results by adding more code to the file and executing each line with <code class="docutils literal notranslate"><span class="pre">&lt;Shift-Enter&gt;</span></code>.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vscode_jl_function_2.png"><img alt="../_images/vscode_jl_function_2.png" src="../_images/vscode_jl_function_2.png" style="width: 100%;" /></a>
-</div>
-<p>That code is also accessible within the REPL.  Executing the function there,</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vscode_repl_1.png"><img alt="../_images/vscode_repl_1.png" src="../_images/vscode_repl_1.png" style="width: 100%;" /></a>
-</div>
-<p>Because the REPL and the files are synchronized, you can modify functions and simple choose <code class="docutils literal notranslate"><span class="pre">&lt;shift-Enter&gt;</span></code> to update their definitions before analyzing the results in the REPL or in the file itself.</p>
-</div>
-<div class="section" id="adding-packages">
-<span id="id1"></span><h3><span class="section-number">10.2.2. </span>Adding Packages<a class="headerlink" href="#adding-packages" title="Permalink to this headline">¶</a></h3>
-<p>Next we will go through simple use of the plotting and package management.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to <code class="docutils literal notranslate"><span class="pre">(&#64;v1.8)</span> <span class="pre">pkg&gt;</span></code> rather than <code class="docutils literal notranslate"><span class="pre">(hello_world)</span> <span class="pre">pkg</span> <span class="pre">&gt;</span></code> then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">activate</span> <span class="pre">.</span></code>.</p>
-<p>You can always see the current package location and details with <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">st</span></code>.  See <a class="reference internal" href="#jl-packages"><span class="std std-ref">Julia Environments</span></a> for more details.</p>
-</div>
-<p>The REPL.  First, type <code class="docutils literal notranslate"><span class="pre">]</span></code> to enter the package management mode, then <code class="docutils literal notranslate"><span class="pre">add</span> <span class="pre">Plots</span></code>.  Depending on whether you have done similar operations before, this may download a lot of dependencies.  See below for an example</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vscode_package_added.png"><img alt="../_images/vscode_package_added.png" src="../_images/vscode_package_added.png" style="width: 100%;" /></a>
-</div>
-<p>Crucially, you will notice that two new files are created. <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code>.  These provide a snapshot of all of the packages used in this particular project.</p>
-<p>Add code in the <code class="docutils literal notranslate"><span class="pre">.jl</span></code> file for a simple plot, and it will be shown on a separate pane</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vscode_plots.png"><img alt="../_images/vscode_plots.png" src="../_images/vscode_plots.png" style="width: 100%;" /></a>
-</div>
-<p>To exit package management mode and return to the REPL, type <code class="docutils literal notranslate"><span class="pre">Ctrl+C</span></code>. To then go from the REPL back to the VS Code terminal, type <code class="docutils literal notranslate"><span class="pre">Ctrl+D</span></code>.</p>
-</div>
-<div class="section" id="executing-files">
-<h3><span class="section-number">10.2.3. </span>Executing Files<a class="headerlink" href="#executing-files" title="Permalink to this headline">¶</a></h3>
-<p>First we will reorganize our file so that it is a set of functions with a call at the end rather than a script.  Replace the code with</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span>
+                    <option value="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/software_engineering/tools_editors.ipynb">Colab</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" data-repourl="https://github.com/quantecon/lecture-julia.notebooks" data-urlpath="tree/lecture-julia.notebooks/software_engineering/tools_editors.ipynb" data-branch=main>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            </ul>
+            <p class="launch"><a href="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/software_engineering/tools_editors.ipynb" id="advancedLaunchButton" target="_blank">Launch Notebook</a></p>
+            <script>
+                // QuantEcon Notebook Launcher
+                const launcherTypeElements = document.querySelectorAll('#settingsModal .modal-servers li');
+                // Highlight the server type if previous selection exists
+                if (typeof localStorage.launcherType !== 'undefined') {
+                  for (var i = 0; i < launcherTypeElements.length; i++) {
+                    launcherTypeElements[i].classList.remove('active');
+                    if ( launcherTypeElements[i].classList.contains(localStorage.launcherType) ) {
+                      launcherTypeElements[i].classList.add('active');
+                    }
+                  }
+                }
+                // Highlight server type on click and set local storage value
+                for (var i = 0; i < launcherTypeElements.length; i++) {
+                  launcherTypeElements[i].addEventListener('click', function() {
+                    for (var j = 0; j < launcherTypeElements.length; j++) {
+                      launcherTypeElements[j].classList.remove('active');
+                    }
+                    this.classList.add('active');
+                    if ( this.classList.contains('launcher-private') ) {
+                      localStorage.launcherType = 'launcher-private';
+                    } else if ( this.classList.contains('launcher-public') ) {
+                      localStorage.launcherType = 'launcher-public';
+                    }
+                    setLaunchServer();
+                  })
+                }
+                const launcherPublic = document.getElementById('launcher-public-input');
+                const launcherPrivate = document.getElementById('launcher-private-input');
+                const pageName = "software_engineering/tools_editors";
+                const repoURL = "https://github.com/quantecon/lecture-julia.notebooks";
+                const urlPath = "tree/lecture-julia.notebooks/software_engineering/tools_editors.ipynb";
+                const branch = "main"
+                const launchNotebookLink = document.getElementById('advancedLaunchButton');
 
-<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
-<span class="k">function</span><span class="w"> </span><span class="n">plot_results</span><span class="p">()</span>
-<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="mi">5</span>
-<span class="w">    </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">f</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="w">    </span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
-<span class="w">    </span><span class="n">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="k">end</span>
+                // Highlight public server option if previous selection exists
+                if (typeof localStorage.launcherPublic !== 'undefined') {
+                  launcherPublic.value = localStorage.launcherPublic;
+                }
+                // Update local storage upon public server selection
+                launcherPublic.addEventListener('change', (event) => {
+                  setLaunchServer();
+                });
+                // Populate private server input if previous entry exists
+                if (typeof localStorage.launcherPrivate !== 'undefined') {
+                  launcherPrivate.value = localStorage.launcherPrivate;
+                }
+                // Update local storage when a private server is entered
+                launcherPrivate.addEventListener('input', (event) => {
+                  setLaunchServer();
+                });
 
-<span class="c"># execute main function</span>
-<span class="n">plot_results</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>While it is fine to use scripts with code not organized in functions for exploration, you will want to organize any serious computations inside of a function.  While this may not matter for every problem, this will let the compiler avoid global variables and highly optimize the results.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The behavior of global variables accessed in loops in the <code class="docutils literal notranslate"><span class="pre">REPL</span></code>, Debugger, inline code evaluations, and Jupyter notebooks is different from executed files.  See the documentation on <a class="reference external" href="https://docs.julialang.org/en/v1/manual/variables-and-scoping/#On-Soft-Scope">soft scoping</a> for more background.  A good heuristic which will avoid these issues is to (1) never use loops outside of a function when you write <code class="docutils literal notranslate"><span class="pre">.jl</span></code> files; and (2) if you ever use the <code class="docutils literal notranslate"><span class="pre">global</span></code> keyword, assume something is wrong and you should put something in a function.</p>
-</div>
-<p>You can execute a <code class="docutils literal notranslate"><span class="pre">.jl</span></code> file in several ways.</p>
-<p>Within a terminal, you can provide the path to the file.  For example,</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>julia<span class="w"> </span>--threads<span class="w"> </span>auto<span class="w"> </span>--project<span class="w"> </span>hello.jl
-</pre></div>
-</div>
-<p>See the <a class="reference internal" href="#repl-main"><span class="std std-ref">REPL</span></a> section for more details on the commandline options.</p>
-<p>Alternatively, within VS Code itself you can use the <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl-F5&gt;</span></code> to run the new file.</p>
-</div>
-<div class="section" id="using-the-debugger">
-<span id="debugger"></span><h3><span class="section-number">10.2.4. </span>Using the Debugger<a class="headerlink" href="#using-the-debugger" title="Permalink to this headline">¶</a></h3>
-<p>To debug your function, first click to the left of a line of code to create a breakpoint (seen as a red dot).</p>
-<p>Next, use <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl-Shift-D&gt;</span></code> or select the run and debug tab on the left in Julia to see</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/debugger_1.png"><img alt="../_images/debugger_1.png" src="../_images/debugger_1.png" style="width: 100%;" /></a>
-</div>
-<p>Then choose the <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">and</span> <span class="pre">Debug</span></code> option and it will execute <code class="docutils literal notranslate"><span class="pre">plot_results()</span></code> at the bottom of the file, and then stop inside at the breakpoint.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Some users may see other options like <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">active</span> <span class="pre">Julia</span> <span class="pre">file</span></code> instead of <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">and</span> <span class="pre">Debug</span></code> in the run and debug tab.</p>
-</div>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/debugger_2.png"><img alt="../_images/debugger_2.png" src="../_images/debugger_2.png" style="width: 100%;" /></a>
-</div>
-<p>You can use the toolbar at the top to step through the code, as described in the <a class="reference external" href="https://www.julia-vscode.org/docs/dev/userguide/debugging/">documentation</a>.</p>
-<p>As an alternative way to start the debugger, you can instead debug a call within the REPL with commands like <code class="docutils literal notranslate"><span class="pre">&#64;run</span> <span class="pre">plot_results()</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The Julia Debugger runs some of the code in an interpreted mode that might be far slower than typical  compiled and optimized code.  For this reason, it may not be possible to use it in all the same ways you might use something like the Matlab debugger.  However, if you organize your code appropriately, you may find that the <a class="reference external" href="https://www.julia-vscode.org/docs/stable/userguide/debugging/#Compile-mode-1">compile mode</a> enables you to concentrate on debugging only some of the functions, while letting slow functions remain compiled.</p>
-</div>
-</div>
-</div>
-<div class="section" id="the-repl">
-<span id="repl-main"></span><h2><a class="toc-backref" href="#id6"><span class="section-number">10.3. </span>The REPL</a><a class="headerlink" href="#the-repl" title="Permalink to this headline">¶</a></h2>
-<p>Even if you are working primarily in <code class="docutils literal notranslate"><span class="pre">.jl</span></code> and/or Jupyter Notebooks in Julia, you will need to become comfortable with the REPL.  We saw some initial use of this when <a class="reference internal" href="#adding-packages"><span class="std std-ref">adding packages</span></a> and exploring the code above, but the REPL has many <a class="reference external" href="https://docs.julialang.org/en/v1/stdlib/REPL/#The-Julia-REPL">more features</a>.</p>
-<div class="section" id="starting-a-repl">
-<h3><span class="section-number">10.3.1. </span>Starting a REPL<a class="headerlink" href="#starting-a-repl" title="Permalink to this headline">¶</a></h3>
-<p>There are several ways to start the REPL.</p>
-<ul class="simple">
-<li><p>Within VS Code, executing code inline will start it as required.</p></li>
-<li><p>In the command palette of VS Code, choose  <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Julia:</span> <span class="pre">Start</span> <span class="pre">REPL</span></code></p></li>
-<li><p>Outside of VS Code, if julia was installed on your system path, you can simply type <code class="docutils literal notranslate"><span class="pre">julia</span></code> or with other options</p></li>
-</ul>
-<p>The command line options for starting Julia are set to decent defaults for terminals running within VS Code, but you will want to set them yourself if starting the REPL otherwise.</p>
-<p>As an example, the argument <code class="docutils literal notranslate"><span class="pre">--threads</span></code> determines the number of threads that Julia starts with.  If starting <code class="docutils literal notranslate"><span class="pre">julia</span></code> on the command line without specifying any arguments, it will default to 1 (or check an environment variable).  To have Julia automatically choose the number of threads based on the number of processors for your machine, pass the <code class="docutils literal notranslate"><span class="pre">--threads</span> <span class="pre">auto</span></code> argument.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>VS Code sets the number of threads automatically based on the number of cores on your machine, but the value can be modified in its <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Preferences:</span> <span class="pre">Open</span> <span class="pre">User</span> <span class="pre">Settings</span></code> and then search for <code class="docutils literal notranslate"><span class="pre">Julia:</span> <span class="pre">Num</span> <span class="pre">Threads</span></code>.</p>
-</div>
-<p>The most important choice is the <code class="docutils literal notranslate"><span class="pre">--project</span></code> toggle which determines whether you want to activate an existing project (or create a new one) when starting the interpreter.  Since a key feature of Julia is to have fully reproducible environments, you will want to do this whenever possible.</p>
-<p>To emphasize this point, this is an example of the <code class="docutils literal notranslate"><span class="pre">]st</span> </code> showing the global environment has only the bare minimum of packages installed.  With this workflow, all other packages are installed only when a given project is activated.</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(@v1.8) pkg&gt; st
-      Status `C:\Users\jesse\.julia\environments\v1.8\Project.toml`
-[7073ff75] IJulia v1.23.2
-[14b8a8f1] PkgTemplates v0.7.18
-[295af30f] Revise v3.1.19
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>A key difference between Julia and some other package managers is that it is capable of having different versions of each package for different projects - which ensures all projects are fully reproducible by you, your future self, and any other collaborators.  While there is a global set of packages available (e.g. <code class="docutils literal notranslate"><span class="pre">IJulia.jl</span></code> to ensure Jupyter support) you should try to keep the packages in different projects separated.  See the documentation on <a class="reference external" href="https://docs.julialang.org/en/v1/manual/code-loading/#Environments-1">environments</a> and the <a class="reference external" href="https://pkgdocs.julialang.org/v1/getting-started/">package manager</a> for more.</p>
-</div>
-<p>If you start the terminal without activating a project, you can activate it afterwards with <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">activate</span> <span class="pre">.</span></code> or <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">Pkg;</span> <span class="pre">Pkg.activate()</span></code>.</p>
-<p>To see this in action, within an external terminal we will open it using both methods, and then use <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">st</span></code> to see which project is activated and which packages are available.</p>
-<p>First, with <code class="docutils literal notranslate"><span class="pre">julia</span> <span class="pre">--threads</span> <span class="pre">auto</span></code> we see that the globally installed packages are available at first, but that the existing <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> in that folder are chosen after we choose <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">activate</span> <span class="pre">.</span></code></p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/repl_1.png"><img alt="../_images/repl_1.png" src="../_images/repl_1.png" style="width: 100%;" /></a>
-</div>
-<p>Next, with <code class="docutils literal notranslate"><span class="pre">julia</span> <span class="pre">--threads</span> <span class="pre">auto</span> <span class="pre">--project</span></code> the project is automatically activated</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/repl_2.png"><img alt="../_images/repl_2.png" src="../_images/repl_2.png" style="width: 100%;" /></a>
-</div>
-<p>Finally, if you choose the <code class="docutils literal notranslate"><span class="pre">--project</span></code> option in a folder which doesn’t have an existing project file, it will create them as required.</p>
-<p>A few other features of the REPL include,</p>
-</div>
-<div class="section" id="more-features-and-modes">
-<h3><span class="section-number">10.3.2. </span>More Features and Modes<a class="headerlink" href="#more-features-and-modes" title="Permalink to this headline">¶</a></h3>
-<p>Hitting <code class="docutils literal notranslate"><span class="pre">;</span></code> brings you into shell mode, which lets you run bash commands (PowerShell on Windows)</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="p">;</span><span class="w"> </span><span class="n">pwd</span>
-</pre></div>
-</div>
-<p>In addition, <code class="docutils literal notranslate"><span class="pre">?</span></code> will bring you into help mode.</p>
-<p>The key use case is to find docstrings for functions and macros, e.g.</p>
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="o">?</span><span class="w"> </span><span class="n">print</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="package-environments">
-<span id="jl-packages"></span><h2><a class="toc-backref" href="#id7"><span class="section-number">10.4. </span>Package Environments</a><a class="headerlink" href="#package-environments" title="Permalink to this headline">¶</a></h2>
-<p>As discussed, the Julia package manager allowed you to create fully reproducible environments (in the same spirit as Python’s and Conda virtual environments).</p>
-<p>As we saw before, <code class="docutils literal notranslate"><span class="pre">]</span></code> brings you into package mode.  Some of the key choices are</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">instantiate</span></code> (or <code class="docutils literal notranslate"><span class="pre">using</span> <span class="pre">Pkg;</span> <span class="pre">Pkg.instantiate()</span></code> in the normal julia mode) will check if you have all of the packages and versions mentioned in the <code class="docutils literal notranslate"><span class="pre">Project.toml</span></code> and <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> files, and install as required.</p>
-<ul>
-<li><p>This feature will let you reproduce the entire environment and, if a <code class="docutils literal notranslate"><span class="pre">Manifest.toml</span></code> is available, the exact package versions used for a project.  For example, these lecture notes use <a class="reference external" href="https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Project.toml">Project.toml</a> and <a class="reference external" href="https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Manifest.toml">Manifest.toml</a> - which you likely instantiated during installation after downloading these notebooks.</p></li>
-</ul>
-</li>
-<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">add</span> <span class="pre">Expectations</span></code> will add a package (here, <code class="docutils literal notranslate"><span class="pre">Expectations.jl</span></code>) to the activated project file (or the global environment if none is activated).</p></li>
-<li><p>Likewise, <code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">rm</span> <span class="pre">Expectations</span></code> will remove that package.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">st</span></code> will show you a snapshot of what you have installed.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">]</span> <span class="pre">up</span></code> will upgrade versions of your packages to the latest versions possible given the graph of compatibility used in each.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>On some operating systems (such as OSX) REPL pasting may not work for package mode, and you will need to access it in the standard way (i.e., hit <code class="docutils literal notranslate"><span class="pre">]</span></code> first and then run your commands).</p>
-</div>
-</div>
-<div class="section" id="more-options-and-configuration-choices">
-<h2><a class="toc-backref" href="#id8"><span class="section-number">10.5. </span>More Options and Configuration Choices</a><a class="headerlink" href="#more-options-and-configuration-choices" title="Permalink to this headline">¶</a></h2>
-<p>VS Code and the related ecosystem have an enormous number of features and additional options.</p>
-<p>The following are some optional choices, not all directly connected to Julia.</p>
-<div class="section" id="optional-extensions">
-<span id="id2"></span><h3><span class="section-number">10.5.1. </span>Optional Extensions<a class="headerlink" href="#optional-extensions" title="Permalink to this headline">¶</a></h3>
-<p>While not required for these lectures, consider installing the following extensions.  As before, you can search for them on the Marketplace or choose <code class="docutils literal notranslate"><span class="pre">Install</span></code> from the webpages themselves.</p>
-<ol class="simple">
-<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter">Jupyter</a>: VS Code increasingly supports Jupyter notebooks directly, and this extension provides the ability to open and edit <code class="docutils literal notranslate"><span class="pre">.ipynb</span></code> notebook files without installing Conda and running <code class="docutils literal notranslate"><span class="pre">jupyter</span> <span class="pre">lab</span></code>.</p></li>
-<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens">GitLens</a>: An extension that provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-">last modified</a> each line of code)</p></li>
-<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github">GitHub Pull Requests and Issues</a>: while VS Code supports the git <a class="reference internal" href="version_control.html"><span class="doc">version control</span></a> natively, these extension provides additional features for working with repositories on GitHub itself.</p></li>
-<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one">Markdown All in One</a>: For editing the markdown format, such as <code class="docutils literal notranslate"><span class="pre">README.md</span></code> and similar files.</p></li>
-</ol>
-</div>
-<div class="section" id="vs-code-as-a-latex-editor">
-<span id="vscode-latex"></span><h3><span class="section-number">10.5.2. </span>VS Code as a LaTeX Editor<a class="headerlink" href="#vs-code-as-a-latex-editor" title="Permalink to this headline">¶</a></h3>
-<p>VS Code has an outstanding LaTeX editing extension, which provides a good way to become comfortable with the tool and managing source code online.</p>
-<ol class="simple">
-<li><p>Install a recent copy of tex</p>
-<ul class="simple">
-<li><p>Typically Windows users would want <a class="reference external" href="https://miktex.org/download">MiKTeX</a></p></li>
-<li><p>macOS and Linux users can also use use either <a class="reference external" href="https://miktex.org/download">MiKTeX</a> or <a class="reference external" href="https://www.tug.org/texlive/">TeX Live</a></p></li>
-<li><p>If you install MiKTeX, ensure you choose the “Always install missing packages on-the-fly” option</p></li>
-</ul>
-</li>
-<li><p>With a new VS Code session, install the following extensions</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop">LaTeX Workshop</a></p></li>
-<li><p>(Optional) <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker">Code Spell Checker</a></p></li>
-</ul>
-</li>
-<li><p>(Optional) If you wish to have the editor automatically compile and display the document when you save your <code class="docutils literal notranslate"><span class="pre">.tex</span></code> file: Then open the VS Code settings, and search for <code class="docutils literal notranslate"><span class="pre">autobuild</span></code> to set the option <code class="docutils literal notranslate"><span class="pre">Latex-workshop</span> <span class="pre">&gt;</span> <span class="pre">Latex</span> <span class="pre">&gt;</span> <span class="pre">Auto</span> <span class="pre">Build:</span> <span class="pre">Run</span></code> to <code class="docutils literal notranslate"><span class="pre">onSave</span></code>.</p></li>
-</ol>
-<p>No further configuration should be required, but see <a class="reference external" href="https://github.com/James-Yu/LaTeX-Workshop/wiki/Install">the manual</a> if you have problems.</p>
-<p>While there many ways to execute a compilation workflow, one method is to use “magic comments” at the top of a latex file.  This is not specific to LaTeX Workshop, and can be used by other tools.</p>
-<ol>
-<li><p>In VS Code, create a new file, such as <code class="docutils literal notranslate"><span class="pre">rough_notes.tex</span></code> and copy in the following</p>
-<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span><span class="c">% !TEX program = pdflatex</span>
-<span class="c">% !TEX enableSynctex = true</span>
+                // Function to update the "Launch Notebook" link href
+                function setLaunchServer() {
+                  launchNotebookLink.removeAttribute("style")
+                  if ( localStorage.launcherType == 'launcher-private' ) {
+                    let repoPrefix = "/jupyter/hub/user-redirect/git-pull?repo=" + repoURL + "&branch=" + branch + "&urlpath=" + urlPath;
+                    launcherPrivateValue = launcherPrivate.value
+                    if (!launcherPrivateValue) {
+                        launchNotebookLink.removeAttribute("href")
+                        launchNotebookLink.style.background = "grey"
+                        return
+                    }
+                    localStorage.launcherPrivate = launcherPrivateValue;
+                    privateServer = localStorage.launcherPrivate.replace(/\/$/, "")
+                    if (!privateServer.includes("http")) {
+                        privateServer = "http://" + privateServer
+                    }
+                    launchNotebookLinkURL = privateServer + repoPrefix;
+                  } else if ( localStorage.launcherType == 'launcher-public' ) {
+                    launcherPublicValue = launcherPublic.options[launcherPublic.selectedIndex].value;
+                    localStorage.launcherPublic = launcherPublicValue;
+                    launchNotebookLinkURL = localStorage.launcherPublic;
+                  }
+                  if (launchNotebookLinkURL) launchNotebookLink.href = launchNotebookLinkURL;
+                }
+                // Check if user has previously selected a server
+                if ( (typeof localStorage.launcherPrivate !== 'undefined') || (typeof localStorage.launcherPublic !== 'undefined') ) {
+                  setLaunchServer();
+                }
+                </script>
 
-<span class="k">\documentclass</span><span class="nb">{</span>article<span class="nb">}</span>
-<span class="k">\title</span><span class="nb">{</span>Rough Notes<span class="nb">}</span>
-<span class="k">\begin</span><span class="nb">{</span>document<span class="nb">}</span>
-   <span class="k">\maketitle</span>
-   Some rough notes
-<span class="k">\end</span><span class="nb">{</span>document<span class="nb">}</span>
-</pre></div>
-</div>
-</li>
-<li><p>Save the document.  If you enabled the automatic build option in your settings, this should compile it.  Otherwise, use <code class="docutils literal notranslate"><span class="pre">F5</span></code> or the command palette <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Latex</span> <span class="pre">Workshop:</span> <span class="pre">Build</span> <span class="pre">Latex</span> <span class="pre">Project</span></code>.</p>
-<p>If you hover over the magnifying glass icon near the top right hand corner, It should look something like,</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vscode_latex_1.png"><img alt="../_images/vscode_latex_1.png" src="../_images/vscode_latex_1.png" style="width: 100%;" /></a>
-</div>
-</li>
-<li><p>Click on that link, or use <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl+Alt+V&gt;</span></code> to get display the PDF Preview.</p>
-<ul class="simple">
-<li><p>The first time you do this, it will ask you to choose the PDF display. Choose <code class="docutils literal notranslate"><span class="pre">VSCode</span> <span class="pre">tab</span></code></p></li>
-<li><p>If you modify the document and save (or manually rebuild) the view will update</p></li>
-<li><p>If you double-click on the PDF it can take you to the synced section of the latex.  Conversely, if you use the <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl+Alt+J&gt;</span></code> or the palette <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">TeX</span> <span class="pre">Workshop:</span> <span class="pre">SyncTex</span> <span class="pre">from</span> <span class="pre">Cursor</span></code> it will find the appropriate section of the PDF based on your current cursor position in the <code class="docutils literal notranslate"><span class="pre">.tex</span></code> file.</p></li>
-</ul>
-</li>
-<li><p>Select the Problems pane at the bottom of the screen (which likely shows 1 warning and no error) or open it with <code class="docutils literal notranslate"><span class="pre">&lt;Ctrl+Shift+M&gt;</span></code></p></li>
-</ol>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vscode_latex_2.png"><img alt="../_images/vscode_latex_2.png" src="../_images/vscode_latex_2.png" style="width: 100%;" /></a>
-</div>
-<p>In that screenshot, we have also selected the <code class="docutils literal notranslate"><span class="pre">TeX</span></code> pane on the left hand side, which provides additional options for you to explore.  All of them have command-palette equivalents.</p>
-<p>If you wanted to have a bibliography, you would add it into the tex file as normal, and just add in the additional magic comment <code class="docutils literal notranslate"><span class="pre">%</span> <span class="pre">!BIB</span> <span class="pre">program</span> <span class="pre">=</span> <span class="pre">bibtex</span></code></p>
-<p>Finally, when using source code control, you will want to make sure you add the intermediate files to your <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> (see <a class="reference internal" href="version_control.html#discarding-changes"><span class="std std-ref">here</span></a> for more).  Typically, you would want to ignore</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>*.aux
-*.log
-*.synctex.gz
-*.pdf
-</pre></div>
-</div>
-<p>Ignoring the <code class="docutils literal notranslate"><span class="pre">*.pdf</span></code> is optional but strongly encouraged as it will ensure you don’t clog the repository with the binary pdf files, and make collaboration easier by preventing clashes on this file.</p>
-</div>
-<div class="section" id="font-choices">
-<h3><span class="section-number">10.5.3. </span>Font Choices<a class="headerlink" href="#font-choices" title="Permalink to this headline">¶</a></h3>
-<p>Beyond their general use, the integrated terminals will use fonts installed within VS Code.  Given that Julia code supports mathematical notation, the extra support in good fonts can be helpful.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://juliamono.netlify.app/download/">JuliaMono</a> and  <a class="reference external" href="https://github.com/microsoft/cascadia-code">Cascadia Code</a> and <a class="reference external" href="https://github.com/tonsky/FiraCode">Fira Code</a> are all good options.</p></li>
-<li><p>You can adapt <a class="reference external" href="https://juliamono.netlify.app/faq/#vs-code">these</a> or <a class="reference external" href="https://techstacker.com/change-vscode-code-font/">these</a> instructions depending on the font choice.</p></li>
-</ul>
-<p>If on Windows, for your external terminal consider installing <a class="reference external" href="https://aka.ms/terminal">Windows Terminal</a>, which is built to support <a class="reference external" href="https://docs.microsoft.com/en-us/windows/terminal/cascadia-code">Cascadia</a> and <a class="reference external" href="https://docs.microsoft.com/en-us/windows/terminal/tutorials/powerline-setup">Powerline</a> fonts.</p>
-</div>
-<div class="section" id="remote-and-collaborative-extensions">
-<h3><span class="section-number">10.5.4. </span>Remote and Collaborative Extensions<a class="headerlink" href="#remote-and-collaborative-extensions" title="Permalink to this headline">¶</a></h3>
-<p>If you ever need to use clusters or work with reproducible <a class="reference external" href="https://code.visualstudio.com/docs/remote/containers">containers</a>, VS Code has strong support for those features.  Key extensions for these are:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare-pack">VS LiveShare</a>: Collaborative coding within VS Code.</p></li>
-<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack">Remote Extensions Pack</a>: Tools to access remote servers, local containers.  Install <a class="reference external" href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse">OpenSSH</a> if required.</p></li>
-<li><p><a class="reference external" href="https://marketplace.visualstudio.com/iems?itemName=liximomo.sftp">SFTP</a>: Secure copying of files to supported cloud services.</p></li>
-</ul>
-<p>Windows users will find good support to access a local linux installation with the <a class="reference external" href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">Windows Subsystem for Linux</a> and the associated <a class="reference external" href="https://code.visualstudio.com/docs/remote/wsl-tutorial">VS Code Extension</a>.</p>
-</div>
-</div>
-</div>
-
-    <script type="text/x-thebe-config">
-    {
-        requestKernel: true,
-        binderOptions: {
-            repo: "binder-examples/jupyter-stacks-datascience",
-            ref: "master",
-        },
-        codeMirrorConfig: {
-            theme: "abcdef",
-            mode: "julia-1.9"
-        },
-        kernelOptions: {
-            kernelName: "julia-1.9",
-            path: "./software_engineering"
-        },
-        predefinedOutput: true
-    }
-    </script>
-    <script>kernelName = 'julia-1.9'</script>
-
-              </div>
-              
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="../more_julia/optimization_solver_packages.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title"><span class="section-number">9. </span>Solvers, Optimizers, and Automatic Differentiation</p>
         </div>
-    </a>
-    <a class='right-next' id="next-link" href="version_control.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">11. </span>GitHub, Version Control and Collaboration</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            
-        </div>
-    </div>
-    <footer class="footer">
-  <p>
-    
-      By Jesse Perla & Thomas J. Sargent & John Stachurski<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
 
-
-      </div>
-    </div>
-  
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
-
+    </div> <!-- .wrapper-->
   </body>
 </html>

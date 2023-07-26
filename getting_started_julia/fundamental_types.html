@@ -1,50 +1,110 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>4. Arrays, Tuples, Ranges, and Other Fundamental Types &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+        <script>
+            MathJax = {
+            loader: {load: ['[tex]/boldsymbol', '[tex]/textmacros']},
+            tex: {
+                packages: {'[+]': ['boldsymbol', 'textmacros']},
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true,
+                macros: {
+                    "argmax" : "arg\\,max",
+                    "argmin" : "arg\\,min",
+                    "col"    : "col",
+                    "Span"   :  "span",
+                    "epsilon": "\\varepsilon",
+                    "EE": "\\mathbb{E}",
+                    "PP": "\\mathbb{P}",
+                    "RR": "\\mathbb{R}",
+                    "NN": "\\mathbb{N}",
+                    "ZZ": "\\mathbb{Z}",
+                    "aA": "\\mathcal{A}",
+                    "bB": "\\mathcal{B}",
+                    "cC": "\\mathcal{C}",
+                    "dD": "\\mathcal{D}",
+                    "eE": "\\mathcal{E}",
+                    "fF": "\\mathcal{F}",
+                    "gG": "\\mathcal{G}",
+                    "hH": "\\mathcal{H}",
+                }
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 0.92,
+                displayAlign: "center",
+            },
+            };
+        </script>
+    
+    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/quantecon-book-theme.5378fd3a70a129d690fd5fc99fb75ef7.css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
-    
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script src="../_static/quantecon-book-theme.ef2ef6c3e8da75e1e736fb5fce08cde6.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-3PCWRLGWND"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-3PCWRLGWND');
+            </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -52,974 +112,163 @@ const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'getting_started_julia/fundamental_types';</script>
     <link rel="canonical" href="https://julia.quantecon.org/getting_started_julia/fundamental_types.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="5. Introduction to Types and Generic Programming" href="introduction_to_types.html" />
     <link rel="prev" title="3. Julia Essentials" href="julia_essentials.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
 
-    <!-- Google Analytics -->
-    
-<script async="" src="https://www.google-analytics.com/analytics.js"></script>
-<script>
-                        window.ga = window.ga || function () {
-                            (ga.q = ga.q || []).push(arguments) };
-                        ga.l = +new Date;
-                        ga('create', 'UA-54984338-8', 'auto');
-                        ga('set', 'anonymizeIp', true);
-                        ga('send', 'pageview');
-                    </script>
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Arrays, Tuples, Ranges, and Other Fundamental Types"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Arrays, Tuples, Ranges, and Other Fundamental Types" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/getting_started_julia/fundamental_types.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
-      
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
-        
-      
-      
-      <img src="../_static/qe-logo-large.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Quantitative Economics with Julia</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Getting Started with Julia
- </span>
-</p>
-<ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="getting_started.html">
-   1. Setting up Your Julia Environment
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="julia_by_example.html">
-   2. Introductory Examples
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="julia_essentials.html">
-   3. Julia Essentials
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   4. Arrays, Tuples, Ranges, and Other Fundamental Types
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="introduction_to_types.html">
-   5. Introduction to Types and Generic Programming
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Package Ecosystem
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/generic_programming.html">
-   6. Generic Programming
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/general_packages.html">
-   7. General Purpose Packages
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
-   8. Data and Statistics Packages
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
-   9. Solvers, Optimizers, and Automatic Differentiation
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Software Engineering
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../software_engineering/tools_editors.html">
-   10. Visual Studio Code and Other Tools
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../software_engineering/version_control.html">
-   11. GitHub, Version Control and Collaboration
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../software_engineering/testing.html">
-   12. Packages, Testing, and Continuous Integration
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../software_engineering/need_for_speed.html">
-   13. The Need for Speed
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Tools and Techniques
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/geom_series.html">
-   14. Geometric Series for Elementary Economics
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
-   15. Linear Algebra
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
-   16. Orthogonal Projections and Their Applications
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
-   17. LLN and CLT
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   18. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   19. Numerical Linear Algebra and Factorizations
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   20. Krylov Methods and Matrix Conditioning
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Introduction to Dynamics
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
-   21. Dynamics in One Dimension
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
-   22. AR1 Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
-   23. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
-   24. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
-   25. Wealth Distribution Dynamics
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/kalman.html">
-   26. A First Look at the Kalman Filter
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/short_path.html">
-   27. Shortest Paths
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Dynamic Programming
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   28. Job Search I: The McCall Search Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   29. Job Search II: Search and Separation
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   30. A Problem that Stumped Milton Friedman
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/odu.html">
-   31. Job Search III: Search with Learning
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/career.html">
-   32. Job Search IV: Modeling Career Choice
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/jv.html">
-   33. Job Search V: On-the-Job Search
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   34. Optimal Growth I: The Stochastic Optimal Growth Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   35. Optimal Growth II: Time Iteration
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   36. Optimal Growth III: The Endogenous Grid Method
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   37. LQ Dynamic Programming Problems
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   38. Optimal Savings I: The Permanent Income Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   39. Optimal Savings II: LQ Techniques
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/ifp.html">
-   41. Optimal Savings III: Occasionally Binding Constraints
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/robustness.html">
-   42. Robustness
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   43. Discrete State Dynamic Programming
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Modeling in Continuous Time
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../continuous_time/seir_model.html">
-   44. Modeling COVID 19 with Differential Equations
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../continuous_time/covid_sde.html">
-   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Multiple Agent Models
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/schelling.html">
-   46. Schelling’s Segregation Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   47. A Lake Model of Employment and Unemployment
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   48. Rational Expectations Equilibrium
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   49. Markov Perfect Equilibrium
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   50. Asset Pricing I: Finite State Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   51. Asset Pricing II: The Lucas Asset Pricing Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   52. Asset Pricing III:  Incomplete Markets
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   53. Uncertainty Traps
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   54. The Aiyagari Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/arellano.html">
-   55. Default Risk and Income Fluctuations
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   56. Globalization and Cycles
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Time Series Models
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/arma.html">
-   57. Covariance Stationary Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/estspec.html">
-   58. Estimation of Spectra
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   59. Additive Functionals
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   60. Multiplicative Functionals
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   61. Classical Control with Linear Algebra
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   62. Classical Filtering With Linear Algebra
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Dynamic Programming Squared
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   63. Dynamic Stackelberg Problems
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   64. Optimal Taxation in an LQ Economy
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   65. Optimal Taxation with State-Contingent Debt
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   66. Optimal Taxation without State-Contingent Debt
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Other
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../about_lectures.html">
-   67. About these Lectures
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../troubleshooting.html">
-   68. Troubleshooting
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../zreferences.html">
-   69. References
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../status.html">
-   70. Execution Statistics
-  </a>
- </li>
-</ul>
-
-    </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
-</div>
-
-</div>
+<body>
 
 
-          
+    <span id="top"></span>
 
+    <div class="qe-wrapper">
 
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
+        <div class="qe-main">
 
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/getting_started_julia/fundamental_types.md"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
+            <div class="qe-page" id=getting_started_julia/fundamental_types>
 
-            <!-- Source interaction buttons -->
+                <div class="qe-page__toc">
 
-            <!-- Full screen (wrap in <a> to have style consistency -->
+                    <div class="inner">
 
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
-            </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#overview">
-   4.1. Overview
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#array-basics">
-   4.2. Array Basics
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#shape-and-dimension">
-     4.2.1. Shape and Dimension
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#array-vs-vector-vs-matrix">
-       4.2.1.1. Array vs Vector vs Matrix
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#creating-arrays">
-     4.2.2. Creating Arrays
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#functions-that-create-arrays">
-       4.2.2.1. Functions that Create Arrays
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#creating-arrays-from-existing-arrays">
-       4.2.2.2. Creating Arrays from Existing Arrays
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#array-definitions-from-literals">
-       4.2.2.3. Array Definitions from Literals
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#array-indexing">
-     4.2.3. Array Indexing
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#views-and-slices">
-     4.2.4. Views and Slices
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#special-matrices">
-     4.2.5. Special Matrices
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#assignment-and-passing-arrays">
-     4.2.6. Assignment and Passing Arrays
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#in-place-and-immutable-types">
-     4.2.7. In-place and Immutable Types
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#operations-on-arrays">
-   4.3. Operations on Arrays
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#array-methods">
-     4.3.1. Array Methods
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#matrix-algebra">
-     4.3.2. Matrix Algebra
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#elementwise-operations">
-     4.3.3. Elementwise Operations
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#algebraic-operations">
-       4.3.3.1. Algebraic Operations
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#elementwise-comparisons">
-       4.3.3.2. Elementwise Comparisons
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#changing-dimensions">
-       4.3.3.3. Changing Dimensions
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#broadcasting-functions">
-     4.3.4. Broadcasting Functions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#linear-algebra">
-     4.3.5. Linear Algebra
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#ranges">
-   4.4. Ranges
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#tuples-and-named-tuples">
-   4.5. Tuples and Named Tuples
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#nothing-missing-and-unions">
-   4.6. Nothing, Missing, and Unions
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#nothing-and-basic-error-handling">
-     4.6.1. Nothing and Basic Error Handling
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exceptions">
-     4.6.2. Exceptions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#missing">
-     4.6.3. Missing
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   4.7. Exercises
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-1">
-     4.7.1. Exercise 1
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-2">
-     4.7.2. Exercise 2
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-3">
-     4.7.3. Exercise 3
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-4">
-     4.7.4. Exercise 4
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#solutions">
-   4.8. Solutions
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
-     4.8.1. Exercise 1
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-
-            </nav>
-        </div>
-    </div>
-</div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>Arrays, Tuples, Ranges, and Other Fundamental Types</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
                         
-                        <div>
-                            <h2> Contents </h2>
+                        <div class="qe-page__toc-header">
+                            On this page
                         </div>
-                        <nav aria-label="Page">
+
+
+                        <nav id="bd-toc-nav" class="qe-page__toc-nav">
                             <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#overview">
-   4.1. Overview
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#array-basics">
-   4.2. Array Basics
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#shape-and-dimension">
-     4.2.1. Shape and Dimension
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#array-vs-vector-vs-matrix">
-       4.2.1.1. Array vs Vector vs Matrix
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#creating-arrays">
-     4.2.2. Creating Arrays
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#functions-that-create-arrays">
-       4.2.2.1. Functions that Create Arrays
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#creating-arrays-from-existing-arrays">
-       4.2.2.2. Creating Arrays from Existing Arrays
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#array-definitions-from-literals">
-       4.2.2.3. Array Definitions from Literals
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#array-indexing">
-     4.2.3. Array Indexing
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#views-and-slices">
-     4.2.4. Views and Slices
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#special-matrices">
-     4.2.5. Special Matrices
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#assignment-and-passing-arrays">
-     4.2.6. Assignment and Passing Arrays
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#in-place-and-immutable-types">
-     4.2.7. In-place and Immutable Types
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#operations-on-arrays">
-   4.3. Operations on Arrays
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#array-methods">
-     4.3.1. Array Methods
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#matrix-algebra">
-     4.3.2. Matrix Algebra
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#elementwise-operations">
-     4.3.3. Elementwise Operations
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#algebraic-operations">
-       4.3.3.1. Algebraic Operations
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#elementwise-comparisons">
-       4.3.3.2. Elementwise Comparisons
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#changing-dimensions">
-       4.3.3.3. Changing Dimensions
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#broadcasting-functions">
-     4.3.4. Broadcasting Functions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#linear-algebra">
-     4.3.5. Linear Algebra
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#ranges">
-   4.4. Ranges
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#tuples-and-named-tuples">
-   4.5. Tuples and Named Tuples
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#nothing-missing-and-unions">
-   4.6. Nothing, Missing, and Unions
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#nothing-and-basic-error-handling">
-     4.6.1. Nothing and Basic Error Handling
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exceptions">
-     4.6.2. Exceptions
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#missing">
-     4.6.3. Missing
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   4.7. Exercises
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-1">
-     4.7.1. Exercise 1
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-2">
-     4.7.2. Exercise 2
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-3">
-     4.7.3. Exercise 3
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-4">
-     4.7.4. Exercise 4
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#solutions">
-   4.8. Solutions
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#id3">
-     4.8.1. Exercise 1
-    </a>
-   </li>
-  </ul>
- </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">4.1. Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#array-basics">4.2. Array Basics</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shape-and-dimension">4.2.1. Shape and Dimension</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#array-vs-vector-vs-matrix">4.2.1.1. Array vs Vector vs Matrix</a></li>
 </ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-arrays">4.2.2. Creating Arrays</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#functions-that-create-arrays">4.2.2.1. Functions that Create Arrays</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-arrays-from-existing-arrays">4.2.2.2. Creating Arrays from Existing Arrays</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#array-definitions-from-literals">4.2.2.3. Array Definitions from Literals</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#array-indexing">4.2.3. Array Indexing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#views-and-slices">4.2.4. Views and Slices</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#special-matrices">4.2.5. Special Matrices</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#assignment-and-passing-arrays">4.2.6. Assignment and Passing Arrays</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#in-place-and-immutable-types">4.2.7. In-place and Immutable Types</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#operations-on-arrays">4.3. Operations on Arrays</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#array-methods">4.3.1. Array Methods</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-algebra">4.3.2. Matrix Algebra</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#elementwise-operations">4.3.3. Elementwise Operations</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#algebraic-operations">4.3.3.1. Algebraic Operations</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#elementwise-comparisons">4.3.3.2. Elementwise Comparisons</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-dimensions">4.3.3.3. Changing Dimensions</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#broadcasting-functions">4.3.4. Broadcasting Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#linear-algebra">4.3.5. Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ranges">4.4. Ranges</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tuples-and-named-tuples">4.5. Tuples and Named Tuples</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#nothing-missing-and-unions">4.6. Nothing, Missing, and Unions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#nothing-and-basic-error-handling">4.6.1. Nothing and Basic Error Handling</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exceptions">4.6.2. Exceptions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#missing">4.6.3. Missing</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">4.7. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1">4.7.1. Exercise 1</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2">4.7.2. Exercise 2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-3">4.7.3. Exercise 3</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-4">4.7.4. Exercise 4</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solutions">4.8. Solutions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">4.8.1. Exercise 1</a></li>
+</ul>
+</li>
+</ul>
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
 
                         </nav>
+
+                        <div class="qe-page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
                     </div>
+
                 </div>
-            </div>
-            
-              <div>
+
+                <div class="qe-page__header">
+
+                    <div class="qe-page__header-copy">
+
+                        <p class="qe-page__header-heading"><a href="../intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="qe-page__header-subheading">Arrays, Tuples, Ranges, and Other Fundamental Types</p>
+
+                    </div>
+
+                    <p class="qe-page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
                 
+                <main class="qe-page__content" role="main">
+                    
+                    <div>
+                        
   <div id="qe-notebook-header" style="text-align:right;">
         <a href="https://quantecon.org/" title="quantecon.org">
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
-</div><div class="tex2jax_ignore mathjax_ignore section" id="arrays-tuples-ranges-and-other-fundamental-types">
-<h1><a class="toc-backref" href="#id4"><span class="section-number">4. </span>Arrays, Tuples, Ranges, and Other Fundamental Types</a><a class="headerlink" href="#arrays-tuples-ranges-and-other-fundamental-types" title="Permalink to this headline">¶</a></h1>
-<div class="contents topic" id="contents">
+</div><section class="tex2jax_ignore mathjax_ignore" id="arrays-tuples-ranges-and-other-fundamental-types">
+<h1><a class="toc-backref" href="#id4" role="doc-backlink"><span class="section-number">4. </span>Arrays, Tuples, Ranges, and Other Fundamental Types</a><a class="headerlink" href="#arrays-tuples-ranges-and-other-fundamental-types" title="Permalink to this heading">#</a></h1>
+<nav class="contents" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#arrays-tuples-ranges-and-other-fundamental-types" id="id4">Arrays, Tuples, Ranges, and Other Fundamental Types</a></p>
@@ -1035,7 +284,7 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 </li>
 </ul>
-</div>
+</nav>
 <blockquote class="epigraph">
 <div><p>“Let’s be clear: the work of science has nothing whatever to do with consensus.
 Consensus is the business of politics. Science, on the contrary, requires only
@@ -1043,8 +292,8 @@ one investigator who happens to be right, which means that he or she has
 results that are verifiable by reference to the real world. In science
 consensus is irrelevant. What is relevant is reproducible results.” – Michael Crichton</p>
 </div></blockquote>
-<div class="section" id="overview">
-<h2><a class="toc-backref" href="#id5"><span class="section-number">4.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<section id="overview">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink"><span class="section-number">4.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h2>
 <p>In Julia, arrays and tuples are the most important data type for working with numerical data.</p>
 <p>In this lecture we give more details on</p>
 <ul class="simple">
@@ -1062,14 +311,14 @@ consensus is irrelevant. What is relevant is reproducible results.” – Michae
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="array-basics">
-<h2><a class="toc-backref" href="#id6"><span class="section-number">4.2. </span>Array Basics</a><a class="headerlink" href="#array-basics" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="array-basics">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink"><span class="section-number">4.2. </span>Array Basics</a><a class="headerlink" href="#array-basics" title="Permalink to this heading">#</a></h2>
 <p>(<a class="reference external" href="https://docs.julialang.org/en/v1/manual/arrays/">See multi-dimensional arrays documentation</a>)</p>
 <p>Since it is one of the most important types, we will start with arrays.</p>
 <p>Later, we will see how arrays (and all other types in Julia) are handled in a generic and extensible way.</p>
-<div class="section" id="shape-and-dimension">
-<h3><span class="section-number">4.2.1. </span>Shape and Dimension<a class="headerlink" href="#shape-and-dimension" title="Permalink to this headline">¶</a></h3>
+<section id="shape-and-dimension">
+<h3><span class="section-number">4.2.1. </span>Shape and Dimension<a class="headerlink" href="#shape-and-dimension" title="Permalink to this heading">#</a></h3>
 <p>We’ve already seen some Julia arrays in action</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1147,8 +396,8 @@ functions</p>
 </div>
 </div>
 <p>The syntax <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> displays a tuple containing one element – the size along the one dimension that exists.</p>
-<div class="section" id="array-vs-vector-vs-matrix">
-<h4><span class="section-number">4.2.1.1. </span>Array vs Vector vs Matrix<a class="headerlink" href="#array-vs-vector-vs-matrix" title="Permalink to this headline">¶</a></h4>
+<section id="array-vs-vector-vs-matrix">
+<h4><span class="section-number">4.2.1.1. </span>Array vs Vector vs Matrix<a class="headerlink" href="#array-vs-vector-vs-matrix" title="Permalink to this heading">#</a></h4>
 <p>In Julia, <code class="docutils literal notranslate"><span class="pre">Vector</span></code> and <code class="docutils literal notranslate"><span class="pre">Matrix</span></code> are just aliases for one- and two-dimensional arrays
 respectively</p>
 <div class="cell docutils container">
@@ -1204,12 +453,12 @@ respectively</p>
 <p>On the other, we use arrays in many settings that don’t involve matrix algebra.</p>
 <p>In such cases, we don’t care about the distinction between row and column vectors.</p>
 <p>This is why many Julia functions return flat arrays by default.</p>
-</div>
-</div>
-<div class="section" id="creating-arrays">
-<span id="id1"></span><h3><span class="section-number">4.2.2. </span>Creating Arrays<a class="headerlink" href="#creating-arrays" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="functions-that-create-arrays">
-<h4><span class="section-number">4.2.2.1. </span>Functions that Create Arrays<a class="headerlink" href="#functions-that-create-arrays" title="Permalink to this headline">¶</a></h4>
+</section>
+</section>
+<section id="creating-arrays">
+<span id="id1"></span><h3><span class="section-number">4.2.2. </span>Creating Arrays<a class="headerlink" href="#creating-arrays" title="Permalink to this heading">#</a></h3>
+<section id="functions-that-create-arrays">
+<h4><span class="section-number">4.2.2.1. </span>Functions that Create Arrays<a class="headerlink" href="#functions-that-create-arrays" title="Permalink to this heading">#</a></h4>
 <p>We’ve already seen some functions for creating a vector filled with <code class="docutils literal notranslate"><span class="pre">0.0</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1265,8 +514,8 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:
- 6.94321e-310  6.94321e-310
- 6.94321e-310  6.94321e-310
+ 6.91469e-310  6.91469e-310
+ 6.91469e-310  6.91469e-310
 </pre></div>
 </div>
 </div>
@@ -1303,9 +552,9 @@ respectively</p>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="creating-arrays-from-existing-arrays">
-<h4><span class="section-number">4.2.2.2. </span>Creating Arrays from Existing Arrays<a class="headerlink" href="#creating-arrays-from-existing-arrays" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="creating-arrays-from-existing-arrays">
+<h4><span class="section-number">4.2.2.2. </span>Creating Arrays from Existing Arrays<a class="headerlink" href="#creating-arrays-from-existing-arrays" title="Permalink to this heading">#</a></h4>
 <p>For the most part, we will avoid directly specifying the types of arrays, and let the compiler deduce the optimal types on its own.</p>
 <p>The reasons for this, discussed in more detail in <a class="reference internal" href="../more_julia/generic_programming.html"><span class="doc">this lecture</span></a>, are to ensure both clarity and generality.</p>
 <p>One place this can be inconvenient is when we need to create an array based on an existing array.</p>
@@ -1359,9 +608,9 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Int64}:
- 10
- 11
-  0
+               1
+               1
+ 139954873283920
 </pre></div>
 </div>
 </div>
@@ -1376,10 +625,10 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Int64}:
- 140531754287312
- 140531754287344
- 140531754287376
- 140531754287408
+ 139954876611312
+ 139954876611328
+ 139954876611344
+ 139954876611360
 </pre></div>
 </div>
 </div>
@@ -1394,15 +643,15 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Int64}:
- 140532228645168  140532209685200
- 140532209685184  140532209685216
+ 139954747324000  139954875762544
+ 139954875762528  139954885082448
 </pre></div>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="array-definitions-from-literals">
-<h4><span class="section-number">4.2.2.3. </span>Array Definitions from Literals<a class="headerlink" href="#array-definitions-from-literals" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="array-definitions-from-literals">
+<h4><span class="section-number">4.2.2.3. </span>Array Definitions from Literals<a class="headerlink" href="#array-definitions-from-literals" title="Permalink to this heading">#</a></h4>
 <p>As we’ve seen, you can create one dimensional arrays from manually specified data like so</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1597,10 +846,10 @@ respectively</p>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="section" id="array-indexing">
-<h3><span class="section-number">4.2.3. </span>Array Indexing<a class="headerlink" href="#array-indexing" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="array-indexing">
+<h3><span class="section-number">4.2.3. </span>Array Indexing<a class="headerlink" href="#array-indexing" title="Permalink to this heading">#</a></h3>
 <p>We’ve already seen the basics of array indexing</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1639,7 +888,7 @@ respectively</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-1.130657886950447
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.017214109535627
 </pre></div>
 </div>
 </div>
@@ -1652,8 +901,8 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
- -1.130657886950447
-  1.0976360828415352
+ 1.017214109535627
+ 0.116883679918141
 </pre></div>
 </div>
 </div>
@@ -1666,8 +915,8 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
- -1.130657886950447
- -0.23788864922951694
+ 1.017214109535627
+ 0.2070903914124899
 </pre></div>
 </div>
 </div>
@@ -1681,8 +930,8 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:
- 0.24462   -0.0859061
- 0.561228  -1.47764
+ -0.0149038   0.211921
+  0.585621   -0.189122
 </pre></div>
 </div>
 </div>
@@ -1709,8 +958,8 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
-  0.24461966394785
- -1.4776397114731308
+ -0.014903752722648725
+ -0.18912177710672054
 </pre></div>
 </div>
 </div>
@@ -1764,9 +1013,9 @@ respectively</p>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="views-and-slices">
-<h3><span class="section-number">4.2.4. </span>Views and Slices<a class="headerlink" href="#views-and-slices" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="views-and-slices">
+<h3><span class="section-number">4.2.4. </span>Views and Slices<a class="headerlink" href="#views-and-slices" title="Permalink to this heading">#</a></h3>
 <p>Using the <code class="docutils literal notranslate"><span class="pre">:</span></code> notation provides a slice of an array, copying the sub-array to a new array with a similar type.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1879,9 +1128,9 @@ typeof(b) = SubArray{Int64, 1, Matrix{Int64}, Tuple{Base.Slice{Base.OneTo{Int64}
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="special-matrices">
-<h3><span class="section-number">4.2.5. </span>Special Matrices<a class="headerlink" href="#special-matrices" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="special-matrices">
+<h3><span class="section-number">4.2.5. </span>Special Matrices<a class="headerlink" href="#special-matrices" title="Permalink to this heading">#</a></h3>
 <p>As we saw with <code class="docutils literal notranslate"><span class="pre">transpose</span></code>, sometimes types that look like matrices are not stored as a dense array.</p>
 <p>As an example, consider creating a diagonal matrix</p>
 <div class="cell docutils container">
@@ -1915,7 +1164,7 @@ typeof(b) = SubArray{Int64, 1, Matrix{Int64}, Tuple{Base.Slice{Base.OneTo{Int64}
 b * a = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.8630380119057683 1.5591950937871621; 0.5551056844098361 0.6551820072742616]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.8593936102995988 1.7347916499194695; 0.2966807855003798 0.053962898751231725]
 </pre></div>
 </div>
 </div>
@@ -1966,9 +1215,9 @@ b * a =
 </div>
 </div>
 <p>This is a <code class="docutils literal notranslate"><span class="pre">UniformScaling</span></code> type rather than an identity matrix, making it much more powerful and general.</p>
-</div>
-<div class="section" id="assignment-and-passing-arrays">
-<h3><span class="section-number">4.2.6. </span>Assignment and Passing Arrays<a class="headerlink" href="#assignment-and-passing-arrays" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="assignment-and-passing-arrays">
+<h3><span class="section-number">4.2.6. </span>Assignment and Passing Arrays<a class="headerlink" href="#assignment-and-passing-arrays" title="Permalink to this heading">#</a></h3>
 <p>As discussed above, in Julia, the left hand side of an assignment is a “binding” or a label to a value.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2089,16 +1338,16 @@ b * a =
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Int64}:
- 140532228646064
- 140532228677792
+ 0
+ 0
 </pre></div>
 </div>
 </div>
 </div>
 <p>The frequency of making this mistake is one of the reasons to avoid in-place functions, unless proven to be necessary by benchmarking.</p>
-</div>
-<div class="section" id="in-place-and-immutable-types">
-<h3><span class="section-number">4.2.7. </span>In-place and Immutable Types<a class="headerlink" href="#in-place-and-immutable-types" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="in-place-and-immutable-types">
+<h3><span class="section-number">4.2.7. </span>In-place and Immutable Types<a class="headerlink" href="#in-place-and-immutable-types" title="Permalink to this heading">#</a></h3>
 <p>Note that scalars are always immutable, such that</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2174,12 +1423,12 @@ xdynamic = [2, 4]
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="section" id="operations-on-arrays">
-<h2><a class="toc-backref" href="#id7"><span class="section-number">4.3. </span>Operations on Arrays</a><a class="headerlink" href="#operations-on-arrays" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="array-methods">
-<h3><span class="section-number">4.3.1. </span>Array Methods<a class="headerlink" href="#array-methods" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="operations-on-arrays">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink"><span class="section-number">4.3. </span>Operations on Arrays</a><a class="headerlink" href="#operations-on-arrays" title="Permalink to this heading">#</a></h2>
+<section id="array-methods">
+<h3><span class="section-number">4.3.1. </span>Array Methods<a class="headerlink" href="#array-methods" title="Permalink to this heading">#</a></h3>
 <p>Julia provides standard functions for acting on arrays, some of which we’ve
 already seen</p>
 <div class="cell docutils container">
@@ -2271,9 +1520,9 @@ extrema(a) = (-1, 1)
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="matrix-algebra">
-<h3><span class="section-number">4.3.2. </span>Matrix Algebra<a class="headerlink" href="#matrix-algebra" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="matrix-algebra">
+<h3><span class="section-number">4.3.2. </span>Matrix Algebra<a class="headerlink" href="#matrix-algebra" title="Permalink to this heading">#</a></h3>
 <p>For two dimensional arrays, <code class="docutils literal notranslate"><span class="pre">*</span></code> means matrix multiplication</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2402,7 +1651,7 @@ extrema(a) = (-1, 1)
 <span class="n">Closest</span> <span class="n">candidates</span> <span class="n">are</span><span class="p">:</span>
   <span class="o">*</span><span class="p">(::</span><span class="n">Any</span><span class="p">,</span> <span class="p">::</span><span class="n">Any</span><span class="p">,</span> <span class="p">::</span><span class="n">Any</span><span class="p">,</span> <span class="p">::</span><span class="n">Any</span><span class="o">...</span><span class="p">)</span>
    <span class="o">@</span> <span class="n">Base</span> <span class="n">operators</span><span class="o">.</span><span class="n">jl</span><span class="p">:</span><span class="mi">578</span>
-  <span class="o">*</span><span class="p">(::</span><span class="n">StridedMatrix</span><span class="p">{</span><span class="n">T</span><span class="p">},</span> <span class="p">::</span><span class="n">StridedVector</span><span class="p">{</span><span class="n">S</span><span class="p">})</span> <span class="n">where</span> <span class="p">{</span><span class="n">T</span><span class="o">&lt;</span><span class="p">:</span><span class="n">Union</span><span class="p">{</span><span class="n">Float32</span><span class="p">,</span> <span class="n">Float64</span><span class="p">,</span> <span class="n">ComplexF64</span><span class="p">,</span> <span class="n">ComplexF32</span><span class="p">},</span> <span class="n">S</span><span class="o">&lt;</span><span class="p">:</span><span class="n">Real</span><span class="p">}</span>
+  <span class="o">*</span><span class="p">(::</span><span class="n">StridedMatrix</span><span class="p">{</span><span class="n">T</span><span class="p">},</span> <span class="p">::</span><span class="n">StridedVector</span><span class="p">{</span><span class="n">S</span><span class="p">})</span> <span class="n">where</span> <span class="p">{</span><span class="n">T</span><span class="o">&lt;</span><span class="p">:</span><span class="n">Union</span><span class="p">{</span><span class="n">Float32</span><span class="p">,</span> <span class="n">Float64</span><span class="p">,</span> <span class="n">ComplexF32</span><span class="p">,</span> <span class="n">ComplexF64</span><span class="p">},</span> <span class="n">S</span><span class="o">&lt;</span><span class="p">:</span><span class="n">Real</span><span class="p">}</span>
    <span class="o">@</span> <span class="n">LinearAlgebra</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">julia</span><span class="o">/</span><span class="mf">1.9.2</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">julia</span><span class="o">/</span><span class="n">stdlib</span><span class="o">/</span><span class="n">v1</span><span class="mf">.9</span><span class="o">/</span><span class="n">LinearAlgebra</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">matmul</span><span class="o">.</span><span class="n">jl</span><span class="p">:</span><span class="mi">49</span>
   <span class="o">*</span><span class="p">(::</span><span class="n">StridedVecOrMat</span><span class="p">,</span> <span class="p">::</span><span class="n">Adjoint</span><span class="p">{</span><span class="o">&lt;</span><span class="p">:</span><span class="n">Any</span><span class="p">,</span> <span class="o">&lt;</span><span class="p">:</span><span class="n">LinearAlgebra</span><span class="o">.</span><span class="n">LQPackedQ</span><span class="p">})</span>
    <span class="o">@</span> <span class="n">LinearAlgebra</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">julia</span><span class="o">/</span><span class="mf">1.9.2</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">julia</span><span class="o">/</span><span class="n">stdlib</span><span class="o">/</span><span class="n">v1</span><span class="mf">.9</span><span class="o">/</span><span class="n">LinearAlgebra</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">lq</span><span class="o">.</span><span class="n">jl</span><span class="p">:</span><span class="mi">269</span>
@@ -2479,11 +1728,11 @@ column vectors.  Post-multiplication requires a transpose</p>
 <p>This is since the left multiplication by a row vector should also be a row-vector.  It also hints
 that the types in Julia more complicated than first appears in the surface notation, as we will explore
 further in the <a class="reference internal" href="introduction_to_types.html"><span class="doc">introduction to types lecture</span></a>.</p>
-</div>
-<div class="section" id="elementwise-operations">
-<h3><span class="section-number">4.3.3. </span>Elementwise Operations<a class="headerlink" href="#elementwise-operations" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="algebraic-operations">
-<h4><span class="section-number">4.3.3.1. </span>Algebraic Operations<a class="headerlink" href="#algebraic-operations" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="elementwise-operations">
+<h3><span class="section-number">4.3.3. </span>Elementwise Operations<a class="headerlink" href="#elementwise-operations" title="Permalink to this heading">#</a></h3>
+<section id="algebraic-operations">
+<h4><span class="section-number">4.3.3.1. </span>Algebraic Operations<a class="headerlink" href="#algebraic-operations" title="Permalink to this heading">#</a></h4>
 <p>Suppose that we wish to multiply every element of matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> with the corresponding element of matrix <code class="docutils literal notranslate"><span class="pre">B</span></code>.</p>
 <p>In that case we need to replace <code class="docutils literal notranslate"><span class="pre">*</span></code> (matrix multiplication) with <code class="docutils literal notranslate"><span class="pre">.*</span></code> (elementwise multiplication).</p>
 <p>For example, compare</p>
@@ -2606,9 +1855,9 @@ further in the <a class="reference internal" href="introduction_to_types.html"><
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="elementwise-comparisons">
-<h4><span class="section-number">4.3.3.2. </span>Elementwise Comparisons<a class="headerlink" href="#elementwise-comparisons" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="elementwise-comparisons">
+<h4><span class="section-number">4.3.3.2. </span>Elementwise Comparisons<a class="headerlink" href="#elementwise-comparisons" title="Permalink to this heading">#</a></h4>
 <p>Elementwise comparisons also use the <code class="docutils literal notranslate"><span class="pre">.x</span></code> style notation</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2710,10 +1959,10 @@ further in the <a class="reference internal" href="introduction_to_types.html"><
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Float64}:
-  0.3612297071266883
- -0.06912279481482227
-  0.15476535798627006
-  1.2244348032122814
+  0.3826780677213629
+  0.7332284294435658
+ -0.8994214650972344
+ -0.8909876056725575
 </pre></div>
 </div>
 </div>
@@ -2727,9 +1976,9 @@ further in the <a class="reference internal" href="introduction_to_types.html"><
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element BitVector:
  0
+ 0
  1
- 0
- 0
+ 1
 </pre></div>
 </div>
 </div>
@@ -2741,15 +1990,16 @@ further in the <a class="reference internal" href="introduction_to_types.html"><
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1-element Vector{Float64}:
- -0.06912279481482227
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
+ -0.8994214650972344
+ -0.8909876056725575
 </pre></div>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="changing-dimensions">
-<h4><span class="section-number">4.3.3.3. </span>Changing Dimensions<a class="headerlink" href="#changing-dimensions" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="changing-dimensions">
+<h4><span class="section-number">4.3.3.3. </span>Changing Dimensions<a class="headerlink" href="#changing-dimensions" title="Permalink to this heading">#</a></h4>
 <p>The primary function for changing the dimensions of an array is <code class="docutils literal notranslate"><span class="pre">reshape()</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2871,10 +2121,10 @@ old one.</p>
 </div>
 </div>
 <p>The return value is an array with the specified dimension “flattened”.</p>
-</div>
-</div>
-<div class="section" id="broadcasting-functions">
-<h3><span class="section-number">4.3.4. </span>Broadcasting Functions<a class="headerlink" href="#broadcasting-functions" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="broadcasting-functions">
+<h3><span class="section-number">4.3.4. </span>Broadcasting Functions<a class="headerlink" href="#broadcasting-functions" title="Permalink to this heading">#</a></h3>
 <p>Julia provides standard mathematical functions such as <code class="docutils literal notranslate"><span class="pre">log</span></code>, <code class="docutils literal notranslate"><span class="pre">exp</span></code>, <code class="docutils literal notranslate"><span class="pre">sin</span></code>, etc.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2923,9 +2173,9 @@ old one.</p>
 </div>
 </div>
 <p>Nonetheless the syntax is convenient.</p>
-</div>
-<div class="section" id="linear-algebra">
-<h3><span class="section-number">4.3.5. </span>Linear Algebra<a class="headerlink" href="#linear-algebra" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="linear-algebra">
+<h3><span class="section-number">4.3.5. </span>Linear Algebra<a class="headerlink" href="#linear-algebra" title="Permalink to this heading">#</a></h3>
 <p>(<a class="reference external" href="https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/">See linear algebra documentation</a>)</p>
 <p>Julia provides some a great deal of additional functionality related to linear operations</p>
 <div class="cell docutils container">
@@ -2992,10 +2242,10 @@ old one.</p>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="section" id="ranges">
-<h2><a class="toc-backref" href="#id8"><span class="section-number">4.4. </span>Ranges</a><a class="headerlink" href="#ranges" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="ranges">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink"><span class="section-number">4.4. </span>Ranges</a><a class="headerlink" href="#ranges" title="Permalink to this heading">#</a></h2>
 <p>As with many other types, a <code class="docutils literal notranslate"><span class="pre">Range</span></code> can act as a vector.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -3068,9 +2318,9 @@ old one.</p>
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="tuples-and-named-tuples">
-<h2><a class="toc-backref" href="#id9"><span class="section-number">4.5. </span>Tuples and Named Tuples</a><a class="headerlink" href="#tuples-and-named-tuples" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="tuples-and-named-tuples">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink"><span class="section-number">4.5. </span>Tuples and Named Tuples</a><a class="headerlink" href="#tuples-and-named-tuples" title="Permalink to this heading">#</a></h2>
 <p>(<a class="reference external" href="https://docs.julialang.org/en/v1/manual/functions/#Tuples-1">See tuples</a> and <a class="reference external" href="https://docs.julialang.org/en/v1/manual/functions/#Named-Tuples-1">named tuples documentation</a>)</p>
 <p>We were introduced to tuples earlier, which provide high-performance immutable sets of distinct types.</p>
 <div class="cell docutils container">
@@ -3185,17 +2435,17 @@ param_gen(; alpha = 0.2) = (alpha = 0.2, beta = 0.2)
 <li><p>An alternative approach, defining a new type using <code class="docutils literal notranslate"><span class="pre">struct</span></code> tends to be more prone to accidental misuse, leads to a great deal of boilerplate code, and requires a julia restart after every update.</p></li>
 <li><p>You can also use the <code class="docutils literal notranslate"><span class="pre">&#64;with_kw</span></code> in the <code class="docutils literal notranslate"><span class="pre">Parameters.jl</span></code> package, which automatically creates a function.  e.g., <code class="docutils literal notranslate"><span class="pre">param_gen</span> <span class="pre">=</span> <span class="pre">&#64;with_kw</span> <span class="pre">(alpha</span> <span class="pre">=</span> <span class="pre">0.1,</span> <span class="pre">beta</span> <span class="pre">=</span> <span class="pre">0.2)</span></code> would be roughly equivalent to the above.</p></li>
 </ul>
-</div>
-<div class="section" id="nothing-missing-and-unions">
-<h2><a class="toc-backref" href="#id10"><span class="section-number">4.6. </span>Nothing, Missing, and Unions</a><a class="headerlink" href="#nothing-missing-and-unions" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="nothing-missing-and-unions">
+<h2><a class="toc-backref" href="#id10" role="doc-backlink"><span class="section-number">4.6. </span>Nothing, Missing, and Unions</a><a class="headerlink" href="#nothing-missing-and-unions" title="Permalink to this heading">#</a></h2>
 <p>Sometimes a variable, return type from a function, or value in an array needs to represent the absence of a value rather than a particular value.</p>
 <p>There are two distinct use cases for this</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">nothing</span></code> (“software engineers null”): used where no value makes sense in a particular context due to a failure in the code, a function parameter not passed in, etc.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">missing</span></code> (“data scientists null”): used when a value would make conceptual sense, but it isn’t available.</p></li>
 </ol>
-<div class="section" id="nothing-and-basic-error-handling">
-<span id="error-handling"></span><h3><span class="section-number">4.6.1. </span>Nothing and Basic Error Handling<a class="headerlink" href="#nothing-and-basic-error-handling" title="Permalink to this headline">¶</a></h3>
+<section id="nothing-and-basic-error-handling">
+<span id="error-handling"></span><h3><span class="section-number">4.6.1. </span>Nothing and Basic Error Handling<a class="headerlink" href="#nothing-and-basic-error-handling" title="Permalink to this heading">#</a></h3>
 <p>The value <code class="docutils literal notranslate"><span class="pre">nothing</span></code> is a single value of type <code class="docutils literal notranslate"><span class="pre">Nothing</span></code></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -3406,9 +2656,9 @@ isnan(f(-1.0)) = true
 </div>
 <p>Note that in this case, the return type is <code class="docutils literal notranslate"><span class="pre">Float64</span></code> regardless of the input for <code class="docutils literal notranslate"><span class="pre">Float64</span></code> input.</p>
 <p>Keep in mind, though, that this only works if the return type of a function is <code class="docutils literal notranslate"><span class="pre">Float64</span></code>.</p>
-</div>
-<div class="section" id="exceptions">
-<h3><span class="section-number">4.6.2. </span>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="exceptions">
+<h3><span class="section-number">4.6.2. </span>Exceptions<a class="headerlink" href="#exceptions" title="Permalink to this heading">#</a></h3>
 <p>(See <a class="reference external" href="https://docs.julialang.org/en/v1/manual/control-flow/index.html#Exception-Handling-1">exceptions documentation</a>)</p>
 <p>While returning a <code class="docutils literal notranslate"><span class="pre">nothing</span></code> can be a good way to deal with functions which may or may not return values, a more robust error handling method is to use exceptions.</p>
 <p>Unless you are writing a package, you will rarely want to define and throw your own exceptions, but will need to deal with them from other libraries.</p>
@@ -3478,9 +2728,9 @@ isnan(f(-1.0)) = true
 </div>
 </div>
 </div>
-</div>
-<div class="section" id="missing">
-<span id="id2"></span><h3><span class="section-number">4.6.3. </span>Missing<a class="headerlink" href="#missing" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="missing">
+<span id="id2"></span><h3><span class="section-number">4.6.3. </span>Missing<a class="headerlink" href="#missing" title="Permalink to this heading">#</a></h3>
 <p>(see <a class="reference external" href="https://docs.julialang.org/en/v1/manual/missing/">“missing” documentation</a>)</p>
 <p>The value <code class="docutils literal notranslate"><span class="pre">missing</span></code> of type <code class="docutils literal notranslate"><span class="pre">Missing</span></code> is used to represent missing value in a statistical sense.</p>
 <p>For example, if you loaded data from a panel, and gaps existed</p>
@@ -3569,19 +2819,19 @@ mean(skipmissing(x)) = 2.6666666666666665
 </div>
 </div>
 <p>As <code class="docutils literal notranslate"><span class="pre">missing</span></code> is similar to R’s <code class="docutils literal notranslate"><span class="pre">NA</span></code> type, we will see more of <code class="docutils literal notranslate"><span class="pre">missing</span></code> when we cover <code class="docutils literal notranslate"><span class="pre">DataFrames</span></code>.</p>
-</div>
-</div>
-<div class="section" id="exercises">
-<h2><a class="toc-backref" href="#id11"><span class="section-number">4.7. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="exercise-1">
-<span id="np-ex1"></span><h3><span class="section-number">4.7.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="exercises">
+<h2><a class="toc-backref" href="#id11" role="doc-backlink"><span class="section-number">4.7. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
+<section id="exercise-1">
+<span id="np-ex1"></span><h3><span class="section-number">4.7.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this heading">#</a></h3>
 <p>This exercise uses matrix operations that arise in certain problems,
 including when dealing with linear stochastic difference equations.</p>
 <p>If you aren’t familiar with all the terminology don’t be concerned – you can
 skim read the background discussion and focus purely on the matrix exercise.</p>
 <p>With that said, consider the stochastic difference equation</p>
 <div class="math notranslate nohighlight" id="equation-ja-sde">
-<span class="eqno">(4.1)<a class="headerlink" href="#equation-ja-sde" title="Permalink to this equation">¶</a></span>\[X_{t+1} = A X_t + b + \Sigma W_{t+1}\]</div>
+<span class="eqno">(4.1)<a class="headerlink" href="#equation-ja-sde" title="Permalink to this equation">#</a></span>\[X_{t+1} = A X_t + b + \Sigma W_{t+1}\]</div>
 <p>Here</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(X_t, b\)</span> and <span class="math notranslate nohighlight">\(X_{t+1}\)</span> are <span class="math notranslate nohighlight">\(n \times 1\)</span></p></li>
@@ -3592,13 +2842,13 @@ skim read the background discussion and focus purely on the matrix exercise.</p>
 <p>Let <span class="math notranslate nohighlight">\(S_t\)</span> denote the <span class="math notranslate nohighlight">\(n \times n\)</span> variance-covariance matrix of <span class="math notranslate nohighlight">\(X_t\)</span>.</p>
 <p>Using the rules for computing variances in matrix expressions, it can be shown from <a class="reference internal" href="#equation-ja-sde">(4.1)</a> that <span class="math notranslate nohighlight">\(\{S_t\}\)</span> obeys</p>
 <div class="math notranslate nohighlight" id="equation-ja-sde-v">
-<span class="eqno">(4.2)<a class="headerlink" href="#equation-ja-sde-v" title="Permalink to this equation">¶</a></span>\[S_{t+1} = A S_t A' + \Sigma \Sigma'\]</div>
+<span class="eqno">(4.2)<a class="headerlink" href="#equation-ja-sde-v" title="Permalink to this equation">#</a></span>\[S_{t+1} = A S_t A' + \Sigma \Sigma'\]</div>
 <p>It can be shown that, provided all eigenvalues of <span class="math notranslate nohighlight">\(A\)</span> lie within the unit circle, the sequence <span class="math notranslate nohighlight">\(\{S_t\}\)</span> converges to a unique limit <span class="math notranslate nohighlight">\(S\)</span>.</p>
 <p>This is the <strong>unconditional variance</strong> or <strong>asymptotic variance</strong> of the stochastic difference equation.</p>
 <p>As an exercise, try writing a simple function that solves for the limit <span class="math notranslate nohighlight">\(S\)</span> by iterating on <a class="reference internal" href="#equation-ja-sde-v">(4.2)</a> given <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(\Sigma\)</span>.</p>
 <p>To test your solution, observe that the limit <span class="math notranslate nohighlight">\(S\)</span> is a solution to the matrix equation</p>
 <div class="math notranslate nohighlight" id="equation-ja-dle">
-<span class="eqno">(4.3)<a class="headerlink" href="#equation-ja-dle" title="Permalink to this equation">¶</a></span>\[S = A S A' + Q
+<span class="eqno">(4.3)<a class="headerlink" href="#equation-ja-dle" title="Permalink to this equation">#</a></span>\[S = A S A' + Q
 \quad \text{where} \quad Q := \Sigma \Sigma'\]</div>
 <p>This kind of equation is known as a <strong>discrete time Lyapunov equation</strong>.</p>
 <p>The <a class="reference external" href="http://quantecon.org/quantecon-jl">QuantEcon package</a>
@@ -3619,9 +2869,9 @@ A =
     0.4 &amp; 0.6
 \end{bmatrix}
 \end{split}\]</div>
-</div>
-<div class="section" id="exercise-2">
-<h3><span class="section-number">4.7.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="exercise-2">
+<h3><span class="section-number">4.7.2. </span>Exercise 2<a class="headerlink" href="#exercise-2" title="Permalink to this heading">#</a></h3>
 <p>Take a stochastic process for <span class="math notranslate nohighlight">\(\{y_t\}_{t=0}^T\)</span></p>
 <div class="math notranslate nohighlight">
 \[
@@ -3657,9 +2907,9 @@ use <code class="docutils literal notranslate"><span class="pre">stephist(vals)<
 <span class="math notranslate nohighlight">\(\sum_{n=1}^N\frac{(y_T^n)^2}{N} -\left(\sum_{n=1}^N\frac{y^n_T}{N}\right)^2\)</span>.</p></li>
 </ul>
 <p>Later, we will interpret some of these in <a class="reference internal" href="../tools_and_techniques/lln_clt.html"><span class="doc">this lecture</span></a>.</p>
-</div>
-<div class="section" id="exercise-3">
-<h3><span class="section-number">4.7.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="exercise-3">
+<h3><span class="section-number">4.7.3. </span>Exercise 3<a class="headerlink" href="#exercise-3" title="Permalink to this heading">#</a></h3>
 <p>Let the data generating process for a variable be</p>
 <div class="math notranslate nohighlight">
 \[
@@ -3682,18 +2932,18 @@ into matrices and vectors, and directly use the equations for
 <li><p>For each of the <code class="docutils literal notranslate"><span class="pre">M=20</span></code> simulations, calculate the OLS estimates for <span class="math notranslate nohighlight">\(a, b, c, d, \sigma\)</span>.</p></li>
 <li><p>Plot a histogram of these estimates for each variable.</p></li>
 </ul>
-</div>
-<div class="section" id="exercise-4">
-<h3><span class="section-number">4.7.4. </span>Exercise 4<a class="headerlink" href="#exercise-4" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="exercise-4">
+<h3><span class="section-number">4.7.4. </span>Exercise 4<a class="headerlink" href="#exercise-4" title="Permalink to this heading">#</a></h3>
 <p>Redo Exercise 1 using the <code class="docutils literal notranslate"><span class="pre">fixedpoint</span></code> function from <code class="docutils literal notranslate"><span class="pre">NLsolve</span></code> <a class="reference internal" href="julia_by_example.html"><span class="doc">this lecture</span></a>.</p>
 <p>Compare the number of iterations of the NLsolve’s Anderson Acceleration to the handcoded iteration used in Exercise 1.</p>
 <p>Hint: Convert the matrix to a vector to use <code class="docutils literal notranslate"><span class="pre">fixedpoint</span></code>. e.g. <code class="docutils literal notranslate"><span class="pre">A</span> <span class="pre">=</span> <span class="pre">[1</span> <span class="pre">2;</span> <span class="pre">3</span> <span class="pre">4]</span></code> then <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">reshape(A,</span> <span class="pre">4)</span></code> turns it into a vector.  To reverse, <code class="docutils literal notranslate"><span class="pre">reshape(x,</span> <span class="pre">2,</span> <span class="pre">2)</span></code>.</p>
-</div>
-</div>
-<div class="section" id="solutions">
-<h2><a class="toc-backref" href="#id12"><span class="section-number">4.8. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id3">
-<h3><span class="section-number">4.8.1. </span>Exercise 1<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="solutions">
+<h2><a class="toc-backref" href="#id12" role="doc-backlink"><span class="section-number">4.8. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this heading">#</a></h2>
+<section id="id3">
+<h3><span class="section-number">4.8.1. </span>Exercise 1<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h3>
 <p>Here’s the iterative approach</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -3770,16 +3020,22 @@ into matrices and vectors, and directly use the equations for
 </div>
 <p>Now let’s do the same thing using QuantEcon’s <code class="docutils literal notranslate"><span class="pre">solve_discrete_lyapunov()</span></code> function and check we get the same result.</p>
 <div class="cell tag_hide-output docutils container">
-<div class="cell_input docutils container">
+<div class="cell_input above-output-prompt docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">QuantEcon</span>
 </pre></div>
 </div>
 </div>
+<details class="hide below-input">
+<summary aria-label="Toggle hidden content">
+<span class="collapsed">Show code cell output</span>
+<span class="expanded">Hide code cell output</span>
+</summary>
 <div class="cell_output docutils container">
 <div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>WARNING: using QuantEcon.LQ in module Main conflicts with an existing identifier.
 </pre></div>
 </div>
 </div>
+</details>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -3793,9 +3049,9 @@ into matrices and vectors, and directly use the equations for
 </div>
 </div>
 </div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -3809,7 +3065,7 @@ into matrices and vectors, and directly use the equations for
             mode: "julia-1.9"
         },
         kernelOptions: {
-            kernelName: "julia-1.9",
+            name: "julia-1.9",
             path: "./getting_started_julia"
         },
         predefinedOutput: true
@@ -3817,44 +3073,622 @@ into matrices and vectors, and directly use the equations for
     </script>
     <script>kernelName = 'julia-1.9'</script>
 
-              </div>
-              
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="qe-page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
             
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="julia_essentials.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title"><span class="section-number">3. </span>Julia Essentials</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="introduction_to_types.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">5. </span>Introduction to Types and Generic Programming</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
+
             
+            <div class="qe-sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="qe-sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="qe-sidebar__nav" id="qe-sidebar-nav" aria-label="Main navigation">
+                    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="julia_by_example.html">
+   2. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="julia_essentials.html">
+   3. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   4. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="introduction_to_types.html">
+   5. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   6. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   7. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   8. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   9. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/tools_editors.html">
+   10. Visual Studio Code and Other Tools
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/version_control.html">
+   11. GitHub, Version Control and Collaboration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/testing.html">
+   12. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/need_for_speed.html">
+   13. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/geom_series.html">
+   14. Geometric Series for Elementary Economics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   18. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   19. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   28. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   29. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   30. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   31. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   32. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   33. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   35. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   36. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   37. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   38. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   39. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   41. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   42. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   43. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   44. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   46. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   47. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   48. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   49. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   50. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   51. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   52. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   53. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   54. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   55. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   56. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   57. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   58. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   59. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   60. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   61. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   62. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   63. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   64. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   65. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   66. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   67. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   68. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   69. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   70. Execution Statistics
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="qe-sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="qe-toolbar">
+
+            <div class="qe-toolbar__inner">
+
+                <ul class="qe-toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                </ul>
+
+                <ul class="qe-toolbar__links">
+                    <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search..." aria-label="Search..." autocomplete="off" accesskey="k">
+                            <i data-feather="search" id="search-icon"></i>
+                        </form>
+                    </li>
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="/_notebooks/getting_started_julia/fundamental_types.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li class="settings-button" id="settingsButton"><div data-tippy-content="Launch Notebook"><i data-feather="play-circle"></i></div></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/quantecon/lecture-julia.myst/blob/main/lectures/getting_started_julia/fundamental_types.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p>Book (PDF)</p></a>
+                </li>
+            </ul>
         </div>
-    </div>
-    <footer class="footer">
-  <p>
-    
-      By Jesse Perla & Thomas J. Sargent & John Stachurski<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title"> Notebook Launcher </p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input">
+                
+                    <option value="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/getting_started_julia/fundamental_types.ipynb">Colab</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" data-repourl="https://github.com/quantecon/lecture-julia.notebooks" data-urlpath="tree/lecture-julia.notebooks/getting_started_julia/fundamental_types.ipynb" data-branch=main>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            </ul>
+            <p class="launch"><a href="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/getting_started_julia/fundamental_types.ipynb" id="advancedLaunchButton" target="_blank">Launch Notebook</a></p>
+            <script>
+                // QuantEcon Notebook Launcher
+                const launcherTypeElements = document.querySelectorAll('#settingsModal .modal-servers li');
+                // Highlight the server type if previous selection exists
+                if (typeof localStorage.launcherType !== 'undefined') {
+                  for (var i = 0; i < launcherTypeElements.length; i++) {
+                    launcherTypeElements[i].classList.remove('active');
+                    if ( launcherTypeElements[i].classList.contains(localStorage.launcherType) ) {
+                      launcherTypeElements[i].classList.add('active');
+                    }
+                  }
+                }
+                // Highlight server type on click and set local storage value
+                for (var i = 0; i < launcherTypeElements.length; i++) {
+                  launcherTypeElements[i].addEventListener('click', function() {
+                    for (var j = 0; j < launcherTypeElements.length; j++) {
+                      launcherTypeElements[j].classList.remove('active');
+                    }
+                    this.classList.add('active');
+                    if ( this.classList.contains('launcher-private') ) {
+                      localStorage.launcherType = 'launcher-private';
+                    } else if ( this.classList.contains('launcher-public') ) {
+                      localStorage.launcherType = 'launcher-public';
+                    }
+                    setLaunchServer();
+                  })
+                }
+                const launcherPublic = document.getElementById('launcher-public-input');
+                const launcherPrivate = document.getElementById('launcher-private-input');
+                const pageName = "getting_started_julia/fundamental_types";
+                const repoURL = "https://github.com/quantecon/lecture-julia.notebooks";
+                const urlPath = "tree/lecture-julia.notebooks/getting_started_julia/fundamental_types.ipynb";
+                const branch = "main"
+                const launchNotebookLink = document.getElementById('advancedLaunchButton');
 
+                // Highlight public server option if previous selection exists
+                if (typeof localStorage.launcherPublic !== 'undefined') {
+                  launcherPublic.value = localStorage.launcherPublic;
+                }
+                // Update local storage upon public server selection
+                launcherPublic.addEventListener('change', (event) => {
+                  setLaunchServer();
+                });
+                // Populate private server input if previous entry exists
+                if (typeof localStorage.launcherPrivate !== 'undefined') {
+                  launcherPrivate.value = localStorage.launcherPrivate;
+                }
+                // Update local storage when a private server is entered
+                launcherPrivate.addEventListener('input', (event) => {
+                  setLaunchServer();
+                });
 
-      </div>
-    </div>
-  
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+                // Function to update the "Launch Notebook" link href
+                function setLaunchServer() {
+                  launchNotebookLink.removeAttribute("style")
+                  if ( localStorage.launcherType == 'launcher-private' ) {
+                    let repoPrefix = "/jupyter/hub/user-redirect/git-pull?repo=" + repoURL + "&branch=" + branch + "&urlpath=" + urlPath;
+                    launcherPrivateValue = launcherPrivate.value
+                    if (!launcherPrivateValue) {
+                        launchNotebookLink.removeAttribute("href")
+                        launchNotebookLink.style.background = "grey"
+                        return
+                    }
+                    localStorage.launcherPrivate = launcherPrivateValue;
+                    privateServer = localStorage.launcherPrivate.replace(/\/$/, "")
+                    if (!privateServer.includes("http")) {
+                        privateServer = "http://" + privateServer
+                    }
+                    launchNotebookLinkURL = privateServer + repoPrefix;
+                  } else if ( localStorage.launcherType == 'launcher-public' ) {
+                    launcherPublicValue = launcherPublic.options[launcherPublic.selectedIndex].value;
+                    localStorage.launcherPublic = launcherPublicValue;
+                    launchNotebookLinkURL = localStorage.launcherPublic;
+                  }
+                  if (launchNotebookLinkURL) launchNotebookLink.href = launchNotebookLinkURL;
+                }
+                // Check if user has previously selected a server
+                if ( (typeof localStorage.launcherPrivate !== 'undefined') || (typeof localStorage.launcherPublic !== 'undefined') ) {
+                  setLaunchServer();
+                }
+                </script>
 
+        </div>
+
+    </div> <!-- .wrapper-->
   </body>
 </html>

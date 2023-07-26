@@ -1,114 +1,877 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>11. GitHub, Version Control and Collaboration &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+        <script>
+            MathJax = {
+            loader: {load: ['[tex]/boldsymbol', '[tex]/textmacros']},
+            tex: {
+                packages: {'[+]': ['boldsymbol', 'textmacros']},
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true,
+                macros: {
+                    "argmax" : "arg\\,max",
+                    "argmin" : "arg\\,min",
+                    "col"    : "col",
+                    "Span"   :  "span",
+                    "epsilon": "\\varepsilon",
+                    "EE": "\\mathbb{E}",
+                    "PP": "\\mathbb{P}",
+                    "RR": "\\mathbb{R}",
+                    "NN": "\\mathbb{N}",
+                    "ZZ": "\\mathbb{Z}",
+                    "aA": "\\mathcal{A}",
+                    "bB": "\\mathcal{B}",
+                    "cC": "\\mathcal{C}",
+                    "dD": "\\mathcal{D}",
+                    "eE": "\\mathcal{E}",
+                    "fF": "\\mathcal{F}",
+                    "gG": "\\mathcal{G}",
+                    "hH": "\\mathcal{H}",
+                }
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 0.92,
+                displayAlign: "center",
+            },
+            };
+        </script>
+    
+    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/quantecon-book-theme.5378fd3a70a129d690fd5fc99fb75ef7.css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
-    
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script src="../_static/quantecon-book-theme.ef2ef6c3e8da75e1e736fb5fce08cde6.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-3PCWRLGWND"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-3PCWRLGWND');
+            </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
 const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'software_engineering/version_control';</script>
     <link rel="canonical" href="https://julia.quantecon.org/software_engineering/version_control.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="12. Packages, Testing, and Continuous Integration" href="testing.html" />
     <link rel="prev" title="10. Visual Studio Code and Other Tools" href="tools_editors.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
 
-    <!-- Google Analytics -->
-    
-<script async="" src="https://www.google-analytics.com/analytics.js"></script>
-<script>
-                        window.ga = window.ga || function () {
-                            (ga.q = ga.q || []).push(arguments) };
-                        ga.l = +new Date;
-                        ga('create', 'UA-54984338-8', 'auto');
-                        ga('set', 'anonymizeIp', true);
-                        ga('send', 'pageview');
-                    </script>
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="GitHub, Version Control and Collaboration"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="GitHub, Version Control and Collaboration" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/software_engineering/version_control.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
+<body>
 
-    
 
-    <div class="container-xl">
-      <div class="row">
-          
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
-      
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
-        
-      
-      
-      <img src="../_static/qe-logo-large.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Quantitative Economics with Julia</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
+    <span id="top"></span>
+
+    <div class="qe-wrapper">
+
+        <div class="qe-main">
+
+            <div class="qe-page" id=software_engineering/version_control>
+
+                <div class="qe-page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="qe-page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="qe-page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setup">11.1. Setup</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#git-vs-github-vs-git-clients">11.1.1. Git vs. GitHub vs. Git Clients</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-objects">11.2. Basic Objects</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#repositories">11.2.1. Repositories</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#commits">11.2.2. Commits</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#common-files">11.2.3. Common Files</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#individual-workflow">11.3. Individual Workflow</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-repository">11.3.1. Creating a Repository</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cloning-a-repository">11.3.2. Cloning a Repository</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#making-committing-and-pushing-changes">11.3.3. Making, Committing, and Pushing Changes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exploring-commits-in-vs-code-and-on-the-github-website">11.3.4. Exploring Commits in VS Code and on the GitHub Website</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pulling-changes-and-the-online-editor">11.3.5. Pulling Changes and the Online Editor</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#discarding-changes">11.3.6. Discarding Changes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reverting-commits">11.3.7. Reverting Commits</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#merge-conflicts">11.3.8. Merge Conflicts</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#collaborative-work">11.4. Collaborative Work</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-collaborators">11.4.1. Adding Collaborators</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#project-management">11.4.2. Project Management</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reviewing-code">11.4.3. Reviewing Code</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#collaboration-via-pull-request">11.5. Collaboration via Pull Request</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-fixes">11.5.1. Quick Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-access-case">11.5.2. No-Access Case</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#write-access-case">11.5.3. Write Access Case</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#julia-package-case">11.5.4. Julia Package Case</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-resources-and-troubleshooting">11.6. Additional Resources and Troubleshooting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#command-line-basics">11.6.1. Command-Line Basics</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">11.7. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1a">11.7.1. Exercise 1a</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1b">11.7.2. Exercise 1b</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1c">11.7.3. Exercise 1c</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2a">11.7.4. Exercise 2a</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2b">11.7.5. Exercise 2b</a></li>
+</ul>
+</li>
+</ul>
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="qe-page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="qe-page__header">
+
+                    <div class="qe-page__header-copy">
+
+                        <p class="qe-page__header-heading"><a href="../intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="qe-page__header-subheading">GitHub, Version Control and Collaboration</p>
+
+                    </div>
+
+                    <p class="qe-page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="qe-page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><section class="tex2jax_ignore mathjax_ignore" id="github-version-control-and-collaboration">
+<h1><a class="toc-backref" href="#id2" role="doc-backlink"><span class="section-number">11. </span>GitHub, Version Control and Collaboration</a><a class="headerlink" href="#github-version-control-and-collaboration" title="Permalink to this heading">#</a></h1>
+<nav class="contents" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#github-version-control-and-collaboration" id="id2">GitHub, Version Control and Collaboration</a></p>
+<ul>
+<li><p><a class="reference internal" href="#setup" id="id3">Setup</a></p></li>
+<li><p><a class="reference internal" href="#basic-objects" id="id4">Basic Objects</a></p></li>
+<li><p><a class="reference internal" href="#individual-workflow" id="id5">Individual Workflow</a></p></li>
+<li><p><a class="reference internal" href="#collaborative-work" id="id6">Collaborative Work</a></p></li>
+<li><p><a class="reference internal" href="#collaboration-via-pull-request" id="id7">Collaboration via Pull Request</a></p></li>
+<li><p><a class="reference internal" href="#additional-resources-and-troubleshooting" id="id8">Additional Resources and Troubleshooting</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id9">Exercises</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
+<p>Co-authored with Arnav Sood</p>
+<p>An essential part of modern software engineering is using version control.</p>
+<p>We use version control because</p>
+<ul class="simple">
+<li><p>Not all iterations on a file are perfect, and you may want to revert changes.</p></li>
+<li><p>We want to be able to see who has changed what and how.</p></li>
+<li><p>We want a uniform version scheme to do this between people and machines.</p></li>
+<li><p>Concurrent editing on code is necessary for collaboration.</p></li>
+<li><p>Version control is an essential part of creating reproducible research.</p></li>
+</ul>
+<p>In this lecture, we’ll discuss how to use Git and GitHub, largely with the built in VS Code support.</p>
+<p>We assume that you have followed the <a class="reference internal" href="tools_editors.html"><span class="doc">VS Code</span></a> instructions.</p>
+<section id="setup">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink"><span class="section-number">11.1. </span>Setup</a><a class="headerlink" href="#setup" title="Permalink to this heading">#</a></h2>
+<ol class="arabic">
+<li><p>Make sure you create an account on <a class="reference external" href="http://github.com/">GitHub.com</a>.</p>
+<ul class="simple">
+<li><p>If you are a student, consider signing up for the GitHub <a class="reference external" href="https://education.github.com/pack/">Student Developer Pack</a> which gives you free <a class="reference external" href="https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-pro">GitHub Pro</a></p></li>
+<li><p>Otherwise, see if you qualify for a free <a class="reference external" href="https://help.github.com/articles/about-github-education-for-educators-and-researchers/">Research or Educator Plan</a> which gives you free <a class="reference external" href="https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-team">GitHub Team</a></p></li>
+</ul>
+</li>
+<li><p>Ensure that <a class="reference external" href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/">git</a> is installed (as it likely was in the <a class="reference internal" href="../getting_started_julia/getting_started.html"><span class="doc">getting started</span></a>)</p></li>
+<li><p>Setup your git username, and change default line-endings if on Windows</p>
+<ol class="arabic">
+<li><p>Opening a terminal (on Windows you can use a powershell or the new “Git Bash” installed in the previous step)</p></li>
+<li><p>Running the following, where the first two lines are not required on linux and OS/X, and you should replace the email and name in the final lines</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>core.eol<span class="w"> </span>lf
+git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>core.autocrlf<span class="w"> </span><span class="nb">false</span>
+git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&quot;you@example.com&quot;</span>
+git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&quot;Your Name&quot;</span><span class="w">   </span>
+git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>github.user<span class="w"> </span><span class="s2">&quot;GITHUBUSERNAME&quot;</span><span class="w">   </span>
+</pre></div>
+</div>
+</li>
+</ol>
+</li>
+<li><p>Ensure that <a class="reference internal" href="tools_editors.html"><span class="doc">VS Code</span></a> is installed</p></li>
+<li><p>Install the <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens">GitLens</a> extension.</p></li>
+</ol>
+<ul class="simple">
+<li><p>Optional, but highly recommended.</p></li>
+<li><p>It provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-">last modified</a> each line of code).</p></li>
+</ul>
+<section id="git-vs-github-vs-git-clients">
+<span id="more-on-git"></span><h3><span class="section-number">11.1.1. </span>Git vs. GitHub vs. Git Clients<a class="headerlink" href="#git-vs-github-vs-git-clients" title="Permalink to this heading">#</a></h3>
+<p>To understand the relationship</p>
+<ul class="simple">
+<li><p>Git is an infrastructure for versioning and merging files (it is not specific to GitHub and does not even require an online server).</p></li>
+<li><p>GitHub provides an online service to coordinate working with Git repositories, and adds some additional features for managing projects.</p></li>
+<li><p>GitHub is the market leader for open source projects and Julia, but there are other options, e.g. <a class="reference external" href="https://about.gitlab.com/">GitLab</a> and <a class="reference external" href="https://bitbucket.org">Bitbucket</a>.</p></li>
+</ul>
+<p>We will use the built-in VS Code Git and GitHub support in this lecture, but you may consider using alternatives</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://desktop.github.com/">GitHub Desktop</a> is a clean and simple GUI for git, which is often useful in conjunction with VS Code.</p></li>
+<li><p><a class="reference external" href="https://www.gitkraken.com/">GitKraken</a> is a superb, specialized tool which makes many advanced operations intuitive.</p></li>
+<li><p>Or, you may directly use the Git command line, which can be convenient for simple operations (e.g. <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/QuantEcon/lecture-julia.notebooks</span></code> would clone the notebook repository), but tends to be harder for more advanced operations.</p></li>
+</ul>
+<p>Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct products.</p>
+</section>
+</section>
+<section id="basic-objects">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink"><span class="section-number">11.2. </span>Basic Objects</a><a class="headerlink" href="#basic-objects" title="Permalink to this heading">#</a></h2>
+<section id="repositories">
+<h3><span class="section-number">11.2.1. </span>Repositories<a class="headerlink" href="#repositories" title="Permalink to this heading">#</a></h3>
+<p>The fundamental object in GitHub is a <em>repository</em> (or “repo”) – this is the master directory for a project.</p>
+<p>One example of a repo is the QuantEcon <a class="reference external" href="https://github.com/quantecon/expectations.jl/">Expectations.jl</a> package.</p>
+<p>On the machine, a repo is a normal directory, along with a subdirectory called <code class="docutils literal notranslate"><span class="pre">.git</span></code> which contains the history of changes.</p>
+</section>
+<section id="commits">
+<h3><span class="section-number">11.2.2. </span>Commits<a class="headerlink" href="#commits" title="Permalink to this heading">#</a></h3>
+<p>GitHub stores history as a sequence of changes to text, called <em>commits</em>.</p>
+<p><a class="reference external" href="https://github.com/QuantEcon/lecture-julia.myst/commit/8a7daeecd5115a334c251c90d4455cd7921996e4">Here</a> is an example of a commit, which modifies instructions on using an extension in these lecture notes.</p>
+<p>In particular, commits have the following features</p>
+<ul class="simple">
+<li><p>An ID (formally, an “SHA-1 hash”)</p></li>
+<li><p>Content (i.e., a before and after state)</p></li>
+<li><p>Metadata (author, timestamp, commit message, etc.)</p></li>
+</ul>
+<p><strong>Note:</strong> It’s crucial to remember that what’s stored in a commit is only the actual changes you make to text.</p>
+<p>This is a key reason why git can store long and complicated histories without consuming massive amounts of memory.</p>
+</section>
+<section id="common-files">
+<h3><span class="section-number">11.2.3. </span>Common Files<a class="headerlink" href="#common-files" title="Permalink to this heading">#</a></h3>
+<p>In addition, each GitHub repository usually comes with a few standard text files</p>
+<ul class="simple">
+<li><p>A <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file, which lists files/extensions/directories that GitHub shouldn’t try to track (e.g., LaTeX compilation byproducts).</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file, which is a <a class="reference external" href="https://guides.github.com/features/mastering-markdown/">Markdown</a> file which GitHub displays by default as the homepage when accessing the repository online.</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">LICENSE.txt</span></code> file, which describes the terms under which the repository’s contents are made available.</p></li>
+</ul>
+<p>For an example of all three, see the <a class="reference external" href="https://github.com/quantecon/expectations.jl/">Expectations.jl</a> repo.</p>
+</section>
+</section>
+<section id="individual-workflow">
+<span id="new-repo-workflow"></span><h2><a class="toc-backref" href="#id5" role="doc-backlink"><span class="section-number">11.3. </span>Individual Workflow</a><a class="headerlink" href="#individual-workflow" title="Permalink to this heading">#</a></h2>
+<p>In this section, we’ll describe how to use GitHub to version your own projects.</p>
+<p>Much of this will carry over to the collaborative section.</p>
+<section id="creating-a-repository">
+<h3><span class="section-number">11.3.1. </span>Creating a Repository<a class="headerlink" href="#creating-a-repository" title="Permalink to this heading">#</a></h3>
+<p>In general, we will always want to make repos for new projects using the following dropdown</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/git-makerepo.png"><img alt="../_images/git-makerepo.png" src="../_images/git-makerepo.png" style="width: 75%;" /></a>
+</figure>
+<p>We can then configure repository options as such</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/git-makerepo-full.png"><img alt="../_images/git-makerepo-full.png" src="../_images/git-makerepo-full.png" style="width: 100%;" /></a>
+</figure>
+<p>In this case, we’re making a public repo <code class="docutils literal notranslate"><span class="pre">github.com/USERNAME/example_repository</span></code> where <code class="docutils literal notranslate"><span class="pre">USERNAME</span></code> is your GitHub account name.  The options chosen are:</p>
+<ul class="simple">
+<li><p>Add in a <code class="docutils literal notranslate"><span class="pre">README.md</span></code>.</p></li>
+<li><p>License under the MIT open-source License.</p></li>
+<li><p>Ignore Julia compilation byproducts in the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>.</p></li>
+<li><p>Leave off support for the Marketplace Apps <code class="docutils literal notranslate"><span class="pre">Codecov</span></code>, which we will discuss further in the <a class="reference internal" href="testing.html"><span class="doc">testing lecture</span></a> lecture.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can also add an existing folder as a new repository on github, where you can use the VS Code features to <a class="reference external" href="https://code.visualstudio.com/docs/editor/versioncontrol#_initialize-a-repository">initialize and publish</a> a repository to GitHub.  Otherwise, the <a class="reference external" href="https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/">instructions are more involved</a>.</p>
+</div>
+</section>
+<section id="cloning-a-repository">
+<span id="clone-repo"></span><h3><span class="section-number">11.3.2. </span>Cloning a Repository<a class="headerlink" href="#cloning-a-repository" title="Permalink to this heading">#</a></h3>
+<p>The next step is to get this to our local machine.  If you click on the <code class="docutils literal notranslate"><span class="pre">&lt;&gt;</span> <span class="pre">Code</span></code> button on the repositories website, you will see a dropdown such as</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/git-clone.png"><img alt="../_images/git-clone.png" src="../_images/git-clone.png" style="width: 100%;" /></a>
+</figure>
+<p>This dropdown gives us a few options</p>
+<ul class="simple">
+<li><p>The copy button below the <code class="docutils literal notranslate"><span class="pre">Clone</span></code> with <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> can be used by either the commandline or other tools.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">in</span> <span class="pre">Desktop</span></code> will call to the GitHub Desktop application if you installed it</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Zip</span></code> will download the directory <em>without the .git</em> subdirectory (avoid this option, as it defeats the purpose of version control).</p></li>
+</ul>
+<p>We will download the repository using the built-in VS Code support.</p>
+<ol class="arabic">
+<li><p>Copy the https URL in that dropdown (e.g. <code class="docutils literal notranslate"><span class="pre">https://github.com/USERNAME/example_repository.git</span></code>).</p></li>
+<li><p>Start VS Code.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+P</span></code> to open the command bar, and choose <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Git:</span> <span class="pre">Clone</span></code></p></li>
+<li><p>At this point, you can paste in the copied URL or choose <code class="docutils literal notranslate"><span class="pre">Clone</span> <span class="pre">from</span> <span class="pre">GitHub</span></code> and then it will let you select your repositories after logging in.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-clone.png"><img alt="../_images/vs-code-clone.png" src="../_images/vs-code-clone.png" style="width: 100%;" /></a>
+</figure>
+</li>
+<li><p>Select a location (e.g. <code class="docutils literal notranslate"><span class="pre">c:\users\USERNAME\GitHub</span></code>) which will clone the repository into a folder (e.g. into <code class="docutils literal notranslate"><span class="pre">c:\users\USERNAME\GitHub\example_repository</span></code>) which holds both the files themselves and the version information. This folder then has all of the information associated with this repository.</p></li>
+<li><p>After the repository is cloned, you can choose to <code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">in</span> <span class="pre">a</span> <span class="pre">New</span> <span class="pre">Window</span></code>.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-done-clone.png"><img alt="../_images/vs-code-done-clone.png" src="../_images/vs-code-done-clone.png" style="width: 100%;" /></a>
+</figure>
+</li>
+</ol>
+<p>You will see the automatically generated files for the <code class="docutils literal notranslate"><span class="pre">LICENSE,</span> <span class="pre">.gitignore</span></code> and <code class="docutils literal notranslate"><span class="pre">README.md</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To manually clone this to your desktop, you can start a terminal and use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/USERNAME/example_repository.git</span></code> within the directory you want to clone it to.  After cloning, you can open the folder within VS Code by either</p>
+<ul class="simple">
+<li><p>Within a terminal on your operating system, navigate to that directory and type <code class="docutils literal notranslate"><span class="pre">code</span> <span class="pre">.</span></code></p></li>
+<li><p>On Windows if you installed VS Code with the appropriate option, right click on the folder and choose <code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">with</span> <span class="pre">Code</span></code> - trusting the authors as required on opening the folder.</p></li>
+<li><p>In the VS Code Menu, choose <code class="docutils literal notranslate"><span class="pre">File/Open</span> <span class="pre">Folder...</span></code>.</p></li>
+</ul>
+</div>
+</section>
+<section id="making-committing-and-pushing-changes">
+<h3><span class="section-number">11.3.3. </span>Making, Committing, and Pushing Changes<a class="headerlink" href="#making-committing-and-pushing-changes" title="Permalink to this heading">#</a></h3>
+<p>Now that we have the repository, we can start working with it.</p>
+<p>Within VS Code, make the following changes:</p>
+<ol class="arabic simple">
+<li><p>Open the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> and add some text.</p></li>
+<li><p>Add a new file called <code class="docutils literal notranslate"><span class="pre">some_file.txt</span></code> with some text in it.  You can do this with the menus, or by right clicking in the Files panel and selecting “New File”.</p></li>
+<li><p>Add another new file called <code class="docutils literal notranslate"><span class="pre">garbage_file.tmp</span></code> with some text in it.</p></li>
+<li><p>Finally, in the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>, add <code class="docutils literal notranslate"><span class="pre">*.tmp</span></code> at the end.</p></li>
+</ol>
+<p>Your editor should look something like</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-1.png"><img alt="../_images/vs-code-edits-1.png" src="../_images/vs-code-edits-1.png" style="width: 100%;" /></a>
+</figure>
+<p>Note that the panel on the left hand side is highlighted with 3 changes.  Select that tab to see the current modifications relative to the current version on github.</p>
+<p>This shows three changes:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code> is modified.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> is modified.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">some_file.txt</span></code> is a new file.</p></li>
+</ol>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">garbage_file.tmp</span></code> is not listed, as the <code class="docutils literal notranslate"><span class="pre">*.tmp</span></code> extension was ignored in the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>.
+If you click on a file, such as the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> in this panel, it will open up the file to show all of the changes relative to the last commit.  For example,</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-2.png"><img alt="../_images/vs-code-edits-2.png" src="../_images/vs-code-edits-2.png" style="width: 100%;" /></a>
+</figure>
+<p>Let us push these changes to GitHub.  Add text in the “Message” in this panel, and then click on the checkmark to commit it.</p>
+<p>As git is a decentralized version control system, this change is now only local to your machine.  You can make a variety of changes locally and only push to GitHub when you are ready.</p>
+<p>To push these to the server, you can use the <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Git:</span> <span class="pre">Push</span></code> command or you can click on the bottom bar of vscode, which should show that one commit is ready to be uploaded and none are ready to be downloaded.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-3.png"><img alt="../_images/vs-code-edits-3.png" src="../_images/vs-code-edits-3.png" style="width: 75%;" /></a>
+</figure>
+</section>
+<section id="exploring-commits-in-vs-code-and-on-the-github-website">
+<h3><span class="section-number">11.3.4. </span>Exploring Commits in VS Code and on the GitHub Website<a class="headerlink" href="#exploring-commits-in-vs-code-and-on-the-github-website" title="Permalink to this heading">#</a></h3>
+<p>If you refresh your web browser with the github repository open, you will see changes and that it now shows multiple commits have been made to this project, as well as the last person to modify it.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-4.png"><img alt="../_images/vs-code-edits-4.png" src="../_images/vs-code-edits-4.png" style="width: 75%;" /></a>
+</figure>
+<p>This functionality will help you track down changes in a project, and in particular, provide tools to track down when functionality may have stopped working or parameters were changed in a project.</p>
+<p>On that page, either choose the description of the commit to display it, or choose the entire list (e.g. 2 commits) and select the most recent.</p>
+<p>This shows a summary of all of the changes between this commit and the last.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-5.png"><img alt="../_images/vs-code-edits-5.png" src="../_images/vs-code-edits-5.png" style="width: 100%;" /></a>
+</figure>
+<p>This interface lets you explore all of the lines of code that were modified between different commits to track down changes.</p>
+<p>Finally, with the <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens">GitLens</a> extension, you can see this information within the files themselves.  Open the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file, and move your typing cursor to one of the lines within the file.</p>
+<p>You will then see a nearly transparent description of (1) who made the last modification to this line; (2) when it occurred; and (3) the message on the commit that modified it.  If you further hover over this you can access even more information on the appropriate commit</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-6.png"><img alt="../_images/vs-code-edits-6.png" src="../_images/vs-code-edits-6.png" style="width: 50%;" /></a>
+</figure>
+<p>You can see more detail on that commit in a variety of ways - such as clicking on that popup.  One convenient approach is in the main Explorer pane (not the Git pane), which as an expandable <code class="docutils literal notranslate"><span class="pre">Timeline</span></code>.  Select this for the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> to compare the current version to another in the timeline,</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-7.png"><img alt="../_images/vs-code-edits-7.png" src="../_images/vs-code-edits-7.png" style="width: 100%;" /></a>
+</figure>
+</section>
+<section id="pulling-changes-and-the-online-editor">
+<span id="online-editor"></span><h3><span class="section-number">11.3.5. </span>Pulling Changes and the Online Editor<a class="headerlink" href="#pulling-changes-and-the-online-editor" title="Permalink to this heading">#</a></h3>
+<p>The opposite of pushing changes is to pull changes made externally and previously pushed to GitHub.</p>
+<p>To see this workflow, we will make an external modification and bring the changes locally.</p>
+<p>Start in the GitHub webpage for your repository and choose the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file.</p>
+<p>You can edit this online by choosing the pen icon, or on some platforms by just typing a <code class="docutils literal notranslate"><span class="pre">.</span></code> and it will open in an online version of VS Code on that repository (which can also be accessed by a change in the url from <code class="docutils literal notranslate"><span class="pre">github.com</span></code> to <code class="docutils literal notranslate"><span class="pre">github.dev</span></code>, e.g.  <code class="docutils literal notranslate"><span class="pre">https://github.come/USERNAME/example_repository/blob/main/README.md</span></code> to  <code class="docutils literal notranslate"><span class="pre">https://github.dev/USERNAME/example_repository/blob/main/README.md</span></code>)</p>
+<p>Here is what that UI looks like in that case after editing the text and choosing the Git pane on the webpage (just as in any other VS Code installation)</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-9.png"><img alt="../_images/vs-code-edits-9.png" src="../_images/vs-code-edits-9.png" style="width: 100%;" /></a>
+</figure>
+<p>As with the desktop VS Code, we then need to commit this with a message.  However, as it is online you will not be able to have local changes, and it commits without a manual “Push”.</p>
+<p>Go back to the desktop VS Code, and you will see that the Git bar at the bottom now shows an incoming change.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-10.png"><img alt="../_images/vs-code-edits-10.png" src="../_images/vs-code-edits-10.png" style="width: 100%;" /></a>
+</figure>
+<p>Notice that the direction of the arrow is the opposite of when we made local modifications.  Whereas moving local commits to the server is called a “Push”, bringing external changes down to your desktop is called a “Pull”.</p>
+<p>But before we pull these changes, we will show how Git can automatically merge them (often on the same file, but at different lines of code).</p>
+<p>On your local VS Code, open the <code class="docutils literal notranslate"><span class="pre">README.txt</span></code> and change the title from <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">example_repository</span></code> to <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">example_repository_modified</span></code>.  Then save and commit this change with a commit message such as <code class="docutils literal notranslate"><span class="pre">Local</span> <span class="pre">Modification</span></code>.  It is important that you modified the top line, and not the same one that you changed in the online editor.</p>
+<p>You will notice that at the bottom it now shows one commit coming from the server, and one going back up.</p>
+<p>Now click on that icon on the bottom of the VS Code editor, which will do a Pull and Push of these changes.  Assuming that you were careful not to modify the same line of code, it will determine that these two changes do not clash, and both commits will be added locally and on the server.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-11.png"><img alt="../_images/vs-code-edits-11.png" src="../_images/vs-code-edits-11.png" style="width: 75%;" /></a>
+</figure>
+</section>
+<section id="discarding-changes">
+<span id="id1"></span><h3><span class="section-number">11.3.6. </span>Discarding Changes<a class="headerlink" href="#discarding-changes" title="Permalink to this heading">#</a></h3>
+<p>A common scenario with Git is that you are making temporary local modifications and want to discard them prior to updating from the server.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> is very useful for ensuring that some files are always ignored.  For example, temporary files in computations or <code class="docutils literal notranslate"><span class="pre">.pdf</span></code> files which coauthors will compile themselves (or having them automatically compiled with a <a class="reference external" href="https://github.com/ubcecon/tutorials/blob/master/github_actions.md">GitHub Action</a>).</p>
+</div>
+<p>To see this workflow prior to making a commit:</p>
+<ol class="arabic simple">
+<li><p>Save a change to the <code class="docutils literal notranslate"><span class="pre">README.md</span></code></p></li>
+<li><p>Open the Git pane, which will show the one modification.</p></li>
+<li><p>Right click on the modification you wish to discard (can be file-by-file).</p></li>
+</ol>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-8.png"><img alt="../_images/vs-code-edits-8.png" src="../_images/vs-code-edits-8.png" style="width: 100%;" /></a>
+</figure>
+<p>By selecting <code class="docutils literal notranslate"><span class="pre">Discard</span> <span class="pre">Changes</span></code> you can revert back to the last commit that had been made without any local modifications.</p>
+</section>
+<section id="reverting-commits">
+<h3><span class="section-number">11.3.7. </span>Reverting Commits<a class="headerlink" href="#reverting-commits" title="Permalink to this heading">#</a></h3>
+<p>On the other hand, if you have already made a commit, then there is a record of this change in the history which cannot be removed directly.  You can, however, easily revert back that particular change.</p>
+<p>For example, open <code class="docutils literal notranslate"><span class="pre">some_file.txt</span></code>, make a change, and commit/push the modification.</p>
+<p>To restore an older version, with GitLens installed, go to the <code class="docutils literal notranslate"><span class="pre">FILE</span> <span class="pre">HISTORY</span></code> in the source control pane, and right click on the older version you wish to keep.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-12.png"><img alt="../_images/vs-code-edits-12.png" src="../_images/vs-code-edits-12.png" style="width: 100%;" /></a>
+</figure>
+<p>Choose <code class="docutils literal notranslate"><span class="pre">Restore</span> <span class="pre">(Checkout)</span></code>, which will add a modification into the <code class="docutils literal notranslate"><span class="pre">Staged</span> <span class="pre">Changes</span></code>.</p>
+<p>Then provide a commit message, and push to the server.</p>
+<p>This will not remove the history of the older commit, but will instead produce the opposite changes required to restore it.</p>
+<p>See the <a class="reference external" href="https://code.visualstudio.com/docs/editor/versioncontrol">VS Code documentation</a> for more features.</p>
+</section>
+<section id="merge-conflicts">
+<span id="merge-conflict"></span><h3><span class="section-number">11.3.8. </span>Merge Conflicts<a class="headerlink" href="#merge-conflicts" title="Permalink to this heading">#</a></h3>
+<p>While in the previous examples, we showed with the <a class="reference internal" href="#online-editor"><span class="std std-ref">online editor</span></a> how we could make external changes and Git would automatically merge them if possible, other times it will not be possible.</p>
+<p>To demonstrate this, follow the same instructions to modify the top line in the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> with the online editor, and commit the change</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-13.png"><img alt="../_images/vs-code-edits-13.png" src="../_images/vs-code-edits-13.png" style="width: 75%;" /></a>
+</figure>
+<p>Then in your desktop, change the same line of code and commit it, but don’t push the change</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-14.png"><img alt="../_images/vs-code-edits-14.png" src="../_images/vs-code-edits-14.png" style="width: 75%;" /></a>
+</figure>
+<p>As before, at the bottom of the window, it shows a commit going to the server, and another coming down.  Click on that button to push and pull the changes.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-14.png"><img alt="../_images/vs-code-edits-14.png" src="../_images/vs-code-edits-14.png" style="width: 75%;" /></a>
+</figure>
+<p>As expected, it was unable to automatically merge the changes, and requires manual intervention to merge.</p>
+<p>It should bring you to the editor to deal with these <a class="reference external" href="https://code.visualstudio.com/docs/editor/versioncontrol#_merge-conflicts">merge conflicts</a></p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-15.png"><img alt="../_images/vs-code-edits-15.png" src="../_images/vs-code-edits-15.png" style="width: 100%;" /></a>
+</figure>
+<p>Since the change on the server occured before your local change, you will need to address this conflict before pushing your change.  While you can manually modify the files, the user interface lets you navigate and choose which changes to accept.</p>
+<p>In that view, choose “Accept Current Change” within the editing screen, and right above the line of code that is highlighted.  This will use your local change and overwrite the one of the server.  Or choose “Accept Incoming Change” to use the server’s version.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/vs-code-edits-16.png"><img alt="../_images/vs-code-edits-16.png" src="../_images/vs-code-edits-16.png" style="width: 75%;" /></a>
+</figure>
+<p>An alternative workflow is to right click on the file, and choose <code class="docutils literal notranslate"><span class="pre">Accept</span> <span class="pre">All</span> <span class="pre">Current</span></code> or <code class="docutils literal notranslate"><span class="pre">Accept</span> <span class="pre">All</span> <span class="pre">Incoming</span></code> to choose one version of the file without going through individual decisions.</p>
+<p>After modifying:</p>
+<ol class="arabic simple">
+<li><p>Save the file if you have resolved the merge conflict.</p></li>
+<li><p>Choose the <code class="docutils literal notranslate"><span class="pre">+</span></code> next to the modified file in the source control pane, or right click on the file and choose <code class="docutils literal notranslate"><span class="pre">Stage</span> <span class="pre">Changes</span></code>.</p></li>
+<li><p>Add a commit message, commit the file</p></li>
+<li><p>Do a Push to synchronize with the server.</p></li>
+</ol>
+<p>See this <a class="reference external" href="https://www.youtube.com/watch?v=QmKdodJU-js">youtube video</a> for more details.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An important “break-glass-in-emergency” feature with git is to completely revert all local changes and reset to the latest commit on the server.</p>
+<p>To do this, in a terminal within the repository execute <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">reset</span> <span class="pre">--hard</span> <span class="pre">origin/main</span></code> (or <code class="docutils literal notranslate"><span class="pre">master</span></code> if the primary branch is called master rather than main). But remember, this will erase all local changes, so back files up locally if required.</p>
+</div>
+</section>
+</section>
+<section id="collaborative-work">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink"><span class="section-number">11.4. </span>Collaborative Work</a><a class="headerlink" href="#collaborative-work" title="Permalink to this heading">#</a></h2>
+<p>We have already seen how Git features (e.g. automatic merging of changes, and tools to manage conflicts where it fails) provide tools for collaboration.</p>
+<p>Here we will look at further GitHub and VS Code functionality to support collaboration.</p>
+<section id="adding-collaborators">
+<h3><span class="section-number">11.4.1. </span>Adding Collaborators<a class="headerlink" href="#adding-collaborators" title="Permalink to this heading">#</a></h3>
+<p>First, add a collaborator to the <code class="docutils literal notranslate"><span class="pre">USERNAME/example_repository</span></code> lecture we created earlier.</p>
+<p>We can do this by choosing <code class="docutils literal notranslate"><span class="pre">Settings</span></code> then <code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Access</span></code>, and finally <code class="docutils literal notranslate"><span class="pre">Invite</span> <span class="pre">a</span> <span class="pre">Collaborator</span></code>.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/git-collab.png"><img alt="../_images/git-collab.png" src="../_images/git-collab.png" style="width: 100%;" /></a>
+</figure>
+<p>Adding someone as a collaborator is required for access to private repositories, and can allow them direct access to changing the repository for public ones.</p>
+</section>
+<section id="project-management">
+<h3><span class="section-number">11.4.2. </span>Project Management<a class="headerlink" href="#project-management" title="Permalink to this heading">#</a></h3>
+<p>In addition, having individuals as collaborators enables further project management features.</p>
+<p>The main feature is an <em>issue</em>, which we can create from the issues tab.</p>
+<p>You should see something like this</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/git-issue.png"><img alt="../_images/git-issue.png" src="../_images/git-issue.png" style="width: 100%;" /></a>
+</figure>
+<p>Let’s unpack the different components</p>
+<ul class="simple">
+<li><p>The <em>assignees</em> dropdown optionally lets you select people tasked to work on the issue.</p></li>
+<li><p>The <em>labels</em> dropdown lets you tag the issue with labels visible from the issues page, such as “high priority” or “feature request”.</p></li>
+<li><p>It’s possible to tag other issues and collaborators (including in different repos) by linking to them in the comments – this is part of what’s called <em>GitHub-Flavored Markdown</em>.</p></li>
+</ul>
+<p>You can see open issues at a glance from the general issues tab</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/git-issue-tab.png"><img alt="../_images/git-issue-tab.png" src="../_images/git-issue-tab.png" style="width: 100%;" /></a>
+</figure>
+<p>The checkboxes are common in GitHub to manage project tasks.</p>
+</section>
+<section id="reviewing-code">
+<h3><span class="section-number">11.4.3. </span>Reviewing Code<a class="headerlink" href="#reviewing-code" title="Permalink to this heading">#</a></h3>
+<p>Whenever people push to a project you’re working on, you’ll receive an email notification.</p>
+<p>You review individual commits by opening a commits and commenting.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/git-review.png"><img alt="../_images/git-review.png" src="../_images/git-review.png" style="width: 100%;" /></a>
+</figure>
+<p>Or by clicking on the line number in the description of the commit differences to have discussions about a specific line of code.  Throughout, if you have a collaborator, you can refer to them by <code class="docutils literal notranslate"><span class="pre">&#64;username</span></code>   replacing <code class="docutils literal notranslate"><span class="pre">username</span></code> with their GitHub name.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/git-review-2.png"><img alt="../_images/git-review-2.png" src="../_images/git-review-2.png" style="width: 100%;" /></a>
+</figure>
+</section>
+</section>
+<section id="collaboration-via-pull-request">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink"><span class="section-number">11.5. </span>Collaboration via Pull Request</a><a class="headerlink" href="#collaboration-via-pull-request" title="Permalink to this heading">#</a></h2>
+<p>One of the defining features of GitHub is that it is the dominant platform for <em>open source</em> code, which anyone can access and use.</p>
+<p>However, while anyone can make a copy of the source code, not everyone has access to modify the particular version stored on GitHub.</p>
+<p>A maintainer (i.e. someone with “write” access to directly modify a repository)
+might consider different contributions and “merge” the changes into the main
+repository if the changes meet their criteria.</p>
+<p>A <em>pull request</em> (“PR”) allows <strong>any</strong> outsiders to suggest changes to open source repositories.</p>
+<p>A PR requests the project maintainer to merge (“pull”) changes you’ve worked on into their repository.</p>
+<p>There are a few different workflows for creating and handling PRs, which we’ll walk through below.</p>
+<p><strong>Note:</strong> If the changes are for a Julia Package, you will need to follow a different workflow – described in the <a class="reference internal" href="testing.html"><span class="doc">testing lecture</span></a>.</p>
+<section id="quick-fixes">
+<span id="web-interface"></span><h3><span class="section-number">11.5.1. </span>Quick Fixes<a class="headerlink" href="#quick-fixes" title="Permalink to this heading">#</a></h3>
+<p>GitHub’s website provides an online editor for quick and dirty changes, such as fixing typos in documentation.</p>
+<p>For example, you can navigate to the source for these lecture notes in <a class="github reference external" href="https://github.com/QuantEcon/lecture-julia.myst">QuantEcon/lecture-julia.myst</a> and navigate to the <a class="reference external" href="https://github.com/QuantEcon/lecture-julia.myst/blob/main/README.md">README.md</a>.</p>
+<p>From there, either click the small pencil to the upper right of the text or type <code class="docutils literal notranslate"><span class="pre">.</span></code> to launch the web editor (which launches the web editor with <a class="reference external" href="https://github.dev/QuantEcon/lecture-julia.myst/blob/main/README.md">https://github.dev/QuantEcon/lecture-julia.myst/blob/main/README.md</a>).</p>
+<p>For example, choosing the pencil might look like</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/git-quick-pr.png"><img alt="../_images/git-quick-pr.png" src="../_images/git-quick-pr.png" style="width: 100%;" /></a>
+</figure>
+<p>Where you can give the name for the <code class="docutils literal notranslate"><span class="pre">new</span> <span class="pre">branch</span></code> and provide a description of your changes for review by maintainers.</p>
+<p>This will create a “fork” of the entire repository, make your change as a commit, and then upload this change to the repository you have forked from (i.e., the Pull Request).</p>
+<p>But what if we want to make more in-depth changes?</p>
+</section>
+<section id="no-access-case">
+<span id="fork-workflow"></span><h3><span class="section-number">11.5.2. </span>No-Access Case<a class="headerlink" href="#no-access-case" title="Permalink to this heading">#</a></h3>
+<p>A common problem is when we don’t have write access (i.e. we can’t directly modify) the repo in question.</p>
+<p>In that case, click the “Fork” button that lives in the top-right of every repo’s main page.</p>
+<p>This will copy the repo into your own GitHub account.</p>
+<p>For example, we can fork the source for these lectures from <a class="reference external" href="https://github.com/QuantEcon/lecture-julia.myst">this repo</a> to our own account (e.g. to <code class="docutils literal notranslate"><span class="pre">https://github.com/USERNAME/lecture-julia.myst</span></code>).</p>
+<p>In fact, if you created a PR for a change in the web GUI, it may already be forked to your account.</p>
+<p>Regardless, you should have a new repository in your account with the same name but different URL, along with a special icon to indicate that it’s a fork.  It will also say where it is forked from, and summarize the number of commits that are different.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/git-clone-fork.png"><img alt="../_images/git-clone-fork.png" src="../_images/git-clone-fork.png" style="width: 100%;" /></a>
+</figure>
+<p>We then can clone this repository to our desktop.  <a class="reference internal" href="#clone-repo"><span class="std std-ref">Follow the instructions</span></a> to clone the forked repository to your desktop (e.g. in VS Code, <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Git:</span> <span class="pre">Clone</span></code>, then choose <code class="docutils literal notranslate"><span class="pre">https://github.com/USERNAME/lecture-julia.myst.git</span></code> for your account, and then <code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">in</span> <span class="pre">New</span> <span class="pre">Window</span></code>).</p>
+<p>In order to more easily manage changes, we need to create a new branch.  Branches are a separate sequence of commits that diverge from the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch at some point (and may later be merged back in).  It allows you to manage a sequence of separate changes as a coherent unit.</p>
+<p>Click on the bottom left of the screen where it says <code class="docutils literal notranslate"><span class="pre">main</span></code> to create or select a new branch, and then choose <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">Branch</span></code>  and title it <code class="docutils literal notranslate"><span class="pre">readme-mod</span></code>.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/new-branch.png"><img alt="../_images/new-branch.png" src="../_images/new-branch.png" style="width: 100%;" /></a>
+</figure>
+<p>You will note that the bottom left hand corner now has chosen that branch rather than the <code class="docutils literal notranslate"><span class="pre">main</span></code> one.  You can use that to easily switch between them in the editor.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/new-branch-2.png"><img alt="../_images/new-branch-2.png" src="../_images/new-branch-2.png" style="width: 100%;" /></a>
+</figure>
+<p>Open the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file and make a change to it in the branch, then save and commit with a message.  At this point, the branch and your commit are still only local.</p>
+<p>To push onto the server, choose the arrow next to the branch name to publish changes.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/new-branch-3.png"><img alt="../_images/new-branch-3.png" src="../_images/new-branch-3.png" style="width: 100%;" /></a>
+</figure>
+<p>At this point, you can choose whether you want this branch to be related to the <code class="docutils literal notranslate"><span class="pre">origin</span></code> (i.e., your fork) or the original repository <code class="docutils literal notranslate"><span class="pre">upstream</span></code>.  Since this is intended to propose a change to the public repository, you should choose <code class="docutils literal notranslate"><span class="pre">upstream</span></code>.</p>
+<p>After selecting, it will ask you whether you want to create a <code class="docutils literal notranslate"><span class="pre">Pull</span> <span class="pre">Request</span></code>.  Choose Yes, and then fill in the information for the new pull request and <code class="docutils literal notranslate"><span class="pre">Create</span></code> it.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/new-branch-4.png"><img alt="../_images/new-branch-4.png" src="../_images/new-branch-4.png" style="width: 100%;" /></a>
+</figure>
+<p>You can <code class="docutils literal notranslate"><span class="pre">Exit</span> <span class="pre">Review</span> <span class="pre">Mode</span></code> after it has been created at which point it may switch to your <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p>
+<p>Use the branch selection on the lower left hand of the editor to change branches as you wish.</p>
+<p>Finally, for the original repository you forked from, they will now see this as a proposed change, as below</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/new-branch-5.png"><img alt="../_images/new-branch-5.png" src="../_images/new-branch-5.png" style="width: 100%;" /></a>
+</figure>
+<p>The maintainers of the repository can choose to accept the change, suggest modifications, comment on individual lines of code, etc.</p>
+<p>If they like the changes, they may choose to “Merge the Pull Request”.  This means that all of the commits proposed from your branch will be applied on top of the main branch on that repository.</p>
+<p>If there are conflicts (i.e., you are changing files which have been modified on the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch since you forked) then you may need to <code class="docutils literal notranslate"><span class="pre">rebase</span></code> your branch and pull request.  This means applying all of the changes that have happened after your fork to your current branch.</p>
+<p>While rebasing can be very complicated, for simple cases you can use the <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Git:</span> <span class="pre">Rebase</span> <span class="pre">(Branch)</span></code> command and choose <code class="docutils literal notranslate"><span class="pre">upstream/main</span></code> to get any of the recent changes.  For more advanced resolution of conflicts and rebasing, GitKraken and GitLens have more elaborate features.</p>
+<p>Creating a pull request is not like bundling up your changes and delivering them, but rather like opening an <em>ongoing connection</em> between two repositories, that is only severed when the PR is closed or merged.</p>
+</section>
+<section id="write-access-case">
+<h3><span class="section-number">11.5.3. </span>Write Access Case<a class="headerlink" href="#write-access-case" title="Permalink to this heading">#</a></h3>
+<p>As you become more familiar with GitHub, and work on larger projects, you will find yourself making PRs even when it isn’t strictly required.</p>
+<p>If you are a maintainer of the repo (e.g. you created it or are a collaborator) then you don’t need to create a fork, but will rather work with a <em>git branch</em>.</p>
+<p>Branches in git represent parallel development streams (i.e., sequences of commits) that the PR is trying to merge.</p>
+<p>For example, back on our <code class="docutils literal notranslate"><span class="pre">example_repository</span></code>, select the branch name on the bottom left corner of VS Code, and make a new branch (e.g. <code class="docutils literal notranslate"><span class="pre">readme-mod</span></code>)</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/new-branch-6.png"><img alt="../_images/new-branch-6.png" src="../_images/new-branch-6.png" style="width: 100%;" /></a>
+</figure>
+<p>Modify the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file, then commit the change to your branch.  As before, this only modifies your local machine, so you will need to publish the branch by clicking on the arrow next to the branch name.</p>
+<p>While you could directly add a PR at this point, choose not to create one so we can create it on your webpage.</p>
+<p>If we refresh the github website, it prompts us to create a PR.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/new-branch-7.png"><img alt="../_images/new-branch-7.png" src="../_images/new-branch-7.png" style="width: 100%;" /></a>
+</figure>
+<p>We can choose <code class="docutils literal notranslate"><span class="pre">Compare</span> <span class="pre">and</span> <span class="pre">Pull</span> <span class="pre">Request</span></code> at this point, giving the PR a name a description, or we can create one later with the <code class="docutils literal notranslate"><span class="pre">branches</span></code> tab on the repository.  If we create the PR, we will see this in our <code class="docutils literal notranslate"><span class="pre">Pull</span> <span class="pre">Requests</span></code> tab at the top of the webpage</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/new-branch-8.png"><img alt="../_images/new-branch-8.png" src="../_images/new-branch-8.png" style="width: 100%;" /></a>
+</figure>
+<p>Typically these would be left open while a cohesive feature or bug is fixed in your code, and then merged.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Reviewers</span></code> can look at the PR, select it on their desktops (by changing to the appropriate branch), and comment on the code.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/new-branch-9.png"><img alt="../_images/new-branch-9.png" src="../_images/new-branch-9.png" style="width: 100%;" /></a>
+</figure>
+<p>Throughout, the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch may be modified through other branches and commits, so this could become out of sync.  If so, then rebasing and conflict resolution is required, as discussed above.</p>
+<p>However, if no conflicts occur, and the commits from the branch can be merged into the main branch, then you can choose to <code class="docutils literal notranslate"><span class="pre">Merge</span> <span class="pre">Pull</span> <span class="pre">Request</span></code>.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/new-branch-10.png"><img alt="../_images/new-branch-10.png" src="../_images/new-branch-10.png" style="width: 100%;" /></a>
+</figure>
+<p>The key difference in the options is that the <code class="docutils literal notranslate"><span class="pre">Squash</span> <span class="pre">and</span> <span class="pre">Merge</span></code> will combine all of the individual commits in this branch into a single commit before merging into the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p>
+<p>The UI then prompts you to remove the branch.  After the PR has been merged, you will typically want to delete that branch to avoid accidentally modifying it.</p>
+<p>Finally, we see that this commit is now listed on the main branch</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="../_images/new-branch-11.png"><img alt="../_images/new-branch-11.png" src="../_images/new-branch-11.png" style="width: 100%;" /></a>
+</figure>
+</section>
+<section id="julia-package-case">
+<h3><span class="section-number">11.5.4. </span>Julia Package Case<a class="headerlink" href="#julia-package-case" title="Permalink to this heading">#</a></h3>
+<p>One special case is when the repo in question is actually a Julia project or package.</p>
+<p>We cover that (along with package workflow in general) in the <a class="reference internal" href="testing.html"><span class="doc">testing lecture</span></a>.</p>
+</section>
+</section>
+<section id="additional-resources-and-troubleshooting">
+<h2><a class="toc-backref" href="#id8" role="doc-backlink"><span class="section-number">11.6. </span>Additional Resources and Troubleshooting</a><a class="headerlink" href="#additional-resources-and-troubleshooting" title="Permalink to this heading">#</a></h2>
+<p>You may want to go beyond the scope of this tutorial when working with GitHub.</p>
+<p>Here are some resources to help</p>
+<ul class="simple">
+<li><p>Kate Hudson’s excellent <a class="reference external" href="https://github.com/k88hudson/git-flight-rules/">git flight rules</a>, which is a near-exhaustive list of situations you could encounter, and command-line fixes.</p></li>
+<li><p>The GitHub <a class="reference external" href="https://lab.github.com/">Learning Lab</a>, an interactive sandbox environment for git.</p></li>
+<li><p>The docs for forking on <a class="reference external" href="https://help.github.com/desktop/guides/contributing-to-projects/cloning-a-repository-from-github-to-github-desktop/">GitHub Desktop</a> and <a class="reference external" href="https://guides.github.com/activities/forking/">the GitHub Website</a>.</p></li>
+</ul>
+<section id="command-line-basics">
+<span id="version-control-commandline"></span><h3><span class="section-number">11.6.1. </span>Command-Line Basics<a class="headerlink" href="#command-line-basics" title="Permalink to this heading">#</a></h3>
+<p>Git also comes with a set of command-line tools.</p>
+<p>They’re optional, but many people like using them.</p>
+<p>Furthermore, in some environments (e.g. JupyterHub installations) you may only have access to the command line.</p>
+<ul class="simple">
+<li><p>On Windows, downloading <code class="docutils literal notranslate"><span class="pre">git</span></code> will have installed a program called <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">bash</span></code>, which installs these tools along with a general Linux-style shell.</p></li>
+<li><p>On Linux/MacOS, these tools are integrated into your usual terminal.</p></li>
+</ul>
+<p>To open the terminal in a directory, either right click and hit “open git bash” (in Windows), or use Linux commands like <code class="docutils literal notranslate"><span class="pre">cd</span></code> and <code class="docutils literal notranslate"><span class="pre">ls</span></code> to navigate.</p>
+<p>See <a class="reference external" href="https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/command-line-101">here</a> for a short introduction to the command line.</p>
+<p>As above, you can clone by grabbing the repo URL (say, GitHub’s <a class="reference external" href="https://github.com/github/site-policy/">site-policy repo</a>) and running <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/github/site-policy.git</span></code>.</p>
+<p>From here, you can get the latest files on the server by <code class="docutils literal notranslate"><span class="pre">cd</span></code>-ing into the directory and running <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code>.</p>
+<p>When you <code class="docutils literal notranslate"><span class="pre">pull</span></code> from the server, it will never overwrite your modified files, so it is impossible to lose local changes.</p>
+<p>Instead, to do a hard reset of all files and overwrite any of your local changes, you can run <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">reset</span> <span class="pre">--hard</span> <span class="pre">origin/master</span></code>.</p>
+</section>
+</section>
+<section id="exercises">
+<h2><a class="toc-backref" href="#id9" role="doc-backlink"><span class="section-number">11.7. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
+<section id="exercise-1a">
+<h3><span class="section-number">11.7.1. </span>Exercise 1a<a class="headerlink" href="#exercise-1a" title="Permalink to this heading">#</a></h3>
+<p>Follow the instructions to create a <a class="reference internal" href="#new-repo-workflow"><span class="std std-ref">new repository</span></a> for one of your GitHub accounts.
+In this repository</p>
+<ul class="simple">
+<li><p>Take the code from one of your previous assignments, such as <a class="reference internal" href="../getting_started_julia/julia_by_example.html#jbe-ex8a"><span class="std std-ref">Newton’s method</span></a> in <a class="reference internal" href="../getting_started_julia/julia_by_example.html"><span class="doc">Introductory Examples</span></a> (either as a <code class="docutils literal notranslate"><span class="pre">.jl</span></code> file or a Jupyter notebook).</p></li>
+<li><p>Put in a <code class="docutils literal notranslate"><span class="pre">README.md</span></code> with some text.</p></li>
+<li><p>Put in a <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file, ignoring the Jupyter files <code class="docutils literal notranslate"><span class="pre">.ipynb_checkpoints</span></code> and the project files, <code class="docutils literal notranslate"><span class="pre">.projects</span></code>.</p></li>
+</ul>
+</section>
+<section id="exercise-1b">
+<h3><span class="section-number">11.7.2. </span>Exercise 1b<a class="headerlink" href="#exercise-1b" title="Permalink to this heading">#</a></h3>
+<p>Pair-up with another student who has done Exercise 1a and find out their GitHub ID, and each do the following</p>
+<ul class="simple">
+<li><p>Add the GitHub ID as a collaborators on your repository.</p></li>
+<li><p>Clone the repositories to your local desktop.</p></li>
+<li><p>Assign each other an issue.</p></li>
+<li><p>Submit a commit from VS Code which references the issue by number.</p></li>
+<li><p>Comment on the commits.</p></li>
+<li><p>Ensure you can run their code without any modifications.</p></li>
+</ul>
+</section>
+<section id="exercise-1c">
+<h3><span class="section-number">11.7.3. </span>Exercise 1c<a class="headerlink" href="#exercise-1c" title="Permalink to this heading">#</a></h3>
+<p>Pair-wise with the results of Exercise 1b examine a merge-conflict by editing the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file for your repository that you have both setup as collaborators.</p>
+<p>Start by ensuring there are multiple lines in the file so that some changes may have conflicts, and some may not.</p>
+<ul class="simple">
+<li><p>Clone the repository to your local desktops.</p></li>
+<li><p>Modify <strong>different</strong> lines of code in the file and both commit and push to the server (prior to pulling from each other)–and see how it merges things “automatically”.</p></li>
+<li><p>Modify <strong>the same</strong> line of code in the file, and deal with the <a class="reference internal" href="#merge-conflict"><span class="std std-ref">merge conflict</span></a>.</p></li>
+</ul>
+</section>
+<section id="exercise-2a">
+<h3><span class="section-number">11.7.4. </span>Exercise 2a<a class="headerlink" href="#exercise-2a" title="Permalink to this heading">#</a></h3>
+<p>Just using GitHub’s <a class="reference internal" href="#web-interface"><span class="std std-ref">web interface</span></a>, submit a Pull Request for a simple change of documentation to a public repository.</p>
+<p>The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. <code class="docutils literal notranslate"><span class="pre">https://github.com/QuantEcon/lecture-julia.myst</span></code>.</p>
+<p>Note: The source for that repository is in <code class="docutils literal notranslate"><span class="pre">.md</span></code> files, but you should be able to find spelling mistakes/etc. without much effort.</p>
+</section>
+<section id="exercise-2b">
+<h3><span class="section-number">11.7.5. </span>Exercise 2b<a class="headerlink" href="#exercise-2b" title="Permalink to this heading">#</a></h3>
+<p>Following the <a class="reference internal" href="#fork-workflow"><span class="std std-ref">instructions</span></a> for forking and cloning a public repository to your local desktop, submit a Pull Request to a public repository.</p>
+<p>Again, you could submit it for a typo in the source repository for these notes, i.e. <code class="docutils literal notranslate"><span class="pre">https://github.com/QuantEcon/lecture-julia.myst</span></code>, but you are also encouraged to instead look for a small change that could help the documentation in another repository.</p>
+<p>If you are ambitious, then go to the Exercise Solutions for one of the Exercises in these lecture notes and submit a PR for your own modified version (if you think it is an improvement!).</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.9"
+        },
+        kernelOptions: {
+            name: "julia-1.9",
+            path: "./software_engineering"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.9'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="qe-page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+
+            
+            <div class="qe-sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="qe-sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="qe-sidebar__nav" id="qe-sidebar-nav" aria-label="Main navigation">
+                    <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
   Getting Started with Julia
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../getting_started_julia/getting_started.html">
    1. Setting up Your Julia Environment
@@ -140,7 +903,7 @@ const thebe_selector_output = ".output, .cell_output"
   Package Ecosystem
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../more_julia/generic_programming.html">
    6. Generic Programming
@@ -167,13 +930,13 @@ const thebe_selector_output = ".output, .cell_output"
   Software Engineering
  </span>
 </p>
-<ul class="current nav bd-sidenav">
+<ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="tools_editors.html">
    10. Visual Studio Code and Other Tools
   </a>
  </li>
- <li class="toctree-l1 current active">
+ <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
    11. GitHub, Version Control and Collaboration
   </a>
@@ -194,7 +957,7 @@ const thebe_selector_output = ".output, .cell_output"
   Tools and Techniques
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../tools_and_techniques/geom_series.html">
    14. Geometric Series for Elementary Economics
@@ -236,7 +999,7 @@ const thebe_selector_output = ".output, .cell_output"
   Introduction to Dynamics
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
    21. Dynamics in One Dimension
@@ -278,7 +1041,7 @@ const thebe_selector_output = ".output, .cell_output"
   Dynamic Programming
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
    28. Job Search I: The McCall Search Model
@@ -365,7 +1128,7 @@ const thebe_selector_output = ".output, .cell_output"
   Modeling in Continuous Time
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
    44. Modeling COVID 19 with Differential Equations
@@ -382,7 +1145,7 @@ const thebe_selector_output = ".output, .cell_output"
   Multiple Agent Models
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
    46. Schelling’s Segregation Model
@@ -444,7 +1207,7 @@ const thebe_selector_output = ".output, .cell_output"
   Time Series Models
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../time_series_models/arma.html">
    57. Covariance Stationary Processes
@@ -481,7 +1244,7 @@ const thebe_selector_output = ".output, .cell_output"
   Dynamic Programming Squared
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
    63. Dynamic Stackelberg Problems
@@ -508,7 +1271,7 @@ const thebe_selector_output = ".output, .cell_output"
   Other
  </span>
 </p>
-<ul class="nav bd-sidenav">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
    67. About these Lectures
@@ -531,1072 +1294,165 @@ const thebe_selector_output = ".output, .cell_output"
  </li>
 </ul>
 
-    </div>
-</nav> <!-- To handle the deprecated key -->
+                </nav>
 
-<div class="navbar_extra_footer">
-  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
-</div>
+                <div class="qe-sidebar__footer">
 
-</div>
-
-
-          
-
-
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
-
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/software_engineering/version_control.md"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
-
-            <!-- Source interaction buttons -->
-
-            <!-- Full screen (wrap in <a> to have style consistency -->
-
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
-            </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#setup">
-   11.1. Setup
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#git-vs-github-vs-git-clients">
-     11.1.1. Git vs. GitHub vs. Git Clients
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#basic-objects">
-   11.2. Basic Objects
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#repositories">
-     11.2.1. Repositories
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#commits">
-     11.2.2. Commits
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#common-files">
-     11.2.3. Common Files
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#individual-workflow">
-   11.3. Individual Workflow
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#creating-a-repository">
-     11.3.1. Creating a Repository
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#cloning-a-repository">
-     11.3.2. Cloning a Repository
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#making-committing-and-pushing-changes">
-     11.3.3. Making, Committing, and Pushing Changes
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exploring-commits-in-vs-code-and-on-the-github-website">
-     11.3.4. Exploring Commits in VS Code and on the GitHub Website
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pulling-changes-and-the-online-editor">
-     11.3.5. Pulling Changes and the Online Editor
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#discarding-changes">
-     11.3.6. Discarding Changes
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#reverting-commits">
-     11.3.7. Reverting Commits
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#merge-conflicts">
-     11.3.8. Merge Conflicts
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#collaborative-work">
-   11.4. Collaborative Work
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#adding-collaborators">
-     11.4.1. Adding Collaborators
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#project-management">
-     11.4.2. Project Management
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#reviewing-code">
-     11.4.3. Reviewing Code
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#collaboration-via-pull-request">
-   11.5. Collaboration via Pull Request
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#quick-fixes">
-     11.5.1. Quick Fixes
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#no-access-case">
-     11.5.2. No-Access Case
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#write-access-case">
-     11.5.3. Write Access Case
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#julia-package-case">
-     11.5.4. Julia Package Case
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#additional-resources-and-troubleshooting">
-   11.6. Additional Resources and Troubleshooting
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#command-line-basics">
-     11.6.1. Command-Line Basics
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   11.7. Exercises
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-1a">
-     11.7.1. Exercise 1a
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-1b">
-     11.7.2. Exercise 1b
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-1c">
-     11.7.3. Exercise 1c
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-2a">
-     11.7.4. Exercise 2a
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-2b">
-     11.7.5. Exercise 2b
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-
-            </nav>
-        </div>
-    </div>
-</div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>GitHub, Version Control and Collaboration</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#setup">
-   11.1. Setup
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#git-vs-github-vs-git-clients">
-     11.1.1. Git vs. GitHub vs. Git Clients
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#basic-objects">
-   11.2. Basic Objects
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#repositories">
-     11.2.1. Repositories
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#commits">
-     11.2.2. Commits
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#common-files">
-     11.2.3. Common Files
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#individual-workflow">
-   11.3. Individual Workflow
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#creating-a-repository">
-     11.3.1. Creating a Repository
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#cloning-a-repository">
-     11.3.2. Cloning a Repository
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#making-committing-and-pushing-changes">
-     11.3.3. Making, Committing, and Pushing Changes
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exploring-commits-in-vs-code-and-on-the-github-website">
-     11.3.4. Exploring Commits in VS Code and on the GitHub Website
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#pulling-changes-and-the-online-editor">
-     11.3.5. Pulling Changes and the Online Editor
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#discarding-changes">
-     11.3.6. Discarding Changes
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#reverting-commits">
-     11.3.7. Reverting Commits
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#merge-conflicts">
-     11.3.8. Merge Conflicts
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#collaborative-work">
-   11.4. Collaborative Work
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#adding-collaborators">
-     11.4.1. Adding Collaborators
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#project-management">
-     11.4.2. Project Management
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#reviewing-code">
-     11.4.3. Reviewing Code
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#collaboration-via-pull-request">
-   11.5. Collaboration via Pull Request
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#quick-fixes">
-     11.5.1. Quick Fixes
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#no-access-case">
-     11.5.2. No-Access Case
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#write-access-case">
-     11.5.3. Write Access Case
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#julia-package-case">
-     11.5.4. Julia Package Case
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#additional-resources-and-troubleshooting">
-   11.6. Additional Resources and Troubleshooting
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#command-line-basics">
-     11.6.1. Command-Line Basics
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#exercises">
-   11.7. Exercises
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-1a">
-     11.7.1. Exercise 1a
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-1b">
-     11.7.2. Exercise 1b
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-1c">
-     11.7.3. Exercise 1c
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-2a">
-     11.7.4. Exercise 2a
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#exercise-2b">
-     11.7.5. Exercise 2b
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-
-                        </nav>
-                    </div>
                 </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="qe-toolbar">
+
+            <div class="qe-toolbar__inner">
+
+                <ul class="qe-toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                </ul>
+
+                <ul class="qe-toolbar__links">
+                    <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search..." aria-label="Search..." autocomplete="off" accesskey="k">
+                            <i data-feather="search" id="search-icon"></i>
+                        </form>
+                    </li>
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="/_notebooks/software_engineering/version_control.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li class="settings-button" id="settingsButton"><div data-tippy-content="Launch Notebook"><i data-feather="play-circle"></i></div></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/quantecon/lecture-julia.myst/blob/main/lectures/software_engineering/version_control.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
             </div>
-            
-              <div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p>Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title"> Notebook Launcher </p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input">
                 
-  <div id="qe-notebook-header" style="text-align:right;">
-        <a href="https://quantecon.org/" title="quantecon.org">
-                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
-        </a>
-</div><div class="tex2jax_ignore mathjax_ignore section" id="github-version-control-and-collaboration">
-<h1><a class="toc-backref" href="#id2"><span class="section-number">11. </span>GitHub, Version Control and Collaboration</a><a class="headerlink" href="#github-version-control-and-collaboration" title="Permalink to this headline">¶</a></h1>
-<div class="contents topic" id="contents">
-<p class="topic-title">Contents</p>
-<ul class="simple">
-<li><p><a class="reference internal" href="#github-version-control-and-collaboration" id="id2">GitHub, Version Control and Collaboration</a></p>
-<ul>
-<li><p><a class="reference internal" href="#setup" id="id3">Setup</a></p></li>
-<li><p><a class="reference internal" href="#basic-objects" id="id4">Basic Objects</a></p></li>
-<li><p><a class="reference internal" href="#individual-workflow" id="id5">Individual Workflow</a></p></li>
-<li><p><a class="reference internal" href="#collaborative-work" id="id6">Collaborative Work</a></p></li>
-<li><p><a class="reference internal" href="#collaboration-via-pull-request" id="id7">Collaboration via Pull Request</a></p></li>
-<li><p><a class="reference internal" href="#additional-resources-and-troubleshooting" id="id8">Additional Resources and Troubleshooting</a></p></li>
-<li><p><a class="reference internal" href="#exercises" id="id9">Exercises</a></p></li>
-</ul>
-</li>
-</ul>
-</div>
-<p>Co-authored with Arnav Sood</p>
-<p>An essential part of modern software engineering is using version control.</p>
-<p>We use version control because</p>
-<ul class="simple">
-<li><p>Not all iterations on a file are perfect, and you may want to revert changes.</p></li>
-<li><p>We want to be able to see who has changed what and how.</p></li>
-<li><p>We want a uniform version scheme to do this between people and machines.</p></li>
-<li><p>Concurrent editing on code is necessary for collaboration.</p></li>
-<li><p>Version control is an essential part of creating reproducible research.</p></li>
-</ul>
-<p>In this lecture, we’ll discuss how to use Git and GitHub, largely with the built in VS Code support.</p>
-<p>We assume that you have followed the <a class="reference internal" href="tools_editors.html"><span class="doc">VS Code</span></a> instructions.</p>
-<div class="section" id="setup">
-<h2><a class="toc-backref" href="#id3"><span class="section-number">11.1. </span>Setup</a><a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
-<ol>
-<li><p>Make sure you create an account on <a class="reference external" href="http://github.com/">GitHub.com</a>.</p>
-<ul class="simple">
-<li><p>If you are a student, consider signing up for the GitHub <a class="reference external" href="https://education.github.com/pack/">Student Developer Pack</a> which gives you free <a class="reference external" href="https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-pro">GitHub Pro</a></p></li>
-<li><p>Otherwise, see if you qualify for a free <a class="reference external" href="https://help.github.com/articles/about-github-education-for-educators-and-researchers/">Research or Educator Plan</a> which gives you free <a class="reference external" href="https://docs.github.com/en/get-started/learning-about-github/githubs-products#github-team">GitHub Team</a></p></li>
-</ul>
-</li>
-<li><p>Ensure that <a class="reference external" href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/">git</a> is installed (as it likely was in the <a class="reference internal" href="../getting_started_julia/getting_started.html"><span class="doc">getting started</span></a>)</p></li>
-<li><p>Setup your git username, and change default line-endings if on Windows</p>
-<ol>
-<li><p>Opening a terminal (on Windows you can use a powershell or the new “Git Bash” installed in the previous step)</p></li>
-<li><p>Running the following, where the first two lines are not required on linux and OS/X, and you should replace the email and name in the final lines</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>core.eol<span class="w"> </span>lf
-git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>core.autocrlf<span class="w"> </span><span class="nb">false</span>
-git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.email<span class="w"> </span><span class="s2">&quot;you@example.com&quot;</span>
-git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>user.name<span class="w"> </span><span class="s2">&quot;Your Name&quot;</span><span class="w">   </span>
-git<span class="w"> </span>config<span class="w"> </span>--global<span class="w"> </span>github.user<span class="w"> </span><span class="s2">&quot;GITHUBUSERNAME&quot;</span><span class="w">   </span>
-</pre></div>
-</div>
-</li>
-</ol>
-</li>
-<li><p>Ensure that <a class="reference internal" href="tools_editors.html"><span class="doc">VS Code</span></a> is installed</p></li>
-<li><p>Install the <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens">GitLens</a> extension.</p></li>
-</ol>
-<ul class="simple">
-<li><p>Optional, but highly recommended.</p></li>
-<li><p>It provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-">last modified</a> each line of code).</p></li>
-</ul>
-<div class="section" id="git-vs-github-vs-git-clients">
-<span id="more-on-git"></span><h3><span class="section-number">11.1.1. </span>Git vs. GitHub vs. Git Clients<a class="headerlink" href="#git-vs-github-vs-git-clients" title="Permalink to this headline">¶</a></h3>
-<p>To understand the relationship</p>
-<ul class="simple">
-<li><p>Git is an infrastructure for versioning and merging files (it is not specific to GitHub and does not even require an online server).</p></li>
-<li><p>GitHub provides an online service to coordinate working with Git repositories, and adds some additional features for managing projects.</p></li>
-<li><p>GitHub is the market leader for open source projects and Julia, but there are other options, e.g. <a class="reference external" href="https://about.gitlab.com/">GitLab</a> and <a class="reference external" href="https://bitbucket.org">Bitbucket</a>.</p></li>
-</ul>
-<p>We will use the built-in VS Code Git and GitHub support in this lecture, but you may consider using alternatives</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://desktop.github.com/">GitHub Desktop</a> is a clean and simple GUI for git, which is often useful in conjunction with VS Code.</p></li>
-<li><p><a class="reference external" href="https://www.gitkraken.com/">GitKraken</a> is a superb, specialized tool which makes many advanced operations intuitive.</p></li>
-<li><p>Or, you may directly use the Git command line, which can be convenient for simple operations (e.g. <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/QuantEcon/lecture-julia.notebooks</span></code> would clone the notebook repository), but tends to be harder for more advanced operations.</p></li>
-</ul>
-<p>Since these lecture notes are intended to provide a minimal path to using the technologies, here we will conflate the workflow of these distinct products.</p>
-</div>
-</div>
-<div class="section" id="basic-objects">
-<h2><a class="toc-backref" href="#id4"><span class="section-number">11.2. </span>Basic Objects</a><a class="headerlink" href="#basic-objects" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="repositories">
-<h3><span class="section-number">11.2.1. </span>Repositories<a class="headerlink" href="#repositories" title="Permalink to this headline">¶</a></h3>
-<p>The fundamental object in GitHub is a <em>repository</em> (or “repo”) – this is the master directory for a project.</p>
-<p>One example of a repo is the QuantEcon <a class="reference external" href="https://github.com/quantecon/expectations.jl/">Expectations.jl</a> package.</p>
-<p>On the machine, a repo is a normal directory, along with a subdirectory called <code class="docutils literal notranslate"><span class="pre">.git</span></code> which contains the history of changes.</p>
-</div>
-<div class="section" id="commits">
-<h3><span class="section-number">11.2.2. </span>Commits<a class="headerlink" href="#commits" title="Permalink to this headline">¶</a></h3>
-<p>GitHub stores history as a sequence of changes to text, called <em>commits</em>.</p>
-<p><a class="reference external" href="https://github.com/QuantEcon/lecture-julia.myst/commit/8a7daeecd5115a334c251c90d4455cd7921996e4">Here</a> is an example of a commit, which modifies instructions on using an extension in these lecture notes.</p>
-<p>In particular, commits have the following features</p>
-<ul class="simple">
-<li><p>An ID (formally, an “SHA-1 hash”)</p></li>
-<li><p>Content (i.e., a before and after state)</p></li>
-<li><p>Metadata (author, timestamp, commit message, etc.)</p></li>
-</ul>
-<p><strong>Note:</strong> It’s crucial to remember that what’s stored in a commit is only the actual changes you make to text.</p>
-<p>This is a key reason why git can store long and complicated histories without consuming massive amounts of memory.</p>
-</div>
-<div class="section" id="common-files">
-<h3><span class="section-number">11.2.3. </span>Common Files<a class="headerlink" href="#common-files" title="Permalink to this headline">¶</a></h3>
-<p>In addition, each GitHub repository usually comes with a few standard text files</p>
-<ul class="simple">
-<li><p>A <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file, which lists files/extensions/directories that GitHub shouldn’t try to track (e.g., LaTeX compilation byproducts).</p></li>
-<li><p>A <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file, which is a <a class="reference external" href="https://guides.github.com/features/mastering-markdown/">Markdown</a> file which GitHub displays by default as the homepage when accessing the repository online.</p></li>
-<li><p>A <code class="docutils literal notranslate"><span class="pre">LICENSE.txt</span></code> file, which describes the terms under which the repository’s contents are made available.</p></li>
-</ul>
-<p>For an example of all three, see the <a class="reference external" href="https://github.com/quantecon/expectations.jl/">Expectations.jl</a> repo.</p>
-</div>
-</div>
-<div class="section" id="individual-workflow">
-<span id="new-repo-workflow"></span><h2><a class="toc-backref" href="#id5"><span class="section-number">11.3. </span>Individual Workflow</a><a class="headerlink" href="#individual-workflow" title="Permalink to this headline">¶</a></h2>
-<p>In this section, we’ll describe how to use GitHub to version your own projects.</p>
-<p>Much of this will carry over to the collaborative section.</p>
-<div class="section" id="creating-a-repository">
-<h3><span class="section-number">11.3.1. </span>Creating a Repository<a class="headerlink" href="#creating-a-repository" title="Permalink to this headline">¶</a></h3>
-<p>In general, we will always want to make repos for new projects using the following dropdown</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/git-makerepo.png"><img alt="../_images/git-makerepo.png" src="../_images/git-makerepo.png" style="width: 75%;" /></a>
-</div>
-<p>We can then configure repository options as such</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/git-makerepo-full.png"><img alt="../_images/git-makerepo-full.png" src="../_images/git-makerepo-full.png" style="width: 100%;" /></a>
-</div>
-<p>In this case, we’re making a public repo <code class="docutils literal notranslate"><span class="pre">github.com/USERNAME/example_repository</span></code> where <code class="docutils literal notranslate"><span class="pre">USERNAME</span></code> is your GitHub account name.  The options chosen are:</p>
-<ul class="simple">
-<li><p>Add in a <code class="docutils literal notranslate"><span class="pre">README.md</span></code>.</p></li>
-<li><p>License under the MIT open-source License.</p></li>
-<li><p>Ignore Julia compilation byproducts in the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>.</p></li>
-<li><p>Leave off support for the Marketplace Apps <code class="docutils literal notranslate"><span class="pre">Codecov</span></code>, which we will discuss further in the <a class="reference internal" href="testing.html"><span class="doc">testing lecture</span></a> lecture.</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>You can also add an existing folder as a new repository on github, where you can use the VS Code features to <a class="reference external" href="https://code.visualstudio.com/docs/editor/versioncontrol#_initialize-a-repository">initialize and publish</a> a repository to GitHub.  Otherwise, the <a class="reference external" href="https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/">instructions are more involved</a>.</p>
-</div>
-</div>
-<div class="section" id="cloning-a-repository">
-<span id="clone-repo"></span><h3><span class="section-number">11.3.2. </span>Cloning a Repository<a class="headerlink" href="#cloning-a-repository" title="Permalink to this headline">¶</a></h3>
-<p>The next step is to get this to our local machine.  If you click on the <code class="docutils literal notranslate"><span class="pre">&lt;&gt;</span> <span class="pre">Code</span></code> button on the repositories website, you will see a dropdown such as</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/git-clone.png"><img alt="../_images/git-clone.png" src="../_images/git-clone.png" style="width: 100%;" /></a>
-</div>
-<p>This dropdown gives us a few options</p>
-<ul class="simple">
-<li><p>The copy button below the <code class="docutils literal notranslate"><span class="pre">Clone</span></code> with <code class="docutils literal notranslate"><span class="pre">HTTPS</span></code> can be used by either the commandline or other tools.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">in</span> <span class="pre">Desktop</span></code> will call to the GitHub Desktop application if you installed it</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Zip</span></code> will download the directory <em>without the .git</em> subdirectory (avoid this option, as it defeats the purpose of version control).</p></li>
-</ul>
-<p>We will download the repository using the built-in VS Code support.</p>
-<ol>
-<li><p>Copy the https URL in that dropdown (e.g. <code class="docutils literal notranslate"><span class="pre">https://github.com/USERNAME/example_repository.git</span></code>).</p></li>
-<li><p>Start VS Code.</p></li>
-<li><p>Use <code class="docutils literal notranslate"><span class="pre">Ctrl+Shift+P</span></code> to open the command bar, and choose <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Git:</span> <span class="pre">Clone</span></code></p></li>
-<li><p>At this point, you can paste in the copied URL or choose <code class="docutils literal notranslate"><span class="pre">Clone</span> <span class="pre">from</span> <span class="pre">GitHub</span></code> and then it will let you select your repositories after logging in.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-clone.png"><img alt="../_images/vs-code-clone.png" src="../_images/vs-code-clone.png" style="width: 100%;" /></a>
-</div>
-</li>
-<li><p>Select a location (e.g. <code class="docutils literal notranslate"><span class="pre">c:\users\USERNAME\GitHub</span></code>) which will clone the repository into a folder (e.g. into <code class="docutils literal notranslate"><span class="pre">c:\users\USERNAME\GitHub\example_repository</span></code>) which holds both the files themselves and the version information. This folder then has all of the information associated with this repository.</p></li>
-<li><p>After the repository is cloned, you can choose to <code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">in</span> <span class="pre">a</span> <span class="pre">New</span> <span class="pre">Window</span></code>.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-done-clone.png"><img alt="../_images/vs-code-done-clone.png" src="../_images/vs-code-done-clone.png" style="width: 100%;" /></a>
-</div>
-</li>
-</ol>
-<p>You will see the automatically generated files for the <code class="docutils literal notranslate"><span class="pre">LICENSE,</span> <span class="pre">.gitignore</span></code> and <code class="docutils literal notranslate"><span class="pre">README.md</span></code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To manually clone this to your desktop, you can start a terminal and use <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/USERNAME/example_repository.git</span></code> within the directory you want to clone it to.  After cloning, you can open the folder within VS Code by either</p>
-<ul class="simple">
-<li><p>Within a terminal on your operating system, navigate to that directory and type <code class="docutils literal notranslate"><span class="pre">code</span> <span class="pre">.</span></code></p></li>
-<li><p>On Windows if you installed VS Code with the appropriate option, right click on the folder and choose <code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">with</span> <span class="pre">Code</span></code> - trusting the authors as required on opening the folder.</p></li>
-<li><p>In the VS Code Menu, choose <code class="docutils literal notranslate"><span class="pre">File/Open</span> <span class="pre">Folder...</span></code>.</p></li>
-</ul>
-</div>
-</div>
-<div class="section" id="making-committing-and-pushing-changes">
-<h3><span class="section-number">11.3.3. </span>Making, Committing, and Pushing Changes<a class="headerlink" href="#making-committing-and-pushing-changes" title="Permalink to this headline">¶</a></h3>
-<p>Now that we have the repository, we can start working with it.</p>
-<p>Within VS Code, make the following changes:</p>
-<ol class="simple">
-<li><p>Open the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> and add some text.</p></li>
-<li><p>Add a new file called <code class="docutils literal notranslate"><span class="pre">some_file.txt</span></code> with some text in it.  You can do this with the menus, or by right clicking in the Files panel and selecting “New File”.</p></li>
-<li><p>Add another new file called <code class="docutils literal notranslate"><span class="pre">garbage_file.tmp</span></code> with some text in it.</p></li>
-<li><p>Finally, in the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>, add <code class="docutils literal notranslate"><span class="pre">*.tmp</span></code> at the end.</p></li>
-</ol>
-<p>Your editor should look something like</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-1.png"><img alt="../_images/vs-code-edits-1.png" src="../_images/vs-code-edits-1.png" style="width: 100%;" /></a>
-</div>
-<p>Note that the panel on the left hand side is highlighted with 3 changes.  Select that tab to see the current modifications relative to the current version on github.</p>
-<p>This shows three changes:</p>
-<ol class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">README.md</span></code> is modified.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> is modified.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">some_file.txt</span></code> is a new file.</p></li>
-</ol>
-<p>Note that <code class="docutils literal notranslate"><span class="pre">garbage_file.tmp</span></code> is not listed, as the <code class="docutils literal notranslate"><span class="pre">*.tmp</span></code> extension was ignored in the <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code>.
-If you click on a file, such as the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> in this panel, it will open up the file to show all of the changes relative to the last commit.  For example,</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-2.png"><img alt="../_images/vs-code-edits-2.png" src="../_images/vs-code-edits-2.png" style="width: 100%;" /></a>
-</div>
-<p>Let us push these changes to GitHub.  Add text in the “Message” in this panel, and then click on the checkmark to commit it.</p>
-<p>As git is a decentralized version control system, this change is now only local to your machine.  You can make a variety of changes locally and only push to GitHub when you are ready.</p>
-<p>To push these to the server, you can use the <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Git:</span> <span class="pre">Push</span></code> command or you can click on the bottom bar of vscode, which should show that one commit is ready to be uploaded and none are ready to be downloaded.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-3.png"><img alt="../_images/vs-code-edits-3.png" src="../_images/vs-code-edits-3.png" style="width: 75%;" /></a>
-</div>
-</div>
-<div class="section" id="exploring-commits-in-vs-code-and-on-the-github-website">
-<h3><span class="section-number">11.3.4. </span>Exploring Commits in VS Code and on the GitHub Website<a class="headerlink" href="#exploring-commits-in-vs-code-and-on-the-github-website" title="Permalink to this headline">¶</a></h3>
-<p>If you refresh your web browser with the github repository open, you will see changes and that it now shows multiple commits have been made to this project, as well as the last person to modify it.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-4.png"><img alt="../_images/vs-code-edits-4.png" src="../_images/vs-code-edits-4.png" style="width: 75%;" /></a>
-</div>
-<p>This functionality will help you track down changes in a project, and in particular, provide tools to track down when functionality may have stopped working or parameters were changed in a project.</p>
-<p>On that page, either choose the description of the commit to display it, or choose the entire list (e.g. 2 commits) and select the most recent.</p>
-<p>This shows a summary of all of the changes between this commit and the last.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-5.png"><img alt="../_images/vs-code-edits-5.png" src="../_images/vs-code-edits-5.png" style="width: 100%;" /></a>
-</div>
-<p>This interface lets you explore all of the lines of code that were modified between different commits to track down changes.</p>
-<p>Finally, with the <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens">GitLens</a> extension, you can see this information within the files themselves.  Open the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file, and move your typing cursor to one of the lines within the file.</p>
-<p>You will then see a nearly transparent description of (1) who made the last modification to this line; (2) when it occurred; and (3) the message on the commit that modified it.  If you further hover over this you can access even more information on the appropriate commit</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-6.png"><img alt="../_images/vs-code-edits-6.png" src="../_images/vs-code-edits-6.png" style="width: 50%;" /></a>
-</div>
-<p>You can see more detail on that commit in a variety of ways - such as clicking on that popup.  One convenient approach is in the main Explorer pane (not the Git pane), which as an expandable <code class="docutils literal notranslate"><span class="pre">Timeline</span></code>.  Select this for the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> to compare the current version to another in the timeline,</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-7.png"><img alt="../_images/vs-code-edits-7.png" src="../_images/vs-code-edits-7.png" style="width: 100%;" /></a>
-</div>
-</div>
-<div class="section" id="pulling-changes-and-the-online-editor">
-<span id="online-editor"></span><h3><span class="section-number">11.3.5. </span>Pulling Changes and the Online Editor<a class="headerlink" href="#pulling-changes-and-the-online-editor" title="Permalink to this headline">¶</a></h3>
-<p>The opposite of pushing changes is to pull changes made externally and previously pushed to GitHub.</p>
-<p>To see this workflow, we will make an external modification and bring the changes locally.</p>
-<p>Start in the GitHub webpage for your repository and choose the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file.</p>
-<p>You can edit this online by choosing the pen icon, or on some platforms by just typing a <code class="docutils literal notranslate"><span class="pre">.</span></code> and it will open in an online version of VS Code on that repository (which can also be accessed by a change in the url from <code class="docutils literal notranslate"><span class="pre">github.com</span></code> to <code class="docutils literal notranslate"><span class="pre">github.dev</span></code>, e.g.  <code class="docutils literal notranslate"><span class="pre">https://github.come/USERNAME/example_repository/blob/main/README.md</span></code> to  <code class="docutils literal notranslate"><span class="pre">https://github.dev/USERNAME/example_repository/blob/main/README.md</span></code>)</p>
-<p>Here is what that UI looks like in that case after editing the text and choosing the Git pane on the webpage (just as in any other VS Code installation)</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-9.png"><img alt="../_images/vs-code-edits-9.png" src="../_images/vs-code-edits-9.png" style="width: 100%;" /></a>
-</div>
-<p>As with the desktop VS Code, we then need to commit this with a message.  However, as it is online you will not be able to have local changes, and it commits without a manual “Push”.</p>
-<p>Go back to the desktop VS Code, and you will see that the Git bar at the bottom now shows an incoming change.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-10.png"><img alt="../_images/vs-code-edits-10.png" src="../_images/vs-code-edits-10.png" style="width: 100%;" /></a>
-</div>
-<p>Notice that the direction of the arrow is the opposite of when we made local modifications.  Whereas moving local commits to the server is called a “Push”, bringing external changes down to your desktop is called a “Pull”.</p>
-<p>But before we pull these changes, we will show how Git can automatically merge them (often on the same file, but at different lines of code).</p>
-<p>On your local VS Code, open the <code class="docutils literal notranslate"><span class="pre">README.txt</span></code> and change the title from <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">example_repository</span></code> to <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">example_repository_modified</span></code>.  Then save and commit this change with a commit message such as <code class="docutils literal notranslate"><span class="pre">Local</span> <span class="pre">Modification</span></code>.  It is important that you modified the top line, and not the same one that you changed in the online editor.</p>
-<p>You will notice that at the bottom it now shows one commit coming from the server, and one going back up.</p>
-<p>Now click on that icon on the bottom of the VS Code editor, which will do a Pull and Push of these changes.  Assuming that you were careful not to modify the same line of code, it will determine that these two changes do not clash, and both commits will be added locally and on the server.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-11.png"><img alt="../_images/vs-code-edits-11.png" src="../_images/vs-code-edits-11.png" style="width: 75%;" /></a>
-</div>
-</div>
-<div class="section" id="discarding-changes">
-<span id="id1"></span><h3><span class="section-number">11.3.6. </span>Discarding Changes<a class="headerlink" href="#discarding-changes" title="Permalink to this headline">¶</a></h3>
-<p>A common scenario with Git is that you are making temporary local modifications and want to discard them prior to updating from the server.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> is very useful for ensuring that some files are always ignored.  For example, temporary files in computations or <code class="docutils literal notranslate"><span class="pre">.pdf</span></code> files which coauthors will compile themselves (or having them automatically compiled with a <a class="reference external" href="https://github.com/ubcecon/tutorials/blob/master/github_actions.md">GitHub Action</a>).</p>
-</div>
-<p>To see this workflow prior to making a commit:</p>
-<ol class="simple">
-<li><p>Save a change to the <code class="docutils literal notranslate"><span class="pre">README.md</span></code></p></li>
-<li><p>Open the Git pane, which will show the one modification.</p></li>
-<li><p>Right click on the modification you wish to discard (can be file-by-file).</p></li>
-</ol>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-8.png"><img alt="../_images/vs-code-edits-8.png" src="../_images/vs-code-edits-8.png" style="width: 100%;" /></a>
-</div>
-<p>By selecting <code class="docutils literal notranslate"><span class="pre">Discard</span> <span class="pre">Changes</span></code> you can revert back to the last commit that had been made without any local modifications.</p>
-</div>
-<div class="section" id="reverting-commits">
-<h3><span class="section-number">11.3.7. </span>Reverting Commits<a class="headerlink" href="#reverting-commits" title="Permalink to this headline">¶</a></h3>
-<p>On the other hand, if you have already made a commit, then there is a record of this change in the history which cannot be removed directly.  You can, however, easily revert back that particular change.</p>
-<p>For example, open <code class="docutils literal notranslate"><span class="pre">some_file.txt</span></code>, make a change, and commit/push the modification.</p>
-<p>To restore an older version, with GitLens installed, go to the <code class="docutils literal notranslate"><span class="pre">FILE</span> <span class="pre">HISTORY</span></code> in the source control pane, and right click on the older version you wish to keep.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-12.png"><img alt="../_images/vs-code-edits-12.png" src="../_images/vs-code-edits-12.png" style="width: 100%;" /></a>
-</div>
-<p>Choose <code class="docutils literal notranslate"><span class="pre">Restore</span> <span class="pre">(Checkout)</span></code>, which will add a modification into the <code class="docutils literal notranslate"><span class="pre">Staged</span> <span class="pre">Changes</span></code>.</p>
-<p>Then provide a commit message, and push to the server.</p>
-<p>This will not remove the history of the older commit, but will instead produce the opposite changes required to restore it.</p>
-<p>See the <a class="reference external" href="https://code.visualstudio.com/docs/editor/versioncontrol">VS Code documentation</a> for more features.</p>
-</div>
-<div class="section" id="merge-conflicts">
-<span id="merge-conflict"></span><h3><span class="section-number">11.3.8. </span>Merge Conflicts<a class="headerlink" href="#merge-conflicts" title="Permalink to this headline">¶</a></h3>
-<p>While in the previous examples, we showed with the <a class="reference internal" href="#online-editor"><span class="std std-ref">online editor</span></a> how we could make external changes and Git would automatically merge them if possible, other times it will not be possible.</p>
-<p>To demonstrate this, follow the same instructions to modify the top line in the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> with the online editor, and commit the change</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-13.png"><img alt="../_images/vs-code-edits-13.png" src="../_images/vs-code-edits-13.png" style="width: 75%;" /></a>
-</div>
-<p>Then in your desktop, change the same line of code and commit it, but don’t push the change</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-14.png"><img alt="../_images/vs-code-edits-14.png" src="../_images/vs-code-edits-14.png" style="width: 75%;" /></a>
-</div>
-<p>As before, at the bottom of the window, it shows a commit going to the server, and another coming down.  Click on that button to push and pull the changes.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-14.png"><img alt="../_images/vs-code-edits-14.png" src="../_images/vs-code-edits-14.png" style="width: 75%;" /></a>
-</div>
-<p>As expected, it was unable to automatically merge the changes, and requires manual intervention to merge.</p>
-<p>It should bring you to the editor to deal with these <a class="reference external" href="https://code.visualstudio.com/docs/editor/versioncontrol#_merge-conflicts">merge conflicts</a></p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-15.png"><img alt="../_images/vs-code-edits-15.png" src="../_images/vs-code-edits-15.png" style="width: 100%;" /></a>
-</div>
-<p>Since the change on the server occured before your local change, you will need to address this conflict before pushing your change.  While you can manually modify the files, the user interface lets you navigate and choose which changes to accept.</p>
-<p>In that view, choose “Accept Current Change” within the editing screen, and right above the line of code that is highlighted.  This will use your local change and overwrite the one of the server.  Or choose “Accept Incoming Change” to use the server’s version.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/vs-code-edits-16.png"><img alt="../_images/vs-code-edits-16.png" src="../_images/vs-code-edits-16.png" style="width: 75%;" /></a>
-</div>
-<p>An alternative workflow is to right click on the file, and choose <code class="docutils literal notranslate"><span class="pre">Accept</span> <span class="pre">All</span> <span class="pre">Current</span></code> or <code class="docutils literal notranslate"><span class="pre">Accept</span> <span class="pre">All</span> <span class="pre">Incoming</span></code> to choose one version of the file without going through individual decisions.</p>
-<p>After modifying:</p>
-<ol class="simple">
-<li><p>Save the file if you have resolved the merge conflict.</p></li>
-<li><p>Choose the <code class="docutils literal notranslate"><span class="pre">+</span></code> next to the modified file in the source control pane, or right click on the file and choose <code class="docutils literal notranslate"><span class="pre">Stage</span> <span class="pre">Changes</span></code>.</p></li>
-<li><p>Add a commit message, commit the file</p></li>
-<li><p>Do a Push to synchronize with the server.</p></li>
-</ol>
-<p>See this <a class="reference external" href="https://www.youtube.com/watch?v=QmKdodJU-js">youtube video</a> for more details.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>An important “break-glass-in-emergency” feature with git is to completely revert all local changes and reset to the latest commit on the server.</p>
-<p>To do this, in a terminal within the repository execute <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">reset</span> <span class="pre">--hard</span> <span class="pre">origin/main</span></code> (or <code class="docutils literal notranslate"><span class="pre">master</span></code> if the primary branch is called master rather than main). But remember, this will erase all local changes, so back files up locally if required.</p>
-</div>
-</div>
-</div>
-<div class="section" id="collaborative-work">
-<h2><a class="toc-backref" href="#id6"><span class="section-number">11.4. </span>Collaborative Work</a><a class="headerlink" href="#collaborative-work" title="Permalink to this headline">¶</a></h2>
-<p>We have already seen how Git features (e.g. automatic merging of changes, and tools to manage conflicts where it fails) provide tools for collaboration.</p>
-<p>Here we will look at further GitHub and VS Code functionality to support collaboration.</p>
-<div class="section" id="adding-collaborators">
-<h3><span class="section-number">11.4.1. </span>Adding Collaborators<a class="headerlink" href="#adding-collaborators" title="Permalink to this headline">¶</a></h3>
-<p>First, add a collaborator to the <code class="docutils literal notranslate"><span class="pre">USERNAME/example_repository</span></code> lecture we created earlier.</p>
-<p>We can do this by choosing <code class="docutils literal notranslate"><span class="pre">Settings</span></code> then <code class="docutils literal notranslate"><span class="pre">Manage</span> <span class="pre">Access</span></code>, and finally <code class="docutils literal notranslate"><span class="pre">Invite</span> <span class="pre">a</span> <span class="pre">Collaborator</span></code>.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/git-collab.png"><img alt="../_images/git-collab.png" src="../_images/git-collab.png" style="width: 100%;" /></a>
-</div>
-<p>Adding someone as a collaborator is required for access to private repositories, and can allow them direct access to changing the repository for public ones.</p>
-</div>
-<div class="section" id="project-management">
-<h3><span class="section-number">11.4.2. </span>Project Management<a class="headerlink" href="#project-management" title="Permalink to this headline">¶</a></h3>
-<p>In addition, having individuals as collaborators enables further project management features.</p>
-<p>The main feature is an <em>issue</em>, which we can create from the issues tab.</p>
-<p>You should see something like this</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/git-issue.png"><img alt="../_images/git-issue.png" src="../_images/git-issue.png" style="width: 100%;" /></a>
-</div>
-<p>Let’s unpack the different components</p>
-<ul class="simple">
-<li><p>The <em>assignees</em> dropdown optionally lets you select people tasked to work on the issue.</p></li>
-<li><p>The <em>labels</em> dropdown lets you tag the issue with labels visible from the issues page, such as “high priority” or “feature request”.</p></li>
-<li><p>It’s possible to tag other issues and collaborators (including in different repos) by linking to them in the comments – this is part of what’s called <em>GitHub-Flavored Markdown</em>.</p></li>
-</ul>
-<p>You can see open issues at a glance from the general issues tab</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/git-issue-tab.png"><img alt="../_images/git-issue-tab.png" src="../_images/git-issue-tab.png" style="width: 100%;" /></a>
-</div>
-<p>The checkboxes are common in GitHub to manage project tasks.</p>
-</div>
-<div class="section" id="reviewing-code">
-<h3><span class="section-number">11.4.3. </span>Reviewing Code<a class="headerlink" href="#reviewing-code" title="Permalink to this headline">¶</a></h3>
-<p>Whenever people push to a project you’re working on, you’ll receive an email notification.</p>
-<p>You review individual commits by opening a commits and commenting.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/git-review.png"><img alt="../_images/git-review.png" src="../_images/git-review.png" style="width: 100%;" /></a>
-</div>
-<p>Or by clicking on the line number in the description of the commit differences to have discussions about a specific line of code.  Throughout, if you have a collaborator, you can refer to them by <code class="docutils literal notranslate"><span class="pre">&#64;username</span></code>   replacing <code class="docutils literal notranslate"><span class="pre">username</span></code> with their GitHub name.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/git-review-2.png"><img alt="../_images/git-review-2.png" src="../_images/git-review-2.png" style="width: 100%;" /></a>
-</div>
-</div>
-</div>
-<div class="section" id="collaboration-via-pull-request">
-<h2><a class="toc-backref" href="#id7"><span class="section-number">11.5. </span>Collaboration via Pull Request</a><a class="headerlink" href="#collaboration-via-pull-request" title="Permalink to this headline">¶</a></h2>
-<p>One of the defining features of GitHub is that it is the dominant platform for <em>open source</em> code, which anyone can access and use.</p>
-<p>However, while anyone can make a copy of the source code, not everyone has access to modify the particular version stored on GitHub.</p>
-<p>A maintainer (i.e. someone with “write” access to directly modify a repository)
-might consider different contributions and “merge” the changes into the main
-repository if the changes meet their criteria.</p>
-<p>A <em>pull request</em> (“PR”) allows <strong>any</strong> outsiders to suggest changes to open source repositories.</p>
-<p>A PR requests the project maintainer to merge (“pull”) changes you’ve worked on into their repository.</p>
-<p>There are a few different workflows for creating and handling PRs, which we’ll walk through below.</p>
-<p><strong>Note:</strong> If the changes are for a Julia Package, you will need to follow a different workflow – described in the <a class="reference internal" href="testing.html"><span class="doc">testing lecture</span></a>.</p>
-<div class="section" id="quick-fixes">
-<span id="web-interface"></span><h3><span class="section-number">11.5.1. </span>Quick Fixes<a class="headerlink" href="#quick-fixes" title="Permalink to this headline">¶</a></h3>
-<p>GitHub’s website provides an online editor for quick and dirty changes, such as fixing typos in documentation.</p>
-<p>For example, you can navigate to the source for these lecture notes in <a class="reference external" href="https://github.com/QuantEcon/lecture-julia.myst">https://github.com/QuantEcon/lecture-julia.myst</a> and navigate to the <a class="reference external" href="https://github.com/QuantEcon/lecture-julia.myst/blob/main/README.md">README.md</a>.</p>
-<p>From there, either click the small pencil to the upper right of the text or type <code class="docutils literal notranslate"><span class="pre">.</span></code> to launch the web editor (which launches the web editor with <a class="reference external" href="https://github.dev/QuantEcon/lecture-julia.myst/blob/main/README.md">https://github.dev/QuantEcon/lecture-julia.myst/blob/main/README.md</a>).</p>
-<p>For example, choosing the pencil might look like</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/git-quick-pr.png"><img alt="../_images/git-quick-pr.png" src="../_images/git-quick-pr.png" style="width: 100%;" /></a>
-</div>
-<p>Where you can give the name for the <code class="docutils literal notranslate"><span class="pre">new</span> <span class="pre">branch</span></code> and provide a description of your changes for review by maintainers.</p>
-<p>This will create a “fork” of the entire repository, make your change as a commit, and then upload this change to the repository you have forked from (i.e., the Pull Request).</p>
-<p>But what if we want to make more in-depth changes?</p>
-</div>
-<div class="section" id="no-access-case">
-<span id="fork-workflow"></span><h3><span class="section-number">11.5.2. </span>No-Access Case<a class="headerlink" href="#no-access-case" title="Permalink to this headline">¶</a></h3>
-<p>A common problem is when we don’t have write access (i.e. we can’t directly modify) the repo in question.</p>
-<p>In that case, click the “Fork” button that lives in the top-right of every repo’s main page.</p>
-<p>This will copy the repo into your own GitHub account.</p>
-<p>For example, we can fork the source for these lectures from <a class="reference external" href="https://github.com/QuantEcon/lecture-julia.myst">this repo</a> to our own account (e.g. to <code class="docutils literal notranslate"><span class="pre">https://github.com/USERNAME/lecture-julia.myst</span></code>).</p>
-<p>In fact, if you created a PR for a change in the web GUI, it may already be forked to your account.</p>
-<p>Regardless, you should have a new repository in your account with the same name but different URL, along with a special icon to indicate that it’s a fork.  It will also say where it is forked from, and summarize the number of commits that are different.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/git-clone-fork.png"><img alt="../_images/git-clone-fork.png" src="../_images/git-clone-fork.png" style="width: 100%;" /></a>
-</div>
-<p>We then can clone this repository to our desktop.  <a class="reference internal" href="#clone-repo"><span class="std std-ref">Follow the instructions</span></a> to clone the forked repository to your desktop (e.g. in VS Code, <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Git:</span> <span class="pre">Clone</span></code>, then choose <code class="docutils literal notranslate"><span class="pre">https://github.com/USERNAME/lecture-julia.myst.git</span></code> for your account, and then <code class="docutils literal notranslate"><span class="pre">Open</span> <span class="pre">in</span> <span class="pre">New</span> <span class="pre">Window</span></code>).</p>
-<p>In order to more easily manage changes, we need to create a new branch.  Branches are a separate sequence of commits that diverge from the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch at some point (and may later be merged back in).  It allows you to manage a sequence of separate changes as a coherent unit.</p>
-<p>Click on the bottom left of the screen where it says <code class="docutils literal notranslate"><span class="pre">main</span></code> to create or select a new branch, and then choose <code class="docutils literal notranslate"><span class="pre">New</span> <span class="pre">Branch</span></code>  and title it <code class="docutils literal notranslate"><span class="pre">readme-mod</span></code>.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/new-branch.png"><img alt="../_images/new-branch.png" src="../_images/new-branch.png" style="width: 100%;" /></a>
-</div>
-<p>You will note that the bottom left hand corner now has chosen that branch rather than the <code class="docutils literal notranslate"><span class="pre">main</span></code> one.  You can use that to easily switch between them in the editor.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/new-branch-2.png"><img alt="../_images/new-branch-2.png" src="../_images/new-branch-2.png" style="width: 100%;" /></a>
-</div>
-<p>Open the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file and make a change to it in the branch, then save and commit with a message.  At this point, the branch and your commit are still only local.</p>
-<p>To push onto the server, choose the arrow next to the branch name to publish changes.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/new-branch-3.png"><img alt="../_images/new-branch-3.png" src="../_images/new-branch-3.png" style="width: 100%;" /></a>
-</div>
-<p>At this point, you can choose whether you want this branch to be related to the <code class="docutils literal notranslate"><span class="pre">origin</span></code> (i.e., your fork) or the original repository <code class="docutils literal notranslate"><span class="pre">upstream</span></code>.  Since this is intended to propose a change to the public repository, you should choose <code class="docutils literal notranslate"><span class="pre">upstream</span></code>.</p>
-<p>After selecting, it will ask you whether you want to create a <code class="docutils literal notranslate"><span class="pre">Pull</span> <span class="pre">Request</span></code>.  Choose Yes, and then fill in the information for the new pull request and <code class="docutils literal notranslate"><span class="pre">Create</span></code> it.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/new-branch-4.png"><img alt="../_images/new-branch-4.png" src="../_images/new-branch-4.png" style="width: 100%;" /></a>
-</div>
-<p>You can <code class="docutils literal notranslate"><span class="pre">Exit</span> <span class="pre">Review</span> <span class="pre">Mode</span></code> after it has been created at which point it may switch to your <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p>
-<p>Use the branch selection on the lower left hand of the editor to change branches as you wish.</p>
-<p>Finally, for the original repository you forked from, they will now see this as a proposed change, as below</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/new-branch-5.png"><img alt="../_images/new-branch-5.png" src="../_images/new-branch-5.png" style="width: 100%;" /></a>
-</div>
-<p>The maintainers of the repository can choose to accept the change, suggest modifications, comment on individual lines of code, etc.</p>
-<p>If they like the changes, they may choose to “Merge the Pull Request”.  This means that all of the commits proposed from your branch will be applied on top of the main branch on that repository.</p>
-<p>If there are conflicts (i.e., you are changing files which have been modified on the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch since you forked) then you may need to <code class="docutils literal notranslate"><span class="pre">rebase</span></code> your branch and pull request.  This means applying all of the changes that have happened after your fork to your current branch.</p>
-<p>While rebasing can be very complicated, for simple cases you can use the <code class="docutils literal notranslate"><span class="pre">&gt;</span> <span class="pre">Git:</span> <span class="pre">Rebase</span> <span class="pre">(Branch)</span></code> command and choose <code class="docutils literal notranslate"><span class="pre">upstream/main</span></code> to get any of the recent changes.  For more advanced resolution of conflicts and rebasing, GitKraken and GitLens have more elaborate features.</p>
-<p>Creating a pull request is not like bundling up your changes and delivering them, but rather like opening an <em>ongoing connection</em> between two repositories, that is only severed when the PR is closed or merged.</p>
-</div>
-<div class="section" id="write-access-case">
-<h3><span class="section-number">11.5.3. </span>Write Access Case<a class="headerlink" href="#write-access-case" title="Permalink to this headline">¶</a></h3>
-<p>As you become more familiar with GitHub, and work on larger projects, you will find yourself making PRs even when it isn’t strictly required.</p>
-<p>If you are a maintainer of the repo (e.g. you created it or are a collaborator) then you don’t need to create a fork, but will rather work with a <em>git branch</em>.</p>
-<p>Branches in git represent parallel development streams (i.e., sequences of commits) that the PR is trying to merge.</p>
-<p>For example, back on our <code class="docutils literal notranslate"><span class="pre">example_repository</span></code>, select the branch name on the bottom left corner of VS Code, and make a new branch (e.g. <code class="docutils literal notranslate"><span class="pre">readme-mod</span></code>)</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/new-branch-6.png"><img alt="../_images/new-branch-6.png" src="../_images/new-branch-6.png" style="width: 100%;" /></a>
-</div>
-<p>Modify the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file, then commit the change to your branch.  As before, this only modifies your local machine, so you will need to publish the branch by clicking on the arrow next to the branch name.</p>
-<p>While you could directly add a PR at this point, choose not to create one so we can create it on your webpage.</p>
-<p>If we refresh the github website, it prompts us to create a PR.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/new-branch-7.png"><img alt="../_images/new-branch-7.png" src="../_images/new-branch-7.png" style="width: 100%;" /></a>
-</div>
-<p>We can choose <code class="docutils literal notranslate"><span class="pre">Compare</span> <span class="pre">and</span> <span class="pre">Pull</span> <span class="pre">Request</span></code> at this point, giving the PR a name a description, or we can create one later with the <code class="docutils literal notranslate"><span class="pre">branches</span></code> tab on the repository.  If we create the PR, we will see this in our <code class="docutils literal notranslate"><span class="pre">Pull</span> <span class="pre">Requests</span></code> tab at the top of the webpage</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/new-branch-8.png"><img alt="../_images/new-branch-8.png" src="../_images/new-branch-8.png" style="width: 100%;" /></a>
-</div>
-<p>Typically these would be left open while a cohesive feature or bug is fixed in your code, and then merged.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">Reviewers</span></code> can look at the PR, select it on their desktops (by changing to the appropriate branch), and comment on the code.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/new-branch-9.png"><img alt="../_images/new-branch-9.png" src="../_images/new-branch-9.png" style="width: 100%;" /></a>
-</div>
-<p>Throughout, the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch may be modified through other branches and commits, so this could become out of sync.  If so, then rebasing and conflict resolution is required, as discussed above.</p>
-<p>However, if no conflicts occur, and the commits from the branch can be merged into the main branch, then you can choose to <code class="docutils literal notranslate"><span class="pre">Merge</span> <span class="pre">Pull</span> <span class="pre">Request</span></code>.</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/new-branch-10.png"><img alt="../_images/new-branch-10.png" src="../_images/new-branch-10.png" style="width: 100%;" /></a>
-</div>
-<p>The key difference in the options is that the <code class="docutils literal notranslate"><span class="pre">Squash</span> <span class="pre">and</span> <span class="pre">Merge</span></code> will combine all of the individual commits in this branch into a single commit before merging into the <code class="docutils literal notranslate"><span class="pre">main</span></code> branch.</p>
-<p>The UI then prompts you to remove the branch.  After the PR has been merged, you will typically want to delete that branch to avoid accidentally modifying it.</p>
-<p>Finally, we see that this commit is now listed on the main branch</p>
-<div class="figure align-default">
-<a class="reference internal image-reference" href="../_images/new-branch-11.png"><img alt="../_images/new-branch-11.png" src="../_images/new-branch-11.png" style="width: 100%;" /></a>
-</div>
-</div>
-<div class="section" id="julia-package-case">
-<h3><span class="section-number">11.5.4. </span>Julia Package Case<a class="headerlink" href="#julia-package-case" title="Permalink to this headline">¶</a></h3>
-<p>One special case is when the repo in question is actually a Julia project or package.</p>
-<p>We cover that (along with package workflow in general) in the <a class="reference internal" href="testing.html"><span class="doc">testing lecture</span></a>.</p>
-</div>
-</div>
-<div class="section" id="additional-resources-and-troubleshooting">
-<h2><a class="toc-backref" href="#id8"><span class="section-number">11.6. </span>Additional Resources and Troubleshooting</a><a class="headerlink" href="#additional-resources-and-troubleshooting" title="Permalink to this headline">¶</a></h2>
-<p>You may want to go beyond the scope of this tutorial when working with GitHub.</p>
-<p>Here are some resources to help</p>
-<ul class="simple">
-<li><p>Kate Hudson’s excellent <a class="reference external" href="https://github.com/k88hudson/git-flight-rules/">git flight rules</a>, which is a near-exhaustive list of situations you could encounter, and command-line fixes.</p></li>
-<li><p>The GitHub <a class="reference external" href="https://lab.github.com/">Learning Lab</a>, an interactive sandbox environment for git.</p></li>
-<li><p>The docs for forking on <a class="reference external" href="https://help.github.com/desktop/guides/contributing-to-projects/cloning-a-repository-from-github-to-github-desktop/">GitHub Desktop</a> and <a class="reference external" href="https://guides.github.com/activities/forking/">the GitHub Website</a>.</p></li>
-</ul>
-<div class="section" id="command-line-basics">
-<span id="version-control-commandline"></span><h3><span class="section-number">11.6.1. </span>Command-Line Basics<a class="headerlink" href="#command-line-basics" title="Permalink to this headline">¶</a></h3>
-<p>Git also comes with a set of command-line tools.</p>
-<p>They’re optional, but many people like using them.</p>
-<p>Furthermore, in some environments (e.g. JupyterHub installations) you may only have access to the command line.</p>
-<ul class="simple">
-<li><p>On Windows, downloading <code class="docutils literal notranslate"><span class="pre">git</span></code> will have installed a program called <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">bash</span></code>, which installs these tools along with a general Linux-style shell.</p></li>
-<li><p>On Linux/MacOS, these tools are integrated into your usual terminal.</p></li>
-</ul>
-<p>To open the terminal in a directory, either right click and hit “open git bash” (in Windows), or use Linux commands like <code class="docutils literal notranslate"><span class="pre">cd</span></code> and <code class="docutils literal notranslate"><span class="pre">ls</span></code> to navigate.</p>
-<p>See <a class="reference external" href="https://www.git-tower.com/learn/git/ebook/en/command-line/appendix/command-line-101">here</a> for a short introduction to the command line.</p>
-<p>As above, you can clone by grabbing the repo URL (say, GitHub’s <a class="reference external" href="https://github.com/github/site-policy/">site-policy repo</a>) and running <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/github/site-policy.git</span></code>.</p>
-<p>From here, you can get the latest files on the server by <code class="docutils literal notranslate"><span class="pre">cd</span></code>-ing into the directory and running <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">pull</span></code>.</p>
-<p>When you <code class="docutils literal notranslate"><span class="pre">pull</span></code> from the server, it will never overwrite your modified files, so it is impossible to lose local changes.</p>
-<p>Instead, to do a hard reset of all files and overwrite any of your local changes, you can run <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">reset</span> <span class="pre">--hard</span> <span class="pre">origin/master</span></code>.</p>
-</div>
-</div>
-<div class="section" id="exercises">
-<h2><a class="toc-backref" href="#id9"><span class="section-number">11.7. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="exercise-1a">
-<h3><span class="section-number">11.7.1. </span>Exercise 1a<a class="headerlink" href="#exercise-1a" title="Permalink to this headline">¶</a></h3>
-<p>Follow the instructions to create a <a class="reference internal" href="#new-repo-workflow"><span class="std std-ref">new repository</span></a> for one of your GitHub accounts.
-In this repository</p>
-<ul class="simple">
-<li><p>Take the code from one of your previous assignments, such as <a class="reference internal" href="../getting_started_julia/julia_by_example.html#jbe-ex8a"><span class="std std-ref">Newton’s method</span></a> in <a class="reference internal" href="../getting_started_julia/julia_by_example.html"><span class="doc">Introductory Examples</span></a> (either as a <code class="docutils literal notranslate"><span class="pre">.jl</span></code> file or a Jupyter notebook).</p></li>
-<li><p>Put in a <code class="docutils literal notranslate"><span class="pre">README.md</span></code> with some text.</p></li>
-<li><p>Put in a <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file, ignoring the Jupyter files <code class="docutils literal notranslate"><span class="pre">.ipynb_checkpoints</span></code> and the project files, <code class="docutils literal notranslate"><span class="pre">.projects</span></code>.</p></li>
-</ul>
-</div>
-<div class="section" id="exercise-1b">
-<h3><span class="section-number">11.7.2. </span>Exercise 1b<a class="headerlink" href="#exercise-1b" title="Permalink to this headline">¶</a></h3>
-<p>Pair-up with another student who has done Exercise 1a and find out their GitHub ID, and each do the following</p>
-<ul class="simple">
-<li><p>Add the GitHub ID as a collaborators on your repository.</p></li>
-<li><p>Clone the repositories to your local desktop.</p></li>
-<li><p>Assign each other an issue.</p></li>
-<li><p>Submit a commit from VS Code which references the issue by number.</p></li>
-<li><p>Comment on the commits.</p></li>
-<li><p>Ensure you can run their code without any modifications.</p></li>
-</ul>
-</div>
-<div class="section" id="exercise-1c">
-<h3><span class="section-number">11.7.3. </span>Exercise 1c<a class="headerlink" href="#exercise-1c" title="Permalink to this headline">¶</a></h3>
-<p>Pair-wise with the results of Exercise 1b examine a merge-conflict by editing the <code class="docutils literal notranslate"><span class="pre">README.md</span></code> file for your repository that you have both setup as collaborators.</p>
-<p>Start by ensuring there are multiple lines in the file so that some changes may have conflicts, and some may not.</p>
-<ul class="simple">
-<li><p>Clone the repository to your local desktops.</p></li>
-<li><p>Modify <strong>different</strong> lines of code in the file and both commit and push to the server (prior to pulling from each other)–and see how it merges things “automatically”.</p></li>
-<li><p>Modify <strong>the same</strong> line of code in the file, and deal with the <a class="reference internal" href="#merge-conflict"><span class="std std-ref">merge conflict</span></a>.</p></li>
-</ul>
-</div>
-<div class="section" id="exercise-2a">
-<h3><span class="section-number">11.7.4. </span>Exercise 2a<a class="headerlink" href="#exercise-2a" title="Permalink to this headline">¶</a></h3>
-<p>Just using GitHub’s <a class="reference internal" href="#web-interface"><span class="std std-ref">web interface</span></a>, submit a Pull Request for a simple change of documentation to a public repository.</p>
-<p>The easiest may be to submit a PR for a typo in the source repository for these notes, i.e. <code class="docutils literal notranslate"><span class="pre">https://github.com/QuantEcon/lecture-julia.myst</span></code>.</p>
-<p>Note: The source for that repository is in <code class="docutils literal notranslate"><span class="pre">.md</span></code> files, but you should be able to find spelling mistakes/etc. without much effort.</p>
-</div>
-<div class="section" id="exercise-2b">
-<h3><span class="section-number">11.7.5. </span>Exercise 2b<a class="headerlink" href="#exercise-2b" title="Permalink to this headline">¶</a></h3>
-<p>Following the <a class="reference internal" href="#fork-workflow"><span class="std std-ref">instructions</span></a> for forking and cloning a public repository to your local desktop, submit a Pull Request to a public repository.</p>
-<p>Again, you could submit it for a typo in the source repository for these notes, i.e. <code class="docutils literal notranslate"><span class="pre">https://github.com/QuantEcon/lecture-julia.myst</span></code>, but you are also encouraged to instead look for a small change that could help the documentation in another repository.</p>
-<p>If you are ambitious, then go to the Exercise Solutions for one of the Exercises in these lecture notes and submit a PR for your own modified version (if you think it is an improvement!).</p>
-</div>
-</div>
-</div>
+                    <option value="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/software_engineering/version_control.ipynb">Colab</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" data-repourl="https://github.com/quantecon/lecture-julia.notebooks" data-urlpath="tree/lecture-julia.notebooks/software_engineering/version_control.ipynb" data-branch=main>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            </ul>
+            <p class="launch"><a href="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/software_engineering/version_control.ipynb" id="advancedLaunchButton" target="_blank">Launch Notebook</a></p>
+            <script>
+                // QuantEcon Notebook Launcher
+                const launcherTypeElements = document.querySelectorAll('#settingsModal .modal-servers li');
+                // Highlight the server type if previous selection exists
+                if (typeof localStorage.launcherType !== 'undefined') {
+                  for (var i = 0; i < launcherTypeElements.length; i++) {
+                    launcherTypeElements[i].classList.remove('active');
+                    if ( launcherTypeElements[i].classList.contains(localStorage.launcherType) ) {
+                      launcherTypeElements[i].classList.add('active');
+                    }
+                  }
+                }
+                // Highlight server type on click and set local storage value
+                for (var i = 0; i < launcherTypeElements.length; i++) {
+                  launcherTypeElements[i].addEventListener('click', function() {
+                    for (var j = 0; j < launcherTypeElements.length; j++) {
+                      launcherTypeElements[j].classList.remove('active');
+                    }
+                    this.classList.add('active');
+                    if ( this.classList.contains('launcher-private') ) {
+                      localStorage.launcherType = 'launcher-private';
+                    } else if ( this.classList.contains('launcher-public') ) {
+                      localStorage.launcherType = 'launcher-public';
+                    }
+                    setLaunchServer();
+                  })
+                }
+                const launcherPublic = document.getElementById('launcher-public-input');
+                const launcherPrivate = document.getElementById('launcher-private-input');
+                const pageName = "software_engineering/version_control";
+                const repoURL = "https://github.com/quantecon/lecture-julia.notebooks";
+                const urlPath = "tree/lecture-julia.notebooks/software_engineering/version_control.ipynb";
+                const branch = "main"
+                const launchNotebookLink = document.getElementById('advancedLaunchButton');
 
-    <script type="text/x-thebe-config">
-    {
-        requestKernel: true,
-        binderOptions: {
-            repo: "binder-examples/jupyter-stacks-datascience",
-            ref: "master",
-        },
-        codeMirrorConfig: {
-            theme: "abcdef",
-            mode: "julia-1.9"
-        },
-        kernelOptions: {
-            kernelName: "julia-1.9",
-            path: "./software_engineering"
-        },
-        predefinedOutput: true
-    }
-    </script>
-    <script>kernelName = 'julia-1.9'</script>
+                // Highlight public server option if previous selection exists
+                if (typeof localStorage.launcherPublic !== 'undefined') {
+                  launcherPublic.value = localStorage.launcherPublic;
+                }
+                // Update local storage upon public server selection
+                launcherPublic.addEventListener('change', (event) => {
+                  setLaunchServer();
+                });
+                // Populate private server input if previous entry exists
+                if (typeof localStorage.launcherPrivate !== 'undefined') {
+                  launcherPrivate.value = localStorage.launcherPrivate;
+                }
+                // Update local storage when a private server is entered
+                launcherPrivate.addEventListener('input', (event) => {
+                  setLaunchServer();
+                });
 
-              </div>
-              
-            
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="tools_editors.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title"><span class="section-number">10. </span>Visual Studio Code and Other Tools</p>
+                // Function to update the "Launch Notebook" link href
+                function setLaunchServer() {
+                  launchNotebookLink.removeAttribute("style")
+                  if ( localStorage.launcherType == 'launcher-private' ) {
+                    let repoPrefix = "/jupyter/hub/user-redirect/git-pull?repo=" + repoURL + "&branch=" + branch + "&urlpath=" + urlPath;
+                    launcherPrivateValue = launcherPrivate.value
+                    if (!launcherPrivateValue) {
+                        launchNotebookLink.removeAttribute("href")
+                        launchNotebookLink.style.background = "grey"
+                        return
+                    }
+                    localStorage.launcherPrivate = launcherPrivateValue;
+                    privateServer = localStorage.launcherPrivate.replace(/\/$/, "")
+                    if (!privateServer.includes("http")) {
+                        privateServer = "http://" + privateServer
+                    }
+                    launchNotebookLinkURL = privateServer + repoPrefix;
+                  } else if ( localStorage.launcherType == 'launcher-public' ) {
+                    launcherPublicValue = launcherPublic.options[launcherPublic.selectedIndex].value;
+                    localStorage.launcherPublic = launcherPublicValue;
+                    launchNotebookLinkURL = localStorage.launcherPublic;
+                  }
+                  if (launchNotebookLinkURL) launchNotebookLink.href = launchNotebookLinkURL;
+                }
+                // Check if user has previously selected a server
+                if ( (typeof localStorage.launcherPrivate !== 'undefined') || (typeof localStorage.launcherPublic !== 'undefined') ) {
+                  setLaunchServer();
+                }
+                </script>
+
         </div>
-    </a>
-    <a class='right-next' id="next-link" href="testing.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">12. </span>Packages, Testing, and Continuous Integration</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            
-        </div>
-    </div>
-    <footer class="footer">
-  <p>
-    
-      By Jesse Perla & Thomas J. Sargent & John Stachurski<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
 
-
-      </div>
-    </div>
-  
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
-
+    </div> <!-- .wrapper-->
   </body>
 </html>

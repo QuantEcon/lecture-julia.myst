@@ -1,50 +1,110 @@
 
+
 <!DOCTYPE html>
 
-<html>
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
     <title>13. The Need for Speed &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     
-  <link href="../_static/css/theme.css" rel="stylesheet">
-  <link href="../_static/css/index.ff1ffe594081f20da1ef19478df9384b.css" rel="stylesheet">
+        <script>
+            MathJax = {
+            loader: {load: ['[tex]/boldsymbol', '[tex]/textmacros']},
+            tex: {
+                packages: {'[+]': ['boldsymbol', 'textmacros']},
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true,
+                macros: {
+                    "argmax" : "arg\\,max",
+                    "argmin" : "arg\\,min",
+                    "col"    : "col",
+                    "Span"   :  "span",
+                    "epsilon": "\\varepsilon",
+                    "EE": "\\mathbb{E}",
+                    "PP": "\\mathbb{P}",
+                    "RR": "\\mathbb{R}",
+                    "NN": "\\mathbb{N}",
+                    "ZZ": "\\mathbb{Z}",
+                    "aA": "\\mathcal{A}",
+                    "bB": "\\mathcal{B}",
+                    "cC": "\\mathcal{C}",
+                    "dD": "\\mathcal{D}",
+                    "eE": "\\mathcal{E}",
+                    "fF": "\\mathcal{F}",
+                    "gG": "\\mathcal{G}",
+                    "hH": "\\mathcal{H}",
+                }
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 0.92,
+                displayAlign: "center",
+            },
+            };
+        </script>
+    
+    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
-    
-      
-
-    
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/sphinx-book-theme.css?digest=c3fdc42140077d1ad13ad2f1588a4309" />
+    <link rel="stylesheet" type="text/css" href="../_static/quantecon-book-theme.5378fd3a70a129d690fd5fc99fb75ef7.css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
-    
-  <link rel="preload" as="script" href="../_static/js/index.be7d3bbb2ef33a8344ce.js">
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
 
     <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script>let toggleHintShow = 'Click to show';</script>
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
-    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="../_static/sphinx-book-theme.d59cb220de22ca1c485ebbdc042f0030.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script src="../_static/quantecon-book-theme.ef2ef6c3e8da75e1e736fb5fce08cde6.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-3PCWRLGWND"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-3PCWRLGWND');
+            </script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
 const thebe_selector = ".thebe,.cell"
 const thebe_selector_input = "pre"
@@ -52,902 +112,159 @@ const thebe_selector_output = ".output, .cell_output"
 </script>
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'software_engineering/need_for_speed';</script>
     <link rel="canonical" href="https://julia.quantecon.org/software_engineering/need_for_speed.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="14. Geometric Series for Elementary Economics" href="../tools_and_techniques/geom_series.html" />
     <link rel="prev" title="12. Packages, Testing, and Continuous Integration" href="testing.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="None">
-    
 
-    <!-- Google Analytics -->
-    
-<script async="" src="https://www.google-analytics.com/analytics.js"></script>
-<script>
-                        window.ga = window.ga || function () {
-                            (ga.q = ga.q || []).push(arguments) };
-                        ga.l = +new Date;
-                        ga('create', 'UA-54984338-8', 'auto');
-                        ga('set', 'anonymizeIp', true);
-                        ga('send', 'pageview');
-                    </script>
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="The Need for Speed"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="The Need for Speed" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/software_engineering/need_for_speed.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
 
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
-    
-        <div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="../index.html">
-      
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
-        
-      
-      
-      <img src="../_static/qe-logo-large.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">Quantitative Economics with Julia</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Getting Started with Julia
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../getting_started_julia/getting_started.html">
-   1. Setting up Your Julia Environment
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
-   2. Introductory Examples
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
-   3. Julia Essentials
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
-   4. Arrays, Tuples, Ranges, and Other Fundamental Types
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
-   5. Introduction to Types and Generic Programming
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Package Ecosystem
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/generic_programming.html">
-   6. Generic Programming
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/general_packages.html">
-   7. General Purpose Packages
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
-   8. Data and Statistics Packages
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
-   9. Solvers, Optimizers, and Automatic Differentiation
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Software Engineering
- </span>
-</p>
-<ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="tools_editors.html">
-   10. Visual Studio Code and Other Tools
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="version_control.html">
-   11. GitHub, Version Control and Collaboration
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="testing.html">
-   12. Packages, Testing, and Continuous Integration
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   13. The Need for Speed
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Tools and Techniques
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/geom_series.html">
-   14. Geometric Series for Elementary Economics
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
-   15. Linear Algebra
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
-   16. Orthogonal Projections and Their Applications
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
-   17. LLN and CLT
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
-   18. Continuous State Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
-   19. Numerical Linear Algebra and Factorizations
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
-   20. Krylov Methods and Matrix Conditioning
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Introduction to Dynamics
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
-   21. Dynamics in One Dimension
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
-   22. AR1 Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
-   23. Finite Markov Chains
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
-   24. Linear State Space Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
-   25. Wealth Distribution Dynamics
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/kalman.html">
-   26. A First Look at the Kalman Filter
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../introduction_dynamics/short_path.html">
-   27. Shortest Paths
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Dynamic Programming
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   28. Job Search I: The McCall Search Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   29. Job Search II: Search and Separation
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   30. A Problem that Stumped Milton Friedman
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/odu.html">
-   31. Job Search III: Search with Learning
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/career.html">
-   32. Job Search IV: Modeling Career Choice
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/jv.html">
-   33. Job Search V: On-the-Job Search
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   34. Optimal Growth I: The Stochastic Optimal Growth Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   35. Optimal Growth II: Time Iteration
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   36. Optimal Growth III: The Endogenous Grid Method
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   37. LQ Dynamic Programming Problems
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   38. Optimal Savings I: The Permanent Income Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   39. Optimal Savings II: LQ Techniques
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/ifp.html">
-   41. Optimal Savings III: Occasionally Binding Constraints
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/robustness.html">
-   42. Robustness
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   43. Discrete State Dynamic Programming
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Modeling in Continuous Time
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../continuous_time/seir_model.html">
-   44. Modeling COVID 19 with Differential Equations
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../continuous_time/covid_sde.html">
-   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Multiple Agent Models
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/schelling.html">
-   46. Schelling’s Segregation Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   47. A Lake Model of Employment and Unemployment
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   48. Rational Expectations Equilibrium
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   49. Markov Perfect Equilibrium
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   50. Asset Pricing I: Finite State Models
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   51. Asset Pricing II: The Lucas Asset Pricing Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   52. Asset Pricing III:  Incomplete Markets
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   53. Uncertainty Traps
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   54. The Aiyagari Model
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/arellano.html">
-   55. Default Risk and Income Fluctuations
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   56. Globalization and Cycles
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Time Series Models
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/arma.html">
-   57. Covariance Stationary Processes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/estspec.html">
-   58. Estimation of Spectra
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/additive_functionals.html">
-   59. Additive Functionals
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
-   60. Multiplicative Functionals
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/lu_tricks.html">
-   61. Classical Control with Linear Algebra
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../time_series_models/classical_filtering.html">
-   62. Classical Filtering With Linear Algebra
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Dynamic Programming Squared
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
-   63. Dynamic Stackelberg Problems
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
-   64. Optimal Taxation in an LQ Economy
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
-   65. Optimal Taxation with State-Contingent Debt
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
-   66. Optimal Taxation without State-Contingent Debt
-  </a>
- </li>
-</ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Other
- </span>
-</p>
-<ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="../about_lectures.html">
-   67. About these Lectures
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../troubleshooting.html">
-   68. Troubleshooting
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../zreferences.html">
-   69. References
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../status.html">
-   70. Execution Statistics
-  </a>
- </li>
-</ul>
-
-    </div>
-</nav> <!-- To handle the deprecated key -->
-
-<div class="navbar_extra_footer">
-  Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
-</div>
-
-</div>
+<body>
 
 
-          
+    <span id="top"></span>
 
+    <div class="qe-wrapper">
 
-          
-<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
-    
-    <div class="topbar container-xl fixed-top">
-    <div class="topbar-contents row">
-        <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show"></div>
-        <div class="col pl-md-4 topbar-main">
-            
-            <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
-                data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
-                aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
-                title="Toggle navigation" data-toggle="tooltip" data-placement="left">
-                <i class="fas fa-bars"></i>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-arrow-up"></i>
-            </button>
-            
-            
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
+        <div class="qe-main">
 
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/software_engineering/need_for_speed.md"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                onclick="printPdf(this)" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-</div>
+            <div class="qe-page" id=software_engineering/need_for_speed>
 
-            <!-- Source interaction buttons -->
+                <div class="qe-page__toc">
 
-            <!-- Full screen (wrap in <a> to have style consistency -->
+                    <div class="inner">
 
-<a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
-        data-placement="bottom" onclick="toggleFullScreen()" aria-label="Fullscreen mode"
-        title="Fullscreen mode"><i
-            class="fas fa-expand"></i></button></a>
-
-            <!-- Launch buttons -->
-
-        </div>
-
-        <!-- Table of contents -->
-        <div class="d-none d-md-block col-md-2 bd-toc show noprint">
-            
-            <div class="tocsection onthispage pt-5 pb-3">
-                <i class="fas fa-list"></i> Contents
-            </div>
-            <nav id="bd-toc-nav" aria-label="Page">
-                <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#overview">
-   13.1. Overview
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#requirements">
-     13.1.1. Requirements
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#understanding-multiple-dispatch-in-julia">
-   13.2. Understanding Multiple Dispatch in Julia
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#methods-and-functions">
-     13.2.1. Methods and Functions
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#adding-methods">
-       13.2.1.1. Adding Methods
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#understanding-the-compilation-process">
-     13.2.2. Understanding the Compilation Process
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#analyzing-function-return-types">
-     13.2.3. Analyzing Function Return Types
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#foundations">
-   13.3. Foundations
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#machine-code">
-     13.3.1. Machine Code
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#generating-machine-code">
-     13.3.2. Generating Machine Code
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#aot-compiled-languages">
-       13.3.2.1. AOT Compiled Languages
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#interpreted-languages">
-       13.3.2.2. Interpreted Languages
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#just-in-time-compilation">
-       13.3.2.3. Just-in-time compilation
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#jit-compilation-in-julia">
-   13.4. JIT Compilation in Julia
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#an-example">
-     13.4.1. An Example
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#potential-problems">
-     13.4.2. Potential Problems
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#fast-and-slow-julia-code">
-   13.5. Fast and Slow Julia Code
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#benchmarktools">
-     13.5.1. BenchmarkTools
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#global-variables">
-     13.5.2. Global Variables
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#composite-types-with-abstract-field-types">
-     13.5.3. Composite Types with Abstract Field Types
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#timing">
-       13.5.3.1. Timing
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#type-inference">
-     13.5.4. Type Inference
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#type-inferences">
-       13.5.4.1. Type Inferences
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#an-abstract-container">
-       13.5.4.2. An Abstract Container
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-comments">
-   13.6. Further Comments
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#summary-and-tips">
-     13.6.1. Summary and Tips
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#further-reading">
-     13.6.2. Further Reading
-    </a>
-   </li>
-  </ul>
- </li>
-</ul>
-
-            </nav>
-        </div>
-    </div>
-</div>
-    <div id="main-content" class="row">
-        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>The Need for Speed</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
                         
-                        <div>
-                            <h2> Contents </h2>
+                        <div class="qe-page__toc-header">
+                            On this page
                         </div>
-                        <nav aria-label="Page">
+
+
+                        <nav id="bd-toc-nav" class="qe-page__toc-nav">
                             <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#overview">
-   13.1. Overview
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#requirements">
-     13.1.1. Requirements
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#understanding-multiple-dispatch-in-julia">
-   13.2. Understanding Multiple Dispatch in Julia
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#methods-and-functions">
-     13.2.1. Methods and Functions
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#adding-methods">
-       13.2.1.1. Adding Methods
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#understanding-the-compilation-process">
-     13.2.2. Understanding the Compilation Process
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#analyzing-function-return-types">
-     13.2.3. Analyzing Function Return Types
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#foundations">
-   13.3. Foundations
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#machine-code">
-     13.3.1. Machine Code
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#generating-machine-code">
-     13.3.2. Generating Machine Code
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#aot-compiled-languages">
-       13.3.2.1. AOT Compiled Languages
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#interpreted-languages">
-       13.3.2.2. Interpreted Languages
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#just-in-time-compilation">
-       13.3.2.3. Just-in-time compilation
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#jit-compilation-in-julia">
-   13.4. JIT Compilation in Julia
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#an-example">
-     13.4.1. An Example
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#potential-problems">
-     13.4.2. Potential Problems
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#fast-and-slow-julia-code">
-   13.5. Fast and Slow Julia Code
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#benchmarktools">
-     13.5.1. BenchmarkTools
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#global-variables">
-     13.5.2. Global Variables
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#composite-types-with-abstract-field-types">
-     13.5.3. Composite Types with Abstract Field Types
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#timing">
-       13.5.3.1. Timing
-      </a>
-     </li>
-    </ul>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#type-inference">
-     13.5.4. Type Inference
-    </a>
-    <ul class="nav section-nav flex-column">
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#type-inferences">
-       13.5.4.1. Type Inferences
-      </a>
-     </li>
-     <li class="toc-h4 nav-item toc-entry">
-      <a class="reference internal nav-link" href="#an-abstract-container">
-       13.5.4.2. An Abstract Container
-      </a>
-     </li>
-    </ul>
-   </li>
-  </ul>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#further-comments">
-   13.6. Further Comments
-  </a>
-  <ul class="nav section-nav flex-column">
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#summary-and-tips">
-     13.6.1. Summary and Tips
-    </a>
-   </li>
-   <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#further-reading">
-     13.6.2. Further Reading
-    </a>
-   </li>
-  </ul>
- </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">13.1. Overview</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#requirements">13.1.1. Requirements</a></li>
 </ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-multiple-dispatch-in-julia">13.2. Understanding Multiple Dispatch in Julia</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#methods-and-functions">13.2.1. Methods and Functions</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-methods">13.2.1.1. Adding Methods</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-the-compilation-process">13.2.2. Understanding the Compilation Process</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analyzing-function-return-types">13.2.3. Analyzing Function Return Types</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#foundations">13.3. Foundations</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#machine-code">13.3.1. Machine Code</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#generating-machine-code">13.3.2. Generating Machine Code</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#aot-compiled-languages">13.3.2.1. AOT Compiled Languages</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#interpreted-languages">13.3.2.2. Interpreted Languages</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#just-in-time-compilation">13.3.2.3. Just-in-time compilation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#jit-compilation-in-julia">13.4. JIT Compilation in Julia</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#an-example">13.4.1. An Example</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#potential-problems">13.4.2. Potential Problems</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fast-and-slow-julia-code">13.5. Fast and Slow Julia Code</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#benchmarktools">13.5.1. BenchmarkTools</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#global-variables">13.5.2. Global Variables</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#composite-types-with-abstract-field-types">13.5.3. Composite Types with Abstract Field Types</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#timing">13.5.3.1. Timing</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#type-inference">13.5.4. Type Inference</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#type-inferences">13.5.4.1. Type Inferences</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#an-abstract-container">13.5.4.2. An Abstract Container</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-comments">13.6. Further Comments</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#summary-and-tips">13.6.1. Summary and Tips</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#further-reading">13.6.2. Further Reading</a></li>
+</ul>
+</li>
+</ul>
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo" alt="logo"></a>
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
 
                         </nav>
+
+                        <div class="qe-page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
                     </div>
+
                 </div>
-            </div>
-            
-              <div>
+
+                <div class="qe-page__header">
+
+                    <div class="qe-page__header-copy">
+
+                        <p class="qe-page__header-heading"><a href="../intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="qe-page__header-subheading">The Need for Speed</p>
+
+                    </div>
+
+                    <p class="qe-page__header-authors">Jesse Perla & Thomas J. Sargent & John Stachurski</p>
+
+                </div> <!-- .page__header -->
+
+
+
                 
+                <main class="qe-page__content" role="main">
+                    
+                    <div>
+                        
   <div id="qe-notebook-header" style="text-align:right;">
         <a href="https://quantecon.org/" title="quantecon.org">
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
-</div><div class="tex2jax_ignore mathjax_ignore section" id="the-need-for-speed">
-<h1><a class="toc-backref" href="#id1"><span class="section-number">13. </span>The Need for Speed</a><a class="headerlink" href="#the-need-for-speed" title="Permalink to this headline">¶</a></h1>
-<div class="contents topic" id="contents">
+</div><section class="tex2jax_ignore mathjax_ignore" id="the-need-for-speed">
+<h1><a class="toc-backref" href="#id1" role="doc-backlink"><span class="section-number">13. </span>The Need for Speed</a><a class="headerlink" href="#the-need-for-speed" title="Permalink to this heading">#</a></h1>
+<nav class="contents" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#the-need-for-speed" id="id1">The Need for Speed</a></p>
@@ -961,9 +278,9 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 </li>
 </ul>
-</div>
-<div class="section" id="overview">
-<h2><a class="toc-backref" href="#id2"><span class="section-number">13.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+</nav>
+<section id="overview">
+<h2><a class="toc-backref" href="#id2" role="doc-backlink"><span class="section-number">13.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h2>
 <p>Computer scientists often classify programming languages according to the following two categories.</p>
 <p><em>High level languages</em> aim to maximize productivity by</p>
 <ul class="simple">
@@ -987,8 +304,8 @@ both high productivity and high performance with relatively little fuss.</p>
 <p>In simple programs, excellent performance is often trivial to achieve.</p>
 <p>For longer, more sophisticated programs, you need to be aware of potential stumbling blocks.</p>
 <p>This lecture covers the key points.</p>
-<div class="section" id="requirements">
-<h3><span class="section-number">13.1.1. </span>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
+<section id="requirements">
+<h3><span class="section-number">13.1.1. </span>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading">#</a></h3>
 <p>You should read our <a class="reference internal" href="../more_julia/generic_programming.html"><span class="doc">earlier lecture</span></a> on types, methods and multiple dispatch before this one.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -997,13 +314,13 @@ both high productivity and high performance with relatively little fuss.</p>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="section" id="understanding-multiple-dispatch-in-julia">
-<h2><a class="toc-backref" href="#id3"><span class="section-number">13.2. </span>Understanding Multiple Dispatch in Julia</a><a class="headerlink" href="#understanding-multiple-dispatch-in-julia" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="understanding-multiple-dispatch-in-julia">
+<h2><a class="toc-backref" href="#id3" role="doc-backlink"><span class="section-number">13.2. </span>Understanding Multiple Dispatch in Julia</a><a class="headerlink" href="#understanding-multiple-dispatch-in-julia" title="Permalink to this heading">#</a></h2>
 <p>This section provides more background on how methods, functions, and types are connected.</p>
-<div class="section" id="methods-and-functions">
-<h3><span class="section-number">13.2.1. </span>Methods and Functions<a class="headerlink" href="#methods-and-functions" title="Permalink to this headline">¶</a></h3>
+<section id="methods-and-functions">
+<h3><span class="section-number">13.2.1. </span>Methods and Functions<a class="headerlink" href="#methods-and-functions" title="Permalink to this heading">#</a></h3>
 <p>The precise data type is important, for reasons of both efficiency and mathematical correctness.</p>
 <p>For example consider 1 + 1 vs. 1.0 + 1.0 or [1 0] + [0 1].</p>
 <p>On a CPU, integer and floating point addition are different things, using a different set of instructions.</p>
@@ -1064,8 +381,8 @@ responsible for handling integer values.</p>
 <div class="output text_html">+(z::<b>Complex</b>, w::<b>Complex</b>) in Base at <a href="https://github.com/JuliaLang/julia/tree/e4ee485e90961018b7e53ce14b8b99335953e176/base/complex.jl#L291" target="_blank">complex.jl:291</a></div></div>
 </div>
 <p>Again, the call has been dispatched to a + method specifically designed for handling the given data type.</p>
-<div class="section" id="adding-methods">
-<h4><span class="section-number">13.2.1.1. </span>Adding Methods<a class="headerlink" href="#adding-methods" title="Permalink to this headline">¶</a></h4>
+<section id="adding-methods">
+<h4><span class="section-number">13.2.1.1. </span>Adding Methods<a class="headerlink" href="#adding-methods" title="Permalink to this heading">#</a></h4>
 <p>It’s straightforward to add methods to existing functions.</p>
 <p>For example, we can’t at present add an integer and a string in Julia (i.e. <code class="docutils literal notranslate"><span class="pre">100</span> <span class="pre">+</span> <span class="pre">&quot;100&quot;</span></code> is not valid syntax).</p>
 <p>This is sensible behavior, but if you want to change it there’s nothing to stop you.</p>
@@ -1086,10 +403,10 @@ responsible for handling integer values.</p>
 </div>
 </div>
 <p>The above code is not executed to avoid any chance of a <a class="reference external" href="https://julialang.org/blog/2020/08/invalidations/">method invalidation</a>, where are a source of compile-time latency.</p>
-</div>
-</div>
-<div class="section" id="understanding-the-compilation-process">
-<h3><span class="section-number">13.2.2. </span>Understanding the Compilation Process<a class="headerlink" href="#understanding-the-compilation-process" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="understanding-the-compilation-process">
+<h3><span class="section-number">13.2.2. </span>Understanding the Compilation Process<a class="headerlink" href="#understanding-the-compilation-process" title="Permalink to this heading">#</a></h3>
 <p>We can now be a little bit clearer about what happens when you call a function on given types.</p>
 <p>Suppose we execute the function call <code class="docutils literal notranslate"><span class="pre">f(a,</span> <span class="pre">b)</span></code> where <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code>
 are of concrete types <code class="docutils literal notranslate"><span class="pre">S</span></code> and <code class="docutils literal notranslate"><span class="pre">T</span></code> respectively.</p>
@@ -1162,7 +479,7 @@ immediate parents are <code class="docutils literal notranslate"><span class="pr
 </div>
 <p>Because the dispatch procedure starts from concrete types and works upwards, dispatch always invokes the <em>most specific method</em> available.</p>
 <p>For example, if you have methods for function <code class="docutils literal notranslate"><span class="pre">f</span></code> that handle</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">(Float64,</span> <span class="pre">Int64)</span></code> pairs</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">(Number,</span> <span class="pre">Number)</span></code> pairs</p></li>
 </ol>
@@ -1236,9 +553,9 @@ above</p>
 <p>On the other hand, <code class="docutils literal notranslate"><span class="pre">3.0</span></code> is a <code class="docutils literal notranslate"><span class="pre">Float64</span></code>, which is not a subtype of  <code class="docutils literal notranslate"><span class="pre">Integer</span></code>.</p>
 <p>Hence the call <code class="docutils literal notranslate"><span class="pre">q(3.0)</span></code> continues up to <code class="docutils literal notranslate"><span class="pre">q(x::Number)</span></code>.</p>
 <p>Finally, <code class="docutils literal notranslate"><span class="pre">q(&quot;foo&quot;)</span></code> is handled by the function operating on <code class="docutils literal notranslate"><span class="pre">Any</span></code>, since <code class="docutils literal notranslate"><span class="pre">String</span></code> is not a subtype of <code class="docutils literal notranslate"><span class="pre">Number</span></code> or <code class="docutils literal notranslate"><span class="pre">Integer</span></code>.</p>
-</div>
-<div class="section" id="analyzing-function-return-types">
-<h3><span class="section-number">13.2.3. </span>Analyzing Function Return Types<a class="headerlink" href="#analyzing-function-return-types" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="analyzing-function-return-types">
+<h3><span class="section-number">13.2.3. </span>Analyzing Function Return Types<a class="headerlink" href="#analyzing-function-return-types" title="Permalink to this heading">#</a></h3>
 <p>For the most part, time spent “optimizing” Julia code to run faster is about ensuring the compiler can correctly deduce types for all functions.</p>
 <p>The macro <code class="docutils literal notranslate"><span class="pre">&#64;code_warntype</span></code> gives us a hint</p>
 <div class="cell docutils container">
@@ -1292,10 +609,7 @@ Arguments
   #self#<span class=" -Color -Color-Cyan">::Core.Const(f)</span>
   x<span class=" -Color -Color-Cyan">::Int64</span>
 Body<span class=" -Color -Color-Bold -Color-Bold-Yellow">::Union{Nothing, Int64}</span>
-1 ─ %1 = (x &gt; 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0)<span class=" -Color -Color-Cyan">::Bool</span>
+1 ─ %1 = (x &gt; 0.0)<span class=" -Color -Color-Cyan">::Bool</span>
 └──      goto #3 if not %1
 2 ─      return x
 3 ─      return Main.nothing
@@ -1349,6 +663,9 @@ Body<span class=" -Color -Color-Bold -Color-Bold-Yellow">::Union{Float64, Int64}
 3 ─      return 0
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </div>
 <p>The solution is to use the <code class="docutils literal notranslate"><span class="pre">zero(x)</span></code> function which returns the additive identity element of type <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
@@ -1377,27 +694,26 @@ Body<span class=" -Color -Color-Cyan">::Float64</span>
 1 ─ %1 = (x &gt; 0.0)<span class=" -Color -Color-Cyan">::Bool</span>
 └──      goto #3 if not %1
 2 ─      return x
-3 ─ %4 = Main
+3 ─ %4 = Main.zero(x)<span class=" -Color -Color-Cyan">::Core.Const(0.0)</span>
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.zero(x)<span class=" -Color -Color-Cyan">::Core.Const(0.0)</span>
-└──      return %4
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>└──      return %4
 </pre></div>
 </div>
 </div>
 </div>
-</div>
-</div>
-<div class="section" id="foundations">
-<h2><a class="toc-backref" href="#id4"><span class="section-number">13.3. </span>Foundations</a><a class="headerlink" href="#foundations" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="foundations">
+<h2><a class="toc-backref" href="#id4" role="doc-backlink"><span class="section-number">13.3. </span>Foundations</a><a class="headerlink" href="#foundations" title="Permalink to this heading">#</a></h2>
 <p>Let’s think about how quickly code runs, taking as given</p>
 <ul class="simple">
 <li><p>hardware configuration</p></li>
 <li><p>algorithm (i.e., set of instructions to be executed)</p></li>
 </ul>
 <p>We’ll start by discussing the kinds of instructions that machines understand.</p>
-<div class="section" id="machine-code">
-<h3><span class="section-number">13.3.1. </span>Machine Code<a class="headerlink" href="#machine-code" title="Permalink to this headline">¶</a></h3>
+<section id="machine-code">
+<h3><span class="section-number">13.3.1. </span>Machine Code<a class="headerlink" href="#machine-code" title="Permalink to this heading">#</a></h3>
 <p>All instructions for computers end up as <em>machine code</em>.</p>
 <p>Writing fast code — expressing a given algorithm so that it runs quickly — boils down to producing efficient machine code.</p>
 <p>You can do this yourself, by hand, if you want to.</p>
@@ -1447,14 +763,14 @@ where they can be easily written and understood.</p>
 <p>In any of these languages we end up with code that is much easier for humans to write, read, share and debug.</p>
 <p>We leave it up to the machine itself to turn our code into machine code.</p>
 <p>How exactly does this happen?</p>
-</div>
-<div class="section" id="generating-machine-code">
-<h3><span class="section-number">13.3.2. </span>Generating Machine Code<a class="headerlink" href="#generating-machine-code" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="generating-machine-code">
+<h3><span class="section-number">13.3.2. </span>Generating Machine Code<a class="headerlink" href="#generating-machine-code" title="Permalink to this heading">#</a></h3>
 <p>The process for turning high level code into machine code differs across
 languages.</p>
 <p>Let’s look at some of the options and how they differ from one another.</p>
-<div class="section" id="aot-compiled-languages">
-<h4><span class="section-number">13.3.2.1. </span>AOT Compiled Languages<a class="headerlink" href="#aot-compiled-languages" title="Permalink to this headline">¶</a></h4>
+<section id="aot-compiled-languages">
+<h4><span class="section-number">13.3.2.1. </span>AOT Compiled Languages<a class="headerlink" href="#aot-compiled-languages" title="Permalink to this heading">#</a></h4>
 <p>Traditional compiled languages like Fortran, C and C++ are a reasonable option for writing fast code.</p>
 <p>Indeed, the standard benchmark for performance is still well-written C or Fortran.</p>
 <p>These languages compile down to efficient machine code because users are forced to provide a lot of detail on data types and how the code will execute.</p>
@@ -1465,9 +781,9 @@ languages.</p>
 </ul>
 <p>At the same time, the syntax and semantics of C and Fortran are verbose and unwieldy when compared to something like Julia.</p>
 <p>Moreover, these low level languages lack the interactivity that’s so crucial for scientific work.</p>
-</div>
-<div class="section" id="interpreted-languages">
-<h4><span class="section-number">13.3.2.2. </span>Interpreted Languages<a class="headerlink" href="#interpreted-languages" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="interpreted-languages">
+<h4><span class="section-number">13.3.2.2. </span>Interpreted Languages<a class="headerlink" href="#interpreted-languages" title="Permalink to this heading">#</a></h4>
 <p>Interpreted languages like Python generate machine code “on the fly”, during program execution.</p>
 <p>This allows them to be flexible and interactive.</p>
 <p>Moreover, programmers can leave many tedious details to the runtime environment, such as</p>
@@ -1483,9 +799,9 @@ together.</p>
 <p>This involves substantial overheads.</p>
 <p>There are also significant overheads associated with accessing the data values themselves, which might not be stored contiguously in memory.</p>
 <p>The resulting machine code is often complex and slow.</p>
-</div>
-<div class="section" id="just-in-time-compilation">
-<h4><span class="section-number">13.3.2.3. </span>Just-in-time compilation<a class="headerlink" href="#just-in-time-compilation" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="just-in-time-compilation">
+<h4><span class="section-number">13.3.2.3. </span>Just-in-time compilation<a class="headerlink" href="#just-in-time-compilation" title="Permalink to this heading">#</a></h4>
 <p>Just-in-time (JIT) compilation is an alternative approach that marries some of
 the advantages of AOT compilation and interpreted languages.</p>
 <p>The basic idea is that functions for specific tasks are compiled as requested.</p>
@@ -1498,16 +814,16 @@ it can in principle generate efficient machine code.</p>
 <li><p>provide all the benefits of high level languages discussed above and, at the same time,</p></li>
 <li><p>produce efficient instruction sets when functions are compiled down to machine code</p></li>
 </ul>
-</div>
-</div>
-</div>
-<div class="section" id="jit-compilation-in-julia">
-<h2><a class="toc-backref" href="#id5"><span class="section-number">13.4. </span>JIT Compilation in Julia</a><a class="headerlink" href="#jit-compilation-in-julia" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+</section>
+<section id="jit-compilation-in-julia">
+<h2><a class="toc-backref" href="#id5" role="doc-backlink"><span class="section-number">13.4. </span>JIT Compilation in Julia</a><a class="headerlink" href="#jit-compilation-in-julia" title="Permalink to this heading">#</a></h2>
 <p>JIT compilation is the approach used by Julia.</p>
 <p>In an ideal setting, all information necessary to generate efficient native machine code is supplied or inferred.</p>
 <p>In such a setting, Julia will be on par with machine code from low level languages.</p>
-<div class="section" id="an-example">
-<h3><span class="section-number">13.4.1. </span>An Example<a class="headerlink" href="#an-example" title="Permalink to this headline">¶</a></h3>
+<section id="an-example">
+<h3><span class="section-number">13.4.1. </span>An Example<a class="headerlink" href="#an-example" title="Permalink to this heading">#</a></h3>
 <p>Consider the function</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1647,19 +963,19 @@ julia_f_1821:                           # @julia_f_1821
 </div>
 </div>
 <p>Subsequent calls using either floats or integers are now routed to the appropriate compiled code.</p>
-</div>
-<div class="section" id="potential-problems">
-<h3><span class="section-number">13.4.2. </span>Potential Problems<a class="headerlink" href="#potential-problems" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="potential-problems">
+<h3><span class="section-number">13.4.2. </span>Potential Problems<a class="headerlink" href="#potential-problems" title="Permalink to this heading">#</a></h3>
 <p>In some senses, what we saw above was a best case scenario.</p>
 <p>Sometimes the JIT compiler produces messy, slow machine code.</p>
 <p>This happens when type inference fails or the compiler has insufficient information to optimize effectively.</p>
 <p>The next section looks at situations where these problems arise and how to get around them.</p>
-</div>
-</div>
-<div class="section" id="fast-and-slow-julia-code">
-<h2><a class="toc-backref" href="#id6"><span class="section-number">13.5. </span>Fast and Slow Julia Code</a><a class="headerlink" href="#fast-and-slow-julia-code" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="fast-and-slow-julia-code">
+<h2><a class="toc-backref" href="#id6" role="doc-backlink"><span class="section-number">13.5. </span>Fast and Slow Julia Code</a><a class="headerlink" href="#fast-and-slow-julia-code" title="Permalink to this heading">#</a></h2>
 <p>To summarize what we’ve learned so far, Julia provides a platform for generating highly efficient machine code with relatively little effort by combining</p>
-<ol class="simple">
+<ol class="arabic simple">
 <li><p>JIT compilation</p></li>
 <li><p>Optional type declarations and type inference to pin down the types of variables and hence compile efficient code</p></li>
 <li><p>Multiple dispatch to facilitate specialization and optimization of compiled code for different data types</p></li>
@@ -1667,15 +983,15 @@ julia_f_1821:                           # @julia_f_1821
 <p>But the process is not flawless, and hiccups can occur.</p>
 <p>The purpose of this section is to highlight potential issues and show you how
 to circumvent them.</p>
-<div class="section" id="benchmarktools">
-<h3><span class="section-number">13.5.1. </span>BenchmarkTools<a class="headerlink" href="#benchmarktools" title="Permalink to this headline">¶</a></h3>
+<section id="benchmarktools">
+<h3><span class="section-number">13.5.1. </span>BenchmarkTools<a class="headerlink" href="#benchmarktools" title="Permalink to this heading">#</a></h3>
 <p>The main Julia package for benchmarking is <a class="reference external" href="https://www.github.com/JuliaCI/BenchmarkTools.jl">BenchmarkTools.jl</a>.</p>
 <p>Below, we’ll use the <code class="docutils literal notranslate"><span class="pre">&#64;btime</span></code> macro it exports to evaluate the performance of Julia code.</p>
 <p>As mentioned in an <a class="reference internal" href="testing.html"><span class="doc">earlier lecture</span></a>, we can also save benchmark results to a file and guard against performance regressions in code.</p>
 <p>For more, see the package docs.</p>
-</div>
-<div class="section" id="global-variables">
-<h3><span class="section-number">13.5.2. </span>Global Variables<a class="headerlink" href="#global-variables" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="global-variables">
+<h3><span class="section-number">13.5.2. </span>Global Variables<a class="headerlink" href="#global-variables" title="Permalink to this heading">#</a></h3>
 <p>Global variables are names assigned to values outside of any function or type definition.</p>
 <p>The are convenient and novice programmers typically use them with abandon.</p>
 <p>But global variables are also dangerous, especially in medium to large size programs, since</p>
@@ -1719,7 +1035,7 @@ variable, or even that the type will stay constant while a given function runs.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  43.175 ms (3000001 allocations: 45.78 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  46.859 ms (3000001 allocations: 45.78 MiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.000001e6
@@ -1762,7 +1078,7 @@ julia_g_2109:                           # @julia_g_2109
 	.cfi_offset %r14, <span class=" -Color -Color-Yellow">-32</span>
 	.cfi_offset %r15, <span class=" -Color -Color-Yellow">-24</span>
 	<span class=" -Color -Color-Bold">vmovsd</span>	%xmm0, <span class=" -Color -Color-Yellow">8(</span>%rsp<span class=" -Color -Color-Yellow">)</span>                  # 8-byte Spill
-	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$139660953203024</span>, %r14          # imm = 0x7F0559813150
+	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$140261873234256</span>, %r14          # imm = 0x7F9143213150
 	<span class=" -Color -Color-Bold">vxorps</span>	%xmm0, %xmm0, %xmm0
 	<span class=" -Color -Color-Bold">vmovaps</span>	%ymm0, <span class=" -Color -Color-Yellow">32(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">$0</span>, <span class=" -Color -Color-Yellow">64(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
@@ -1792,9 +1108,9 @@ julia_g_2109:                           # @julia_g_2109
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
 .LBB0_1:                                # %L2
                                         # =&gt;This Inner Loop Header: Depth=1
-	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$139660953203024</span>, %r14          # imm = 0x7F0559813150
+	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$140261873234256</span>, %r14          # imm = 0x7F9143213150
 ; │ @ In[23]:6 within `g`
-	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">-619706040(</span>%r14<span class=" -Color -Color-Yellow">)</span>, %r13
+	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">80046792(</span>%r14<span class=" -Color -Color-Yellow">)</span>, %r13
 	<span class=" -Color -Color-Bold">movq</span>	%r13, <span class=" -Color -Color-Yellow">64(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">movq</span>	%rbx, <span class=" -Color -Color-Yellow">56(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">(</span>%rsp<span class=" -Color -Color-Yellow">)</span>, %rax                    # 8-byte Reload
@@ -1811,7 +1127,7 @@ julia_g_2109:                           # @julia_g_2109
 	<span class=" -Color -Color-Bold">movq</span>	%rax, <span class=" -Color -Color-Yellow">48(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">movq</span>	%rbx, <span class=" -Color -Color-Yellow">16(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
 	<span class=" -Color -Color-Bold">movq</span>	%rax, <span class=" -Color -Color-Yellow">24(</span>%rsp<span class=" -Color -Color-Yellow">)</span>
-	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$139660874071040</span>, %r14          # imm = 0x7F0554C9BC00
+	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$140261794102272</span>, %r14          # imm = 0x7F913E69BC00
 	<span class=" -Color -Color-Bold">movq</span>	%r14, %rdi
 	<span class=" -Color -Color-Bold">movq</span>	%r15, %rsi
 	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$2</span>, %edx
@@ -1884,7 +1200,7 @@ julia_g_2109:                           # @julia_g_2109
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3.207 ms (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.671 ms (0 allocations: 0 bytes)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.000001e6
@@ -1901,14 +1217,14 @@ julia_g_2109:                           # @julia_g_2109
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 1556 samples with 1 evaluation.
- Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">3.207 ms</span> … <span class=" -Color -Color-Magenta">3.289 ms</span>  ┊ GC (min … max): 0.00% … 0.00%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">3.212 ms             </span>┊ GC (median):    0.00%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">3.212 ms</span> ± <span class=" -Color -Color-Green">4.048 μs</span>  ┊ GC (mean ± σ):  0.00% ± 0.00%
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 2341 samples with 1 evaluation.
+ Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">1.671 ms</span> … <span class=" -Color -Color-Magenta">  7.603 ms</span>  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">2.103 ms               </span>┊ GC (median):    0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">2.130 ms</span> ± <span class=" -Color -Color-Green">308.668 μs</span>  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-  ▇                 █▅▆<span class=" -Color -Color-Blue">▁</span>                                     
-  █▂▁▁▁▁▄▆▄▂▂▁▁▁▁▁▁▃███<span class=" -Color -Color-Blue">█</span>▅▄▇▇█▆▇▅▄▄▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▂▁▁▂ ▃
-  3.21 ms        Histogram: frequency by time       3.22 ms <span class=" -Color -Color-Bold">&lt;</span>
+  ▂         ▁ ▂▃▄▅▇▇█▇▅▆<span class=" -Color -Color-Blue">▅</span><span class=" -Color -Color-Green">▅</span>▆▅▄▄▄▁▂▁                             
+  █▄▆▄▅▅▆▇▅█████████████<span class=" -Color -Color-Blue">█</span><span class=" -Color -Color-Green">█</span>█████████▇▆▇█▅▆▆▄▄▄▄▃▃▃▃▃▃▃▂▃▂▂▁▂▂▂ ▅
+  1.67 ms         Histogram: frequency by time        2.85 ms <span class=" -Color -Color-Bold">&lt;</span>
 
  Memory estimate: <span class=" -Color -Color-Yellow">0 bytes</span>, allocs estimate: <span class=" -Color -Color-Yellow">0</span>.
 </pre></div>
@@ -1988,7 +1304,7 @@ hence can optimize accordingly.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6.948 ms (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.227 ms (0 allocations: 0 bytes)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.000001e6
@@ -1998,9 +1314,9 @@ hence can optimize accordingly.</p>
 </div>
 <p>Now the compiler can again generate efficient machine code.</p>
 <p>However, global variables within a function is almost always a bad idea.  Instead, the <code class="docutils literal notranslate"><span class="pre">b_const</span></code> should be passed as a parameter to the function.</p>
-</div>
-<div class="section" id="composite-types-with-abstract-field-types">
-<h3><span class="section-number">13.5.3. </span>Composite Types with Abstract Field Types<a class="headerlink" href="#composite-types-with-abstract-field-types" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="composite-types-with-abstract-field-types">
+<h3><span class="section-number">13.5.3. </span>Composite Types with Abstract Field Types<a class="headerlink" href="#composite-types-with-abstract-field-types" title="Permalink to this heading">#</a></h3>
 <p>Another scenario that trips up the JIT compiler is when composite types have
 fields with abstract types.</p>
 <p>We met this issue <a class="reference internal" href="../more_julia/generic_programming.html#spec-field-types"><span class="std std-ref">earlier</span></a>, when we discussed AR(1) models.</p>
@@ -2070,8 +1386,8 @@ fields with abstract types.</p>
 </div>
 </div>
 <p>This is significant because such information is detected by the compiler.</p>
-<div class="section" id="timing">
-<h4><span class="section-number">13.5.3.1. </span>Timing<a class="headerlink" href="#timing" title="Permalink to this headline">¶</a></h4>
+<section id="timing">
+<h4><span class="section-number">13.5.3.1. </span>Timing<a class="headerlink" href="#timing" title="Permalink to this heading">#</a></h4>
 <p>Here’s a function that uses the field <code class="docutils literal notranslate"><span class="pre">a</span></code> of our objects</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2099,7 +1415,7 @@ fields with abstract types.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  26.294 ms (1999489 allocations: 30.51 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  27.084 ms (1999489 allocations: 30.51 MiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.000001e6
@@ -2157,7 +1473,7 @@ julia_f_2648:                           # @julia_f_2648
 	<span class=" -Color -Color-Bold">movq</span>	<span class=" -Color -Color-Yellow">(</span>%rdi<span class=" -Color -Color-Yellow">)</span>, %r13
 	<span class=" -Color -Color-Bold">movl</span>	<span class=" -Color -Color-Yellow">$1</span>, %ebx
 	<span class=" -Color -Color-Bold">movabsq</span>	$ijl_apply_generic, %r12
-	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$139660874071040</span>, %r14          # imm = 0x7F0554C9BC00
+	<span class=" -Color -Color-Bold">movabsq</span>	<span class=" -Color -Color-Yellow">$140261794102272</span>, %r14          # imm = 0x7F913E69BC00
 	<span class=" -Color -Color-Bold">leaq</span>	<span class=" -Color -Color-Yellow">-88(</span>%rbp<span class=" -Color -Color-Yellow">)</span>, %r15
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
 .LBB0_1:                                # %L3
@@ -2212,7 +1528,7 @@ julia_f_2648:                           # @julia_f_2648
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  26.360 ms (1999489 allocations: 30.51 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24.128 ms (1999489 allocations: 30.51 MiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.000001e6
@@ -2230,7 +1546,7 @@ julia_f_2648:                           # @julia_f_2648
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.799 ns (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.500 ns (0 allocations: 0 bytes)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.000001e6
@@ -2330,10 +1646,10 @@ julia_f_no_return_2669:                 # @julia_f_no_return_2669
 </div>
 </div>
 <p>We see that the code is even simpler.  In effect, if figured out that because <code class="docutils literal notranslate"><span class="pre">tmp</span></code> wasn’t returned, and the <code class="docutils literal notranslate"><span class="pre">foo.a</span></code> could have no side effects (since it knows the type of <code class="docutils literal notranslate"><span class="pre">a</span></code>), that it doesn’t even need to execute any of the code in the function.</p>
-</div>
-</div>
-<div class="section" id="type-inference">
-<h3><span class="section-number">13.5.4. </span>Type Inference<a class="headerlink" href="#type-inference" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="type-inference">
+<h3><span class="section-number">13.5.4. </span>Type Inference<a class="headerlink" href="#type-inference" title="Permalink to this heading">#</a></h3>
 <p>Consider the following function, which essentially does the same job as Julia’s <code class="docutils literal notranslate"><span class="pre">sum()</span></code> function but acts only on floating point data</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2375,7 +1691,7 @@ julia_f_no_return_2669:                 # @julia_f_no_return_2669
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  160.398 μs (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  83.599 μs (0 allocations: 0 bytes)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>50000.0
@@ -2399,7 +1715,7 @@ julia_f_no_return_2669:                 # @julia_f_no_return_2669
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  160.398 μs (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  83.600 μs (0 allocations: 0 bytes)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>50000.0
@@ -2416,7 +1732,7 @@ julia_f_no_return_2669:                 # @julia_f_no_return_2669
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  12.899 μs (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  26.300 μs (0 allocations: 0 bytes)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>50000.00000000001
@@ -2432,7 +1748,7 @@ julia_f_no_return_2669:                 # @julia_f_no_return_2669
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  133.712 ns (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  81.056 ns (0 allocations: 0 bytes)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>50000.0
@@ -2441,8 +1757,8 @@ julia_f_no_return_2669:                 # @julia_f_no_return_2669
 </div>
 </div>
 <p>Note that the difference in speed is enormous—suggesting it is better to keep things in their more structured forms as long as possible.  You can check the underlying source used for this with <code class="docutils literal notranslate"><span class="pre">&#64;which</span> <span class="pre">sum(x_range)</span></code> to see the specialized algorithm used.</p>
-<div class="section" id="type-inferences">
-<h4><span class="section-number">13.5.4.1. </span>Type Inferences<a class="headerlink" href="#type-inferences" title="Permalink to this headline">¶</a></h4>
+<section id="type-inferences">
+<h4><span class="section-number">13.5.4.1. </span>Type Inferences<a class="headerlink" href="#type-inferences" title="Permalink to this heading">#</a></h4>
 <p>Here’s the same function minus the type annotation in the function signature</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -2471,7 +1787,7 @@ similar speed as the function with type information.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  160.398 μs (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  83.600 μs (0 allocations: 0 bytes)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>50000.0
@@ -2483,9 +1799,9 @@ similar speed as the function with type information.</p>
 data type, a newly compiled version of the function is produced to handle that
 type.</p>
 <p>In this case, since we’re calling the function on a vector of floats, we get a compiled version of the function with essentially the same internal representation as <code class="docutils literal notranslate"><span class="pre">sum_float_array()</span></code>.</p>
-</div>
-<div class="section" id="an-abstract-container">
-<h4><span class="section-number">13.5.4.2. </span>An Abstract Container<a class="headerlink" href="#an-abstract-container" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="an-abstract-container">
+<h4><span class="section-number">13.5.4.2. </span>An Abstract Container<a class="headerlink" href="#an-abstract-container" title="Permalink to this heading">#</a></h4>
 <p>Things get tougher for the interpreter when the data type within the array is imprecise.</p>
 <p>For example, the following snippet creates an array where the element type is <code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
 <div class="cell docutils container">
@@ -2515,7 +1831,7 @@ type.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  20.852 ms (1000000 allocations: 15.26 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  19.762 ms (1000000 allocations: 15.26 MiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>14.392726722864989
@@ -2523,25 +1839,25 @@ type.</p>
 </div>
 </div>
 </div>
-</div>
-</div>
-</div>
-<div class="section" id="further-comments">
-<h2><a class="toc-backref" href="#id7"><span class="section-number">13.6. </span>Further Comments</a><a class="headerlink" href="#further-comments" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+</section>
+<section id="further-comments">
+<h2><a class="toc-backref" href="#id7" role="doc-backlink"><span class="section-number">13.6. </span>Further Comments</a><a class="headerlink" href="#further-comments" title="Permalink to this heading">#</a></h2>
 <p>Here are some final comments on performance.</p>
-<div class="section" id="summary-and-tips">
-<h3><span class="section-number">13.6.1. </span>Summary and Tips<a class="headerlink" href="#summary-and-tips" title="Permalink to this headline">¶</a></h3>
+<section id="summary-and-tips">
+<h3><span class="section-number">13.6.1. </span>Summary and Tips<a class="headerlink" href="#summary-and-tips" title="Permalink to this heading">#</a></h3>
 <p>Use functions to segregate operations into logically distinct blocks.</p>
 <p>Data types will be determined at function boundaries.</p>
 <p>If types are not supplied then they will be inferred.</p>
 <p>If types are stable and can be inferred effectively your functions will run fast.</p>
-</div>
-<div class="section" id="further-reading">
-<h3><span class="section-number">13.6.2. </span>Further Reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="further-reading">
+<h3><span class="section-number">13.6.2. </span>Further Reading<a class="headerlink" href="#further-reading" title="Permalink to this heading">#</a></h3>
 <p>A good next stop for further reading is the <a class="reference external" href="https://docs.julialang.org/en/v1/manual/performance-tips/">relevant part</a> of the Julia documentation.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
     <script type="text/x-thebe-config">
     {
@@ -2555,7 +1871,7 @@ type.</p>
             mode: "julia-1.9"
         },
         kernelOptions: {
-            kernelName: "julia-1.9",
+            name: "julia-1.9",
             path: "./software_engineering"
         },
         predefinedOutput: true
@@ -2563,44 +1879,622 @@ type.</p>
     </script>
     <script>kernelName = 'julia-1.9'</script>
 
-              </div>
-              
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="qe-page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
             
-                <!-- Previous / next buttons -->
-<div class='prev-next-area'> 
-    <a class='left-prev' id="prev-link" href="testing.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title"><span class="section-number">12. </span>Packages, Testing, and Continuous Integration</p>
-        </div>
-    </a>
-    <a class='right-next' id="next-link" href="../tools_and_techniques/geom_series.html" title="next page">
-    <div class="prev-next-info">
-        <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title"><span class="section-number">14. </span>Geometric Series for Elementary Economics</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
+
             
+            <div class="qe-sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="qe-sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="qe-sidebar__nav" id="qe-sidebar-nav" aria-label="Main navigation">
+                    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   2. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   3. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   4. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   5. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/generic_programming.html">
+   6. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/general_packages.html">
+   7. General Purpose Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/data_statistical_packages.html">
+   8. Data and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../more_julia/optimization_solver_packages.html">
+   9. Solvers, Optimizers, and Automatic Differentiation
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="tools_editors.html">
+   10. Visual Studio Code and Other Tools
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="version_control.html">
+   11. GitHub, Version Control and Collaboration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html">
+   12. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   13. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/geom_series.html">
+   14. Geometric Series for Elementary Economics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   15. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   16. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   17. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   18. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   19. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   20. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   21. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   22. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   23. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   24. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   25. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   26. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   27. Shortest Paths
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   28. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   29. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   30. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   31. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   32. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   33. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   34. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   35. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   36. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   37. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   38. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   39. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   40. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   41. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   42. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   43. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   44. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   45. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   46. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   47. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   48. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   49. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   50. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   51. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   52. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   53. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   54. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   55. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   56. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Time Series Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/arma.html">
+   57. Covariance Stationary Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/estspec.html">
+   58. Estimation of Spectra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/additive_functionals.html">
+   59. Additive Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/multiplicative_functionals.html">
+   60. Multiplicative Functionals
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/lu_tricks.html">
+   61. Classical Control with Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../time_series_models/classical_filtering.html">
+   62. Classical Filtering With Linear Algebra
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Dynamic Programming Squared
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/dyn_stack.html">
+   63. Dynamic Stackelberg Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/lqramsey.html">
+   64. Optimal Taxation in an LQ Economy
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/opt_tax_recur.html">
+   65. Optimal Taxation with State-Contingent Debt
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming_squared/amss.html">
+   66. Optimal Taxation without State-Contingent Debt
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   67. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   68. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   69. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   70. Execution Statistics
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="qe-sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="qe-toolbar">
+
+            <div class="qe-toolbar__inner">
+
+                <ul class="qe-toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                </ul>
+
+                <ul class="qe-toolbar__links">
+                    <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search..." aria-label="Search..." autocomplete="off" accesskey="k">
+                            <i data-feather="search" id="search-icon"></i>
+                        </form>
+                    </li>
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="/_notebooks/software_engineering/need_for_speed.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li class="settings-button" id="settingsButton"><div data-tippy-content="Launch Notebook"><i data-feather="play-circle"></i></div></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/quantecon/lecture-julia.myst/blob/main/lectures/software_engineering/need_for_speed.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p>Book (PDF)</p></a>
+                </li>
+            </ul>
         </div>
-    </div>
-    <footer class="footer">
-  <p>
-    
-      By Jesse Perla & Thomas J. Sargent & John Stachurski<br/>
-    
-        &copy; Copyright 2021.<br/>
-  </p>
-</footer>
-</main>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title"> Notebook Launcher </p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input">
+                
+                    <option value="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/software_engineering/need_for_speed.ipynb">Colab</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" data-repourl="https://github.com/quantecon/lecture-julia.notebooks" data-urlpath="tree/lecture-julia.notebooks/software_engineering/need_for_speed.ipynb" data-branch=main>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            </ul>
+            <p class="launch"><a href="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/software_engineering/need_for_speed.ipynb" id="advancedLaunchButton" target="_blank">Launch Notebook</a></p>
+            <script>
+                // QuantEcon Notebook Launcher
+                const launcherTypeElements = document.querySelectorAll('#settingsModal .modal-servers li');
+                // Highlight the server type if previous selection exists
+                if (typeof localStorage.launcherType !== 'undefined') {
+                  for (var i = 0; i < launcherTypeElements.length; i++) {
+                    launcherTypeElements[i].classList.remove('active');
+                    if ( launcherTypeElements[i].classList.contains(localStorage.launcherType) ) {
+                      launcherTypeElements[i].classList.add('active');
+                    }
+                  }
+                }
+                // Highlight server type on click and set local storage value
+                for (var i = 0; i < launcherTypeElements.length; i++) {
+                  launcherTypeElements[i].addEventListener('click', function() {
+                    for (var j = 0; j < launcherTypeElements.length; j++) {
+                      launcherTypeElements[j].classList.remove('active');
+                    }
+                    this.classList.add('active');
+                    if ( this.classList.contains('launcher-private') ) {
+                      localStorage.launcherType = 'launcher-private';
+                    } else if ( this.classList.contains('launcher-public') ) {
+                      localStorage.launcherType = 'launcher-public';
+                    }
+                    setLaunchServer();
+                  })
+                }
+                const launcherPublic = document.getElementById('launcher-public-input');
+                const launcherPrivate = document.getElementById('launcher-private-input');
+                const pageName = "software_engineering/need_for_speed";
+                const repoURL = "https://github.com/quantecon/lecture-julia.notebooks";
+                const urlPath = "tree/lecture-julia.notebooks/software_engineering/need_for_speed.ipynb";
+                const branch = "main"
+                const launchNotebookLink = document.getElementById('advancedLaunchButton');
 
+                // Highlight public server option if previous selection exists
+                if (typeof localStorage.launcherPublic !== 'undefined') {
+                  launcherPublic.value = localStorage.launcherPublic;
+                }
+                // Update local storage upon public server selection
+                launcherPublic.addEventListener('change', (event) => {
+                  setLaunchServer();
+                });
+                // Populate private server input if previous entry exists
+                if (typeof localStorage.launcherPrivate !== 'undefined') {
+                  launcherPrivate.value = localStorage.launcherPrivate;
+                }
+                // Update local storage when a private server is entered
+                launcherPrivate.addEventListener('input', (event) => {
+                  setLaunchServer();
+                });
 
-      </div>
-    </div>
-  
-  <script src="../_static/js/index.be7d3bbb2ef33a8344ce.js"></script>
+                // Function to update the "Launch Notebook" link href
+                function setLaunchServer() {
+                  launchNotebookLink.removeAttribute("style")
+                  if ( localStorage.launcherType == 'launcher-private' ) {
+                    let repoPrefix = "/jupyter/hub/user-redirect/git-pull?repo=" + repoURL + "&branch=" + branch + "&urlpath=" + urlPath;
+                    launcherPrivateValue = launcherPrivate.value
+                    if (!launcherPrivateValue) {
+                        launchNotebookLink.removeAttribute("href")
+                        launchNotebookLink.style.background = "grey"
+                        return
+                    }
+                    localStorage.launcherPrivate = launcherPrivateValue;
+                    privateServer = localStorage.launcherPrivate.replace(/\/$/, "")
+                    if (!privateServer.includes("http")) {
+                        privateServer = "http://" + privateServer
+                    }
+                    launchNotebookLinkURL = privateServer + repoPrefix;
+                  } else if ( localStorage.launcherType == 'launcher-public' ) {
+                    launcherPublicValue = launcherPublic.options[launcherPublic.selectedIndex].value;
+                    localStorage.launcherPublic = launcherPublicValue;
+                    launchNotebookLinkURL = localStorage.launcherPublic;
+                  }
+                  if (launchNotebookLinkURL) launchNotebookLink.href = launchNotebookLinkURL;
+                }
+                // Check if user has previously selected a server
+                if ( (typeof localStorage.launcherPrivate !== 'undefined') || (typeof localStorage.launcherPublic !== 'undefined') ) {
+                  setLaunchServer();
+                }
+                </script>
 
+        </div>
+
+    </div> <!-- .wrapper-->
   </body>
 </html>
