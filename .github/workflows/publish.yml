@@ -104,11 +104,10 @@ jobs:
           QE_SERVICES_PAT: ${{ secrets.QUANTECON_SERVICES_PAT }}
         run: |
           git clone https://quantecon-services:$QE_SERVICES_PAT@github.com/quantecon/lecture-julia.notebooks
-          cp _build/lecture-julia.notebooks/*.ipynb lecture-julia.notebooks
+          cp -r _build/lecture-julia.notebooks/ lecture-julia.notebooks
           cd lecture-julia.notebooks
           git config user.name "QuantEcon Services"
           git config user.email "admin@quantecon.org"
-          git add *.ipynb
-          git add *.toml
+          git add --all
           git commit -m "auto publishing updates to notebooks"
           git push origin main
