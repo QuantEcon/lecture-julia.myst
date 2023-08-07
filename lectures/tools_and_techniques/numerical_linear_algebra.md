@@ -620,7 +620,8 @@ Implementing the $Q$ using its tridiagonal structure
 using LinearAlgebra
 alpha = 0.1
 N = 6
-Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha], fill(alpha, N - 1))
+Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
+                fill(alpha, N - 1))
 ```
 
 Here we can use `Tridiagonal` to exploit the structure of the problem.
@@ -706,7 +707,8 @@ end
 
 alpha = 0.1
 N = 4
-Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha], fill(alpha, N - 1))
+Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
+                fill(alpha, N - 1))
 A = sparse([-0.1 0.1
             0.2 -0.2])
 M = size(A, 1)
@@ -765,7 +767,8 @@ is isomorphic to determining whether the directed graph of the Markov chain is [
 using Graphs
 alpha = 0.1
 N = 6
-Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha], fill(alpha, N - 1))
+Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
+                fill(alpha, N - 1))
 ```
 
 We can verify that it is possible to move between every pair of states in a finite number of steps with
