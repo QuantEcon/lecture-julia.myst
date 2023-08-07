@@ -354,7 +354,8 @@ function wealth_dynamics_model(; # all named arguments
     z_stationary_dist = Normal(z_mean, sqrt(z_var))
 
     @assert alpha <= 1 # check stability condition that wealth does not diverge
-    return (; w_hat, s_0, c_y, μ_y, sigma_y, c_r, μ_r, sigma_r, a, b, sigma_z, z_mean,
+    return (; w_hat, s_0, c_y, μ_y, sigma_y, c_r, μ_r, sigma_r, a, b, sigma_z,
+            z_mean,
             z_var, z_stationary_dist, exp_z_mean, R_mean, y_mean, alpha)
 end
 ```
@@ -576,9 +577,11 @@ function simulate_panel_no_turbo(N, T, p)
     for t in 1:T
         @inbounds for i in 1:N
             zp[i] = a * z[i] + b + sigma_z * randn()
-            R[i] = (w[i] >= w_hat) ? c_r * exp(zp[i]) + exp(μ_r + sigma_r * randn()) :
+            R[i] = (w[i] >= w_hat) ?
+                   c_r * exp(zp[i]) + exp(μ_r + sigma_r * randn()) :
                    0.0
-            wp[i] = c_y * exp(zp[i]) + exp(μ_y + sigma_y * randn()) + R[i] * s_0 * w[i]
+            wp[i] = c_y * exp(zp[i]) + exp(μ_y + sigma_y * randn()) +
+                    R[i] * s_0 * w[i]
         end
         # Step forward
         w .= wp

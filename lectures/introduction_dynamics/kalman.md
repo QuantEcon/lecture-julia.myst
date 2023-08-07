@@ -700,7 +700,7 @@ Q = 0.3 .* G
 
 # define the prior density
 Sigma = [0.9 0.3
-     0.3 0.9]
+         0.3 0.9]
 x̂ = [8, 8]
 
 # initialize the Kalman filter
