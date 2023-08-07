@@ -256,7 +256,7 @@ function mc_sample_path(P; init = 1, sample_size = 1000)
     X[1] = init # set the initial state
 
     for t in 2:sample_size
-        dist = dists[X[t-1]] # get discrete RV from last state's transition distribution
+        dist = dists[X[t - 1]] # get discrete RV from last state's transition distribution
         X[t] = rand(dist) # draw new value
     end
     return X
@@ -291,7 +291,7 @@ Random.seed!(42);  # for result reproducibility
 ```{code-cell} julia
 P = [0.4 0.6; 0.2 0.8]
 X = mc_sample_path(P, sample_size = 100_000); # note 100_000 = 100000
-μ_1 = count(X .== 1)/length(X) # .== broadcasts test for equality. Could use mean(X .== 1)
+μ_1 = count(X .== 1) / length(X) # .== broadcasts test for equality. Could use mean(X .== 1)
 ```
 
 ```{code-cell} julia
@@ -321,7 +321,7 @@ Random.seed!(42);  # For reproducibility
 P = [0.4 0.6; 0.2 0.8];
 mc = MarkovChain(P)
 X = simulate(mc, 100_000);
-μ_2 = count(X .== 1)/length(X) # or mean(x -> x == 1, X)
+μ_2 = count(X .== 1) / length(X) # or mean(x -> x == 1, X)
 ```
 
 ```{code-cell} julia
@@ -704,7 +704,7 @@ As seen in {eq}`fin_mc_fr`, we can shift probabilities forward one unit of time 
 Some distributions are invariant under this updating process --- for example,
 
 ```{code-cell} julia
-P = [.4 .6; .2 .8];
+P = [0.4 0.6; 0.2 0.8];
 ψ = [0.25, 0.75];
 ψ' * P
 ```
@@ -801,7 +801,7 @@ Hence we need to impose the restriction that the solution must be a probability 
 A suitable algorithm is implemented in [QuantEcon.jl](http://quantecon.org/quantecon-jl) --- the next code block illustrates
 
 ```{code-cell} julia
-P = [.4 .6; .2 .8];
+P = [0.4 0.6; 0.2 0.8];
 mc = MarkovChain(P);
 stationary_distributions(mc)
 ```
@@ -844,7 +844,7 @@ mc = MarkovChain(P)
 x_star, y_star, z_star = ψ_star # unpack the stationary dist
 plt = scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colors,
               gridalpha = 0.5, legend = :none)
-plot!(plt, camera = (45,45))
+plot!(plt, camera = (45, 45))
 ```
 
 ```{code-cell} julia
@@ -1234,12 +1234,12 @@ Random.seed!(42);  # For reproducibility
 ```
 
 ```{code-cell} julia
-α = 0.1 # probability of getting hired
-β = 0.1 # probability of getting fired
+alpha = 0.1 # probability of getting hired
+beta = 0.1 # probability of getting fired
 N = 10_000
-p̄ = β / (α + β) # steady-state probabilities
-P = [1 - α   α
-     β   1 - β] # stochastic matrix
+p̄ = beta / (alpha + beta) # steady-state probabilities
+P = [1-alpha alpha
+     beta 1-beta] # stochastic matrix
 mc = MarkovChain(P)
 labels = ["start unemployed", "start employed"]
 y_vals = Array{Vector}(undef, 2) # sample paths holder

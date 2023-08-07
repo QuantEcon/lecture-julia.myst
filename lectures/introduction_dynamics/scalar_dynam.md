@@ -216,39 +216,44 @@ plots.
 ```{code-cell} julia
 # Iterates a function from an initial condition 
 function iterate_map(f, x0, T)
-    x = zeros(T+1)
+    x = zeros(T + 1)
     x[1] = x0
-    for t in 2:(T+1)
-        x[t] = f(x[t-1])
+    for t in 2:(T + 1)
+        x[t] = f(x[t - 1])
     end
     return x
 end
 
-function plot45(f, xmin, xmax, x0, T; num_points = 100, label = L"g(k)", xlabel = "k")
+function plot45(f, xmin, xmax, x0, T; num_points = 100, label = L"g(k)",
+                xlabel = "k")
     # Plot the function and the 45 degree line
     x_grid = range(xmin, xmax, num_points)
-    plt = plot(x_grid, f.(x_grid); xlim=(xmin, xmax), ylim=(xmin, xmax), linecolor=:black, lw=2, label)
-    plot!(x_grid, x_grid; linecolor=:blue, lw=2, label = nothing)
+    plt = plot(x_grid, f.(x_grid); xlim = (xmin, xmax), ylim = (xmin, xmax),
+               linecolor = :black, lw = 2, label)
+    plot!(x_grid, x_grid; linecolor = :blue, lw = 2, label = nothing)
 
     # Iterate map and add ticks
     x = iterate_map(f, x0, T)
     xticks!(x, [L"%$(xlabel)_{%$i}" for i in 0:T])
-    yticks!(x, [L"%$(xlabel)_{%$i}" for i in 0:T])    
-    
+    yticks!(x, [L"%$(xlabel)_{%$i}" for i in 0:T])
+
     # Plot arrows and dashes
     for i in 1:T
-        plot!([x[i], x[i]], [x[i], x[i+1]], arrow=:closed, linecolor=:black, alpha=0.5, label = nothing)
-        plot!([x[i], x[i+1]], [x[i+1], x[i+1]], arrow=:closed, linecolor=:black, alpha=0.5, label = nothing)
-        plot!([x[i+1], x[i+1]], [0, x[i+1]], linestyle=:dash, linecolor=:black, alpha=0.5, label = nothing)
+        plot!([x[i], x[i]], [x[i], x[i + 1]], arrow = :closed, linecolor = :black,
+              alpha = 0.5, label = nothing)
+        plot!([x[i], x[i + 1]], [x[i + 1], x[i + 1]], arrow = :closed,
+              linecolor = :black, alpha = 0.5, label = nothing)
+        plot!([x[i + 1], x[i + 1]], [0, x[i + 1]], linestyle = :dash,
+              linecolor = :black, alpha = 0.5, label = nothing)
     end
-    plot!([x[1], x[1]], [0, x[1]], linestyle=:dash, linecolor=:black, alpha=0.5, label = nothing)
-end  
+    plot!([x[1], x[1]], [0, x[1]], linestyle = :dash, linecolor = :black,
+          alpha = 0.5, label = nothing)
+end
 
-
-function ts_plot(f, x0, T; xlabel=L"t", label=L"k_t")
+function ts_plot(f, x0, T; xlabel = L"t", label = L"k_t")
     x = iterate_map(f, x0, T)
     plot(0:T, x; xlabel, label)
-    plot!(0:T, x; seriestype=:scatter, mc=:blue, alpha=0.7, label=nothing)
+    plot!(0:T, x; seriestype = :scatter, mc = :blue, alpha = 0.7, label = nothing)
 end
 ```
 
@@ -256,19 +261,19 @@ Let's create a 45 degree diagram for the Solow model with a fixed set of
 parameters
 
 ```{code-cell} julia
-p = (A=2, s=0.3, α=0.3, δ=0.4, xmin=0, xmax=4)
+p = (A = 2, s = 0.3, alpha = 0.3, δ = 0.4, xmin = 0, xmax = 4)
 ```
 
 Here's the update function corresponding to the model.
 
 ```{code-cell} julia
-g(k; p) = p.A * p.s * k^p.α + (1 - p.δ) * k
+g(k; p) = p.A * p.s * k^p.alpha + (1 - p.δ) * k
 ```
 
 Here is the 45 degree plot.
 
 ```{code-cell} julia
-plot45(k -> g(k; p), p.xmin, p.xmax, 0,6)
+plot45(k -> g(k; p), p.xmin, p.xmax, 0, 6)
 ```
 
 The plot shows the function $g$ and the 45 degree line.
@@ -313,13 +318,13 @@ We can plot the time series of capital corresponding to the figure above as
 follows:
 
 ```{code-cell} julia
-ts_plot(k -> g(k; p), k0,5)
+ts_plot(k -> g(k; p), k0, 5)
 ```
 
 Here's a somewhat longer view:
 
 ```{code-cell} julia
-ts_plot(k -> g(k; p), k0,20)
+ts_plot(k -> g(k; p), k0, 20)
 ```
 
 When capital stock is higher than the unique positive steady state, we see that
@@ -333,7 +338,7 @@ plot45(k -> g(k; p), p.xmin, p.xmax, k0, 5)
 Here is the time series:
 
 ```{code-cell} julia
-ts_plot(k -> g(k; p), k0,8)
+ts_plot(k -> g(k; p), k0, 8)
 ```
 
 ### Complex Dynamics
@@ -353,13 +358,13 @@ Let's have a look at the 45 degree diagram.
 xmin, xmax = 0, 1
 g(k) = 4 * k * (1 - k)
 x0 = 0.3
-plot45(g, xmin, xmax, 0.1,0)
+plot45(g, xmin, xmax, 0.1, 0)
 ```
 
 Now let's look at a typical trajectory.
 
 ```{code-cell} julia
-plot45(g, xmin, xmax, 0.1,6)
+plot45(g, xmin, xmax, 0.1, 6)
 ```
 
 Notice how irregular it is.
@@ -367,13 +372,13 @@ Notice how irregular it is.
 Here is the corresponding time series plot.
 
 ```{code-cell} julia
-ts_plot(g, x0,6)
+ts_plot(g, x0, 6)
 ```
 
 The irregularity is even clearer over a longer time horizon:
 
 ```{code-cell} julia
-ts_plot(g,x0,20)
+ts_plot(g, x0, 20)
 ```
 
 ## Exercises
@@ -411,7 +416,7 @@ Now let's plot a trajectory:
 
 ```{code-cell} julia
 x0 = -0.5
-plot45(k -> g(k; q), q.xmin, q.xmax, x0,5)
+plot45(k -> g(k; q), q.xmin, q.xmax, x0, 5)
 ```
 
 Here is the corresponding time series, which converges towards the steady
@@ -441,7 +446,7 @@ Here is the corresponding time series, which converges towards the steady
 state.
 
 ```{code-cell} julia
-ts_plot(k -> g(k; r),x0, 10)
+ts_plot(k -> g(k; r), x0, 10)
 ```
 
 Once again, we have convergence to the steady state but the nature of
