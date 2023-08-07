@@ -440,7 +440,8 @@ First, we will solve with a direct method, which will give the solution to machi
 using LinearAlgebra, IterativeSolvers, Statistics
 alpha = 0.1
 N = 100
-Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha], fill(alpha, N - 1))
+Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
+                fill(alpha, N - 1))
 
 r = range(0.0, 10.0, length = N)
 ρ = 0.05
@@ -719,7 +720,8 @@ First, lets use a Krylov method to solve our simple valuation problem
 ```{code-cell} julia
 alpha = 0.1
 N = 100
-Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha], fill(alpha, N - 1))
+Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
+                fill(alpha, N - 1))
 
 r = range(0.0, 10.0, length = N)
 ρ = 0.05
@@ -749,7 +751,8 @@ This can be implemented as a function (either in-place or out-of-place) which ca
 ```{code-cell} julia
 function A_mul(x)
     [(ρ + alpha) * x[1] - alpha * x[2];
-     [-alpha * x[i - 1] + (ρ + 2 * alpha) * x[i] - alpha * x[i + 1] for i in 2:(N - 1)];  # comprehension
+     [-alpha * x[i - 1] + (ρ + 2 * alpha) * x[i] - alpha * x[i + 1]
+      for i in 2:(N - 1)]  # comprehension
      -alpha * x[end - 1] + (ρ + alpha) * x[end]]
 end
 

@@ -878,7 +878,7 @@ function exercise2(; n = 250, k = 50_000, dw = Uniform(-1, 1), du = Uniform(-2, 
     vw = var(dw)
     vu = var(du)
     Sigma = [vw vw
-         vw vw+vu]
+             vw vw+vu]
     Q = inv(sqrt(Sigma))
     function generate_data(dw, du, n)
         dw = rand(dw, n)
