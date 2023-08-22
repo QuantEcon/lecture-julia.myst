@@ -635,7 +635,8 @@ You may want to go beyond the scope of this tutorial when working with GitHub.
 Here are some resources to help
 
 * Kate Hudson's excellent [git flight rules](https://github.com/k88hudson/git-flight-rules/), which is a near-exhaustive list of situations you could encounter, and command-line fixes.
-* The GitHub [Learning Lab](https://lab.github.com/), an interactive sandbox environment for git.
+* The [GitHub Skills](https://skills.github.com/), an interactive sandbox environment for git.
+* Learn [version control with Git](https://www.git-tower.com/learn/git/ebook). This online book will help you master it with ease.
 * The docs for forking on [GitHub Desktop](https://help.github.com/desktop/guides/contributing-to-projects/cloning-a-repository-from-github-to-github-desktop/) and [the GitHub Website](https://guides.github.com/activities/forking/).
 
 (version_control_commandline)=
