@@ -655,23 +655,23 @@ linear problem.
 v = A \ r
 ```
 
-The $Q$ is also used to calculate the evolution of the Markov chain, in direct analogy to the $ψ_{t+k} = ψ_t P^k$ evolution with the transition matrix $P$ of the discrete case.
+The $Q$ is also used to calculate the evolution of the Markov chain, in direct analogy to the $psi_{t+k} = psi_t P^k$ evolution with the transition matrix $P$ of the discrete case.
 
 In the continuous case, this becomes the system of linear differential equations
 
 $$
-\dot{ψ}(t) = Q(t)^T ψ(t)
+\dot{psi}(t) = Q(t)^T psi(t)
 $$
 
 given the initial condition $\psi(0)$ and where the $Q(t)$ intensity matrix is allowed to vary with time.  In the simplest case of a constant $Q$ matrix, this is a simple constant-coefficient system of linear ODEs with coefficients $Q^T$.
 
-If a stationary equilibrium exists, note that $\dot{ψ}(t) = 0$, and the stationary solution $ψ^{*}$ needs to satisfy
+If a stationary equilibrium exists, note that $\dot{psi}(t) = 0$, and the stationary solution $psi^{*}$ needs to satisfy
 
 $$
-0 = Q^T ψ^{*}
+0 = Q^T psi^{*}
 $$
 
-Notice that this is of the form $0 ψ^{*} = Q^T ψ^{*}$ and hence is equivalent to finding the eigenvector associated with the $\lambda = 0$ eigenvalue of $Q^T$.
+Notice that this is of the form $0 psi^{*} = Q^T psi^{*}$ and hence is equivalent to finding the eigenvector associated with the $\lambda = 0$ eigenvalue of $Q^T$.
 
 With our example, we can calculate all of the eigenvalues and eigenvectors
 
@@ -748,14 +748,14 @@ case, we can verify that it is the last one.
 L_eig = eigen(Matrix(L'))
 @assert norm(L_eig.values[end]) < 1E-10
 
-ψ = L_eig.vectors[:, end]
-ψ = ψ / sum(ψ)
+psi = L_eig.vectors[:, end]
+psi = psi / sum(psi)
 ```
 
 Reshape this to be two-dimensional if it is helpful for visualization.
 
 ```{code-cell} julia
-reshape(ψ, N, size(A, 1))
+reshape(psi, N, size(A, 1))
 ```
 
 ### Irreducibility
