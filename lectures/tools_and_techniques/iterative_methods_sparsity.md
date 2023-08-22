@@ -957,9 +957,9 @@ First, finding the transition matrix $P$ and its adjoint directly as a check
 
 ```{code-cell} julia
 theta = 0.1
-ζ = 0.05
+zeta = 0.05
 N = 5
-P = Tridiagonal(fill(ζ, N - 1), [1 - theta; fill(1 - theta - ζ, N - 2); 1 - ζ],
+P = Tridiagonal(fill(zeta, N - 1), [1 - theta; fill(1 - theta - zeta, N - 2); 1 - zeta],
                 fill(theta, N - 1))
 P'
 ```
@@ -968,9 +968,9 @@ Implementing the adjoint-vector product directly, and verifying that it gives th
 
 ```{code-cell} julia
 function P_adj_mul(x)
-    [(1 - theta) * x[1] + ζ * x[2];
-     [theta * x[i - 1] + (1 - theta - ζ) * x[i] + ζ * x[i + 1] for i in 2:(N - 1)];  # comprehension
-     theta * x[end - 1] + (1 - ζ) * x[end]]
+    [(1 - theta) * x[1] + zeta * x[2];
+     [theta * x[i - 1] + (1 - theta - zeta) * x[i] + zeta * x[i + 1] for i in 2:(N - 1)];  # comprehension
+     theta * x[end - 1] + (1 - zeta) * x[end]]
 end
 P_adj_map = LinearMap(P_adj_mul, N)
 @show norm(P' - sparse(P_adj_map))
@@ -1069,10 +1069,10 @@ parameters in a named tuple generator
 
 ```{code-cell} julia
 using Parameters, BenchmarkTools
-function default_params(; theta = 0.1, ζ = 0.05, ρ = 0.03, N = 10, M = 6,
+function default_params(; theta = 0.1, zeta = 0.05, ρ = 0.03, N = 10, M = 6,
                         shape = Tuple(fill(N, M)),  # for reshaping vector to M-d array
                         e_m = ([CartesianIndex((1:M .== i) * 1...) for i in 1:M]))
-    (; theta, ζ, ρ, N, M, shape, e_m)
+    (; theta, zeta, ρ, N, M, shape, e_m)
 end
 ```
 
@@ -1080,7 +1080,7 @@ Next, implement the in-place matrix-free product
 
 ```{code-cell} julia
 function Q_mul!(dv, v, p)
-    (; theta, ζ, N, M, shape, e_m) = p
+    (; theta, zeta, N, M, shape, e_m) = p
     v = reshape(v, shape)  # now can access v, dv as M-dim arrays
     dv = reshape(dv, shape)
 
@@ -1092,10 +1092,10 @@ function Q_mul!(dv, v, p)
                 dv[ind] += theta * v[ind + e_m[m]]
             end
             if (n_m > 1)
-                dv[ind] += ζ * v[ind - e_m[m]]
+                dv[ind] += zeta * v[ind - e_m[m]]
             end
         end
-        dv[ind] -= (theta * count(ind.I .< N) + ζ * count(ind.I .> 1)) * v[ind]
+        dv[ind] -= (theta * count(ind.I .< N) + zeta * count(ind.I .> 1)) * v[ind]
     end
 end
 
@@ -1203,7 +1203,7 @@ $$
 
 ```{code-cell} julia
 function Q_T_mul!(dpsi, psi, p)
-    (; theta, ζ, N, M, shape, e_m) = p
+    (; theta, zeta, N, M, shape, e_m) = p
     psi = reshape(psi, shape)
     dpsi = reshape(dpsi, shape)
 
@@ -1215,10 +1215,10 @@ function Q_T_mul!(dpsi, psi, p)
                 dpsi[ind] += theta * psi[ind - e_m[m]]
             end
             if (n_m < N)
-                dpsi[ind] += ζ * psi[ind + e_m[m]]
+                dpsi[ind] += zeta * psi[ind + e_m[m]]
             end
         end
-        dpsi[ind] -= (theta * count(ind.I .< N) + ζ * count(ind.I .> 1)) * psi[ind]
+        dpsi[ind] -= (theta * count(ind.I .< N) + zeta * count(ind.I .> 1)) * psi[ind]
     end
 end
 ```
@@ -1288,7 +1288,8 @@ The algorithm can solve for the steady state of $10^5$ states in a few seconds
 
 ```{code-cell} julia
 function stationary_psi(p)
-    Q_T = LinearMap((dpsi, psi) -> Q_T_mul!(dpsi, psi, p), p.N^p.M, ismutating = true)
+    Q_T = LinearMap((dpsi, psi) -> Q_T_mul!(dpsi, psi, p), p.N^p.M,
+                    ismutating = true)
     psi = fill(1 / (p.N^p.M), p.N^p.M) # can't use 0 as initial guess
     sol = gmres!(psi, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
     return psi / sum(psi)

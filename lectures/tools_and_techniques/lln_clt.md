@@ -803,7 +803,8 @@ function exercise1(distribution = Uniform(0, π / 2); n = 250, k = 10_000, g = s
     y = vec(y)
     error_obs = sqrt(n) .* (g.(y) .- g.(mu))
     density(error_obs, label = "Empirical Density")
-    return plot!(Normal(0, g′(mu) .* sigma), linestyle = :dash, label = "Asymptotic",
+    return plot!(Normal(0, g′(mu) .* sigma), linestyle = :dash,
+                 label = "Asymptotic",
                  color = :black)
 end
 exercise1()
