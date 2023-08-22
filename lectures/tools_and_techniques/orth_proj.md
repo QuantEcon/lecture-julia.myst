@@ -752,7 +752,6 @@ using Test # Put this before any code in the lecture.
 
 ```{code-cell} julia
 function gram_schmidt(X)
-
     U = similar(X, Float64) # for robustness
 
     function normalized_orthogonal_projection(b, Z)
@@ -765,9 +764,9 @@ function gram_schmidt(X)
 
     for col in 1:size(U, 2)
         # set up
-        b = X[:,col]       # vector we're going to project
-        Z = X[:,1:col - 1] # first i-1 columns of X
-        U[:,col] = normalized_orthogonal_projection(b, Z)
+        b = X[:, col]       # vector we're going to project
+        Z = X[:, 1:(col - 1)] # first i-1 columns of X
+        U[:, col] = normalized_orthogonal_projection(b, Z)
     end
 
     return U
