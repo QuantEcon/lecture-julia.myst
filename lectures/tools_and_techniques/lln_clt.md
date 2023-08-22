@@ -229,13 +229,13 @@ function ksl(distribution, n = 100)
     title = nameof(typeof(distribution))
     observations = rand(distribution, n)
     sample_means = cumsum(observations) ./ (1:n)
-    μ = mean(distribution)
+    mu = mean(distribution)
     plot(repeat((1:n)', 2),
          [zeros(1, n); observations'], label = "", color = :grey, alpha = 0.5)
     plot!(1:n, observations, color = :grey, markershape = :circle,
           alpha = 0.5, label = "", linewidth = 0)
-    if !isnan(μ)
-        hline!([μ], color = :black, linewidth = 1.5, linestyle = :dash,
+    if !isnan(mu)
+        hline!([mu], color = :black, linewidth = 1.5, linestyle = :dash,
                grid = false,
                label = "Mean")
     end
@@ -797,13 +797,13 @@ Random.seed!(0);
 ```{code-cell} julia
 function exercise1(distribution = Uniform(0, π / 2); n = 250, k = 10_000, g = sin,
                    g′ = cos)
-    μ, sigma = mean(distribution), std(distribution)
+    mu, sigma = mean(distribution), std(distribution)
     y = rand(distribution, n, k)
     y = mean(y, dims = 1)
     y = vec(y)
-    error_obs = sqrt(n) .* (g.(y) .- g.(μ))
+    error_obs = sqrt(n) .* (g.(y) .- g.(mu))
     density(error_obs, label = "Empirical Density")
-    return plot!(Normal(0, g′(μ) .* sigma), linestyle = :dash, label = "Asymptotic",
+    return plot!(Normal(0, g′(mu) .* sigma), linestyle = :dash, label = "Asymptotic",
                  color = :black)
 end
 exercise1()

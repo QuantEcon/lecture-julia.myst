@@ -935,10 +935,10 @@ A = Tridiagonal([fill(0.1, N - 2); 0.2], fill(0.8, N), [0.2; fill(0.1, N - 2)])
 A_adjoint = A'
 
 # Find 1 of the largest magnitude eigenvalue
-λ, ϕ = eigs(A_adjoint, nev = 1, which = :LM, maxiter = 1000)
-ϕ = real(ϕ) ./ sum(real(ϕ))
+λ, phi = eigs(A_adjoint, nev = 1, which = :LM, maxiter = 1000)
+phi = real(phi) ./ sum(real(phi))
 @show λ
-@show mean(ϕ);
+@show mean(phi);
 ```
 
 Indeed, the `λ` is equal to `1`.  If we choose `nev = 2`, it will provide the eigenpairs with the two eigenvalues of largest absolute value.
@@ -956,11 +956,11 @@ take the Markov chain for a simple counting process:
 First, finding the transition matrix $P$ and its adjoint directly as a check
 
 ```{code-cell} julia
-θ = 0.1
+theta = 0.1
 ζ = 0.05
 N = 5
-P = Tridiagonal(fill(ζ, N - 1), [1 - θ; fill(1 - θ - ζ, N - 2); 1 - ζ],
-                fill(θ, N - 1))
+P = Tridiagonal(fill(ζ, N - 1), [1 - theta; fill(1 - theta - ζ, N - 2); 1 - ζ],
+                fill(theta, N - 1))
 P'
 ```
 
@@ -968,9 +968,9 @@ Implementing the adjoint-vector product directly, and verifying that it gives th
 
 ```{code-cell} julia
 function P_adj_mul(x)
-    [(1 - θ) * x[1] + ζ * x[2];
-     [θ * x[i - 1] + (1 - θ - ζ) * x[i] + ζ * x[i + 1] for i in 2:(N - 1)];  # comprehension
-     θ * x[end - 1] + (1 - ζ) * x[end]]
+    [(1 - theta) * x[1] + ζ * x[2];
+     [theta * x[i - 1] + (1 - theta - ζ) * x[i] + ζ * x[i + 1] for i in 2:(N - 1)];  # comprehension
+     theta * x[end - 1] + (1 - ζ) * x[end]]
 end
 P_adj_map = LinearMap(P_adj_mul, N)
 @show norm(P' - sparse(P_adj_map))
@@ -979,10 +979,10 @@ P_adj_map = LinearMap(P_adj_mul, N)
 Finally, solving for the stationary distribution using the matrix-free method (which could be verified against the decomposition approach of $P'$)
 
 ```{code-cell} julia
-λ, ϕ = eigs(P_adj_map, nev = 1, which = :LM, maxiter = 1000)
-ϕ = real(ϕ) ./ sum(real(ϕ))
+λ, phi = eigs(P_adj_map, nev = 1, which = :LM, maxiter = 1000)
+phi = real(phi) ./ sum(real(phi))
 @show λ
-@show ϕ
+@show phi
 ```
 
 Of course, for a problem this simple, the direct eigendecomposition will be significantly faster.  Use matrix-free iterative methods only for large systems where
@@ -1069,10 +1069,10 @@ parameters in a named tuple generator
 
 ```{code-cell} julia
 using Parameters, BenchmarkTools
-function default_params(; θ = 0.1, ζ = 0.05, ρ = 0.03, N = 10, M = 6,
+function default_params(; theta = 0.1, ζ = 0.05, ρ = 0.03, N = 10, M = 6,
                         shape = Tuple(fill(N, M)),  # for reshaping vector to M-d array
                         e_m = ([CartesianIndex((1:M .== i) * 1...) for i in 1:M]))
-    (; θ, ζ, ρ, N, M, shape, e_m)
+    (; theta, ζ, ρ, N, M, shape, e_m)
 end
 ```
 
@@ -1080,7 +1080,7 @@ Next, implement the in-place matrix-free product
 
 ```{code-cell} julia
 function Q_mul!(dv, v, p)
-    (; θ, ζ, N, M, shape, e_m) = p
+    (; theta, ζ, N, M, shape, e_m) = p
     v = reshape(v, shape)  # now can access v, dv as M-dim arrays
     dv = reshape(dv, shape)
 
@@ -1089,13 +1089,13 @@ function Q_mul!(dv, v, p)
         for m in 1:M
             n_m = ind[m]
             if (n_m < N)
-                dv[ind] += θ * v[ind + e_m[m]]
+                dv[ind] += theta * v[ind + e_m[m]]
             end
             if (n_m > 1)
                 dv[ind] += ζ * v[ind - e_m[m]]
             end
         end
-        dv[ind] -= (θ * count(ind.I .< N) + ζ * count(ind.I .> 1)) * v[ind]
+        dv[ind] -= (theta * count(ind.I .< N) + ζ * count(ind.I .> 1)) * v[ind]
     end
 end
 
@@ -1202,23 +1202,23 @@ $$
 $$
 
 ```{code-cell} julia
-function Q_T_mul!(dψ, ψ, p)
-    (; θ, ζ, N, M, shape, e_m) = p
-    ψ = reshape(ψ, shape)
-    dψ = reshape(dψ, shape)
+function Q_T_mul!(dpsi, psi, p)
+    (; theta, ζ, N, M, shape, e_m) = p
+    psi = reshape(psi, shape)
+    dpsi = reshape(dpsi, shape)
 
-    @inbounds for ind in CartesianIndices(ψ)
-        dψ[ind] = 0.0
+    @inbounds for ind in CartesianIndices(psi)
+        dpsi[ind] = 0.0
         for m in 1:M
             n_m = ind[m]
             if (n_m > 1)
-                dψ[ind] += θ * ψ[ind - e_m[m]]
+                dpsi[ind] += theta * psi[ind - e_m[m]]
             end
             if (n_m < N)
-                dψ[ind] += ζ * ψ[ind + e_m[m]]
+                dpsi[ind] += ζ * psi[ind + e_m[m]]
             end
         end
-        dψ[ind] -= (θ * count(ind.I .< N) + ζ * count(ind.I .> 1)) * ψ[ind]
+        dpsi[ind] -= (theta * count(ind.I .< N) + ζ * count(ind.I .> 1)) * psi[ind]
     end
 end
 ```
@@ -1229,7 +1229,7 @@ our `Q` operator.
 ```{code-cell} julia
 p = default_params(; N = 5, M = 4)  # sparse is too slow for the full matrix
 Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
-Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
+Q_T = LinearMap((dpsi, psi) -> Q_T_mul!(dpsi, psi, p), p.N^p.M, ismutating = true)
 @show norm(sparse(Q)' - sparse(Q_T));  # reminder: use sparse only for testing!
 ```
 
@@ -1240,7 +1240,7 @@ do this with a dense eigenvalue solution for relatively small matrices
 p = default_params(; N = 5, M = 4)
 eig_Q_T = eigen(Matrix(Q_T))
 vec = real(eig_Q_T.vectors[:, end])
-direct_ψ = vec ./ sum(vec)
+direct_psi = vec ./ sum(vec)
 @show eig_Q_T.values[end];
 ```
 
@@ -1260,18 +1260,18 @@ use GMRES since we do not have any structure.
 
 ```{code-cell} julia
 p = default_params(; N = 5, M = 4)  # sparse is too slow for the full matrix
-Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
-ψ = fill(1 / (p.N^p.M), p.N^p.M) # can't use 0 as initial guess
-sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
-ψ = ψ / sum(ψ)
-@show norm(ψ - direct_ψ);
+Q_T = LinearMap((dpsi, psi) -> Q_T_mul!(dpsi, psi, p), p.N^p.M, ismutating = true)
+psi = fill(1 / (p.N^p.M), p.N^p.M) # can't use 0 as initial guess
+sol = gmres!(psi, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
+psi = psi / sum(psi)
+@show norm(psi - direct_psi);
 ```
 
 The speed and memory differences between these methods can be orders of magnitude.
 
 ```{code-cell} julia
 p = default_params(; N = 4, M = 4)  # Dense and sparse matrices are too slow for the full dataset.
-Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
+Q_T = LinearMap((dpsi, psi) -> Q_T_mul!(dpsi, psi, p), p.N^p.M, ismutating = true)
 Q_T_dense = Matrix(Q_T)
 Q_T_sparse = sparse(Q_T)
 b = zeros(p.N^p.M)
@@ -1287,17 +1287,17 @@ The differences become even more stark as the matrix grows.  With `default_param
 The algorithm can solve for the steady state of $10^5$ states in a few seconds
 
 ```{code-cell} julia
-function stationary_ψ(p)
-    Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
-    ψ = fill(1 / (p.N^p.M), p.N^p.M) # can't use 0 as initial guess
-    sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
-    return ψ / sum(ψ)
+function stationary_psi(p)
+    Q_T = LinearMap((dpsi, psi) -> Q_T_mul!(dpsi, psi, p), p.N^p.M, ismutating = true)
+    psi = fill(1 / (p.N^p.M), p.N^p.M) # can't use 0 as initial guess
+    sol = gmres!(psi, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
+    return psi / sum(psi)
 end
 p = default_params(; N = 10, M = 5)
-@btime stationary_ψ($p);
+@btime stationary_psi($p);
 ```
 
-As a final demonstration, consider calculating the full evolution of the $ψ(t)$ Markov chain.  For the constant
+As a final demonstration, consider calculating the full evolution of the $psi(t)$ Markov chain.  For the constant
 $Q'$ matrix, the solution to this system of equations is $\psi(t) = \exp(Q') \psi(0)$
 
 Matrix-free Krylov methods using a technique called [exponential integration](https://en.wikipedia.org/wiki/Exponential_integrator) can solve this for high-dimensional problems.
@@ -1310,12 +1310,12 @@ using OrdinaryDiffEq, DiffEqOperators
 function solve_transition_dynamics(p, t)
     (; N, M) = p
 
-    ψ_0 = [1.0; fill(0.0, N^M - 1)]
-    O! = MatrixFreeOperator((dψ, ψ, p, t) -> Q_T_mul!(dψ, ψ, p), (p, 0.0),
+    psi_0 = [1.0; fill(0.0, N^M - 1)]
+    O! = MatrixFreeOperator((dpsi, psi, p, t) -> Q_T_mul!(dpsi, psi, p), (p, 0.0),
                             size = (N^M, N^M), opnorm = (p) -> 1.25)
 
     # define the corresponding ODE problem
-    prob = ODEProblem(O!, ψ_0, (0.0, t[end]), p)
+    prob = ODEProblem(O!, psi_0, (0.0, t[end]), p)
     return solve(prob, LinearExponential(krylov = :simple), tstops = t)
 end
 t = 0.0:5.0:100.0
