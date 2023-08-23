@@ -49,7 +49,7 @@ function format_myst(input_file_path, output_file_path, extra_replacements = fal
             if ignore_errors
                 return m # i.e., don't change anything
             else
-                throw(e)
+                throw(e) 
             end
         end
     end
