@@ -444,9 +444,9 @@ Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
                 fill(alpha, N - 1))
 
 r = range(0.0, 10.0, length = N)
-ρ = 0.05
+rho = 0.05
 
-A = ρ * I - Q
+A = rho * I - Q
 v_direct = A \ r
 mean(v_direct)
 ```
@@ -466,7 +466,7 @@ where it is strictly greater, we say that the matrix is strictly diagonally domi
 With our example, given that $Q$ is the infinitesimal generator of a Markov chain, we know that each row sums to 0, and hence
 it is weakly diagonally dominant.
 
-However, notice that when $\rho > 0$, and since the diagonal of $Q$ is negative,  $A = ρ I - Q$ makes the matrix strictly diagonally dominant.
+However, notice that when $\rho > 0$, and since the diagonal of $Q$ is negative,  $A = rho I - Q$ makes the matrix strictly diagonally dominant.
 
 ### Jacobi Iteration
 
@@ -724,9 +724,9 @@ Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
                 fill(alpha, N - 1))
 
 r = range(0.0, 10.0, length = N)
-ρ = 0.05
+rho = 0.05
 
-A = ρ * I - Q
+A = rho * I - Q
 v = zeros(N)
 results = gmres!(v, A, r, log = true)
 v_sol = results[1]
@@ -750,10 +750,10 @@ This can be implemented as a function (either in-place or out-of-place) which ca
 
 ```{code-cell} julia
 function A_mul(x)
-    [(ρ + alpha) * x[1] - alpha * x[2];
-     [-alpha * x[i - 1] + (ρ + 2 * alpha) * x[i] - alpha * x[i + 1]
+    [(rho + alpha) * x[1] - alpha * x[2];
+     [-alpha * x[i - 1] + (rho + 2 * alpha) * x[i] - alpha * x[i + 1]
       for i in 2:(N - 1)]  # comprehension
-     -alpha * x[end - 1] + (ρ + alpha) * x[end]]
+     -alpha * x[end - 1] + (rho + alpha) * x[end]]
 end
 
 x = rand(N)
@@ -815,11 +815,11 @@ we would use the in-place `mul!(y, A, x)` function.  The wrappers for linear ope
 
 ```{code-cell} julia
 function A_mul!(y, x)  # in-place version
-    y[1] = (ρ + alpha) * x[1] - alpha * x[2]
+    y[1] = (rho + alpha) * x[1] - alpha * x[2]
     for i in 2:(N - 1)
-        y[i] = -alpha * x[i - 1] + (ρ + 2alpha) * x[i] - alpha * x[i + 1]
+        y[i] = -alpha * x[i - 1] + (rho + 2alpha) * x[i] - alpha * x[i + 1]
     end
-    y[end] = -alpha * x[end - 1] + (ρ + alpha) * x[end]
+    y[end] = -alpha * x[end - 1] + (rho + alpha) * x[end]
     return y
 end
 A_map_2 = LinearMap(A_mul!, N, ismutating = true)  # ismutating == in-place
@@ -854,13 +854,13 @@ function Q_mul(x)
      alpha * x[end - 1] - alpha * x[end]]
 end
 Q_map = LinearMap(Q_mul, N)
-A_composed = ρ * I - Q_map   # map composition, performs no calculations
+A_composed = rho * I - Q_map   # map composition, performs no calculations
 @show norm(A - sparse(A_composed))  # test produces the same matrix
 gmres(A_composed, r, log = true)[2]
 ```
 
 In this example, the left-multiply of the `A_composed` used by `gmres` uses the left-multiply of `Q_map` and `I` with the rules
-of linearity.  The `A_composed = ρ * I - Q_map` operation simply creates the `LinearMaps.LinearCombination` type, and doesn't perform any calculations on its own.
+of linearity.  The `A_composed = rho * I - Q_map` operation simply creates the `LinearMaps.LinearCombination` type, and doesn't perform any calculations on its own.
 
 ## Iterative Methods for Linear Least Squares
 
@@ -935,13 +935,13 @@ A = Tridiagonal([fill(0.1, N - 2); 0.2], fill(0.8, N), [0.2; fill(0.1, N - 2)])
 A_adjoint = A'
 
 # Find 1 of the largest magnitude eigenvalue
-λ, phi = eigs(A_adjoint, nev = 1, which = :LM, maxiter = 1000)
+lambda, phi = eigs(A_adjoint, nev = 1, which = :LM, maxiter = 1000)
 phi = real(phi) ./ sum(real(phi))
-@show λ
+@show lambda
 @show mean(phi);
 ```
 
-Indeed, the `λ` is equal to `1`.  If we choose `nev = 2`, it will provide the eigenpairs with the two eigenvalues of largest absolute value.
+Indeed, the `lambda` is equal to `1`.  If we choose `nev = 2`, it will provide the eigenpairs with the two eigenvalues of largest absolute value.
 
 *Hint*: If you get errors using `Arpack`, increase the `maxiter` parameter for your problems.
 
@@ -981,9 +981,9 @@ P_adj_map = LinearMap(P_adj_mul, N)
 Finally, solving for the stationary distribution using the matrix-free method (which could be verified against the decomposition approach of $P'$)
 
 ```{code-cell} julia
-λ, phi = eigs(P_adj_map, nev = 1, which = :LM, maxiter = 1000)
+lambda, phi = eigs(P_adj_map, nev = 1, which = :LM, maxiter = 1000)
 phi = real(phi) ./ sum(real(phi))
-@show λ
+@show lambda
 @show phi
 ```
 
@@ -1071,10 +1071,10 @@ parameters in a named tuple generator
 
 ```{code-cell} julia
 using Parameters, BenchmarkTools
-function default_params(; theta = 0.1, zeta = 0.05, ρ = 0.03, N = 10, M = 6,
+function default_params(; theta = 0.1, zeta = 0.05, rho = 0.03, N = 10, M = 6,
                         shape = Tuple(fill(N, M)),  # for reshaping vector to M-d array
                         e_m = ([CartesianIndex((1:M .== i) * 1...) for i in 1:M]))
-    (; theta, zeta, ρ, N, M, shape, e_m)
+    return (; theta, zeta, rho, N, M, shape, e_m)
 end
 ```
 
@@ -1136,7 +1136,7 @@ of only 10,000 possible states.
 ```{code-cell} julia
 p = default_params(; N = 10, M = 4)
 Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
-A = p.ρ * I - Q
+A = p.rho * I - Q
 A_sparse = sparse(A)  # expensive: use only in tests
 r = r_vec(p)
 v_direct = A_sparse \ r
@@ -1161,9 +1161,9 @@ Putting everything together to solving much larger systems with GMRES as our lin
 
 ```{code-cell} julia
 function solve_bellman(p; iv = zeros(p.N^p.M))
-    (; ρ, N, M) = p
+    (; rho, N, M) = p
     Q = LinearMap((df, f) -> Q_mul!(df, f, p), N^M, ismutating = true)
-    A = ρ * I - Q
+    A = rho * I - Q
     r = r_vec(p)
 
     sol = gmres!(iv, A, r, log = false)  # iterative solver, matrix-free

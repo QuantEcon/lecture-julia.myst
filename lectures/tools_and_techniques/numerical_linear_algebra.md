@@ -626,7 +626,7 @@ Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
 
 Here we can use `Tridiagonal` to exploit the structure of the problem.
 
-Consider a simple payoff vector $r$ associated with each state, and a discount rate $ρ$.  Then we can solve for
+Consider a simple payoff vector $r$ associated with each state, and a discount rate $rho$.  Then we can solve for
 the expected present discounted value in a way similar to the discrete-time case.
 
 $$
@@ -643,9 +643,9 @@ For our example, exploiting the tridiagonal structure,
 
 ```{code-cell} julia
 r = range(0.0, 10.0, length = N)
-ρ = 0.05
+rho = 0.05
 
-A = ρ * I - Q
+A = rho * I - Q
 ```
 
 Note that this $A$ matrix is maintaining the tridiagonal structure of the problem, which leads to an efficient solution to the
@@ -676,7 +676,7 @@ Notice that this is of the form $0 psi^{*} = Q^T psi^{*}$ and hence is equivalen
 With our example, we can calculate all of the eigenvalues and eigenvectors
 
 ```{code-cell} julia
-λ, vecs = eigen(Array(Q'))
+lambda, vecs = eigen(Array(Q'))
 ```
 
 Indeed, there is a $\lambda = 0$ eigenvalue, which is associated with the last column in the eigenvector.  To turn that into a probability,
@@ -734,8 +734,8 @@ r = vec(r)  # vectorize it since stacked in same order
 Solving the equation $\rho v = r + L v$
 
 ```{code-cell} julia
-ρ = 0.05
-v = (ρ * I - L) \ r
+rho = 0.05
+v = (rho * I - L) \ r
 reshape(v, N, M)
 ```
 
