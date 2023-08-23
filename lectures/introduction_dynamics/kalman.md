@@ -648,18 +648,18 @@ end
 ```{code-cell} julia
 using Random, Expectations
 Random.seed!(43)  # reproducible results
-ϵ = 0.1
+epsilon = 0.1
 kalman = Kalman(A, G, Q, R)
 set_state!(kalman, x_hat_0, Sigma_0)
-nodes, weights = qnwlege(21, theta - ϵ, theta + ϵ)
+nodes, weights = qnwlege(21, theta - epsilon, theta + epsilon)
 
 T = 600
 z = zeros(T)
 for t in 1:T
     # record the current predicted mean and variance, and plot their densities
     m, v = kalman.cur_x_hat, kalman.cur_sigma
-    dist = Truncated(Normal(m, sqrt(v)), theta - 30 * ϵ, theta + 30 * ϵ) # define on compact interval, so we can use gridded expectation
-    E = expectation(dist, nodes) # nodes ∈ [theta-ϵ, theta+ϵ]
+    dist = Truncated(Normal(m, sqrt(v)), theta - 30 * epsilon, theta + 30 * epsilon) # define on compact interval, so we can use gridded expectation
+    E = expectation(dist, nodes) # nodes ∈ [theta-epsilon, theta+epsilon]
     integral = E(x -> 1) # just take the pdf integral
     z[t] = 1.0 - integral
     # generate the noisy signal and update the Kalman filter

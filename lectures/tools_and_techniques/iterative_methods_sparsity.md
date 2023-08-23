@@ -109,9 +109,9 @@ Here we see an example of the best-conditioned matrix, the identity matrix with 
 On the other hand, notice that
 
 ```{code-cell} julia
-ϵ = 1E-6
+epsilon = 1E-6
 A = [1.0 0.0
-     1.0 ϵ]
+     1.0 epsilon]
 cond(A)
 ```
 
@@ -155,9 +155,9 @@ even more ill-conditioned.
 This comes up frequently when calculating the product of a matrix and its transpose (e.g., forming the covariance matrix).  A classic example is the [Läuchli matrix](https://link.springer.com/article/10.1007%2FBF01386022).
 
 ```{code-cell} julia
-lauchli(N, ϵ) = [ones(N)'; ϵ * I(N)]'
-ϵ = 1E-8
-L = lauchli(3, ϵ) |> Matrix
+lauchli(N, epsilon) = [ones(N)'; epsilon * I(N)]'
+epsilon = 1E-8
+L = lauchli(3, epsilon) |> Matrix
 ```
 
 Note that the condition number increases substantially
@@ -180,7 +180,7 @@ sort(sqrt.(Complex.(eigen(L * L').values)), lt = (x, y) -> abs(x) < abs(y))
 Note that these are significantly different than the known analytic solution and, in particular, are difficult to distinguish from 0.
 
 ```{code-cell} julia
-sqrt.([3 + ϵ^2, ϵ^2, ϵ^2]) |> sort
+sqrt.([3 + epsilon^2, epsilon^2, epsilon^2]) |> sort
 ```
 
 Alternatively, we could calculate these by taking the square of the singular values of $L$ itself, which is much more accurate
