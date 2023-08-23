@@ -354,9 +354,7 @@ function wealth_dynamics_model(; # all named arguments
     z_stationary_dist = Normal(z_mean, sqrt(z_var))
 
     @assert alpha <= 1 # check stability condition that wealth does not diverge
-    return (; w_hat, s_0, c_y, μ_y, sigma_y, c_r, μ_r, sigma_r, a, b, sigma_z,
-            z_mean,
-            z_var, z_stationary_dist, exp_z_mean, R_mean, y_mean, alpha)
+    return (; w_hat, s_0, c_y, μ_y, sigma_y, c_r, μ_r, sigma_r, a, b, sigma_z,z_mean,z_var, z_stationary_dist, exp_z_mean, R_mean, y_mean, alpha)
 end
 ```
 
