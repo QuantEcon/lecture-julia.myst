@@ -261,13 +261,13 @@ Let's create a 45 degree diagram for the Solow model with a fixed set of
 parameters
 
 ```{code-cell} julia
-p = (A = 2, s = 0.3, alpha = 0.3, δ = 0.4, xmin = 0, xmax = 4)
+p = (A = 2, s = 0.3, alpha = 0.3, delta = 0.4, xmin = 0, xmax = 4)
 ```
 
 Here's the update function corresponding to the model.
 
 ```{code-cell} julia
-g(k; p) = p.A * p.s * k^p.alpha + (1 - p.δ) * k
+g(k; p) = p.A * p.s * k^p.alpha + (1 - p.delta) * k
 ```
 
 Here is the 45 degree plot.

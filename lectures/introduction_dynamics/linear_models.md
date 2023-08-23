@@ -1233,16 +1233,16 @@ using LaTeXStrings, QuantEcon, Plots
 ### Exercise 1
 
 ```{code-cell} julia
-ϕ0, ϕ1, ϕ2 = 1.1, 0.8, -0.8
+phi0, phi1, phi2 = 1.1, 0.8, -0.8
 
 A = [1.0 0.0 0
-     ϕ0 ϕ1 ϕ2
+     phi0 phi1 phi2
      0.0 1.0 0.0]
 C = zeros(3, 1)
 G = [0.0 1.0 0.0]
-μ_0 = ones(3)
+mu_0 = ones(3)
 
-lss = LSS(A, C, G; mu_0 = μ_0)
+lss = LSS(A, C, G; mu_0 = mu_0)
 
 x, y = simulate(lss, 50)
 plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
@@ -1265,10 +1265,10 @@ end
 using Random
 Random.seed!(42) # For deterministic results.
 
-ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
+phi1, phi2, phi3, phi4 = 0.5, -0.2, 0, 0.5
 sigma = 0.2
 
-A = [ϕ1 ϕ2 ϕ3 ϕ4
+A = [phi1 phi2 phi3 phi4
      1.0 0.0 0.0 0.0
      0.0 1.0 0.0 0.0
      0.0 0.0 1.0 0.0]
@@ -1305,10 +1305,10 @@ Random.seed!(42);
 ```
 
 ```{code-cell} julia
-ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
+phi1, phi2, phi3, phi4 = 0.5, -0.2, 0, 0.5
 sigma = 0.1
 
-A = [ϕ1 ϕ2 ϕ3 ϕ4
+A = [phi1 phi2 phi3 phi4
      1.0 0.0 0.0 0.0
      0.0 1.0 0.0 0.0
      0.0 0.0 1.0 0.0]
@@ -1337,8 +1337,8 @@ plot!(ensemble_mean, color = :blue, linewidth = 2, label = L"\overline{y_t}")
 m = moment_sequence(ar)
 pop_means = zeros(0)
 for (i, t) in enumerate(m)
-    (μ_x, μ_y, Sigma_x, Sigma_y) = t
-    push!(pop_means, μ_y[1])
+    (mu_x, mu_y, Sigma_x, Sigma_y) = t
+    push!(pop_means, mu_y[1])
     i == 50 && break
 end
 plot!(pop_means, color = :green, linewidth = 2, label = L"G \mu_t")
@@ -1366,10 +1366,10 @@ Random.seed!(42);
 ```
 
 ```{code-cell} julia
-ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
+phi1, phi2, phi3, phi4 = 0.5, -0.2, 0, 0.5
 sigma = 0.1
 
-A = [ϕ1 ϕ2 ϕ3 ϕ4
+A = [phi1 phi2 phi3 phi4
      1.0 0.0 0.0 0.0
      0.0 1.0 0.0 0.0
      0.0 0.0 1.0 0.0]
@@ -1387,8 +1387,8 @@ T4 = 100
 ar = LSS(A, C, G; mu_0 = ones(4))
 ymin, ymax = -0.6, 0.6
 
-μ_x, μ_y, Sigma_x, Sigma_y = stationary_distributions(ar)
-ar = LSS(A, C, G; mu_0 = μ_x, Sigma_0 = Sigma_x)
+mu_x, mu_y, Sigma_x, Sigma_y = stationary_distributions(ar)
+ar = LSS(A, C, G; mu_0 = mu_x, Sigma_0 = Sigma_x)
 colors = ["c", "g", "b"]
 
 ys = []

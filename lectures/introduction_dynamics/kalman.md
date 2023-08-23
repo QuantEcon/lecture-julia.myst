@@ -121,7 +121,7 @@ tags: [output_scroll]
 # set up prior objects
 Sigma = [0.4  0.3
      0.3  0.45]
-x̂ = [0.2, -0.2]
+x_hat = [0.2, -0.2]
 
 # define G and R from the equation y = Gx + N(0, R)
 G = I # this is a generic identity object that conforms to the right dimensions
@@ -139,7 +139,7 @@ x_grid = range(-1.5, 2.9, length = 100)
 y_grid = range(-3.1, 1.7, length = 100)
 
 # generate distribution
-dist = MvNormal(x̂, Sigma)
+dist = MvNormal(x_hat, Sigma)
 two_args_to_pdf(dist) = (x, y) -> pdf(dist, [x, y]) # returns a function to be plotted
 
 # plot
@@ -234,11 +234,11 @@ The original density is left in as contour lines for comparison
 ```{code-cell} julia
 # define posterior objects
 M = Sigma * G' * inv(G * Sigma * G' + R)
-x̂_F = x̂ + M * (y - G * x̂)
+x_hat_F = x_hat + M * (y - G * x_hat)
 Sigma_F = Sigma - M * G * Sigma
 
 # plot the new density on the old plot
-newdist = MvNormal(x̂_F, Symmetric(Sigma_F)) # because Sigma_F
+newdist = MvNormal(x_hat_F, Symmetric(Sigma_F)) # because Sigma_F
 contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false,
          color = :lighttest, cbar = false)
 contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false, levels = 7,
@@ -349,9 +349,9 @@ $$
 
 ```{code-cell} julia
 # get the predictive distribution
-new_x̂ = A * x̂_F
+new_x_hat = A * x_hat_F
 new_Sigma = A * Sigma_F * A' + Q
-predictdist = MvNormal(new_x̂, Symmetric(new_Sigma))
+predictdist = MvNormal(new_x_hat, Symmetric(new_Sigma))
 
 # plot Density 3
 contour(x_grid, y_grid, two_args_to_pdf(predictdist), fill = false, lw = 1,
@@ -368,7 +368,7 @@ annotate!(y[1], y[2], L"y", color = :black)
 tags: [remove-cell]
 ---
 @testset "Prediction Test" begin
-    @test new_x̂ ≈ [1.9199999999999995, 0.26666666666666655]
+    @test new_x_hat ≈ [1.9199999999999995, 0.26666666666666655]
     @test new_Sigma ≈ [0.312 0.066; 0.066 0.141]
 end
 ```
@@ -606,15 +606,15 @@ using QuantEcon
 
 ```{code-cell} julia
 # parameters
-θ = 10
+theta = 10
 A, G, Q, R = 1.0, 1.0, 0.0, 1.0
-x̂_0, Sigma_0 = 8.0, 1.0
+x_hat_0, Sigma_0 = 8.0, 1.0
 
 # initialize Kalman filter
 kalman = Kalman(A, G, Q, R)
-set_state!(kalman, x̂_0, Sigma_0)
+set_state!(kalman, x_hat_0, Sigma_0)
 
-xgrid = range(θ - 5, θ + 2, length = 200)
+xgrid = range(theta - 5, theta + 2, length = 200)
 densities = zeros(200, 5) # one column per round of updating
 for i in 1:5
     # record the current predicted mean and variance, and plot their densities
@@ -622,7 +622,7 @@ for i in 1:5
     densities[:, i] = pdf.(Normal(m, sqrt(v)), xgrid)
 
     # generate the noisy signal
-    y = θ + randn()
+    y = theta + randn()
 
     # update the Kalman filter
     update!(kalman, y)
@@ -630,7 +630,7 @@ end
 
 labels = [L"t=1" L"t=2" L"t=3" L"t=4" L"t=5"]
 plot(xgrid, densities, label = labels, legend = :topleft, grid = false,
-     title = L"First 5 densities when $\theta = %$θ$")
+     title = L"First 5 densities when $\theta = %$theta$")
 ```
 
 ```{code-cell} julia
@@ -650,20 +650,20 @@ using Random, Expectations
 Random.seed!(43)  # reproducible results
 ϵ = 0.1
 kalman = Kalman(A, G, Q, R)
-set_state!(kalman, x̂_0, Sigma_0)
-nodes, weights = qnwlege(21, θ - ϵ, θ + ϵ)
+set_state!(kalman, x_hat_0, Sigma_0)
+nodes, weights = qnwlege(21, theta - ϵ, theta + ϵ)
 
 T = 600
 z = zeros(T)
 for t in 1:T
     # record the current predicted mean and variance, and plot their densities
     m, v = kalman.cur_x_hat, kalman.cur_sigma
-    dist = Truncated(Normal(m, sqrt(v)), θ - 30 * ϵ, θ + 30 * ϵ) # define on compact interval, so we can use gridded expectation
-    E = expectation(dist, nodes) # nodes ∈ [θ-ϵ, θ+ϵ]
+    dist = Truncated(Normal(m, sqrt(v)), theta - 30 * ϵ, theta + 30 * ϵ) # define on compact interval, so we can use gridded expectation
+    E = expectation(dist, nodes) # nodes ∈ [theta-ϵ, theta+ϵ]
     integral = E(x -> 1) # just take the pdf integral
     z[t] = 1.0 - integral
     # generate the noisy signal and update the Kalman filter
-    update!(kalman, θ + randn())
+    update!(kalman, theta + randn())
 end
 
 plot(1:T, z, fillrange = 0, color = :blue, fillalpha = 0.2, grid = false,
@@ -701,11 +701,11 @@ Q = 0.3 .* G
 # define the prior density
 Sigma = [0.9 0.3
          0.3 0.9]
-x̂ = [8, 8]
+x_hat = [8, 8]
 
 # initialize the Kalman filter
 kn = Kalman(A, G, Q, R)
-set_state!(kn, x̂, Sigma)
+set_state!(kn, x_hat, Sigma)
 
 # set the true initial value of the state
 x = zeros(2)

@@ -291,7 +291,7 @@ Random.seed!(42);  # for result reproducibility
 ```{code-cell} julia
 P = [0.4 0.6; 0.2 0.8]
 X = mc_sample_path(P, sample_size = 100_000); # note 100_000 = 100000
-μ_1 = count(X .== 1) / length(X) # .== broadcasts test for equality. Could use mean(X .== 1)
+mu_1 = count(X .== 1) / length(X) # .== broadcasts test for equality. Could use mean(X .== 1)
 ```
 
 ```{code-cell} julia
@@ -321,7 +321,7 @@ Random.seed!(42);  # For reproducibility
 P = [0.4 0.6; 0.2 0.8];
 mc = MarkovChain(P)
 X = simulate(mc, 100_000);
-μ_2 = count(X .== 1) / length(X) # or mean(x -> x == 1, X)
+mu_2 = count(X .== 1) / length(X) # or mean(x -> x == 1, X)
 ```
 
 ```{code-cell} julia
@@ -331,7 +331,7 @@ tags: [remove-cell]
 @testset "QE Sample Path Test" begin
     @test P ≈ [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
     @test X[1:5] == [2, 2, 2, 2, 2]
-    #test μ_1 ≈ μ_2 atol = 1e-2
+    #test mu_1 ≈ mu_2 atol = 1e-2
 end
 ```
 
@@ -705,8 +705,8 @@ Some distributions are invariant under this updating process --- for example,
 
 ```{code-cell} julia
 P = [0.4 0.6; 0.2 0.8];
-ψ = [0.25, 0.75];
-ψ' * P
+psi = [0.25, 0.75];
+psi' * P
 ```
 
 Such distributions are called **stationary**, or **invariant**.
@@ -824,7 +824,7 @@ P = [0.971 0.029 0.000
      0.145 0.778 0.077
      0.000 0.508 0.492] # stochastic matrix
 
-ψ = [0.0 0.2 0.8] # initial distribution
+psi = [0.0 0.2 0.8] # initial distribution
 
 t = 20 # path length
 x_vals = zeros(t)
@@ -833,15 +833,15 @@ z_vals = similar(x_vals)
 colors = [repeat([:red], 20); :black] # for plotting
 
 for i in 1:t
-    x_vals[i] = ψ[1]
-    y_vals[i] = ψ[2]
-    z_vals[i] = ψ[3]
-    ψ = ψ * P # update distribution
+    x_vals[i] = psi[1]
+    y_vals[i] = psi[2]
+    z_vals[i] = psi[3]
+    psi = psi * P # update distribution
 end
 
 mc = MarkovChain(P)
-ψ_star = stationary_distributions(mc)[1]
-x_star, y_star, z_star = ψ_star # unpack the stationary dist
+psi_star = stationary_distributions(mc)[1]
+x_star, y_star, z_star = psi_star # unpack the stationary dist
 plt = scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colors,
               gridalpha = 0.5, legend = :none)
 plot!(plt, camera = (45, 45))
@@ -1237,7 +1237,7 @@ Random.seed!(42);  # For reproducibility
 alpha = 0.1 # probability of getting hired
 beta = 0.1 # probability of getting fired
 N = 10_000
-p̄ = beta / (alpha + beta) # steady-state probabilities
+p_bar = beta / (alpha + beta) # steady-state probabilities
 P = [1-alpha alpha
      beta 1-beta] # stochastic matrix
 mc = MarkovChain(P)
@@ -1246,8 +1246,8 @@ y_vals = Array{Vector}(undef, 2) # sample paths holder
 
 for x0 in 1:2
     X = simulate_indices(mc, N; init = x0) # generate the sample path
-    X̄ = cumsum(X .== 1) ./ (1:N) # compute state fraction. ./ required for precedence
-    y_vals[x0] = X̄ .- p̄ # plot divergence from steady state
+    X_bar = cumsum(X .== 1) ./ (1:N) # compute state fraction. ./ required for precedence
+    y_vals[x0] = X_bar .- p_bar # plot divergence from steady state
 end
 
 plot(y_vals, color = [:blue :green], fillrange = 0, fillalpha = 0.1,
