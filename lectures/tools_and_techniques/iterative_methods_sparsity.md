@@ -959,7 +959,8 @@ First, finding the transition matrix $P$ and its adjoint directly as a check
 theta = 0.1
 zeta = 0.05
 N = 5
-P = Tridiagonal(fill(zeta, N - 1), [1 - theta; fill(1 - theta - zeta, N - 2); 1 - zeta],
+P = Tridiagonal(fill(zeta, N - 1),
+                [1 - theta; fill(1 - theta - zeta, N - 2); 1 - zeta],
                 fill(theta, N - 1))
 P'
 ```
@@ -969,7 +970,8 @@ Implementing the adjoint-vector product directly, and verifying that it gives th
 ```{code-cell} julia
 function P_adj_mul(x)
     [(1 - theta) * x[1] + zeta * x[2];
-     [theta * x[i - 1] + (1 - theta - zeta) * x[i] + zeta * x[i + 1] for i in 2:(N - 1)];  # comprehension
+     [theta * x[i - 1] + (1 - theta - zeta) * x[i] + zeta * x[i + 1]
+      for i in 2:(N - 1)]  # comprehension
      theta * x[end - 1] + (1 - zeta) * x[end]]
 end
 P_adj_map = LinearMap(P_adj_mul, N)
@@ -1218,7 +1220,8 @@ function Q_T_mul!(dpsi, psi, p)
                 dpsi[ind] += zeta * psi[ind + e_m[m]]
             end
         end
-        dpsi[ind] -= (theta * count(ind.I .< N) + zeta * count(ind.I .> 1)) * psi[ind]
+        dpsi[ind] -= (theta * count(ind.I .< N) + zeta * count(ind.I .> 1)) *
+                     psi[ind]
     end
 end
 ```
