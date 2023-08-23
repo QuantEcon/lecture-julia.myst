@@ -130,7 +130,7 @@ that might come out of a Markov chain or a discretization of a diffusion process
 
 ```{code-cell} julia
 N = 5
-A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
+A = Tridiagonal([fill(0.1, N - 2); 0.2], fill(0.8, N), [0.2; fill(0.1, N - 2)])
 ```
 
 The number of non-zeros here is approximately $3 N$, linear, which scales well for huge matrices into the millions or billions
@@ -147,8 +147,8 @@ This also applies to the $A' A$ operation when forming the normal equations of l
 
 ```{code-cell} julia
 A = sprand(20, 21, 0.3)
-@show nnz(A)/20^2
-@show nnz(A'*A)/21^2;
+@show nnz(A) / 20^2
+@show nnz(A' * A) / 21^2;
 ```
 
 We see that a 30 percent dense matrix becomes almost full dense after the product is taken.
@@ -173,7 +173,7 @@ Then, take away structure to see the impact on performance,
 ```{code-cell} julia
 N = 1000
 b = rand(N)
-A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
+A = Tridiagonal([fill(0.1, N - 2); 0.2], fill(0.8, N), [0.2; fill(0.1, N - 2)])
 A_sparse = sparse(A)  # sparse but losing tridiagonal structure
 A_dense = Array(A)    # dropping the sparsity structure, dense 1000x1000
 
@@ -202,7 +202,7 @@ The other important question is what is the structure of the resulting matrix.  
 
 ```{code-cell} julia
 N = 5
-U = UpperTriangular(rand(N,N))
+U = UpperTriangular(rand(N, N))
 ```
 
 ```{code-cell} julia
@@ -218,7 +218,7 @@ L * U
 On the other hand, a tridiagonal matrix times a diagonal matrix is still tridiagonal - and can use specialized $O(N)$ algorithms.
 
 ```{code-cell} julia
-A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
+A = Tridiagonal([fill(0.1, N - 2); 0.2], fill(0.8, N), [0.2; fill(0.1, N - 2)])
 D = Diagonal(rand(N))
 D * A
 ```
@@ -245,7 +245,7 @@ Take a simple linear system of a dense matrix,
 
 ```{code-cell} julia
 N = 4
-A = rand(N,N)
+A = rand(N, N)
 b = rand(N)
 ```
 
@@ -263,14 +263,14 @@ Even if you need to solve a system with the same matrix multiple times, you are 
 
 ```{code-cell} julia
 N = 100
-A = rand(N,N)
+A = rand(N, N)
 M = 30
-B = rand(N,M)
+B = rand(N, M)
 function solve_inverting(A, B)
     A_inv = inv(A)
     X = similar(B)
-    for i in 1:size(B,2)
-        X[:,i] = A_inv * B[:,i]
+    for i in 1:size(B, 2)
+        X[:, i] = A_inv * B[:, i]
     end
     return X
 end
@@ -278,13 +278,11 @@ end
 function solve_factoring(A, B)
     X = similar(B)
     A = factorize(A)
-    for i in 1:size(B,2)
-        X[:,i] = A \ B[:,i]
+    for i in 1:size(B, 2)
+        X[:, i] = A \ B[:, i]
     end
     return X
 end
-
-
 
 @btime solve_inverting($A, $B)
 @btime solve_factoring($A, $B)
@@ -330,7 +328,7 @@ matrix.
 
 ```{code-cell} julia
 N = 4
-A = rand(N,N)
+A = rand(N, N)
 b = rand(N)
 
 Af = factorize(A)  # chooses the right factorization, LU here
@@ -396,7 +394,7 @@ The LU decomposition also has specialized algorithms for structured matrices, su
 ```{code-cell} julia
 N = 1000
 b = rand(N)
-A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
+A = Tridiagonal([fill(0.1, N - 2); 0.2], fill(0.8, N), [0.2; fill(0.1, N - 2)])
 factorize(A) |> typeof
 ```
 
@@ -428,7 +426,7 @@ As always, symmetry allows specialized algorithms.
 
 ```{code-cell} julia
 N = 500
-B = rand(N,N)
+B = rand(N, N)
 A_dense = B' * B  # an easy way to generate a symmetric positive semi-definite matrix
 A = Symmetric(A_dense)  # flags the matrix as symmetric
 
@@ -450,7 +448,7 @@ cholesky(A) \ b  # use the factorization to solve
 
 benchmark_solve(A, b)
 benchmark_solve(A_dense, b)
-@btime cholesky($A, check=false) \ $b;
+@btime cholesky($A, check = false) \ $b;
 ```
 
 ### QR Decomposition
@@ -484,7 +482,7 @@ N = 10
 M = 3
 x_true = rand(3)
 
-A = rand(N,M) .+ randn(N)
+A = rand(N, M) .+ randn(N)
 b = rand(N)
 x = A \ b
 ```
@@ -496,7 +494,7 @@ Af = qr(A)
 Q = Af.Q
 R = [Af.R; zeros(N - M, M)] # Stack with zeros
 @show Q * R ≈ A
-x = R \ Q'*b  # simplified QR solution for least squares
+x = R \ Q' * b  # simplified QR solution for least squares
 ```
 
 This stacks the `R` with zeros, but the more specialized algorithm would not multiply directly
@@ -535,7 +533,7 @@ factorization with `qr` and then use it to solve a system
 
 ```{code-cell} julia
 N = 5
-A = rand(N,N)
+A = rand(N, N)
 b = rand(N)
 @show A \ b
 @show qr(A) \ b;
@@ -620,9 +618,10 @@ Implementing the $Q$ using its tridiagonal structure
 
 ```{code-cell} julia
 using LinearAlgebra
-α = 0.1
+alpha = 0.1
 N = 6
-Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
+                fill(alpha, N - 1))
 ```
 
 Here we can use `Tridiagonal` to exploit the structure of the problem.
@@ -643,7 +642,7 @@ $$
 For our example, exploiting the tridiagonal structure,
 
 ```{code-cell} julia
-r = range(0.0, 10.0, length=N)
+r = range(0.0, 10.0, length = N)
 ρ = 0.05
 
 A = ρ * I - Q
@@ -656,23 +655,23 @@ linear problem.
 v = A \ r
 ```
 
-The $Q$ is also used to calculate the evolution of the Markov chain, in direct analogy to the $ψ_{t+k} = ψ_t P^k$ evolution with the transition matrix $P$ of the discrete case.
+The $Q$ is also used to calculate the evolution of the Markov chain, in direct analogy to the $psi_{t+k} = psi_t P^k$ evolution with the transition matrix $P$ of the discrete case.
 
 In the continuous case, this becomes the system of linear differential equations
 
 $$
-\dot{ψ}(t) = Q(t)^T ψ(t)
+\dot{psi}(t) = Q(t)^T psi(t)
 $$
 
 given the initial condition $\psi(0)$ and where the $Q(t)$ intensity matrix is allowed to vary with time.  In the simplest case of a constant $Q$ matrix, this is a simple constant-coefficient system of linear ODEs with coefficients $Q^T$.
 
-If a stationary equilibrium exists, note that $\dot{ψ}(t) = 0$, and the stationary solution $ψ^{*}$ needs to satisfy
+If a stationary equilibrium exists, note that $\dot{psi}(t) = 0$, and the stationary solution $psi^{*}$ needs to satisfy
 
 $$
-0 = Q^T ψ^{*}
+0 = Q^T psi^{*}
 $$
 
-Notice that this is of the form $0 ψ^{*} = Q^T ψ^{*}$ and hence is equivalent to finding the eigenvector associated with the $\lambda = 0$ eigenvalue of $Q^T$.
+Notice that this is of the form $0 psi^{*} = Q^T psi^{*}$ and hence is equivalent to finding the eigenvector associated with the $\lambda = 0$ eigenvalue of $Q^T$.
 
 With our example, we can calculate all of the eigenvalues and eigenvectors
 
@@ -684,7 +683,7 @@ Indeed, there is a $\lambda = 0$ eigenvalue, which is associated with the last c
 we need to normalize it.
 
 ```{code-cell} julia
-vecs[:,N] ./ sum(vecs[:,N])
+vecs[:, N] ./ sum(vecs[:, N])
 ```
 
 ### Multiple Dimensions
@@ -706,12 +705,13 @@ function markov_chain_product(Q, A)
     return As + Qs
 end
 
-α = 0.1
+alpha = 0.1
 N = 4
-Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
+                fill(alpha, N - 1))
 A = sparse([-0.1 0.1
-    0.2 -0.2])
-M = size(A,1)
+            0.2 -0.2])
+M = size(A, 1)
 L = markov_chain_product(Q, A)
 L |> Matrix  # display as a dense matrix
 ```
@@ -748,14 +748,14 @@ case, we can verify that it is the last one.
 L_eig = eigen(Matrix(L'))
 @assert norm(L_eig.values[end]) < 1E-10
 
-ψ = L_eig.vectors[:,end]
-ψ = ψ / sum(ψ)
+psi = L_eig.vectors[:, end]
+psi = psi / sum(psi)
 ```
 
 Reshape this to be two-dimensional if it is helpful for visualization.
 
 ```{code-cell} julia
-reshape(ψ, N, size(A,1))
+reshape(psi, N, size(A, 1))
 ```
 
 ### Irreducibility
@@ -765,9 +765,10 @@ is isomorphic to determining whether the directed graph of the Markov chain is [
 
 ```{code-cell} julia
 using Graphs
-α = 0.1
+alpha = 0.1
 N = 6
-Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
+                fill(alpha, N - 1))
 ```
 
 We can verify that it is possible to move between every pair of states in a finite number of steps with
@@ -781,8 +782,8 @@ Alternatively, as an example of a reducible Markov chain where states $1$ and $2
 
 ```{code-cell} julia
 Q = [-0.2 0.2 0
-    0.2 -0.2 0
-    0.2 0.6 -0.8]
+     0.2 -0.2 0
+     0.2 0.6 -0.8]
 Q_graph = DiGraph(Q)
 @show is_strongly_connected(Q_graph);
 ```
@@ -799,20 +800,20 @@ An $N \times N$ banded matrix with bandwidth $P$ has about $N P$ nonzeros in its
 These can be created directly as a dense matrix with `diagm`.  For example, with a bandwidth of three and a zero diagonal,
 
 ```{code-cell} julia
-diagm(1 => [1,2,3], -1 => [4,5,6])
+diagm(1 => [1, 2, 3], -1 => [4, 5, 6])
 ```
 
 Or as a sparse matrix,
 
 ```{code-cell} julia
-spdiagm(1 => [1,2,3], -1 => [4,5,6])
+spdiagm(1 => [1, 2, 3], -1 => [4, 5, 6])
 ```
 
 Or directly using [BandedMatrices.jl](https://github.com/JuliaMatrices/BandedMatrices.jl)
 
 ```{code-cell} julia
 using BandedMatrices
-BandedMatrix(1 => [1,2,3], -1 => [4,5,6])
+BandedMatrix(1 => [1, 2, 3], -1 => [4, 5, 6])
 ```
 
 There is also a convenience function for generating random banded matrices
@@ -892,11 +893,11 @@ To see this, a convenient tool is the benchmarking
 
 ```{code-cell} julia
 using BenchmarkTools
-A = rand(10,10)
-B = rand(10,10)
+A = rand(10, 10)
+B = rand(10, 10)
 C = similar(A)
 function f!(C, A, B)
-    D = A*B
+    D = A * B
     C .= D .+ 1
 end
 @btime f!($C, $A, $B)
@@ -915,8 +916,8 @@ function f2!(C, A, B)
     mul!(C, A, B)  # in-place multiplication
     C .+= 1
 end
-A = rand(10,10)
-B = rand(10,10)
+A = rand(10, 10)
+B = rand(10, 10)
 C = similar(A)
 @btime f!($C, $A, $B)
 @btime f2!($C, $A, $B)
@@ -928,7 +929,7 @@ Another example of this is solutions to linear equations, where for large soluti
 solution vector.
 
 ```{code-cell} julia
-A = rand(10,10)
+A = rand(10, 10)
 y = rand(10)
 z = A \ y  # creates temporary
 
@@ -943,7 +944,7 @@ idea - and worrying about it prior to benchmarking is premature optimization.
 There are a variety of other non-allocating versions of functions.  For example,
 
 ```{code-cell} julia
-A = rand(10,10)
+A = rand(10, 10)
 B = similar(A)
 
 transpose!(B, A)  # non-allocating version of B = transpose(A)
@@ -953,15 +954,15 @@ Finally, a common source of unnecessary allocations is when taking slices or por
 matrices.  For example, the following allocates a new matrix `B` and copies the values.
 
 ```{code-cell} julia
-A = rand(5,5)
-B = A[2,:]  # extract a vector
+A = rand(5, 5)
+B = A[2, :]  # extract a vector
 ```
 
 To see that these are different matrices, note that
 
 ```{code-cell} julia
-A[2,1] = 100.0
-@show A[2,1]
+A[2, 1] = 100.0
+@show A[2, 1]
 @show B[1];
 ```
 
@@ -969,11 +970,11 @@ Instead of allocating a new matrix, you can take a `view` of a matrix, which pro
 appropriate `AbstractArray` type that doesn't allocate new memory with the `@view` matrix.
 
 ```{code-cell} julia
-A = rand(5,5)
-B = @view A[2,:]  #  does not copy the data
+A = rand(5, 5)
+B = @view A[2, :]  #  does not copy the data
 
-A[2,1] = 100.0
-@show A[2,1]
+A[2, 1] = 100.0
+@show A[2, 1]
 @show B[1];
 ```
 
@@ -990,10 +991,12 @@ One approach is to create a {doc}`custom type<../getting_started_julia/introduct
 
 ```{code-cell} julia
 struct MyResults{T}
-    x::Array{T,1}
-    A::Array{T,2}
+    x::Array{T, 1}
+    A::Array{T, 2}
 end
-MyResults(N) = MyResults(Array{Float64,1}(undef, N), Array{Float64,2}(undef, N, N))    
+function MyResults(N)
+    MyResults(Array{Float64, 1}(undef, N), Array{Float64, 2}(undef, N, N))
+end
 
 #Support for inplace copying
 import Base.copy!
@@ -1012,32 +1015,32 @@ To create a contrived algorithm, see the following code:
 ```{code-cell} julia
 # By convention, name has ! to denote mutating, and mutate first argument
 function calculate_results!(results, val, params)
-    (;N, b, C) = params
-    B = rand(N,N)  # Contrived.  Assume complicated
+    (; N, b, C) = params
+    B = rand(N, N)  # Contrived.  Assume complicated
     lmul!(val, B)  # val * B -> B inplace, no allocation
     mul!(results.A, B, C) #   B * C -> results.A
     ldiv!(results.x, factorize(results.A), b)  # x = A \ b inplace
 end
 
 # Some iterative algorithm
-function iterate_values(vals, params)    
-    (;N) = params
-    
+function iterate_values(vals, params)
+    (; N) = params
+
     # preallocate
     results = MyResults(N)
     prev_results = MyResults(N)
     norms = similar(vals)
-        
+
     for (i, val) in enumerate(vals)
         calculate_results!(results, val, params)
-        norms[i] = norm(results.x- prev_results.x)            
+        norms[i] = norm(results.x - prev_results.x)
         println("|x_new - x_old| = ", norms[i])
         copy!(prev_results, results)
     end
     return norms
 end
 
-params = (N = 5, C = rand(5,5), b = rand(5))
+params = (N = 5, C = rand(5, 5), b = rand(5))
 vals = range(0.0, 1.0, length = 10)
 iterate_values(vals, params)
 ```
@@ -1098,7 +1101,7 @@ Start with a simple symmetric tridiagonal matrix
 
 ```{code-cell} julia
 N = 100
-A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2)])
+A = Tridiagonal([fill(0.1, N - 2); 0.2], fill(0.8, N), [0.2; fill(0.1, N - 2)])
 A_adjoint = A';
 ```
 

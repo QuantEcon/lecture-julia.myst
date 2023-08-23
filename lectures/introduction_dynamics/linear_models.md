@@ -1233,20 +1233,20 @@ using LaTeXStrings, QuantEcon, Plots
 ### Exercise 1
 
 ```{code-cell} julia
-ϕ0, ϕ1, ϕ2 = 1.1, 0.8, -0.8
+phi0, phi1, phi2 = 1.1, 0.8, -0.8
 
-A = [1.0   0.0   0
-        ϕ0    ϕ1    ϕ2
-        0.0   1.0   0.0]
+A = [1.0 0.0 0
+     phi0 phi1 phi2
+     0.0 1.0 0.0]
 C = zeros(3, 1)
 G = [0.0 1.0 0.0]
-μ_0 = ones(3)
+mu_0 = ones(3)
 
-lss = LSS(A, C, G; mu_0=μ_0)
+lss = LSS(A, C, G; mu_0 = mu_0)
 
 x, y = simulate(lss, 50)
 plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
-plot!(xlabel="time", ylabel = L"y_t", legend = :none)
+plot!(xlabel = "time", ylabel = L"y_t", legend = :none)
 ```
 
 ```{code-cell} julia
@@ -1265,24 +1265,24 @@ end
 using Random
 Random.seed!(42) # For deterministic results.
 
-ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
-σ = 0.2
+phi1, phi2, phi3, phi4 = 0.5, -0.2, 0, 0.5
+sigma = 0.2
 
-A = [ϕ1     ϕ2    ϕ3    ϕ4
-        1.0   0.0   0.0   0.0
-        0.0   1.0   0.0   0.0
-        0.0   0.0   1.0   0.0]
-C = [σ
-        0.0
-        0.0
-        0.0]''
+A = [phi1 phi2 phi3 phi4
+     1.0 0.0 0.0 0.0
+     0.0 1.0 0.0 0.0
+     0.0 0.0 1.0 0.0]
+C = [sigma
+     0.0
+     0.0
+     0.0]
 G = [1.0 0.0 0.0 0.0]
 
 ar = LSS(A, C, G; mu_0 = ones(4))
 x, y = simulate(ar, 200)
 
 plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
-plot!(xlabel="time", ylabel = L"y_t", legend = :none)
+plot!(xlabel = "time", ylabel = L"y_t", legend = :none)
 ```
 
 ```{code-cell} julia
@@ -1305,17 +1305,17 @@ Random.seed!(42);
 ```
 
 ```{code-cell} julia
-ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
-σ = 0.1
+phi1, phi2, phi3, phi4 = 0.5, -0.2, 0, 0.5
+sigma = 0.1
 
-A = [ ϕ1    ϕ2    ϕ3    ϕ4
-        1.0   0.0   0.0   0.0
-        0.0   1.0   0.0   0.0
-        0.0   0.0   1.0   0.0]
-C = [σ
-        0.0
-        0.0
-        0.0]
+A = [phi1 phi2 phi3 phi4
+     1.0 0.0 0.0 0.0
+     0.0 1.0 0.0 0.0
+     0.0 0.0 1.0 0.0]
+C = [sigma
+     0.0
+     0.0
+     0.0]
 G = [1.0 0.0 0.0 0.0]
 I = 20
 T = 50
@@ -1324,7 +1324,7 @@ ymin, ymax = -0.5, 1.15
 
 ensemble_mean = zeros(T)
 ys = []
-for i ∈ 1:I
+for i in 1:I
     x, y = simulate(ar, T)
     y = dropdims(y, dims = 1)
     push!(ys, y)
@@ -1336,13 +1336,13 @@ plot(ys, color = :blue, alpha = 0.2, linewidth = 0.8, label = "")
 plot!(ensemble_mean, color = :blue, linewidth = 2, label = L"\overline{y_t}")
 m = moment_sequence(ar)
 pop_means = zeros(0)
-for (i, t) ∈ enumerate(m)
-    (μ_x, μ_y, Σ_x, Σ_y) = t
-    push!(pop_means, μ_y[1])
+for (i, t) in enumerate(m)
+    (mu_x, mu_y, Sigma_x, Sigma_y) = t
+    push!(pop_means, mu_y[1])
     i == 50 && break
 end
 plot!(pop_means, color = :green, linewidth = 2, label = L"G \mu_t")
-plot!(ylims=(ymin, ymax), xlabel = "time", ylabel = L"y_t", legendfont = font(12))
+plot!(ylims = (ymin, ymax), xlabel = "time", ylabel = L"y_t", legendfont = font(12))
 ```
 
 ```{code-cell} julia
@@ -1366,17 +1366,17 @@ Random.seed!(42);
 ```
 
 ```{code-cell} julia
-ϕ1, ϕ2, ϕ3, ϕ4 = 0.5, -0.2, 0, 0.5
-σ = 0.1
+phi1, phi2, phi3, phi4 = 0.5, -0.2, 0, 0.5
+sigma = 0.1
 
-A = [ϕ1     ϕ2    ϕ3    ϕ4
-        1.0   0.0   0.0   0.0
-        0.0   1.0   0.0   0.0
-        0.0   0.0   1.0   0.0]
-C = [σ
-        0.0
-        0.0
-        0.0]''
+A = [phi1 phi2 phi3 phi4
+     1.0 0.0 0.0 0.0
+     0.0 1.0 0.0 0.0
+     0.0 0.0 1.0 0.0]
+C = [sigma
+     0.0
+     0.0
+     0.0]''
 G = [1.0 0.0 0.0 0.0]
 
 T0 = 10
@@ -1387,14 +1387,14 @@ T4 = 100
 ar = LSS(A, C, G; mu_0 = ones(4))
 ymin, ymax = -0.6, 0.6
 
-μ_x, μ_y, Σ_x, Σ_y = stationary_distributions(ar)
-ar = LSS(A, C, G; mu_0=μ_x, Sigma_0=Σ_x)
+mu_x, mu_y, Sigma_x, Sigma_y = stationary_distributions(ar)
+ar = LSS(A, C, G; mu_0 = mu_x, Sigma_0 = Sigma_x)
 colors = ["c", "g", "b"]
 
 ys = []
 x_scatter = []
 y_scatter = []
-for i ∈ 1:80
+for i in 1:80
     rcolor = colors[rand(1:3)]
     x, y = simulate(ar, T4)
     y = dropdims(y, dims = 1)
@@ -1406,8 +1406,9 @@ end
 plot(ys, linewidth = 0.8, alpha = 0.5)
 plot!([T0 T1 T2; T0 T1 T2], [-1 -1 -1; 1 1 1], color = :black, legend = :none)
 scatter!(x_scatter, y_scatter, color = :black, alpha = 0.5)
-plot!(ylims=(ymin, ymax), ylabel = L"y_t", xticks =[], yticks = ymin:0.2:ymax)
-plot!(annotations = [(T0+1, -0.55, L"T");(T1+1, -0.55, L"T^\prime");(T2+1, -0.55, L"T^{\prime\prime}")])
+plot!(ylims = (ymin, ymax), ylabel = L"y_t", xticks = [], yticks = ymin:0.2:ymax)
+plot!(annotations = [(T0 + 1, -0.55, L"T"); (T1 + 1, -0.55, L"T^\prime");
+                     (T2 + 1, -0.55, L"T^{\prime\prime}")])
 ```
 
 ```{code-cell} julia
@@ -1417,7 +1418,7 @@ tags: [remove-cell]
 @testset "Exercise 4 Tests" begin
     # #test ys[4][7] ≈ 0.011484225879516554 atol = 1e-3
     #test ar.A[1, 4] ≈ 0.5 atol = 1e-3
-    #test Σ_y[1] ≈ 0.020833333252863163 atol = 1e-3
+    #test Sigma_y[1] ≈ 0.020833333252863163 atol = 1e-3
 end
 ```
 
