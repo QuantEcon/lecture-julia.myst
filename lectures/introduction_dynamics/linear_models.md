@@ -1275,7 +1275,7 @@ A = [phi1 phi2 phi3 phi4
 C = [sigma
      0.0
      0.0
-     0.0]''
+     0.0]
 G = [1.0 0.0 0.0 0.0]
 
 ar = LSS(A, C, G; mu_0 = ones(4))
