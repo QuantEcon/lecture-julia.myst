@@ -1242,7 +1242,7 @@ C = zeros(3, 1)
 G = [0.0 1.0 0.0]
 mu_0 = ones(3)
 
-lss = LSS(A, C, G; mu_0 = mu_0)
+lss = LSS(A, C, G; mu_0)
 
 x, y = simulate(lss, 50)
 plot(dropdims(y, dims = 1), color = :blue, linewidth = 2, alpha = 0.7)
@@ -1376,7 +1376,7 @@ A = [phi1 phi2 phi3 phi4
 C = [sigma
      0.0
      0.0
-     0.0]''
+     0.0]
 G = [1.0 0.0 0.0 0.0]
 
 T0 = 10

@@ -130,7 +130,7 @@ R = 0.5 .* Sigma
 # define A and Q
 A = [1.2  0
      0   -0.2]
-Q = 0.3Sigma
+Q = 0.3 * Sigma
 
 y = [2.3, -1.9]
 
