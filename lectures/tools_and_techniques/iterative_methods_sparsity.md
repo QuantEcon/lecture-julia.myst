@@ -109,9 +109,9 @@ Here we see an example of the best-conditioned matrix, the identity matrix with 
 On the other hand, notice that
 
 ```{code-cell} julia
-ϵ = 1E-6
+epsilon = 1E-6
 A = [1.0 0.0
-     1.0 ϵ]
+     1.0 epsilon]
 cond(A)
 ```
 
@@ -155,9 +155,9 @@ even more ill-conditioned.
 This comes up frequently when calculating the product of a matrix and its transpose (e.g., forming the covariance matrix).  A classic example is the [Läuchli matrix](https://link.springer.com/article/10.1007%2FBF01386022).
 
 ```{code-cell} julia
-lauchli(N, ϵ) = [ones(N)'; ϵ * I(N)]'
-ϵ = 1E-8
-L = lauchli(3, ϵ) |> Matrix
+lauchli(N, epsilon) = [ones(N)'; epsilon * I(N)]'
+epsilon = 1E-8
+L = lauchli(3, epsilon) |> Matrix
 ```
 
 Note that the condition number increases substantially
@@ -174,20 +174,20 @@ This comes up when conducting [Principal Component Analysis](https://en.wikipedi
 requires calculations of the eigenvalues of the covariance matrix
 
 ```{code-cell} julia
-sort(sqrt.(Complex.(eigen(L*L').values)), lt = (x,y) -> abs(x) < abs(y))
+sort(sqrt.(Complex.(eigen(L * L').values)), lt = (x, y) -> abs(x) < abs(y))
 ```
 
 Note that these are significantly different than the known analytic solution and, in particular, are difficult to distinguish from 0.
 
 ```{code-cell} julia
-sqrt.([3 + ϵ^2, ϵ^2, ϵ^2]) |> sort
+sqrt.([3 + epsilon^2, epsilon^2, epsilon^2]) |> sort
 ```
 
 Alternatively, we could calculate these by taking the square of the singular values of $L$ itself, which is much more accurate
 and lets us clearly distinguish from zero
 
 ```{code-cell} julia
-svd(L).S  |> sort
+svd(L).S |> sort
 ```
 
 Similarly, we are better off calculating least squares directly rather than forming the normal equation (i.e., $A' A x = A' b$) ourselves
@@ -195,7 +195,7 @@ Similarly, we are better off calculating least squares directly rather than form
 ```{code-cell} julia
 N = 3
 A = lauchli(N, 1E-7)' |> Matrix
-b = rand(N+1)
+b = rand(N + 1)
 x_sol_1 = A \ b  # using a least-squares solver
 x_sol_2 = (A' * A) \ (A' * b)  # forming the normal equation ourselves
 norm(x_sol_1 - x_sol_2)
@@ -244,7 +244,7 @@ Implementing this for the interpolation of the $exp(x)$ function
 ```{code-cell} julia
 N = 5
 f(x) = exp(x)
-x = range(0.0, 10.0, length = N+1)
+x = range(0.0, 10.0, length = N + 1)
 y = f.(x)  # generate some data to interpolate
 
 A = [x_i^n for x_i in x, n in 0:N]
@@ -270,7 +270,7 @@ interpolation?
 ```{code-cell} julia
 N = 10
 f(x) = exp(x)
-x = range(0.0, 10.0, length = N+1)
+x = range(0.0, 10.0, length = N + 1)
 y = f.(x)  # generate some data to interpolate
 
 A = [x_i^n for x_i in x, n in 0:N]
@@ -287,7 +287,7 @@ This blows up quickly
 ```{code-cell} julia
 N = 20
 f(x) = exp(x)
-x = range(0.0, 10.0, length = N+1)
+x = range(0.0, 10.0, length = N + 1)
 y = f.(x)  # generate some data to interpolate
 
 A = [x_i^n for x_i in x, n in 0:N]
@@ -335,15 +335,14 @@ First, interpolate with $N = 5$ and avoid taking the inverse.  In that case, as 
 ```{code-cell} julia
 using LaTeXStrings, Plots
 
-
 N_display = 100
-g(x) = 1/(1 + 25x^2)
+g(x) = 1 / (1 + 25x^2)
 x_display = range(-1, 1, length = N_display)
 y_display = g.(x_display)
 
 # interpolation
 N = 5
-x = range(-1.0, 1.0, length = N+1)
+x = range(-1.0, 1.0, length = N + 1)
 y = g.(x)
 A_5 = [x_i^n for x_i in x, n in 0:N]
 c_5 = A_5 \ y
@@ -363,7 +362,7 @@ of grid points and the order of the polynomial will lead to better approximation
 
 ```{code-cell} julia
 N = 9
-x = range(-1.0, 1.0, length = N+1)
+x = range(-1.0, 1.0, length = N + 1)
 y = g.(x)
 A_9 = [x_i^n for x_i in x, n in 0:N]
 c_9 = A_9 \ y
@@ -439,14 +438,15 @@ First, we will solve with a direct method, which will give the solution to machi
 
 ```{code-cell} julia
 using LinearAlgebra, IterativeSolvers, Statistics
-α = 0.1
+alpha = 0.1
 N = 100
-Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
+                fill(alpha, N - 1))
 
-r = range(0.0, 10.0, length=N)
-ρ = 0.05
+r = range(0.0, 10.0, length = N)
+rho = 0.05
 
-A = ρ * I - Q
+A = rho * I - Q
 v_direct = A \ r
 mean(v_direct)
 ```
@@ -466,7 +466,7 @@ where it is strictly greater, we say that the matrix is strictly diagonally domi
 With our example, given that $Q$ is the infinitesimal generator of a Markov chain, we know that each row sums to 0, and hence
 it is weakly diagonally dominant.
 
-However, notice that when $\rho > 0$, and since the diagonal of $Q$ is negative,  $A = ρ I - Q$ makes the matrix strictly diagonally dominant.
+However, notice that when $\rho > 0$, and since the diagonal of $Q$ is negative,  $A = rho I - Q$ makes the matrix strictly diagonally dominant.
 
 ### Jacobi Iteration
 
@@ -599,7 +599,7 @@ Solving this system with the conjugate gradient method:
 
 ```{code-cell} julia
 x = zeros(N)
-sol = cg!(x, A, b, log=true, maxiter = 1000)
+sol = cg!(x, A, b, log = true, maxiter = 1000)
 sol[end]
 ```
 
@@ -645,7 +645,7 @@ But it may or may not decrease the number of iterations
 using Preconditioners
 x = zeros(N)
 P = DiagonalPreconditioner(A)
-sol = cg!(x, A, b, log=true, maxiter = 1000)
+sol = cg!(x, A, b, log = true, maxiter = 1000)
 sol[end]
 ```
 
@@ -655,7 +655,7 @@ Another classic preconditioner is the incomplete LU decomposition
 using IncompleteLU
 x = zeros(N)
 P = ilu(A, τ = 0.1)
-sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
+sol = cg!(x, A, b, Pl = P, log = true, maxiter = 1000)
 sol[end]
 ```
 
@@ -668,7 +668,7 @@ Finally, naively trying another preconditioning approach (called [Algebraic Mult
 ```{code-cell} julia
 x = zeros(N)
 P = AMGPreconditioner{RugeStuben}(A)
-sol = cg!(x, A, b, Pl = P, log=true, maxiter = 1000)
+sol = cg!(x, A, b, Pl = P, log = true, maxiter = 1000)
 sol[end]
 ```
 
@@ -688,11 +688,11 @@ using IterativeSolvers
 
 N = 10
 f(x) = exp(x)
-x = range(0.0, 10.0, length = N+1)
+x = range(0.0, 10.0, length = N + 1)
 y = f.(x)  # generate some data to interpolate
 A = sparse([x_i^n for x_i in x, n in 0:N])
-c = zeros(N+1)  # initial guess required for iterative solutions
-results = gmres!(c, A, y, log=true, maxiter = 1000)
+c = zeros(N + 1)  # initial guess required for iterative solutions
+results = gmres!(c, A, y, log = true, maxiter = 1000)
 println("cond(A) = $(cond(Matrix(A))), $(results[end]) Norm error $(norm(A*c - y, Inf))")
 ```
 
@@ -701,12 +701,12 @@ That method converged in 11 iterations.  Now if we try it with an incomplete LU 
 ```{code-cell} julia
 N = 10
 f(x) = exp(x)
-x = range(0.0, 10.0, length = N+1)
+x = range(0.0, 10.0, length = N + 1)
 y = f.(x)  # generate some data to interpolate
 A = [x_i^n for x_i in x, n in 0:N]
 P = ilu(sparse(A), τ = 0.1)
-c = zeros(N+1)  # initial guess required for iterative solutions
-results = gmres!(c, A, y, Pl = P,log=true, maxiter = 1000)
+c = zeros(N + 1)  # initial guess required for iterative solutions
+results = gmres!(c, A, y, Pl = P, log = true, maxiter = 1000)
 println("$(results[end]) Norm error $(norm(A*c - y, Inf))")
 ```
 
@@ -718,16 +718,17 @@ however, to consider the cost of the preconditioning process in your problem.
 First, lets use a Krylov method to solve our simple valuation problem
 
 ```{code-cell} julia
-α = 0.1
+alpha = 0.1
 N = 100
-Q = Tridiagonal(fill(α, N-1), [-α; fill(-2α, N-2); -α], fill(α, N-1))
+Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
+                fill(alpha, N - 1))
 
-r = range(0.0, 10.0, length=N)
-ρ = 0.05
+r = range(0.0, 10.0, length = N)
+rho = 0.05
 
-A = ρ * I - Q
+A = rho * I - Q
 v = zeros(N)
-results = gmres!(v, A, r, log=true)
+results = gmres!(v, A, r, log = true)
 v_sol = results[1]
 println("$(results[end])")
 ```
@@ -748,9 +749,12 @@ $$
 This can be implemented as a function (either in-place or out-of-place) which calculates $y = A x$
 
 ```{code-cell} julia
-A_mul(x) = [ (ρ + α) * x[1] - α * x[2];
-             [-α * x[i-1] + (ρ + 2*α) * x[i] - α * x[i+1] for i in 2:N-1];  # comprehension
-             - α * x[end-1] + (ρ + α) * x[end]]
+function A_mul(x)
+    [(rho + alpha) * x[1] - alpha * x[2];
+     [-alpha * x[i - 1] + (rho + 2 * alpha) * x[i] - alpha * x[i + 1]
+      for i in 2:(N - 1)]  # comprehension
+     -alpha * x[end - 1] + (rho + alpha) * x[end]]
+end
 
 x = rand(N)
 @show norm(A * x - A_mul(x))  # compare to matrix;
@@ -777,7 +781,7 @@ Now, with the `A_map` object, we can fulfill many of the operations we would exp
 
 ```{code-cell} julia
 x = rand(N)
-@show norm(A_map * x  - A * x)
+@show norm(A_map * x - A * x)
 y = similar(x)
 mul!(y, A_map, x) # in-place multiplication
 @show norm(y - A * x)
@@ -811,18 +815,18 @@ we would use the in-place `mul!(y, A, x)` function.  The wrappers for linear ope
 
 ```{code-cell} julia
 function A_mul!(y, x)  # in-place version
-    y[1] = (ρ + α) * x[1] - α * x[2]
-    for i in 2:N-1
-        y[i] = -α * x[i-1] + (ρ + 2α) * x[i] -α * x[i+1]
+    y[1] = (rho + alpha) * x[1] - alpha * x[2]
+    for i in 2:(N - 1)
+        y[i] = -alpha * x[i - 1] + (rho + 2alpha) * x[i] - alpha * x[i + 1]
     end
-    y[end] = - α * x[end-1] + (ρ + α) * x[end]
+    y[end] = -alpha * x[end - 1] + (rho + alpha) * x[end]
     return y
 end
 A_map_2 = LinearMap(A_mul!, N, ismutating = true)  # ismutating == in-place
 
 v = zeros(N)
 @show norm(A_map_2 * v - A * v)  # can still call with * and have it allocate
-results = gmres!(v, A_map_2, r, log=true)  # in-place gmres
+results = gmres!(v, A_map_2, r, log = true)  # in-place gmres
 println("$(results[end])")
 ```
 
@@ -832,7 +836,7 @@ it would be for matrices $A, B$ and scalars $c_1, c_2$.
 For example, take $2 A x + x = (2 A + I) x \equiv B x$ as a new linear map,
 
 ```{code-cell} julia
-B = 2.0 * A_map  + I  # composite linear operator
+B = 2.0 * A_map + I  # composite linear operator
 B * rand(N)  # left-multiply works with the composition
 typeof(B)
 ```
@@ -844,17 +848,19 @@ Another example is to solve the $\rho v = r + Q v$ equation for $v$ with composi
 rather than by creating the full $A = \rho - Q$ operator, which we implemented as `A_mul`
 
 ```{code-cell} julia
-Q_mul(x) = [ -α * x[1] +     α * x[2];
-            [α * x[i-1] - 2*α * x[i] + α*x[i+1] for i in 2:N-1];  # comprehension
-            α * x[end-1] - α * x[end];]
+function Q_mul(x)
+    [-alpha * x[1] + alpha * x[2];
+     [alpha * x[i - 1] - 2 * alpha * x[i] + alpha * x[i + 1] for i in 2:(N - 1)];  # comprehension
+     alpha * x[end - 1] - alpha * x[end]]
+end
 Q_map = LinearMap(Q_mul, N)
-A_composed = ρ * I - Q_map   # map composition, performs no calculations
+A_composed = rho * I - Q_map   # map composition, performs no calculations
 @show norm(A - sparse(A_composed))  # test produces the same matrix
-gmres(A_composed, r, log=true)[2]
+gmres(A_composed, r, log = true)[2]
 ```
 
 In this example, the left-multiply of the `A_composed` used by `gmres` uses the left-multiply of `Q_map` and `I` with the rules
-of linearity.  The `A_composed = ρ * I - Q_map` operation simply creates the `LinearMaps.LinearCombination` type, and doesn't perform any calculations on its own.
+of linearity.  The `A_composed = rho * I - Q_map` operation simply creates the `LinearMaps.LinearCombination` type, and doesn't perform any calculations on its own.
 
 ## Iterative Methods for Linear Least Squares
 
@@ -877,15 +883,15 @@ We can compare solving the least-squares problem with LSMR and direct methods
 ```{code-cell} julia
 M = 1000
 N = 10000
-σ = 0.1
-β = rand(M)
+sigma = 0.1
+beta = rand(M)
 # simulate data
 X = sprand(N, M, 0.1)
-y = X * β + σ * randn(N)
-β_direct = X \ y
+y = X * beta + sigma * randn(N)
+beta_direct = X \ y
 results = lsmr(X, y, log = true)
-β_lsmr = results[1]
-@show norm(β_direct - β_lsmr)
+beta_lsmr = results[1]
+@show norm(beta_direct - beta_lsmr)
 println("$(results[end])")
 ```
 
@@ -925,17 +931,17 @@ As an example,
 ```{code-cell} julia
 using Arpack, LinearAlgebra
 N = 1000
-A = Tridiagonal([fill(0.1, N-2); 0.2], fill(0.8, N), [0.2; fill(0.1, N-2);])
+A = Tridiagonal([fill(0.1, N - 2); 0.2], fill(0.8, N), [0.2; fill(0.1, N - 2)])
 A_adjoint = A'
 
 # Find 1 of the largest magnitude eigenvalue
-λ, ϕ = eigs(A_adjoint, nev=1, which=:LM, maxiter=1000)
-ϕ = real(ϕ) ./ sum(real(ϕ))
-@show λ
-@show mean(ϕ);
+lambda, phi = eigs(A_adjoint, nev = 1, which = :LM, maxiter = 1000)
+phi = real(phi) ./ sum(real(phi))
+@show lambda
+@show mean(phi);
 ```
 
-Indeed, the `λ` is equal to `1`.  If we choose `nev = 2`, it will provide the eigenpairs with the two eigenvalues of largest absolute value.
+Indeed, the `lambda` is equal to `1`.  If we choose `nev = 2`, it will provide the eigenpairs with the two eigenvalues of largest absolute value.
 
 *Hint*: If you get errors using `Arpack`, increase the `maxiter` parameter for your problems.
 
@@ -950,19 +956,24 @@ take the Markov chain for a simple counting process:
 First, finding the transition matrix $P$ and its adjoint directly as a check
 
 ```{code-cell} julia
-θ = 0.1
-ζ = 0.05
+theta = 0.1
+zeta = 0.05
 N = 5
-P = Tridiagonal(fill(ζ, N-1), [1-θ; fill(1-θ-ζ, N-2); 1-ζ], fill(θ, N-1))
+P = Tridiagonal(fill(zeta, N - 1),
+                [1 - theta; fill(1 - theta - zeta, N - 2); 1 - zeta],
+                fill(theta, N - 1))
 P'
 ```
 
 Implementing the adjoint-vector product directly, and verifying that it gives the same matrix as the adjoint
 
 ```{code-cell} julia
-P_adj_mul(x) = [ (1-θ) * x[1] + ζ * x[2];
-                [θ * x[i-1] + (1-θ-ζ) * x[i] + ζ * x[i+1] for i in 2:N-1];  # comprehension
-            θ * x[end-1] + (1-ζ) * x[end];]
+function P_adj_mul(x)
+    [(1 - theta) * x[1] + zeta * x[2];
+     [theta * x[i - 1] + (1 - theta - zeta) * x[i] + zeta * x[i + 1]
+      for i in 2:(N - 1)]  # comprehension
+     theta * x[end - 1] + (1 - zeta) * x[end]]
+end
 P_adj_map = LinearMap(P_adj_mul, N)
 @show norm(P' - sparse(P_adj_map))
 ```
@@ -970,10 +981,10 @@ P_adj_map = LinearMap(P_adj_mul, N)
 Finally, solving for the stationary distribution using the matrix-free method (which could be verified against the decomposition approach of $P'$)
 
 ```{code-cell} julia
-λ, ϕ = eigs(P_adj_map, nev=1, which=:LM, maxiter=1000)
-ϕ = real(ϕ) ./ sum(real(ϕ))
-@show λ
-@show ϕ
+lambda, phi = eigs(P_adj_map, nev = 1, which = :LM, maxiter = 1000)
+phi = real(phi) ./ sum(real(phi))
+@show lambda
+@show phi
 ```
 
 Of course, for a problem this simple, the direct eigendecomposition will be significantly faster.  Use matrix-free iterative methods only for large systems where
@@ -1035,7 +1046,7 @@ The added benefit of this approach is that it will be the most efficient way to 
 For the counting process with arbitrary dimensions, we will frequently be incrementing or decrementing the $m$ unit vectors of the `CartesianIndex` type with
 
 ```{code-cell} julia
-e_m = [CartesianIndex((1:M .== i)*1...)  for i in 1:M]
+e_m = [CartesianIndex((1:M .== i) * 1...) for i in 1:M]
 ```
 
 and then use the vector to increment.  For example, if the current count is `(1, 2, 2)` and we want to add a count of `1` to the first index and remove a count
@@ -1060,16 +1071,18 @@ parameters in a named tuple generator
 
 ```{code-cell} julia
 using Parameters, BenchmarkTools
-default_params = @with_kw (θ = 0.1, ζ = 0.05, ρ = 0.03, N = 10, M = 6,
-                           shape = Tuple(fill(N, M)),  # for reshaping vector to M-d array
-                           e_m = ([CartesianIndex((1:M .== i)*1...)  for i in 1:M]))
+function default_params(; theta = 0.1, zeta = 0.05, rho = 0.03, N = 10, M = 6,
+                        shape = Tuple(fill(N, M)),  # for reshaping vector to M-d array
+                        e_m = ([CartesianIndex((1:M .== i) * 1...) for i in 1:M]))
+    return (; theta, zeta, rho, N, M, shape, e_m)
+end
 ```
 
 Next, implement the in-place matrix-free product
 
 ```{code-cell} julia
 function Q_mul!(dv, v, p)
-    (;θ, ζ, N, M, shape, e_m) = p
+    (; theta, zeta, N, M, shape, e_m) = p
     v = reshape(v, shape)  # now can access v, dv as M-dim arrays
     dv = reshape(dv, shape)
 
@@ -1077,14 +1090,14 @@ function Q_mul!(dv, v, p)
         dv[ind] = 0.0
         for m in 1:M
             n_m = ind[m]
-            if(n_m < N)
-                dv[ind] += θ * v[ind + e_m[m]]
+            if (n_m < N)
+                dv[ind] += theta * v[ind + e_m[m]]
             end
-            if(n_m > 1)
-                dv[ind] += ζ *v[ind - e_m[m]]
+            if (n_m > 1)
+                dv[ind] += zeta * v[ind - e_m[m]]
             end
         end
-        dv[ind] -= (θ * count(ind.I .< N) + ζ * count(ind.I .> 1)) * v[ind]
+        dv[ind] -= (theta * count(ind.I .< N) + zeta * count(ind.I .> 1)) * v[ind]
     end
 end
 
@@ -1105,8 +1118,8 @@ Given this profit function, we can write the simple Bellman equation in our stan
 
 ```{code-cell} julia
 function r_vec(p)
-    z = (1:p.M).^2  # payoffs per type m
-    r = [0.5 * dot(ind.I, z)  for ind in CartesianIndices(p.shape)]
+    z = (1:(p.M)) .^ 2  # payoffs per type m
+    r = [0.5 * dot(ind.I, z) for ind in CartesianIndices(p.shape)]
     return reshape(r, p.N^p.M)  # return as a vector
 end
 @show typeof(r_vec(p))
@@ -1121,9 +1134,9 @@ Below, we create a linear operator and compare the algorithm for a few different
 of only 10,000 possible states.
 
 ```{code-cell} julia
-p = default_params(N=10, M=4)
+p = default_params(; N = 10, M = 4)
 Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
-A = p.ρ * I - Q
+A = p.rho * I - Q
 A_sparse = sparse(A)  # expensive: use only in tests
 r = r_vec(p)
 v_direct = A_sparse \ r
@@ -1131,10 +1144,10 @@ iv = zero(r)
 
 @btime $A_sparse \ $r  # direct
 @show norm(gmres(A, r) - v_direct)
-@btime gmres!(iv, $A, $r) setup = (iv = zero(r))
+@btime gmres!(iv, $A, $r) setup=(iv = zero(r))
 
 @show norm(bicgstabl(A, r) - v_direct)
-@btime bicgstabl!(iv, $A, $r) setup = (iv = zero(r))
+@btime bicgstabl!(iv, $A, $r) setup=(iv = zero(r))
 
 @show norm(idrs(A, r) - v_direct)
 @btime idrs($A, $r);
@@ -1148,15 +1161,15 @@ Putting everything together to solving much larger systems with GMRES as our lin
 
 ```{code-cell} julia
 function solve_bellman(p; iv = zeros(p.N^p.M))
-    (;ρ, N, M) = p
+    (; rho, N, M) = p
     Q = LinearMap((df, f) -> Q_mul!(df, f, p), N^M, ismutating = true)
-    A = ρ * I - Q
+    A = rho * I - Q
     r = r_vec(p)
 
     sol = gmres!(iv, A, r, log = false)  # iterative solver, matrix-free
     return sol
 end
-p = default_params(N=10, M=6)
+p = default_params(; N = 10, M = 6)
 @btime solve_bellman($p);
 ```
 
@@ -1191,23 +1204,24 @@ $$
 $$
 
 ```{code-cell} julia
-function Q_T_mul!(dψ, ψ, p)
-    (;θ, ζ, N, M, shape, e_m) = p
-    ψ = reshape(ψ, shape)
-    dψ = reshape(dψ, shape)
+function Q_T_mul!(dpsi, psi, p)
+    (; theta, zeta, N, M, shape, e_m) = p
+    psi = reshape(psi, shape)
+    dpsi = reshape(dpsi, shape)
 
-    @inbounds for ind in CartesianIndices(ψ)
-        dψ[ind] = 0.0
+    @inbounds for ind in CartesianIndices(psi)
+        dpsi[ind] = 0.0
         for m in 1:M
             n_m = ind[m]
-            if(n_m > 1)
-                dψ[ind] += θ * ψ[ind - e_m[m]]
+            if (n_m > 1)
+                dpsi[ind] += theta * psi[ind - e_m[m]]
             end
-            if(n_m < N)
-                dψ[ind] += ζ *ψ[ind + e_m[m]]
+            if (n_m < N)
+                dpsi[ind] += zeta * psi[ind + e_m[m]]
             end
         end
-        dψ[ind] -= (θ * count(ind.I .< N) + ζ * count(ind.I .> 1)) * ψ[ind]
+        dpsi[ind] -= (theta * count(ind.I .< N) + zeta * count(ind.I .> 1)) *
+                     psi[ind]
     end
 end
 ```
@@ -1216,9 +1230,9 @@ The `sparse` function for the operator is useful for testing that the function i
 our `Q` operator.
 
 ```{code-cell} julia
-p = default_params(N=5, M=4)  # sparse is too slow for the full matrix
+p = default_params(; N = 5, M = 4)  # sparse is too slow for the full matrix
 Q = LinearMap((df, f) -> Q_mul!(df, f, p), p.N^p.M, ismutating = true)
-Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
+Q_T = LinearMap((dpsi, psi) -> Q_T_mul!(dpsi, psi, p), p.N^p.M, ismutating = true)
 @show norm(sparse(Q)' - sparse(Q_T));  # reminder: use sparse only for testing!
 ```
 
@@ -1226,10 +1240,10 @@ As discussed previously, the steady state can be found as the eigenvector associ
 do this with a dense eigenvalue solution for relatively small matrices
 
 ```{code-cell} julia
-p = default_params(N=5, M=4)
+p = default_params(; N = 5, M = 4)
 eig_Q_T = eigen(Matrix(Q_T))
-vec = real(eig_Q_T.vectors[:,end])
-direct_ψ = vec ./ sum(vec)
+vec = real(eig_Q_T.vectors[:, end])
+direct_psi = vec ./ sum(vec)
 @show eig_Q_T.values[end];
 ```
 
@@ -1248,25 +1262,27 @@ We can use various Krylov methods for this trick (e.g., if the matrix is symmetr
 use GMRES since we do not have any structure.
 
 ```{code-cell} julia
-p = default_params(N=5, M=4)  # sparse is too slow for the full matrix
-Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
-ψ = fill(1/(p.N^p.M), p.N^p.M) # can't use 0 as initial guess
-sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
-ψ = ψ / sum(ψ)
-@show norm(ψ - direct_ψ);
+p = default_params(; N = 5, M = 4)  # sparse is too slow for the full matrix
+Q_T = LinearMap((dpsi, psi) -> Q_T_mul!(dpsi, psi, p), p.N^p.M, ismutating = true)
+psi = fill(1 / (p.N^p.M), p.N^p.M) # can't use 0 as initial guess
+sol = gmres!(psi, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
+psi = psi / sum(psi)
+@show norm(psi - direct_psi);
 ```
 
 The speed and memory differences between these methods can be orders of magnitude.
 
 ```{code-cell} julia
-p = default_params(N=4, M=4)  # Dense and sparse matrices are too slow for the full dataset.
-Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
+p = default_params(; N = 4, M = 4)  # Dense and sparse matrices are too slow for the full dataset.
+Q_T = LinearMap((dpsi, psi) -> Q_T_mul!(dpsi, psi, p), p.N^p.M, ismutating = true)
 Q_T_dense = Matrix(Q_T)
 Q_T_sparse = sparse(Q_T)
 b = zeros(p.N^p.M)
 @btime eigen($Q_T_dense)
-@btime eigs($Q_T_sparse, nev=1, which=:SM, v0 = iv) setup = (iv = fill(1/(p.N^p.M), p.N^p.M))
-@btime gmres!(iv, $Q_T, $b) setup = (iv = fill(1/(p.N^p.M), p.N^p.M));
+@btime eigs($Q_T_sparse, nev = 1, which = :SM, v0 = iv) setup=(iv = fill(1 /
+                                                                         (p.N^p.M),
+                                                                         p.N^p.M))
+@btime gmres!(iv, $Q_T, $b) setup=(iv = fill(1 / (p.N^p.M), p.N^p.M));
 ```
 
 The differences become even more stark as the matrix grows.  With `default_params(N=5, M=5)`, the `gmres` solution is at least 3 orders of magnitude faster, and uses close to 3 orders of magnitude less memory than the dense solver.  In addition, the `gmres` solution is about an order of magnitude faster than the iterative sparse eigenvalue solver.
@@ -1274,17 +1290,18 @@ The differences become even more stark as the matrix grows.  With `default_param
 The algorithm can solve for the steady state of $10^5$ states in a few seconds
 
 ```{code-cell} julia
-function stationary_ψ(p)
-    Q_T = LinearMap((dψ, ψ) -> Q_T_mul!(dψ, ψ, p), p.N^p.M, ismutating = true)
-    ψ = fill(1/(p.N^p.M), p.N^p.M) # can't use 0 as initial guess
-    sol = gmres!(ψ, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
-    return ψ / sum(ψ)
+function stationary_psi(p)
+    Q_T = LinearMap((dpsi, psi) -> Q_T_mul!(dpsi, psi, p), p.N^p.M,
+                    ismutating = true)
+    psi = fill(1 / (p.N^p.M), p.N^p.M) # can't use 0 as initial guess
+    sol = gmres!(psi, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
+    return psi / sum(psi)
 end
-p = default_params(N=10, M=5)
-@btime stationary_ψ($p);
+p = default_params(; N = 10, M = 5)
+@btime stationary_psi($p);
 ```
 
-As a final demonstration, consider calculating the full evolution of the $ψ(t)$ Markov chain.  For the constant
+As a final demonstration, consider calculating the full evolution of the $psi(t)$ Markov chain.  For the constant
 $Q'$ matrix, the solution to this system of equations is $\psi(t) = \exp(Q') \psi(0)$
 
 Matrix-free Krylov methods using a technique called [exponential integration](https://en.wikipedia.org/wiki/Exponential_integrator) can solve this for high-dimensional problems.
@@ -1295,18 +1312,18 @@ For this, we can set up a `MatrixFreeOperator` for our `Q_T_mul!` function (equi
 using OrdinaryDiffEq, DiffEqOperators
 
 function solve_transition_dynamics(p, t)
-    (;N, M) = p
+    (; N, M) = p
 
-    ψ_0 = [1.0; fill(0.0, N^M - 1)]
-    O! = MatrixFreeOperator((dψ, ψ, p, t) -> Q_T_mul!(dψ, ψ, p), (p, 0.0),
-                            size=(N^M,N^M), opnorm=(p)->1.25)
+    psi_0 = [1.0; fill(0.0, N^M - 1)]
+    O! = MatrixFreeOperator((dpsi, psi, p, t) -> Q_T_mul!(dpsi, psi, p), (p, 0.0),
+                            size = (N^M, N^M), opnorm = (p) -> 1.25)
 
     # define the corresponding ODE problem
-    prob = ODEProblem(O!,ψ_0,(0.0,t[end]), p)
-    return solve(prob, LinearExponential(krylov=:simple), tstops = t)
+    prob = ODEProblem(O!, psi_0, (0.0, t[end]), p)
+    return solve(prob, LinearExponential(krylov = :simple), tstops = t)
 end
 t = 0.0:5.0:100.0
-p = default_params(N=10, M=6)
+p = default_params(; N = 10, M = 6)
 sol = solve_transition_dynamics(p, t)
 v = solve_bellman(p)
 plot(t, [dot(sol(tval), v) for tval in t], xlabel = L"t", label = L"E_t(v)")

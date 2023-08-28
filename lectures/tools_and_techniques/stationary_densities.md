@@ -461,20 +461,20 @@ using Distributions, StatsPlots, Plots, QuantEcon, Random
 Random.seed!(42) # For deterministic results.
 
 s = 0.2
-δ = 0.1
-a_σ = 0.4                    # A = exp(B) where B ~ N(0, a_σ)
-α = 0.4                      # We set f(k) = k**α
-ψ_0 = Beta(5.0, 5.0)         # Initial distribution
-ϕ = LogNormal(0.0, a_σ)
+delta = 0.1
+a_sigma = 0.4                    # A = exp(B) where B ~ N(0, a_sigma)
+alpha = 0.4                      # We set f(k) = k**alpha
+psi_0 = Beta(5.0, 5.0)         # Initial distribution
+phi = LogNormal(0.0, a_sigma)
 
 function p(x, y)
     # Stochastic kernel for the growth model with Cobb-Douglas production.
     # Both x and y must be strictly positive.
 
-    d = s * x.^α
+    d = s * x .^ alpha
 
-    pdf_arg = clamp.((y .- (1-δ) .* x) ./ d, eps(), Inf)
-    return pdf.(ϕ, pdf_arg) ./ d
+    pdf_arg = clamp.((y .- (1 - delta) .* x) ./ d, eps(), Inf)
+    return pdf.(phi, pdf_arg) ./ d
 end
 
 n = 10000  # Number of observations at each date t
@@ -482,12 +482,12 @@ T = 30     # Compute density of k_t at 1,...,T+1
 
 # Generate matrix s.t. t-th column is n observations of k_t
 k = zeros(n, T)
-A = rand!(ϕ, zeros(n, T))
+A = rand!(phi, zeros(n, T))
 
 # Draw first column from initial distribution
-k[:, 1] = rand(ψ_0, n) ./ 2  # divide by 2 to match scale = 0.5 in py version
-for t in 1:T-1
-    k[:, t+1] = s*A[:, t] .* k[:, t].^α + (1-δ) .* k[:, t]
+k[:, 1] = rand(psi_0, n) ./ 2  # divide by 2 to match scale = 0.5 in py version
+for t in 1:(T - 1)
+    k[:, t + 1] = s * A[:, t] .* k[:, t] .^ alpha + (1 - delta) .* k[:, t]
 end
 
 # Generate T instances of LAE using this data, one for each date t
@@ -498,9 +498,9 @@ ygrid = range(0.01, 4, length = 200)
 laes_plot = []
 colors = []
 for i in 1:T
-    ψ = laes[i]
-    push!(laes_plot, lae_est(ψ , ygrid))
-    push!(colors,  RGBA(0, 0, 0, 1 - (i - 1)/T))
+    psi = laes[i]
+    push!(laes_plot, lae_est(psi, ygrid))
+    push!(colors, RGBA(0, 0, 0, 1 - (i - 1) / T))
 end
 plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2,
      xlabel = "capital", legend = :none)
@@ -823,13 +823,13 @@ Use the same parameters.
 For the four initial distributions, use the beta distribution and shift the random draws as shown below
 
 ```{code-block} julia
-ψ_0 = Beta(5.0, 5.0)  # Initial distribution
+psi_0 = Beta(5.0, 5.0)  # Initial distribution
 n = 1000
 # .... more setup
 
 for i in 1:4
     # .... some code
-    rand_draws = (rand(ψ_0, n) .+ 2.5i) ./ 2
+    rand_draws = (rand(psi_0, n) .+ 2.5i) ./ 2
 ```
 
 (statd_ex3)=
@@ -925,30 +925,31 @@ Random.seed!(42);  # reproducible results
 ```
 
 ```{code-cell} julia
-ϕ = Normal()
+phi = Normal()
 n = 500
-θ = 0.8
-d = sqrt(1.0 - θ^2)
-δ = θ / d
+theta = 0.8
+d = sqrt(1.0 - theta^2)
+delta = theta / d
 
 # true density of TAR model
-ψ_star(y) = 2 .* pdf.(ϕ, y) .* cdf.(ϕ, δ * y)
+psi_star(y) = 2 .* pdf.(phi, y) .* cdf.(phi, delta * y)
 
 # Stochastic kernel for the TAR model.
-p_TAR(x, y) = pdf.(ϕ, (y .- θ .* abs.(x)) ./ d) ./ d
+p_TAR(x, y) = pdf.(phi, (y .- theta .* abs.(x)) ./ d) ./ d
 
-Z = rand(ϕ, n)
+Z = rand(phi, n)
 X = zeros(n)
-for t in 1:n-1
-    X[t+1] = θ * abs(X[t]) + d * Z[t]
+for t in 1:(n - 1)
+    X[t + 1] = theta * abs(X[t]) + d * Z[t]
 end
 
-ψ_est(a) = lae_est(LAE(p_TAR, X), a)
+psi_est(a) = lae_est(LAE(p_TAR, X), a)
 k_est = kde(X)
 
 ys = range(-3, 3, length = 200)
-plot(ys, ψ_star(ys), color=:blue, lw = 2, alpha = 0.6, label = "true")
-plot!(ys, ψ_est(ys), color=:green, lw = 2, alpha = 0.6, label = "look ahead estimate")
+plot(ys, psi_star(ys), color = :blue, lw = 2, alpha = 0.6, label = "true")
+plot!(ys, psi_est(ys), color = :green, lw = 2, alpha = 0.6,
+      label = "look ahead estimate")
 plot!(k_est.x, k_est.density, color = :black, lw = 2, alpha = 0.6,
       label = "kernel based estimate")
 ```
@@ -977,20 +978,20 @@ Random.seed!(42);  # reproducible results
 
 ```{code-cell} julia
 s = 0.2
-δ = 0.1
-a_σ = 0.4  # A = exp(B) where B ~ N(0, a_σ)
-α = 0.4    # We set f(k) = k**α
-ψ_0 = Beta(5.0, 5.0)  # Initial distribution
-ϕ = LogNormal(0.0, a_σ)
+delta = 0.1
+a_sigma = 0.4  # A = exp(B) where B ~ N(0, a_sigma)
+alpha = 0.4    # We set f(k) = k**alpha
+psi_0 = Beta(5.0, 5.0)  # Initial distribution
+phi = LogNormal(0.0, a_sigma)
 
 function p_growth(x, y)
     # Stochastic kernel for the growth model with Cobb-Douglas production.
     # Both x and y must be strictly positive.
 
-        d = s * x.^α
+    d = s * x .^ alpha
 
-    pdf_arg = clamp.((y .- (1-δ) .* x) ./ d, eps(), Inf)
-    return pdf.(ϕ, pdf_arg) ./ d
+    pdf_arg = clamp.((y .- (1 - delta) .* x) ./ d, eps(), Inf)
+    return pdf.(phi, pdf_arg) ./ d
 end
 
 n = 1000  # Number of observations at each date t
@@ -1002,29 +1003,29 @@ laes_plot = zeros(length(ygrid), 4T)
 colors = []
 for i in 1:4
     k = zeros(n, T)
-    A = rand!(ϕ, zeros(n, T))
+    A = rand!(phi, zeros(n, T))
 
     # Draw first column from initial distribution
     # match scale = 0.5 and loc = 2i in julia version
-    k[:, 1] = (rand(ψ_0, n) .+ 2.5i) ./ 2
-    for t in 1:T-1
-        k[:, t+1] = s * A[:, t] .* k[:, t].^α + (1 - δ) .* k[:, t]
+    k[:, 1] = (rand(psi_0, n) .+ 2.5i) ./ 2
+    for t in 1:(T - 1)
+        k[:, t + 1] = s * A[:, t] .* k[:, t] .^ alpha + (1 - delta) .* k[:, t]
     end
 
     # Generate T instances of LAE using this data, one for each date t
     laes = [LAE(p_growth, k[:, t]) for t in T:-1:1]
     ind = i
     for j in 1:T
-        ψ = laes[j]
-        laes_plot[:, ind] = lae_est(ψ, ygrid)
+        psi = laes[j]
+        laes_plot[:, ind] = lae_est(psi, ygrid)
         ind = ind + 4
-        push!(colors,  RGBA(0, 0, 0, 1 - (j - 1) / T))
+        push!(colors, RGBA(0, 0, 0, 1 - (j - 1) / T))
     end
 end
 
 #colors = reshape(reshape(colors, T, 4)', 4*T, 1)
 colors = reshape(colors, 1, length(colors))
-plot(ygrid, laes_plot, layout = (2,2), color = colors,
+plot(ygrid, laes_plot, layout = (2, 2), color = colors,
      legend = :none, xlabel = "capital", xlims = (0, xmax))
 ```
 
@@ -1057,9 +1058,9 @@ n = 20
 k = 5000
 J = 6
 
-θ = 0.9
-d = sqrt(1 - θ^2)
-δ = θ / d
+theta = 0.9
+d = sqrt(1 - theta^2)
+delta = theta / d
 
 initial_conditions = range(8, 0, length = J)
 
@@ -1076,10 +1077,10 @@ for j in 1:J
     labels = []
     labels = vcat(labels, ones(k, 1))
     for t in 2:n
-        X[:, t] = θ .* abs.(X[:, t-1]) .+ d .* Z[:, t, j]
-        labels = vcat(labels, t*ones(k, 1))
+        X[:, t] = theta .* abs.(X[:, t - 1]) .+ d .* Z[:, t, j]
+        labels = vcat(labels, t * ones(k, 1))
     end
-    X = reshape(X, n*k, 1)
+    X = reshape(X, n * k, 1)
     push!(data, X)
     push!(x_labels, labels)
 end
