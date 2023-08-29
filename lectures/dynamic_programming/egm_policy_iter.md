@@ -215,7 +215,7 @@ The first step is to bring in the model that we used in the {doc}`Coleman policy
 ```{code-cell} julia
 # model
 
-Model = @with_kw (α = 0.65, # productivity parameter
+Model(α = 0.65, # productivity parameter
                   β = 0.95, # discount factor
                   γ = 1.0,  # risk aversion
                   μ = 0.0,  # lognorm(μ, σ)
@@ -228,6 +228,7 @@ Model = @with_kw (α = 0.65, # productivity parameter
                   f = k-> k^α, # production function
                   f′ = k -> α*k^(α-1), # f'
                   grid = range(grid_min, grid_max, length = grid_size)) # grid
+                  = (;α,β ,γ,μ ,s ,grid_min,grid_max ,grid_size ,u,u′ ,f ,f′,grid )
 ```
 
 Next we generate an instance

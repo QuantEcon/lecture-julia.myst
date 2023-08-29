@@ -464,7 +464,7 @@ Here's an object containing data from the log-linear growth model we used in the
 
 ```{code-cell} julia
 isoelastic(c, γ) = isone(γ) ? log(c) : (c^(1 - γ) - 1) / (1 - γ)
-Model = @with_kw (α = 0.65,                            # Productivity parameter
+Model(α = 0.65,                            # Productivity parameter
                   β = 0.95,                            # Discount factor
                   γ = 1.0,                             # Risk aversion
                   μ = 0.0,                             # First parameter in lognorm(μ, σ)
@@ -477,7 +477,7 @@ Model = @with_kw (α = 0.65,                            # Productivity parameter
                   ∂u∂c = c -> c^(-γ),                  # u′
                   f = k -> k^α,                        # production function
                   f′ = k -> α * k^(α - 1),             # f′
-                  )
+                  ) = (;α,β,γ ,μ,s,grid,grid_min,grid_max,grid_size,u,∂u∂c,f,f′)
 ```
 
 Next we generate an instance

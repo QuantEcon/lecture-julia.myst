@@ -361,11 +361,11 @@ using Parameters, Plots, QuantEcon, Random
 ```
 
 ```{code-cell} julia
-ConsumptionProblem = @with_kw (β = 0.96,
-                               y = [2.0, 1.5],
-                               b0 = 3.0,
-                               P = [0.8 0.2
-                                    0.4 0.6])
+ConsumptionProblem(β = 0.96,
+                  y = [2.0, 1.5],
+                  b0 = 3.0,
+                  P = [0.8 0.2
+                      0.4 0.6]) =  (; β ,y,b0,P)
 
 function consumption_complete(cp)
 
