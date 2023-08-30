@@ -47,7 +47,7 @@ Once separation enters the picture, the agent comes to view
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Expectations, LaTeXStrings, Parameters, NLsolve, Plots
+using Distributions, Expectations, LaTeXStrings,NLsolve, Plots
 ```
 
 ## The Model
@@ -233,44 +233,45 @@ using Test
 ```
 
 ```{code-cell} julia
-using Distributions, LinearAlgebra, Expectations, Parameters, NLsolve, Plots
+using Distributions, LinearAlgebra, Expectations, NLsolve, Plots
 
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
                             iter = 2_000)
-    (; α, β, σ, c, γ, w, dist, u) = mcm
+    (; alpha, beta, sigma, c, gamma, w, dist, u) = mcm
 
     # parameter validation
     @assert c > 0.0
     @assert minimum(w) > 0.0 # perhaps not strictly necessary, but useful here
 
     # necessary objects
-    u_w = u.(w, σ)
-    u_c = u(c, σ)
+    u_w = u.(w, sigma)
+    u_c = u(c, sigma)
     E = expectation(dist) # expectation operator for wage distribution
 
     # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
     function T(x)
-        V = x[1:end-1]
+        V = x[1:(end - 1)]
         U = x[end]
-        [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
+        [u_w + beta * ((1 - alpha) * V .+ alpha * U);
+         u_c + beta * (1 - gamma) * U + beta * gamma * E * max.(U, V)]
     end
 
     # value function iteration
     x_iv = [V_iv; U_iv] # initial x val
     xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol, m = 0).zero
-    V = xstar[1:end-1]
+    V = xstar[1:(end - 1)]
     U = xstar[end]
 
     # compute the reservation wage
     wbarindex = searchsortedfirst(V .- U, 0.0)
     if wbarindex >= length(w) # if this is true, you never want to accept
-        w̄ = Inf
+        w_bar = Inf
     else
-        w̄ = w[wbarindex] # otherwise, return the number
+        w_bar = w[wbarindex] # otherwise, return the number
     end
 
     # return a NamedTuple, so we can select values by name
-    return (V = V, U = U, w̄ = w̄)
+    return (; V, U, w_bar)
 end
 ```
 
@@ -284,28 +285,29 @@ We'll use the default parameterizations found in the code above.
 
 ```{code-cell} julia
 # a default utility function
-u(c, σ) = (c^(1 - σ) - 1) / (1 - σ)
+u(c, sigma) = (c^(1 - sigma) - 1) / (1 - sigma)
 
 # model constructor
-McCallModel = @with_kw (α = 0.2,
-    β = 0.98, # discount rate
-    γ = 0.7,
-    c = 6.0, # unemployment compensation
-    σ = 2.0,
-    u = u, # utility function
-    w = range(10, 20, length = 60), # wage values
-    dist = BetaBinomial(59, 600, 400)) # distribution over wage values
+function McCallModel(;alpha = 0.2,
+                     beta = 0.98, # discount rate
+                     gamma = 0.7,
+                     c = 6.0, # unemployment compensation
+                     sigma = 2.0,
+                     u = u, # utility function
+                     w = range(10, 20, length = 60), # wage values
+                     dist = BetaBinomial(59, 600, 400)) # distribution over wage values
+    return (; alpha, beta, gamma, c, sigma, u, w, dist)
+end
 ```
 
 ```{code-cell} julia
 # plots setting
 
-
 mcm = McCallModel()
 (; V, U) = solve_mccall_model(mcm)
 U_vec = fill(U, length(mcm.w))
 
-plot(mcm.w, [V U_vec], lw = 2, α = 0.7, label = [L"V" L"U"])
+plot(mcm.w, [V U_vec], lw = 2, alpha = 0.7, label = [L"V" L"U"])
 ```
 
 ```{code-cell} julia
@@ -406,7 +408,7 @@ Plot the reservation wage against the job offer rate $\gamma$.
 Use
 
 ```{code-cell} julia
-γ_vals = range(0.05,  0.95, length = 25)
+gamma_vals = range(0.05, 0.95, length = 25)
 ```
 
 Interpret your results.
@@ -420,25 +422,25 @@ we can create an array for reservation wages for different values of $c$,
 $\beta$ and $\alpha$ and plot the results like so
 
 ```{code-cell} julia
-c_vals = range(2,  12, length = 25)
+c_vals = range(2, 12, length = 25)
 
 models = [McCallModel(c = cval) for cval in c_vals]
 sols = solve_mccall_model.(models)
-w̄_vals = [sol.w̄ for sol in sols]
+w_bar_vals = [sol.w_bar for sol in sols]
 
 plot(c_vals,
-    w̄_vals,
-    lw = 2,
-    α = 0.7,
-    xlabel = "unemployment compensation",
-    ylabel = "reservation wage",
-    label = L"$\overline{w}$ as a function of $c$")
+     w_bar_vals,
+     lw = 2,
+     alpha = 0.7,
+     xlabel = "unemployment compensation",
+     ylabel = "reservation wage",
+     label = L"$\overline{w}$ as a function of $c$")
 ```
 
 Note that we could've done the above in one pass (which would be important if, for example, the parameter space was quite large).
 
 ```{code-cell} julia
-w̄_vals = [solve_mccall_model(McCallModel(c = cval)).w̄ for cval in c_vals];
+w_bar_vals = [solve_mccall_model(McCallModel(c = cval)).w_bar for cval in c_vals];
 # doesn't allocate new arrays for models and solutions
 ```
 
@@ -447,9 +449,9 @@ w̄_vals = [solve_mccall_model(McCallModel(c = cval)).w̄ for cval in c_vals];
 tags: [remove-cell]
 ---
 @testset "Solutions 1 Tests" begin
-    #test w̄_vals[10] ≈ 11.35593220338983
+    #test w_bar_vals[10] ≈ 11.35593220338983
     @test c_vals[1] == 2 && c_vals[end] == 12 && length(c_vals) == 25
-    #test w̄_vals[17] - c_vals[17] ≈ 4.72316384180791
+    #test w_bar_vals[17] - c_vals[17] ≈ 4.72316384180791
     # Just a sanity check on how these things relate.
 end
 ```
@@ -459,14 +461,15 @@ end
 Similar to above, we can plot $\bar w$ against $\gamma$ as follows
 
 ```{code-cell} julia
-γ_vals = range(0.05,  0.95, length = 25)
+gamma_vals = range(0.05, 0.95, length = 25)
 
-models = [McCallModel(γ = γval) for γval in γ_vals]
+models = [McCallModel(gamma = gammaval) for gammaval in gamma_vals]
 sols = solve_mccall_model.(models)
-w̄_vals = [sol.w̄ for sol in sols]
+w_bar_vals = [sol.w_bar for sol in sols]
 
-plot(γ_vals, w̄_vals, lw = 2, α = 0.7, xlabel = "job offer rate",
-     ylabel = "reservation wage", label = L"$\overline{w}$ as a function of $\gamma$")
+plot(gamma_vals, w_bar_vals, lw = 2, alpha = 0.7, xlabel = "job offer rate",
+     ylabel = "reservation wage",
+     label = L"$\overline{w}$ as a function of $\gamma$")
 ```
 
 ```{code-cell} julia
@@ -474,8 +477,8 @@ plot(γ_vals, w̄_vals, lw = 2, α = 0.7, xlabel = "job offer rate",
 tags: [remove-cell]
 ---
 @testset "Solutions 2 Tests" begin
-    #test w̄_vals[17] ≈ 11.35593220338983 # same as w̄_vals[10] before.
-    @test γ_vals[1] ≈ 0.05 && γ_vals[end] ≈ 0.95 && length(γ_vals) == 25
+    #test w_bar_vals[17] ≈ 11.35593220338983 # same as w_bar_vals[10] before.
+    @test gamma_vals[1] ≈ 0.05 && gamma_vals[end] ≈ 0.95 && length(gamma_vals) == 25
 end
 ```
 
