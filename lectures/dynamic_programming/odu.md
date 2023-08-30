@@ -161,7 +161,7 @@ using Test # At the head of every lecture.
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, LaTeXStrings, Plots, QuantEcon, Interpolations, Parameters
+using Distributions, LaTeXStrings, Plots, QuantEcon, Interpolations
 
 w_max = 2
 x = range(0, w_max, length = 200)
@@ -212,7 +212,7 @@ The code is as follows.
 # use key word argment
 function SearchProblem(; beta = 0.95, c = 0.6, F_a = 1, F_b = 1,
                        G_a = 3, G_b = 1.2, w_max = 2.0,
-                       w_grid_size = 40, π_grid_size = 40)
+                       w_grid_size = 40, pi_grid_size = 40)
     F = Beta(F_a, F_b)
     G = Beta(G_a, G_b)
 
@@ -220,26 +220,26 @@ function SearchProblem(; beta = 0.95, c = 0.6, F_a = 1, F_b = 1,
     f(x) = pdf.(F, x / w_max) / w_max
     g(x) = pdf.(G, x / w_max) / w_max
 
-    π_min = 1e-3  # avoids instability
-    π_max = 1 - π_min
+    pi_min = 1e-3  # avoids instability
+    pi_max = 1 - pi_min
 
     w_grid = range(0, w_max, length = w_grid_size)
-    π_grid = range(π_min, π_max, length = π_grid_size)
+    pi_grid = range(pi_min, pi_max, length = pi_grid_size)
 
     nodes, weights = qnwlege(21, 0.0, w_max)
 
-    return (beta = beta, c = c, F = F, G = G, f = f,
-            g = g, n_w = w_grid_size, w_max = w_max,
-            w_grid = w_grid, n_π = π_grid_size, π_min = π_min,
-            π_max = π_max, π_grid = π_grid, quad_nodes = nodes,
+    return (; beta, c, F, G, f,
+            g, n_w = w_grid_size, w_max,
+            w_grid, n_pi = pi_grid_size, pi_min,
+            pi_max, pi_grid = pi_grid, quad_nodes = nodes,
             quad_weights = weights)
 end
 
-function q(sp, w, π_val)
-    new_π = 1.0 / (1 + ((1 - π_val) * sp.g(w)) / (π_val * sp.f(w)))
+function q(sp, w, pi_val)
+    new_pi = 1.0 / (1 + ((1 - pi_val) * sp.g(w)) / (pi_val * sp.f(w)))
 
-    # Return new_π when in [π_min, π_max] and else end points
-    return clamp(new_π, sp.π_min, sp.π_max)
+    # Return new_pi when in [pi_min, pi_max] and else end points
+    return clamp(new_pi, sp.pi_min, sp.pi_max)
 end
 
 function T!(sp, v, out;
@@ -248,7 +248,7 @@ function T!(sp, v, out;
     (; f, g, beta, c) = sp
     nodes, weights = sp.quad_nodes, sp.quad_weights
 
-    vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v,
+    vf = extrapolate(interpolate((sp.w_grid, sp.pi_grid), v,
                                  Gridded(Linear())), Flat())
 
     # set up quadrature nodes/weights
@@ -258,18 +258,18 @@ function T!(sp, v, out;
         # calculate v1
         v1 = w / (1 - beta)
 
-        for (π_j, _π) in enumerate(sp.π_grid)
+        for (pi_j, _pi) in enumerate(sp.pi_grid)
             # calculate v2
             function integrand(m)
-                [vf(m[i], q.(Ref(sp), m[i], _π)) *
-                 (_π * f(m[i]) + (1 - _π) * g(m[i])) for i in 1:length(m)]
+                [vf(m[i], q.(Ref(sp), m[i], _pi)) *
+                 (_pi * f(m[i]) + (1 - _pi) * g(m[i])) for i in 1:length(m)]
             end
             integral = do_quad(integrand, nodes, weights)
             # integral = do_quad(integrand, q_nodes, q_weights)
             v2 = c + beta * integral
 
             # return policy if asked for, otherwise return max of values
-            out[w_i, π_j] = ret_policy ? v1 > v2 : max(v1, v2)
+            out[w_i, pi_j] = ret_policy ? v1 > v2 : max(v1, v2)
         end
     end
     return out
@@ -278,7 +278,7 @@ end
 function T(sp, v;
            ret_policy = false)
     out_type = ret_policy ? Bool : Float64
-    out = zeros(out_type, sp.n_w, sp.n_π)
+    out = zeros(out_type, sp.n_w, sp.n_pi)
     T!(sp, v, out, ret_policy = ret_policy)
 end
 
@@ -290,15 +290,15 @@ function res_wage_operator!(sp, phi, out)
     # simplify name
     (; f, g, beta, c) = sp
 
-    # Construct interpolator over π_grid, given phi
-    phi_f = LinearInterpolation(sp.π_grid, phi, extrapolation_bc = Line())
+    # Construct interpolator over pi_grid, given phi
+    phi_f = LinearInterpolation(sp.pi_grid, phi, extrapolation_bc = Line())
 
     # set up quadrature nodes/weights
     q_nodes, q_weights = qnwlege(7, 0.0, sp.w_max)
 
-    for (i, _π) in enumerate(sp.π_grid)
+    for (i, _pi) in enumerate(sp.pi_grid)
         function integrand(x)
-            max.(x, phi_f.(q.(Ref(sp), x, _π))) .* (_π * f(x) + (1 - _π) * g(x))
+            max.(x, phi_f.(q.(Ref(sp), x, _pi))) .* (_pi * f(x) + (1 - _pi) * g(x))
         end
         integral = do_quad(integrand, q_nodes, q_weights)
         out[i] = (1 - beta) * c + beta * integral
@@ -327,25 +327,25 @@ Here's the value function:
 
 ```{code-cell} julia
 # Set up the problem and initial guess, solve by VFI
-sp = SearchProblem(; w_grid_size = 100, π_grid_size = 100)
-v_init = fill(sp.c / (1 - sp.beta), sp.n_w, sp.n_π)
+sp = SearchProblem(; w_grid_size = 100, pi_grid_size = 100)
+v_init = fill(sp.c / (1 - sp.beta), sp.n_w, sp.n_pi)
 f(x) = T(sp, x)
 v = compute_fixed_point(f, v_init)
 policy = get_greedy(sp, v)
 
 # Make functions for the linear interpolants of these
-vf = extrapolate(interpolate((sp.w_grid, sp.π_grid), v, Gridded(Linear())),
+vf = extrapolate(interpolate((sp.w_grid, sp.pi_grid), v, Gridded(Linear())),
                  Flat())
-pf = extrapolate(interpolate((sp.w_grid, sp.π_grid), policy,
+pf = extrapolate(interpolate((sp.w_grid, sp.pi_grid), policy,
                              Gridded(Linear())), Flat())
 
 function plot_value_function(; w_plot_grid_size = 100,
-                             π_plot_grid_size = 100)
-    π_plot_grid = range(0.001, 0.99, length = π_plot_grid_size)
+                             pi_plot_grid_size = 100)
+    pi_plot_grid = range(0.001, 0.99, length = pi_plot_grid_size)
     w_plot_grid = range(0, sp.w_max, length = w_plot_grid_size)
-    Z = [vf(w_plot_grid[j], π_plot_grid[i])
-         for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
-    p = contour(π_plot_grid, w_plot_grid, Z, levels = 15, alpha = 0.6,
+    Z = [vf(w_plot_grid[j], pi_plot_grid[i])
+         for j in 1:w_plot_grid_size, i in 1:pi_plot_grid_size]
+    p = contour(pi_plot_grid, w_plot_grid, Z, levels = 15, alpha = 0.6,
                 fill = true, size = (400, 400), c = :lightrainbow)
     plot!(xlabel = L"\pi", ylabel = L"w", xguidefont = font(12))
     return p
@@ -359,12 +359,12 @@ The optimal policy:
 
 ```{code-cell} julia
 function plot_policy_function(; w_plot_grid_size = 100,
-                              π_plot_grid_size = 100)
-    π_plot_grid = range(0.001, 0.99, length = π_plot_grid_size)
+                              pi_plot_grid_size = 100)
+    pi_plot_grid = range(0.001, 0.99, length = pi_plot_grid_size)
     w_plot_grid = range(0, sp.w_max, length = w_plot_grid_size)
-    Z = [pf(w_plot_grid[j], π_plot_grid[i])
-         for j in 1:w_plot_grid_size, i in 1:π_plot_grid_size]
-    p = contour(π_plot_grid, w_plot_grid, Z, levels = 1, alpha = 0.6, fill = true,
+    Z = [pf(w_plot_grid[j], pi_plot_grid[i])
+         for j in 1:w_plot_grid_size, i in 1:pi_plot_grid_size]
+    p = contour(pi_plot_grid, w_plot_grid, Z, levels = 1, alpha = 0.6, fill = true,
                 size = (400, 400), c = :coolwarm)
     plot!(xlabel = L"\pi", ylabel = "wage", xguidefont = font(12), cbar = false)
     annotate!(0.4, 1.0, "reject")
@@ -555,15 +555,15 @@ time is much shorter than that of the value function approach in
 `examples/odu_vfi_plots.jl`.
 
 ```{code-cell} julia
-sp = SearchProblem(π_grid_size = 50)
+sp = SearchProblem(pi_grid_size = 50)
 
-phi_init = ones(sp.n_π)
+phi_init = ones(sp.n_pi)
 f_ex1(x) = res_wage_operator(sp, x)
-w̄ = compute_fixed_point(f_ex1, phi_init)
+w_bar = compute_fixed_point(f_ex1, phi_init)
 
-plot(sp.π_grid, w̄, linewidth = 2, color = :black,
+plot(sp.pi_grid, w_bar, linewidth = 2, color = :black,
      fillrange = 0, fillalpha = 0.15, fillcolor = :blue)
-plot!(sp.π_grid, 2 * ones(length(w̄)), linewidth = 0, fillrange = w̄,
+plot!(sp.pi_grid, 2 * ones(length(w_bar)), linewidth = 0, fillrange = w_bar,
       fillalpha = 0.12, fillcolor = :green, legend = :none)
 plot!(ylims = (0, 2), annotations = [(0.42, 1.2, "reject"),
           (0.7, 1.8, "accept")])
@@ -585,29 +585,29 @@ The code takes a few minutes to run.
 using Random
 Random.seed!(42)
 
-# Set up model and compute the function w̄
-sp = SearchProblem(π_grid_size = 50, F_a = 1, F_b = 1)
-phi_init = ones(sp.n_π)
+# Set up model and compute the function w_bar
+sp = SearchProblem(pi_grid_size = 50, F_a = 1, F_b = 1)
+phi_init = ones(sp.n_pi)
 g(x) = res_wage_operator(sp, x)
-w̄_vals = compute_fixed_point(g, phi_init)
-w̄ = extrapolate(interpolate((sp.π_grid,), w̄_vals,
+w_bar_vals = compute_fixed_point(g, phi_init)
+w_bar = extrapolate(interpolate((sp.pi_grid,), w_bar_vals,
                              Gridded(Linear())), Flat())
 
 # Holds the employment state and beliefs of an individual agent.
 mutable struct Agent{TF <: AbstractFloat, TI <: Integer}
-    _π::TF
+    _pi::TF
     employed::TI
 end
 
-Agent(_π = 1e-3) = Agent(_π, 1)
+Agent(_pi = 1e-3) = Agent(_pi, 1)
 
 function update!(ag, H)
     if ag.employed == 0
         w = rand(H) * 2   # account for scale in julia
-        if w >= w̄(ag._π)
+        if w >= w_bar(ag._pi)
             ag.employed = 1
         else
-            ag._π = 1.0 ./ (1 .+ ((1 - ag._π) .* sp.g(w)) ./ (ag._π * sp.f(w)))
+            ag._pi = 1.0 ./ (1 .+ ((1 - ag._pi) .* sp.g(w)) ./ (ag._pi * sp.f(w)))
         end
     end
     nothing

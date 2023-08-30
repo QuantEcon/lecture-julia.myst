@@ -545,7 +545,7 @@ to solve finite and infinite horizon linear quadratic control problems.
 In the module, the various updating, simulation and fixed point methods  act on a type  called `LQ`, which includes
 
 * Instance data:
-    * The required parameters $Q, R, A, B$ and optional parameters C, beta, T, R_f, N specifying a given LQ model
+    * The required parameters $Q, R, A, B$ and optional parameters C, $\beta$, T, R_f, N specifying a given LQ model
         * set $T$ and $R_f$ to `None` in the infinite horizon case
         * set `C = None` (or zero) in the deterministic case
     * the value function and policy data
@@ -654,7 +654,7 @@ Random.seed!(42);
 r = 0.05
 beta = 1 / (1 + r)
 T = 45
-c̄ = 2.0
+c_bar = 2.0
 sigma = 0.25
 mu = 1.0
 q = 1e6
@@ -664,7 +664,7 @@ Q = 1.0
 R = zeros(2, 2)
 Rf = zeros(2, 2);
 Rf[1, 1] = q;
-A = [1+r -c̄+mu; 0 1]
+A = [1+r -c_bar+mu; 0 1]
 B = [-1.0, 0]
 C = [sigma, 0]
 
@@ -675,7 +675,7 @@ xp, up, wp = compute_sequence(lq, x0)
 
 # convert back to assets, consumption and income
 assets = vec(xp[1, :]) # a_t
-c = vec(up .+ c̄) # c_t
+c = vec(up .+ c_bar) # c_t
 income = vec(sigma * wp[1, 2:end] .+ mu) # y_t
 
 # plot results
@@ -741,7 +741,7 @@ xp, up, wp = compute_sequence(lq, x0)
 
 # convert back to assets, consumption and income
 assets = vec(xp[1, :]) # a_t
-c = vec(up .+ c̄) # c_t
+c = vec(up .+ c_bar) # c_t
 income = vec(sigma * wp[1, 2:end] .+ mu) # y_t
 
 # plot results
@@ -1304,7 +1304,7 @@ $p(t) = m_1 t + m_2 t^2$ has an inverted U shape with
 r = 0.05
 beta = 1 / (1 + r)
 T = 50
-c̄ = 1.5
+c_bar = 1.5
 sigma = 0.15
 mu = 2
 q = 1e4
@@ -1316,7 +1316,7 @@ Q = 1.0
 R = zeros(4, 4)
 Rf = zeros(4, 4);
 Rf[1, 1] = q;
-A = [1+r -c̄ m1 m2;
+A = [1+r -c_bar m1 m2;
      0 1 0 0;
      0 1 1 0;
      0 1 2 1]
@@ -1330,7 +1330,7 @@ xp, up, wp = compute_sequence(lq, x0)
 
 # convert results back to assets, consumption and income
 ap = vec(xp[1, 1:end]) # assets
-c = vec(up .+ c̄) # consumption
+c = vec(up .+ c_bar) # consumption
 time = 1:T
 income = sigma * vec(wp[1, 2:end]) + m1 * time + m2 * time .^ 2 # income
 
@@ -1356,7 +1356,7 @@ r = 0.05
 beta = 1 / (1 + r)
 T = 60
 K = 40
-c̄ = 4
+c_bar = 4
 sigma = 0.35
 mu = 4
 q = 1e4
@@ -1369,7 +1369,7 @@ Q = 1.0
 R = zeros(4, 4)
 Rf = zeros(4, 4);
 Rf[1, 1] = q;
-A = [1+r s-c̄ 0 0;
+A = [1+r s-c_bar 0 0;
      0 1 0 0;
      0 1 1 0;
      0 1 2 1]
@@ -1392,7 +1392,7 @@ Rf2 = lq_retired_proxy.P
 # formulate LQ problem 2 (working life)
 Q = 1.0
 R = zeros(4, 4)
-A = [1+r -c̄ m1 m2;
+A = [1+r -c_bar m1 m2;
      0 1 0 0;
      0 1 1 0;
      0 1 2 1]
@@ -1414,7 +1414,7 @@ xp = [xp_w xp_r[:, 2:end]]
 assets = vec(xp[1, :]) # assets
 
 up = [up_w up_r]
-c = vec(up .+ c̄) # consumption
+c = vec(up .+ c_bar) # consumption
 
 time = 1:K
 income_w = sigma * vec(wp_w[1, 2:(K + 1)]) + m1 .* time + m2 .* time .^ 2 # income

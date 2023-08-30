@@ -165,7 +165,7 @@ The bottom panel presents mixtures of these distributions, with various mixing p
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, LaTeXStrings, Parameters, Printf, Random, Roots, Plots
+using Distributions, LaTeXStrings, Printf, Random, Roots, Plots
 
 ```
 
@@ -426,7 +426,7 @@ function choice(p, d0, d1, L0, L1, c)
 end
 ```
 
-Next we solve a problem by finding the alpha, beta values for the decision rule
+Next we solve a problem by finding the $\alpha$, $\beta$ values for the decision rule
 
 ```{code-cell} julia
 function decision_rule(d0, d1, L0, L1, c)
@@ -449,8 +449,10 @@ function decision_rule(d0, d1, L0, L1, c)
     # x₁ to never again accepting x₁ at the various indifference points
     # Find alpha by checking for a permanent transition from the area accepting of
     # x₀ to never again accepting x₀ at the various indifference points
-    beta = findlast((left .== 2) .& (right .≠ 2)) |> (x -> isa(x, Int) ? roots[x] : 0)
-    alpha = findfirst((left .≠ 1) .& (right .== 1)) |> (x -> isa(x, Int) ? roots[x] : 1)
+    beta = findlast((left .== 2) .& (right .≠ 2)) |>
+           (x -> isa(x, Int) ? roots[x] : 0)
+    alpha = findfirst((left .≠ 1) .& (right .== 1)) |>
+            (x -> isa(x, Int) ? roots[x] : 1)
     if beta < alpha
         @printf("Accept x1 if p <= %.2f\nContinue to draw if %.2f <= p <= %.2f
                 \nAccept x0 if p >= %.2f", beta, beta, alpha, alpha)
@@ -511,7 +513,7 @@ function Problem(d0 = Beta(1, 1), d1 = Beta(9, 9),
                  L0 = 2, L1 = 2,
                  c = 0.2, p = 0.5,
                  n = 100, return_output = false)
-    (; d0, d1, L0, L1, c, p, n, return_output)
+    return (; d0, d1, L0, L1, c, p, n, return_output)
 end;
 ```
 

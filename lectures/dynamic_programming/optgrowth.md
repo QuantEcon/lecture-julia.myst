@@ -464,7 +464,7 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using LaTeXStrings, Plots, Interpolations, NLsolve, Optim, Random, Parameters
+using LaTeXStrings, Plots, Interpolations, NLsolve, Optim, Random
 using Optim: maximum, maximizer
 ```
 
@@ -500,14 +500,15 @@ Here's a function that implements the Bellman operator using linear interpolatio
 
 ```{code-cell} julia
 function T(w; p, tol = 1e-10)
-    (; beta, u, f, ξ, y) = p # unpack parameters
+    (; beta, u, f, Xi, y) = p # unpack parameters
     w_func = LinearInterpolation(y, w)
 
     Tw = similar(w)
     sigma = similar(w)
     for (i, y_val) in enumerate(y)
         # solve maximization for each point in y, using y itself as initial condition.
-        results = maximize(c -> u(c; p) + beta * mean(w_func.(f(y_val - c; p) .* ξ)),
+        results = maximize(c -> u(c; p) +
+                                beta * mean(w_func.(f(y_val - c; p) .* Xi)),
                            tol, y_val)
         Tw[i] = maximum(results)
         sigma[i] = maximizer(results)
@@ -571,8 +572,8 @@ function # named tuples defaults
 OptimalGrowthModel(alpha = 0.4, beta = 0.96, mu = 0.0, s = 0.1,
                    u = u, f = f, # defaults defined above
                    y = range(1e-5, 4.0, length = 200), # grid on y
-                   ξ = exp.(mu .+ s * randn(250)))
-    (; alpha, beta, mu, s, u, f, y, ξ)
+                   Xi = exp.(mu .+ s * randn(250)))
+    (; alpha, beta, mu, s, u, f, y, Xi)
 end # named tuples defaults
 
 # True value and policy function

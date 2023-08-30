@@ -134,7 +134,7 @@ $$
 
 Interpretation:
 
-* draw $q$ from a beta distribution with shape parameters $(a, b)$
+* draw $q$ from a $\beta$ distribution with shape parameters $(a, b)$
 * run $n$ independent binary trials, each with success probability $q$
 * $p(k \,|\, n, a, b)$ is the probability of $k$ successes in these $n$ trials
 
@@ -196,9 +196,9 @@ function CareerWorkerProblem(; beta = 0.95,
     G_probs = pdf.(dist_G, support(dist_G))
     F_mean = sum(theta .* F_probs)
     G_mean = sum(epsilon .* G_probs)
-    return (beta = beta, N = N, B = B, theta = theta, epsilon = epsilon,
-            F_probs = F_probs, G_probs = G_probs,
-            F_mean = F_mean, G_mean = G_mean)
+    return (; beta, N, B, theta, epsilon,
+            F_probs, G_probs,
+            F_mean, G_mean)
 end
 
 function update_bellman!(cp, v, out; ret_policy = false)

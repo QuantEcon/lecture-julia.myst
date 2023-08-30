@@ -356,7 +356,7 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Parameters, Plots, QuantEcon, Random
+using Plots, QuantEcon, Random
 
 ```
 
@@ -379,10 +379,10 @@ function consumption_complete(cp)
     # Using equation (7) calculate b2
     b2 = (y2 - y1 - (Q[1, 1] - Q[2, 1] - 1) * b1) / (Q[1, 2] + 1 - Q[2, 2])
 
-    # Using equation (5) calculae c̄
-    c̄ = y1 - b0 + ([b1 b2] * Q[1, :])[1]
+    # Using equation (5) calculae c_bar
+    c_bar = y1 - b0 + ([b1 b2] * Q[1, :])[1]
 
-    return c̄, b1, b2
+    return c_bar, b1, b2
 end
 
 function consumption_incomplete(cp; N_simul = 150)
@@ -418,9 +418,9 @@ Let's test by checking that $\bar c$ and $b_2$ satisfy the budget constraint
 
 ```{code-cell} julia
 cp = ConsumptionProblem()
-c̄, b1, b2 = consumption_complete(cp)
+c_bar, b1, b2 = consumption_complete(cp)
 debt_complete = [b1, b2]
-isapprox((c̄ + b2 - cp.y[2] - debt_complete' * (cp.beta * cp.P)[2, :])[1], 0)
+isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.beta * cp.P)[2, :])[1], 0)
 ```
 
 ```{code-cell} julia
@@ -429,8 +429,8 @@ tags: [remove-cell]
 ---
 @testset "Budget Constraint Tests" begin
     # assert that the object above is always true
-    @test isapprox((c̄ + b2 - cp.y[2] - debt_complete' * (cp.beta * cp.P)[2, :])[1], 0)
-    @test c̄ ≈ 1.7241558441558444 # default example invariance
+    @test isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.beta * cp.P)[2, :])[1], 0)
+    @test c_bar ≈ 1.7241558441558444 # default example invariance
     @test debt_complete[2] ≈ 2.188311688311688 # one of the other objects
 end
 ```
@@ -585,14 +585,14 @@ Random.seed!(42)
 N_simul = 150
 cp = ConsumptionProblem()
 
-c̄, b1, b2 = consumption_complete(cp)
+c_bar, b1, b2 = consumption_complete(cp)
 debt_complete = [b1, b2]
 
 c_path, debt_path, y_path, s_path = consumption_incomplete(cp, N_simul = N_simul)
 
 plt_cons = plot(title = "Consumption paths", xlabel = "Periods", ylim = [1.4, 2.1])
 plot!(plt_cons, 1:N_simul, c_path, label = "incomplete market", lw = 2)
-plot!(plt_cons, 1:N_simul, fill(c̄, N_simul), label = "complete market", lw = 2)
+plot!(plt_cons, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
 plot!(plt_cons, 1:N_simul, y_path, label = "income", lw = 2, alpha = 0.6,
       linestyle = :dash)
 plot!(plt_cons, legend = :bottom)
@@ -635,7 +635,7 @@ We can simply relabel variables to acquire tax-smoothing interpretations of our 
 plt_tax = plot(title = "Tax collection paths", x_label = "Periods",
                ylim = [1.4, 2.1])
 plot!(plt_tax, 1:N_simul, c_path, label = "incomplete market", lw = 2)
-plot!(plt_tax, 1:N_simul, fill(c̄, N_simul), label = "complete market", lw = 2)
+plot!(plt_tax, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
 plot!(plt_tax, 1:N_simul, y_path, label = "govt expenditures", alpha = 0.6,
       linestyle = :dash,
       lw = 2)
@@ -708,13 +708,13 @@ cp = ConsumptionProblem(beta, y, b0, P)
 Q = beta * P
 N_simul = 150
 
-c̄, b1, b2 = consumption_complete(cp)
+c_bar, b1, b2 = consumption_complete(cp)
 debt_complete = [b1, b2]
 
 println("P = $P")
 println("Q = $Q")
 println("Govt expenditures in peace and war = $y")
-println("Constant tax collections = $c̄")
+println("Constant tax collections = $c_bar")
 println("Govt assets in two states = $debt_complete")
 
 msg = """
@@ -731,9 +731,9 @@ println("Spending on Arrow war security in war = $AS2")
 
 println("\n")
 println("Government tax collections plus asset levels in peace and war")
-TB1 = c̄ + b1
+TB1 = c_bar + b1
 println("T+b in peace = $TB1")
-TB2 = c̄ + b2
+TB2 = c_bar + b2
 println("T+b in war = $TB2")
 
 println("\n")
@@ -746,10 +746,10 @@ println("total govt spending in war = $G2")
 println("\n")
 println("Let's see ex post and ex ante returns on Arrow securities")
 
-Π = 1 ./ Q    # reciprocal(Q)
-exret = Π
+Pi = 1 ./ Q    # reciprocal(Q)
+exret = Pi
 println("Ex post returns to purchase of Arrow securities = $exret")
-exant = Π .* P
+exant = Pi .* P
 println("Ex ante returns to purchase of Arrow securities = $exant")
 ```
 
@@ -758,7 +758,7 @@ println("Ex ante returns to purchase of Arrow securities = $exant")
 tags: [remove-cell]
 ---
 @testset "Peace and War Debt Tests" begin
-    #test c̄ ≈ 1.3116883116883118
+    #test c_bar ≈ 1.3116883116883118
     #test G2 ≈ 2.9350649350649354
     #test G1 ≈ 1.3116883116883118
     #test AS2 ≈ 0.9350649350649349

@@ -532,9 +532,9 @@ In the code below, we use the [LSS](https://github.com/QuantEcon/QuantEcon.jl/bl
   graph as the population distribution
 
 ```{code-cell} julia
-function income_consumption_debt_series(A, C, G, mu_0, Sigma_0, T = 150, npaths = 25)
-    lss = LSS(A, C, G, mu_0 = mu_0, Sigma_0 = Sigma_0)
-
+function income_consumption_debt_series(A, C, G, mu_0, Sigma_0, T = 150,
+                                        npaths = 25)
+    lss = LSS(A, C < G; mu_0, Sigma_0)
     # simulation/Moment Parameters
     moment_generator = moment_sequence(lss)
 

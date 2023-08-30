@@ -377,7 +377,7 @@ Here's some code that implements the Coleman operator.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using BenchmarkTools, Interpolations, LaTeXStrings, Parameters, Plots, Roots
+using BenchmarkTools, Interpolations, LaTeXStrings,  Plots, Roots
 using Optim, Random
 ```
 
@@ -389,12 +389,12 @@ using Test
 ```
 
 ```{code-cell} julia
-using BenchmarkTools, Interpolations, Parameters, Plots, Roots
+using BenchmarkTools, Interpolations, Plots, Roots
 
 ```
 
 ```{code-cell} julia
-function K!(Kg, g, grid, beta, ∂u∂c, f, f′, shocks)
+function K!(Kg, g, grid, beta, dudc, f, f_prime, shocks)
     # This function requires the container of the output value as argument Kg
 
     # Construct linear interpolation object
@@ -403,8 +403,8 @@ function K!(Kg, g, grid, beta, ∂u∂c, f, f′, shocks)
     # solve for updated consumption value
     for (i, y) in enumerate(grid)
         function h(c)
-            vals = ∂u∂c.(g_func.(f(y - c) * shocks)) .* f′(y - c) .* shocks
-            return ∂u∂c(c) - beta * mean(vals)
+            vals = dudc.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .* shocks
+            returndudc(c) - beta * mean(vals)
         end
         Kg[i] = find_zero(h, (1e-10, y - 1e-10))
     end
@@ -412,7 +412,9 @@ function K!(Kg, g, grid, beta, ∂u∂c, f, f′, shocks)
 end
 
 # The following function does NOT require the container of the output value as argument
-K(g, grid, beta, ∂u∂c, f, f′, shocks) = K!(similar(g), g, grid, beta, ∂u∂c, f, f′, shocks)
+function K(g, grid, beta, dudc, f, f_prime, shocks)
+    K!(similar(g), g, grid, beta, dudc, f, f_prime, shocks)
+end
 ```
 
 It has some similarities to the code for the Bellman operator in our {doc}`optimal growth lecture <../dynamic_programming/optgrowth>`.
@@ -473,10 +475,12 @@ function Model(alpha = 0.65,                            # Productivity parameter
                grid_max = 4.0,                      # Largest grid point
                grid_size = 200,                     # Number of grid points
                u = (c, gamma = gamma) -> isoelastic(c, gamma),  # utility function
-               ∂u∂c = c -> c^(-gamma),                  # u′
+               dudc = c -> c^(-gamma),                  # u_prime
                f = k -> k^alpha,                        # production function
-               f′ = k -> alpha * k^(alpha - 1))
-    (; alpha, beta, gamma, mu, s, grid, grid_min, grid_max, grid_size, u, ∂u∂c, f, f′)
+               f_prime = k -> alpha * k^(alpha - 1))
+    return (; alpha, beta, gamma, mu, s, grid, grid_min, grid_max, grid_size, u,
+            dudc, f,
+            f_prime)
 end
 ```
 
@@ -512,8 +516,8 @@ end
 ```{code-cell} julia
 function verify_true_policy(m, shocks, c_star)
     # compute (Kc_star)
-    (; grid, beta, ∂u∂c, f, f′) = m
-    c_star_new = K(c_star, grid, beta, ∂u∂c, f, f′, shocks)
+    (; grid, beta, dudc, f, f_prime) = m
+    c_star_new = K(c_star, grid, beta, dudc, f, f_prime, shocks)
 
     # plot c_star and Kc_star
     plot(grid, c_star, label = L"optimal policy $c^*$")
@@ -548,11 +552,11 @@ The initial condition we'll use is the one that eats the whole pie: $c(y) = y$
 
 ```{code-cell} julia
 function check_convergence(m, shocks, c_star, g_init; n_iter = 15)
-    (; grid, beta, ∂u∂c, f, f′) = m
+    (; grid, beta, dudc, f, f_prime) = m
     g = g_init
     plot(m.grid, g, lw = 2, alpha = 0.6, label = L"intial condition $c(y) = y$")
     for i in 1:n_iter
-        new_g = K(g, grid, beta, ∂u∂c, f, f′, shocks)
+        new_g = K(g, grid, beta, dudc, f, f_prime, shocks)
         g = new_g
         plot!(grid, g, lw = 2, alpha = 0.6, label = "")
     end
@@ -594,12 +598,12 @@ function iterate_updating(func, arg_init; sim_length = 20)
 end
 
 function compare_error(m, shocks, g_init, w_init; sim_length = 20)
-    (; grid, beta, u, ∂u∂c, f, f′) = m
+    (; grid, beta, u, dudc, f, f_prime) = m
     g, w = g_init, w_init
 
     # two functions for simplification
     bellman_single_arg(w) = T(w, grid, beta, u, f, shocks)
-    coleman_single_arg(g) = K(g, grid, beta, ∂u∂c, f, f′, shocks)
+    coleman_single_arg(g) = K(g, grid, beta, dudc, f, f_prime, shocks)
 
     g = iterate_updating(coleman_single_arg, grid, sim_length = 20)
     w = iterate_updating(bellman_single_arg, u.(grid), sim_length = 20)
@@ -741,12 +745,12 @@ m_ex = Model(gamma = 1.5);
 ```{code-cell} julia
 function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid);
                    sim_length = 20)
-    (; grid, beta, u, ∂u∂c, f, f′) = m
+    (; grid, beta, u, dudc, f, f_prime) = m
     # initial policy and value
     g, w = g_init, w_init
     # iteration
     bellman_single_arg(w) = T(w, grid, beta, u, f, shocks)
-    coleman_single_arg(g) = K(g, grid, beta, ∂u∂c, f, f′, shocks)
+    coleman_single_arg(g) = K(g, grid, beta, dudc, f, f_prime, shocks)
 
     g = iterate_updating(coleman_single_arg, grid, sim_length = 20)
     w = iterate_updating(bellman_single_arg, u.(m.grid), sim_length = 20)
@@ -772,13 +776,13 @@ It assumes that you've just run the code from the previous exercise
 
 ```{code-cell} julia
 function bellman(m, shocks)
-    (; grid, beta, u, ∂u∂c, f, f′) = m
+    (; grid, beta, u, dudc, f, f_prime) = m
     bellman_single_arg(w) = T(w, grid, beta, u, f, shocks)
     iterate_updating(bellman_single_arg, u.(grid), sim_length = 20)
 end
 function coleman(m, shocks)
-    (; grid, beta, ∂u∂c, f, f′) = m
-    coleman_single_arg(g) = K(g, grid, beta, ∂u∂c, f, f′, shocks)
+    (; grid, beta, dudc, f, f_prime) = m
+    coleman_single_arg(g) = K(g, grid, beta, dudc, f, f_prime, shocks)
     iterate_updating(coleman_single_arg, grid, sim_length = 20)
 end
 ```

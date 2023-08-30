@@ -44,7 +44,7 @@ kernelspec:
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Interpolations, Expectations, Parameters
+using Distributions, Interpolations, Expectations
 using LaTeXStrings, Plots, NLsolve, Random
 
 ```
@@ -191,7 +191,7 @@ function JvWorker(; A = 1.4,
                   grid_size = 50,
                   epsilon = 1e-4)
     G(x, phi) = A .* (x .* phi) .^ alpha
-    π_func = sqrt
+    pi_func = sqrt
     F = Beta(2, 2)
 
     # expectation operator
@@ -206,8 +206,8 @@ function JvWorker(; A = 1.4,
     # CoordInterpGrid below
     x_grid = range(epsilon, grid_max, length = grid_size)
 
-    return (A = A, alpha = alpha, beta = beta, x_grid = x_grid, G = G,
-            π_func = π_func, F = F, E = E, epsilon = epsilon)
+    return (; A, alpha, beta, x_grid, G,
+            pi_func, F, E, epsilon)
 end
 
 function T!(jv,
@@ -215,7 +215,7 @@ function T!(jv,
             new_V::AbstractVector)
 
     # simplify notation
-    (; G, π_func, F, beta, E, epsilon) = jv
+    (; G, pi_func, F, beta, E, epsilon) = jv
 
     # prepare interpoland of value function
     Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc = Line())
@@ -232,7 +232,7 @@ function T!(jv,
             s, phi = z
             h(u) = Vf(max(G(x, phi), u))
             integral = E(h)
-            q = π_func(s) * integral + (1.0 - π_func(s)) * Vf(G(x, phi))
+            q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
 
             return -x * (1.0 - phi - s) - beta * q
         end
@@ -250,12 +250,10 @@ function T!(jv,
     end
 end
 
-function T!(jv,
-            V,
-            out::Tuple{AbstractVector, AbstractVector})
+function T!(jv, V, out::Tuple{AbstractVector, AbstractVector})
 
     # simplify notation
-    (; G, π_func, F, beta, E, epsilon) = jv
+    (; G, pi_func, F, beta, E, epsilon) = jv
 
     # prepare interpoland of value function
     Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc = Line())
@@ -275,7 +273,7 @@ function T!(jv,
             s, phi = z
             h(u) = Vf(max(G(x, phi), u))
             integral = E(h)
-            q = π_func(s) * integral + (1.0 - π_func(s)) * Vf(G(x, phi))
+            q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
 
             return -x * (1.0 - phi - s) - beta * q
         end
@@ -471,7 +469,7 @@ Here's code to produce the 45 degree diagram
 ```{code-cell} julia
 wp = JvWorker(grid_size = 25)
 # simplify notation
-(; G, π_func, F) = wp
+(; G, pi_func, F) = wp
 
 v_init = collect(wp.x_grid) * 0.5
 f2(x) = T(wp, x)
@@ -509,7 +507,7 @@ xs = []
 ys = []
 for x in plot_grid
     for i in 1:K
-        b = rand() < π_func(s(x)) ? 1 : 0
+        b = rand() < pi_func(s(x)) ? 1 : 0
         U = rand(wp.F)
         y = h_func(x, b, U)
         push!(xs, x)

@@ -376,7 +376,7 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using BenchmarkTools, LaTeXStrings, Optim, Parameters, Plots, QuantEcon, Random
+using BenchmarkTools, LaTeXStrings, Optim, Plots, QuantEcon, Random
 using Optim: converged, maximum, maximizer, minimizer, iterations
 
 ```
@@ -389,7 +389,7 @@ du(x) = 1 / x
 # model
 function ConsumerProblem(; r = 0.01,
                          beta = 0.96,
-                         Π = [0.6 0.4; 0.05 0.95],
+                         Pi = [0.6 0.4; 0.05 0.95],
                          z_vals = [0.5, 1.0],
                          b = 0.0,
                          grid_max = 16,
@@ -397,14 +397,14 @@ function ConsumerProblem(; r = 0.01,
     R = 1 + r
     asset_grid = range(-b, grid_max, length = grid_size)
 
-    return (r = r, R = R, beta = beta, b = b, Π = Π, z_vals = z_vals,
-            asset_grid = asset_grid)
+    return (; r, R, beta, b, Pi, z_vals,
+            asset_grid)
 end
 
 function T!(cp, V, out; ret_policy = false)
 
     # unpack input, set up arrays
-    (; R, Π, beta, b, asset_grid, z_vals) = cp
+    (; R, Pi, beta, b, asset_grid, z_vals) = cp
     z_idx = 1:length(z_vals)
 
     # value function when the shock index is z_i
@@ -416,7 +416,7 @@ function T!(cp, V, out; ret_policy = false)
     for (i_z, z) in enumerate(z_vals)
         for (i_a, a) in enumerate(asset_grid)
             function obj(c)
-                EV = dot(vf.(R * a + z - c, z_idx), Π[i_z, :]) # compute expectation
+                EV = dot(vf.(R * a + z - c, z_idx), Pi[i_z, :]) # compute expectation
                 return u(c) + beta * EV
             end
             res = maximize(obj, opt_lb, R .* a .+ z .+ b)
@@ -429,7 +429,7 @@ function T!(cp, V, out; ret_policy = false)
             end
         end
     end
-    out
+    return out
 end
 
 T(cp, V; ret_policy = false) = T!(cp, V, similar(V); ret_policy = ret_policy)
@@ -440,7 +440,7 @@ get_greedy(cp, V) = update_bellman(cp, V, ret_policy = true)
 
 function K!(cp, c, out)
     # simplify names, set up arrays
-    (; R, Π, beta, b, asset_grid, z_vals) = cp
+    (; R, Pi, beta, b, asset_grid, z_vals) = cp
     z_idx = 1:length(z_vals)
     gam = R * beta
 
@@ -454,7 +454,7 @@ function K!(cp, c, out)
         for (i_a, a) in enumerate(asset_grid)
             function h(t)
                 cps = cf.(R * a + z - t, z_idx) # c' for each z'
-                expectation = dot(du.(cps), Π[i_z, :])
+                expectation = dot(du.(cps), Pi[i_z, :])
                 return abs(du(t) - max(gam * expectation, du(R * a + z + b)))
             end
             opt_ub = R * a + z + b  # addresses issue #8 on github
@@ -739,7 +739,7 @@ end
 
 ```{code-cell} julia
 function compute_asset_series(cp, T = 500_000; verbose = false)
-    (; Π, z_vals, R) = cp  # simplify names
+    (; Pi, z_vals, R) = cp  # simplify names
     z_idx = 1:length(z_vals)
     v_init, c_init = initialize(cp)
     c = compute_fixed_point(x -> K(cp, x), c_init,
@@ -748,7 +748,7 @@ function compute_asset_series(cp, T = 500_000; verbose = false)
     cf = interp(cp.asset_grid, c)
 
     a = zeros(T + 1)
-    z_seq = simulate(MarkovChain(Π), T)
+    z_seq = simulate(MarkovChain(Pi), T)
     for t in 1:T
         i_z = z_seq[t]
         a[t + 1] = R * a[t] + z_vals[i_z] - cf(a[t], i_z)

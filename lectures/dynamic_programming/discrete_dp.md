@@ -427,7 +427,7 @@ using Test
 ```
 
 ```{code-cell} julia
-using BenchmarkTools, Plots, QuantEcon, Parameters
+using BenchmarkTools, Plots, QuantEcon
 
 ```
 
@@ -450,7 +450,7 @@ function transition_matrices(g)
         end
     end
 
-    return (Q = Q, R = R)
+    return (; Q, R)
 end
 ```
 
@@ -500,7 +500,7 @@ function verbose_matrices(g)
             @assert sum(Q[s + 1, a + 1, :]) ≈ 1 #Optional check that matrix is stochastic
          end
     end
-    return (Q = Q, R = R)
+    return (;Q, R )
 end
 ```
 
@@ -822,7 +822,8 @@ solution of the original continuous model. Here's the exact solution:
 c = f(grid) - grid[sigma]
 
 ab = alpha * beta
-c1 = (log(1 - alpha * beta) + log(alpha * beta) * alpha * beta / (1 - alpha * beta)) / (1 - beta)
+c1 = (log(1 - alpha * beta) + log(alpha * beta) * alpha * beta / (1 - alpha * beta)) /
+     (1 - beta)
 c2 = alpha / (1 - alpha * beta)
 
 v_star(k) = c1 + c2 * log(k)
