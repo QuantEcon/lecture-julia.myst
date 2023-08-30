@@ -404,7 +404,7 @@ function K!(Kg, g, grid, beta, dudc, f, f_prime, shocks)
     for (i, y) in enumerate(grid)
         function h(c)
             vals = dudc.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .* shocks
-            return dudc * c - beta * mean(vals)
+            return dudc(c) - beta * mean(vals)
         end
         Kg[i] = find_zero(h, (1e-10, y - 1e-10))
     end

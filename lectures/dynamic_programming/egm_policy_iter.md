@@ -216,7 +216,7 @@ The first step is to bring in the model that we used in the {doc}`Coleman policy
 ```{code-cell} julia
 # model
 
-function Model(alpha = 0.65, # productivity parameter
+function Model(;alpha = 0.65, # productivity parameter
                beta = 0.95, # discount factor
                gamma = 1.0,  # risk aversion
                mu = 0.0,  # lognorm(mu, sigma)
