@@ -404,7 +404,7 @@ function K!(Kg, g, grid, beta, dudc, f, f_prime, shocks)
     for (i, y) in enumerate(grid)
         function h(c)
             vals = dudc.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .* shocks
-            return dudc*c - beta * mean(vals)
+            return dudc * c - beta * mean(vals)
         end
         Kg[i] = find_zero(h, (1e-10, y - 1e-10))
     end
@@ -465,7 +465,7 @@ Here's an object containing data from the log-linear growth model we used in the
 
 ```{code-cell} julia
 isoelastic(c, gamma) = isone(gamma) ? log(c) : (c^(1 - gamma) - 1) / (1 - gamma)
-function Model(;alpha = 0.65,                            # Productivity parameter
+function Model(; alpha = 0.65,                            # Productivity parameter
                beta = 0.95,                            # Discount factor
                gamma = 1.0,                             # Risk aversion
                mu = 0.0,                             # First parameter in lognorm(mu, sigma)

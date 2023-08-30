@@ -591,7 +591,7 @@ phi_init = ones(sp.n_pi)
 g(x) = res_wage_operator(sp, x)
 w_bar_vals = compute_fixed_point(g, phi_init)
 w_bar = extrapolate(interpolate((sp.pi_grid,), w_bar_vals,
-                             Gridded(Linear())), Flat())
+                                Gridded(Linear())), Flat())
 
 # Holds the employment state and beliefs of an individual agent.
 mutable struct Agent{TF <: AbstractFloat, TI <: Integer}

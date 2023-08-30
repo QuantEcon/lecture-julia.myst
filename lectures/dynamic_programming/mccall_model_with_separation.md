@@ -288,7 +288,7 @@ We'll use the default parameterizations found in the code above.
 u(c, sigma) = (c^(1 - sigma) - 1) / (1 - sigma)
 
 # model constructor
-function McCallModel(;alpha = 0.2,
+function McCallModel(; alpha = 0.2,
                      beta = 0.98, # discount rate
                      gamma = 0.7,
                      c = 6.0, # unemployment compensation
