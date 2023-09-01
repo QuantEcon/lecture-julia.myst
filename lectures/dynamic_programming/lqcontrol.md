@@ -545,7 +545,7 @@ to solve finite and infinite horizon linear quadratic control problems.
 In the module, the various updating, simulation and fixed point methods  act on a type  called `LQ`, which includes
 
 * Instance data:
-    * The required parameters $Q, R, A, B$ and optional parameters C, β, T, R_f, N specifying a given LQ model
+    * The required parameters $Q, R, A, B$ and optional parameters C, $\beta$, T, R_f, N specifying a given LQ model
         * set $T$ and $R_f$ to `None` in the infinite horizon case
         * set `C = None` (or zero) in the deterministic case
     * the value function and policy data
@@ -652,33 +652,34 @@ Random.seed!(42);
 ```{code-cell} julia
 # model parameters
 r = 0.05
-β = 1 / (1 + r)
+beta = 1 / (1 + r)
 T = 45
-c̄ = 2.0
-σ = 0.25
-μ = 1.0
+c_bar = 2.0
+sigma = 0.25
+mu = 1.0
 q = 1e6
 
 # formulate as an LQ problem
 Q = 1.0
 R = zeros(2, 2)
-Rf = zeros(2, 2); Rf[1, 1] = q
-A = [1 + r -c̄ + μ; 0  1]
+Rf = zeros(2, 2);
+Rf[1, 1] = q;
+A = [1+r -c_bar+mu; 0 1]
 B = [-1.0, 0]
-C = [σ, 0]
+C = [sigma, 0]
 
 # compute solutions and simulate
-lq = QuantEcon.LQ(Q, R, A, B, C; bet = β, capT = T, rf = Rf)
+lq = QuantEcon.LQ(Q, R, A, B, C; bet = beta, capT = T, rf = Rf)
 x0 = [0.0, 1]
 xp, up, wp = compute_sequence(lq, x0)
 
 # convert back to assets, consumption and income
 assets = vec(xp[1, :]) # a_t
-c = vec(up .+ c̄) # c_t
-income = vec(σ * wp[1, 2:end] .+ μ) # y_t
+c = vec(up .+ c_bar) # c_t
+income = vec(sigma * wp[1, 2:end] .+ mu) # y_t
 
 # plot results
-p = plot([assets, c, zeros(T + 1), income, cumsum(income .- μ)],
+p = plot([assets, c, zeros(T + 1), income, cumsum(income .- mu)],
          lab = ["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
          color = [:blue :green :black :orange :red],
          xaxis = "Time", layout = (2, 1),
@@ -740,11 +741,11 @@ xp, up, wp = compute_sequence(lq, x0)
 
 # convert back to assets, consumption and income
 assets = vec(xp[1, :]) # a_t
-c = vec(up .+ c̄) # c_t
-income = vec(σ * wp[1, 2:end] .+ μ) # y_t
+c = vec(up .+ c_bar) # c_t
+income = vec(sigma * wp[1, 2:end] .+ mu) # y_t
 
 # plot results
-p = plot([assets, c, zeros(T + 1), income, cumsum(income .- μ)],
+p = plot([assets, c, zeros(T + 1), income, cumsum(income .- mu)],
          lab = ["assets" "consumption" "" "non-financial income" "cumulative unanticipated income"],
          color = [:blue :green :black :orange :red],
          xaxis = "Time", layout = (2, 1),
@@ -1301,42 +1302,43 @@ $p(t) = m_1 t + m_2 t^2$ has an inverted U shape with
 ```{code-cell} julia
 # model parameters
 r = 0.05
-β = 1 / (1 + r)
+beta = 1 / (1 + r)
 T = 50
-c̄ = 1.5
-σ = 0.15
-μ = 2
+c_bar = 1.5
+sigma = 0.15
+mu = 2
 q = 1e4
-m1 = T * (μ / (T / 2)^2)
-m2 = -(μ / (T / 2)^2)
+m1 = T * (mu / (T / 2)^2)
+m2 = -(mu / (T / 2)^2)
 
 # formulate as an LQ problem
 Q = 1.0
 R = zeros(4, 4)
-Rf = zeros(4, 4); Rf[1, 1] = q
-A = [1 + r -c̄ m1 m2;
-     0     1      0  0;
-     0     1      1  0;
-     0     1      2  1]
+Rf = zeros(4, 4);
+Rf[1, 1] = q;
+A = [1+r -c_bar m1 m2;
+     0 1 0 0;
+     0 1 1 0;
+     0 1 2 1]
 B = [-1.0, 0.0, 0.0, 0.0]
-C = [σ, 0.0, 0.0, 0.0]
+C = [sigma, 0.0, 0.0, 0.0]
 
 # compute solutions and simulate
-lq = QuantEcon.LQ(Q, R, A, B, C; bet = β, capT = T, rf = Rf)
+lq = QuantEcon.LQ(Q, R, A, B, C; bet = beta, capT = T, rf = Rf)
 x0 = [0.0, 1, 0, 0]
 xp, up, wp = compute_sequence(lq, x0)
 
 # convert results back to assets, consumption and income
 ap = vec(xp[1, 1:end]) # assets
-c = vec(up .+ c̄) # consumption
+c = vec(up .+ c_bar) # consumption
 time = 1:T
-income = σ * vec(wp[1, 2:end]) + m1 * time + m2 * time.^2 # income
+income = sigma * vec(wp[1, 2:end]) + m1 * time + m2 * time .^ 2 # income
 
 # plot results
 p1 = plot(Vector[income, ap, c, zeros(T + 1)],
           lab = ["non-financial income" "assets" "consumption" ""],
           color = [:orange :blue :green :black],
-          xaxis = "Time", layout = (2,1),
+          xaxis = "Time", layout = (2, 1),
           bottom_margin = 20mm, size = (600, 600))
 ```
 
@@ -1351,34 +1353,35 @@ the lecture.
 ```{code-cell} julia
 # model parameters
 r = 0.05
-β = 1/(1 + r)
+beta = 1 / (1 + r)
 T = 60
 K = 40
-c̄ = 4
-σ = 0.35
-μ = 4
+c_bar = 4
+sigma = 0.35
+mu = 4
 q = 1e4
 s = 1
-m1 = 2 * μ / K
-m2 = - μ / K^2
+m1 = 2 * mu / K
+m2 = -mu / K^2
 
 # formulate LQ problem 1 (retirement)
 Q = 1.0
 R = zeros(4, 4)
-Rf = zeros(4, 4); Rf[1, 1] = q
-A = [1+r  s-c̄ 0 0;
-     0     1      0 0;
-     0     1      1 0;
-     0     1      2 1]
+Rf = zeros(4, 4);
+Rf[1, 1] = q;
+A = [1+r s-c_bar 0 0;
+     0 1 0 0;
+     0 1 1 0;
+     0 1 2 1]
 B = [-1.0, 0, 0, 0]
 C = zeros(4)
 
 # initialize LQ instance for retired agent
-lq_retired = QuantEcon.LQ(Q, R, A, B, C; bet = β, capT = T - K, rf = Rf)
+lq_retired = QuantEcon.LQ(Q, R, A, B, C; bet = beta, capT = T - K, rf = Rf)
 
 # since update_values!() changes its argument in place, we need another identical instance
 # just to get the correct value function
-lq_retired_proxy = QuantEcon.LQ(Q, R, A, B, C; bet = β, capT = T - K, rf = Rf)
+lq_retired_proxy = QuantEcon.LQ(Q, R, A, B, C; bet = beta, capT = T - K, rf = Rf)
 
 # iterate back to start of retirement, record final value function
 for i in 1:(T - K)
@@ -1389,15 +1392,15 @@ Rf2 = lq_retired_proxy.P
 # formulate LQ problem 2 (working life)
 Q = 1.0
 R = zeros(4, 4)
-A = [1 + r -c̄ m1 m2;
-     0     1      0  0;
-     0     1      1  0;
-     0     1      2  1]
+A = [1+r -c_bar m1 m2;
+     0 1 0 0;
+     0 1 1 0;
+     0 1 2 1]
 B = [-1.0, 0, 0, 0]
-C = [σ, 0, 0, 0]
+C = [sigma, 0, 0, 0]
 
 # set up working life LQ instance with terminal Rf from lq_retired
-lq_working = QuantEcon.LQ(Q, R, A, B, C; bet = β, capT = K, rf = Rf2)
+lq_working = QuantEcon.LQ(Q, R, A, B, C; bet = beta, capT = K, rf = Rf2)
 
 # simulate working state / control paths
 x0 = [0.0, 1, 0, 0]
@@ -1411,10 +1414,10 @@ xp = [xp_w xp_r[:, 2:end]]
 assets = vec(xp[1, :]) # assets
 
 up = [up_w up_r]
-c = vec(up .+ c̄) # consumption
+c = vec(up .+ c_bar) # consumption
 
 time = 1:K
-income_w = σ * vec(wp_w[1, 2:K+1]) + m1 .* time + m2 .* time.^2 # income
+income_w = sigma * vec(wp_w[1, 2:(K + 1)]) + m1 .* time + m2 .* time .^ 2 # income
 income_r = ones(T - K) * s
 income = [income_w; income_r]
 
@@ -1467,10 +1470,10 @@ Our solution code is
 # model parameters
 a0 = 5.0
 a1 = 0.5
-σ = 0.15
-ρ = 0.9
-γ = 1.0
-β = 0.95
+sigma = 0.15
+rho = 0.9
+gamma = 1.0
+beta = 0.95
 c = 2.0
 T = 120
 
@@ -1479,14 +1482,14 @@ m0 = (a0 - c) / (2 * a1)
 m1 = 1 / (2 * a1)
 
 # formulate LQ problem
-Q = γ
+Q = gamma
 R = [a1 -a1 0; -a1 a1 0; 0 0 0]
-A = [ρ 0 m0 * (1 - ρ); 0 1 0; 0 0 1]
+A = [rho 0 m0*(1 - rho); 0 1 0; 0 0 1]
 
 B = [0.0, 1, 0]
-C = [m1 * σ, 0, 0]
+C = [m1 * sigma, 0, 0]
 
-lq = QuantEcon.LQ(Q, R, A, B, C; bet = β)
+lq = QuantEcon.LQ(Q, R, A, B, C; bet = beta)
 
 # simulate state / control paths
 x0 = [m0, 2, 1]
@@ -1498,7 +1501,7 @@ q = vec(xp[2, :])
 p3 = plot(eachindex(q), [q̄ q],
           lab = [L"\overline{q}" L"q"],
           color = [:black :blue],
-          xaxis = "Time", title = L"Dynamics with $\gamma = %$γ$",
+          xaxis = "Time", title = L"Dynamics with $\gamma = %$gamma$",
           bottom_margin = 20mm, top_margin = 10mm,
           size = (700, 500))
 ```

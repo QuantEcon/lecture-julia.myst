@@ -329,29 +329,28 @@ using Test
 using QuantEcon, LinearAlgebra
 using LaTeXStrings, Plots
 
-
 # Set parameters
-α, β, ρ1, ρ2, σ = 10.0, 0.95, 0.9, 0.0, 1.0
+alpha, beta, rho1, rho2, sigma = 10.0, 0.95, 0.9, 0.0, 1.0
 
-R = 1 / β
+R = 1 / beta
 A = [1.0 0.0 0.0;
-       α  ρ1  ρ2;
-    0.0 1.0 0.0]
-C = [0.0; σ; 0.0]''
+     alpha rho1 rho2;
+     0.0 1.0 0.0]
+C = [0.0; sigma; 0.0]''
 G = [0.0 1.0 0.0]
 
 # Form LinearStateSpace system and pull off steady state moments
-μ_z0 = [1.0, 0.0, 0.0]
-Σ_z0 = zeros(3, 3)
-Lz = LSS(A, C, G, mu_0=μ_z0, Sigma_0=Σ_z0)
-μ_z, μ_y, Σ_z, Σ_y = stationary_distributions(Lz)
+mu_z0 = [1.0, 0.0, 0.0]
+Sigma_z0 = zeros(3, 3)
+Lz = LSS(A, C, G, mu_0 = mu_z0, Sigma_0 = Sigma_z0)
+mu_z, mu_y, Sigma_z, Sigma_y = stationary_distributions(Lz)
 
 # Mean vector of state for the savings problem
-mxo = [μ_z; 0.0]
+mxo = [mu_z; 0.0]
 
 # Create stationary covariance matrix of x -- start everyone off at b=0
 a1 = zeros(3, 1)
-aa = hcat(Σ_z, a1)
+aa = hcat(Sigma_z, a1)
 bb = zeros(1, 4)
 sxo = vcat(aa, bb)
 
@@ -374,20 +373,20 @@ end
 The next step is to create the matrices for the LQ system
 
 ```{code-cell} julia
-A12 = zeros(3,1)
+A12 = zeros(3, 1)
 ALQ_l = hcat(A, A12)
 ALQ_r = [0 -R 0 R]
 ALQ = vcat(ALQ_l, ALQ_r)
 
 RLQ = [0.0 0.0 0.0 0.0;
-        0.0 0.0 0.0 0.0;
-        0.0 0.0 0.0 0.0;
-        0.0 0.0 0.0 1e-9]
+       0.0 0.0 0.0 0.0;
+       0.0 0.0 0.0 0.0;
+       0.0 0.0 0.0 1e-9]
 
 QLQ = 1.0
 BLQ = [0.0; 0.0; 0.0; R]
-CLQ = [0.0; σ; 0.0; 0.0]
-β_LQ = β
+CLQ = [0.0; sigma; 0.0; 0.0]
+beta_LQ = beta
 ```
 
 Let's print these out and have a look at them
@@ -402,7 +401,7 @@ println("Q = $QLQ")
 Now create the appropriate instance of an LQ model
 
 ```{code-cell} julia
-LQPI = QuantEcon.LQ(QLQ, RLQ, ALQ, BLQ, CLQ, bet=β_LQ);
+LQPI = QuantEcon.LQ(QLQ, RLQ, ALQ, BLQ, CLQ, bet = beta_LQ);
 ```
 
 We'll save the implied optimal policy function soon and compare with what we get by
@@ -448,8 +447,8 @@ Now we'll apply the formulas in this system
 
 ```{code-cell} julia
 # Use the above formulas to create the optimal policies for b_{t+1} and c_t
-b_pol = G * (inv(I - β * A)) * (A - I)
-c_pol = (1 - β) * (G * inv(I - β * A))
+b_pol = G * (inv(I - beta * A)) * (A - I)
+c_pol = (1 - beta) * (G * inv(I - beta * A))
 
 # Create the A matrix for a LinearStateSpace instance
 A_LSS1 = vcat(A, b_pol)
@@ -461,12 +460,12 @@ C_LSS = vcat(C, 0)
 
 # Create the G matrix for LSS methods
 G_LSS1 = vcat(G, c_pol)
-G_LSS2 = vcat(0, -(1 - β))
+G_LSS2 = vcat(0, -(1 - beta))
 G_LSS = hcat(G_LSS1, G_LSS2)
 
 # Use the following values to start everyone off at b=0, initial incomes zero
-μ_0 = [1.0, 0.0, 0.0, 0.0]
-Σ_0 = zeros(4, 4)
+mu_0 = [1.0, 0.0, 0.0, 0.0]
+Sigma_0 = zeros(4, 4)
 ```
 
 A_LSS calculated as we have here should equal ABF calculated above using the LQ model
@@ -520,7 +519,7 @@ A second graph  plots a collection of simulations against the population distrib
 Comparing sample paths with population distributions at each date $t$ is a useful exercise---see {ref}`our discussion <lln_mr>` of the laws of large numbers.
 
 ```{code-cell} julia
-lss = LSS(A_LSS, C_LSS, G_LSS, mu_0=μ_0, Sigma_0=Σ_0);
+lss = LSS(A_LSS, C_LSS, G_LSS, mu_0 = mu_0, Sigma_0 = Sigma_0);
 ```
 
 ### Population and sample panels
@@ -533,10 +532,9 @@ In the code below, we use the [LSS](https://github.com/QuantEcon/QuantEcon.jl/bl
   graph as the population distribution
 
 ```{code-cell} julia
-function income_consumption_debt_series(A, C, G, μ_0, Σ_0, T = 150, npaths = 25)
-
-    lss = LSS(A, C, G, mu_0=μ_0, Sigma_0=Σ_0)
-
+function income_consumption_debt_series(A, C, G, mu_0, Sigma_0, T = 150,
+                                        npaths = 25)
+    lss = LSS(A, C, G; mu_0, Sigma_0)
     # simulation/Moment Parameters
     moment_generator = moment_sequence(lss)
 
@@ -546,7 +544,7 @@ function income_consumption_debt_series(A, C, G, μ_0, Σ_0, T = 150, npaths = 2
     ysim = zeros(npaths, T)
 
     for i in 1:npaths
-        sims = simulate(lss,T)
+        sims = simulate(lss, T)
         bsim[i, :] = sims[1][end, :]
         csim[i, :] = sims[2][2, :]
         ysim[i, :] = sims[2][1, :]
@@ -557,10 +555,10 @@ function income_consumption_debt_series(A, C, G, μ_0, Σ_0, T = 150, npaths = 2
     cons_var = similar(cons_mean)
     debt_mean = similar(cons_mean)
     debt_var = similar(cons_mean)
-    for (idx, t) = enumerate(moment_generator)
-        (μ_x, μ_y, Σ_x, Σ_y) = t
-        cons_mean[idx], cons_var[idx] = μ_y[2], Σ_y[2, 2]
-        debt_mean[idx], debt_var[idx] = μ_x[4], Σ_x[4, 4]
+    for (idx, t) in enumerate(moment_generator)
+        (mu_x, mu_y, Sigma_x, Sigma_y) = t
+        cons_mean[idx], cons_var[idx] = mu_y[2], Sigma_y[2, 2]
+        debt_mean[idx], debt_var[idx] = mu_x[4], Sigma_x[4, 4]
         idx == T && break
     end
     return bsim, csim, ysim, cons_mean, cons_var, debt_mean, debt_var
@@ -569,31 +567,31 @@ end
 function consumption_income_debt_figure(bsim, csim, ysim)
 
     # get T
-    T =  size(bsim, 2)
+    T = size(bsim, 2)
 
     # create first figure
     xvals = 1:T
 
     # plot consumption and income
-    plt_1 = plot(csim[1,:], label=L"c", color=:blue, lw=2)
-    plot!(plt_1, ysim[1, :], label=L"y", color=:green, lw=2)
-    plot!(plt_1, csim', alpha=0.1, color=:blue, label="")
-    plot!(plt_1, ysim', alpha=0.1, color=:green, label="")
-    plot!(plt_1, title="Nonfinancial Income, Consumption, and Debt",
-          xlabel=L"t", ylabel=L"$y$ and $c$",legend=:bottomright)
+    plt_1 = plot(csim[1, :], label = L"c", color = :blue, lw = 2)
+    plot!(plt_1, ysim[1, :], label = L"y", color = :green, lw = 2)
+    plot!(plt_1, csim', alpha = 0.1, color = :blue, label = "")
+    plot!(plt_1, ysim', alpha = 0.1, color = :green, label = "")
+    plot!(plt_1, title = "Nonfinancial Income, Consumption, and Debt",
+          xlabel = L"t", ylabel = L"$y$ and $c$", legend = :bottomright)
 
     # plot debt
-    plt_2 = plot(bsim[1,: ], label=L"b", color=:red, lw=2)
-    plot!(plt_2, bsim', alpha=0.1, color=:red,label="")
-    plot!(plt_2, xlabel=L"t", ylabel="debt",legend=:bottomright)
+    plt_2 = plot(bsim[1, :], label = L"b", color = :red, lw = 2)
+    plot!(plt_2, bsim', alpha = 0.1, color = :red, label = "")
+    plot!(plt_2, xlabel = L"t", ylabel = "debt", legend = :bottomright)
 
-    plot(plt_1, plt_2, layout=(2,1), size=(800,600))
+    plot(plt_1, plt_2, layout = (2, 1), size = (800, 600))
 end
 
 function consumption_debt_fanchart(csim, cons_mean, cons_var,
                                    bsim, debt_mean, debt_var)
     # get T
-    T =  size(bsim, 2)
+    T = size(bsim, 2)
 
     # create percentiles of cross-section distributions
     cmean = mean(cons_mean)
@@ -608,28 +606,32 @@ function consumption_debt_fanchart(csim, cons_mean, cons_var,
     xvals = 1:T
 
     # first fanchart
-    plt_1=plot(xvals, cons_mean, color=:black, lw=2, label="")
-    plot!(plt_1, xvals, Array(csim'), color=:black, alpha=0.25, label="")
-    plot!(plt_1, xvals, cons_mean, ribbon=c95, alpha=0.25, fillalpha=0.25, color=:blue, label="")
-    plot!(plt_1, xvals, cons_mean, ribbon=c90, alpha=0.25, fillalpha=0.25, color=:red, label="")
-    plot!(plt_1, title="Consumption/Debt over time",
-          ylim=(cmean-15, cmean+15), ylabel="consumption")
+    plt_1 = plot(xvals, cons_mean, color = :black, lw = 2, label = "")
+    plot!(plt_1, xvals, Array(csim'), color = :black, alpha = 0.25, label = "")
+    plot!(plt_1, xvals, cons_mean, ribbon = c95, alpha = 0.25, fillalpha = 0.25,
+          color = :blue, label = "")
+    plot!(plt_1, xvals, cons_mean, ribbon = c90, alpha = 0.25, fillalpha = 0.25,
+          color = :red, label = "")
+    plot!(plt_1, title = "Consumption/Debt over time",
+          ylim = (cmean - 15, cmean + 15), ylabel = "consumption")
 
     # second fanchart
-    plt_2=plot(xvals, debt_mean, color=:black, lw=2, label="")
-    plot!(plt_2, xvals, Array(bsim'), color=:black, alpha=0.25, label="")
-    plot!(plt_2, xvals, debt_mean, ribbon=d95, alpha=0.25, fillalpha=0.25, color=:blue, label="")
-    plot!(plt_2, xvals, debt_mean, ribbon=d90, alpha=0.25, fillalpha=0.25, color=:red, label="")
-    plot!(plt_2, ylabel="debt", xlabel=L"t")
+    plt_2 = plot(xvals, debt_mean, color = :black, lw = 2, label = "")
+    plot!(plt_2, xvals, Array(bsim'), color = :black, alpha = 0.25, label = "")
+    plot!(plt_2, xvals, debt_mean, ribbon = d95, alpha = 0.25, fillalpha = 0.25,
+          color = :blue, label = "")
+    plot!(plt_2, xvals, debt_mean, ribbon = d90, alpha = 0.25, fillalpha = 0.25,
+          color = :red, label = "")
+    plot!(plt_2, ylabel = "debt", xlabel = L"t")
 
-    plot(plt_1, plt_2, layout=(2,1), size=(800,600))
+    plot(plt_1, plt_2, layout = (2, 1), size = (800, 600))
 end
 ```
 
 Now let's create figures with initial conditions of zero for $y_0$ and $b_0$
 
 ```{code-cell} julia
-out = income_consumption_debt_series(A_LSS, C_LSS, G_LSS, μ_0, Σ_0)
+out = income_consumption_debt_series(A_LSS, C_LSS, G_LSS, mu_0, Sigma_0)
 bsim0, csim0, ysim0 = out[1:3]
 cons_mean0, cons_var0, debt_mean0, debt_var0 = out[4:end]
 
@@ -703,9 +705,9 @@ By altering initial conditions, we shall remove this transient in our second exa
 ```{code-cell} julia
 function cointegration_figure(bsim, csim)
     # create figure
-    plot((1 - β) * bsim[1, :] + csim[1, :], color=:black,lw=2,label="")
-    plot!((1 - β) * bsim' + csim', color=:black, alpha=.1,label="")
-    plot!(title="Cointegration of Assets and Consumption", xlabel=L"t")
+    plot((1 - beta) * bsim[1, :] + csim[1, :], color = :black, lw = 2, label = "")
+    plot!((1 - beta) * bsim' + csim', color = :black, alpha = 0.1, label = "")
+    plot!(title = "Cointegration of Assets and Consumption", xlabel = L"t")
 end
 
 cointegration_figure(bsim0, csim0)
