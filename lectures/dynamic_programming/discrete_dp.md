@@ -500,7 +500,7 @@ function verbose_matrices(g)
             @assert sum(Q[s + 1, a + 1, :]) ≈ 1 #Optional check that matrix is stochastic
          end
     end
-    return (;Q, R )
+return (;Q,R)
 end
 ```
 

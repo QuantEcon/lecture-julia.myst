@@ -465,7 +465,7 @@ Here's an object containing data from the log-linear growth model we used in the
 
 ```{code-cell} julia
 isoelastic(c, gamma) = isone(gamma) ? log(c) : (c^(1 - gamma) - 1) / (1 - gamma)
-function Model(; alpha = 0.65,                            # Productivity parameter
+function Model(; alpha = 0.65,                         # Productivity parameter
                beta = 0.95,                            # Discount factor
                gamma = 1.0,                             # Risk aversion
                mu = 0.0,                             # First parameter in lognorm(mu, sigma)

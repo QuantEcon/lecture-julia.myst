@@ -293,7 +293,7 @@ function McCallModel(; alpha = 0.2,
                      gamma = 0.7,
                      c = 6.0, # unemployment compensation
                      sigma = 2.0,
-                     u = u, # utility function
+                     u = (c, sigma) -> (c^(1 - sigma) - 1) / (1 - sigma), # utility function
                      w = range(10, 20, length = 60), # wage values
                      dist = BetaBinomial(59, 600, 400)) # distribution over wage values
     return (; alpha, beta, gamma, c, sigma, u, w, dist)
