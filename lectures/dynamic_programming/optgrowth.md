@@ -568,12 +568,11 @@ In addition to the model parameters, we need a grid and some shock draws for Mon
 Random.seed!(42) # for reproducible results
 u(c; p) = log(c) # utility
 f(k; p) = k^p.alpha # deterministic part of production function
-function # named tuples defaults
-OptimalGrowthModel(alpha = 0.4, beta = 0.96, mu = 0.0, s = 0.1,
-                   u = u, f = f, # defaults defined above
-                   y = range(1e-5, 4.0, length = 200), # grid on y
-                   Xi = exp.(mu .+ s * randn(250)))
-    (; alpha, beta, mu, s, u, f, y, Xi)
+function OptimalGrowthModel(; alpha = 0.4, beta = 0.96, mu = 0.0, s = 0.1,
+                            u = u, f = f, # defaults defined above
+                            y = range(1e-5, 4.0, length = 200), # grid on y
+                            Xi = exp.(mu .+ s * randn(250)))
+    return (; alpha, beta, mu, s, u, f, y, Xi)
 end # named tuples defaults
 
 # True value and policy function
