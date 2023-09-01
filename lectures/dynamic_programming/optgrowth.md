@@ -748,7 +748,7 @@ Random.seed!(42);
 tags: [hide-output]
 ---
 p = OptimalGrowthModel(s = 0.05)
-p.ξ
+p.Xi
 ```
 
 Otherwise, the parameters and primitives are the same as the log linear model discussed earlier in the lecture.
