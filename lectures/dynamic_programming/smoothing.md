@@ -356,61 +356,61 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Parameters, Plots, QuantEcon, Random
+using Plots, QuantEcon, Random
 
 ```
 
 ```{code-cell} julia
-ConsumptionProblem = @with_kw (β = 0.96,
-                               y = [2.0, 1.5],
-                               b0 = 3.0,
-                               P = [0.8 0.2
-                                    0.4 0.6])
+function ConsumptionProblem(beta = 0.96,
+                            y = [2.0, 1.5],
+                            b0 = 3.0,
+                            P = [0.8 0.2
+                                 0.4 0.6])
+    (; beta, y, b0, P)
+end
 
 function consumption_complete(cp)
-
-    (;β, P, y, b0) = cp
+    (; beta, P, y, b0) = cp
 
     y1, y2 = y                              # extract income levels
     b1 = b0                                 # b1 is known to be equal to b0
-    Q = β * P                               # assumed price system
+    Q = beta * P                               # assumed price system
 
     # Using equation (7) calculate b2
     b2 = (y2 - y1 - (Q[1, 1] - Q[2, 1] - 1) * b1) / (Q[1, 2] + 1 - Q[2, 2])
 
-    # Using equation (5) calculae c̄
-    c̄ = y1 - b0 + ([b1 b2] * Q[1, :])[1]
+    # Using equation (5) calculae c_bar
+    c_bar = y1 - b0 + ([b1 b2] * Q[1, :])[1]
 
-    return c̄, b1, b2
+    return c_bar, b1, b2
 end
 
 function consumption_incomplete(cp; N_simul = 150)
-
-    (;β, P, y, b0) = cp
+    (; beta, P, y, b0) = cp
 
     # for the simulation use the MarkovChain type
     mc = MarkovChain(P)
 
     # useful variables
     y = y
-    v = inv(I - β * P) * y
+    v = inv(I - beta * P) * y
 
     # simulate state path
-    s_path = simulate(mc, N_simul, init=1)
+    s_path = simulate(mc, N_simul, init = 1)
 
     # store consumption and debt path
     b_path, c_path = ones(N_simul + 1), ones(N_simul)
     b_path[1] = b0
 
     # optimal decisions from (12) and (13)
-    db = ((1 - β) * v - y) / β
+    db = ((1 - beta) * v - y) / beta
 
     for (i, s) in enumerate(s_path)
-        c_path[i] = (1 - β) * (v[s, 1] - b_path[i])
+        c_path[i] = (1 - beta) * (v[s, 1] - b_path[i])
         b_path[i + 1] = b_path[i] + db[s, 1]
     end
 
-    return c_path, b_path[1:end - 1], y[s_path], s_path
+    return c_path, b_path[1:(end - 1)], y[s_path], s_path
 end
 ```
 
@@ -418,9 +418,9 @@ Let's test by checking that $\bar c$ and $b_2$ satisfy the budget constraint
 
 ```{code-cell} julia
 cp = ConsumptionProblem()
-c̄, b1, b2 = consumption_complete(cp)
+c_bar, b1, b2 = consumption_complete(cp)
 debt_complete = [b1, b2]
-isapprox((c̄ + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0)
+isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.beta * cp.P)[2, :])[1], 0)
 ```
 
 ```{code-cell} julia
@@ -429,8 +429,8 @@ tags: [remove-cell]
 ---
 @testset "Budget Constraint Tests" begin
     # assert that the object above is always true
-    @test isapprox((c̄ + b2 - cp.y[2] - debt_complete' * (cp.β * cp.P)[2, :])[1], 0)
-    @test c̄ ≈ 1.7241558441558444 # default example invariance
+    @test isapprox((c_bar + b2 - cp.y[2] - debt_complete' * (cp.beta * cp.P)[2, :])[1], 0)
+    @test c_bar ≈ 1.7241558441558444 # default example invariance
     @test debt_complete[2] ≈ 2.188311688311688 # one of the other objects
 end
 ```
@@ -585,24 +585,26 @@ Random.seed!(42)
 N_simul = 150
 cp = ConsumptionProblem()
 
-c̄, b1, b2 = consumption_complete(cp)
+c_bar, b1, b2 = consumption_complete(cp)
 debt_complete = [b1, b2]
 
-c_path, debt_path, y_path, s_path = consumption_incomplete(cp, N_simul=N_simul)
+c_path, debt_path, y_path, s_path = consumption_incomplete(cp, N_simul = N_simul)
 
-plt_cons = plot(title = "Consumption paths", xlabel = "Periods", ylim = [1.4,2.1])
+plt_cons = plot(title = "Consumption paths", xlabel = "Periods", ylim = [1.4, 2.1])
 plot!(plt_cons, 1:N_simul, c_path, label = "incomplete market", lw = 2)
-plot!(plt_cons, 1:N_simul, fill(c̄, N_simul), label = "complete market", lw = 2)
-plot!(plt_cons, 1:N_simul, y_path, label = "income", lw = 2, alpha = 0.6, linestyle = :dash)
+plot!(plt_cons, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
+plot!(plt_cons, 1:N_simul, y_path, label = "income", lw = 2, alpha = 0.6,
+      linestyle = :dash)
 plot!(plt_cons, legend = :bottom)
 
 plt_debt = plot(title = "Debt paths", xlabel = "Periods")
 plot!(plt_debt, 1:N_simul, debt_path, label = "incomplete market")
 plot!(plt_debt, 1:N_simul, debt_complete[s_path], label = "complete market", lw = 2)
-plot!(plt_debt, 1:N_simul, y_path, label = "income", lw = 2, alpha = 0.6, linestyle = :dash)
+plot!(plt_debt, 1:N_simul, y_path, label = "income", lw = 2, alpha = 0.6,
+      linestyle = :dash)
 plot!(plt_debt, legend = :bottomleft)
 
-plot(plt_cons, plt_debt, layout = (1,2), size = (800, 400))
+plot(plt_cons, plt_debt, layout = (1, 2), size = (800, 400))
 ```
 
 ```{code-cell} julia
@@ -630,19 +632,22 @@ income $y_t$, notice that
 We can simply relabel variables to acquire tax-smoothing interpretations of our two models
 
 ```{code-cell} julia
-plt_tax = plot(title = "Tax collection paths", x_label = "Periods", ylim = [1.4,2.1])
+plt_tax = plot(title = "Tax collection paths", x_label = "Periods",
+               ylim = [1.4, 2.1])
 plot!(plt_tax, 1:N_simul, c_path, label = "incomplete market", lw = 2)
-plot!(plt_tax, 1:N_simul, fill(c̄, N_simul), label = "complete market", lw = 2)
-plot!(plt_tax, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash,
+plot!(plt_tax, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
+plot!(plt_tax, 1:N_simul, y_path, label = "govt expenditures", alpha = 0.6,
+      linestyle = :dash,
       lw = 2)
 
 plt_gov = plot(title = "Government assets paths", x_label = "Periods")
 plot!(plt_gov, 1:N_simul, debt_path, label = "incomplete market", lw = 2)
 plot!(plt_gov, 1:N_simul, debt_complete[s_path], label = "complete market", lw = 2)
-plot!(plt_gov, 1:N_simul, y_path, label = "govt expenditures", alpha = .6, linestyle = :dash,
+plot!(plt_gov, 1:N_simul, y_path, label = "govt expenditures", alpha = 0.6,
+      linestyle = :dash,
       lw = 2)
 hline!(plt_gov, [0], linestyle = :dash, color = :black, lw = 2, label = "")
-plot(plt_tax, plt_gov, layout = (1,2), size = (800, 400))
+plot(plt_tax, plt_gov, layout = (1, 2), size = (800, 400))
 ```
 
 ```{code-cell} julia
@@ -693,23 +698,23 @@ Here's our code to compute a quantitative example with zero debt in peace time:
 ```{code-cell} julia
 # Parameters
 
-β = .96
+beta = 0.96
 y = [1.0, 2.0]
 b0 = 0.0
 P = [0.8 0.2;
      0.4 0.6]
 
-cp = ConsumptionProblem(β, y, b0, P)
-Q = β * P
+cp = ConsumptionProblem(beta, y, b0, P)
+Q = beta * P
 N_simul = 150
 
-c̄, b1, b2 = consumption_complete(cp)
+c_bar, b1, b2 = consumption_complete(cp)
 debt_complete = [b1, b2]
 
 println("P = $P")
 println("Q = $Q")
 println("Govt expenditures in peace and war = $y")
-println("Constant tax collections = $c̄")
+println("Constant tax collections = $c_bar")
 println("Govt assets in two states = $debt_complete")
 
 msg = """
@@ -726,14 +731,14 @@ println("Spending on Arrow war security in war = $AS2")
 
 println("\n")
 println("Government tax collections plus asset levels in peace and war")
-TB1 = c̄ + b1
+TB1 = c_bar + b1
 println("T+b in peace = $TB1")
-TB2 = c̄ + b2
+TB2 = c_bar + b2
 println("T+b in war = $TB2")
 
 println("\n")
 println("Total government spending in peace and war")
-G1= y[1] + AS1
+G1 = y[1] + AS1
 G2 = y[2] + AS2
 println("total govt spending in peace = $G1")
 println("total govt spending in war = $G2")
@@ -741,10 +746,10 @@ println("total govt spending in war = $G2")
 println("\n")
 println("Let's see ex post and ex ante returns on Arrow securities")
 
-Π = 1 ./ Q    # reciprocal(Q)
-exret = Π
+Pi = 1 ./ Q    # reciprocal(Q)
+exret = Pi
 println("Ex post returns to purchase of Arrow securities = $exret")
-exant = Π .* P
+exant = Pi .* P
 println("Ex ante returns to purchase of Arrow securities = $exant")
 ```
 
@@ -753,7 +758,7 @@ println("Ex ante returns to purchase of Arrow securities = $exant")
 tags: [remove-cell]
 ---
 @testset "Peace and War Debt Tests" begin
-    #test c̄ ≈ 1.3116883116883118
+    #test c_bar ≈ 1.3116883116883118
     #test G2 ≈ 2.9350649350649354
     #test G1 ≈ 1.3116883116883118
     #test AS2 ≈ 0.9350649350649349
@@ -919,7 +924,7 @@ Random.seed!(42);
 ```
 
 ```{code-cell} julia
-function complete_ss(β, b0, x0, A, C, S_y, T = 12)
+function complete_ss(beta, b0, x0, A, C, S_y, T = 12)
 
     # Create a linear state space for simulation purposes
     # This adds "b" as a state to the linear state space system
@@ -930,21 +935,21 @@ function complete_ss(β, b0, x0, A, C, S_y, T = 12)
     # Ctilde = vcat(C, zeros(1, 1))
     # S_ytilde = hcat(S_y, zeros(1, 1))
 
-    lss = LSS(A, C, S_y, mu_0=x0)
+    lss = LSS(A, C, S_y, mu_0 = x0)
 
     # Add extra state to initial condition
     # x0 = hcat(x0, 0)
 
-    # Compute the (I - β*A)^{-1}
-    rm = inv(I - β * A)
+    # Compute the (I - beta*A)^{-1}
+    rm = inv(I - beta * A)
 
     # Constant level of consumption
-    cbar = (1 - β) * (S_y * rm * x0 .- b0)
+    cbar = (1 - beta) * (S_y * rm * x0 .- b0)
     c_hist = ones(T) * cbar[1]
 
     # Debt
     x_hist, y_hist = simulate(lss, T)
-    b_hist = (S_y * rm * x_hist .- cbar[1] / (1.0 - β))
+    b_hist = (S_y * rm * x_hist .- cbar[1] / (1.0 - beta))
 
     return c_hist, vec(b_hist), vec(y_hist), x_hist
 end
@@ -952,20 +957,20 @@ end
 N_simul = 150
 
 # Define parameters
-α, ρ1, ρ2 = 10.0, 0.9, 0.0
-σ = 1.0
+alpha, rho1, rho2 = 10.0, 0.9, 0.0
+sigma = 1.0
 # N_simul = 1
 # T = N_simul
 A = [1.0 0.0 0.0;
-     α    ρ1  ρ2;
+     alpha rho1 rho2;
      0.0 1.0 0.0]
-C = [0.0, σ, 0.0]
+C = [0.0, sigma, 0.0]
 S_y = [1.0 1.0 0.0]
-β, b0 = 0.95, -10.0
-x0 = [1.0, α / (1 - ρ1), α / (1 - ρ1)]
+beta, b0 = 0.95, -10.0
+x0 = [1.0, alpha / (1 - rho1), alpha / (1 - rho1)]
 
 # Do simulation for complete markets
-out = complete_ss(β, b0, x0, A, C, S_y, 150)
+out = complete_ss(beta, b0, x0, A, C, S_y, 150)
 c_hist_com, b_hist_com, y_hist_com, x_hist_com = out
 
 # Consumption plots
@@ -980,7 +985,7 @@ plot!(plt_debt, 1:N_simul, b_hist_com, label = "debt", lw = 2)
 plot!(plt_debt, 1:N_simul, y_hist_com, label = "Income",
       lw = 2, alpha = 0.6, linestyle = :dash)
 hline!(plt_debt, [0], color = :black, linestyle = :dash, lw = 2, label = "")
-plot(plt_cons, plt_debt, layout = (1,2), size = (800, 400))
+plot(plt_cons, plt_debt, layout = (1, 2), size = (800, 400))
 plot!(legend = :bottomleft)
 ```
 
