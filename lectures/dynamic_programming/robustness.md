@@ -935,53 +935,52 @@ using Test
 ```{code-cell} julia
 using QuantEcon, Plots, LinearAlgebra, Interpolations
 
-
 # model parameters
 a_0 = 100
 a_1 = 0.5
-ρ = 0.9
-σ_d = 0.05
-β = 0.95
+rho = 0.9
+sigma_d = 0.05
+beta = 0.95
 c = 2
-γ = 50.0
-θ = 0.002
+gamma = 50.0
+theta = 0.002
 ac = (a_0 - c) / 2.0
 
 # Define LQ matrices
-R = [ 0   ac    0;
-    ac -a_1  0.5;
-    0.  0.5    0]
+R = [0 ac 0;
+     ac -a_1 0.5;
+     0.0 0.5 0]
 R = -R  # For minimization
-Q = Matrix([γ / 2.0]')
-A = [1. 0. 0.;
-    0. 1. 0.;
-    0. 0.  ρ]
-B = [0. 1. 0.]'
-C = [0. 0. σ_d]'
+Q = Matrix([gamma / 2.0]')
+A = [1.0 0.0 0.0;
+     0.0 1.0 0.0;
+     0.0 0.0 rho]
+B = [0.0 1.0 0.0]'
+C = [0.0 0.0 sigma_d]'
 
 ## Functions
 
-function evaluate_policy(θ, F)
-    rlq = RBLQ(Q, R, A, B, C, β, θ)
+function evaluate_policy(theta, F)
+    rlq = RBLQ(Q, R, A, B, C, beta, theta)
     K_F, P_F, d_F, O_F, o_F = evaluate_F(rlq, F)
     x0 = [1.0 0.0 0.0]'
-    value = - x0' * P_F * x0 .- d_F
+    value = -x0' * P_F * x0 .- d_F
     entropy = x0' * O_F * x0 .+ o_F
     return value[1], entropy[1]    # return scalars
 end
 
 function value_and_entropy(emax, F, bw, grid_size = 1000)
     if lowercase(bw) == "worst"
-        θs = 1 ./ range(1e-8,  1000, length = grid_size)
+        thetas = 1 ./ range(1e-8, 1000, length = grid_size)
     else
-        θs = -1 ./ range(1e-8,  1000, length = grid_size)
+        thetas = -1 ./ range(1e-8, 1000, length = grid_size)
     end
 
     data = zeros(grid_size, 2)
 
-    for (i, θ) in enumerate(θs)
-        data[i, :] = collect(evaluate_policy(θ, F))
-        if data[i, 2] ≥ emax      # stop at this entropy level
+    for (i, theta) in enumerate(thetas)
+        data[i, :] = collect(evaluate_policy(theta, F))
+        if data[i, 2] >= emax      # stop at this entropy level
             data = data[1:i, :]
             break
         end
@@ -992,18 +991,18 @@ end
 ## Main
 
 # compute optimal rule
-optimal_lq = QuantEcon.LQ(Q, R, A, B, C, zero(B'A), bet=β)
+optimal_lq = QuantEcon.LQ(Q, R, A, B, C, zero(B'A), bet = beta)
 Po, Fo, Do = stationary_values(optimal_lq)
 
-# compute robust rule for our θ
-baseline_robust = RBLQ(Q, R, A, B, C, β, θ)
+# compute robust rule for our theta
+baseline_robust = RBLQ(Q, R, A, B, C, beta, theta)
 Fb, Kb, Pb = robust_rule(baseline_robust)
 
 # Check the positive definiteness of worst-case covariance matrix to
-# ensure that θ exceeds the breakdown point
-test_matrix = I - (C' * Pb * C ./ θ)[1]
+# ensure that theta exceeds the breakdown point
+test_matrix = I - (C' * Pb * C ./ theta)[1]
 eigenvals, eigenvecs = eigen(test_matrix)
-@assert all(x -> x ≥ 0, eigenvals)
+@assert all(x -> x >= 0, eigenvals)
 
 emax = 1.6e6
 
@@ -1017,7 +1016,7 @@ robust_worst_case = value_and_entropy(emax, Fb, "worst")
 data_pairs = ((optimal_best_case, optimal_worst_case),
               (robust_best_case, robust_worst_case))
 
-egrid = range(0,  emax, length = 100)
+egrid = range(0, emax, length = 100)
 egrid_data = []
 for data_pair in data_pairs
     for data in data_pair
@@ -1026,12 +1025,12 @@ for data_pair in data_pairs
         push!(egrid_data, curve.(egrid))
     end
 end
-plot(egrid, egrid_data, color=[:red :red :blue :blue])
-plot!(egrid, egrid_data[1], fillrange=egrid_data[2],
-    fillcolor=:red, fillalpha=0.1, color=:red, legend=:none)
-plot!(egrid, egrid_data[3], fillrange=egrid_data[4],
-    fillcolor=:blue, fillalpha=0.1, color=:blue, legend=:none)
-plot!(xlabel="Entropy", ylabel="Value")
+plot(egrid, egrid_data, color = [:red :red :blue :blue])
+plot!(egrid, egrid_data[1], fillrange = egrid_data[2],
+      fillcolor = :red, fillalpha = 0.1, color = :red, legend = :none)
+plot!(egrid, egrid_data[3], fillrange = egrid_data[4],
+      fillcolor = :blue, fillalpha = 0.1, color = :blue, legend = :none)
+plot!(xlabel = "Entropy", ylabel = "Value")
 ```
 
 ```{code-cell} julia
