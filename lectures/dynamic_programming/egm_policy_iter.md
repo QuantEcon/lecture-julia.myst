@@ -143,7 +143,7 @@ Here's an implementation of $K$ using EGM as described above.
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using BenchmarkTools, Interpolations, LaTeXStrings, Parameters, Plots, Random, Roots
+using BenchmarkTools, Interpolations, LaTeXStrings, Plots, Random, Roots
 
 ```
 
@@ -155,22 +155,22 @@ using Test
 ```
 
 ```{code-cell} julia
-function coleman_egm(g, k_grid, β, u′, u′_inv, f, f′, shocks)
+function coleman_egm(g, k_grid, beta, u_prime, u_prime_inv, f, f_prime, shocks)
 
     # Allocate memory for value of consumption on endogenous grid points
     c = similar(k_grid)
 
     # Solve for updated consumption value
     for (i, k) in enumerate(k_grid)
-        vals = u′.(g.(f(k) * shocks)) .* f′(k) .* shocks
-        c[i] = u′_inv(β * mean(vals))
+        vals = u_prime.(g.(f(k) * shocks)) .* f_prime(k) .* shocks
+        c[i] = u_prime_inv(beta * mean(vals))
     end
 
     # Determine endogenous grid
     y = k_grid + c  # y_i = k_i + c_i
 
     # Update policy function and return
-    Kg = LinearInterpolation(y,c, extrapolation_bc=Line())
+    Kg = LinearInterpolation(y, c, extrapolation_bc = Line())
     Kg_f(x) = Kg(x)
     return Kg_f
 end
@@ -181,7 +181,7 @@ Note the lack of any root finding algorithm.
 We'll also run our original implementation, which uses an exogenous grid and requires root finding, so we can perform some comparisons
 
 ```{code-cell} julia
-function K!(Kg, g, grid, β, u′, f, f′, shocks)
+function K!(Kg, g, grid, beta, u_prime, f, f_prime, shocks)
 
     # This function requires the container of the output value as argument Kg
 
@@ -191,8 +191,8 @@ function K!(Kg, g, grid, β, u′, f, f′, shocks)
     # solve for updated consumption value #
     for (i, y) in enumerate(grid)
         function h(c)
-            vals = u′.(g_func.(f(y - c) * shocks)) .* f′(y - c) .* shocks
-            return u′(c) - β * mean(vals)
+            vals = u_prime.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .* shocks
+            return u_prime(c) - beta * mean(vals)
         end
         Kg[i] = find_zero(h, (1e-10, y - 1e-10))
     end
@@ -200,8 +200,9 @@ function K!(Kg, g, grid, β, u′, f, f′, shocks)
 end
 
 # The following function does NOT require the container of the output value as argument
-K(g, grid, β, u′, f, f′, shocks) =
-    K!(similar(g), g, grid, β, u′, f, f′, shocks)
+function K(g, grid, beta, u_prime, f, f_prime, shocks)
+    K!(similar(g), g, grid, beta, u_prime, f, f_prime, shocks)
+end
 ```
 
 Let's test out the code above on some example parameterizations, after the following imports.
@@ -215,19 +216,22 @@ The first step is to bring in the model that we used in the {doc}`Coleman policy
 ```{code-cell} julia
 # model
 
-Model = @with_kw (α = 0.65, # productivity parameter
-                  β = 0.95, # discount factor
-                  γ = 1.0,  # risk aversion
-                  μ = 0.0,  # lognorm(μ, σ)
-                  s = 0.1,  # lognorm(μ, σ)
-                  grid_min = 1e-6, # smallest grid point
-                  grid_max = 4.0,  # largest grid point
-                  grid_size = 200, # grid size
-                  u = γ == 1 ? log : c->(c^(1-γ)-1)/(1-γ), # utility function
-                  u′ = c-> c^(-γ), # u'
-                  f = k-> k^α, # production function
-                  f′ = k -> α*k^(α-1), # f'
-                  grid = range(grid_min, grid_max, length = grid_size)) # grid
+function Model(; alpha = 0.65, # productivity parameter
+               beta = 0.95, # discount factor
+               gamma = 1.0,  # risk aversion
+               mu = 0.0,  # lognorm(mu, sigma)
+               s = 0.1,  # lognorm(mu, sigma)
+               grid_min = 1e-6, # smallest grid point
+               grid_max = 4.0,  # largest grid point
+               grid_size = 200, # grid size
+               u = gamma == 1 ? log : c -> (c^(1 - gamma) - 1) / (1 - gamma), # utility function
+               u_prime = c -> c^(-gamma), # u'
+               f = k -> k^alpha, # production function
+               f_prime = k -> alpha * k^(alpha - 1), # f'
+               grid = range(grid_min, grid_max, length = grid_size)) # grid
+    return (; alpha, beta, gamma, mu, s, grid_min, grid_max, grid_size, u, u_prime,
+            f, f_prime, grid)
+end
 ```
 
 Next we generate an instance
@@ -242,7 +246,7 @@ We also need some shock draws for Monte Carlo integration
 Random.seed!(42); # For reproducible behavior.
 
 shock_size = 250     # Number of shock draws in Monte Carlo integral
-shocks = exp.(mlog.μ .+ mlog.s * randn(shock_size));
+shocks = exp.(mlog.mu .+ mlog.s * randn(shock_size));
 ```
 
 ```{code-cell} julia
@@ -258,13 +262,13 @@ end
 As a preliminary test, let's see if $K c^* = c^*$, as implied by the theory
 
 ```{code-cell} julia
-c_star(y) = (1 - mlog.α * mlog.β) * y
+c_star(y) = (1 - mlog.alpha * mlog.beta) * y
 
 # some useful constants
-ab = mlog.α * mlog.β
-c1 = log(1 - ab) / (1 - mlog.β)
-c2 = (mlog.μ + mlog.α * log(ab)) / (1 - mlog.α)
-c3 = 1 / (1 - mlog.β)
+ab = mlog.alpha * mlog.beta
+c1 = log(1 - ab) / (1 - mlog.beta)
+c2 = (mlog.mu + mlog.alpha * log(ab)) / (1 - mlog.alpha)
+c3 = 1 / (1 - mlog.beta)
 c4 = 1 / (1 - ab)
 
 v_star(y) = c1 + c2 * (c3 - c4) + c4 * log(y)
@@ -283,7 +287,8 @@ end
 ```{code-cell} julia
 function verify_true_policy(m, shocks, c_star)
     k_grid = m.grid
-    c_star_new = coleman_egm(c_star, k_grid, m.β, m.u′, m.u′, m.f, m.f′, shocks)
+    c_star_new = coleman_egm(c_star, k_grid, m.beta, m.u_prime, m.u_prime, m.f,
+                             m.f_prime, shocks)
 
     plt = plot()
     plot!(plt, k_grid, c_star.(k_grid), lw = 2, label = L"optimal policy $c^*$")
@@ -303,19 +308,19 @@ tags: [remove-cell]
 # This should look like a 45-degree line.
 ```
 
-Notice that we're passing u′ to coleman_egm twice.
+Notice that we're passing u_prime to coleman_egm twice.
 
 The reason is that, in the case of log utility, $u'(c) = (u')^{-1}(c) = 1/c$.
 
-Hence u′ and u′_inv are the same.
+Hence u_prime and u_prime_inv are the same.
 
 We can't really distinguish the two plots.
 
 In fact it's easy to see that the difference is essentially zero:
 
 ```{code-cell} julia
-c_star_new = coleman_egm(c_star, mlog.grid, mlog.β, mlog.u′,
-                         mlog.u′, mlog.f, mlog.f′, shocks)
+c_star_new = coleman_egm(c_star, mlog.grid, mlog.beta, mlog.u_prime,
+                         mlog.u_prime, mlog.f, mlog.f_prime, shocks)
 maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid)
 ```
 
@@ -343,16 +348,20 @@ function check_convergence(m, shocks, c_star, g_init, n_iter)
     g = g_init
     plt = plot()
     plot!(plt, m.grid, g.(m.grid),
-          color = RGBA(0,0,0,1), lw = 2, alpha = 0.6, label = L"initial condition $c(y) = y$")
+          color = RGBA(0, 0, 0, 1), lw = 2, alpha = 0.6,
+          label = L"initial condition $c(y) = y$")
     for i in 1:n_iter
-        new_g = coleman_egm(g, k_grid, m.β, m.u′, m.u′, m.f, m.f′, shocks)
+        new_g = coleman_egm(g, k_grid, m.beta, m.u_prime, m.u_prime, m.f, m.f_prime,
+                            shocks)
         g = new_g
-        plot!(plt, k_grid, new_g.(k_grid), alpha = 0.6, color = RGBA(0,0,(i / n_iter), 1),
+        plot!(plt, k_grid, new_g.(k_grid), alpha = 0.6,
+              color = RGBA(0, 0, (i / n_iter), 1),
               lw = 2, label = "")
     end
 
     plot!(plt, k_grid, c_star.(k_grid),
-          color = :black, lw = 2, alpha = 0.8, label = L"true policy function $c^*$")
+          color = :black, lw = 2, alpha = 0.8,
+          label = L"true policy function $c^*$")
     plot!(plt, legend = :topleft)
 end
 ```
@@ -373,8 +382,8 @@ We'll do so using the CRRA model adopted in the exercises of the {doc}`Euler equ
 Here's the model and some convenient functions
 
 ```{code-cell} julia
-mcrra = Model(α = 0.65, β = 0.95, γ = 1.5)
-u′_inv(c) = c^(-1 / mcrra.γ)
+mcrra = Model(alpha = 0.65, beta = 0.95, gamma = 1.5)
+u_prime_inv(c) = c^(-1 / mcrra.gamma)
 ```
 
 ```{code-cell} julia
@@ -383,16 +392,18 @@ tags: [remove-cell]
 ---
 @testset "U Prime Tests" begin
     # test that the behavior of this function is invariant
-    @test u′_inv(3) ≈ 0.4807498567691362
+    @test u_prime_inv(3) ≈ 0.4807498567691362
 end
 ```
 
 Here's the result
 
 ```{code-cell} julia
-crra_coleman(g, m, shocks) = K(g, m.grid, m.β, m.u′, m.f, m.f′, shocks)
-crra_coleman_egm(g, m, shocks) = coleman_egm(g, m.grid, m.β, m.u′,
-                                             u′_inv, m.f, m.f′, shocks)
+crra_coleman(g, m, shocks) = K(g, m.grid, m.beta, m.u_prime, m.f, m.f_prime, shocks)
+function crra_coleman_egm(g, m, shocks)
+    coleman_egm(g, m.grid, m.beta, m.u_prime,
+                u_prime_inv, m.f, m.f_prime, shocks)
+end
 function coleman(m = m, shocks = shocks; sim_length = 20)
     g = m.grid
     for i in 1:sim_length
