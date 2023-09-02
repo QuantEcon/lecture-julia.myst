@@ -432,7 +432,7 @@ using BenchmarkTools, Plots, QuantEcon
 ```
 
 ```{code-cell} julia
-SimpleOG(;B = 10, M = 5, alpha = 0.5, beta = 0.9) = (; B, M, alpha, beta)
+SimpleOG(; B = 10, M = 5, alpha = 0.5, beta = 0.9) = (; B, M, alpha, beta)
 
 function transition_matrices(g)
     (; B, M, alpha, beta) = g
