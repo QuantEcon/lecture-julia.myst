@@ -134,7 +134,7 @@ $$
 
 Interpretation:
 
-* draw $q$ from a β distribution with shape parameters $(a, b)$
+* draw $q$ from a $\beta$ distribution with shape parameters $(a, b)$
 * run $n$ independent binary trials, each with success probability $q$
 * $p(k \,|\, n, a, b)$ is the probability of $k$ successes in these $n$ trials
 
@@ -155,7 +155,6 @@ using Test
 
 ```{code-cell} julia
 using LaTeXStrings, Plots, QuantEcon, Distributions
-
 
 n = 50
 a_vals = [0.5, 1, 100]
@@ -182,41 +181,37 @@ Implementation:
 The code for solving the DP problem described above is found below:
 
 ```{code-cell} julia
-function CareerWorkerProblem(;β = 0.95,
+function CareerWorkerProblem(; beta = 0.95,
                              B = 5.0,
                              N = 50,
                              F_a = 1.0,
                              F_b = 1.0,
                              G_a = 1.0,
                              G_b = 1.0)
-    θ = range(0, B, length = N)
-    ϵ = copy(θ)
-    dist_F = BetaBinomial(N-1, F_a, F_b)
-    dist_G = BetaBinomial(N-1, G_a, G_b)
+    theta = range(0, B, length = N)
+    epsilon = copy(theta)
+    dist_F = BetaBinomial(N - 1, F_a, F_b)
+    dist_G = BetaBinomial(N - 1, G_a, G_b)
     F_probs = pdf.(dist_F, support(dist_F))
     G_probs = pdf.(dist_G, support(dist_G))
-    F_mean = sum(θ .* F_probs)
-    G_mean = sum(ϵ .* G_probs)
-    return (β = β, N = N, B = B, θ = θ, ϵ = ϵ,
-            F_probs = F_probs, G_probs = G_probs,
-            F_mean = F_mean, G_mean = G_mean)
+    F_mean = sum(theta .* F_probs)
+    G_mean = sum(epsilon .* G_probs)
+    return (; beta, N, B, theta, epsilon, F_probs, G_probs, F_mean, G_mean)
 end
 
 function update_bellman!(cp, v, out; ret_policy = false)
 
     # new life. This is a function of the distribution parameters and is
     # always constant. No need to recompute it in the loop
-    v3 = (cp.G_mean + cp.F_mean .+ cp.β .*
-          cp.F_probs' * v * cp.G_probs)[1] # do not need 1 element array
+    v3 = (cp.G_mean + cp.F_mean .+ cp.beta .* cp.F_probs' * v * cp.G_probs)[1] # do not need 1 element array
 
-    for j in 1:cp.N
-        for i in 1:cp.N
+    for j in 1:(cp.N)
+        for i in 1:(cp.N)
             # stay put
-            v1 = cp.θ[i] + cp.ϵ[j] + cp.β * v[i, j]
+            v1 = cp.theta[i] + cp.epsilon[j] + cp.beta * v[i, j]
 
             # new job
-            v2 = (cp.θ[i] .+ cp.G_mean .+ cp.β .*
-                  v[i, :]' * cp.G_probs)[1] # do not need a single element array
+            v2 = (cp.theta[i] .+ cp.G_mean .+ cp.beta .* v[i, :]' * cp.G_probs)[1] # do not need a single element array
 
             if ret_policy
                 if v1 > max(v2, v3)
@@ -233,7 +228,6 @@ function update_bellman!(cp, v, out; ret_policy = false)
         end
     end
 end
-
 
 function update_bellman(cp, v; ret_policy = false)
     out = similar(v)
@@ -274,8 +268,9 @@ v_init = fill(100.0, wp.N, wp.N)
 func(x) = update_bellman(wp, x)
 v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
 
-plot(linetype = :surface, wp.θ, wp.ϵ, transpose(v), xlabel=L"\theta", ylabel=L"\epsilon",
-     seriescolor=:plasma, gridalpha = 1)
+plot(linetype = :surface, wp.theta, wp.epsilon, transpose(v), xlabel = L"\theta",
+     ylabel = L"\epsilon",
+     seriescolor = :plasma, gridalpha = 1)
 ```
 
 The optimal policy can be represented as follows (see {ref}`Exercise 3 <career_ex3>` for code).
@@ -373,31 +368,31 @@ G = DiscreteRV(wp.G_probs)
 
 function gen_path(T = 20)
     i = j = 1
-    θ_ind = Int[]
-    ϵ_ind = Int[]
+    theta_ind = Int[]
+    epsilon_ind = Int[]
 
-    for t=1:T
+    for t in 1:T
         # do nothing if stay put
         if optimal_policy[i, j] == 2 # new job
             j = rand(G)[1]
         elseif optimal_policy[i, j] == 3 # new life
             i, j = rand(F)[1], rand(G)[1]
         end
-        push!(θ_ind, i)
-        push!(ϵ_ind, j)
+        push!(theta_ind, i)
+        push!(epsilon_ind, j)
     end
-    return wp.θ[θ_ind], wp.ϵ[ϵ_ind]
+    return wp.theta[theta_ind], wp.epsilon[epsilon_ind]
 end
 
 plot_array = Any[]
 for i in 1:2
-    θ_path, ϵ_path = gen_path()
-    plt = plot(ϵ_path, label=L"\epsilon")
-    plot!(plt, θ_path, label=L"\theta")
-    plot!(plt, legend=:bottomright)
+    theta_path, epsilon_path = gen_path()
+    plt = plot(epsilon_path, label = L"\epsilon")
+    plot!(plt, theta_path, label = L"\theta")
+    plot!(plt, legend = :bottomright)
     push!(plot_array, plt)
 end
-plot(plot_array..., layout = (2,1))
+plot(plot_array..., layout = (2, 1))
 ```
 
 ```{code-cell} julia
@@ -430,7 +425,6 @@ function gen_first_passage_time(optimal_policy)
     end
 end
 
-
 M = 25000
 samples = zeros(M)
 for i in 1:M
@@ -448,12 +442,12 @@ tags: [remove-cell]
 end
 ```
 
-To compute the median with $\beta=0.99$ instead of the default value $\beta=0.95$, replace `wp=CareerWorkerProblem()` with `wp=CareerWorkerProblem(β=0.99)`.
+To compute the median with $\beta=0.99$ instead of the default value $\beta=0.95$, replace `wp=CareerWorkerProblem()` with `wp=CareerWorkerProblem(beta=0.99)`.
 
 The medians are subject to randomness, but should be about 7 and 14 respectively. Not surprisingly, more patient workers will wait longer to settle down to their final job.
 
 ```{code-cell} julia
-wp2 = CareerWorkerProblem(β=0.99)
+wp2 = CareerWorkerProblem(beta = 0.99)
 
 v2, optimal_policy2 = solve_wp(wp2)
 
@@ -485,30 +479,30 @@ lvls = [0.5, 1.5, 2.5, 3.5]
 x_grid = range(0, 5, length = 50)
 y_grid = range(0, 5, length = 50)
 
-contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
-        fillalpha=1, cbar = false)
-contour!(xlabel=L"\theta", ylabel=L"\epsilon")
-annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
-annotate!([(4.5,2.5, text("new job", 14, :center))])
-annotate!([(4.0,4.5, text("stay put", 14, :center))])
+contour(x_grid, y_grid, optimal_policy', fill = true, levels = lvls, color = :Blues,
+        fillalpha = 1, cbar = false)
+contour!(xlabel = L"\theta", ylabel = L"\epsilon")
+annotate!([(1.8, 2.5, text("new life", 14, :white, :center))])
+annotate!([(4.5, 2.5, text("new job", 14, :center))])
+annotate!([(4.0, 4.5, text("stay put", 14, :center))])
 ```
 
 Now, we need only swap out for the new parameters
 
 ```{code-cell} julia
-wp = CareerWorkerProblem(G_a=100.0, G_b=100.0); # use new params
+wp = CareerWorkerProblem(G_a = 100.0, G_b = 100.0); # use new params
 v, optimal_policy = solve_wp(wp)
 
 lvls = [0.5, 1.5, 2.5, 3.5]
 x_grid = range(0, 5, length = 50)
 y_grid = range(0, 5, length = 50)
 
-contour(x_grid, y_grid, optimal_policy', fill=true, levels=lvls,color = :Blues,
-        fillalpha=1, cbar = false)
-contour!(xlabel=L"\theta", ylabel=L"\epsilon")
-annotate!([(1.8,2.5, text("new life", 14, :white, :center))])
-annotate!([(4.5,2.5, text("new job", 14, :center))])
-annotate!([(4.0,4.5, text("stay put", 14, :center))])
+contour(x_grid, y_grid, optimal_policy', fill = true, levels = lvls, color = :Blues,
+        fillalpha = 1, cbar = false)
+contour!(xlabel = L"\theta", ylabel = L"\epsilon")
+annotate!([(1.8, 2.5, text("new life", 14, :white, :center))])
+annotate!([(4.5, 2.5, text("new job", 14, :center))])
+annotate!([(4.0, 4.5, text("stay put", 14, :center))])
 ```
 
 You will see that the region for which the worker
