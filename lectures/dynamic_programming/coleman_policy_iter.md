@@ -478,7 +478,8 @@ function Model(; alpha = 0.65,                         # Productivity parameter
                dudc = c -> c^(-gamma),                  # u_prime
                f = k -> k^alpha,                        # production function
                f_prime = k -> alpha * k^(alpha - 1))
-    return (; alpha, beta, gamma, mu, s, grid, grid_min, grid_max, grid_size, u, dudc, f, f_prime)
+    return (; alpha, beta, gamma, mu, s, grid, grid_min, grid_max, grid_size, u,
+            dudc, f, f_prime)
 end
 ```
 

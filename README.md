@@ -57,6 +57,15 @@ Julia code blocks in the myst `.md` files can be formatted using a script in thi
 julia format_myst.jl lectures/getting_started_julia/getting_started.md
 ```
 
+As a helper, you can call a shell script to do it for an entire folder
+```bash
+bash format_all_directory.sh lectures/dynamic_programming
+```
+or to also do the unicode substitutions
+```bash
+bash format_all_directory.sh lectures/dynamic_programming true
+```
+
 Alternatively, the formatter will run automatically when a pull-request is made
 
 
