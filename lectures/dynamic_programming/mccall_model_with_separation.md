@@ -244,8 +244,8 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1
     @assert minimum(w) > 0.0 # perhaps not strictly necessary, but useful here
 
     # necessary objects
-    u_w = u.(w, sigma)
-    u_c = u(c, sigma)
+    u_w = mcm.u.(w, sigma)
+    u_c = mcm.u(c, sigma)
     E = expectation(dist) # expectation operator for wage distribution
 
     # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
@@ -284,16 +284,12 @@ Let's plot the approximate solutions $U$ and $V$ to see what they look like.
 We'll use the default parameterizations found in the code above.
 
 ```{code-cell} julia
-# a default utility function
-u(c, sigma) = (c^(1 - sigma) - 1) / (1 - sigma)
-
-# model constructor
 function McCallModel(; alpha = 0.2,
                      beta = 0.98, # discount rate
                      gamma = 0.7,
                      c = 6.0, # unemployment compensation
                      sigma = 2.0,
-                     u = (c, sigma) -> (c^(1 - sigma) - 1) / (1 - sigma), # utility function
+                     u = (c, sigma) -> (c^(1 - sigma) - 1) / (1 - sigma),
                      w = range(10, 20, length = 60), # wage values
                      dist = BetaBinomial(59, 600, 400)) # distribution over wage values
     return (; alpha, beta, gamma, c, sigma, u, w, dist)

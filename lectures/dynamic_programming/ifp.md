@@ -397,8 +397,7 @@ function ConsumerProblem(; r = 0.01,
     R = 1 + r
     asset_grid = range(-b, grid_max, length = grid_size)
 
-    return (; r, R, beta, b, Pi, z_vals,
-            asset_grid)
+    return (; r, R, beta, b, Pi, z_vals, asset_grid)
 end
 
 function T!(cp, V, out; ret_policy = false)

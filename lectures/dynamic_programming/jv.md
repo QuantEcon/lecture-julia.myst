@@ -210,9 +210,7 @@ function JvWorker(; A = 1.4,
             pi_func, F, E, epsilon)
 end
 
-function T!(jv,
-            V,
-            new_V::AbstractVector)
+function T!(jv, V, new_V::AbstractVector)
 
     # simplify notation
     (; G, pi_func, F, beta, E, epsilon) = jv

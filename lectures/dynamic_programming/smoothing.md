@@ -366,7 +366,7 @@ function ConsumptionProblem(beta = 0.96,
                             b0 = 3.0,
                             P = [0.8 0.2
                                  0.4 0.6])
-    (; beta, y, b0, P)
+    return (; beta, y, b0, P)
 end
 
 function consumption_complete(cp)
@@ -379,7 +379,7 @@ function consumption_complete(cp)
     # Using equation (7) calculate b2
     b2 = (y2 - y1 - (Q[1, 1] - Q[2, 1] - 1) * b1) / (Q[1, 2] + 1 - Q[2, 2])
 
-    # Using equation (5) calculae c_bar
+    # Using equation (5) calculate c_bar
     c_bar = y1 - b0 + ([b1 b2] * Q[1, :])[1]
 
     return c_bar, b1, b2

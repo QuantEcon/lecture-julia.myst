@@ -196,9 +196,7 @@ function CareerWorkerProblem(; beta = 0.95,
     G_probs = pdf.(dist_G, support(dist_G))
     F_mean = sum(theta .* F_probs)
     G_mean = sum(epsilon .* G_probs)
-    return (; beta, N, B, theta, epsilon,
-            F_probs, G_probs,
-            F_mean, G_mean)
+    return (; beta, N, B, theta, epsilon, F_probs, G_probs, F_mean, G_mean)
 end
 
 function update_bellman!(cp, v, out; ret_policy = false)
