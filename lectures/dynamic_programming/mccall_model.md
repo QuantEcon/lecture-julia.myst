@@ -350,7 +350,8 @@ beta = 0.99
 num_plots = 6
 
 # Operator
-T(v) = max.(w / (1 - beta), c + beta * E * v) # (5) broadcasts over the w, fixes the v
+# Broadcasts over the w, fixes the v
+T(v) = max.(w / (1 - beta), c + beta * E * v)
 # alternatively, T(v) = [max(wval/(1 - beta), c + beta * E*v) for wval in w]
 
 # fill in  matrix of vs
