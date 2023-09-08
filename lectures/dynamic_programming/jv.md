@@ -44,7 +44,7 @@ kernelspec:
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Interpolations, Expectations, Parameters
+using Distributions, Interpolations, Expectations
 using LaTeXStrings, Plots, NLsolve, Random
 
 ```
@@ -184,66 +184,62 @@ using Test
 ```
 
 ```{code-cell} julia
-  # model object
-  function JvWorker(;A = 1.4,
-              α = 0.6,
-              β = 0.96,
-              grid_size = 50,
-              ϵ = 1e-4)
+# model object
+function JvWorker(; A = 1.4,
+                  alpha = 0.6,
+                  beta = 0.96,
+                  grid_size = 50,
+                  epsilon = 1e-4)
+    G(x, phi) = A .* (x .* phi) .^ alpha
+    pi_func = sqrt
+    F = Beta(2, 2)
 
-      G(x, ϕ) = A .* (x .* ϕ).^α
-      π_func = sqrt
-      F = Beta(2, 2)
+    # expectation operator
+    E = expectation(F)
 
-      # expectation operator
-      E = expectation(F)
+    # Set up grid over the state space for DP
+    # Max of grid is the max of a large quantile value for F and the
+    # fixed point y = G(y, 1).
+    grid_max = max(A^(1.0 / (1.0 - alpha)), quantile(F, 1 - epsilon))
 
-      # Set up grid over the state space for DP
-      # Max of grid is the max of a large quantile value for F and the
-      # fixed point y = G(y, 1).
-      grid_max = max(A^(1.0 / (1.0 - α)), quantile(F, 1 - ϵ))
+    # range for range(epsilon, grid_max, grid_size). Needed for
+    # CoordInterpGrid below
+    x_grid = range(epsilon, grid_max, length = grid_size)
 
-      # range for range(ϵ, grid_max, grid_size). Needed for
-      # CoordInterpGrid below
-      x_grid = range(ϵ, grid_max, length = grid_size)
+    return (; A, alpha, beta, x_grid, G,
+            pi_func, F, E, epsilon)
+end
 
-      return (A = A, α = α, β = β, x_grid = x_grid, G = G,
-              π_func = π_func, F = F, E = E, ϵ = ϵ)
-  end
-
-function T!(jv,
-                           V,
-                           new_V::AbstractVector)
+function T!(jv, V, new_V::AbstractVector)
 
     # simplify notation
-    (;G, π_func, F, β, E, ϵ) = jv
+    (; G, pi_func, F, beta, E, epsilon) = jv
 
     # prepare interpoland of value function
-    Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
+    Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc = Line())
 
     # instantiate the linesearch variables
     max_val = -1.0
     cur_val = 0.0
     max_s = 1.0
-    max_ϕ = 1.0
-    search_grid = range(ϵ, 1.0, length = 15)
+    max_phi = 1.0
+    search_grid = range(epsilon, 1.0, length = 15)
 
     for (i, x) in enumerate(jv.x_grid)
-
         function w(z)
-            s, ϕ = z
-            h(u) = Vf(max(G(x, ϕ), u))
+            s, phi = z
+            h(u) = Vf(max(G(x, phi), u))
             integral = E(h)
-            q = π_func(s) * integral + (1.0 - π_func(s)) * Vf(G(x, ϕ))
+            q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
 
-            return - x * (1.0 - ϕ - s) - β * q
+            return -x * (1.0 - phi - s) - beta * q
         end
 
         for s in search_grid
-            for ϕ in search_grid
-                cur_val = ifelse(s + ϕ <= 1.0, -w((s, ϕ)), -1.0)
+            for phi in search_grid
+                cur_val = ifelse(s + phi <= 1.0, -w((s, phi)), -1.0)
                 if cur_val > max_val
-                    max_val, max_s, max_ϕ = cur_val, s, ϕ
+                    max_val, max_s, max_phi = cur_val, s, phi
                 end
             end
         end
@@ -252,48 +248,45 @@ function T!(jv,
     end
 end
 
-function T!(jv,
-                           V,
-                           out::Tuple{AbstractVector, AbstractVector})
+function T!(jv, V, out::Tuple{AbstractVector, AbstractVector})
 
     # simplify notation
-    (;G, π_func, F, β, E, ϵ) = jv
+    (; G, pi_func, F, beta, E, epsilon) = jv
 
     # prepare interpoland of value function
-    Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc=Line())
+    Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc = Line())
 
     # instantiate variables
-    s_policy, ϕ_policy = out[1], out[2]
+    s_policy, phi_policy = out[1], out[2]
 
     # instantiate the linesearch variables
     max_val = -1.0
     cur_val = 0.0
     max_s = 1.0
-    max_ϕ = 1.0
-    search_grid = range(ϵ, 1.0, length = 15)
+    max_phi = 1.0
+    search_grid = range(epsilon, 1.0, length = 15)
 
     for (i, x) in enumerate(jv.x_grid)
-
         function w(z)
-            s, ϕ = z
-            h(u) = Vf(max(G(x, ϕ), u))
+            s, phi = z
+            h(u) = Vf(max(G(x, phi), u))
             integral = E(h)
-            q = π_func(s) * integral + (1.0 - π_func(s)) * Vf(G(x, ϕ))
+            q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
 
-            return - x * (1.0 - ϕ - s) - β * q
+            return -x * (1.0 - phi - s) - beta * q
         end
 
         for s in search_grid
-            for ϕ in search_grid
-                cur_val = ifelse(s + ϕ <= 1.0, -w((s, ϕ)), -1.0)
+            for phi in search_grid
+                cur_val = ifelse(s + phi <= 1.0, -w((s, phi)), -1.0)
                 if cur_val > max_val
-                    max_val, max_s, max_ϕ = cur_val, s, ϕ
+                    max_val, max_s, max_phi = cur_val, s, phi
                 end
             end
         end
 
-    s_policy[i], ϕ_policy[i] = max_s, max_ϕ
-end
+        s_policy[i], phi_policy[i] = max_s, max_phi
+    end
 end
 
 function T(jv, V; ret_policies = false)
@@ -372,17 +365,17 @@ Let's plot the optimal policies and see what they look like.
 The code is as follows
 
 ```{code-cell} julia
-wp = JvWorker(grid_size=25)
+wp = JvWorker(grid_size = 25)
 v_init = collect(wp.x_grid) .* 0.5
 
 f(x) = T(wp, x)
 V = fixedpoint(f, v_init)
 sol_V = V.zero
 
-s_policy, ϕ_policy = T(wp, sol_V, ret_policies = true)
+s_policy, phi_policy = T(wp, sol_V, ret_policies = true)
 
 # plot solution
-p = plot(wp.x_grid, [ϕ_policy s_policy sol_V],
+p = plot(wp.x_grid, [phi_policy s_policy sol_V],
          title = [L"$\phi$ policy" L"$s$ policy" "value function"],
          color = [:orange :blue :green],
          xaxis = (L"x", (0.0, maximum(wp.x_grid))),
@@ -404,7 +397,7 @@ Overall, the policies match well with our predictions from {ref}`section <jvboec
 tags: [remove-cell]
 ---
 @testset "First Plot Tests" begin
-  @test [s_policy[4], ϕ_policy[4]] ≈ [0.0001, 0.9285785714285715]
+  @test [s_policy[4], phi_policy[4]] ≈ [0.0001, 0.9285785714285715]
 end
 ```
 
@@ -472,21 +465,21 @@ Can you give a rough interpretation for the value that you see?
 Here's code to produce the 45 degree diagram
 
 ```{code-cell} julia
-wp = JvWorker(grid_size=25)
+wp = JvWorker(grid_size = 25)
 # simplify notation
-(;G, π_func, F) = wp
+(; G, pi_func, F) = wp
 
 v_init = collect(wp.x_grid) * 0.5
 f2(x) = T(wp, x)
 V2 = fixedpoint(f2, v_init)
 sol_V2 = V2.zero
-s_policy, ϕ_policy = T(wp, sol_V2, ret_policies=true)
+s_policy, phi_policy = T(wp, sol_V2, ret_policies = true)
 
 # Turn the policy function arrays into CoordInterpGrid objects for interpolation
-s = LinearInterpolation(wp.x_grid, s_policy, extrapolation_bc=Line())
-ϕ = LinearInterpolation(wp.x_grid, ϕ_policy, extrapolation_bc=Line())
+s = LinearInterpolation(wp.x_grid, s_policy, extrapolation_bc = Line())
+phi = LinearInterpolation(wp.x_grid, phi_policy, extrapolation_bc = Line())
 
-h_func(x, b, U) = (1 - b) * G(x, ϕ(x)) + b * max(G(x, ϕ(x)), U)
+h_func(x, b, U) = (1 - b) * G(x, phi(x)) + b * max(G(x, phi(x)), U)
 ```
 
 ```{code-cell} julia
@@ -495,7 +488,7 @@ tags: [remove-cell]
 ---
 @testset "Solutions 1 Tests" begin
   @test s(3) ≈ 0.0001
-  #test ϕ(4) ≈ 0.2857857142857143
+  #test phi(4) ≈ 0.2857857142857143
 end
 ```
 
@@ -511,8 +504,8 @@ ticks = [0.25, 0.5, 0.75, 1.0]
 xs = []
 ys = []
 for x in plot_grid
-    for i=1:K
-        b = rand() < π_func(s(x)) ? 1 : 0
+    for i in 1:K
+        b = rand() < pi_func(s(x)) ? 1 : 0
         U = rand(wp.F)
         y = h_func(x, b, U)
         push!(xs, x)
@@ -520,9 +513,10 @@ for x in plot_grid
     end
 end
 
-plot(plot_grid, plot_grid, color=:black, linestyle=:dash, legend=:none)
-scatter!(xs, ys, alpha=0.25, color=:green, lims=(0, plot_grid_max), ticks=ticks)
-plot!(xlabel=L"x_t", ylabel=L"x_{t+1}", guidefont=font(16))
+plot(plot_grid, plot_grid, color = :black, linestyle = :dash, legend = :none)
+scatter!(xs, ys, alpha = 0.25, color = :green, lims = (0, plot_grid_max),
+         ticks = ticks)
+plot!(xlabel = L"x_t", ylabel = L"x_{t+1}", guidefont = font(16))
 ```
 
 ```{code-cell} julia
@@ -555,13 +549,13 @@ $\phi_t = \phi(x_t) \approx 0.6$.
 ### Exercise 2
 
 ```{code-cell} julia
-wp = JvWorker(grid_size=25)
+wp = JvWorker(grid_size = 25)
 
-xbar(ϕ) = (wp.A * ϕ^wp.α)^(1.0 / (1.0 - wp.α))
+xbar(phi) = (wp.A * phi^wp.alpha)^(1.0 / (1.0 - wp.alpha))
 
-ϕ_grid = range(0, 1, length = 100)
+phi_grid = range(0, 1, length = 100)
 
-plot(ϕ_grid, [xbar(ϕ) * (1 - ϕ) for ϕ in ϕ_grid], color = :blue,
+plot(phi_grid, [xbar(phi) * (1 - phi) for phi in phi_grid], color = :blue,
      label = L"w^\phi", legendfont = font(12), xlabel = L"\phi",
      guidefont = font(16), grid = false, legend = :topleft)
 ```
