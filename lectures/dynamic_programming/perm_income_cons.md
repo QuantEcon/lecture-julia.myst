@@ -336,7 +336,7 @@ R = 1 / beta
 A = [1.0 0.0 0.0;
      alpha rho1 rho2;
      0.0 1.0 0.0]
-C = [0.0; sigma; 0.0]''
+C = [0.0; sigma; 0.0]
 G = [0.0 1.0 0.0]
 
 # Form LinearStateSpace system and pull off steady state moments
