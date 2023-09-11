@@ -427,16 +427,16 @@ using Test
 ```
 
 ```{code-cell} julia
-using BenchmarkTools, Plots, QuantEcon, Parameters
+using BenchmarkTools, Plots, QuantEcon
 
 ```
 
 ```{code-cell} julia
-SimpleOG = @with_kw (B = 10, M = 5, α = 0.5, β = 0.9)
+SimpleOG(; B = 10, M = 5, alpha = 0.5, beta = 0.9) = (; B, M, alpha, beta)
 
 function transition_matrices(g)
-    (;B, M, α, β) = g
-    u(c) = c^α
+    (; B, M, alpha, beta) = g
+    u(c) = c^alpha
     n = B + M + 1
     m = M + 1
 
@@ -446,11 +446,11 @@ function transition_matrices(g)
     for a in 0:M
         Q[:, a + 1, (a:(a + B)) .+ 1] .= 1 / (B + 1)
         for s in 0:(B + M)
-            R[s + 1, a + 1] = (a≤s ? u(s - a) : -Inf)
+            R[s + 1, a + 1] = (a <= s ? u(s - a) : -Inf)
         end
     end
 
-    return (Q = Q, R = R)
+    return (; Q, R)
 end
 ```
 
@@ -468,8 +468,8 @@ In case the preceding code was too concise, we can see a more verbose form
 tags: [output_scroll]
 ---
 function verbose_matrices(g)
-    (;B, M, α, β) = g
-    u(c) = c^α
+    (;B, M, alpha, beta) = g
+    u(c) = c^alpha
 
     #Matrix dimensions. The +1 is due to the 0 state.
     n = B + M + 1
@@ -500,16 +500,16 @@ function verbose_matrices(g)
             @assert sum(Q[s + 1, a + 1, :]) ≈ 1 #Optional check that matrix is stochastic
          end
     end
-    return (Q = Q, R = R)
+return (;Q,R)
 end
 ```
 
-Instances of `DiscreteDP` are created using the signature `DiscreteDP(R, Q, β)`.
+Instances of `DiscreteDP` are created using the signature `DiscreteDP(R, Q, beta)`.
 
 Let's create an instance using the objects stored in `g`
 
 ```{code-cell} julia
-ddp = DiscreteDP(R, Q, g.β);
+ddp = DiscreteDP(R, Q, g.beta);
 ```
 
 Now that we have an instance `ddp` of `DiscreteDP` we can solve it as follows
@@ -524,7 +524,7 @@ Let's see what we've got here
 fieldnames(typeof(results))
 ```
 
-The most important attributes are `v`, the value function, and `σ`, the optimal policy
+The most important attributes are `v`, the value function, and `sigma`, the optimal policy
 
 ```{code-cell} julia
 results.v
@@ -569,7 +569,7 @@ results.num_iter
 tags: [remove-cell]
 ---
 @testset "Iteration Tests" begin
-    @test results.num_iter ≤ 3 # Make sure we didn't take more cycles, compared to v0.6
+    @test results.num_iter <= 3 # Make sure we didn't take more cycles, compared to v0.6
 end
 ```
 
@@ -606,10 +606,10 @@ Here's the same information in a bar graph
 What happens if the agent is more patient?
 
 ```{code-cell} julia
-g_2 = SimpleOG(β=0.99);
+g_2 = SimpleOG(beta = 0.99);
 Q_2, R_2 = transition_matrices(g_2);
 
-ddp_2 = DiscreteDP(R_2, Q_2, g_2.β)
+ddp_2 = DiscreteDP(R_2, Q_2, g_2.beta)
 
 results_2 = solve(ddp_2, PFI)
 
@@ -639,7 +639,7 @@ One of the advantages of this alternative set up is that it permits use of a spa
 
 (An example of using sparse matrices is given in the exercises below)
 
-The call signature of the second formulation is `DiscreteDP(R, Q, β, s_indices, a_indices)` where
+The call signature of the second formulation is `DiscreteDP(R, Q, beta, s_indices, a_indices)` where
 
 * `s_indices` and `a_indices` are arrays of equal length `L` enumerating all feasible state-action pairs
 * `R` is an array of length `L` giving corresponding rewards
@@ -650,9 +650,9 @@ Here's how we could set up these objects for the preceding example
 ```{code-cell} julia
 B = 10
 M = 5
-α = 0.5
-β = 0.9
-u(c) = c^α
+alpha = 0.5
+beta = 0.9
+u(c) = c^alpha
 n = B + M + 1
 m = M + 1
 
@@ -670,11 +670,11 @@ for s in 0:(M + B)
         q = zeros(1, n)
         q[(a + 1):((a + B) + 1)] .= b
         Q = [Q; q]
-        R = [R; u(s-a)]
+        R = [R; u(s - a)]
     end
 end
 
-ddp = DiscreteDP(R, Q, β, s_indices, a_indices);
+ddp = DiscreteDP(R, Q, beta, s_indices, a_indices);
 results = solve(ddp, PFI)
 ```
 
@@ -707,10 +707,10 @@ we let $f(k) = k^{\alpha}$ with $\alpha = 0.65$,
 $u(c) = \log c$, and $\beta = 0.95$.
 
 ```{code-cell} julia
-α = 0.65
-f(k) = k.^α
+alpha = 0.65
+f(k) = k .^ alpha
 u_log(x) = log(x)
-β = 0.95
+beta = 0.95
 ```
 
 Here we want to solve a finite state version of the continuous state
@@ -766,7 +766,7 @@ end
 Now let's set up $R$ and $Q$
 
 ```{code-cell} julia
-R = u_log.(C[C.>0]);
+R = u_log.(C[C .> 0]);
 ```
 
 ```{code-cell} julia
@@ -793,14 +793,14 @@ We're now in a position to create an instance of `DiscreteDP`
 corresponding to the growth model.
 
 ```{code-cell} julia
-ddp = DiscreteDP(R, Q, β, s_indices, a_indices);
+ddp = DiscreteDP(R, Q, beta, s_indices, a_indices);
 ```
 
 ### Solving the Model
 
 ```{code-cell} julia
 results = solve(ddp, PFI)
-v, σ, num_iter = results.v, results.sigma, results.num_iter
+v, sigma, num_iter = results.v, results.sigma, results.num_iter
 num_iter
 ```
 
@@ -810,8 +810,8 @@ tags: [remove-cell]
 ---
 @testset "Results Test" begin
     #test v[4] ≈ -42.301381867365954
-    @test σ[4] == 10
-    @test num_iter ≤ 10
+    @test sigma[4] == 10
+    @test num_iter <= 10
 end
 ```
 
@@ -819,14 +819,15 @@ Let us compare the solution of the discrete model with the exact
 solution of the original continuous model. Here's the exact solution:
 
 ```{code-cell} julia
-c = f(grid) - grid[σ]
+c = f(grid) - grid[sigma]
 
-ab = α * β
-c1 = (log(1 - α * β) + log(α * β) * α * β / (1 - α * β)) / (1 - β)
-c2 = α / (1 - α * β)
+ab = alpha * beta
+c1 = (log(1 - alpha * beta) + log(alpha * beta) * alpha * beta / (1 - alpha * beta)) /
+     (1 - beta)
+c2 = alpha / (1 - alpha * beta)
 
 v_star(k) = c1 + c2 * log(k)
-c_star(k) = (1 - α * β) * k.^α
+c_star(k) = (1 - alpha * beta) * k .^ alpha
 ```
 
 ```{code-cell} julia
@@ -843,7 +844,8 @@ end
 Let's plot the value functions.
 
 ```{code-cell} julia
-plot(grid, [v v_star.(grid)], ylim = (-40, -32), lw = 2, label = ["discrete" "continuous"])
+plot(grid, [v v_star.(grid)], ylim = (-40, -32), lw = 2,
+     label = ["discrete" "continuous"])
 ```
 
 They are barely distinguishable (although you can see the difference if
@@ -853,7 +855,8 @@ Now let's look at the discrete and exact policy functions for
 consumption.
 
 ```{code-cell} julia
-plot(grid, [c c_star.(grid)], lw = 2, label = ["discrete" "continuous"], legend = :topleft)
+plot(grid, [c c_star.(grid)], lw = 2, label = ["discrete" "continuous"],
+     legend = :topleft)
 ```
 
 These functions are again close, although some difference is visible and
@@ -891,7 +894,7 @@ end
 The value function is monotone, as expected:
 
 ```{code-cell} julia
-all(x -> x ≥ 0, diff(v))
+all(x -> x >= 0, diff(v))
 ```
 
 ```{code-cell} julia
@@ -899,7 +902,7 @@ all(x -> x ≥ 0, diff(v))
 tags: [remove-cell]
 ---
 @testset "Monotonicity Test" begin
-    @test all(x -> x ≥ 0, diff(v))
+    @test all(x -> x >= 0, diff(v))
 end
 ```
 
@@ -924,7 +927,7 @@ res1.num_iter
 ```
 
 ```{code-cell} julia
-σ == res1.sigma
+sigma == res1.sigma
 ```
 
 ```{code-cell} julia
@@ -932,7 +935,7 @@ res1.num_iter
 tags: [remove-cell]
 ---
 @testset "Equivalence Test" begin
-    #test σ == res1.sigma
+    #test sigma == res1.sigma
 end
 ```
 
@@ -946,7 +949,7 @@ res2.num_iter
 ```
 
 ```{code-cell} julia
-σ == res2.sigma
+sigma == res2.sigma
 ```
 
 ```{code-cell} julia
@@ -954,7 +957,7 @@ res2.num_iter
 tags: [remove-cell]
 ---
 @testset "Other Equivalence Test" begin
-    #test σ == res2.sigma
+    #test sigma == res2.sigma
 end
 ```
 
@@ -970,10 +973,10 @@ n = 50
 ws = []
 colors = []
 w = w_init
-for i in 0:n-1
+for i in 0:(n - 1)
     w = bellman_operator(ddp, w)
     push!(ws, w)
-    push!(colors, RGBA(0, 0, 0, i/n))
+    push!(colors, RGBA(0, 0, 0, i / n))
 end
 
 plot(grid,
@@ -983,7 +986,7 @@ plot(grid,
      xlims = extrema(grid),
      label = "initial condition")
 
-plot!(grid, ws,  label = "", color = reshape(colors, 1, length(colors)), lw = 2)
+plot!(grid, ws, label = "", color = reshape(colors, 1, length(colors)), lw = 2)
 plot!(grid, v_star.(grid), label = "true value function", color = :red, lw = 2)
 ```
 
@@ -1008,8 +1011,8 @@ function compute_policies(n_vals...)
     for n in 1:maximum(n_vals)
         w = bellman_operator(ddp, w)
         if n in n_vals
-            σ = compute_greedy(ddp, w)
-            c_policy = f(grid) - grid[σ]
+            sigma = compute_greedy(ddp, w)
+            c_policy = f(grid) - grid[sigma]
             push!(c_policies, c_policy)
         end
     end
@@ -1061,21 +1064,21 @@ condition $k_0 = 0.1$.
 discount_factors = (0.9, 0.94, 0.98)
 k_init = 0.1
 
-k_init_ind = findfirst(collect(grid) .≥ k_init)
+k_init_ind = findfirst(collect(grid) .>= k_init)
 
 sample_size = 25
 
-ddp0 = DiscreteDP(R, Q, β, s_indices, a_indices)
+ddp0 = DiscreteDP(R, Q, beta, s_indices, a_indices)
 k_paths = []
 labels = []
 
-for β in discount_factors
-    ddp0.beta = β
+for beta in discount_factors
+    ddp0.beta = beta
     res0 = solve(ddp0, PFI)
-    k_path_ind = simulate(res0.mc, sample_size, init=k_init_ind)
-    k_path = grid[k_path_ind.+1]
+    k_path_ind = simulate(res0.mc, sample_size, init = k_init_ind)
+    k_path = grid[k_path_ind .+ 1]
     push!(k_paths, k_path)
-    push!(labels, L"\beta = %$β")
+    push!(labels, L"\beta = %$beta")
 end
 
 plot(k_paths,

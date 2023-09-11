@@ -165,7 +165,7 @@ The bottom panel presents mixtures of these distributions, with various mixing p
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, LaTeXStrings, Parameters, Printf, Random, Roots, Plots
+using Distributions, LaTeXStrings, Printf, Random, Roots, Plots
 
 ```
 
@@ -181,13 +181,14 @@ using StatsPlots
 
 begin
     base_dist = [Beta(1, 1), Beta(3, 3)]
-    mixed_dist = MixtureModel.(Ref(base_dist), (p -> [p, one(p) - p]).(0.25:0.25:0.75))
-    plot(plot(base_dist, labels = [L"f_0" L"f_1"], title = "Original Distributions"),
+    mixed_dist = MixtureModel.(Ref(base_dist),
+                               (p -> [p, one(p) - p]).(0.25:0.25:0.75))
+    plot(plot(base_dist, labels = [L"f_0" L"f_1"],
+              title = "Original Distributions"),
          plot(mixed_dist, labels = [L"1/4-3/4" L"1/2-1/2" L"3/4-1/4"],
               title = "Distribution Mixtures"),
          # Global settings across both plots
-         ylab = "Density", ylim = (0, 2), layout = (2, 1)
-         )
+         ylab = "Density", ylim = (0, 2), layout = (2, 1))
 end
 ```
 
@@ -389,7 +390,9 @@ Here's the code
 ```{code-cell} julia
 accept_x0(p, L0) = (one(p) - p) * L0
 accept_x1(p, L1) = p * L1
-bayes_update(p, d0, d1) = p * pdf(d0, p) / pdf(MixtureModel([d0, d1], [p, one(p) - p]), p)
+function bayes_update(p, d0, d1)
+    p * pdf(d0, p) / pdf(MixtureModel([d0, d1], [p, one(p) - p]), p)
+end
 function draw_again(p, d0, d1, L0, L1, c, target)
     candidate = 0.0
     cost = 0.0
@@ -423,7 +426,7 @@ function choice(p, d0, d1, L0, L1, c)
 end
 ```
 
-Next we solve a problem by finding the α, β values for the decision rule
+Next we solve a problem by finding the $\alpha$, $\beta$ values for the decision rule
 
 ```{code-cell} julia
 function decision_rule(d0, d1, L0, L1, c)
@@ -442,27 +445,29 @@ function decision_rule(d0, d1, L0, L1, c)
     # Compute the choice at both sides
     left = first.(choice.(roots .- eps(), d0, d1, L0, L1, c))
     right = first.(choice.(roots .+ eps(), d0, d1, L0, L1, c))
-    # Find β by checking for a permanent transition from the area accepting to
+    # Find beta by checking for a permanent transition from the area accepting to
     # x₁ to never again accepting x₁ at the various indifference points
-    # Find α by checking for a permanent transition from the area accepting of
+    # Find alpha by checking for a permanent transition from the area accepting of
     # x₀ to never again accepting x₀ at the various indifference points
-    β = findlast((left .== 2) .& (right .≠ 2)) |> (x -> isa(x, Int) ? roots[x] : 0)
-    α = findfirst((left .≠ 1) .& (right .== 1)) |> (x -> isa(x, Int) ? roots[x] : 1)
-    if β < α
-        @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p ≤ %.2f
-                \nAccept x0 if p ≥ %.2f", β, β, α, α)
+    beta = findlast((left .== 2) .& (right .≠ 2)) |>
+           (x -> isa(x, Int) ? roots[x] : 0)
+    alpha = findfirst((left .≠ 1) .& (right .== 1)) |>
+            (x -> isa(x, Int) ? roots[x] : 1)
+    if beta < alpha
+        @printf("Accept x1 if p <= %.2f\nContinue to draw if %.2f <= p <= %.2f
+                \nAccept x0 if p >= %.2f", beta, beta, alpha, alpha)
     else
-        x0 = accept_x0(β, L0)
-        x1 = accept_x1(β, L1)
-        draw = draw_again(β, d0, d1, L0, L1, c, min(x0, x1))
+        x0 = accept_x0(beta, L0)
+        x1 = accept_x1(beta, L1)
+        draw = draw_again(beta, d0, d1, L0, L1, c, min(x0, x1))
         if draw == min(x0, x1, draw)
-            @printf("Accept x1 if p ≤ %.2f\nContinue to draw if %.2f ≤ p ≤ %.2f
-                    \nAccept x0 if p ≥ %.2f", β, β, α, α)
+            @printf("Accept x1 if p <= %.2f\nContinue to draw if %.2f <= p <= %.2f
+                    \nAccept x0 if p >= %.2f", beta, beta, alpha, alpha)
         else
-            @printf("Accept x1 if p ≤ %.2f\nAccept x0 if p ≥ %.2f", β, α)
+            @printf("Accept x1 if p <= %.2f\nAccept x0 if p >= %.2f", beta, alpha)
         end
     end
-    return (α, β)
+    return (alpha, beta)
 end
 ```
 
@@ -470,8 +475,8 @@ We can simulate an agent facing a problem and the outcome with the following fun
 
 ```{code-cell} julia
 function simulation(problem)
-    (;d0, d1, L0, L1, c, p, n, return_output) = problem
-    α, β = decision_rule(d0, d1, L0, L1, c)
+    (; d0, d1, L0, L1, c, p, n, return_output) = problem
+    alpha, beta = decision_rule(d0, d1, L0, L1, c)
     outcomes = fill(false, n)
     costs = fill(0.0, n)
     trials = fill(0, n)
@@ -487,9 +492,9 @@ function simulation(problem)
             t += 1
             outcome = rand(d)
             p = bayes_update(p, d0, d1)
-            if p <= β
+            if p <= beta
                 choice = 1
-            elseif p >= α
+            elseif p >= alpha
                 choice = 2
             end
         end
@@ -501,13 +506,15 @@ function simulation(problem)
     end
     @printf("\nCorrect: %.2f\nAverage Cost: %.2f\nAverage number of trials: %.2f",
             mean(outcomes), mean(costs), mean(trials))
-    return return_output ? (α, β, outcomes, costs, trials) : nothing
+    return return_output ? (alpha, beta, outcomes, costs, trials) : nothing
 end
 
-Problem = @with_kw (d0 = Beta(1,1), d1 = Beta(9,9),
-                    L0 = 2, L1 = 2,
-                    c = 0.2, p = 0.5,
-                    n = 100, return_output = false);
+function Problem(d0 = Beta(1, 1), d1 = Beta(9, 9),
+                 L0 = 2, L1 = 2,
+                 c = 0.2, p = 0.5,
+                 n = 100, return_output = false)
+    return (; d0, d1, L0, L1, c, p, n, return_output)
+end;
 ```
 
 ```{code-cell} julia
@@ -517,13 +524,13 @@ tags: [remove-cell]
 @testset "Verifying Output" begin
     Random.seed!(0)
     (;d0, d1, L0, L1, c) = Problem()
-    α, β, outcomes, costs, trials = simulation(Problem(return_output = true))
-    #test α ≈ 0.57428237
-    #test β ≈ 0.352510338
-    choices = first.(choice.((clamp(β - eps(), 0, 1),
-                              clamp(β + eps(), 0, 1),
-                              clamp(α - eps(), 0, 1),
-                              clamp(α + eps(), 0, 1)),
+    alpha, beta, outcomes, costs, trials = simulation(Problem(return_output = true))
+    #test alpha ≈ 0.57428237
+    #test beta ≈ 0.352510338
+    choices = first.(choice.((clamp(beta - eps(), 0, 1),
+                              clamp(beta + eps(), 0, 1),
+                              clamp(alpha - eps(), 0, 1),
+                              clamp(alpha + eps(), 0, 1)),
                               d0, d1, L0, L1, c))
     #test choices[1] == 2
     #test choices[2] ≠ 2
@@ -544,16 +551,16 @@ tags: [remove-cell]
 @testset "Comparative Statics" begin
     Random.seed!(0)
     (;d0, d1, L0, L1, c) = Problem()
-    α, β, outcomes, costs, trials = simulation(Problem(c = 2c, return_output = true))
-    #test α ≈ 0.53551172 atol = 1e-3
-    #test β ≈ 0.41244737 atol = 1e-3
+    alpha, beta, outcomes, costs, trials = simulation(Problem(c = 2c, return_output = true))
+    #test alpha ≈ 0.53551172 atol = 1e-3
+    #test beta ≈ 0.41244737 atol = 1e-3
     #test mean(outcomes) ≈ 0.39 atol = 1e-2
     #test mean(costs) ≈ 1.696 atol = 1e-3
     #test mean(trials) ≈ 1.19 atol = 1e-3
-    choices = first.(choice.((clamp(β - eps(), 0, 1),
-                              clamp(β + eps(), 0, 1),
-                              clamp(α - eps(), 0, 1),
-                              clamp(α + eps(), 0, 1)),
+    choices = first.(choice.((clamp(beta - eps(), 0, 1),
+                              clamp(beta + eps(), 0, 1),
+                              clamp(alpha - eps(), 0, 1),
+                              clamp(alpha + eps(), 0, 1)),
                               d0, d1, L0, L1, 2c))
     #test choices[1] == 2 
     #test choices[2] ≠ 2 

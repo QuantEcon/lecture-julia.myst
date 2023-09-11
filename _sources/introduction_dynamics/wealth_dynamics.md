@@ -146,7 +146,7 @@ n = 10_000
 plt = plot(F, F, label = "equality", legend = :topleft)
 for a in a_vals
     u = rand(n)
-    y = sort(u.^(-1/a))  # distributed as Pareto with tail index a
+    y = sort(u .^ (-1 / a))  # distributed as Pareto with tail index a
     (; F, L) = lorenz(y)
     plot!(plt, F, L, label = L"a = %$a")
 end
@@ -179,13 +179,16 @@ Let's see if the Gini coefficient computed from a simulated sample matches
 this at each fixed value of $a$.
 
 ```{code-cell} julia
-gini(v) = (2 * sum(i * y for (i,y) in enumerate(v))/sum(v)
-           - (length(v) + 1))/length(v)
+function gini(v)
+    (2 * sum(i * y for (i, y) in enumerate(v)) / sum(v)
+     -
+     (length(v) + 1)) / length(v)
+end
 
 a_vals = 1:19
 n = 100
 ginis = [gini(sort(rand(Weibull(a), n))) for a in a_vals]
-ginis_theoretical = [1 - 2^(-1/a) for a in a_vals]
+ginis_theoretical = [1 - 2^(-1 / a) for a in a_vals]
 
 plot(a_vals, ginis, label = "estimated gini coefficient",
      xlabel = L"Weibull parameter $a$", ylabel = "Gini coefficient")
@@ -208,8 +211,8 @@ In the following case, the `L` is pre-allocated and will be overwritten.
 
 ```{code-cell} julia
 function lorenz!(L, v)
-   # cumulative sum but inplace: [v[1], v[1] + v[2], ... ]
-    cumsum!(L, v)    
+    # cumulative sum but inplace: [v[1], v[1] + v[2], ... ]
+    cumsum!(L, v)
     L ./= L[end]  # inplace division to normalize
     F = (1:length(v)) / length(v) # doesn't allocate since F is a range
     return F, L # using inplace we can still return the L vector
@@ -227,7 +230,7 @@ using BenchmarkTools
 n = 1_000_000
 a = 2
 u = rand(n)
-v = sort(u.^(-1/a))
+v = sort(u .^ (-1 / a))
 @btime lorenz($v); # performance with out-of-place
 ```
 
@@ -248,7 +251,7 @@ Furthermore, this benefit is only felt if we are reusing the same `L` in repeate
 n = 1000
 a = 2
 u = rand(n)
-v = sort(u.^(-1/a))
+v = sort(u .^ (-1 / a))
 L = similar(v) # preallocate of same type, size
 @btime lorenz($v)
 @btime lorenz!($L, $v)
@@ -329,31 +332,30 @@ First, we will write a function which collects all of the parameters into a name
 
 ```{code-cell} julia
 function wealth_dynamics_model(; # all named arguments
-    w_hat=1.0, # savings parameter
-    s_0=0.75, # savings parameter
-    c_y=1.0, # labor income parameter
-    μ_y=1.0, # labor income parameter
-    σ_y=0.2, # labor income parameter
-    c_r=0.05, # rate of return parameter
-    μ_r=0.1, # rate of return parameter
-    σ_r=0.5, # rate of return parameter
-    a=0.5, # aggregate shock parameter
-    b=0.0, # aggregate shock parameter
-    σ_z=0.1 # aggregate shock parameter
-    )
-z_mean = b / (1 - a)
-z_var = σ_z^2 / (1 - a^2)
-exp_z_mean = exp(z_mean + z_var / 2)
-R_mean = c_r * exp_z_mean + exp(μ_r + σ_r^2 / 2)
-y_mean = c_y * exp_z_mean + exp(μ_y + σ_y^2 / 2)
-α = R_mean * s_0
+                               w_hat = 1.0, # savings parameter
+                               s_0 = 0.75, # savings parameter
+                               c_y = 1.0, # labor income parameter
+                               mu_y = 1.0, # labor income parameter
+                               sigma_y = 0.2, # labor income parameter
+                               c_r = 0.05, # rate of return parameter
+                               mu_r = 0.1, # rate of return parameter
+                               sigma_r = 0.5, # rate of return parameter
+                               a = 0.5, # aggregate shock parameter
+                               b = 0.0, # aggregate shock parameter
+                               sigma_z = 0.1)
+    z_mean = b / (1 - a)
+    z_var = sigma_z^2 / (1 - a^2)
+    exp_z_mean = exp(z_mean + z_var / 2)
+    R_mean = c_r * exp_z_mean + exp(mu_r + sigma_r^2 / 2)
+    y_mean = c_y * exp_z_mean + exp(mu_y + sigma_y^2 / 2)
+    alpha = R_mean * s_0
 
-# Distributions
-z_stationary_dist = Normal(z_mean, sqrt(z_var))
+    # Distributions
+    z_stationary_dist = Normal(z_mean, sqrt(z_var))
 
-@assert α <= 1 # check stability condition that wealth does not diverge
-return (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z, z_mean,
-z_var,z_stationary_dist, exp_z_mean, R_mean, y_mean, α)
+    @assert alpha <= 1 # check stability condition that wealth does not diverge
+    return (; w_hat, s_0, c_y, mu_y, sigma_y, c_r, mu_r, sigma_r, a, b, sigma_z,
+            z_mean, z_var, z_stationary_dist, exp_z_mean, R_mean, y_mean, alpha)
 end
 ```
 
@@ -365,21 +367,21 @@ The `p` argument is a named-tuple or struct consist with the `wealth_dynamics_mo
 
 ```{code-cell} julia
 function simulate_wealth_dynamics(w_0, z_0, T, params)
-    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = params # unpack
-    w = zeros(T+1)
-    z = zeros(T+1)
+    (; w_hat, s_0, c_y, mu_y, sigma_y, c_r, mu_r, sigma_r, a, b, sigma_z) = params # unpack
+    w = zeros(T + 1)
+    z = zeros(T + 1)
     w[1] = w_0
     z[1] = z_0
 
-    for t = 2:T+1
-        z[t] = a*z[t-1] + b + σ_z * randn()
-        y = c_y*exp(z[t]) + exp(μ_y + σ_y*randn())
+    for t in 2:(T + 1)
+        z[t] = a * z[t - 1] + b + sigma_z * randn()
+        y = c_y * exp(z[t]) + exp(mu_y + sigma_y * randn())
         w[t] = y # income goes to next periods wealth
-        if w[t-1] >= w_hat # if above minimum wealth level, add savings
-            R = c_r * exp(z[t]) + exp(μ_r + σ_r*randn())
-            w[t] += R * s_0 * w[t-1]
+        if w[t - 1] >= w_hat # if above minimum wealth level, add savings
+            R = c_r * exp(z[t]) + exp(mu_r + sigma_r * randn())
+            w[t] += R * s_0 * w[t - 1]
         end
-    end    
+    end
     return w, z
 end
 ```
@@ -393,7 +395,7 @@ z_0 = rand(p.z_stationary_dist)
 T = 200
 w, z = simulate_wealth_dynamics(y_0, z_0, T, p)
 
-plot(w, caption = "Wealth simulation", xlabel="t", label=L"w(t)")
+plot(w, caption = "Wealth simulation", xlabel = "t", label = L"w(t)")
 ```
 
 Notice the large spikes in wealth over time.
@@ -427,7 +429,7 @@ function f2(x)
     temp = (x >= 0.0) ? x : -x
     return val + temp
 end
-f3(x) = 2.0 + ( (x >= 0.0) ? x : -x)
+f3(x) = 2.0 + ((x >= 0.0) ? x : -x)
 @show f1(0.8), f2(0.8), f3(0.8)
 @show f1(1.8), f2(1.8), f3(1.8);
 ```
@@ -436,10 +438,10 @@ Using this, lets rewrite our code to simplify the conditional and otherwise simu
 
 ```{code-cell} julia
 function simulate_panel(N, T, p)
-    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = p
+    (; w_hat, s_0, c_y, mu_y, sigma_y, c_r, mu_r, sigma_r, a, b, sigma_z) = p
     w = p.y_mean * ones(N) # start at the mean of y
     z = rand(p.z_stationary_dist, N)
-    
+
     # Preallocate next period states and R intermediate
     zp = similar(z)
     wp = similar(w)
@@ -450,17 +452,19 @@ function simulate_panel(N, T, p)
         R_shock = randn(N)
         w_shock = randn(N)
         @turbo for i in 1:N
-            zp[i] = a*z[i] + b + σ_z*z_shock[i]
-            R[i] = (w[i] >= w_hat) ? c_r*exp(zp[i]) + exp(μ_r + σ_r*R_shock[i]) : 0.0
-            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*w_shock[i]) + R[i]*s_0*w[i]            
+            zp[i] = a * z[i] + b + sigma_z * z_shock[i]
+            R[i] = (w[i] >= w_hat) ?
+                   c_r * exp(zp[i]) + exp(mu_r + sigma_r * R_shock[i]) : 0.0
+            wp[i] = c_y * exp(zp[i]) + exp(mu_y + sigma_y * w_shock[i]) +
+                    R[i] * s_0 * w[i]
         end
         # Step forward
         w .= wp
         z .= zp
-    end    
+    end
     sort!(w) # sorts the wealth so we can calculate gini/lorenz        
     F, L = lorenz(w)
-    return (;w, F, L, gini = gini(w))
+    return (; w, F, L, gini = gini(w))
 end
 ```
 
@@ -488,18 +492,18 @@ The code below simulates the wealth distribution, Lorenz curve, and gini for mul
 
 ```{code-cell} julia
 
-μ_r_vals = range(0.0, 0.075, 5)
-results = map(μ_r -> simulate_panel(N, T, wealth_dynamics_model(;μ_r)),
-              μ_r_vals);
+mu_r_vals = range(0.0, 0.075, 5)
+results = map(mu_r -> simulate_panel(N, T, wealth_dynamics_model(; mu_r)),
+              mu_r_vals);
 ```
 
 Using these results, we can plot the Lorenz curves for each value of $\mu_r$ and compare to perfect equality.
 
 ```{code-cell} julia
 plt = plot(results[1].F, results[1].F, label = "equality", legend = :topleft,
-           ylabel="Lorenz Curve")
-[plot!(plt, res.F, res.L, label = L"\psi^*, \mu_r = %$μ_r") 
- for (μ_r, res) in zip(μ_r_vals, results)]
+           ylabel = "Lorenz Curve")
+[plot!(plt, res.F, res.L, label = L"\psi^*, \mu_r = %$mu_r")
+ for (mu_r, res) in zip(mu_r_vals, results)]
 plt
 ```
 
@@ -509,7 +513,7 @@ The Lorenz curve shifts downwards as returns on financial income rise, indicatin
 Now let’s check the Gini coefficient.
 ```{code-cell} julia
 ginis = [res.gini for res in results]
-plot(μ_r_vals, ginis, label = "Gini coefficient", xlabel = L"\mu_r")
+plot(mu_r_vals, ginis, label = "Gini coefficient", xlabel = L"\mu_r")
 ```
 Once again, we see that inequality increases as returns on financial income rise, and the relationship is roughly linear.
 
@@ -517,13 +521,13 @@ Let's finish this section by investigating what happens when we change the
 volatility term $\sigma_r$ in financial returns.
 
 ```{code-cell} julia
-σ_r_vals = range(0.35, 0.53, 5)
-results = map(σ_r -> simulate_panel(N, T, wealth_dynamics_model(;σ_r)),
-              σ_r_vals);
+sigma_r_vals = range(0.35, 0.53, 5)
+results = map(sigma_r -> simulate_panel(N, T, wealth_dynamics_model(; sigma_r)),
+              sigma_r_vals);
 plt = plot(results[1].F, results[1].F, label = "equality", legend = :topleft,
-           ylabel="Lorenz Curve")
-[plot!(plt, res.F, res.L, label = L"\psi^*, \sigma_r = %$σ_r")
- for (σ_r, res) in zip(σ_r_vals, results)]
+           ylabel = "Lorenz Curve")
+[plot!(plt, res.F, res.L, label = L"\psi^*, \sigma_r = %$sigma_r")
+ for (sigma_r, res) in zip(sigma_r_vals, results)]
 plt
 ```
 
@@ -531,7 +535,7 @@ We see that greater volatility has the effect of increasing inequality in this m
 
 ```{code-cell} julia
 ginis = [res.gini for res in results]
-plot(σ_r_vals, ginis, label = "Gini coefficient", xlabel = L"\sigma_r")
+plot(sigma_r_vals, ginis, label = "Gini coefficient", xlabel = L"\sigma_r")
 ```
 
 Similarly, the Gini coefficient shows that greater volatility increases inequality and approaches a Gini of 1 (i.e., perfect inequality) as the volatility increases where a $\sigma_r \approx 0.53$ is close to the maximum value fixing the other parameters at their default values.
@@ -560,10 +564,10 @@ Lets write a version without the macro.  In that case, we do not need to allocat
 
 ```{code-cell} julia
 function simulate_panel_no_turbo(N, T, p)
-    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = p
+    (; w_hat, s_0, c_y, mu_y, sigma_y, c_r, mu_r, sigma_r, a, b, sigma_z) = p
     w = p.y_mean * ones(N) # start at the mean of y
     z = rand(p.z_stationary_dist, N)
-    
+
     # Preallocate next period states and R intermediate
     zp = similar(z)
     wp = similar(w)
@@ -571,17 +575,20 @@ function simulate_panel_no_turbo(N, T, p)
 
     for t in 1:T
         @inbounds for i in 1:N
-            zp[i] = a*z[i] + b + σ_z * randn()
-            R[i] = (w[i] >= w_hat) ? c_r * exp(zp[i]) + exp(μ_r + σ_r*randn()) : 0.0
-            wp[i] = c_y*exp(zp[i]) + exp(μ_y + σ_y*randn()) + R[i] * s_0*w[i]            
+            zp[i] = a * z[i] + b + sigma_z * randn()
+            R[i] = (w[i] >= w_hat) ?
+                   c_r * exp(zp[i]) + exp(mu_r + sigma_r * randn()) :
+                   0.0
+            wp[i] = c_y * exp(zp[i]) + exp(mu_y + sigma_y * randn()) +
+                    R[i] * s_0 * w[i]
         end
         # Step forward
         w .= wp
         z .= zp
-    end    
+    end
     sort!(w) # sorts the wealth so we can calculate gini/lorenz        
     F, L = lorenz(w)
-    return (;w, F, L, gini = gini(w))
+    return (; w, F, L, gini = gini(w))
 end
 ```
 The `@inbounds` macro ignore bounds checking to gain a few percent increase in speed but is not essential otherwise.
@@ -591,13 +598,13 @@ Finally, to see the comparison to a vectorized approach in the style of matlab o
 ```{code-cell} julia
 function step_wealth_vectorized(w, z, p)
     N = length(w) # panel size    
-    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = p
-    zp = a*z .+ b .+ σ_z * randn(N) # vectorized
-    y = c_y*exp.(zp) .+ exp.(μ_y .+ σ_y*randn(N))
+    (; w_hat, s_0, c_y, mu_y, sigma_y, c_r, mu_r, sigma_r, a, b, sigma_z) = p
+    zp = a * z .+ b .+ sigma_z * randn(N) # vectorized
+    y = c_y * exp.(zp) .+ exp.(mu_y .+ sigma_y * randn(N))
 
     # return set to zero if no savings, simplifies vectorization
-    R = (w .> w_hat).*(c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N)))
-    wp = y .+ s_0*R.*w # note R = 0 if not saving since w < w_hat
+    R = (w .> w_hat) .* (c_r * exp.(zp) .+ exp.(mu_r .+ sigma_r * randn(N)))
+    wp = y .+ s_0 * R .* w # note R = 0 if not saving since w < w_hat
     return wp, zp
 end
 function simulate_panel_vectorized(N, T, p)
@@ -612,7 +619,7 @@ function simulate_panel_vectorized(N, T, p)
     end
     sort!(w) # sorts the wealth so we can calculate gini/lorenz        
     F, L = lorenz(w)
-    return (;w, F, L, gini = gini(w))
+    return (; w, F, L, gini = gini(w))
 end
 ```
 
@@ -642,13 +649,13 @@ First, a vectorized version of our original code is
 ```{code-cell} julia
 function step_wealth(w, z, params)
     N = length(w) # panel size    
-    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = params
-    zp = a*z .+ b .+ σ_z * randn(N) # vectorized
-    y = c_y*exp.(zp) .+ exp.(μ_y .+ σ_y*randn(N))
+    (; w_hat, s_0, c_y, mu_y, sigma_y, c_r, mu_r, sigma_r, a, b, sigma_z) = params
+    zp = a * z .+ b .+ sigma_z * randn(N) # vectorized
+    y = c_y * exp.(zp) .+ exp.(mu_y .+ sigma_y * randn(N))
 
     # return set to zero if no savings, simplifies vectorization
-    R = (w .> w_hat).*(c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N)))
-    wp = y .+ s_0*R.*w # note R = 0 if not saving since w < w_hat
+    R = (w .> w_hat) .* (c_r * exp.(zp) .+ exp.(mu_r .+ sigma_r * randn(N)))
+    wp = y .+ s_0 * R .* w # note R = 0 if not saving since w < w_hat
     return wp, zp
 end
 function simulate_panel(N, T, params)
@@ -663,7 +670,7 @@ function simulate_panel(N, T, params)
     end
     sort!(w) # sorts the wealth so we can calculate gini/lorenz        
     F, L = lorenz(w)
-    return (;w, F, L, gini = gini(w))
+    return (; w, F, L, gini = gini(w))
 end
 ```
 
@@ -678,32 +685,32 @@ In addition, a standard trick is to pass in a pre-allocated buffer which is repl
 ```{code-cell} julia
 function step_wealth!(w, z, y, R, params)
     N = length(w) # panel size    
-    (;w_hat, s_0, c_y, μ_y, σ_y, c_r, μ_r, σ_r, a, b, σ_z) = params
+    (; w_hat, s_0, c_y, mu_y, sigma_y, c_r, mu_r, sigma_r, a, b, sigma_z) = params
 
-    # Splitting up old: zp = a*z .+ b .+ σ_z * randn(N) # vectorized
+    # Splitting up old: zp = a*z .+ b .+ sigma_z * randn(N) # vectorized
     shock_z = randn(N)
-    lmul!(σ_z, shock_z) # σ_z * randn(N)
-    shock_z .+= b # b .+ σ_z * randn(N)
+    lmul!(sigma_z, shock_z) # sigma_z * randn(N)
+    shock_z .+= b # b .+ sigma_z * randn(N)
     lmul!(a, z) # a*z
-    z .+= shock_z # zp = a*z .+ b .+ σ_z * randn(N)
+    z .+= shock_z # zp = a*z .+ b .+ sigma_z * randn(N)
 
-    # Splitting up old: y = c_y*exp.(zp) .+ exp.(μ_y .+ σ_y*randn(N))
+    # Splitting up old: y = c_y*exp.(zp) .+ exp.(mu_y .+ sigma_y*randn(N))
     exp_zp = exp.(z)
     copy!(y, exp_zp) # y = exp.(zp)
     lmul!(c_y, y) # y = c_y*exp.(zp)
     shock_y = randn(N)
-    lmul!(σ_y, shock_y) # σ_y*randn(N)
-    shock_y .+= μ_y # μ_y .+ σ_y*randn(N)    
-    y .+= exp.(shock_y) # y = c_y*exp.(zp) .+ exp.(μ_y .+ σ_y*randn(N))
+    lmul!(sigma_y, shock_y) # sigma_y*randn(N)
+    shock_y .+= mu_y # mu_y .+ sigma_y*randn(N)    
+    y .+= exp.(shock_y) # y = c_y*exp.(zp) .+ exp.(mu_y .+ sigma_y*randn(N))
 
-    # Split up the: R .= (w .> w_hat).*(c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N)))
+    # Split up the: R .= (w .> w_hat).*(c_r*exp.(zp) .+ exp.(mu_r .+ sigma_r*randn(N)))
     shock_R = randn(N)
-    lmul!(σ_r, shock_R) # σ_r*randn(N)
-    shock_R .+= μ_r # μ_r .+ σ_y*randn(N)    
+    lmul!(sigma_r, shock_R) # sigma_r*randn(N)
+    shock_R .+= mu_r # mu_r .+ sigma_y*randn(N)    
     copy!(R, exp_zp) # exp.(zp)
     lmul!(c_r, R) # c_r*exp.(zp)
-    R .+= exp.(shock_R) # c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N))
-    R .*= (w .> w_hat) # (w .> w_hat).*(c_r*exp.(zp) .+ exp.(μ_r .+ σ_r*randn(N)))
+    R .+= exp.(shock_R) # c_r*exp.(zp) .+ exp.(mu_r .+ sigma_r*randn(N))
+    R .*= (w .> w_hat) # (w .> w_hat).*(c_r*exp.(zp) .+ exp.(mu_r .+ sigma_r*randn(N)))
 
     # Split up the: wp = y .+ s_0*R.*w
     lmul!(s_0, w) # s_0*w
@@ -725,7 +732,7 @@ function simulate_panel!(N, T, params)
     end
     sort!(w) # sorts the wealth so we can calculate gini/lorenz        
     F, L = lorenz(w)
-    return (;w, F, L, gini = gini(w))
+    return (; w, F, L, gini = gini(w))
 end
 ```
 As you can see, this was a lot of work, most of which was attempting to eliminate temporary values.

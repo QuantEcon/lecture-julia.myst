@@ -229,13 +229,14 @@ function ksl(distribution, n = 100)
     title = nameof(typeof(distribution))
     observations = rand(distribution, n)
     sample_means = cumsum(observations) ./ (1:n)
-    μ = mean(distribution)
+    mu = mean(distribution)
     plot(repeat((1:n)', 2),
          [zeros(1, n); observations'], label = "", color = :grey, alpha = 0.5)
     plot!(1:n, observations, color = :grey, markershape = :circle,
           alpha = 0.5, label = "", linewidth = 0)
-    if !isnan(μ)
-        hline!([μ], color = :black, linewidth = 1.5, linestyle = :dash, grid = false,
+    if !isnan(mu)
+        hline!([mu], color = :black, linewidth = 1.5, linestyle = :dash,
+               grid = false,
                label = "Mean")
     end
     plot!(1:n, sample_means, linewidth = 3, alpha = 0.6, color = :green,
@@ -246,7 +247,7 @@ end
 
 ```{code-cell} julia
 distributions = [TDist(10), Beta(2, 2), Gamma(5, 2), Poisson(4), LogNormal(0.5),
-                 Exponential(1)]
+    Exponential(1)]
 ```
 
 Here is in an example for the standard normal distribution
@@ -260,7 +261,8 @@ Random.seed!(0); # reproducible results
 ```
 
 ```{code-cell} julia
-plot(ksl.(sample(distributions, 3, replace = false))..., layout = (3, 1), legend = false)
+plot(ksl.(sample(distributions, 3, replace = false))..., layout = (3, 1),
+     legend = false)
 ```
 
 The three distributions are chosen at random from distributions.
@@ -297,7 +299,8 @@ Random.seed!(0); # reproducible results
 ```{code-cell} julia
 function plot_means(n = 1000)
     sample_mean = cumsum(rand(Cauchy(), n)) ./ (1:n)
-    plot(1:n, sample_mean, color = :red, alpha = 0.6, label = "Sample Mean", linewidth = 3)
+    plot(1:n, sample_mean, color = :red, alpha = 0.6, label = "Sample Mean",
+         linewidth = 3)
     return hline!([0], color = :black, linestyle = :dash, label = "", grid = false)
 end
 
@@ -394,14 +397,15 @@ Think of $X_i = 1$ as a "success", so that $Y_n = \sum_{i=1}^n X_i$ is the numbe
 The next figure plots the probability mass function of $Y_n$ for $n = 1, 2, 4, 8$
 
 ```{code-cell} julia
-binomial_pdf(n) =
+function binomial_pdf(n)
     bar(0:n, pdf.(Binomial(n), 0:n),
         xticks = 0:10, ylim = (0, 1), yticks = 0:0.1:1,
         label = L"Binomial(%$n, 0.5)", legend = :topleft)
+end
 ```
 
 ```{code-cell} julia
-plot(binomial_pdf.((1,2,4,8))...)
+plot(binomial_pdf.((1, 2, 4, 8))...)
 ```
 
 When $n = 1$, the distribution is flat --- one success or no successes
@@ -449,14 +453,14 @@ $F(x) = 1 - e^{- \lambda x}$.
 using StatsPlots
 
 function simulation1(distribution, n = 250, k = 10_000)
-    σ = std(distribution)
+    sigma = std(distribution)
     y = rand(distribution, n, k)
     y .-= mean(distribution)
     y = mean(y, dims = 1)
     y = √n * vec(y)
     density(y, label = "Empirical Distribution")
-    return plot!(Normal(0, σ), linestyle = :dash, color = :black,
-                 label = L"Normal(0.00, %$(σ^2))")
+    return plot!(Normal(0, sigma), linestyle = :dash, color = :black,
+                 label = L"Normal(0.00, %$(sigma^2))")
 end
 ```
 
@@ -492,7 +496,7 @@ specified as the convex combination of three different beta densities.
 function simulation2(distribution = Beta(2, 2), n = 5, k = 10_000)
     y = rand(distribution, k, n)
     for col in 1:n
-        y[:,col] += rand([-0.5, 0.6, -1.1], k)
+        y[:, col] += rand([-0.5, 0.6, -1.1], k)
     end
     y = (y .- mean(distribution)) ./ std(distribution)
     y = cumsum(y, dims = 2) ./ sqrt.(1:5)' # return grid of data
@@ -791,14 +795,16 @@ Random.seed!(0);
 ```
 
 ```{code-cell} julia
-function exercise1(distribution = Uniform(0, π/2); n = 250, k = 10_000, g = sin, g′ = cos)
-    μ, σ = mean(distribution), std(distribution)
+function exercise1(distribution = Uniform(0, π / 2); n = 250, k = 10_000, g = sin,
+                   g′ = cos)
+    mu, sigma = mean(distribution), std(distribution)
     y = rand(distribution, n, k)
     y = mean(y, dims = 1)
     y = vec(y)
-    error_obs = sqrt(n) .* (g.(y) .- g.(μ))
+    error_obs = sqrt(n) .* (g.(y) .- g.(mu))
     density(error_obs, label = "Empirical Density")
-    return plot!(Normal(0, g′(μ) .* σ), linestyle = :dash, label = "Asymptotic",
+    return plot!(Normal(0, g′(mu) .* sigma), linestyle = :dash,
+                 label = "Asymptotic",
                  color = :black)
 end
 exercise1()
@@ -869,12 +875,12 @@ Random.seed!(0);
 ```
 
 ```{code-cell} julia
-function exercise2(;n = 250, k = 50_000, dw = Uniform(-1, 1), du = Uniform(-2, 2))
+function exercise2(; n = 250, k = 50_000, dw = Uniform(-1, 1), du = Uniform(-2, 2))
     vw = var(dw)
     vu = var(du)
-    Σ = [vw    vw
-         vw vw + vu]
-    Q = inv(sqrt(Σ))
+    Sigma = [vw vw
+             vw vw+vu]
+    Q = inv(sqrt(Sigma))
     function generate_data(dw, du, n)
         dw = rand(dw, n)
         X = [dw dw + rand(du, n)]
