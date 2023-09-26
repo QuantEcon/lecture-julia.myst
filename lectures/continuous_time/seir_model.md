@@ -294,7 +294,7 @@ function F(x, p, t)
 
     return [-gamma * R_0 * s * i;              # ds/dt
             gamma * R_0 * s * i -  sigma * e;  # de/dt
-            sigma * e - γ*i;                   # di/dt
+            sigma * e - gamma * i;                   # di/dt
             gamma * i;                         # dr/dt
             eta * (R_bar_0(t, p) - R_0);       # dR_0/dt
             sigma * e;                         # dc/dt
