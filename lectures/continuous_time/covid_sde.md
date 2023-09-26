@@ -230,40 +230,41 @@ First, construct our $F$ from {eq}`dfcvsde` and $G$ from {eq}`dG`
 
 ```{code-cell} julia
 function F(x, p, t)
-    s, i, r, d, R₀, δ = x
-    (;γ, R̄₀, η, σ, ξ, θ, δ_bar) = p
+    s, i, r, d, R_0, delta = x
+    (; gamma, R_bar_0, eta, sigma, xi, theta, delta_bar) = p
 
-    return [-γ*R₀*s*i;        # ds/dt
-            γ*R₀*s*i - γ*i;   # di/dt
-            (1-δ)*γ*i;        # dr/dt
-            δ*γ*i;            # dd/dt
-            η*(R̄₀(t, p) - R₀);# dR₀/dt
-            θ*(δ_bar - δ);    # dδ/dt
-            ]
+    return [-gamma * R_0 * s * i;              # ds/dt
+             gamma * R_0 * s * i - gamma * i;  # di/dt
+            (1 - delta) * gamma * i;          # dr/dt
+             delta * gamma * i;               # dd/dt
+             eta * (R_bar_0(t, p) - R_0);      # dR_0/dt
+             theta * (delta_bar - delta);     # ddelta/dt
+           ]
 end
 
 function G(x, p, t)
-    s, i, r, d, R₀, δ = x
-    (;γ, R̄₀, η, σ, ξ, θ, δ_bar) = p
+    s, i, r, d, R_0, delta = x
+    (; gamma, R_bar_0, eta, sigma, xi, theta, delta_bar) = p
 
-    return [0; 0; 0; 0; σ*sqrt(R₀); ξ*sqrt(δ * (1-δ))]
+    return [0; 0; 0; 0; sigma * sqrt(R_0); xi * sqrt(delta * (1 - delta))]
 end
 ```
 
 Next create a settings generator, and then define a [SDEProblem](https://docs.sciml.ai/stable/tutorials/sde_example/#Example-2:-Systems-of-SDEs-with-Diagonal-Noise-1)  with Diagonal Noise.
 
 ```{code-cell} julia
-p_gen = @with_kw (T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
-                  R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n, δ_bar = 0.01,
-                  σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8)
-p =  p_gen()  # use all defaults
+p_gen(; T = 550.0, gamma = 1.0 / 18, eta = 1.0 / 20, 
+        R_0_n = 1.6, R_bar_0 = (t, p) -> p.R_0_n, delta_bar = 0.01, 
+        sigma = 0.03, xi = 0.004, theta = 0.2, N = 3.3E8) = (; T, gamma, eta, R_0_n, R_bar_0, delta_bar, sigma, xi, theta, N)
+
+p = p_gen()  # use all defaults
 i_0 = 25000 / p.N
 r_0 = 0.0
 d_0 = 0.0
 s_0 = 1.0 - i_0 - r_0 - d_0
-R̄₀_0 = 0.5  # starting in lockdown
-δ_0 = p.δ_bar
-x_0 = [s_0, i_0, r_0, d_0, R̄₀_0, δ_0]
+R_bar_0_0 = 0.5  # starting in lockdown
+delta_0 = p.delta_bar
+x_0 = [s_0, i_0, r_0, d_0, R_bar_0_0, delta_0]
 
 prob = SDEProblem(F, G, x_0, (0, p.T), p)
 ```
@@ -370,29 +371,29 @@ We will shut down the shocks to the mortality rate (i.e. $\xi = 0$) to focus on 
 Consider $\eta = 1/50$ and $\eta = 1/20$, where we start at the same initial condition of $R_0(0) = 0.5$.
 
 ```{code-cell} julia
-function generate_η_experiment(η; p_gen = p_gen, trajectories = 100,
-                              saveat = 1.0, x_0 = x_0, T = 120.0)
-    p = p_gen(η = η, ξ = 0.0)
+function generate_eta_experiment(eta; p_gen, trajectories = 100, saveat = 1.0, x_0, T = 120.0)
+    p = p_gen(eta = eta, xi = 0.0)
     ensembleprob = EnsembleProblem(SDEProblem(F, G, x_0, (0, T), p))
-    sol = solve(ensembleprob, SOSRI(), EnsembleThreads(),
-                trajectories = trajectories, saveat = saveat)
+    sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), trajectories = trajectories, saveat = saveat)
     return EnsembleSummary(sol)
 end
 
 # Evaluate two different lockdown scenarios
-η_1 = 1/50
-η_2 = 1/20
-summ_1 = generate_η_experiment(η_1)
-summ_2 = generate_η_experiment(η_2)
-plot(summ_1, idxs = (4,5),
+eta_1 = 1 / 50
+eta_2 = 1 / 20
+summ_1 = generate_eta_experiment(eta_1)
+summ_2 = generate_eta_experiment(eta_2)
+
+plot(summ_1, idxs = (4, 5),
     title = ["Proportion Dead" L"R_0"],
     ylabel = [L"d(t)" L"R_0(t)"], xlabel = L"t",
     legend = [:topleft :bottomright],
-    labels = L"Middle 95% Quantile, $\eta = %$η_1$",
+    labels = L"Middle 95% Quantile, $\eta = %$eta_1$",
     layout = (2, 1), size = (900, 900), fillalpha = 0.5)
-plot!(summ_2, idxs = (4,5),
+
+plot!(summ_2, idxs = (4, 5),
     legend = [:topleft :bottomright],
-    labels = L"Middle 95% Quantile, $\eta = %$η_2$", size = (900, 900), fillalpha = 0.5)
+    labels = L"Middle 95% Quantile, $\eta = %$eta_2$", size = (900, 900), fillalpha = 0.5)
 ```
 
 While the the mean of the $d(t)$ increases, unsurprisingly, we see that the 95% quantile for later time periods is also much larger - even after the $R_0$ has converged.
@@ -411,24 +412,24 @@ Since empirical estimates of $R_0(t)$ discussed in {cite}`NBERw27128` and other 
 We start the model with 100,000 active infections.
 
 ```{code-cell} julia
-R₀_L = 0.5  # lockdown
-η_experiment = 1.0/10
-σ_experiment = 0.04
-R̄₀_lift_early(t, p) = t < 30.0 ? R₀_L : 2.0
-R̄₀_lift_late(t, p) = t < 120.0 ? R₀_L : 2.0
+R_0_L = 0.5  # lockdown
+eta_experiment = 1.0 / 10
+sigma_experiment = 0.04
 
-p_early = p_gen(R̄₀ = R̄₀_lift_early, η = η_experiment, σ = σ_experiment)
-p_late = p_gen(R̄₀ = R̄₀_lift_late, η = η_experiment, σ = σ_experiment)
+R_bar_0_lift_early(t, p) = t < 30.0 ? R_0_L : 2.0
+R_bar_0_lift_late(t, p) = t < 120.0 ? R_0_L : 2.0
 
+p_early = p_gen(R_bar_0 = R_bar_0_lift_early, eta = eta_experiment, sigma = sigma_experiment)
+p_late = p_gen(R_bar_0 = R_bar_0_lift_late, eta = eta_experiment, sigma = sigma_experiment)
 
 # initial conditions
 i_0 = 100000 / p_early.N
 r_0 = 0.0
 d_0 = 0.0
 s_0 = 1.0 - i_0 - r_0 - d_0
-δ_0 = p_early.δ_bar
+delta_0 = p_early.delta_bar
 
-x_0 = [s_0, i_0, r_0, d_0, R₀_L, δ_0]  # start in lockdown
+x_0 = [s_0, i_0, r_0, d_0, R_0_L, delta_0]  # start in lockdown
 prob_early = SDEProblem(F, G, x_0, (0, p_early.T), p_early)
 prob_late = SDEProblem(F, G, x_0, (0, p_late.T), p_late)
 ```
@@ -438,13 +439,13 @@ Simulating for a single realization of the shocks, we see the results are qualit
 ```{code-cell} julia
 sol_early = solve(prob_early, SOSRI())
 sol_late = solve(prob_late, SOSRI())
-plot(sol_early, vars = [5, 1,2,4],
+plot(sol_early, vars = [5, 1, 2, 4],
     title = [L"R_0" "Susceptible" "Infected" "Dead"],
     layout = (2, 2), size = (900, 600),
     ylabel = [L"R_0(t)" L"s(t)" L"i(t)" L"d(t)"], xlabel = L"t",
         legend = [:bottomright :topright :topright :topleft],
         label = ["Early" "Early" "Early" "Early"])
-plot!(sol_late, vars = [5, 1,2,4],
+plot!(sol_late, vars = [5, 1, 2, 4],
         legend = [:bottomright :topright :topright :topleft],
         label = ["Late" "Late" "Late" "Late"], xlabel = L"t")
 ```
@@ -535,24 +536,26 @@ We will redo the "Ending Lockdown" simulation from above, where the only differe
 
 ```{code-cell} julia
 function F_reinfect(x, p, t)
-    s, i, r, d, R₀, δ = x
-    (;γ, R̄₀, η, σ, ξ, θ, δ_bar, ν) = p
+    s, i, r, d, R_0, delta = x
+    (;gamma, R_bar_0, eta, sigma, xi, theta, delta_bar, nu) = p
 
-    return [-γ*R₀*s*i + ν*r;  # ds/dt
-            γ*R₀*s*i - γ*i;   # di/dt
-            (1-δ)*γ*i - ν*r   # dr/dt
-            δ*γ*i;            # dd/dt
-            η*(R̄₀(t, p) - R₀);# dR₀/dt
-            θ*(δ_bar - δ);    # dδ/dt
-            ]
+    return [
+        -gamma * R_0 * s * i + nu * r;      # ds/dt
+         gamma * R_0 * s * i - gamma * i;   # di/dt
+        (1 - delta) * gamma * i - nu * r;   # dr/dt
+        delta * gamma * i;                  # dd/dt
+        eta * (R_bar_0(t, p) - R_0);        # dR_0/dt
+        theta * (delta_bar - delta);        # ddelta/dt
+    ]
 end
 
-p_re_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, η = 1.0 / 20,
-                R₀_n = 1.6, R̄₀ = (t, p) -> p.R₀_n,
-                δ_bar = 0.01, σ = 0.03, ξ = 0.004, θ = 0.2, N = 3.3E8, ν = 1/360)
+p_re_gen(; T = 550.0, gamma = 1.0 / 18, eta = 1.0 / 20,
+           R_0_n = 1.6, R_bar_0 = (t, p) -> p.R_0_n,
+           delta_bar = 0.01, sigma = 0.03, xi = 0.004, theta = 0.2,
+           N = 3.3E8, nu = 1/360) = (; T, gamma, eta, R_0_n, R_bar_0, delta_bar, sigma, xi, theta, N, nu)
 
-p_re_early = p_re_gen(R̄₀ = R̄₀_lift_early, η = η_experiment, σ = σ_experiment)
-p_re_late = p_re_gen(R̄₀ = R̄₀_lift_late, η = η_experiment, σ = σ_experiment)
+p_re_early = p_re_gen(R_bar_0  = R_bar_0 _lift_early, eta = eta_experiment, sigma = sigma_experiment)
+p_re_late = p_re_gen(R_bar_0  = R_bar_0 _lift_late, eta = eta_experiment, sigma = sigma_experiment)
 
 trajectories = 400
 saveat = 1.0
