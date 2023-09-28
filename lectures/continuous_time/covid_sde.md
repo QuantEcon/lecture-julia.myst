@@ -371,7 +371,7 @@ We will shut down the shocks to the mortality rate (i.e. $\xi = 0$) to focus on 
 Consider $\eta = 1/50$ and $\eta = 1/20$, where we start at the same initial condition of $R_0(0) = 0.5$.
 
 ```{code-cell} julia
-function generate_eta_experiment(eta; p_gen, trajectories = 100, saveat = 1.0, x_0, T = 120.0)
+function generate_eta_experiment(eta; p_gen = p_gen, trajectories = 100, saveat = 1.0, x_0 = x_0, T = 120.0)
     p = p_gen(eta = eta, xi = 0.0)
     ensembleprob = EnsembleProblem(SDEProblem(F, G, x_0, (0, T), p))
     sol = solve(ensembleprob, SOSRI(), EnsembleThreads(), trajectories = trajectories, saveat = saveat)
