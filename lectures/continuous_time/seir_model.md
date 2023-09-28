@@ -290,7 +290,7 @@ First, construct our $F$ from {eq}`dfcv`
 ```{code-cell} julia
 function F(x, p, t)
     s, e, i, r, R_0, c, d = x
-    (;sigma, gamma, R_0_bar, eta, delta) = p
+    (;sigma, gamma, R_bar_0, eta, delta) = p
 
     return [-gamma * R_0 * s * i;              # ds/dt
             gamma * R_0 * s * i -  sigma * e;  # de/dt
@@ -313,9 +313,9 @@ The only confusing part of the notation is the `R_0(t, p)` which evaluates the `
 The baseline parameters are put into a named tuple generator (see previous lectures using [Parameters.jl](https://github.com/mauro3/Parameters.jl)) with default values discussed above.
 
 ```{code-cell} julia
-p_gen(T = 550.0, gamma = 1.0 / 18, sigma = 1 / 5.2, eta = 1.0 / 20,
+p_gen(;T = 550.0, gamma = 1.0 / 18, sigma = 1 / 5.2, eta = 1.0 / 20,
                 R_0_n = 1.6, delta = 0.01, N = 3.3E8,
-                R_0_bar = (t, p) -> p.R_0_n) = (T, gamma, sigma, eta, R_0_n, delta, N, R_0_bar)
+                R_bar_0 = (t, p) -> p.R_0_n) = (;T, gamma, sigma, eta, R_0_n, delta, N, R_bar_0)
 ```
 
 Note that the default $\bar{R}_0(t)$ function always equals $R_{0n}$ -- a parameterizable natural level of $R_0$ used only by the `R_hat_0` function
