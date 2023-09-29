@@ -554,8 +554,8 @@ p_re_gen(; T = 550.0, gamma = 1.0 / 18, eta = 1.0 / 20,
            delta_bar = 0.01, sigma = 0.03, xi = 0.004, theta = 0.2,
            N = 3.3E8, nu = 1/360) = (; T, gamma, eta, R_0_n, R_bar_0, delta_bar, sigma, xi, theta, N, nu)
 
-p_re_early = p_re_gen(R_bar_0  = R_bar_0 _lift_early, eta = eta_experiment, sigma = sigma_experiment)
-p_re_late = p_re_gen(R_bar_0  = R_bar_0 _lift_late, eta = eta_experiment, sigma = sigma_experiment)
+p_re_early = p_re_gen(R_bar_0  = R_bar_0_lift_early, eta = eta_experiment, sigma = sigma_experiment)
+p_re_late = p_re_gen(R_bar_0  = R_bar_0_lift_late, eta = eta_experiment, sigma = sigma_experiment)
 
 trajectories = 400
 saveat = 1.0
