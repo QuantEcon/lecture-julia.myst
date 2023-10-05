@@ -387,12 +387,12 @@ summ_2 = generate_eta_experiment(eta_2)
 plot(summ_1, idxs = (4, 5),
     title = ["Proportion Dead" L"R_0"],
     ylabel = [L"d(t)" L"R_0(t)"], xlabel = L"t",
-    legend = [:topleft :bottomright],
+    legend = :topleft,
     labels = L"Middle 95% Quantile, $\eta = %$eta_1$",
     layout = (2, 1), size = (900, 900), fillalpha = 0.5)
 
 plot!(summ_2, idxs = (4, 5),
-    legend = [:topleft :bottomright],
+    legend = :topleft,
     labels = L"Middle 95% Quantile, $\eta = %$eta_2$", size = (900, 900), fillalpha = 0.5)
 ```
 
