@@ -293,8 +293,8 @@ function F(x, p, t)
     (;sigma, gamma, R_bar_0, eta, delta) = p
 
     return [-gamma * R_0 * s * i;              # ds/dt
-            gamma * R_0 * s * i -  sigma * e;  # de/dt
-            sigma * e - gamma * i;                   # di/dt
+            gamma * R_0 * s * i - sigma * e;   # de/dt
+            sigma * e - gamma * i;             # di/dt
             gamma * i;                         # dr/dt
             eta * (R_bar_0(t, p) - R_0);       # dR_0/dt
             sigma * e;                         # dc/dt
@@ -306,7 +306,7 @@ end;
 
 This function takes the vector `x` of states in the system and extracts the fixed parameters passed into the `p` object.
 
-The only confusing part of the notation is the `R_0(t, p)` which evaluates the `p.R_bar_0` at this time (and also allows it to depend on the `p` parameter).
+The only confusing part of the notation is the `R_bar_0(t, p)` which evaluates the `p.R_bar_0` at this time (and also allows it to depend on the `p` parameter).
 
 ### Parameters
 #####HERE ENDED
@@ -318,7 +318,7 @@ p_gen(;T = 550.0, gamma = 1.0 / 18, sigma = 1 / 5.2, eta = 1.0 / 20,
                 R_bar_0 = (t, p) -> p.R_0_n) = (;T, gamma, sigma, eta, R_0_n, delta, N, R_bar_0)
 ```
 
-Note that the default $\bar{R}_0(t)$ function always equals $R_{0n}$ -- a parameterizable natural level of $R_0$ used only by the `R_hat_0` function
+Note that the default $\bar{R}_0(t)$ function always equals $R_{0n}$ -- a parameterizable natural level of $R_0$ used only by the `R_bar_0` function
 
 Setting initial conditions, we choose a fixed $s, i, e, r$, as well as $R_0(0) = R_{0n}$ and $m(0) = 0.01$
 
@@ -472,8 +472,8 @@ and 75,000 agents already exposed to the virus and thus soon to be contagious.
 R_0_L = 0.5  # lockdown
 R_bar_0_lift_early(t, p) = t < 30.0 ? R_0_L : 2.0
 R_bar_0_lift_late(t, p) = t < 120.0 ? R_0_L : 2.0
-p_early = p_gen(R_bar_0= R_bar_0_lift_early, eta = 10.0)
-p_late = p_gen(R_bar_0= R_bar_0_lift_late, eta = 10.0)
+p_early = p_gen(R_bar_0 = R_bar_0_lift_early, eta = 10.0)
+p_late = p_gen(R_bar_0 = R_bar_0_lift_late, eta = 10.0)
 
 
 # initial conditions
@@ -483,7 +483,7 @@ s_0 = 1.0 - i_0 - e_0
 
 x_0 = [s_0, e_0, i_0, 0.0, R_0_L, 0.0, 0.0] # start in lockdown
 
-# create two problems, with rapid movement of R_0(t) towards R_hat_0(t)
+# create two problems, with rapid movement of R_0(t) towards R_bar_0(t)
 prob_early = ODEProblem(F, x_0, tspan, p_early)
 prob_late = ODEProblem(F, x_0, tspan, p_late)
 ```
