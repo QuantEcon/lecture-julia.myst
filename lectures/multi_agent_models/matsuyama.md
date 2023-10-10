@@ -342,7 +342,7 @@ using Plots, Parameters
 ```
 
 ```{code-cell} julia
-function h_j(j, nk, s1, s2, θ, δ, ρ)
+function h_j(j, nk, s1, s2, theta, delta, rho)
     # Find out who's h we are evaluating
     if j == 1
         sj = s1
@@ -354,8 +354,8 @@ function h_j(j, nk, s1, s2, θ, δ, ρ)
 
     # Coefficients on the quadratic a x^2 + b x + c = 0
     a = 1.0
-    b = ((ρ + 1 / ρ) * nk - sj - sk)
-    c = (nk * nk - (sj * nk) / ρ - sk * ρ * nk)
+    b = ((rho + 1 / rho) * nk - sj - sk)
+    c = (nk * nk - (sj * nk) / rho - sk * rho * nk)
 
     # Positive solution of quadratic form
     root = (-b + sqrt(b * b - 4 * a * c)) / (2 * a)
@@ -363,41 +363,41 @@ function h_j(j, nk, s1, s2, θ, δ, ρ)
     return root
 end
 
-DLL(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
-    (n1 ≤ s1_ρ) && (n2 ≤ s2_ρ)
+DLL(n1, n2, s1_rho, s2_rho, s1, s2, theta, delta, rho) =
+    (n1 <= s1_rho) && (n2 <= s2_rho)
 
-DHH(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
-    (n1 ≥ h_j(1, n2, s1, s2, θ, δ, ρ)) && (n2 ≥ h_j(2, n1, s1, s2, θ, δ, ρ))
+DHH(n1, n2, s1_rho, s2_rho, s1, s2, theta, delta, rho) =
+    (n1 >= h_j(1, n2, s1, s2, theta, delta, rho)) && (n2 >= h_j(2, n1, s1, s2, theta, delta, rho))
 
-DHL(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
-    (n1 ≥ s1_ρ) && (n2 ≤ h_j(2, n1, s1, s2, θ, δ, ρ))
+DHL(n1, n2, s1_rho, s2_rho, s1, s2, theta, delta, rho) =
+    (n1 >= s1_rho) && (n2 <= h_j(2, n1, s1, s2, theta, delta, rho))
 
-DLH(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
-    (n1 ≤ h_j(1, n2, s1, s2, θ, δ, ρ)) && (n2 ≥ s2_ρ)
+DLH(n1, n2, s1_rho, s2_rho, s1, s2, theta, delta, rho) =
+    (n1 <= h_j(1, n2, s1, s2, theta, delta, rho)) && (n2 >= s2_rho)
 
-function one_step(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
+function one_step(n1, n2, s1_rho, s2_rho, s1, s2, theta, delta, rho)
     # Depending on where we are, evaluate the right branch
-    if DLL(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
-        n1_tp1 = δ * (θ * s1_ρ + (1 - θ) * n1)
-        n2_tp1 = δ * (θ * s2_ρ + (1 - θ) * n2)
-    elseif DHH(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
-        n1_tp1 = δ * n1
-        n2_tp1 = δ * n2
-    elseif DHL(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
-        n1_tp1 = δ * n1
-        n2_tp1 = δ * (θ * h_j(2, n1, s1, s2, θ, δ, ρ) + (1 - θ) * n2)
-    elseif DLH(n1, n2, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
-        n1_tp1 = δ * (θ * h_j(1, n2, s1, s2, θ, δ, ρ) + (1 - θ) * n1)
-        n2_tp1 = δ * n2
+    if DLL(n1, n2, s1_rho, s2_rho, s1, s2, theta, delta, rho)
+        n1_tp1 = delta * (theta * s1_rho + (1 - theta) * n1)
+        n2_tp1 = delta * (theta * s2_rho + (1 - theta) * n2)
+    elseif DHH(n1, n2, s1_rho, s2_rho, s1, s2, theta, delta, rho)
+        n1_tp1 = delta * n1
+        n2_tp1 = delta * n2
+    elseif DHL(n1, n2, s1_rho, s2_rho, s1, s2, theta, delta, rho)
+        n1_tp1 = delta * n1
+        n2_tp1 = delta * (theta * h_j(2, n1, s1, s2, theta, delta, rho) + (1 - theta) * n2)
+    elseif DLH(n1, n2, s1_rho, s2_rho, s1, s2, theta, delta, rho)
+        n1_tp1 = delta * (theta * h_j(1, n2, s1, s2, theta, delta, rho) + (1 - theta) * n1)
+        n2_tp1 = delta * n2
     end
 
     return n1_tp1, n2_tp1
 end
 
-new_n1n2(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ) =
-    one_step(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
+new_n1n2(n1_0, n2_0, s1_rho, s2_rho, s1, s2, theta, delta, rho) =
+    one_step(n1_0, n2_0, s1_rho, s2_rho, s1, s2, theta, delta, rho)
 
-function pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
+function pers_till_sync(n1_0, n2_0, s1_rho, s2_rho, s1, s2, theta, delta, rho,
                         maxiter, npers)
 
     # Initialize the status of synchronization
@@ -407,11 +407,11 @@ function pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
 
     nsync = 0
 
-    while (~synchronized) && (iters < maxiter)
+    while (!synchronized) && (iters < maxiter)
         # Increment the number of iterations and get next values
         iters += 1
 
-        n1_t, n2_t = new_n1n2(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
+        n1_t, n2_t = new_n1n2(n1_0, n2_0, s1_rho, s2_rho, s1, s2, theta, delta, rho)
 
         # Check whether same in this period
         if abs(n1_t - n2_t) < 1e-8
@@ -432,7 +432,7 @@ function pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
     return synchronized, pers_2_sync
 end
 
-function create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
+function create_attraction_basis(s1_rho, s2_rho, s1, s2, theta, delta, rho,
                                  maxiter, npers, npts)
     # Create unit range with npts
     synchronized, pers_2_sync = false, 0
@@ -443,9 +443,7 @@ function create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
     # Iterate over initial conditions
     for (i, n1_0) in enumerate(unit_range)
         for (j, n2_0) in enumerate(unit_range)
-            synchronized, pers_2_sync = pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ,
-                                                       s1, s2, θ, δ, ρ,
-                                                       maxiter, npers)
+            synchronized, pers_2_sync = pers_till_sync(n1_0, n2_0, s1_rho, s2_rho, s1, s2, theta, delta, rho, maxiter, npers)
             time_2_sync[i, j] = pers_2_sync
         end
     end
@@ -453,18 +451,18 @@ function create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ, ρ,
 end
 
 # model
-function MSGSync(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
+function MSGSync(s1 = 0.5, theta = 2.5, delta = 0.7, rho = 0.2)
     # Store other cutoffs and parameters we use
     s2 = 1 - s1
-    s1_ρ = min((s1 - ρ * s2) / (1 - ρ), 1)
-    s2_ρ = 1 - s1_ρ
+    s1_rho = min((s1 - rho * s2) / (1 - rho), 1)
+    s2_rho = 1 - s1_rho
 
-    return (s1 = s1, s2 = s2, s1_ρ = s1_ρ, s2_ρ = s2_ρ, θ = θ, δ = δ, ρ = ρ)
+    return (;s1, s2, s1_rho, s2_rho, theta, delta, rho)
 end
 
 function simulate_n(model, n1_0, n2_0, T)
     # Unpack parameters
-    @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
+    (;s1, s2, theta, delta, rho, s1_rho, s2_rho) = model
 
     # Allocate space
     n1 = zeros(T)
@@ -474,7 +472,7 @@ function simulate_n(model, n1_0, n2_0, T)
     for t in 1:T
         # Get next values
         n1[t], n2[t] = n1_0, n2_0
-        n1_0, n2_0 = new_n1n2(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2, θ, δ, ρ)
+        n1_0, n2_0 = new_n1n2(n1_0, n2_0, s1_rho, s2_rho, s1, s2, theta, delta, rho)
     end
 
     return n1, n2
@@ -483,10 +481,10 @@ end
 function pers_till_sync(model, n1_0, n2_0,
                         maxiter = 500, npers = 3)
     # Unpack parameters
-    @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
+    (;s1, s2, theta, delta, rho, s1_rho, s2_rho) = model
 
-    return pers_till_sync(n1_0, n2_0, s1_ρ, s2_ρ, s1, s2,
-                        θ, δ, ρ, maxiter, npers)
+    return pers_till_sync(n1_0, n2_0, s1_rho, s2_rho, s1, s2,
+                        theta, delta, rho, maxiter, npers)
 end
 
 function create_attraction_basis(model;
@@ -494,10 +492,10 @@ function create_attraction_basis(model;
                                  npers = 3,
                                  npts = 50)
     # Unpack parameters
-    @unpack s1, s2, θ, δ, ρ, s1_ρ, s2_ρ = model
+    (;s1, s2, theta, delta, rho, s1_rho, s2_rho) = model
 
-    ab = create_attraction_basis(s1_ρ, s2_ρ, s1, s2, θ, δ,
-                                 ρ, maxiter, npers, npts)
+    ab = create_attraction_basis(s1_rho, s2_rho, s1, s2, theta, delta,
+                                 rho, maxiter, npers, npts)
     return ab
 end
 ```
@@ -513,8 +511,8 @@ The time series share parameters but differ in their initial condition.
 Here's the function
 
 ```{code-cell} julia
-function plot_timeseries(n1_0, n2_0, s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2)
-    model = MSGSync(s1, θ, δ, ρ)
+function plot_timeseries(n1_0, n2_0, s1 = 0.5, theta = 2.5, delta = 0.7, rho = 0.2)
+    model = MSGSync(s1, theta, delta, rho)
     n1, n2 = simulate_n(model, n1_0, n2_0, 25)
     return [n1 n2]
 end
@@ -569,10 +567,10 @@ Replicate the figure {ref}`shown above <matsrep>` by coloring initial conditions
 ### Exercise 1
 
 ```{code-cell} julia
-function plot_attraction_basis(s1 = 0.5, θ = 2.5, δ = 0.7, ρ = 0.2; npts = 250)
+function plot_attraction_basis(s1 = 0.5, theta = 2.5, delta = 0.7, rho = 0.2; npts = 250)
     # Create attraction basis
     unitrange = range(0,  1, length = npts)
-    model = MSGSync(s1, θ, δ, ρ)
+    model = MSGSync(s1, theta, delta, rho)
     ab = create_attraction_basis(model,npts=npts)
     plt = Plots.heatmap(ab, legend = false)
 end
@@ -593,13 +591,13 @@ plot(plots..., size = (1000, 1000))
 tags: [remove-cell]
 ---
 function plot_attraction_basis(s1 = 0.5,
-                            θ = 2.5,
-                            δ = 0.7,
-                            ρ = 0.2;
+                            theta = 2.5,
+                            delta = 0.7,
+                            rho = 0.2;
                             npts = 250)
     # Create attraction basis
     unitrange = range(0,  1, length = npts)
-    model = MSGSync(s1, θ, δ, ρ)
+    model = MSGSync(s1, theta, delta, rho)
     ab = create_attraction_basis(model, npts = npts)
 end
 

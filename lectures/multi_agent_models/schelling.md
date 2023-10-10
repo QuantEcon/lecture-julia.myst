@@ -8,7 +8,7 @@ kernelspec:
   language: julia
   name: julia-1.10
 ---
-
+##AT THIS ONE BUT LUCAS 
 (schelling)=
 ```{raw} html
 <div id="qe-notebook-header" style="text-align:right;">
@@ -160,7 +160,7 @@ Random.seed!(42);
 ```
 
 ```{code-cell} julia
-Agent = @with_kw (kind, location = rand(2))
+Agent(;kind, location = rand(2)) = (;kind, location)
 
 draw_location!(a) = a.location .= rand(2)
 
@@ -179,7 +179,7 @@ function is_happy(a)
     #              partialsortperm(get_distance.(Ref(a), agents),
     #                              1:neighborhood_size))
 
-    return share ≥ preference
+    return share >= preference
 end
 
 function update!(a)

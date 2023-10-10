@@ -312,25 +312,25 @@ using Test
 ```
 
 ```{code-cell} julia
-function ArellanoEconomy(;β = .953,
-                          γ = 2.,
+function ArellanoEconomy(;beta = .953,
+                          gamma = 2.,
                           r = 0.017,
-                          ρ = 0.945,
-                          η = 0.025,
-                          θ = 0.282,
+                          rho = 0.945,
+                          eta = 0.025,
+                          theta = 0.282,
                           ny = 21,
                           nB = 251)
 
     # create grids
     Bgrid = collect(range(-.4, .4, length = nB))
-    mc = tauchen(ny, ρ, η)
-    Π = mc.p
+    mc = tauchen(ny, rho, eta)
+    Pi = mc.p
     ygrid = exp.(mc.state_values)
     ydefgrid = min.(.969 * mean(ygrid), ygrid)
 
     # define value functions
     # notice ordered different than Python to take
-    # advantage of column major layout of Julia)
+    # advantage of column major layout of Julia
     vf = zeros(nB, ny)
     vd = zeros(1, ny)
     vc = zeros(nB, ny)
@@ -338,13 +338,12 @@ function ArellanoEconomy(;β = .953,
     q = ones(nB, ny) .* (1 / (1 + r))
     defprob = zeros(nB, ny)
 
-    return (β = β, γ = γ, r = r, ρ = ρ, η = η, θ = θ, ny = ny,
-            nB = nB, ygrid = ygrid, ydefgrid = ydefgrid,
-            Bgrid = Bgrid, Π = Π, vf = vf, vd = vd, vc = vc,
-            policy = policy, q = q, defprob = defprob)
+    return (;beta, gamma, r, rho, eta, theta, ny,
+            nB, ygrid, ydefgrid, Bgrid, Pi, vf, vd, vc,
+            policy, q, defprob)
 end
 
-u(ae, c) = c^(1 - ae.γ) / (1 - ae.γ)
+u(ae, c) = c^(1 - ae.gamma) / (1 - ae.gamma)
 
 function one_step_update!(ae,
                           EV,
@@ -352,8 +351,8 @@ function one_step_update!(ae,
                           EVc)
 
     # unpack stuff
-    @unpack β, γ, r, ρ, η, θ, ny, nB = ae
-    @unpack ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = ae
+    (;beta, gamma, r, rho, eta, theta, ny, nB) = ae
+    (;ygrid, ydefgrid, Bgrid, Pi, vf, vd, vc, policy, q, defprob) = ae
     zero_ind = searchsortedfirst(Bgrid, 0.)
 
     for iy in 1:ny
@@ -361,7 +360,7 @@ function one_step_update!(ae,
         ydef = ae.ydefgrid[iy]
 
         # value of being in default with income y
-        defval = u(ae, ydef) + β * (θ * EVc[zero_ind, iy] + (1-θ) * EVd[1, iy])
+        defval = u(ae, ydef) + beta * (theta * EVc[zero_ind, iy] + (1-theta) * EVd[1, iy])
         ae.vd[1, iy] = defval
 
         for ib in 1:nB
@@ -371,7 +370,7 @@ function one_step_update!(ae,
             pol_ind = 0
             for ib_next=1:nB
                 c = max(y - ae.q[ib_next, iy]*Bgrid[ib_next] + B, 1e-14)
-                m = u(ae, c) + β * EV[ib_next, iy]
+                m = u(ae, c) + beta * EV[ib_next, iy]
 
                 if m > current_max
                     current_max = m
@@ -390,14 +389,14 @@ end
 
 function compute_prices!(ae)
     # unpack parameters
-    @unpack β, γ, r, ρ, η, θ, ny, nB = ae
+    (;beta, gamma, r, rho, eta, theta, ny, nB) = ae
 
     # create default values with a matching size
     vd_compat = repeat(ae.vd, nB)
     default_states = vd_compat .> ae.vc
 
     # update default probabilities and prices
-    copyto!(ae.defprob, default_states * ae.Π')
+    copyto!(ae.defprob, default_states * ae.Pi')
     copyto!(ae.q, (1 .- ae.defprob) / (1 + r))
     return
 end
@@ -405,9 +404,9 @@ end
 function vfi!(ae; tol = 1e-8, maxit = 10000)
 
     # unpack stuff
-    @unpack β, γ, r, ρ, η, θ, ny, nB = ae
-    @unpack ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = ae
-    Πt = Π'
+    (;beta, gamma, r, rho, eta, theta, ny, nB) = ae
+    (;ygrid, ydefgrid, Bgrid, Pi, vf, vd, vc, policy, q, defprob) = ae
+    Pit = Pi'
 
     # Iteration stuff
     it = 0
@@ -420,11 +419,11 @@ function vfi!(ae; tol = 1e-8, maxit = 10000)
         it += 1
 
         # compute expectations for this iterations
-        # (we need Π' because of order value function dimensions)
+        # (we need Pi' because of order value function dimensions)
         copyto!(V_upd, ae.vf)
-        EV = ae.vf * Πt
-        EVd = ae.vd * Πt
-        EVc = ae.vc * Πt
+        EV = ae.vf * Pit
+        EVd = ae.vd * Pit
+        EVc = ae.vc * Pit
 
         # update value function
         one_step_update!(ae, EV, EVd, EVc)
@@ -452,7 +451,7 @@ function QuantEcon.simulate(ae,
     B_init_ind = searchsortedfirst(ae.Bgrid, B_init)
 
     # create a QE MarkovChain
-    mc = MarkovChain(ae.Π)
+    mc = MarkovChain(ae.Pi)
     y_sim_indices = simulate(mc, capT + 1; init = y_init_ind)
 
     # allocate and fill output
@@ -495,8 +494,8 @@ function QuantEcon.simulate(ae,
             y_sim_val[t] = ae.ydefgrid[y_sim_indices[t]]
             q_sim_val[t] = ae.q[zero_index, y_sim_indices[t]]
 
-            # with probability θ exit default status
-            default_status[t + 1] = rand() ≥ ae.θ
+            # with probability theta exit default status
+            default_status[t + 1] = rand() >= ae.theta
         end
     end
 
@@ -591,12 +590,12 @@ using DataFrames, Plots
 Compute the value function, policy and equilibrium prices
 
 ```{code-cell} julia
-ae = ArellanoEconomy(β = .953,     # time discount rate
-                     γ = 2.,       # risk aversion
+ae = ArellanoEconomy(beta = .953,     # time discount rate
+                     gamma = 2.,       # risk aversion
                      r = 0.017,    # international interest rate
-                     ρ = .945,     # persistence in output
-                     η = 0.025,    # st dev of output shock
-                     θ = 0.282,    # prob of regaining access
+                     rho = .945,     # persistence in output
+                     eta = 0.025,    # st dev of output shock
+                     theta = 0.282,    # prob of regaining access
                      ny = 21,      # number of points in y grid
                      nB = 251)     # number of points in B grid
 
@@ -627,7 +626,7 @@ q_low = zeros(0)
 q_high = zeros(0)
 for i in 1:ae.nB
     b = ae.Bgrid[i]
-    if -0.35 ≤ b ≤ 0  # to match fig 3 of Arellano
+    if -0.35 <= b <= 0  # to match fig 3 of Arellano
         push!(x, b)
         push!(q_low, ae.q[i, iy_low])
         push!(q_high, ae.q[i, iy_high])

@@ -210,23 +210,23 @@ using LaTeXStrings, Parameters, Plots, QuantEcon
 ```
 
 ```{code-cell} julia
-Household = @with_kw (r = 0.01,
-                      w = 1.0,
-                      σ = 1.0,
-                      β = 0.96,
-                      z_chain = MarkovChain([0.9 0.1; 0.1 0.9], [0.1; 1.0]),
-                      a_min = 1e-10,
-                      a_max = 18.0,
-                      a_size = 200,
-                      a_vals = range(a_min, a_max, length = a_size),
-                      z_size = length(z_chain.state_values),
-                      n = a_size * z_size,
-                      s_vals = gridmake(a_vals, z_chain.state_values),
-                      s_i_vals = gridmake(1:a_size, 1:z_size),
-                      u = σ == 1 ? x -> log(x) : x -> (x^(1 - σ) - 1) / (1 - σ),
-                      R = setup_R!(fill(-Inf, n, a_size), a_vals, s_vals, r, w, u),
-                      # -Inf is the utility of dying (0 consumption)
-                      Q = setup_Q!(zeros(n, a_size, n), s_i_vals, z_chain))
+Household(;r = 0.01, 
+    w = 1.0,
+    sigma = 1.0,
+    beta = 0.96,
+    z_chain = MarkovChain([0.9 0.1; 0.1 0.9], [0.1; 1.0]),
+    a_min = 1e-10,
+    a_max = 18.0,
+    a_size = 200,
+    a_vals = range(a_min, a_max, length = a_size),
+    z_size = length(z_chain.state_values),
+    n = a_size * z_size,
+    s_vals = gridmake(a_vals, z_chain.state_values),
+    s_i_vals = gridmake(1:a_size, 1:z_size),
+    u = sigma == 1 ? x -> log(x) : x -> (x^(1 - sigma) - 1) / (1 - sigma),
+    R = setup_R!(fill(-Inf, n, a_size), a_vals, s_vals, r, w, u),
+    # -Inf is the utility of dying (0 consumption)
+    Q = setup_Q!(zeros(n, a_size, n), s_i_vals, z_chain)) = (; r, w, sigma, beta, z_chain, a_min, a_max, a_size, a_vals, z_size, n, s_vals, s_i_vals, u, R, Q)
 
 function setup_Q!(Q, s_i_vals, z_chain)
     for next_s_i in 1:size(Q, 3)
@@ -274,7 +274,7 @@ Random.seed!(42);
 am = Household(a_max = 20.0, r = 0.03, w = 0.956)
 
 # Use the instance to build a discrete dynamic program
-am_ddp = DiscreteDP(am.R, am.Q, am.β)
+am_ddp = DiscreteDP(am.R, am.Q, am.beta)
 
 # Solve using policy function iteration
 results = solve(am_ddp, PFI)
@@ -326,16 +326,16 @@ Random.seed!(42);
 # Firms' parameters
 const A = 1
 const N = 1
-const α = 0.33
-const β = 0.96
-const δ = 0.05
+const alpha = 0.33
+const beta = 0.96
+const delta = 0.05
 
 function r_to_w(r)
-    return A * (1 - α) * (A * α / (r + δ)) ^ (α / (1 - α))
+    return A * (1 - alpha) * (A * alpha / (r + delta)) ^ (alpha / (1 - alpha))
 end
 
 function rd(K)
-    return A * α * (N / K) ^ (1 - α) - δ
+    return A * alpha * (N / K) ^ (1 - alpha) - delta
 end
 
 function prices_to_capital_stock(am, r)
@@ -345,7 +345,7 @@ function prices_to_capital_stock(am, r)
     (;a_vals, s_vals, u) = am
     setup_R!(am.R, a_vals, s_vals, r, w, u)
 
-    aiyagari_ddp = DiscreteDP(am.R, am.Q, am.β)
+    aiyagari_ddp = DiscreteDP(am.R, am.Q, am.beta)
 
     # Compute the optimal policy
     results = solve(aiyagari_ddp, PFI)
@@ -358,7 +358,7 @@ function prices_to_capital_stock(am, r)
 end
 
 # Create an instance of Household
-am = Household(β = β, a_max = 20.0)
+am = Household(beta = beta, a_max = 20.0)
 
 # Create a grid of r values at which to compute demand and supply of capital
 r_vals = range(0.005, 0.04, length = 20)
