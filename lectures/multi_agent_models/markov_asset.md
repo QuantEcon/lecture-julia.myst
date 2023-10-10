@@ -404,12 +404,12 @@ Here's the code, including a test of the spectral radius condition
 
 ```{code-cell} julia
 n = 25  # size of state space
-β = 0.9
+beta = 0.9
 mc = tauchen(n, 0.96, 0.02)
 
 K = mc.p .* exp.(mc.state_values)'
 
-v = (I - β * K) \  (β * K * ones(n, 1))
+v = (I - beta * K) \  (beta * K * ones(n, 1))
 
 plot(mc.state_values,
      v,
@@ -541,39 +541,35 @@ the AssetPriceModel objects
 
 ```{code-cell} julia
 # A default Markov chain for the state process
-ρ = 0.9
-σ = 0.02
+rho = 0.9
+sigma = 0.02
 n = 25
-default_mc = tauchen(n, ρ, σ)
+default_mc = tauchen(n, rho, sigma)
 
-AssetPriceModel = @with_kw (β = 0.96,
-                            γ = 2.0,
-                            mc = default_mc,
-                            n = size(mc.p)[1],
-                            g = exp)
+AssetPriceModel(;beta = 0.96, gamma = 2.0, mc = default_mc, n = size(mc.p)[1], g = exp) = (;beta, gamma, mc, n, g)
 
 # test stability of matrix Q
 function test_stability(ap, Q)
     sr = maximum(abs, eigvals(Q))
-    if sr ≥ 1 / ap.β
+    if sr >= 1 / ap.beta
         msg = "Spectral radius condition failed with radius = $sr"
         throw(ArgumentError(msg))
     end
 end
 
 # price/dividend ratio of the Lucas tree
-function tree_price(ap; γ = ap.γ)
+function tree_price(ap; gamma = ap.gamma)
     # Simplify names, set up matrices
-    (;β, mc) = ap
+    (;beta, mc) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, ap.n)
-    J = P .* ap.g.(y).^(1 - γ)
+    J = P .* ap.g.(y).^(1 - gamma)
 
     # Make sure that a unique solution exists
     test_stability(ap, J)
 
     # Compute v
-    v = (I - β * J) \ sum(β * J, dims = 2)
+    v = (I - beta * J) \ sum(beta * J, dims = 2)
 
     return v
 end
@@ -583,16 +579,16 @@ Here's a plot of $v$ as a function of the state for several values of $\gamma$,
 with a positively correlated Markov process and $g(x) = \exp(x)$
 
 ```{code-cell} julia
-γs = [1.2, 1.4, 1.6, 1.8, 2.0]
+gammas = [1.2, 1.4, 1.6, 1.8, 2.0]
 ap = AssetPriceModel()
 states = ap.mc.state_values
 
 lines = []
 labels = []
 
-for γ in γs
-    v = tree_price(ap, γ = γ)
-    label = L"\gamma = %$γ"
+for gamma in gammas
+    v = tree_price(ap, gamma = gamma)
+    label = L"\gamma = %$gamma"
     push!(labels, label)
     push!(lines, v)
 end
@@ -690,18 +686,18 @@ p = (I - \beta M)^{-1} \beta M \zeta {\mathbb 1}
 The above is implemented in the function consol_price
 
 ```{code-cell} julia
-function consol_price(ap, ζ)
+function consol_price(ap, zeta)
     # Simplify names, set up matrices
-    (;β, γ, mc, g, n) = ap
+    (;beta, gamma, mc, g, n) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, n)
-    M = P .* g.(y).^(-γ)
+    M = P .* g.(y).^(-gamma)
 
     # Make sure that a unique solution exists
     test_stability(ap, M)
 
     # Compute price
-    return (I - β * M) \ sum(β * ζ * M, dims = 2)
+    return (I - beta * M) \ sum(beta * zeta * M, dims = 2)
 end
 ```
 
@@ -777,24 +773,24 @@ We can find the solution with the following function call_option
 
 ```{code-cell} julia
 # price of perpetual call on consol bond
-function call_option(ap, ζ, p_s, ϵ = 1e-7)
+function call_option(ap, zeta, p_s, epsilon = 1e-7)
 
     # Simplify names, set up matrices
-    (;β, γ, mc, g, n) = ap
+    (;beta, gamma, mc, g, n) = ap
     P, y = mc.p, mc.state_values
     y = reshape(y, 1, n)
-    M = P .* g.(y).^(-γ)
+    M = P .* g.(y).^(-gamma)
 
     # Make sure that a unique console price exists
     test_stability(ap, M)
 
     # Compute option price
-    p = consol_price(ap, ζ)
+    p = consol_price(ap, zeta)
     w = zeros(ap.n, 1)
-    error = ϵ + 1
-    while (error > ϵ)
+    error = epsilon + 1
+    while (error > epsilon)
         # Maximize across columns
-        w_new = max.(β * M * w, p .- p_s)
+        w_new = max.(beta * M * w, p .- p_s)
         # Find maximal difference of each component and update
         error = maximum(abs, w - w_new)
         w = w_new
@@ -807,13 +803,13 @@ end
 Here's a plot of $w$ compared to the consol price when $P_S = 40$
 
 ```{code-cell} julia
-ap = AssetPriceModel(β=0.9)
-ζ = 1.0
+ap = AssetPriceModel(beta=0.9)
+zeta = 1.0
 strike_price = 40.0
 
 x = ap.mc.state_values
-p = consol_price(ap, ζ)
-w = call_option(ap, ζ, strike_price)
+p = consol_price(ap, zeta)
+w = call_option(ap, zeta, strike_price)
 
 plot(x, p, color = "blue", lw = 2, xlabel = "state", label = "consol price")
 plot!(x, w, color = "green", lw = 2, label = "value of call option")
@@ -899,9 +895,9 @@ Consider the following primitives
 n = 5
 P = fill(0.0125, n, n) + (0.95 - 0.0125)I
 s = [1.05, 1.025, 1.0, 0.975, 0.95]
-γ = 2.0
-β = 0.94
-ζ = 1.0
+gamma = 2.0
+beta = 0.94
+zeta = 1.0
 ```
 
 Let $g$ be defined by $g(x) = x$  (that is, $g$ is the identity map).
@@ -965,16 +961,16 @@ P = fill(0.0125, n, n) + (0.95 - 0.0125)I
 s = [0.95, 0.975, 1.0, 1.025, 1.05]  # state values
 mc = MarkovChain(P, s)
 
-γ = 2.0
-β = 0.94
-ζ = 1.0
+gamma = 2.0
+beta = 0.94
+zeta = 1.0
 p_s = 150.0
 ```
 
 Next we'll create an instance of AssetPriceModel to feed into the functions.
 
 ```{code-cell} julia
-ap = AssetPriceModel(β = β, mc = mc, γ = γ, g = x -> x)
+ap = AssetPriceModel(beta = beta, mc = mc, gamma = gamma, g = x -> x)
 ```
 
 ```{code-cell} julia
@@ -997,7 +993,7 @@ println("Consol Bond Prices: $(v_consol)\n")
 ```
 
 ```{code-cell} julia
-w = call_option(ap, ζ, p_s)
+w = call_option(ap, zeta, p_s)
 ```
 
 ```{code-cell} julia
@@ -1015,23 +1011,23 @@ end
 Here's a suitable function:
 
 ```{code-cell} julia
-function finite_horizon_call_option(ap, ζ, p_s, k)
+function finite_horizon_call_option(ap, zeta, p_s, k)
 
     # Simplify names, set up matrices
-    (;β, γ, mc) = ap
+    (;beta, gamma, mc) = ap
     P, y = mc.p, mc.state_values
     y = y'
-    M = P .* ap.g.(y).^(- γ)
+    M = P .* ap.g.(y).^(- gamma)
 
     # Make sure that a unique console price exists
     test_stability(ap, M)
 
     # Compute option price
-    p = consol_price(ap, ζ)
+    p = consol_price(ap, zeta)
     w = zeros(ap.n, 1)
     for i in 1:k
         # Maximize across columns
-        w = max.(β * M * w, p .- p_s)
+        w = max.(beta * M * w, p .- p_s)
     end
 
     return w
@@ -1052,7 +1048,7 @@ end
 lines = []
 labels = []
 for k in [5, 25]
-    w = finite_horizon_call_option(ap, ζ, p_s, k)
+    w = finite_horizon_call_option(ap, zeta, p_s, k)
     push!(lines, w)
     push!(labels, L"k = %$k")
 end

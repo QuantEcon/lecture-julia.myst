@@ -662,16 +662,16 @@ Here's our solution
 # model parameters
 a0 = 100
 a1 = 0.05
-β = 0.95
-γ = 10.0
+beta = 0.95
+gamma = 10.0
 
 # beliefs
-κ0 = 95.5
-κ1 = 0.95
+kappa0 = 95.5
+kappa1 = 0.95
 
 # formulate the LQ problem
 A = [1  0  0
-     0 κ1 κ0
+     0 kappa1 kappa0
      0  0  1]
 
 B = [1.0, 0.0, 0.0]
@@ -680,10 +680,10 @@ R = [    0   a1/2 -a0/2
       a1/2      0     0
      -a0/2      0     0]
 
-Q = 0.5 * γ
+Q = 0.5 * gamma
 
 # solve for the optimal policy
-lq = QuantEcon.LQ(Q, R, A, B; bet = β)
+lq = QuantEcon.LQ(Q, R, A, B; bet = beta)
 P, F, d = stationary_values(lq)
 
 hh = h0, h1, h2 = -F[3], 1 - F[1], -F[2]
@@ -751,7 +751,7 @@ for (k0, k1) in candidates
     A = [1  0  0
          0 k1 k0
          0  0  1]
-    lq = QuantEcon.LQ(Q, R, A, B; bet=β)
+    lq = QuantEcon.LQ(Q, R, A, B; bet=beta)
     P, F, d = stationary_values(lq)
     hh = h0, h1, h2 = -F[3], 1 - F[1], -F[2]
 
@@ -833,15 +833,15 @@ B = [1.0, 0.0]
 R = [ a1 / 2.0  -a0 / 2.0
      -a0 / 2.0        0.0]
 
-Q = γ / 2.0
+Q = gamma / 2.0
 
 # solve for the optimal policy
-lq = QuantEcon.LQ(Q, R, A, B; bet=β)
+lq = QuantEcon.LQ(Q, R, A, B; bet=beta)
 P, F, d = stationary_values(lq)
 
 # print the results
-κ0, κ1 = -F[2], 1 - F[1]
-println("κ0=$κ0\tκ1=$κ1")
+kappa0, kappa1 = -F[2], 1 - F[1]
+println("kappa0=$kappa0\tkappa1=$kappa1")
 ```
 
 ```{code-cell} julia
@@ -849,8 +849,8 @@ println("κ0=$κ0\tκ1=$κ1")
 tags: [remove-cell]
 ---
 @testset begin
-    @test κ0 ≈ 95.081845248600 rtol = 4
-    @test κ1 ≈ 0.952459076301 rtol = 4
+    @test kappa0 ≈ 95.081845248600 rtol = 4
+    @test kappa1 ≈ 0.952459076301 rtol = 4
 end
 ```
 
@@ -879,10 +879,10 @@ B = [1.0, 0.0]
 R = [       a1   -a0 / 2.0
      -a0 / 2.0         0.0]
 
-Q = γ / 2.0
+Q = gamma / 2.0
 
 # solve for the optimal policy
-lq = QuantEcon.LQ(Q, R, A, B; bet=β)
+lq = QuantEcon.LQ(Q, R, A, B; bet=beta)
 P, F, d = stationary_values(lq)
 
 # print the results

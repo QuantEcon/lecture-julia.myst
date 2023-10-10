@@ -393,39 +393,39 @@ using Distributions, Interpolations, LaTeXStrings, Parameters, Plots, Random
 
 ```{code-cell} julia
 # model
-function LucasTree(;γ = 2.0,
-                    β = 0.95,
-                    α = 0.9,
-                    σ = 0.1,
+function LucasTree(;gamma = 2.0,
+                    beta = 0.95,
+                    alpha = 0.9,
+                    sigma = 0.1,
                     grid_size = 100)
 
-    ϕ = LogNormal(0.0, σ)
-    shocks = rand(ϕ, 500)
+    phi = LogNormal(0.0, sigma)
+    shocks = rand(phi, 500)
 
     # build a grid with mass around stationary distribution
-    ssd = σ / sqrt(1 - α^2)
+    ssd = sigma / sqrt(1 - alpha^2)
     grid_min, grid_max = exp(-4ssd), exp(4ssd)
     grid = range(grid_min, grid_max, length = grid_size)
 
-    # set h(y) = β * int u'(G(y,z)) G(y,z) ϕ(dz)
+    # set h(y) = beta * int u'(G(y,z)) G(y,z) phi(dz)
     h = similar(grid)
     for (i, y) in enumerate(grid)
-        h[i] = β * mean((y^α .* shocks).^(1 - γ))
+        h[i] = beta * mean((y^alpha .* shocks).^(1 - gamma))
     end
 
-    return (γ = γ, β = β, α = α, σ = σ, ϕ = ϕ, grid = grid, shocks = shocks, h = h)
+    return (gamma = gamma, beta = beta, alpha = alpha, sigma = sigma, phi = phi, grid = grid, shocks = shocks, h = h)
 end
 
 # approximate Lucas operator, which returns the updated function Tf on the grid
 function lucas_operator(lt, f)
 
     # unpack input
-    (;grid, α, β, h) = lt
+    (;grid, alpha, beta, h) = lt
     z = lt.shocks
 
-    Af = LinearInterpolation(grid, f, extrapolation_bc=Line())
+    Af = linear_interpolation(grid, f, extrapolation_bc=Line()) 
 
-    Tf = [ h[i] + β * mean(Af.(grid[i]^α .* z)) for i in 1:length(grid) ]
+    Tf = [ h[i] + beta * mean(Af.(grid[i]^alpha .* z)) for i in 1:length(grid) ]
     return Tf
 end
 
@@ -434,7 +434,7 @@ function solve_lucas_model(lt;
                            tol = 1e-6,
                            max_iter = 500)
 
-    (;grid, γ) = lt
+    (;grid, gamma) = lt
 
     i = 0
     f = zero(grid)  # Initial guess of f
@@ -447,8 +447,8 @@ function solve_lucas_model(lt;
         i += 1
     end
 
-    # p(y) = f(y) * y ^ γ
-    price = f .* grid.^γ
+    # p(y) = f(y) * y ^ gamma
+    price = f .* grid.^gamma
 
     return price
 end
@@ -459,7 +459,7 @@ An example of usage is given in the docstring and repeated here
 ```{code-cell} julia
 Random.seed!(42) # For reproducible results.
 
-tree = LucasTree(γ = 2.0, β = 0.95, α = 0.90, σ = 0.1)
+tree = LucasTree(gamma = 2.0, beta = 0.95, alpha = 0.90, sigma = 0.1)
 price_vals = solve_lucas_model(tree);
 ```
 
@@ -519,11 +519,11 @@ Random.seed!(42);
 
 ```{code-cell} julia
 plot()
-for β in (.95, 0.98)
-    tree = LucasTree(;β = β)
+for beta in (.95, 0.98)
+    tree = LucasTree(;beta = beta)
     grid = tree.grid
     price_vals = solve_lucas_model(tree)
-    plot!(grid, price_vals, lw = 2, label = L"\beta = %$β")
+    plot!(grid, price_vals, lw = 2, label = L"\beta = %$beta")
 end
 
 plot!(xlabel = L"y", ylabel = "price", legend = :topleft)
@@ -535,7 +535,7 @@ tags: [remove-cell]
 ---
 @testset begin # For the 0.98, since the other one is overwritten.
     Random.seed!(42)
-    price_vals = solve_lucas_model(LucasTree(β = 0.98))
+    price_vals = solve_lucas_model(LucasTree(beta = 0.98))
     #test price_vals[20] ≈ 35.00073581199659
     #test price_vals[57] ≈ 124.32987344509688
 end

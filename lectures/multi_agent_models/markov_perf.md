@@ -432,8 +432,8 @@ using QuantEcon, LinearAlgebra
 # parameters
 a0 = 10.0
 a1 = 2.0
-β = 0.96
-γ = 12.0
+beta = 0.96
+gamma = 12.0
 
 # in LQ form
 A  = I + zeros(3, 3)
@@ -448,12 +448,12 @@ R2 = [      0.0          0.0      -a0 / 2.0;
             0.0          0.0       a1 / 2.0;
     -a0 / 2.0     a1 / 2.0             a1]
 
-Q1 = Q2 = γ
+Q1 = Q2 = gamma
 S1 = S2 = W1 = W2 = M1 = M2 = 0.0
 
 # solve using QE's nnash function
 F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2,
-                       beta=β)
+                       beta=beta)
 
 # display policies
 println("Computed policies for firm 1 and firm 2:")
@@ -480,8 +480,8 @@ In particular, let's take F2 as computed above, plug it into {eq}`eq_mpe_p1p` an
 We hope that the resulting policy will agree with F1 as computed above
 
 ```{code-cell} julia
-Λ1 = A - (B2 * F2)
-lq1 = QuantEcon.LQ(Q1, R1, Λ1, B1, bet=β)
+Lamda1 = A - (B2 * F2)
+lq1 = QuantEcon.LQ(Q1, R1, Lamda1, B1, bet=beta)
 P1_ih, F1_ih, d = stationary_values(lq1)
 F1_ih
 ```
@@ -493,7 +493,7 @@ tags: [remove-cell]
 @testset begin
   @test P1_ih[2, 2] ≈ 5.441368459897164
   @test d ≈ 0.0
-  @test Λ1[1, 1] ≈ 1.0 && Λ1[3, 2] ≈ -0.07584666305807419
+  @test Lamda1[1, 1] ≈ 1.0 && Lamda1[3, 2] ≈ -0.07584666305807419
   @test F1_ih ≈ [-0.6684661291052371 0.29512481789806305 0.07584666292394007]
   @test isapprox(F1, F1_ih, atol=1e-7) # Make sure the test below comes up true.
 end
@@ -651,7 +651,7 @@ The exercise is to calculate these matrices and compute the following figures.
 The first figure shows the dynamics of inventories for each firm when the parameters are
 
 ```{code-cell} julia
-δ = 0.02
+delta = 0.02
 D = [ -1  0.5;
      0.5   -1]
 b = [25, 25]
@@ -683,8 +683,8 @@ First let's compute the duopoly MPE under the stated parameters
 # parameters
 a0 = 10.0
 a1 = 2.0
-β = 0.96
-γ = 12.0
+beta = 0.96
+gamma = 12.0
 
 # in LQ form
 A = I + zeros(3, 3)
@@ -699,12 +699,12 @@ R2 = [      0.0        0.0    -a0 / 2.0;
             0.0        0.0     a1 / 2.0;
       -a0 / 2.0   a1 / 2.0           a1]
 
-Q1 = Q2 = γ
+Q1 = Q2 = gamma
 S1 = S2 = W1 = W2 = M1 = M2 = 0.0
 
 # solve using QE's nnash function
 F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2,
-                       beta=β)
+                       beta=beta)
 ```
 
 ```{code-cell} julia
@@ -783,9 +783,9 @@ resulting dynamics of $\{q_t\}$, starting at $q_0 = 2.0$.
 tags: [hide-output]
 ---
 R = a1
-Q = γ
+Q = gamma
 A = B = 1
-lq_alt = QuantEcon.LQ(Q, R, A, B, bet=β)
+lq_alt = QuantEcon.LQ(Q, R, A, B, bet=beta)
 P, F, d = stationary_values(lq_alt)
 q̄ = a0 / (2.0 * a1)
 qm = zeros(n)
@@ -830,13 +830,13 @@ plot(plt_q, plt_p, layout=(2,1), size=(700,600))
 We treat the case $\delta = 0.02$
 
 ```{code-cell} julia
-δ = 0.02
+delta = 0.02
 D = [-1  0.5;
      0.5 -1]
 b = [25, 25]
 c1 = c2 = [1, -2, 1]
 e1 = e2 = [10, 10, 3]
-δ_1 = 1-δ
+delta_1 = 1-delta
 ```
 
 Recalling that the control and state are
@@ -860,14 +860,14 @@ we set up the matrices as follows:
 
 ```{code-cell} julia
 # create matrices needed to compute the Nash feedback equilibrium
-A = [δ_1     0   -δ_1 * b[1];
-       0   δ_1   -δ_1 * b[2];
+A = [delta_1     0   -delta_1 * b[1];
+       0   delta_1   -delta_1 * b[2];
        0     0             1]
 
-B1 = δ_1 * [1 -D[1, 1];
+B1 = delta_1 * [1 -D[1, 1];
             0 -D[2, 1];
             0        0]
-B2 = δ_1 * [0 -D[1, 2];
+B2 = delta_1 * [0 -D[1, 2];
             1 -D[2, 2];
             0        0]
 

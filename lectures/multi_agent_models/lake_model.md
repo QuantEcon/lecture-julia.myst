@@ -213,20 +213,20 @@ using Test
 ```
 
 ```{code-cell} julia
-LakeModel = @with_kw (λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
+LakeModel(;lambda = 0.283, alpha = 0.013, b = 0.0124, d = 0.00822) = (;lambda, alpha, b, d)
 
 function transition_matrices(lm)
-    (;λ, α, b, d) = lm
+    (;lambda, alpha, b, d) = lm
     g = b - d
-    A = [(1 - λ) * (1 - d) + b      (1 - d) * α + b
-        (1 - d) * λ                 (1 - d) * (1 - α)]
-    Â = A ./ (1 + g)
-    return (A = A, Â = Â)
+    A = [(1 - lambda) * (1 - d) + b      (1 - d) * alpha + b
+        (1 - d) * lambda                 (1 - d) * (1 - alpha)]
+    A_hat = A ./ (1 + g)
+    return (A, A_hat)
 end
 
 function rate_steady_state(lm)
-    (;Â) = transition_matrices(lm)
-    sol = fixedpoint(x -> Â * x, fill(0.5, 2))
+    (;A_hat) = transition_matrices(lm)
+    sol = fixedpoint(x -> A_hat * x, fill(0.5, 2))
     converged(sol) || error("Failed to converge in $(result.iterations) iterations")
     return sol.zero
 end
@@ -243,12 +243,12 @@ function simulate_stock_path(lm, X0, T)
 end
 
 function simulate_rate_path(lm, x0, T)
-    (;Â) = transition_matrices(lm)
+    (;A_hat) = transition_matrices(lm)
     x_path = zeros(eltype(x0), 2, T)
     x = copy(x0)
     for t in 1:T
         x_path[:, t] = x
-        x = Â * x
+        x = A_hat * x
     end
     return x_path
 end
@@ -258,24 +258,24 @@ Let's observe these matrices for the baseline model
 
 ```{code-cell} julia
 lm = LakeModel()
-A, Â = transition_matrices(lm)
+A, A_hat = transition_matrices(lm)
 A
 ```
 
 ```{code-cell} julia
-Â
+A_hat
 ```
 
 And a revised model
 
 ```{code-cell} julia
-lm = LakeModel(α = 2.0)
-A, Â = transition_matrices(lm)
+lm = LakeModel(alpha = 2.0)
+A, A_hat = transition_matrices(lm)
 A
 ```
 
 ```{code-cell} julia
-Â
+A_hat
 ```
 
 ```{code-cell} julia
@@ -283,7 +283,7 @@ Â
 tags: [remove-cell]
 ---
 @testset begin
-    @test lm.α ≈ 2.0
+    @test lm.alpha ≈ 2.0
     @test A[1][1] ≈ 0.7235062600000001
 end
 ```
@@ -343,8 +343,8 @@ This is the case for our default parameters:
 
 ```{code-cell} julia
 lm = LakeModel()
-A, Â = transition_matrices(lm)
-e, f = eigvals(Â)
+A, A_hat = transition_matrices(lm)
+e, f = eigvals(A_hat)
 abs(e), abs(f)
 ```
 
@@ -487,9 +487,9 @@ using QuantEcon, Roots, Random
 lm = LakeModel(d = 0, b = 0)
 T = 5000                        # Simulation length
 
-(;α, λ) = lm
-P = [(1 - λ)     λ
-     α      (1 - α)]
+(;alpha, lambda) = lm
+P = [(1 - lambda)     lambda
+     alpha      (1 - alpha)]
 ```
 
 ```{code-cell} julia
@@ -498,9 +498,9 @@ mc = MarkovChain(P, [0; 1])     # 0=unemployed, 1=employed
 xbar = rate_steady_state(lm)
 
 s_path = simulate(mc, T; init=2)
-s̄_e = cumsum(s_path) ./ (1:T)
-s̄_u = 1 .- s̄_e
-s_bars = [s̄_u s̄_e]
+s_bar_e = cumsum(s_path) ./ (1:T)
+s_bar_u = 1 .- s_bar_e
+s_bars = [s_bar_u s_bar_e]
 
 plt_unemp = plot(title = "Percent of time unemployed", 1:T, s_bars[:,1],color = :blue, lw = 2,
                  alpha = 0.5, label = "", grid = true)
@@ -630,19 +630,18 @@ Following {cite}`davis2006flow`, we set $\alpha$, the hazard rate of leaving emp
 We will make use of (with some tweaks) the code we wrote in the {doc}`McCall model lecture <../dynamic_programming/mccall_model>`, embedded below for convenience.
 
 ```{code-cell} julia
-function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
-                            iter = 2_000)
-    (;α, β, σ, c, γ, w, E, u) = mcm
+function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,iter = 2_000)
+    (;alpha, beta, sigma, c, gamma, w, E, u) = mcm
 
     # necessary objects
-    u_w = u.(w, σ)
-    u_c = u(c, σ)
+    u_w = u.(w, sigma)
+    u_c = u(c, sigma)
 
     # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
     function T(x)
         V = x[1:end-1]
         U = x[end]
-        [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
+        [u_w + beta * ((1 - alpha) * V .+ alpha * U); u_c + beta * (1 - gamma) * U + beta * gamma * E * max.(U, V)]
     end
 
     # value function iteration
@@ -654,13 +653,13 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1
     # compute the reservation wage
     w_barindex = searchsortedfirst(V .- U, 0.0)
     if w_barindex >= length(w) # if this is true, you never want to accept
-        w̄ = Inf
+        w_bar = Inf
     else
-        w̄ = w[w_barindex] # otherwise, return the number
+        w_bar = w[w_barindex] # otherwise, return the number
     end
 
     # return a NamedTuple, so we can select values by name
-    return (V = V, U = U, w̄ = w̄)
+    return (;V, U, w_bar)
 end
 ```
 
@@ -668,17 +667,18 @@ And the McCall object
 
 ```{code-cell} julia
 # a default utility function
-u(c, σ) = c > 0 ? (c^(1 - σ) - 1) / (1 - σ) : -10e-6
+u(c, sigma) = c > 0 ? (c^(1 - sigma) - 1) / (1 - sigma) : -10e-6
 
 # model constructor
-McCallModel = @with_kw (α = 0.2,
-                        β = 0.98, # discount rate
-                        γ = 0.7,
-                        c = 6.0, # unemployment compensation
-                        σ = 2.0,
-                        u = u, # utility function
-                        w = range(10, 20, length = 60), # wage values
-                        E = Expectation(BetaBinomial(59, 600, 400))) # distribution over wage values
+McCallModel(;alpha = 0.2, 
+            beta = 0.98,                            # discount rate
+            gamma = 0.7,
+            c = 6.0,                                # unemployment compensation
+            sigma = 2.0,
+            u = u,                                  # utility function
+            w = range(10, 20, length = 60),         # w= wage values; E= distribution over wage values
+            E = Expectation(BetaBinomial(59, 600, 400))) = (;alpha, beta, gamma, c, sigma, u, w, E)
+            
 ```
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
@@ -686,13 +686,13 @@ function of the unemployment compensation rate
 
 ```{code-cell} julia
 # some global variables that will stay constant
-α = 0.013
-α_q = (1 - (1 - α)^3)
+alpha = 0.013
+alpha_q = (1 - (1 - alpha)^3)
 b_param = 0.0124
 d_param = 0.00822
-β = 0.98
-γ = 1.0
-σ = 2.0
+beta = 0.98
+gamma = 1.0
+sigma = 2.0
 
 # the default wage distribution: a discretized log normal
 log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
@@ -707,33 +707,33 @@ w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
 
 E = expectation(Categorical(p_vec)) # expectation object
 
-function compute_optimal_quantities(c, τ)
-    mcm = McCallModel(α = α_q,
-                      β = β,
-                      γ = γ,
-                      c = c - τ, # post-tax compensation
-                      σ = σ,
-                      w = w_vec .- τ, # post-tax wages
+function compute_optimal_quantities(c, tau)
+    mcm = McCallModel(alpha = alpha_q,
+                      beta = beta,
+                      gamma = gamma,
+                      c = c - tau, # post-tax compensation
+                      sigma = sigma,
+                      w = w_vec .- tau, # post-tax wages
                       E = E) # expectation operator
 
-    (;V, U, w̄) = solve_mccall_model(mcm)
-    indicator = wage -> wage > w̄
-    λ = γ * E * indicator.(w_vec .- τ)
+    (;V, U, w_bar) = solve_mccall_model(mcm)
+    indicator = wage -> wage > w_bar
+    lambda = gamma * E * indicator.(w_vec .- tau)
 
-    return w̄, λ, V, U
+    return w_bar, lambda, V, U
 end
 
-function compute_steady_state_quantities(c, τ)
-    w̄, λ_param, V, U = compute_optimal_quantities(c, τ)
+function compute_steady_state_quantities(c, tau)
+    w_bar, lambda_param, V, U = compute_optimal_quantities(c, tau)
 
     # compute steady state employment and unemployment rates
-    lm = LakeModel(λ = λ_param, α = α_q, b = b_param, d = d_param)
+    lm = LakeModel(lambda = lambda_param, alpha = alpha_q, b = b_param, d = d_param)
     x = rate_steady_state(lm)
     u_rate, e_rate = x
 
     # compute steady state welfare
-    indicator(wage) = wage > w̄
-    decisions = indicator.(w_vec .- τ)
+    indicator(wage) = wage > w_bar
+    decisions = indicator.(w_vec .- tau)
     w = (E * (V .* decisions)) / (E * decisions)
     welfare = e_rate .* w + u_rate .* U
 
@@ -746,8 +746,8 @@ function find_balanced_budget_tax(c)
         return t - u_rate * c
     end
 
-    τ = find_zero(steady_state_budget, (0.0, 0.9c))
-    return τ
+    tau = find_zero(steady_state_budget, (0.0, 0.9c))
+    return tau
 end
 
 # levels of unemployment insurance we wish to study
@@ -844,7 +844,7 @@ T = 50
 New legislation changes $\lambda$ to $0.2$
 
 ```{code-cell} julia
-lm = LakeModel(λ = 0.2)
+lm = LakeModel(lambda = 0.2)
 ```
 
 ```{code-cell} julia
@@ -936,16 +936,16 @@ end
 Here are the other parameters:
 
 ```{code-cell} julia
-b̂ = 0.003
-T̂ = 20
+b_hat = 0.003
+T_hat = 20
 ```
 
 Let's increase $b$ to the new value and simulate for 20 periods
 
 ```{code-cell} julia
-lm = LakeModel(b=b̂)
-X_path1 = simulate_stock_path(lm, x0 * N0, T̂)   # simulate stocks
-x_path1 = simulate_rate_path(lm, x0, T̂)         # simulate rates
+lm = LakeModel(b=b_hat)
+X_path1 = simulate_stock_path(lm, x0 * N0, T_hat)   # simulate stocks
+x_path1 = simulate_rate_path(lm, x0, T_hat)         # simulate rates
 ```
 
 Now we reset $b$ to the original value and then, using the state
@@ -954,8 +954,8 @@ additional 30 periods
 
 ```{code-cell} julia
 lm = LakeModel(b = 0.0124)
-X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T̂+1)    # simulate stocks
-x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T̂+1)     # simulate rates
+X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T_hat+1)    # simulate stocks
+x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T_hat+1)     # simulate rates
 ```
 
 Finally we combine these two paths and plot
