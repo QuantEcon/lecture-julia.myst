@@ -929,16 +929,10 @@ We define named tuples and default values for the model and solver settings, and
 instantiate one copy of each
 
 ```{code-cell} julia
-model = @with_kw (a0 = 10,
-                  a1 = 2,
-                  β = 0.96,
-                  γ = 120.,
-                  n = 300)
+model(;a0 = 10, a1 = 2, beta = 0.96, gamma = 120.,  n = 300) = (; a0, a1, beta, gamma, n)
 
 # things like tolerances, etc.
-settings = @with_kw (tol0 = 1e-8,
-                     tol1 = 1e-16,
-                     tol2 = 1e-2)
+settings(;tol0 = 1e-8,tol1 = 1e-16,tol2 = 1e-2) = (;tol0, tol1, tol2)
 
 defaultModel = model();
 defaultSettings = settings();
@@ -947,12 +941,12 @@ defaultSettings = settings();
 Now we can compute the actual policy using the LQ routine from QuantEcon.jl
 
 ```{code-cell} julia
-@unpack a0, a1, β, γ, n = defaultModel
-@unpack tol0, tol1, tol2 = defaultSettings
+(;a0, a1, beta, gamma, n) = defaultModel
+(;tol0, tol1, tol2) = defaultSettings
 
-βs = [β^x for x = 0:n-1]
+betas = [beta^x for x = 0:n-1]
 Alhs = I + zeros(4, 4);
-Alhs[4, :] = [β * a0 / (2 * γ), -β * a1 / (2 * γ), -β * a1 / γ, β] # Euler equation coefficients
+Alhs[4, :] = [beta * a0 / (2 * gamma), -beta * a1 / (2 * gamma), -beta * a1 / gamma, beta] # Euler equation coefficients
 Arhs = I + zeros(4, 4);
 Arhs[3, 4] = 1.;
 Alhsinv = inv(Alhs);
@@ -960,8 +954,8 @@ Alhsinv = inv(Alhs);
 A = Alhsinv * Arhs;
 B = Alhsinv * [0, 1, 0, 0,];
 R = [0 -a0/2 0 0; -a0/2 a1 a1/2 0; 0 a1/2 0 0; 0 0 0 0];
-Q = γ;
-lq = QuantEcon.LQ(Q, R, A, B, bet=β);
+Q = gamma;
+lq = QuantEcon.LQ(Q, R, A, B, bet=beta);
 P, F, d = stationary_values(lq)
 
 P22 = P[4:end, 4:end];
@@ -970,17 +964,17 @@ P22inv = inv(P22);
 H_0_0 = -P22inv * P21;
 
 # simulate forward
-π_leader = zeros(n);
+pi_leader = zeros(n);
 z0 = [1, 1, 1];
 x0 = H_0_0 * z0;
 y0 = vcat(z0, x0);
 
 Random.seed!(1) # for reproducibility
 yt, ut = compute_sequence(lq, y0, n);
-π_matrix = R + F' * Q * F;
+pi_matrix = R + F' * Q * F;
 
 for t in 1:n
-    π_leader[t] = -(yt[:, t]' * π_matrix * yt[:, t]);
+    pi_leader[t] = -(yt[:, t]' * pi_matrix * yt[:, t]);
 end
 
 println("Computed policy for Stackelberg leader: $F")
@@ -1017,7 +1011,7 @@ We'll compute it two ways (they give identical answers -- just a check
 on coding and thinking)
 
 ```{code-cell} julia
-v_leader_forward = sum(βs .* π_leader);
+v_leader_forward = sum(betas .* pi_leader);
 v_leader_direct = -yt[:, 1]' * P * yt[:, 1];
 
 println("v_leader_forward (forward sim) is $v_leader_forward")
@@ -1034,7 +1028,7 @@ tags: [remove-cell]
 
 ```{code-cell} julia
 # manually check whether P is an approximate fixed point
-P_next = (R + F' * Q * F + β * (A - B * F)' * P * (A - B * F));
+P_next = (R + F' * Q * F + beta * (A - B * F)' * P * (A - B * F));
 all(P - P_next .< tol0)
 ```
 
@@ -1049,7 +1043,7 @@ tags: [remove-cell]
 # manually checks whether two different ways of computing the
 # value function give approximately the same answer
 v_expanded = -((y0' * R * y0 + ut[:, 1]' * Q * ut[:, 1] +
-           β * (y0' * (A - B * F)' * P * (A - B * F) * y0)));
+           beta * (y0' * (A - B * F)' * P * (A - B * F) * y0)));
 (v_leader_direct - v_expanded < tol0)[1, 1]
 ```
 
@@ -1102,14 +1096,14 @@ We check that the recursive **Big** $K$ **, little** $k$ formulation of the foll
 $\vec q_1$ that we computed when we solved the Stackelberg problem
 
 ```{code-cell} julia
-Ã = I + zeros(5, 5);
-Ã[1:4, 1:4] .= A - B * F;
-R̃ = [0 0 0 0 -a0/2; 0 0 0 0 a1/2; 0 0 0 0 0; 0 0 0 0 0; -a0/2 a1/2 0 0 a1];
-Q̃ = Q;
-B̃ = [0, 0, 0, 0, 1];
+A_tilde = I + zeros(5, 5);
+A_tilde[1:4, 1:4] .= A - B * F;
+R_tilde = [0 0 0 0 -a0/2; 0 0 0 0 a1/2; 0 0 0 0 0; 0 0 0 0 0; -a0/2 a1/2 0 0 a1];
+Q_tilde = Q;
+B_tilde = [0, 0, 0, 0, 1];
 
-lq_tilde = QuantEcon.LQ(Q̃, R̃, Ã, B̃, bet=β);
-P̃, F̃, d̃ = stationary_values(lq_tilde);
+lq_tilde = QuantEcon.LQ(Q_tilde, R_tilde, A_tilde, B_tilde, bet=beta);
+P_tilde, F_tilde, d_tilde = stationary_values(lq_tilde);
 y0_tilde = vcat(y0, y0[3]);
 yt_tilde = compute_sequence(lq_tilde, y0_tilde, n)[1];
 ```
@@ -1159,7 +1153,7 @@ Can you spot what features of $\tilde F$ imply this?
 Hint: remember the components of $X_t$
 
 ```{code-cell} julia
-F̃ # policy function in the follower's problem
+F_tilde # policy function in the follower's problem
 ```
 
 ```{code-cell} julia
@@ -1167,43 +1161,43 @@ P # value function in the Stackelberg problem
 ```
 
 ```{code-cell} julia
-P̃ # value function in the follower's problem
+P_tilde # value function in the follower's problem
 ```
 
 ```{code-cell} julia
 # manually check that P is an approximate fixed point
-all((P  - ((R + F' * Q * F) + β * (A - B * F)' * P * (A - B * F)) .< tol0))
+all((P  - ((R + F' * Q * F) + beta * (A - B * F)' * P * (A - B * F)) .< tol0))
 ```
 
 ```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
-#test all((P  - ((R + F' * Q * F) + β * (A - B * F)' * P * (A - B * F)) .< tol0))
+#test all((P  - ((R + F' * Q * F) + beta * (A - B * F)' * P * (A - B * F)) .< tol0))
 ```
 
 ```{code-cell} julia
 # compute `P_guess` using `F_tilde_star`
-F̃_star = -[0, 0, 0, 1, 0]';
+F_tilde_star = -[0, 0, 0, 1, 0]';
 P_guess = zeros(5, 5);
 
 for i in 1:1000
-    P_guess = ((R̃ + F̃_star' * Q̃ * F̃_star) +
-               β * (Ã - B̃ * F̃_star)' * P_guess
-               * (Ã - B̃ * F̃_star));
+    P_guess = ((R_tilde + F_tilde_star' * Q_tilde * F_tilde_star) +
+               beta * (A_tilde - B_tilde * F_tilde_star)' * P_guess
+               * (A_tilde - B_tilde * F_tilde_star));
 end
 ```
 
 ```{code-cell} julia
 # value function in the follower's problem
--(y0_tilde' * P̃ * y0_tilde)[1, 1]
+-(y0_tilde' * P_tilde * y0_tilde)[1, 1]
 ```
 
 ```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
-@test -(y0_tilde' * P̃ * y0_tilde)[1, 1] ≈ 112.65590740578173
+@test -(y0_tilde' * P_tilde * y0_tilde)[1, 1] ≈ 112.65590740578173
 ```
 
 ```{code-cell} julia
@@ -1220,8 +1214,8 @@ tags: [remove-cell]
 
 ```{code-cell} julia
 # c policy using policy iteration algorithm
-F_iter = (β * inv(Q + β * B̃' * P_guess * B̃)
-      * B̃' * P_guess * Ã);
+F_iter = (beta * inv(Q + beta * B_tilde' * P_guess * B_tilde)
+      * B_tilde' * P_guess * A_tilde);
 P_iter = zeros(5, 5);
 dist_vec = zeros(5, 5);
 
@@ -1229,22 +1223,22 @@ for i in 1:100
     # compute P_iter
     dist_vec = similar(P_iter)
     for j in 1:1000
-        P_iter = (R̃ + F_iter' * Q * F_iter) + β *
-                  (Ã - B̃ * F_iter)' * P_iter *
-                  (Ã - B̃ * F_iter);
+        P_iter = (R_tilde + F_iter' * Q * F_iter) + beta *
+                  (A_tilde - B_tilde * F_iter)' * P_iter *
+                  (A_tilde - B_tilde * F_iter);
 
         # update F_iter
-        F_iter = β * inv(Q + β * B̃' * P_iter * B̃) *
-                    B̃' * P_iter * Ã;
+        F_iter = beta * inv(Q + beta * B_tilde' * P_iter * B_tilde) *
+                    B_tilde' * P_iter * A_tilde;
 
-        dist_vec = P_iter - ((R̃ + F_iter' * Q * F_iter) +
-                β * (Ã - B̃ * F_iter)' * P_iter *
-                (Ã - B̃ * F_iter));
+        dist_vec = P_iter - ((R_tilde + F_iter' * Q * F_iter) +
+                beta * (A_tilde - B_tilde * F_iter)' * P_iter *
+                (A_tilde - B_tilde * F_iter));
     end
 end
 
 if maximum(abs.(dist_vec)) < 1e-8
-    dist_vec2 = F_iter - (β * inv(Q + β * B̃' * P_iter * B̃) * B̃' * P_iter * Ã)
+    dist_vec2 = F_iter - (beta * inv(Q + beta * B_tilde' * P_iter * B_tilde) * B_tilde' * P_iter * A_tilde)
         if maximum(abs.(dist_vec2)) < 1e-8
             @show F_iter
         else
@@ -1260,7 +1254,7 @@ yt_tilde_star = zeros(n, 5);
 yt_tilde_star[1, :] = y0_tilde;
 
 for t in 1:n-1
-    yt_tilde_star[t+1, :] = (Ã - B̃ * F̃_star) * yt_tilde_star[t, :];
+    yt_tilde_star[t+1, :] = (A_tilde - B_tilde * F_tilde_star) * yt_tilde_star[t, :];
 end
 
 plot([yt_tilde_star[:, 5], yt_tilde[3, :]], labels = [L"\tilde{q}" L"q"])
@@ -1317,13 +1311,13 @@ B1 = [0, 0, 1];
 B2 = [0, 1, 0];
 R1 = [0 0 -a0/2; 0 0 a1/2; -a0/2 a1/2 a1];
 R2 = [0 -a0/2 0; -a0/2 a1 a1/2; 0 a1/2 0];
-Q1 = Q2 = γ;
+Q1 = Q2 = gamma;
 S1 = S2 = W1 = W2 = M1 = M2 = 0.;
 
 # solve using nnash from QE
 F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2,
                         S1, S2, W1, W2, M1, M2,
-                        beta = β,
+                        beta = beta,
                         tol = tol1);
 
 # simulate forward
@@ -1370,11 +1364,11 @@ tags: [remove-cell]
 # compute values
 u1 = -F1 * z;
 u2 = -F2 * z;
-π_1 = (p .* q1)' - γ * u1.^2;
-π_2 = (p .* q2)' - γ * u2.^2;
+pi_1 = (p .* q1)' - gamma * u1.^2;
+pi_2 = (p .* q2)' - gamma * u2.^2;
 
-v1_forward = π_1 * βs;
-v2_forward = π_2 * βs;
+v1_forward = pi_1 * betas;
+v2_forward = pi_2 * betas;
 
 v1_direct = -z[:, 1]' * P1 * z[:, 1];
 v2_direct = -z[:, 1]' * P2 * z[:, 1];
@@ -1395,8 +1389,8 @@ tags: [remove-cell]
 
 ```{code-cell} julia
 # sanity check
-Λ_1 = A - B2 * F2;
-lq1 = QuantEcon.LQ(Q1, R1, Λ_1, B1, bet = β);
+Lambda_1 = A - B2 * F2;
+lq1 = QuantEcon.LQ(Q1, R1, Lambda_1, B1, bet = beta);
 P1_ih, F1_ih, d = stationary_values(lq1);
 
 v2_direct_alt = -z[:, 1]' * P1_ih * z[:, 1] + d;
@@ -1411,7 +1405,7 @@ vt_follower = zeros(n);
 
 for t in 1:n
     vt_MPE[t] = -z[:, t]' * P1 * z[:, t];
-    vt_follower[t] = -yt_tilde[:, t]' * P̃ * yt_tilde[:, t];
+    vt_follower[t] = -yt_tilde[:, t]' * P_tilde * yt_tilde[:, t];
 end
 
 plot([vt_MPE, vt_leader, vt_follower], labels = ["MPE" "Stackelberg leader" "Stackelberg follower"], 

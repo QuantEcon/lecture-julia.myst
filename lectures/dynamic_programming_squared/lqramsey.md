@@ -599,7 +599,7 @@ struct DiscreteStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
 end
 
 struct Economy{TF <: AbstractFloat, SP <: AbstractStochProcess}
-    β::TF
+    beta::TF
     Sg::Matrix{TF}
     Sd::Matrix{TF}
     Sb::Matrix{TF}
@@ -613,7 +613,7 @@ function compute_exog_sequences(econ, x)
     g, d, b, s = [dropdims(S * x, dims = 1) for S in (Sg, Sd, Sb, Ss)]
 
     #= solve for Lagrange multiplier in the govt budget constraint
-    In fact we solve for ν = λ / (1 + 2*λ).  Here ν is the
+    In fact we solve for ν = lambda / (1 + 2*lambda).  Here ν is the
     solution to a quadratic equation a(ν^2 - ν) + b = 0 where
     a and b are expected discounted sums of quadratic forms of the state. =#
     Sm = Sb - Sd - Ss
@@ -631,17 +631,17 @@ function compute_allocation(econ, Sm, ν, x, b)
     c = dropdims(Sc * x, dims = 1)
     l = dropdims(Sl * x, dims = 1)
     p = dropdims((Sb - Sc) * x, dims = 1)  # Price without normalization
-    τ = 1 .- l ./ (b .- c)
-    rvn = l .* τ
+    tau = 1 .- l ./ (b .- c)
+    rvn = l .* tau
 
-    return Sc, Sl, c, l, p, τ, rvn
+    return Sc, Sl, c, l, p, tau, rvn
 end
 
 
 function compute_ν(a0, b0)
     disc = a0^2 - 4a0 * b0
 
-    if disc ≥ 0
+    if disc >= 0
         ν = 0.5 *(a0 - sqrt(disc)) / a0
     else
         println("There is no Ramsey equilibrium for these parameters.")
@@ -658,17 +658,17 @@ function compute_ν(a0, b0)
 end
 
 
-function compute_Π(B, R, rvn, g, ξ)
-    π = B[2:end] - R[1:end-1] .* B[1:end-1] - rvn[1:end-1] + g[1:end-1]
-    Π = cumsum(π .* ξ)
-    return π, Π
+function compute_Pi(B, R, rvn, g,Xi)
+    pi = B[2:end] - R[1:end-1] .* B[1:end-1] - rvn[1:end-1] + g[1:end-1]
+    Pi = cumsum(pi .*Xi)
+    return pi, Pi
 end
 
 
 function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T)
     # simplify notation
-    @unpack β, Sg, Sd, Sb, Ss = econ
-    @unpack P, x_vals = econ.proc
+    (;beta, Sg, Sd, Sb, Ss) = econ
+    (;P, x_vals) = econ.proc
 
     mc = MarkovChain(P)
     state = simulate(mc, T, init=1)
@@ -679,7 +679,7 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T
 
     # compute a0, b0
     ns = size(P, 1)
-    F = I - β.*P
+    F = I - beta.*P
     a0 = (F \ ((Sm * x_vals)'.^2))[1] ./ 2
     H = ((Sb - Sd + Sg) * x_vals) .* ((Sg - Ss)*x_vals)
     b0 = (F \ H')[1] ./ 2
@@ -688,29 +688,27 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T
     ν = compute_ν(a0, b0)
 
     # Solve for the allocation given ν and x
-    Sc, Sl, c, l, p, τ, rvn = compute_allocation(econ, Sm, ν, x, b)
+    Sc, Sl, c, l, p, tau, rvn = compute_allocation(econ, Sm, ν, x, b)
 
     # compute remaining variables
     H = ((Sb - Sc) * x_vals) .* ((Sl - Sg) * x_vals) - (Sl * x_vals).^2
     temp = dropdims(F * H', dims = 2)
     B = temp[state] ./ p
     H = dropdims(P[state, :] * ((Sb - Sc) * x_vals)', dims = 2)
-    R = p ./ (β .* H)
+    R = p ./ (beta .* H)
     temp = dropdims(P[state, :] *((Sb - Sc) * x_vals)', dims = 2)
-    ξ = p[2:end] ./ temp[1:end-1]
+   Xi = p[2:end] ./ temp[1:end-1]
 
-    # compute π
-    π, Π = compute_Π(B, R, rvn, g, ξ)
+    # compute pi
+    pi, Pi = compute_Pi(B, R, rvn, g,Xi)
 
-    return (g = g, d = d, b = b, s = s, c = c,
-            l = l, p = p, τ = τ, rvn = rvn, B = B,
-            R = R, π = π, Π = Π, ξ = ξ)
+    return (;g, d, b, s, c, l, p, tau, rvn, B, R, pi, Pi, Xi)
 end
 
 function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
     # simplify notation
-    @unpack β, Sg, Sd, Sb, Ss = econ
-    @unpack A, C = econ.proc
+    (;beta, Sg, Sd, Sb, Ss) = econ
+    (;A, C) = econ.proc
 
     # generate an initial condition x0 satisfying x0 = A x0
     nx, nx = size(A)
@@ -733,37 +731,34 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
 
     # compute a0 and b0
     H = Sm'Sm
-    a0 = 0.5 * var_quadratic_sum(A, C, H, β, x0)
+    a0 = 0.5 * var_quadratic_sum(A, C, H, beta, x0)
     H = (Sb - Sd + Sg)'*(Sg + Ss)
-    b0 = 0.5 * var_quadratic_sum(A, C, H, β, x0)
+    b0 = 0.5 * var_quadratic_sum(A, C, H, beta, x0)
 
     # compute lagrange multiplier
     ν = compute_ν(a0, b0)
 
     # solve for the allocation given ν and x
-    Sc, Sl, c, l, p, τ, rvn = compute_allocation(econ, Sm, ν, x, b)
+    Sc, Sl, c, l, p, tau, rvn = compute_allocation(econ, Sm, ν, x, b)
 
     # compute remaining variables
     H = Sl'Sl - (Sb - Sc)' *(Sl - Sg)
     L = zeros(T)
     for t in eachindex(L)
-        L[t] = var_quadratic_sum(A, C, H, β, x[:, t])
+        L[t] = var_quadratic_sum(A, C, H, beta, x[:, t])
     end
     B = L ./ p
-    Rinv = dropdims(β .* (Sb- Sc)*A*x, dims = 1) ./ p
+    Rinv = dropdims(beta .* (Sb- Sc)*A*x, dims = 1) ./ p
     R = 1 ./ Rinv
     AF1 = (Sb - Sc) * x[:, 2:end]
     AF2 = (Sb - Sc) * A * x[:, 1:end-1]
-    ξ =  AF1 ./ AF2
-    ξ = dropdims(ξ, dims = 1)
+   Xi =  AF1 ./ AF2
+   Xi = dropdims(Xi, dims = 1)
 
-    # compute π
-    π, Π = compute_Π(B, R, rvn, g, ξ)
+    # compute pi
+    pi, Pi = compute_Pi(B, R, rvn, g,Xi)
 
-    return (g = g, d = d, b = b, s = s,
-            c = c, l = l, p = p, τ = τ,
-            rvn = rvn, B = B, R = R,
-            π = π, Π = Π, ξ = ξ)
+    return(;g, d, b, s, c, l, p, tau, rvn, B, R, pi, Pi, Xi)
 end
 
 function gen_fig_1(path)
@@ -784,7 +779,7 @@ function gen_fig_1(path)
 
     plt_4 = plot(path.rvn, lw=2, label=L"\tau_t l_t")
     plot!(plt_4, path.g, lw=2, label=L"g_t")
-    plot!(plt_4, path.π, lw=2, label=L"\pi_t")
+    plot!(plt_4, path.pi, lw=2, label=L"\pi_t")
     plot!(plt_4, xlabel="Time", grid=true)
 
     plot(plt_1, plt_2, plt_3, plt_4, layout=(2,2), size = (800,600))
@@ -794,7 +789,7 @@ function gen_fig_2(path)
 
     T = length(path.c)
 
-    paths = [path.ξ, path.Π]
+    paths = [path.Xi, path.Pi]
     labels = [L"\xi_t", L"\Pi_t"]
     plt_1 = plot()
     plt_2 = plot()
@@ -847,17 +842,17 @@ using Random
 Random.seed!(42)
 
 # parameters
-β = 1 / 1.05
-ρ, mg = .7, .35
-A = [ρ mg*(1 - ρ); 0.0 1.0]
-C = [sqrt(1 - ρ^2) * mg / 10 0.0; 0 0]
+beta = 1 / 1.05
+rho, mg = .7, .35
+A = [rho mg*(1 - rho); 0.0 1.0]
+C = [sqrt(1 - rho^2) * mg / 10 0.0; 0 0]
 Sg = [1.0 0.0]
 Sd = [0.0 0.0]
 Sb = [0 2.135]
 Ss = [0.0 0.0]
 proc = ContStochProcess(A, C)
 
-econ = Economy(β, Sg, Sd, Sb, Ss, proc)
+econ = Economy(beta, Sg, Sd, Sb, Ss, proc)
 T = 50
 path = compute_paths(econ, T)
 
@@ -874,10 +869,10 @@ tags: [remove-cell]
   #test path.c[36] ≈ 0.6291101011610297 atol = 1e-3
   #test path.B[9] ≈ 0.07442403655989423 atol = 1e-3
   #test path.rvn[27] ≈ 0.35013269833342753 atol = 1e-3
-  #test path.π[31] ≈ -0.05846215388377568 atol = 1e-3
+  #test path.pi[31] ≈ -0.05846215388377568 atol = 1e-3
   #test path.R[43] ≈ 1.0437715852385672 atol = 1e-3
-  #test path.ξ[43] ≈  1.001895202392805 atol = 1e-3
-  #test path.Π[43] ≈ -0.4185282208457552 atol = 1e-3 # plot tests
+  #test path.xi[43] ≈  1.001895202392805 atol = 1e-3
+  #test path.Pi[43] ≈ -0.4185282208457552 atol = 1e-3 # plot tests
 end
 ```
 
@@ -911,7 +906,7 @@ Random.seed!(42);
 
 ```{code-cell} julia
 # Parameters
-β = 1 / 1.05
+beta = 1 / 1.05
 P = [0.8 0.2 0.0
     0.0 0.5 0.5
     0.0 0.0 1.0]
@@ -929,7 +924,7 @@ Sb = [0.0 0.0 1.0 0.0 0.0]
 Ss = [0.0 0.0 0.0 1.0 0.0]
 proc = DiscreteStochProcess(P, x_vals)
 
-econ = Economy(β, Sg, Sd, Sb, Ss, proc)
+econ = Economy(beta, Sg, Sd, Sb, Ss, proc)
 T = 15
 path = compute_paths(econ, T)
 
@@ -949,7 +944,7 @@ tags: [remove-cell]
   #test path.c[2] ≈ 0.6147870853305598
   #@test path.R ≈ [1.05, 1.05, 1.05, 1.05, 1.05, 1.0930974212983846, 1.05, 1.05, 1.05, 1.05,
   #                1.05, 1.05, 1.05, 1.05, 1.05]
-  #@test path.ξ ≈ [1.0, 1.0, 1.0, 1.0, 1.0, 0.9589548368586813, 1.0, 1.0, 1.0, 1.0, 1.0,
+  #@test path.xi ≈ [1.0, 1.0, 1.0, 1.0, 1.0, 0.9589548368586813, 1.0, 1.0, 1.0, 1.0, 1.0,
   #                1.0, 1.0, 1.0]
 end
 ```
@@ -997,21 +992,21 @@ Random.seed!(42);
 tags: [hide-output]
 ---
 # parameters
-β = 1 / 1.05
-ρ, mg = .95, .35
-A = [0. 0. 0. ρ  mg*(1-ρ);
+beta = 1 / 1.05
+rho, mg = .95, .35
+A = [0. 0. 0. rho  mg*(1-rho);
      1. 0. 0. 0.       0.;
      0. 1. 0. 0.       0.;
      0. 0. 1. 0.       0.;
      0. 0. 0. 0.       1.]
 C = zeros(5, 5)
-C[1, 1] = sqrt(1 - ρ^2) * mg / 8
+C[1, 1] = sqrt(1 - rho^2) * mg / 8
 Sg = [1. 0. 0. 0. 0.]
 Sd = [0. 0. 0. 0. 0.]
 Sb = [0. 0. 0. 0. 2.135]
 Ss = [0. 0. 0. 0. 0.]
 proc = ContStochProcess(A, C)
-econ = Economy(β, Sg, Sd, Sb, Ss, proc)
+econ = Economy(beta, Sg, Sd, Sb, Ss, proc)
 
 T = 50
 path = compute_paths(econ, T)
@@ -1028,7 +1023,7 @@ tags: [remove-cell]
   #test path.rvn[7]  ≈ 0.35146870025913474
   #test path.c[2]  ≈ 0.6259521929536346
   #test path.R[5][1]  ≈ 1.0501742289013196
-  #test path.ξ[10] ≈ 1.002202281639002
+  #test path.xi[10] ≈ 1.002202281639002
 end
 ```
 

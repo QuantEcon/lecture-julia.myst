@@ -58,7 +58,9 @@ function format_myst(input_file_path, output_file_path, extra_replacements = fal
     replacements = Dict("α" => "alpha", "β" => "beta", "γ" => "gamma", "≤" => "<=",
     "≥" => ">=", "Σ" => "Sigma", "σ" => "sigma","μ"=>"mu","ϕ"=>"phi","ψ"=>"psi","ϵ"=>"epsilon",
     "δ"=>"delta","θ" => "theta","ζ"=>"zeta","X̄" => "X_bar","p̄" => "p_bar","x̂" => "x_hat","λ"=>"lambda",
-    "ρ"=>"rho","u′" => "u_prime" , "f′"=>"f_prime"," ∂u∂c"=>"dudc","Π"=>"Pi","π"=>"pi"," ξ"=>"Xi","c̄"=>"c_bar","w̄"=>"w_bar") 
+    "ρ"=>"rho","u′" => "u_prime" , "f′"=>"f_prime"," ∂u∂c"=>"dudc","Π"=>"Pi","π"=>"pi","ξ"=>"xi","c̄"=>"c_bar",
+    "w̄"=>"w_bar","Θ" => "Theta", "Ξ" =>"Xi", "Q̃" => "Q_tilde","R̃" => "R_tilde","Ã" => "A_tilde", "B̃" => "B_tilde",
+    "P̃" => "P_tilde","F̃" => "F_tilde","d̃" => "d_tilde") 
 
     # Replace the code blocks in the content and handle exceptions
     try
