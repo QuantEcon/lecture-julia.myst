@@ -266,7 +266,7 @@ function AMF_LSS_VAR(A, B, D, F = nothing; ν = nothing)
     # construct BIG state space representation
     lss = construct_ss(A, B, D, F, ν, nx, nk, nm)
 
-    return (A = A, B = B, D = D, F = F, ν = ν, nx = nx, nk = nk, nm = nm, lss = lss)
+    return (;A, B, D, F, ν, nx, nk, nm, lss)
 end
 
 AMF_LSS_VAR(A, B, D) =
@@ -335,14 +335,14 @@ function multiplicative_decomp(A, B, D, F, ν, nx)
 end
 
 function loglikelihood_path(amf, x, y)
-    @unpack A, B, D, F = amf
+    (;A, B, D, F) = amf
     k, T = size(y)
     FF = F * F'
     FFinv = inv(FF)
     temp = y[:, 2:end]-y[:, 1:end-1] - D*x[:, 1:end-1]
     obs =  temp .* FFinv .* temp
     obssum = cumsum(obs)
-    scalar = (logdet(FF) + k * log(2π)) * (1:T)
+    scalar = (logdet(FF) + k * log(2pi)) * (1:T)
 
     return -(obssum + scalar) / 2
 end
@@ -356,7 +356,7 @@ end
 function plot_additive(amf, T; npaths = 25, show_trend = true)
 
     # pull out right sizes so we know how to increment
-    @unpack nx, nk, nm = amf
+    (;nx, nk, nm) = amf
 
     # allocate space (nm is the number of additive functionals - we want npaths for each)
     mpath = zeros(nm*npaths, T)
@@ -428,7 +428,7 @@ end
 
 function plot_multiplicative(amf, T, npaths = 25, show_trend = true)
     # pull out right sizes so we know how to increment
-    @unpack nx, nk, nm = amf
+    (;nx, nk, nm) = amf
     # matrices for the multiplicative decomposition
     H, g, ν_tilde = multiplicative_decomp(A, B, D, F, ν, nx)
 
@@ -508,7 +508,7 @@ end
 function plot_martingales(amf, T, npaths = 25)
 
     # pull out right sizes so we know how to increment
-    @unpack A, B, D, F, ν, nx, nk, nm = amf
+    (;A, B, D, F, ν, nx, nk, nm) = amf
     # matrices for the multiplicative decomposition
     H, g, ν_tilde = multiplicative_decomp(A, B, D, F, ν, nx)
 
@@ -571,7 +571,7 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
     trange = 1:T
 
     # allocate transpose
-    mpathᵀ = Matrix(mpath')
+    mpath_T = Matrix(mpath')
 
     # create figure
     plots=plot(layout = (2, 2), size = (800, 800))
@@ -589,7 +589,7 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
 
     # plot martingale component
     plot!(plots[2], trange, mpath[1, :], color = :magenta, label = "")
-    plot!(plots[2], trange, mpathᵀ, alpha = 0.45, color = :magenta, label = "")
+    plot!(plots[2], trange, mpath_T, alpha = 0.45, color = :magenta, label = "")
     ub = mbounds[2, :]
     lb = mbounds[1, :]
     plot!(plots[2], ub, fillrange = lb, alpha = 0.25, color = :magenta, label = "")
@@ -645,18 +645,18 @@ Random.seed!(42);
 ```
 
 ```{code-cell} julia
-ϕ_1, ϕ_2, ϕ_3, ϕ_4 = 0.5, -0.2, 0, 0.5
-σ = 0.01
+phi_1, phi_2, phi_3, phi_4 = 0.5, -0.2, 0, 0.5
+sigma = 0.01
 ν = 0.01 # growth rate
 
 ## A matrix should be n x n
-A = [ϕ_1 ϕ_2 ϕ_3 ϕ_4;
+A = [phi_1 phi_2 phi_3 phi_4;
        1   0   0   0;
        0   1   0   0;
        0   0   1   0]
 
 # B matrix should be n x k
-B = [σ, 0, 0, 0]
+B = [sigma, 0, 0, 0]
 
 D = [1 0 0 0] * A
 F = [1, 0, 0, 0] ⋅ vec(B)
