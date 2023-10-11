@@ -227,10 +227,10 @@ using QuantEcon, Plots, Random
 Random.seed!(42) # For reproducible results.
 
 n = 40              # Data size
-ϕ = 0.5             # AR parameter
-θ = [0, -0.8]       # MA parameter
-σ = 1.0
-lp = ARMA(ϕ, θ, σ)
+phi = 0.5             # AR parameter
+theta = [0, -0.8]       # MA parameter
+sigma = 1.0
+lp = ARMA(phi, theta, sigma)
 X = simulation(lp, ts_length = n)
 
 x, y = periodogram(X)
@@ -522,10 +522,10 @@ Random.seed!(42);  # reproducible results
 
 ```{code-cell} julia
 n = 400
-ϕ = 0.5
-θ = [0, -0.8]
-σ = 1.0
-lp = ARMA(ϕ, θ, 1.0)
+phi = 0.5
+theta = [0, -0.8]
+sigma = 1.0
+lp = ARMA(phi, theta, 1.0)
 X = simulation(lp, ts_length = n)
 
 xs = []

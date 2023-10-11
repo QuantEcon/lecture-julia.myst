@@ -237,10 +237,10 @@ plt_1=plot()
 plt_2=plot()
 plots = [plt_1, plt_2]
 
-for (i, ϕ) in enumerate((0.8, -0.8))
+for (i, phi) in enumerate((0.8, -0.8))
     times = 0:16
-    acov = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
-    label = L"autocovariance, $\phi = %$ϕ$"
+    acov = [phi.^k ./ (1 - phi.^2) for k in times]
+    label = L"autocovariance, $\phi = %$phi$"
     plot!(plots[i], times, acov, color=:blue, lw=2, marker=:circle, markersize=3,
           alpha=0.6, label=label)
     plot!(plots[i], legend=:topright, xlabel="time", xlim=(0,15))
@@ -254,9 +254,9 @@ plot(plots[1], plots[2], layout=(2,1), size=(700,500))
 tags: [remove-cell]
 ---
 @testset begin
-  ϕ = 0.8
+  phi = 0.8
   times = 0:16
-  acov = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
+  acov = [phi.^k ./ (1 - phi.^2) for k in times]
   @test acov[4] ≈ 1.422222222222223 # Can't access acov directly because of scoping.
   @test acov[1] ≈ 2.7777777777777786
 end
@@ -480,19 +480,19 @@ It is a nice exercise to verify that {eq}`ma1_sd_ed` and {eq}`ar1_sd_ed` are ind
 Plotting {eq}`ar1_sd_ed` reveals the shape of the spectral density for the AR(1) model when $\phi$ takes the values 0.8 and -0.8 respectively
 
 ```{code-cell} julia
-ar1_sd(ϕ, ω) = 1 ./ (1 .- 2 * ϕ * cos.(ω) .+ ϕ.^2)
+ar1_sd(phi, omega) = 1 ./ (1 .- 2 * phi * cos.(omega) .+ phi.^2)
 
-ω_s = range(0, π, length = 180)
+omega_s = range(0, pi, length = 180)
 
 plt_1=plot()
 plt_2=plot()
 plots=[plt_1, plt_2]
 
-for (i, ϕ) in enumerate((0.8, -0.8))
-    sd = ar1_sd(ϕ, ω_s)
-    label = L"spectral density, $\phi = %$ϕ$"
-    plot!(plots[i], ω_s, sd, color=:blue, alpha=0.6, lw=2, label=label)
-    plot!(plots[i], legend=:top, xlabel="frequency", xlim=(0,π))
+for (i, phi) in enumerate((0.8, -0.8))
+    sd = ar1_sd(phi, omega_s)
+    label = L"spectral density, $\phi = %$phi$"
+    plot!(plots[i], omega_s, sd, color=:blue, alpha=0.6, lw=2, label=label)
+    plot!(plots[i], legend=:top, xlabel="frequency", xlim=(0,pi))
 end
 plot(plots[1], plots[2], layout=(2,1), size=(700,500))
 ```
@@ -502,9 +502,9 @@ plot(plots[1], plots[2], layout=(2,1), size=(700,500))
 tags: [remove-cell]
 ---
 @testset begin
-  @test ar1_sd(0.8, ω_s)[18] ≈ 9.034248169239635
-  @test ar1_sd(-0.8, ω_s)[18] ≈ 0.3155260821833043
-  @test ω_s[1] == 0.0 && ω_s[end] ≈ π && length(ω_s) == 180 # Grid invariant.
+  @test ar1_sd(0.8, omega_s)[18] ≈ 9.034248169239635
+  @test ar1_sd(-0.8, omega_s)[18] ≈ 0.3155260821833043
+  @test omega_s[1] == 0.0 && omega_s[end] ≈ pi && length(omega_s) == 180 # Grid invariant.
 end
 ```
 
@@ -536,20 +536,20 @@ products on the right-hand side of {eq}`sumpr` is large.
 These ideas are illustrated in the next figure, which has $k$ on the horizontal axis
 
 ```{code-cell} julia
-ϕ = -0.8
+phi = -0.8
 times = 0:16
-y1 = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
-y2 = [cos.(π * k) for k in times]
+y1 = [phi.^k ./ (1 - phi.^2) for k in times]
+y2 = [cos.(pi * k) for k in times]
 y3 = [a * b for (a, b) in zip(y1, y2)]
 
-# Autocovariance when ϕ = -0.8
+# Autocovariance when phi = -0.8
 plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=3,
              alpha=0.6, label=L"\gamma(k)")
 plot!(plt_1, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
       lw=2, label="")
 plot!(plt_1, legend=:topright, xlim=(0,15), yticks=[-2, 0, 2])
 
-# Cycles at frequence π
+# Cycles at frequence pi
 plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=3,
              alpha=0.6, label=L"cos(\pi k)")
 plot!(plt_2, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
@@ -583,20 +583,20 @@ not matched, the sequence $\gamma(k) \cos(\omega k)$ contains
 both positive and negative terms, and hence the sum of these terms is much smaller
 
 ```{code-cell} julia
-ϕ = -0.8
+phi = -0.8
 times = 0:16
-y1 = [ϕ.^k ./ (1 - ϕ.^2) for k in times]
-y2 = [cos.(π * k/3) for k in times]
+y1 = [phi.^k ./ (1 - phi.^2) for k in times]
+y2 = [cos.(pi * k/3) for k in times]
 y3 = [a * b for (a, b) in zip(y1, y2)]
 
-# Autocovariance when ϕ = -0.8
+# Autocovariance when phi = -0.8
 plt_1 = plot(times, y1, color=:blue, lw=2, marker=:circle, markersize=3,
              alpha=0.6, label=L"\gamma(k)")
 plot!(plt_1, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
       lw=2, label="")
 plot!(plt_1, legend=:topright, xlim=(0,15), yticks=[-2, 0, 2])
 
-# Cycles at frequence π
+# Cycles at frequence pi
 plt_2 = plot(times, y2, color=:blue, lw=2, marker=:circle, markersize=3,
              alpha=0.6, label=L"cos(\pi k/3)")
 plot!(plt_2, seriestype=:hline, [0], linestyle=:dash, alpha=0.5,
@@ -755,7 +755,7 @@ using QuantEcon, Random
 function plot_spectral_density(arma, plt)
     (w, spect) = spectral_density(arma, two_pi=false)
     plot!(plt, w, spect, lw=2, alpha=0.7,label="")
-    plot!(plt, title="Spectral density", xlim=(0,π),
+    plot!(plt, title="Spectral density", xlim=(0,pi),
           xlabel="frequency", ylabel="spectrum", yscale=:log)
     return plt
 end
@@ -839,9 +839,9 @@ We'll use the model $X_t = 0.5 X_{t-1} + \epsilon_t - 0.8 \epsilon_{t-2}$
 
 ```{code-cell} julia
 Random.seed!(42) # For reproducible results.
-ϕ = 0.5;
-θ = [0, -0.8];
-arma = ARMA(ϕ, θ, 1.0)
+phi = 0.5;
+theta = [0, -0.8];
+arma = ARMA(phi, theta, 1.0)
 quad_plot(arma)
 ```
 
@@ -864,7 +864,7 @@ end
 The call
 
 ```{code-block} julia
-arma = ARMA(ϕ, θ, σ)
+arma = ARMA(phi, theta, sigma)
 ```
 
 creates an instance `arma` that represents the ARMA($p, q$) model
@@ -874,15 +874,15 @@ X_t = \phi_1 X_{t-1} + ... + \phi_p X_{t-p} +
     \epsilon_t + \theta_1 \epsilon_{t-1} + ... + \theta_q \epsilon_{t-q}
 $$
 
-If `ϕ` and `θ` are arrays or sequences, then the interpretation will
+If `phi` and `theta` are arrays or sequences, then the interpretation will
 be
 
-* `ϕ` holds the vector of parameters $(\phi_1, \phi_2,..., \phi_p)$
-* `θ` holds the vector of parameters $(\theta_1, \theta_2,..., \theta_q)$
+* `phi` holds the vector of parameters $(\phi_1, \phi_2,..., \phi_p)$
+* `theta` holds the vector of parameters $(\theta_1, \theta_2,..., \theta_q)$
 
-The parameter `σ` is always a scalar, the standard deviation of the white noise.
+The parameter `sigma` is always a scalar, the standard deviation of the white noise.
 
-We also permit `ϕ` and `θ` to be scalars, in which case the model will be interpreted as
+We also permit `phi` and `theta` to be scalars, in which case the model will be interpreted as
 
 $$
 X_t = \phi X_{t-1} + \epsilon_t + \theta \epsilon_{t-1}

@@ -119,9 +119,9 @@ import Distributions: loglikelihood
 ```
 
 ```{code-cell} julia
-AMF_LSS_VAR = @with_kw (A, B, D, F = 0.0, ν = 0.0, lss = construct_ss(A, B, D, F, ν))
+AMF_LSS_VAR(;A, B, D, F = 0.0, nu = 0.0, lss = construct_ss(A, B, D, F, nu)) = (;A, B, D, F,nu, lss)
 
-function construct_ss(A, B, D, F, ν)
+function construct_ss(A, B, D, F, nu)
     H, g = additive_decomp(A, B, D, F)
 
     # Build A matrix for LSS
@@ -129,7 +129,7 @@ function construct_ss(A, B, D, F, ν)
     A1 = [1 0 0 0 0]       # Transition for 1
     A2 = [1 1 0 0 0]       # Transition for t
     A3 = [0 0 A 0 0]       # Transition for x_{t+1}
-    A4 = [ν 0 D 1 0]       # Transition for y_{t+1}
+    A4 = [nu 0 D 1 0]       # Transition for y_{t+1}
     A5 = [0 0 0 0 1]       # Transition for m_{t+1}
     Abar = vcat(A1, A2, A3, A4, A5)
 
@@ -142,7 +142,7 @@ function construct_ss(A, B, D, F, ν)
     G2 = [0 0 0 1 0]               # Selector for y_{t}
     G3 = [0 0 0 0 1]               # Selector for martingale
     G4 = [0 0 -g 0 0]              # Selector for stationary
-    G5 = [0 ν 0 0 0]               # Selector for trend
+    G5 = [0 nu 0 0 0]               # Selector for trend
     Gbar = vcat(G1, G2, G3, G4, G5)
 
     # Build LSS struct
@@ -159,15 +159,15 @@ function additive_decomp(A, B, D, F)
     return H, g
 end
 
-function multiplicative_decomp(A, B, D, F, ν)
+function multiplicative_decomp(A, B, D, F, nu)
     H, g = additive_decomp(A, B, D, F)
-    ν_tilde = ν + 0.5 * H^2
+    nu_tilde = nu + 0.5 * H^2
 
-    return ν_tilde, H, g
+    return nu_tilde, H, g
 end
 
 function loglikelihood_path(amf, x, y)
-    @unpack A, B, D, F = amf
+    (;A, B, D, F) = amf
     T = length(y)
     FF = F^2
     FFinv = inv(FF)
@@ -418,7 +418,7 @@ Random.seed!(42);
 
 ```{code-cell} julia
 # Create the second (wrong) alternative model
-amf2 = AMF_LSS_VAR(A = 0.9, B = 1.0, D = 0.55, F = 0.25) # parameters for θ_1 closer to θ_0
+amf2 = AMF_LSS_VAR(A = 0.9, B = 1.0, D = 0.55, F = 0.25) # parameters for theta_1 closer to theta_0
 
 # Get likelihood from each path x^{i}, y^{i}
 LLit2 = simulate_likelihood(amf2, Xit, Yit)
@@ -572,8 +572,8 @@ Random.seed!(42);
 ```{code-cell} julia
 function simulate_martingale_components(amf, T = 1_000, I = 5_000)
     # Get the multiplicative decomposition
-    @unpack A, B, D, F, ν, lss = amf
-    ν, H, g = multiplicative_decomp(A, B, D, F, ν)
+    (;A, B, D, F, nu, lss) = amf
+    nu, H, g = multiplicative_decomp(A, B, D, F, nu)
 
     # Allocate space
     add_mart_comp = zeros(I, T)
@@ -591,7 +591,7 @@ function simulate_martingale_components(amf, T = 1_000, I = 5_000)
 end
 
 # Build model
-amf_2 = AMF_LSS_VAR(A = 0.8, B = 0.001, D = 1.0, F = 0.01, ν = 0.005)
+amf_2 = AMF_LSS_VAR(A = 0.8, B = 0.001, D = 1.0, F = 0.01, nu = 0.005)
 
 amc, mmc = simulate_martingale_components(amf_2, 1_000, 5_000)
 
@@ -669,8 +669,8 @@ Here is some code that tackles these tasks
 function Mtilde_t_density(amf, t; xmin = 1e-8, xmax = 5.0, npts = 5000)
 
     # Pull out the multiplicative decomposition
-    νtilde, H, g =
-        multiplicative_decomp(amf.A, amf.B, amf.D, amf.F, amf.ν)
+    nutilde, H, g =
+        multiplicative_decomp(amf.A, amf.B, amf.D, amf.F, amf.nu)
     H2 = H*H
 
     # The distribution
@@ -684,8 +684,8 @@ end
 function logMtilde_t_density(amf, t; xmin = -15.0, xmax = 15.0, npts = 5000)
 
     # Pull out the multiplicative decomposition
-    @unpack A, B, D, F, ν = amf
-    νtilde, H, g = multiplicative_decomp(A, B, D, F, ν)
+    (;A, B, D, F, nu) = amf
+    nutilde, H, g = multiplicative_decomp(A, B, D, F, nu)
     H2 = H * H
 
     # The distribution
@@ -706,7 +706,7 @@ plots = plot(layout = (3,2), size = (600,800))
 
 for (it, dens_t) in enumerate(dens_to_plot)
     x, pdf = dens_t
-    plot!(plots[it], title = "Density for time (time_to_plot[it])")
+    plot!(plots[it], title = "Density for time (time_to_plot[it])",titlefontsize = 10)
     plot!(plots[it], pdf, fillrange = 0, label = "")
 end
 plot(plots)
@@ -739,28 +739,28 @@ $\nu = \tilde{\nu}$.
 Here's our code
 
 ```{code-cell} julia
-function Uu(amf, δ, γ)
-    @unpack A, B, D, F, ν = amf
-    ν_tilde, H, g = multiplicative_decomp(A, B, D, F, ν)
+function Uu(amf, delta, gamma)
+    (;A, B, D, F, nu) = amf
+    nu_tilde, H, g = multiplicative_decomp(A, B, D, F, nu)
 
-    resolv = 1 / (1 - exp(-δ) * A)
+    resolv = 1 / (1 - exp(-delta) * A)
     vect = F + D * resolv * B
 
-    U_risky = exp(-δ) * resolv * D
-    u_risky = exp(-δ) / (1 - exp(-δ)) * (ν + 0.5 * (1 - γ) * (vect^2))
+    U_risky = exp(-delta) * resolv * D
+    u_risky = exp(-delta) / (1 - exp(-delta)) * (nu + 0.5 * (1 - gamma) * (vect^2))
 
     U_det = 0
-    u_det = exp(-δ) / (1 - exp(-δ))  * ν_tilde
+    u_det = exp(-delta) / (1 - exp(-delta))  * nu_tilde
 
     return U_risky, u_risky, U_det, u_det
 end
 
 # Set remaining parameters
-δ = 0.02
-γ = 2.0
+delta = 0.02
+gamma = 2.0
 
 # Get coeffs
-U_r, u_r, U_d, u_d = Uu(amf_2, δ, γ)
+U_r, u_r, U_d, u_d = Uu(amf_2, delta, gamma)
 ```
 
 The values of the two processes are
