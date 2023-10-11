@@ -171,13 +171,13 @@ We begin by implementing a simple version of this model with a constant $R_0$ an
 First, define the system of equations
 
 ```{code-cell} julia
-function F_simple(x, p, t; gamma = 1/18, R_0 = 3.0, sigma = 1/5.2)
+function F_simple(x, p, t; γ = 1/18, R₀ = 3.0, σ = 1/5.2)
     s, e, i, r = x
 
-    return [-gamma * R_0 * s * i;              # ds/dt
-             gamma * R_0 * s * i - sigma * e;  # de/dt 
-             sigma * e - gamma * i;            # di/dt 
-             gamma * i;                        # dr/dt
+    return [-γ*R₀*s*i;       # ds/dt = -γR₀si
+             γ*R₀*s*i -  σ*e;# de/dt =  γR₀si -σe
+             σ*e - γ*i;      # di/dt =         σe -γi
+                   γ*i;      # dr/dt =             γi
             ]
 end
 ```
@@ -195,7 +195,7 @@ tspan = (0.0, 350.0)  # ≈ 350 days
 prob = ODEProblem(F_simple, x_0, tspan)
 ```
 
-With this, choose an ODE algorithm and solve the initial value problem.  A good default algorithm for non-stiff ODEs of this sort might be `Tsit5()`, which is the Tsitouras 5/4 Runge-Kutta method.
+With this, choose an ODE algorithm and solve the initial value problem.  A good default algorithm for non-stiff ODEs of this sort might be `Tsit5()`, which is the Tsitouras 5/4 Runge-Kutta method).
 
 ```{code-cell} julia
 sol = solve(prob, Tsit5())
@@ -242,7 +242,7 @@ While we could integrate the deaths given the solution to the model ex-post, it 
 
 This is a common trick when solving systems of ODEs.  While equivalent in principle to using the appropriate quadrature scheme, this becomes especially convenient when adaptive time-stepping algorithms are used to solve the ODEs (i.e. there is not a regular time grid). Note that when doing so, $d(0) = \int_0^0 \delta \gamma i(\tau) d \tau = 0$ is the initial condition.
 
-The system {eq}`seir_system` and the supplemental equations can be written in vector form $x := [s, e, i, r, R_0, c, d]$ with parameter tuple $p := (\sigma, \gamma, \eta, \delta, \bar{R}_0(\cdot))$
+The system {eq}`seir_system` and the supplemental equations can be written in vector form $x := [s, e, i, r, R₀, c, d]$ with parameter tuple $p := (\sigma, \gamma, \eta, \delta, \bar{R}_0(\cdot))$
 
 Note that in those parameters, the targeted reproduction number, $\bar{R}_0(t)$, is an exogenous function.
 
@@ -289,36 +289,35 @@ First, construct our $F$ from {eq}`dfcv`
 
 ```{code-cell} julia
 function F(x, p, t)
-    s, e, i, r, R_0, c, d = x
-    (;sigma, gamma, R_bar_0, eta, delta) = p
+    s, e, i, r, R₀, c, d = x
+    (;σ, γ, R̄₀, η, δ) = p
 
-    return [-gamma * R_0 * s * i;              # ds/dt
-            gamma * R_0 * s * i - sigma * e;   # de/dt
-            sigma * e - gamma * i;             # di/dt
-            gamma * i;                         # dr/dt
-            eta * (R_bar_0(t, p) - R_0);       # dR_0/dt
-            sigma * e;                         # dc/dt
-            delta * gamma * i;                 # dd/dt
+    return [-γ*R₀*s*i;        # ds/dt
+            γ*R₀*s*i -  σ*e;  # de/dt
+            σ*e - γ*i;        # di/dt
+            γ*i;              # dr/dt
+            η*(R̄₀(t, p) - R₀);# dR₀/dt
+            σ*e;              # dc/dt
+            δ*γ*i;            # dd/dt
             ]
 end;
-
 ```
 
 This function takes the vector `x` of states in the system and extracts the fixed parameters passed into the `p` object.
 
-The only confusing part of the notation is the `R_bar_0(t, p)` which evaluates the `p.R_bar_0` at this time (and also allows it to depend on the `p` parameter).
+The only confusing part of the notation is the `R̄₀(t, p)` which evaluates the `p.R̄₀` at this time (and also allows it to depend on the `p` parameter).
 
 ### Parameters
-#####HERE ENDED
+
 The baseline parameters are put into a named tuple generator (see previous lectures using [Parameters.jl](https://github.com/mauro3/Parameters.jl)) with default values discussed above.
 
 ```{code-cell} julia
-p_gen(;T = 550.0, gamma = 1.0 / 18, sigma = 1 / 5.2, eta = 1.0 / 20,
-                R_0_n = 1.6, delta = 0.01, N = 3.3E8,
-                R_bar_0 = (t, p) -> p.R_0_n) = (;T, gamma, sigma, eta, R_0_n, delta, N, R_bar_0)
+p_gen = @with_kw ( T = 550.0, γ = 1.0 / 18, σ = 1 / 5.2, η = 1.0 / 20,
+                R₀_n = 1.6, δ = 0.01, N = 3.3E8,
+                R̄₀ = (t, p) -> p.R₀_n);
 ```
 
-Note that the default $\bar{R}_0(t)$ function always equals $R_{0n}$ -- a parameterizable natural level of $R_0$ used only by the `R_bar_0` function
+Note that the default $\bar{R}_0(t)$ function always equals $R_{0n}$ -- a parameterizable natural level of $R_0$ used only by the `R̄₀` function
 
 Setting initial conditions, we choose a fixed $s, i, e, r$, as well as $R_0(0) = R_{0n}$ and $m(0) = 0.01$
 
@@ -329,7 +328,7 @@ i_0 = 1E-7
 e_0 = 4.0 * i_0
 s_0 = 1.0 - i_0 - e_0
 
-x_0 = [s_0, e_0, i_0, 0.0, p.R_0_n, 0.0, 0.0]
+x_0 = [s_0, e_0, i_0, 0.0, p.R₀_n, 0.0, 0.0]
 tspan = (0.0, p.T)
 prob = ODEProblem(F, x_0, tspan, p)
 ```
@@ -373,9 +372,9 @@ Let's start with the case where $\bar{R}_0(t) = R_{0n}$ is constant.
 We calculate the time path of infected people under different assumptions of $R_{0n}$:
 
 ```{code-cell} julia
-R_0_n_vals = range(1.6, 3.0, length = 6)
-sols = [solve(ODEProblem(F, x_0, tspan, p_gen(R_0_n = R_0_n)),
-              Tsit5(), saveat=0.5) for R_0_n in R_0_n_vals];
+R₀_n_vals = range(1.6, 3.0, length = 6)
+sols = [solve(ODEProblem(F, x_0, tspan, p_gen(R₀_n = R₀_n)),
+              Tsit5(), saveat=0.5) for R₀_n in R₀_n_vals];
 ```
 
 Here we chose `saveat=0.5` to get solutions that were evenly spaced every `0.5`.
@@ -385,7 +384,7 @@ Changing the saved points is just a question of storage/interpolation, and does 
 Let's plot current cases as a fraction of the population.
 
 ```{code-cell} julia
-labels = permutedims([L"R_0 = %$r" for r in R_0_n_vals])
+labels = permutedims([L"R_0 = %$r" for r in R₀_n_vals])
 infecteds = [sol[3,:] for sol in sols]
 plot(infecteds, label=labels, legend=:topleft, lw = 2, xlabel = L"t",
      ylabel = L"i(t)", title = "Current Cases")
@@ -414,21 +413,21 @@ In the simple case, where $\bar{R}_0(t) = R_{0n}$ is independent of the state, t
 
 We will examine the case where $R_0(0) = 3$ and then it falls to $R_{0n} = 1.6$ due to the progressive adoption of stricter mitigation measures.
 
-The parameter `eta` controls the rate, or the speed at which restrictions are
+The parameter `η` controls the rate, or the speed at which restrictions are
 imposed.
 
 We consider several different rates:
 
 ```{code-cell} julia
-eta_vals = [1/5, 1/10, 1/20, 1/50, 1/100]
-labels = permutedims([L"\eta = %$eta" for eta in eta_vals]);
+η_vals = [1/5, 1/10, 1/20, 1/50, 1/100]
+labels = permutedims([L"\eta = %$η" for η in η_vals]);
 ```
 
 Let's calculate the time path of infected people, current cases, and mortality
 
 ```{code-cell} julia
 x_0 = [s_0, e_0, i_0, 0.0, 3.0, 0.0, 0.0]
-sols = [solve(ODEProblem(F, x_0, tspan, p_gen(eta=eta)), Tsit5(), saveat=0.5) for eta in eta_vals];
+sols = [solve(ODEProblem(F, x_0, tspan, p_gen(η=η)), Tsit5(), saveat=0.5) for η in η_vals];
 ```
 
 Next, plot the $R_0$ over time:
@@ -469,11 +468,11 @@ The parameters considered here start the model with 25,000 active infections
 and 75,000 agents already exposed to the virus and thus soon to be contagious.
 
 ```{code-cell} julia
-R_0_L = 0.5  # lockdown
-R_bar_0_lift_early(t, p) = t < 30.0 ? R_0_L : 2.0
-R_bar_0_lift_late(t, p) = t < 120.0 ? R_0_L : 2.0
-p_early = p_gen(R_bar_0 = R_bar_0_lift_early, eta = 10.0)
-p_late = p_gen(R_bar_0 = R_bar_0_lift_late, eta = 10.0)
+R₀_L = 0.5  # lockdown
+R̄₀_lift_early(t, p) = t < 30.0 ? R₀_L : 2.0
+R̄₀_lift_late(t, p) = t < 120.0 ? R₀_L : 2.0
+p_early = p_gen(R̄₀= R̄₀_lift_early, η = 10.0)
+p_late = p_gen(R̄₀= R̄₀_lift_late, η = 10.0)
 
 
 # initial conditions
@@ -481,9 +480,9 @@ i_0 = 25000 / p_early.N
 e_0 = 75000 / p_early.N
 s_0 = 1.0 - i_0 - e_0
 
-x_0 = [s_0, e_0, i_0, 0.0, R_0_L, 0.0, 0.0] # start in lockdown
+x_0 = [s_0, e_0, i_0, 0.0, R₀_L, 0.0, 0.0] # start in lockdown
 
-# create two problems, with rapid movement of R_0(t) towards R_bar_0(t)
+# create two problems, with rapid movement of R₀(t) towards R̄₀(t)
 prob_early = ODEProblem(F, x_0, tspan, p_early)
 prob_late = ODEProblem(F, x_0, tspan, p_late)
 ```
@@ -502,7 +501,7 @@ plot!(sol_late, vars = [7], label = "Lift Late", xlabel = L"t")
 Next we examine the daily deaths, $\frac{d D(t)}{dt} = N \delta \gamma i(t)$.
 
 ```{code-cell} julia
-flow_deaths(sol, p) = p.N * p.delta * p.gamma * sol[3,:]
+flow_deaths(sol, p) = p.N * p.δ * p.γ * sol[3,:]
 
 plot(sol_early.t, flow_deaths(sol_early, p_early), title = "Flow Deaths", label = "Lift Early")
 plot!(sol_late.t, flow_deaths(sol_late, p_late), label = "Lift Late", xlabel = L"t")
