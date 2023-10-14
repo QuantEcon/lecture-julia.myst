@@ -626,7 +626,7 @@ Q = Tridiagonal(fill(alpha, N - 1), [-alpha; fill(-2alpha, N - 2); -alpha],
 
 Here we can use `Tridiagonal` to exploit the structure of the problem.
 
-Consider a simple payoff vector $r$ associated with each state, and a discount rate $rho$.  Then we can solve for
+Consider a simple payoff vector $r$ associated with each state, and a discount rate $\rho$.  Then we can solve for
 the expected present discounted value in a way similar to the discrete-time case.
 
 $$
@@ -655,23 +655,23 @@ linear problem.
 v = A \ r
 ```
 
-The $Q$ is also used to calculate the evolution of the Markov chain, in direct analogy to the $psi_{t+k} = psi_t P^k$ evolution with the transition matrix $P$ of the discrete case.
+The $Q$ is also used to calculate the evolution of the Markov chain, in direct analogy to the $\psi_{t+k} = \psi_t P^k$ evolution with the transition matrix $P$ of the discrete case.
 
 In the continuous case, this becomes the system of linear differential equations
 
 $$
-\dot{psi}(t) = Q(t)^T psi(t)
+\dot{\psi}(t) = Q(t)^T \psi(t)
 $$
 
 given the initial condition $\psi(0)$ and where the $Q(t)$ intensity matrix is allowed to vary with time.  In the simplest case of a constant $Q$ matrix, this is a simple constant-coefficient system of linear ODEs with coefficients $Q^T$.
 
-If a stationary equilibrium exists, note that $\dot{psi}(t) = 0$, and the stationary solution $psi^{*}$ needs to satisfy
+If a stationary equilibrium exists, note that $\dot{\psi}(t) = 0$, and the stationary solution $\psi^{*}$ needs to satisfy
 
 $$
-0 = Q^T psi^{*}
+0 = Q^T \psi^{*}
 $$
 
-Notice that this is of the form $0 psi^{*} = Q^T psi^{*}$ and hence is equivalent to finding the eigenvector associated with the $\lambda = 0$ eigenvalue of $Q^T$.
+Notice that this is of the form $0 \psi^{*} = Q^T \psi^{*}$ and hence is equivalent to finding the eigenvector associated with the $\lambda = 0$ eigenvalue of $Q^T$.
 
 With our example, we can calculate all of the eigenvalues and eigenvectors
 
