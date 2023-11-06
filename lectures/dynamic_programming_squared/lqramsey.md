@@ -613,8 +613,8 @@ function compute_exog_sequences(econ, x)
     g, d, b, s = [dropdims(S * x, dims = 1) for S in (Sg, Sd, Sb, Ss)]
 
     #= solve for Lagrange multiplier in the govt budget constraint
-    In fact we solve for ν = lambda / (1 + 2*lambda).  Here ν is the
-    solution to a quadratic equation a(ν^2 - ν) + b = 0 where
+    In fact we solve for nu = lambda / (1 + 2*lambda).  Here nu is the
+    solution to a quadratic equation a(nu^2 - nu) + b = 0 where
     a and b are expected discounted sums of quadratic forms of the state. =#
     Sm = Sb - Sd - Ss
 
@@ -622,12 +622,11 @@ function compute_exog_sequences(econ, x)
 end
 
 
-function compute_allocation(econ, Sm, ν, x, b)
-    Sg, Sd, Sb, Ss = econ.Sg, econ.Sd, econ.Sb, econ.Ss
-
-    # solve for the allocation given ν and x
-    Sc = 0.5 .* (Sb + Sd - Sg - ν .* Sm)
-    Sl = 0.5 .* (Sb - Sd + Sg - ν .* Sm)
+function compute_allocation(econ, Sm, nu, x, b)
+    (;Sg, Sd, Sb, Ss) = econ
+    # solve for the allocation given nu and x
+    Sc = 0.5 .* (Sb + Sd - Sg - nu .* Sm)
+    Sl = 0.5 .* (Sb - Sd + Sg - nu .* Sm)
     c = dropdims(Sc * x, dims = 1)
     l = dropdims(Sl * x, dims = 1)
     p = dropdims((Sb - Sc) * x, dims = 1)  # Price without normalization
@@ -638,29 +637,29 @@ function compute_allocation(econ, Sm, ν, x, b)
 end
 
 
-function compute_ν(a0, b0)
+function compute_nu(a0, b0)
     disc = a0^2 - 4a0 * b0
 
     if disc >= 0
-        ν = 0.5 *(a0 - sqrt(disc)) / a0
+        nu = 0.5 *(a0 - sqrt(disc)) / a0
     else
         println("There is no Ramsey equilibrium for these parameters.")
         error("Government spending (economy.g) too low")
     end
 
     # Test that the Lagrange multiplier has the right sign
-    if ν * (0.5 - ν) < 0
+    if nu * (0.5 - nu) < 0
         print("Negative multiplier on the government budget constraint.")
         error("Government spending (economy.g) too low")
     end
 
-    return ν
+    return nu
 end
 
 
-function compute_Pi(B, R, rvn, g,Xi)
+function compute_Pi(B, R, rvn, g,xi)
     pi = B[2:end] - R[1:end-1] .* B[1:end-1] - rvn[1:end-1] + g[1:end-1]
-    Pi = cumsum(pi .*Xi)
+    Pi = cumsum(pi .*xi)
     return pi, Pi
 end
 
@@ -685,10 +684,10 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T
     b0 = (F \ H')[1] ./ 2
 
     # compute lagrange multiplier
-    ν = compute_ν(a0, b0)
+    nu = compute_nu(a0, b0)
 
-    # Solve for the allocation given ν and x
-    Sc, Sl, c, l, p, tau, rvn = compute_allocation(econ, Sm, ν, x, b)
+    # Solve for the allocation given nu and x
+    Sc, Sl, c, l, p, tau, rvn = compute_allocation(econ, Sm, nu, x, b)
 
     # compute remaining variables
     H = ((Sb - Sc) * x_vals) .* ((Sl - Sg) * x_vals) - (Sl * x_vals).^2
@@ -697,12 +696,12 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T
     H = dropdims(P[state, :] * ((Sb - Sc) * x_vals)', dims = 2)
     R = p ./ (beta .* H)
     temp = dropdims(P[state, :] *((Sb - Sc) * x_vals)', dims = 2)
-   Xi = p[2:end] ./ temp[1:end-1]
+   xi = p[2:end] ./ temp[1:end-1]
 
     # compute pi
-    pi, Pi = compute_Pi(B, R, rvn, g,Xi)
+    pi, Pi = compute_Pi(B, R, rvn, g, xi)
 
-    return (;g, d, b, s, c, l, p, tau, rvn, B, R, pi, Pi, Xi)
+    return (;g, d, b, s, c, l, p, tau, rvn, B, R, pi, Pi, xi)
 end
 
 function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
@@ -736,10 +735,10 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
     b0 = 0.5 * var_quadratic_sum(A, C, H, beta, x0)
 
     # compute lagrange multiplier
-    ν = compute_ν(a0, b0)
+    nu = compute_nu(a0, b0)
 
-    # solve for the allocation given ν and x
-    Sc, Sl, c, l, p, tau, rvn = compute_allocation(econ, Sm, ν, x, b)
+    # solve for the allocation given nu and x
+    Sc, Sl, c, l, p, tau, rvn = compute_allocation(econ, Sm, nu, x, b)
 
     # compute remaining variables
     H = Sl'Sl - (Sb - Sc)' *(Sl - Sg)
@@ -752,13 +751,13 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
     R = 1 ./ Rinv
     AF1 = (Sb - Sc) * x[:, 2:end]
     AF2 = (Sb - Sc) * A * x[:, 1:end-1]
-   Xi =  AF1 ./ AF2
-   Xi = dropdims(Xi, dims = 1)
+   xi =  AF1 ./ AF2
+   xi = dropdims(xi, dims = 1)
 
     # compute pi
-    pi, Pi = compute_Pi(B, R, rvn, g,Xi)
+    pi, Pi = compute_Pi(B, R, rvn, g, xi)
 
-    return(;g, d, b, s, c, l, p, tau, rvn, B, R, pi, Pi, Xi)
+    return(;g, d, b, s, c, l, p, tau, rvn, B, R, pi, Pi, xi)
 end
 
 function gen_fig_1(path)
@@ -789,7 +788,7 @@ function gen_fig_2(path)
 
     T = length(path.c)
 
-    paths = [path.Xi, path.Pi]
+    paths = [path.xi, path.Pi]
     labels = [L"\xi_t", L"\Pi_t"]
     plt_1 = plot()
     plt_2 = plot()

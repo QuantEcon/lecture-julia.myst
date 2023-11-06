@@ -929,7 +929,7 @@ We define named tuples and default values for the model and solver settings, and
 instantiate one copy of each
 
 ```{code-cell} julia
-model(;a0 = 10, a1 = 2, beta = 0.96, gamma = 120.,  n = 300) = (; a0, a1, beta, gamma, n)
+model(;a0 = 10, a1 = 2, beta = 0.96, gamma = 120., n = 300) = (; a0, a1, beta, gamma, n)
 
 # things like tolerances, etc.
 settings(;tol0 = 1e-8,tol1 = 1e-16,tol2 = 1e-2) = (;tol0, tol1, tol2)
@@ -1166,7 +1166,7 @@ P_tilde # value function in the follower's problem
 
 ```{code-cell} julia
 # manually check that P is an approximate fixed point
-all((P  - ((R + F' * Q * F) + beta * (A - B * F)' * P * (A - B * F)) .< tol0))
+all((P - ((R + F' * Q * F) + beta * (A - B * F)' * P * (A - B * F)) .< tol0))
 ```
 
 ```{code-cell} julia
@@ -1410,7 +1410,8 @@ end
 
 plot([vt_MPE, vt_leader, vt_follower], labels = ["MPE" "Stackelberg leader" "Stackelberg follower"], 
         title = "MPE vs Stackelberg Values",
-        xlabel = L"t")
+        xlabel = L"t", 
+        legend = :outertopright)
 ```
 
 ```{code-cell} julia
