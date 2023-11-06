@@ -628,7 +628,7 @@ function LQFilter(d, h, y_m;
         beta = 1.0
     else
         d = beta.^(collect(0:m)/2) * d
-        y_m = y_m * beta.^(- collect(1:m)/2)
+        y_m = y_m * beta.^(-collect(1:m)/2)
     end
 
     return (;d, h, y_m, m, phi, beta, phi_r, k)
@@ -636,7 +636,7 @@ end
 
 function construct_W_and_Wm(lqf, N)
 
-    d, m = lqf.d, lqf.m
+    (;d, m) = lqf
 
     W = zeros(N + 1, N + 1)
     W_m = zeros(N + 1, m)
@@ -687,21 +687,21 @@ function construct_W_and_Wm(lqf, N)
 end
 
 function roots_of_characteristic(lqf)
-    m, phi = lqf.m, lqf.phi
+    (;m, phi) = lqf
 
     # Calculate the roots of the 2m-polynomial
     phi_poly = Poly(phi[end:-1:1])
     proots = roots(phi_poly)
     # sort the roots according to their length (in descending order)
     roots_sorted = sort(proots, by=abs)[end:-1:1]
-   z_0 = sum(phi) / polyval(poly(proots), 1.0)
+    z_0 = sum(phi) / polyval(poly(proots), 1.0)
     z_1_to_m = roots_sorted[1:m]     # we need only those outside the unit circle
     lambda = 1 ./ z_1_to_m
     return z_1_to_m, z_0, lambda
 end
 
 function coeffs_of_c(lqf)
-    m = lqf.m
+    (;m) = lqf
     z_1_to_m, z_0, lambda = roots_of_characteristic(lqf)
     c_0 = (z_0 * prod(z_1_to_m) * (-1.0)^m)^(0.5)
     c_coeffs = coeffs(poly(z_1_to_m)) * z_0 / c_0
@@ -711,7 +711,7 @@ end
 function solution(lqf)
     z_1_to_m, z_0, lambda = roots_of_characteristic(lqf)
     c_0 = coeffs_of_c(lqf)[end]
-    A = zeros(lqf.m)
+    A = zeros(m)
     for j in 1:m
         denom = 1 - lambda/lambda[j]
         A[j] = c_0^(-2) / prod(denom[1:m .!= j])
@@ -727,7 +727,7 @@ function construct_V(lqf; N = nothing)
         throw(ArgumentError("N must be Integer!"))
     end
 
-    phi_r, k = lqf.phi_r, lqf.k
+    (;phi_r, k) = lqf
     V = zeros(N, N)
     for i in 1:N
         for j in 1:N
@@ -758,7 +758,7 @@ function predict(lqf, a_hist, t)
 end
 
 function optimal_y(lqf, a_hist, t = nothing)
-    beta, y_m, m = lqf.beta, lqf.y_m, lqf.m
+    (;beta, y_m, m) = lqf
 
     N = length(a_hist) - 1
     W, W_m = construct_W_and_Wm(lqf, N)
@@ -777,7 +777,7 @@ function optimal_y(lqf, a_hist, t = nothing)
 
         # transform the a sequence if beta is given
         if beta != 1
-            a_hist =  reshape(a_hist * (beta^(collect(N:0)/ 2)), N + 1, 1)
+            a_hist = reshape(a_hist * (beta^(collect(N:0)/ 2)), N + 1, 1)
         end
 
         a_bar = a_hist - W_m * y_m        # a_bar from the lecutre

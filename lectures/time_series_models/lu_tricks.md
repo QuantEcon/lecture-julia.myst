@@ -940,7 +940,7 @@ function LQFilter(d, h, y_m;
         y_m = y_m * beta.^(- collect(1:m)/2)
     end
 
-    return (d = d, h = h, y_m = y_m, m = m, phi = phi, beta = beta, phi_r = phi_r, k = k)
+    return (;d, h, y_m, m, phi, beta, phi_r, k)
 end
 
 function construct_W_and_Wm(lqf, N)
@@ -1010,7 +1010,7 @@ function roots_of_characteristic(lqf)
 end
 
 function coeffs_of_c(lqf)
-    m = lqf.m
+    (;m) = lqf
     z_1_to_m, z_0, lambda = roots_of_characteristic(lqf)
     c_0 = (z_0 * prod(z_1_to_m) * (-1.0)^m)^(0.5)
     c_coeffs = coeffs(Polynomial(z_1_to_m)) * z_0 / c_0
@@ -1020,7 +1020,7 @@ end
 function solution(lqf)
     z_1_to_m, z_0, lambda = roots_of_characteristic(lqf)
     c_0 = coeffs_of_c(lqf)[end]
-    A = zeros(lqf.m)
+    A = zeros(m)
     for j in 1:m
         denom = 1 - lambda/lambda[j]
         A[j] = c_0^(-2) / prod(denom[1:m .!= j])

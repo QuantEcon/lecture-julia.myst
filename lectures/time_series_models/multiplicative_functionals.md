@@ -119,7 +119,7 @@ import Distributions: loglikelihood
 ```
 
 ```{code-cell} julia
-AMF_LSS_VAR(;A, B, D, F = 0.0, nu = 0.0, lss = construct_ss(A, B, D, F, nu)) = (;A, B, D, F,nu, lss)
+AMF_LSS_VAR(;A, B, D, F = 0.0, nu = 0.0, lss = construct_ss(A, B, D, F, nu)) = (;A, B, D, F, nu, lss)
 
 function construct_ss(A, B, D, F, nu)
     H, g = additive_decomp(A, B, D, F)
@@ -266,11 +266,11 @@ Xmean_pop, Ymean_pop = population_means(amf, T)
 # Plot sample means vs population means
 plt_1 = plot(Xmean_t', color = :blue, label = L"(1/I) \sum_i x_t^i")
 plot!(plt_1, Xmean_pop, color = :black, label = L"E x_t")
-plot!(plt_1, title = L"x_t", xlim = (0, T), legend = :bottomleft)
+plot!(plt_1, title = L"x_t", xlim = (0, T), legend = :outertopright)
 
 plt_2 = plot(Ymean_t', color = :blue, label = L"(1/I) \sum_i x_t^i")
 plot!(plt_2, Ymean_pop, color = :black, label = L"E y_t")
-plot!(plt_2, title = L"y_t", xlim = (0, T), legend = :bottomleft)
+plot!(plt_2, title = L"y_t", xlim = (0, T), legend = :outertopright)
 
 plot(plt_1, plt_2, layout = (2, 1), size = (800,500))
 ```
@@ -666,11 +666,12 @@ We will plot the densities of $\log {\widetilde M}_t$ for different values of $t
 Here is some code that tackles these tasks
 
 ```{code-cell} julia
-function Mtilde_t_density(amf, t; xmin = 1e-8, xmax = 5.0, npts = 5000)
+function Mtilde_t_density(amf, t; xmin = 1e-8, xmax = 5.0, npts = 50
+(;A, B, D, F, nu) = amf00)
 
     # Pull out the multiplicative decomposition
     nutilde, H, g =
-        multiplicative_decomp(amf.A, amf.B, amf.D, amf.F, amf.nu)
+        multiplicative_decomp(A, B, D, F, nu)
     H2 = H*H
 
     # The distribution
