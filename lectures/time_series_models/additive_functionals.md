@@ -224,7 +224,7 @@ using Distributions, LaTeXStrings, Parameters, Plots, QuantEcon
 ```
 
 ```{code-cell} julia
-function AMF_LSS_VAR(A, B, D, F = nothing; ν = nothing)
+function AMF_LSS_VAR(A, B, D, F = nothing; upsilon = nothing)
 
     if B isa AbstractVector
         B = reshape(B, length(B), 1)
@@ -250,32 +250,32 @@ function AMF_LSS_VAR(A, B, D, F = nothing; ν = nothing)
         F = reshape(F, length(F), 1)
     end
 
-    # set ν
-    if isnothing(ν)
-        ν = zeros(nm, 1)
-    elseif ndims(ν) == 1
-        ν = reshape(ν, length(ν), 1)
+    # set upsilon
+    if isnothing(upsilon)
+        upsilon = zeros(nm, 1)
+    elseif ndims(upsilon) == 1
+        upsilon = reshape(upsilon, length(upsilon), 1)
     else
-        throw(ArgumentError("ν must be column vector!"))
+        throw(ArgumentError("upsilon must be column vector!"))
     end
 
-    if size(ν, 1) != size(D, 1)
-        error("The size of ν is inconsistent with D!")
+    if size(upsilon, 1) != size(D, 1)
+        error("The size of upsilon is inconsistent with D!")
     end
 
     # construct BIG state space representation
-    lss = construct_ss(A, B, D, F, ν, nx, nk, nm)
+    lss = construct_ss(A, B, D, F, upsilon, nx, nk, nm)
 
-    return (;A, B, D, F, ν, nx, nk, nm, lss)
+    return (;A, B, D, F, upsilon, nx, nk, nm, lss)
 end
 
 AMF_LSS_VAR(A, B, D) =
-    AMF_LSS_VAR(A, B, D, nothing, ν=nothing)
-AMF_LSS_VAR(A, B, D, F, ν) =
-    AMF_LSS_VAR(A, B, D, [F], ν=[ν])
+    AMF_LSS_VAR(A, B, D, nothing, upsilon=nothing)
+AMF_LSS_VAR(A, B, D, F, upsilon) =
+    AMF_LSS_VAR(A, B, D, [F], upsilon=[upsilon])
 
 function construct_ss(A, B, D, F,
-                    ν, nx, nk, nm)
+                    upsilon, nx, nk, nm)
 
     H, g = additive_decomp(A, B, D, F, nx)
 
@@ -295,7 +295,7 @@ function construct_ss(A, B, D, F,
     A1 = hcat(1, 0, nx0r, ny0r, ny0r)          # transition for 1
     A2 = hcat(1, 1, nx0r, ny0r, ny0r)          # transition for t
     A3 = hcat(nx0c, nx0c, A, nyx0m', nyx0m')   # transition for x_{t+1}
-    A4 = hcat(ν, ny0c, D, ny1m, ny0m)          # transition for y_{t+1}
+    A4 = hcat(upsilon, ny0c, D, ny1m, ny0m)          # transition for y_{t+1}
     A5 = hcat(ny0c, ny0c, nyx0m, ny0m, ny1m)   # transition for m_{t+1}
     Abar = vcat(A1, A2, A3, A4, A5)
 
@@ -308,7 +308,7 @@ function construct_ss(A, B, D, F,
     G2 = hcat(ny0c, ny0c, nyx0m, ny1m, ny0m)          # selector for y_{t}
     G3 = hcat(ny0c, ny0c, nyx0m, ny0m, ny1m)          # selector for martingale
     G4 = hcat(ny0c, ny0c, -g, ny0m, ny0m)             # selector for stationary
-    G5 = hcat(ny0c, ν, nyx0m, ny0m, ny0m)             # selector for trend
+    G5 = hcat(ny0c, upsilon, nyx0m, ny0m, ny0m)             # selector for trend
     Gbar = vcat(G1, G2, G3, G4, G5)
 
     # build LSS type
@@ -327,11 +327,11 @@ function additive_decomp(A, B, D, F, nx)
     return H, g
 end
 
-function multiplicative_decomp(A, B, D, F, ν, nx)
+function multiplicative_decomp(A, B, D, F, upsilon, nx)
     H, g = additive_decomp(A, B, D, F, nx)
-    ν_tilde = ν .+ 0.5 * diag(H * H')
+    upsilon_tilde = upsilon .+ 0.5 * diag(H * H')
 
-    return H, g, ν_tilde
+    return H, g, upsilon_tilde
 end
 
 function loglikelihood_path(amf, x, y)
@@ -430,7 +430,7 @@ function plot_multiplicative(amf, T, npaths = 25, show_trend = true)
     # pull out right sizes so we know how to increment
     (;nx, nk, nm) = amf
     # matrices for the multiplicative decomposition
-    H, g, ν_tilde = multiplicative_decomp(A, B, D, F, ν, nx)
+    H, g, upsilon_tilde = multiplicative_decomp(A, B, D, F, upsilon, nx)
 
     # allocate space (nm is the number of functionals - we want npaths for each)
     mpath_mult = zeros(nm * npaths, T)
@@ -508,9 +508,9 @@ end
 function plot_martingales(amf, T, npaths = 25)
 
     # pull out right sizes so we know how to increment
-    (;A, B, D, F, ν, nx, nk, nm) = amf
+    (;A, B, D, F, upsilon, nx, nk, nm) = amf
     # matrices for the multiplicative decomposition
-    H, g, ν_tilde = multiplicative_decomp(A, B, D, F, ν, nx)
+    H, g, upsilon_tilde = multiplicative_decomp(A, B, D, F, upsilon, nx)
 
     # allocate space (nm is the number of functionals - we want npaths for each)
     mpath_mult = zeros(nm * npaths, T)
@@ -647,13 +647,13 @@ Random.seed!(42);
 ```{code-cell} julia
 phi_1, phi_2, phi_3, phi_4 = 0.5, -0.2, 0, 0.5
 sigma = 0.01
-ν = 0.01 # growth rate
+upsilon = 0.01 # growth rate
 
 ## A matrix should be n x n
 A = [phi_1 phi_2 phi_3 phi_4;
-       1   0   0   0;
-       0   1   0   0;
-       0   0   1   0]
+       1     0     0     0;
+       0     1     0     0;
+       0     0     1     0]
 
 # B matrix should be n x k
 B = [sigma, 0, 0, 0]
@@ -661,7 +661,7 @@ B = [sigma, 0, 0, 0]
 D = [1 0 0 0] * A
 F = [1, 0, 0, 0] ⋅ vec(B)
 
-amf = AMF_LSS_VAR(A, B, D, F, ν)
+amf = AMF_LSS_VAR(A, B, D, F, upsilon)
 
 T = 150
 x, y = simulate(amf.lss, T)
