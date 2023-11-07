@@ -8,7 +8,6 @@ kernelspec:
   language: julia
   name: julia-1.10
 ---
-##AT THIS ONE BUT LUCAS 
 (schelling)=
 ```{raw} html
 <div id="qe-notebook-header" style="text-align:right;">

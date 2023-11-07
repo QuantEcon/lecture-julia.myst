@@ -226,7 +226,7 @@ Household(;r = 0.01,
     u = sigma == 1 ? x -> log(x) : x -> (x^(1 - sigma) - 1) / (1 - sigma),
     R = setup_R!(fill(-Inf, n, a_size), a_vals, s_vals, r, w, u),
     # -Inf is the utility of dying (0 consumption)
-    Q = setup_Q!(zeros(n, a_size, n), s_i_vals, z_chain)) = (; r, w, sigma, beta, z_chain, a_min, a_max, a_size, a_vals, z_size, n, s_vals, s_i_vals, u, R, Q)
+    Q = setup_Q!(zeros(n, a_size, n), s_i_vals, z_chain)) = (;r, w, sigma, beta, z_chain, a_min, a_max, a_size, a_vals, z_size, n, s_vals, s_i_vals, u, R, Q)
 
 function setup_Q!(Q, s_i_vals, z_chain)
     for next_s_i in 1:size(Q, 3)
@@ -368,7 +368,7 @@ k_vals = prices_to_capital_stock.(Ref(am), r_vals)
 
 # Plot against demand for capital by firms
 demand = rd.(k_vals)
-labels =  ["demand for capital" "supply of capital"]
+labels = ["demand for capital" "supply of capital"]
 plot(k_vals, [demand r_vals], label = labels, lw = 2, alpha = 0.6)
 plot!(xlabel = "capital", ylabel = "interest rate", xlim = (2, 14), ylim = (0.0, 0.1))
 ```

@@ -413,7 +413,7 @@ function LucasTree(;gamma = 2.0,
         h[i] = beta * mean((y^alpha .* shocks).^(1 - gamma))
     end
 
-    return (gamma = gamma, beta = beta, alpha = alpha, sigma = sigma, phi = phi, grid = grid, shocks = shocks, h = h)
+    return (;gamma, beta, alpha, sigma, phi, grid, shocks, h)
 end
 
 # approximate Lucas operator, which returns the updated function Tf on the grid

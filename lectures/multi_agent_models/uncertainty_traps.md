@@ -236,16 +236,16 @@ using DataFrames, LaTeXStrings, Parameters, Plots
 ```
 
 ```{code-cell} julia
-UncertaintyTrapEcon(;a = 1.5, # risk aversion
-                    gamma_x = 0.5, # production shock precision
-                    rho = 0.99, # correlation coefficient for theta
-                    sigma_theta = 0.5, # standard dev. of theta shock
-                    num_firms = 100, # number of firms
-                    sigma_F = 1.5, # standard dev. of fixed costs
-                    c = -420.0, # external opportunity cost
-                    mu_init = 0.0, # initial value for mu
-                    gamma_init = 4.0, # initial value for gamma
-                    theta_init = 0.0, # initial value for theta
+UncertaintyTrapEcon(;a = 1.5,                       # risk aversion
+                    gamma_x = 0.5,                  # production shock precision
+                    rho = 0.99,                     # correlation coefficient for theta
+                    sigma_theta = 0.5,              # standard dev. of theta shock
+                    num_firms = 100,                # number of firms
+                    sigma_F = 1.5,                  # standard dev. of fixed costs
+                    c = -420.0,                     # external opportunity cost
+                    mu_init = 0.0,                  # initial value for mu
+                    gamma_init = 4.0,               # initial value for gamma
+                    theta_init = 0.0,               # initial value for theta
                     sigma_x = sqrt(a / gamma_x))  = # standard dev. of shock
                     (;a, gamma_x, rho, sigma_theta, num_firms, sigma_F, c, mu_init, gamma_init, theta_init, sigma_x)
 ```
