@@ -221,7 +221,7 @@ function transition_matrices(lm)
     A = [(1 - lambda) * (1 - d) + b      (1 - d) * alpha + b
         (1 - d) * lambda                 (1 - d) * (1 - alpha)]
     A_hat = A ./ (1 + g)
-    return (A, A_hat)
+    return (;A, A_hat)
 end
 
 function rate_steady_state(lm)
@@ -630,7 +630,7 @@ Following {cite}`davis2006flow`, we set $\alpha$, the hazard rate of leaving emp
 We will make use of (with some tweaks) the code we wrote in the {doc}`McCall model lecture <../dynamic_programming/mccall_model>`, embedded below for convenience.
 
 ```{code-cell} julia
-function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,iter = 2_000)
+function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5, iter = 2_000)
     (;alpha, beta, sigma, c, gamma, w, E, u) = mcm
 
     # necessary objects
@@ -671,13 +671,14 @@ u(c, sigma) = c > 0 ? (c^(1 - sigma) - 1) / (1 - sigma) : -10e-6
 
 # model constructor
 McCallModel(;alpha = 0.2, 
-            beta = 0.98,                            # discount rate
+            beta = 0.98,                                   # discount rate
             gamma = 0.7,
-            c = 6.0,                                # unemployment compensation
+            c = 6.0,                                       # unemployment compensation
             sigma = 2.0,
-            u = u,                                  # utility function
-            w = range(10, 20, length = 60),         # w= wage values; E= distribution over wage values
-            E = Expectation(BetaBinomial(59, 600, 400))) = (;alpha, beta, gamma, c, sigma, u, w, E)
+            u = u,                                         # utility function
+            w = range(10, 20, length = 60),                # w= wage values
+            E = Expectation(BetaBinomial(59, 600, 400))) = # E = distribution over wage values
+            (;alpha, beta, gamma, c, sigma, u, w, E)
             
 ```
 

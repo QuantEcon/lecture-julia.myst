@@ -590,14 +590,14 @@ using DataFrames, Plots
 Compute the value function, policy and equilibrium prices
 
 ```{code-cell} julia
-ae = ArellanoEconomy(beta = .953,     # time discount rate
+ae = ArellanoEconomy(beta = .953,      # time discount rate
                      gamma = 2.,       # risk aversion
-                     r = 0.017,    # international interest rate
-                     rho = .945,     # persistence in output
-                     eta = 0.025,    # st dev of output shock
+                     r = 0.017,        # international interest rate
+                     rho = .945,       # persistence in output
+                     eta = 0.025,      # st dev of output shock
                      theta = 0.282,    # prob of regaining access
-                     ny = 21,      # number of points in y grid
-                     nB = 251)     # number of points in B grid
+                     ny = 21,          # number of points in y grid
+                     nB = 251)         # number of points in B grid
 
 # now solve the model on the grid.
 vfi!(ae)

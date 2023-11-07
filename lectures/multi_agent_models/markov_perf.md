@@ -440,13 +440,13 @@ A  = I + zeros(3, 3)
 B1 = [0.0, 1.0, 0.0]
 B2 = [0.0, 0.0, 1.0]
 
-R1 = [      0.0   -a0 / 2.0          0.0;
-    -a0 / 2.0          a1     a1 / 2.0;
-            0.0    a1 / 2.0          0.0]
+R1 = [ 0.0      -a0 / 2.0      0.0;
+    -a0 / 2.0       a1       a1 / 2.0;
+       0.0       a1 / 2.0      0.0    ]
 
-R2 = [      0.0          0.0      -a0 / 2.0;
-            0.0          0.0       a1 / 2.0;
-    -a0 / 2.0     a1 / 2.0             a1]
+R2 = [ 0.0         0.0      -a0 / 2.0;
+       0.0         0.0       a1 / 2.0;
+    -a0 / 2.0    a1 / 2.0      a1     ]
 
 Q1 = Q2 = gamma
 S1 = S2 = W1 = W2 = M1 = M2 = 0.0
@@ -480,8 +480,8 @@ In particular, let's take F2 as computed above, plug it into {eq}`eq_mpe_p1p` an
 We hope that the resulting policy will agree with F1 as computed above
 
 ```{code-cell} julia
-Lamda1 = A - (B2 * F2)
-lq1 = QuantEcon.LQ(Q1, R1, Lamda1, B1, bet=beta)
+Lambda1 = A - (B2 * F2)
+lq1 = QuantEcon.LQ(Q1, R1, Lambda1, B1, bet=beta)
 P1_ih, F1_ih, d = stationary_values(lq1)
 F1_ih
 ```
@@ -493,7 +493,7 @@ tags: [remove-cell]
 @testset begin
   @test P1_ih[2, 2] ≈ 5.441368459897164
   @test d ≈ 0.0
-  @test Lamda1[1, 1] ≈ 1.0 && Lamda1[3, 2] ≈ -0.07584666305807419
+  @test Lambda1[1, 1] ≈ 1.0 && Lambda1[3, 2] ≈ -0.07584666305807419
   @test F1_ih ≈ [-0.6684661291052371 0.29512481789806305 0.07584666292394007]
   @test isapprox(F1, F1_ih, atol=1e-7) # Make sure the test below comes up true.
 end
@@ -860,9 +860,9 @@ we set up the matrices as follows:
 
 ```{code-cell} julia
 # create matrices needed to compute the Nash feedback equilibrium
-A = [delta_1     0   -delta_1 * b[1];
-       0   delta_1   -delta_1 * b[2];
-       0     0             1]
+A = [delta_1     0      -delta_1 * b[1];
+       0      delta_1   -delta_1 * b[2];
+       0        0                1      ]
 
 B1 = delta_1 * [1 -D[1, 1];
             0 -D[2, 1];

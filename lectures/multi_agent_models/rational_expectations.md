@@ -670,9 +670,9 @@ kappa0 = 95.5
 kappa1 = 0.95
 
 # formulate the LQ problem
-A = [1  0  0
+A = [1    0     0
      0 kappa1 kappa0
-     0  0  1]
+     0    0     1   ]
 
 B = [1.0, 0.0, 0.0]
 
