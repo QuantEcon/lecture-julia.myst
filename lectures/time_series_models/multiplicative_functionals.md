@@ -666,8 +666,8 @@ We will plot the densities of $\log {\widetilde M}_t$ for different values of $t
 Here is some code that tackles these tasks
 
 ```{code-cell} julia
-function Mtilde_t_density(amf, t; xmin = 1e-8, xmax = 5.0, npts = 50
-(;A, B, D, F, nu) = amf00)
+function Mtilde_t_density(amf, t; xmin = 1e-8, xmax = 5.0, npts = 50)
+(;A, B, D, F, nu) = amf
 
     # Pull out the multiplicative decomposition
     nutilde, H, g =
