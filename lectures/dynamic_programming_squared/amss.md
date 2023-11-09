@@ -542,7 +542,7 @@ function time1_value(pas::SequentialAllocation, mu::Real)
 end
 
 
-function T(model::Model, c::Union{Real,Vector}, n::Union{Real,Vector})
+function Omega(model::Model, c::Union{Real,Vector}, n::Union{Real,Vector})
     Uc, Un = model.Uc.(c, n), model.Un.(c, n)
     return 1. .+ Un./(model.Theta .* Uc)
 end
@@ -562,12 +562,12 @@ function simulate(pas::SequentialAllocation,
     cHist = zeros(T)
     nHist = zeros(T)
     Bhist = zeros(T)
-    THist = zeros(T)
+    OmegaHist = zeros(T)
     muHist = zeros(T)
     RHist = zeros(T-1)
     # time 0
     mu, cHist[1], nHist[1], _  = time0_allocation(pas, B_, s_0)
-    THist[1] = T(pas.model, cHist[1], nHist[1])[s_0]
+    OmegaHist[1] = Omega(pas.model, cHist[1], nHist[1])[s_0]
     Bhist[1] = B_
     muHist[1] = mu
     # time 1 onward
@@ -575,13 +575,13 @@ function simulate(pas::SequentialAllocation,
         c, n, x, Xi = time1_allocation(pas,mu)
         u_c = Uc(c,n)
         s = sHist[t]
-        THist[t] = T(pas.model, c, n)[s]
+        OmegaHist[t] = Omega(pas.model, c, n)[s]
         Eu_c = dot(Pi[sHist[t-1],:], u_c)
         cHist[t], nHist[t], Bhist[t] = c[s], n[s], x[s] / u_c[s]
         RHist[t-1] = Uc(cHist[t-1], nHist[t-1]) / (beta * Eu_c)
         muHist[t] = mu
     end
-    return cHist, nHist, Bhist, THist, sHist, muHist, RHist
+    return cHist, nHist, Bhist, OmegaHist, sHist, muHist, RHist
 end
 
 
