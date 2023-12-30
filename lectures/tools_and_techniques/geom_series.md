@@ -499,7 +499,7 @@ in a project with gross one period nominal rate of return accumulates
   project
 - thus, $1$ dollar invested at time $0$ pays interest
   $r$ dollars after one period, so we have $r+1 = R$
-  dollars at time$1$
+  dollars at time $1$
 - at time $1$ we reinvest $1+r =R$ dollars and receive interest
   of $r R$ dollars at time $2$ plus the *principal*
   $R$ dollars, so we receive $r R + R = (1+r)R = R^2$
@@ -551,7 +551,7 @@ The **present value** of the lease is
 
 $$
 \begin{aligned} 
-p_0  & = x_0 + x_1/R + x_2/(R^2) + \ddots \\
+p_0  & = x_0 + x_1/R + x_2/(R^2) + \cdots \\
 & = x_0 (1 + G R^{-1} + G^2 R^{-2} + \cdots ) \\
 & = x_0 \frac{1}{1 - G R^{-1}} 
 \end{aligned}
@@ -704,7 +704,7 @@ plot!(plt, T, y_3, label = L"$T$-period Lease First-order Approx. adj.")
 
 Evidently our approximations perform well for small values of $T$.
 
-However, holding $g$ and r fixed, our approximations deteriorate as $T$ increases.
+However, holding $g$ and $r$ fixed, our approximations deteriorate as $T$ increases.
 
 Next we compare the infinite and finite duration lease present values
 over different lease lengths $T$.

@@ -457,7 +457,7 @@ equation through methods such as value-function iteration.
 The condition we will examine here is called [**diagonal dominance**](https://en.wikipedia.org/wiki/Diagonally_dominant_matrix).
 
 $$
-|A_{ii}| \geq \sum_{j\neq i} |A_{ij}| \quad\text{for all } i = 1\ldots N
+|A_{ii}| \geq \sum_{j\neq i} |A_{ij}| \quad\text{for all } i = 1, \ldots N
 $$
 
 That is, in every row, the diagonal element is weakly greater in absolute value than the sum of all of the other elements in the row.  In cases
@@ -466,7 +466,7 @@ where it is strictly greater, we say that the matrix is strictly diagonally domi
 With our example, given that $Q$ is the infinitesimal generator of a Markov chain, we know that each row sums to 0, and hence
 it is weakly diagonally dominant.
 
-However, notice that when $\rho > 0$, and since the diagonal of $Q$ is negative,  $A = rho I - Q$ makes the matrix strictly diagonally dominant.
+However, notice that when $\rho > 0$, and since the diagonal of $Q$ is negative,  $A = \rho I - Q$ makes the matrix strictly diagonally dominant.
 
 ### Jacobi Iteration
 
@@ -1187,7 +1187,7 @@ $$
 If $Q$ is a matrix, we could just take its transpose to find the adoint.  However, with matrix-free methods, we need to implement the
 adjoint-vector product directly.
 
-The logic for the adjoint is that for a given $n = (n_1,\ldots, n_m, \ldots n_M)$, the $Q^T$ product for that row has terms enter when
+The logic for the adjoint is that for a given $n = (n_1,\ldots, n_m, \ldots, n_M)$, the $Q^T$ product for that row has terms enter when
 
 1. $1 < n_m \leq N$, entering into the identical $n$ except with one less customer in the $m$ position
 1. $1 \leq n_m < N$, entering into the identical $n$ except with one more customer in the $m$ position
