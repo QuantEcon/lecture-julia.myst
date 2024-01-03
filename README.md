@@ -26,7 +26,7 @@ It is straightforward to install the Jupyter Book and Julia software necessary f
 7. Start a VS Code terminal with ``<Ctrl+`>`` or through any other method.  Create a conda environment.
 
     ```bash
-    conda create -n lecture-julia.myst python=3.9
+    conda create -n lecture-julia.myst python=3.11
     conda activate lecture-julia.myst
     pip install -r requirements.txt
     ```
@@ -62,12 +62,8 @@ As a helper, you can call a shell script to do it for an entire folder
 bash format_all_directory.sh lectures/dynamic_programming
 ```
 or to also do the unicode substitutions
-```bash
 bash format_all_directory.sh lectures/dynamic_programming true
 ```
-
-Alternatively, the formatter will run automatically when a pull-request is made
-
 
 **(Optional) REPL Integration**
 With [MyST-Markdown](https://github.com/executablebooks/myst-vs-code) and [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) installed, you can ensure that pressing `<Ctrl-Enter>` on lines of code are sent to a Julia REPL.
@@ -84,6 +80,7 @@ If you installed the REPL Integration above, then in a `.md` file,
 3. Then, assuming that you set up the keybindings above, you can send a line of code in the markdown to the REPL with `<Ctrl-Enter>`.
 
 Code can be executed line by line, or you can select a chunk of code and execute it.
+
 ## Example Operations
 ### Building the lectures
 To do a full build of the lectures:
@@ -100,7 +97,7 @@ jb build lectures
 
 This will take a while. But it will populate your cache, so future iteration is faster.
 
-On Windows, if you get the following error:
+It is suggested to use WSL on Windows On Windows, if you get the following error:
 
 ```
 ImportError: DLL load failed while importing win32api: The specified procedure could not be found.
@@ -133,4 +130,3 @@ jb clean lectures --all
 After execution, you can find the generated `.ipynb` and `.jl` files in `_build/jupyter_execute` for each lecture.
 - To see errors, you can open these in JupyterLab, the Jupyter support within VS Code, etc.
 - If using the Julia REPL in VS Code, make sure to do `] activate lectures` prior to testing to ensure the packages are activated.  This is not necessary when opening in Jupyter.
-- Finally, the code is written using interactive scoping, so `include(_build/jupyter_execute/dynamic_programming/mccall_model.jl)` etc. may not work.  However, `shift-enter` within VS Code to the REPL will work, and you can execute these with [SoftGlobalScope.jl](https://github.com/stevengj/SoftGlobalScope.jl) if strictly required.

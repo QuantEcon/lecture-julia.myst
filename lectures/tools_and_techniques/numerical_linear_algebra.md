@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (numerical_linear_algebra)=
@@ -494,7 +494,7 @@ Af = qr(A)
 Q = Af.Q
 R = [Af.R; zeros(N - M, M)] # Stack with zeros
 @show Q * R ≈ A
-x = R \ Q' * b  # simplified QR solution for least squares
+x = R \ Matrix(Q)' * b  # simplified QR solution for least squares
 ```
 
 This stacks the `R` with zeros, but the more specialized algorithm would not multiply directly

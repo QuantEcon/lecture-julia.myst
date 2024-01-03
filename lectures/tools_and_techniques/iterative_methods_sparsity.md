@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (iterative_methods_sparsity)=
@@ -1300,34 +1300,3 @@ end
 p = default_params(; N = 10, M = 5)
 @btime stationary_psi($p);
 ```
-
-As a final demonstration, consider calculating the full evolution of the $psi(t)$ Markov chain.  For the constant
-$Q'$ matrix, the solution to this system of equations is $\psi(t) = \exp(Q') \psi(0)$
-
-Matrix-free Krylov methods using a technique called [exponential integration](https://en.wikipedia.org/wiki/Exponential_integrator) can solve this for high-dimensional problems.
-
-For this, we can set up a `MatrixFreeOperator` for our `Q_T_mul!` function (equivalent to the `LinearMap`, but with some additional requirements for the ODE solver) and use the [LinearExponential](http://docs.juliadiffeq.org/latest/solvers/ode_solve.html#Exponential-Methods-for-Linear-and-Affine-Problems-1) time-stepping method.
-
-```{code-cell} julia
-using OrdinaryDiffEq, DiffEqOperators
-
-function solve_transition_dynamics(p, t)
-    (; N, M) = p
-
-    psi_0 = [1.0; fill(0.0, N^M - 1)]
-    O! = MatrixFreeOperator((dpsi, psi, p, t) -> Q_T_mul!(dpsi, psi, p), (p, 0.0),
-                            size = (N^M, N^M), opnorm = (p) -> 1.25)
-
-    # define the corresponding ODE problem
-    prob = ODEProblem(O!, psi_0, (0.0, t[end]), p)
-    return solve(prob, LinearExponential(krylov = :simple), tstops = t)
-end
-t = 0.0:5.0:100.0
-p = default_params(; N = 10, M = 6)
-sol = solve_transition_dynamics(p, t)
-v = solve_bellman(p)
-plot(t, [dot(sol(tval), v) for tval in t], xlabel = L"t", label = L"E_t(v)")
-```
-
-The above plot (1) calculates the full dynamics of the Markov chain from the $n_m = 1$ for all $m$ initial condition; (2) solves the dynamics of a system of a million ODEs; and (3) uses the calculation of the Bellman equation to find the expected valuation during that transition.  The entire process takes less than 30 seconds.
-

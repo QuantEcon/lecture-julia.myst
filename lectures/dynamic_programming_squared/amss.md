@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (opt_tax_amss)=
@@ -1036,14 +1036,14 @@ function solve_time1_bellman(model::Model{TR}, μgrid::AbstractArray) where {TR 
         xprimes = repeat(x, 1, S)
         xgrid[s_, :] = x
         for sprime = 1:S
-            splc = CubicSpline(c[:, sprime][end:-1:1], x[end:-1:1])
-            spln = CubicSpline(n[:, sprime][end:-1:1], x[end:-1:1])
-            splx = CubicSpline(xprimes[:, sprime][end:-1:1], x[end:-1:1])
+            splc = CubicSpline(c[:, sprime][end:-1:1], x[end:-1:1];extrapolate=true)
+            spln = CubicSpline(n[:, sprime][end:-1:1], x[end:-1:1];extrapolate=true)
+            splx = CubicSpline(xprimes[:, sprime][end:-1:1], x[end:-1:1];extrapolate=true)
             cf[s_, sprime] = y -> splc(y)
             nf[s_, sprime] = y -> spln(y)
             xprimef[s_, sprime] = y -> splx(y)
         end
-        splV = CubicSpline(V[end:-1:1], x[end:-1:1])
+        splV = CubicSpline(V[end:-1:1], x[end:-1:1];extrapolate=true)
         Vf[s_] = y -> splV(y)
     end
 
