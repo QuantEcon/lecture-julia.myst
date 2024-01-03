@@ -221,7 +221,7 @@ end
 
 function linear_steady_state(A, x_0 = ones(size(A, 1)) / size(A, 1))
     sol = fixedpoint(x -> A * x, x_0)
-    converged(sol) || error("Failed to converge in $(result.iterations) iterations")
+    converged(sol) || error("Failed to converge in $(sol.iterations) iter")
     return sol.zero
 end
 ```
@@ -295,10 +295,10 @@ x3 = sum(X_path, dims = 1)'
 
 plt_unemp = plot(title = "Unemployment", 1:T, x1, color = :blue, lw = 2,
                  grid = true, label = "")
-plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, lw = 2, grid = true,
-               label = "")
-plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, lw = 2, grid = true,
-                 label = "")
+plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, lw = 2,
+               grid = true, label = "")
+plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, lw = 2,
+                 grid = true, label = "")
 
 plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 ```
@@ -360,10 +360,10 @@ plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[1, :], color = :blue,
                  lw = 2, alpha = 0.5, grid = true, label = "")
 plot!(plt_unemp, [u_bar], color = :red, linetype = :hline, linestyle = :dash,
       lw = 2, label = "")
-plt_emp = plot(title = "Employment rate", 1:T, x_path[2, :], color = :blue, lw = 2,
-               alpha = 0.5, grid = true, label = "")
-plot!(plt_emp, [e_bar], color = :red, linetype = :hline, linestyle = :dash, lw = 2,
-      label = "")
+plt_emp = plot(title = "Employment rate", 1:T, x_path[2, :], color = :blue,
+               lw = 2, alpha = 0.5, grid = true, label = "")
+plot!(plt_emp, [e_bar], color = :red, linetype = :hline, linestyle = :dash,
+      lw = 2, label = "")
 plot(plt_unemp, plt_emp, layout = (2, 1), size = (700, 500))
 ```
 
@@ -490,10 +490,10 @@ plt_unemp = plot(title = "Percent of time unemployed", 1:T, s_bars[:, 1],
                  color = :blue, lw = 2, alpha = 0.5, label = "", grid = true)
 plot!(plt_unemp, [u_bar], linetype = :hline, linestyle = :dash, color = :red,
       lw = 2, label = "")
-plt_emp = plot(title = "Percent of time employed", 1:T, s_bars[:, 2], color = :blue,
-               lw = 2, alpha = 0.5, label = "", grid = true)
-plot!(plt_emp, [e_bar], linetype = :hline, linestyle = :dash, color = :red, lw = 2,
-      label = "")
+plt_emp = plot(title = "Percent of time employed", 1:T, s_bars[:, 2],
+               color = :blue, lw = 2, alpha = 0.5, label = "", grid = true)
+plot!(plt_emp, [e_bar], linetype = :hline, linestyle = :dash, color = :red,
+      lw = 2, label = "")
 plot(plt_unemp, plt_emp, layout = (2, 1), size = (700, 500))
 ```
 
@@ -616,7 +616,8 @@ Following {cite}`davis2006flow`, we set $\alpha$, the hazard rate of leaving emp
 We will make use of (with some tweaks) the code we wrote in the {doc}`McCall model lecture <../dynamic_programming/mccall_model>`, embedded below for convenience.
 
 ```{code-cell} julia
-function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
+function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
+                            tol = 1e-5,
                             iter = 2_000)
     (; alpha, beta, sigma, c, gamma, w, w_probs, u) = mcm
 
@@ -656,7 +657,8 @@ And the McCall object
 
 ```{code-cell} julia
 function McCallModel(; alpha, beta, gamma, c, sigma, w, w_probs,
-                     u = (c, sigma) -> c > 0 ? (c^(1 - sigma) - 1) / (1 - sigma) :
+                     u = (c, sigma) -> c > 0 ?
+                                       (c^(1 - sigma) - 1) / (1 - sigma) :
                                        -10e-6)
     return (; alpha, beta, gamma, c, sigma, u, w, w_probs)
 end
@@ -674,14 +676,18 @@ function compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
 
     (; V, U, w_bar) = solve_mccall_model(mcm)
     accept_wage = w_pretax .- tau .> w_bar
-    lambda = gamma * dot(w_probs, accept_wage) # sum up proportion accepting the wages
+
+    # sum up proportion accepting the wages
+    lambda = gamma * dot(w_probs, accept_wage)
     return w_bar, lambda, V, U
 end
 
-function compute_steady_state_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
-                                         alpha, w_pretax, b, d)
-    w_bar, lambda, V, U = compute_optimal_quantities(c_pretax, tau; w_probs, sigma,
-                                                     gamma, beta, alpha, w_pretax)
+function compute_steady_state_quantities(c_pretax, tau; w_probs, sigma, gamma,
+                                         beta, alpha, w_pretax, b, d)
+    w_bar, lambda, V, U = compute_optimal_quantities(c_pretax, tau; w_probs,
+                                                     sigma,
+                                                     gamma, beta, alpha,
+                                                     w_pretax)
 
     # compute steady state employment and unemployment rates
     lm = LakeModel(; lambda, alpha, b, d)
@@ -698,9 +704,10 @@ end
 function find_balanced_budget_tax(c_pretax; w_probs, sigma, gamma, beta, alpha,
                                   w_pretax, b, d)
     function steady_state_budget(t)
-        u_rate, e_rate, w = compute_steady_state_quantities(c_pretax, t; w_probs,
-                                                            sigma, gamma, beta,
-                                                            alpha, w_pretax, b, d)
+        u_rate, e_rate, w = compute_steady_state_quantities(c_pretax, t;
+                                                            w_probs, sigma,
+                                                            gamma, beta, alpha,
+                                                            w_pretax, b, d)
         return t - u_rate * c_pretax
     end
 
@@ -720,12 +727,14 @@ function calculate_equilibriums(c_pretax; w_probs, sigma, gamma, beta, alpha,
     welfare_vec = similar(c_pretax)
 
     for (i, c_pre) in enumerate(c_pretax)
-        tau = find_balanced_budget_tax(c_pre; w_probs, sigma, gamma, beta, alpha,
-                                       w_pretax, b, d)
+        tau = find_balanced_budget_tax(c_pre; w_probs, sigma, gamma, beta,
+                                       alpha, w_pretax, b, d)
         u_rate, e_rate, welfare = compute_steady_state_quantities(c_pre, tau;
-                                                                  w_probs, sigma,
+                                                                  w_probs,
+                                                                  sigma,
                                                                   gamma, beta,
-                                                                  alpha, w_pretax,
+                                                                  alpha,
+                                                                  w_pretax,
                                                                   b, d)
         tau_vec[i] = tau
         u_vec[i] = u_rate
@@ -760,13 +769,14 @@ w_pretax = (w_pretax[1:(end - 1)] + w_pretax[2:end]) / 2
 c_pretax = range(5, 140, length = 60)
 tau_vec, u_vec, e_vec, welfare_vec = calculate_equilibriums(c_pretax; w_probs,
                                                             sigma, gamma, beta,
-                                                            alpha, w_pretax, b, d)
+                                                            alpha, w_pretax, b,
+                                                            d)
 
 # plots
 plt_unemp = plot(title = "Unemployment", c_pretax, u_vec, color = :blue,
                  lw = 2, alpha = 0.7, label = "", grid = true)
-plt_tax = plot(title = "Tax", c_pretax, tau_vec, color = :blue, lw = 2, alpha = 0.7,
-               label = "", grid = true)
+plt_tax = plot(title = "Tax", c_pretax, tau_vec, color = :blue, lw = 2,
+               alpha = 0.7, label = "", grid = true)
 plt_emp = plot(title = "Employment", c_pretax, e_vec, color = :blue, lw = 2,
                alpha = 0.7, label = "", grid = true)
 plt_welf = plot(title = "Welfare", c_pretax, welfare_vec, color = :blue, lw = 2,
@@ -976,8 +986,8 @@ plt_unemp = plot(title = "Unemployment", 1:T, x1, color = :blue, lw = 2,
                  alpha = 0.7, grid = true, label = "", bg_inside = :lightgrey)
 plot!(plt_unemp, ylims = extrema(x1) .+ (-1, 1))
 
-plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, lw = 2, alpha = 0.7,
-               grid = true, label = "", bg_inside = :lightgrey)
+plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, lw = 2,
+               alpha = 0.7, grid = true, label = "", bg_inside = :lightgrey)
 plot!(plt_emp, ylims = extrema(x2) .+ (-1, 1))
 
 plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, alpha = 0.7,
