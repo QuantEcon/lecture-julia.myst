@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (wald_friedman)=
@@ -509,7 +509,7 @@ function simulation(problem)
     return return_output ? (alpha, beta, outcomes, costs, trials) : nothing
 end
 
-function Problem(d0 = Beta(1, 1), d1 = Beta(9, 9),
+function Problem(;d0 = Beta(1, 1), d1 = Beta(9, 9),
                  L0 = 2, L1 = 2,
                  c = 0.2, p = 0.5,
                  n = 100, return_output = false)
@@ -524,7 +524,7 @@ tags: [remove-cell]
 @testset "Verifying Output" begin
     Random.seed!(0)
     (;d0, d1, L0, L1, c) = Problem()
-    alpha, beta, outcomes, costs, trials = simulation(Problem(return_output = true))
+    alpha, beta, outcomes, costs, trials = simulation(Problem(;return_output = true))
     #test alpha ≈ 0.57428237
     #test beta ≈ 0.352510338
     choices = first.(choice.((clamp(beta - eps(), 0, 1),
@@ -551,7 +551,7 @@ tags: [remove-cell]
 @testset "Comparative Statics" begin
     Random.seed!(0)
     (;d0, d1, L0, L1, c) = Problem()
-    alpha, beta, outcomes, costs, trials = simulation(Problem(c = 2c, return_output = true))
+    alpha, beta, outcomes, costs, trials = simulation(Problem(;c = 2c, return_output = true))
     #test alpha ≈ 0.53551172 atol = 1e-3
     #test beta ≈ 0.41244737 atol = 1e-3
     #test mean(outcomes) ≈ 0.39 atol = 1e-2
@@ -582,7 +582,7 @@ Before you look, think about what will happen:
 
 ```{code-cell} julia
 Random.seed!(0);
-simulation(Problem(c = 0.4));
+simulation(Problem(;c = 0.4));
 ```
 
 Notice what happens?
