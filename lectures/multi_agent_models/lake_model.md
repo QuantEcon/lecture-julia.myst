@@ -196,9 +196,8 @@ Here's the code:
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics
-using Distributions, Expectations, NLsolve, Plots
-using QuantEcon, Roots, Random
+using LinearAlgebra, Statistics, Distributions
+using NLsolve, Plots, QuantEcon, Roots, Random
 ```
 
 ```{code-cell} julia
@@ -208,7 +207,7 @@ tags: [remove-cell]
 using Test
 ```
 
-A few reusable functions for simulating linear maps and finding fixed points
+Reusable functions for simulating linear maps and finding their fixed points
 
 ```{code-cell} julia
 function simulate_linear(A, x_0, T)
@@ -619,7 +618,7 @@ We will make use of (with some tweaks) the code we wrote in the {doc}`McCall mod
 ```{code-cell} julia
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
                             iter = 2_000)
-    (; alpha, beta, sigma, c, gamma, w, E, u) = mcm
+    (; alpha, beta, sigma, c, gamma, w, w_probs, u) = mcm
 
     # pre-calculate utilities
     u_w = u.(w, sigma)
@@ -629,8 +628,9 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1
     function T(x)
         V = x[1:(end - 1)]
         U = x[end]
-        [u_w + beta * ((1 - alpha) * V .+ alpha * U);
-         u_c + beta * (1 - gamma) * U + beta * gamma * E * max.(U, V)]
+        return [u_w + beta * ((1 - alpha) * V .+ alpha * U);
+                u_c + beta * (1 - gamma) * U +
+                beta * gamma * dot(w_probs, max.(U, V))]
     end
 
     # value function iteration
@@ -655,15 +655,10 @@ end
 And the McCall object
 
 ```{code-cell} julia
-function McCallModel(; alpha = 0.2,
-                     beta = 0.98,
-                     gamma = 0.7,
-                     c = 6.0, # unemployment compensation
-                     sigma = 2.0,
-                     u = (c, sigma) -> c > 0 ? (c^(1 - sigma) - 1) / (1 - sigma) : -10e-6,
-                     w = range(10, 20, length = 60),
-                     E = Expectation(BetaBinomial(59, 600, 400)))
-    return (; alpha, beta, gamma, c, sigma, u, w, E)
+function McCallModel(; alpha, beta, gamma, c, sigma, w, w_probs,
+                     u = (c, sigma) -> c > 0 ? (c^(1 - sigma) - 1) / (1 - sigma) :
+                                       -10e-6)
+    return (; alpha, beta, gamma, c, sigma, u, w, w_probs)
 end
 ```
 
@@ -671,40 +666,41 @@ Now let's compute and plot welfare, employment, unemployment, and tax revenue as
 function of the unemployment compensation rate
 
 ```{code-cell} julia
-function compute_optimal_quantities(c_pretax, tau; E, sigma, gamma, beta, alpha,
-                                    w_pretax)
-    mcm = McCallModel(; alpha, beta, gamma, sigma, E,
+function compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
+                                    alpha, w_pretax)
+    mcm = McCallModel(; alpha, beta, gamma, sigma, w_probs,
                       c = c_pretax - tau, # post-tax compensation
                       w = w_pretax .- tau)
 
     (; V, U, w_bar) = solve_mccall_model(mcm)
-    indicator = wage -> wage > w_bar
-    lambda = gamma * E * indicator.(w_pretax .- tau)
-
+    accept_wage = w_pretax .- tau .> w_bar
+    lambda = gamma * dot(w_probs, accept_wage) # sum up proportion accepting the wages
     return w_bar, lambda, V, U
 end
 
-function compute_steady_state_quantities(c_pretax, tau; E, sigma, gamma, beta,
+function compute_steady_state_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
                                          alpha, w_pretax, b, d)
-    w_bar, lambda, V, U = compute_optimal_quantities(c_pretax, tau; E, sigma, gamma, beta, alpha, w_pretax)
+    w_bar, lambda, V, U = compute_optimal_quantities(c_pretax, tau; w_probs, sigma,
+                                                     gamma, beta, alpha, w_pretax)
 
     # compute steady state employment and unemployment rates
     lm = LakeModel(; lambda, alpha, b, d)
     u_rate, e_rate = lm.x_bar
 
     # compute steady state welfare
-    indicator(wage) = wage > w_bar
-    decisions = indicator.(w_pretax .- tau)
-    w = (E * (V .* decisions)) / (E * decisions)
+    accept_wage = w_pretax .- tau .> w_bar
+    w = (dot(w_probs, V .* accept_wage)) / dot(w_probs, accept_wage)
     welfare = e_rate .* w + u_rate .* U
 
     return u_rate, e_rate, welfare
 end
 
-function find_balanced_budget_tax(c_pretax; E, sigma, gamma, beta, alpha, w_pretax,
-                                  b, d)
+function find_balanced_budget_tax(c_pretax; w_probs, sigma, gamma, beta, alpha,
+                                  w_pretax, b, d)
     function steady_state_budget(t)
-        u_rate, e_rate, w = compute_steady_state_quantities(c_pretax, t; E, sigma, gamma, beta, alpha, w_pretax, b, d)
+        u_rate, e_rate, w = compute_steady_state_quantities(c_pretax, t; w_probs,
+                                                            sigma, gamma, beta,
+                                                            alpha, w_pretax, b, d)
         return t - u_rate * c_pretax
     end
 
@@ -716,15 +712,21 @@ end
 Helper function to calculate for various unemployment insurance levels
 
 ```{code-cell} julia
-function calculate_equilibriums(c_pretax; E, sigma, gamma, beta, alpha, w_pretax, b, d)
+function calculate_equilibriums(c_pretax; w_probs, sigma, gamma, beta, alpha,
+                                w_pretax, b, d)
     tau_vec = similar(c_pretax)
     u_vec = similar(c_pretax)
     e_vec = similar(c_pretax)
     welfare_vec = similar(c_pretax)
 
     for (i, c_pre) in enumerate(c_pretax)
-        tau = find_balanced_budget_tax(c_pre; E, sigma, gamma, beta, alpha, w_pretax, b, d)
-        u_rate, e_rate, welfare = compute_steady_state_quantities(c_pre, tau; E, sigma, gamma, beta, alpha, w_pretax, b, d)
+        tau = find_balanced_budget_tax(c_pre; w_probs, sigma, gamma, beta, alpha,
+                                       w_pretax, b, d)
+        u_rate, e_rate, welfare = compute_steady_state_quantities(c_pre, tau;
+                                                                  w_probs, sigma,
+                                                                  gamma, beta,
+                                                                  alpha, w_pretax,
+                                                                  b, d)
         tau_vec[i] = tau
         u_vec[i] = u_rate
         e_vec[i] = e_rate
@@ -751,13 +753,14 @@ w_pretax = range(1e-3, max_wage, length = wage_grid_size + 1)
 logw_dist = Normal(log(log_wage_mean), 1)
 cdf_logw = cdf.(logw_dist, log.(w_pretax))
 pdf_logw = cdf_logw[2:end] - cdf_logw[1:(end - 1)]
-p_vec = pdf_logw ./ sum(pdf_logw)
+w_probs = pdf_logw ./ sum(pdf_logw) # probabilities
 w_pretax = (w_pretax[1:(end - 1)] + w_pretax[2:end]) / 2
-E = expectation(Categorical(p_vec)) # expectation object
 
 # levels of unemployment insurance we wish to study
 c_pretax = range(5, 140, length = 60)
-tau_vec, u_vec, e_vec, welfare_vec = calculate_equilibriums(c_pretax;E, sigma,gamma, beta,alpha, w_pretax, b, d)
+tau_vec, u_vec, e_vec, welfare_vec = calculate_equilibriums(c_pretax; w_probs,
+                                                            sigma, gamma, beta,
+                                                            alpha, w_pretax, b, d)
 
 # plots
 plt_unemp = plot(title = "Unemployment", c_pretax, u_vec, color = :blue,
