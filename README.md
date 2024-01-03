@@ -62,7 +62,6 @@ As a helper, you can call a shell script to do it for an entire folder
 bash format_all_directory.sh lectures/dynamic_programming
 ```
 or to also do the unicode substitutions
-```bash
 bash format_all_directory.sh lectures/dynamic_programming true
 ```
 
