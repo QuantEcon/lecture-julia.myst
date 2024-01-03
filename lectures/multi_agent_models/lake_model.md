@@ -349,9 +349,9 @@ Let's look at the convergence of the unemployment and employment rate to steady 
 
 ```{code-cell} julia
 lm = LakeModel()
-e_0 = 0.92     # initial employment rate
-u_0 = 1 - e_0  # initial unemployment rate
-T = 50         # simulation length
+e_0 = 0.92 # initial employment rate
+u_0 = 1 - e_0 # initial unemployment rate
+T = 50 # simulation length
 
 u_bar, e_bar = lm.x_bar
 x_0 = [u_0; e_0]
@@ -621,7 +621,7 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1
                             iter = 2_000)
     (; alpha, beta, sigma, c, gamma, w, E, u) = mcm
 
-    # necessary objects
+    # pre-calculate utilities
     u_w = u.(w, sigma)
     u_c = u(c, sigma)
 
@@ -656,12 +656,12 @@ And the McCall object
 
 ```{code-cell} julia
 function McCallModel(; alpha = 0.2,
-                     beta = 0.98, # discount rate
+                     beta = 0.98,
                      gamma = 0.7,
                      c = 6.0, # unemployment compensation
                      sigma = 2.0,
                      u = (c, sigma) -> c > 0 ? (c^(1 - sigma) - 1) / (1 - sigma) : -10e-6,
-                     w = range(10, 20, length = 60), # w= wage values
+                     w = range(10, 20, length = 60),
                      E = Expectation(BetaBinomial(59, 600, 400)))
     return (; alpha, beta, gamma, c, sigma, u, w, E)
 end
@@ -686,8 +686,7 @@ end
 
 function compute_steady_state_quantities(c_pretax, tau; E, sigma, gamma, beta,
                                          alpha, w_pretax, b, d)
-    w_bar, lambda, V, U = compute_optimal_quantities(c_pretax, tau; E, sigma, gamma,
-                                                     beta, alpha, w_pretax)
+    w_bar, lambda, V, U = compute_optimal_quantities(c_pretax, tau; E, sigma, gamma, beta, alpha, w_pretax)
 
     # compute steady state employment and unemployment rates
     lm = LakeModel(; lambda, alpha, b, d)
@@ -705,9 +704,7 @@ end
 function find_balanced_budget_tax(c_pretax; E, sigma, gamma, beta, alpha, w_pretax,
                                   b, d)
     function steady_state_budget(t)
-        u_rate, e_rate, w = compute_steady_state_quantities(c_pretax, t; E, sigma,
-                                                            gamma, beta, alpha,
-                                                            w_pretax, b, d)
+        u_rate, e_rate, w = compute_steady_state_quantities(c_pretax, t; E, sigma, gamma, beta, alpha, w_pretax, b, d)
         return t - u_rate * c_pretax
     end
 
@@ -716,7 +713,28 @@ function find_balanced_budget_tax(c_pretax; E, sigma, gamma, beta, alpha, w_pret
 end
 ```
 
-Using these functions with some parameters.
+Helper function to calculate for various unemployment insurance levels
+
+```{code-cell} julia
+function calculate_equilibriums(c_pretax; E, sigma, gamma, beta, alpha, w_pretax, b, d)
+    tau_vec = similar(c_pretax)
+    u_vec = similar(c_pretax)
+    e_vec = similar(c_pretax)
+    welfare_vec = similar(c_pretax)
+
+    for (i, c_pre) in enumerate(c_pretax)
+        tau = find_balanced_budget_tax(c_pre; E, sigma, gamma, beta, alpha, w_pretax, b, d)
+        u_rate, e_rate, welfare = compute_steady_state_quantities(c_pre, tau; E, sigma, gamma, beta, alpha, w_pretax, b, d)
+        tau_vec[i] = tau
+        u_vec[i] = u_rate
+        e_vec[i] = e_rate
+        welfare_vec[i] = welfare
+    end
+    return tau_vec, u_vec, e_vec, welfare_vec
+end
+```
+
+Parameters for our experiment
 
 ```{code-cell} julia
 alpha_base = 0.013
@@ -730,41 +748,23 @@ sigma = 2.0
 # the default wage distribution: a discretized log normal
 log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
 w_pretax = range(1e-3, max_wage, length = wage_grid_size + 1)
-
 logw_dist = Normal(log(log_wage_mean), 1)
 cdf_logw = cdf.(logw_dist, log.(w_pretax))
 pdf_logw = cdf_logw[2:end] - cdf_logw[1:(end - 1)]
-
 p_vec = pdf_logw ./ sum(pdf_logw)
 w_pretax = (w_pretax[1:(end - 1)] + w_pretax[2:end]) / 2
-
 E = expectation(Categorical(p_vec)) # expectation object
+
 # levels of unemployment insurance we wish to study
-Nc = 60
-c_pretax = range(5, 140, length = Nc)
+c_pretax = range(5, 140, length = 60)
+tau_vec, u_vec, e_vec, welfare_vec = calculate_equilibriums(c_pretax;E, sigma,gamma, beta,alpha, w_pretax, b, d)
 
-tax_vec = zeros(Nc)
-unempl_vec = similar(tax_vec)
-empl_vec = similar(tax_vec)
-welfare_vec = similar(tax_vec)
-
-for i in 1:Nc
-    t = find_balanced_budget_tax(c_pretax[i]; E, sigma, gamma, beta, alpha,
-                                 w_pretax, b, d)
-    u_rate, e_rate, welfare = compute_steady_state_quantities(c_pretax[i], t; E,
-                                                              sigma, gamma, beta,
-                                                              alpha, w_pretax, b, d)
-    tax_vec[i] = t
-    unempl_vec[i] = u_rate
-    empl_vec[i] = e_rate
-    welfare_vec[i] = welfare
-end
-
-plt_unemp = plot(title = "Unemployment", c_pretax, unempl_vec, color = :blue,
+# plots
+plt_unemp = plot(title = "Unemployment", c_pretax, u_vec, color = :blue,
                  lw = 2, alpha = 0.7, label = "", grid = true)
-plt_tax = plot(title = "Tax", c_pretax, tax_vec, color = :blue, lw = 2, alpha = 0.7,
+plt_tax = plot(title = "Tax", c_pretax, tau_vec, color = :blue, lw = 2, alpha = 0.7,
                label = "", grid = true)
-plt_emp = plot(title = "Employment", c_pretax, empl_vec, color = :blue, lw = 2,
+plt_emp = plot(title = "Employment", c_pretax, e_vec, color = :blue, lw = 2,
                alpha = 0.7, label = "", grid = true)
 plt_welf = plot(title = "Welfare", c_pretax, welfare_vec, color = :blue, lw = 2,
                 alpha = 0.7, label = "", grid = true)
@@ -775,6 +775,17 @@ plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2, 2), size = (800, 700))
 Welfare first increases and then decreases as unemployment benefits rise.
 
 The level that maximizes steady state welfare is approximately 62.
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset begin
+    @test tau_vec[2] ≈ 0.859664806251665
+    @test u_vec[10] ≈ 0.22587607040020583
+    @test e_vec[4] ≈ 0.8527180941230578
+end
+```
 
 ## Exercises
 
@@ -864,9 +875,8 @@ plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    #test x1[1] ≈ 8.266626766923284
-    #test x2[2] ≈ 91.43632870031433
-    #test x3[3] ≈ 100.83774723999996
+    @test x3[21] ≈ 108.70045145781441
+    @test x2[12] ≈ 93.05432951806618
 end
 ```
 
@@ -890,8 +900,8 @@ plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    #test x_path[1,3] ≈ 0.09471014989625384
-    #test x_path[2,7] ≈ 0.8936171021324064
+    @test x_path[1,3] ≈ 0.09471014989625384
+    @test x_path[2,7] ≈ 0.8936171021324064
 end
 ```
 
@@ -918,7 +928,7 @@ x0 = lm.x_bar
 tags: [remove-cell]
 ---
 @testset begin
-    #test x0[1] ≈ 0.08266626766923285
+    @test x0[1] ≈ 0.08266626766923285
 end
 ```
 
@@ -978,9 +988,9 @@ plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    #test x1[1] ≈ 8.266626766923284
-    #test x2[2] ≈ 92.11681873319097
-    #test x3[3] ≈ 98.95872483999996
+    @test x1[1] ≈ 8.266626766923284
+    @test x2[2] ≈ 92.11681873319097
+    @test x3[3] ≈ 98.95872483999996
 end
 ```
 
@@ -1004,8 +1014,8 @@ plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    #test x_path[1,3] ≈ 0.06791408368459205
-    #test x_path[2,7] ≈ 0.9429334437639298
+    @test x_path[1,3] ≈ 0.06791408368459205
+    @test x_path[2,7] ≈ 0.9429334437639298
 end
 ```
 
