@@ -58,10 +58,14 @@ julia format_myst.jl lectures/getting_started_julia/getting_started.md
 ```
 
 As a helper, you can call a shell script to do it for an entire folder
+
 ```bash
 bash format_all_directory.sh lectures/dynamic_programming
 ```
+
 or to also do the unicode substitutions
+
+```bash
 bash format_all_directory.sh lectures/dynamic_programming true
 ```
 
