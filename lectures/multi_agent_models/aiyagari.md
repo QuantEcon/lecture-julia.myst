@@ -252,8 +252,8 @@ function Household(; r = 0.01,
             end
         end
     end
-    return (; r, w, sigma, beta, z_chain, a_min, a_max, a_size, a_vals, z_size, n,
-            s_vals, s_i_vals, u, R, Q)
+    return (; r, w, sigma, beta, z_chain, a_min, a_max, a_size, a_vals, z_size,
+            n, s_vals, s_i_vals, u, R, Q)
 end
 ```
 
@@ -268,7 +268,7 @@ Random.seed!(42);
 
 ```{code-cell} julia
 # Create an instance of Household
-am = Household(;a_max = 20.0, r = 0.03, w = 0.956)
+am = Household(; a_max = 20.0, r = 0.03, w = 0.956)
 
 # Use the instance to build a discrete dynamic program
 am_ddp = DiscreteDP(am.R, am.Q, am.beta)
@@ -369,7 +369,8 @@ r_inverse_demand_vals = r_inverse_demand.(k_vals; A, N, alpha, delta)
 
 # Plot against demand for capital by firms
 labels = ["demand for capital" "supply of capital"]
-plot(k_vals, [r_inverse_demand_vals r_vals], label = labels, lw = 2, alpha = 0.6)
+plot(k_vals, [r_inverse_demand_vals r_vals], label = labels, lw = 2,
+     alpha = 0.6)
 plot!(xlabel = "capital", ylabel = "interest rate", xlim = (2, 14),
       ylim = (0.0, 0.1))
 ```

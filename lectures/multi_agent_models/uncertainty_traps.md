@@ -231,12 +231,13 @@ using Test, Random
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using DataFrames, LaTeXStrings, Parameters, Plots
+using DataFrames, LaTeXStrings, Plots
 
 ```
 
 ```{code-cell} julia
-UncertaintyTrapEcon(;a = 1.5,                       # risk aversion
+function # standard dev. of shock
+UncertaintyTrapEcon(; a = 1.5,                       # risk aversion
                     gamma_x = 0.5,                  # production shock precision
                     rho = 0.99,                     # correlation coefficient for theta
                     sigma_theta = 0.5,              # standard dev. of theta shock
@@ -246,8 +247,10 @@ UncertaintyTrapEcon(;a = 1.5,                       # risk aversion
                     mu_init = 0.0,                  # initial value for mu
                     gamma_init = 4.0,               # initial value for gamma
                     theta_init = 0.0,               # initial value for theta
-                    sigma_x = sqrt(a / gamma_x))  = # standard dev. of shock
-                    (;a, gamma_x, rho, sigma_theta, num_firms, sigma_F, c, mu_init, gamma_init, theta_init, sigma_x)
+                    sigma_x = sqrt(a / gamma_x)) # standard dev. of shock
+    (; a, gamma_x, rho, sigma_theta, num_firms, sigma_F, c, mu_init, gamma_init,
+     theta_init, sigma_x)
+end
 ```
 
 In the results below we use this code to simulate time series for the major variables.
@@ -361,7 +364,7 @@ different values of $M$
 
 ```{code-cell} julia
 econ = UncertaintyTrapEcon()
-(;rho, sigma_theta, gamma_x) = econ # simplify names
+(; rho, sigma_theta, gamma_x) = econ # simplify names
 
 # grid for gamma and gamma_{t+1}
 gamma = range(1e-10, 3, length = 200)
@@ -372,7 +375,8 @@ labels = ["0" "1" "2" "3" "4" "5" "6"]
 
 plot(gamma, gamma, lw = 2, label = "45 Degree")
 plot!(gamma, gammap, lw = 2, label = labels)
-plot!(xlabel = L"\gamma", ylabel = L"\gamma^\prime", legend_title = L"M", legend = :bottomright)
+plot!(xlabel = L"\gamma", ylabel = L"\gamma^\prime", legend_title = L"M",
+      legend = :bottomright)
 ```
 
 ```{code-cell} julia
@@ -397,7 +401,7 @@ is, the number of active firms and average output
 ```{code-cell} julia
 function simulate(uc, capT = 2_000)
     # unpack parameters
-    (;a, gamma_x, rho, sigma_theta, num_firms, sigma_F, c, mu_init, gamma_init, theta_init, sigma_x) = uc
+    (; a, gamma_x, rho, sigma_theta, num_firms, sigma_F, c, mu_init, gamma_init, theta_init, sigma_x) = uc
 
     # draw standard normal shocks
     w_shocks = randn(capT)
@@ -420,26 +424,30 @@ function simulate(uc, capT = 2_000)
         else
             X = 0.0
         end
-        return (;X, M)
+        return (; X, M)
     end
 
     # initialize dataframe
     X_init, M_init = gen_aggregates(gamma_init, mu_init, theta_init)
-    df = DataFrame(gamma = gamma_init, mu = mu_init, theta = theta_init, X = X_init, M = M_init)
+    df = DataFrame(gamma = gamma_init, mu = mu_init, theta = theta_init,
+                   X = X_init, M = M_init)
 
     # update dataframe
     for t in 2:capT
         # unpack old variables
-        theta_old, gamma_old, mu_old, X_old, M_old = (df.theta[end], df.gamma[end], df.mu[end], df.X[end], df.M[end])
+        theta_old, gamma_old, mu_old, X_old, M_old = (df.theta[end],
+                                                      df.gamma[end], df.mu[end],
+                                                      df.X[end], df.M[end])
 
         # define new beliefs
-        theta = rho * theta_old + sigma_theta * w_shocks[t-1]
-        mu = (rho * (gamma_old * mu_old + M_old * gamma_x * X_old))/(gamma_old + M_old * gamma_x)
+        theta = rho * theta_old + sigma_theta * w_shocks[t - 1]
+        mu = (rho * (gamma_old * mu_old + M_old * gamma_x * X_old)) /
+             (gamma_old + M_old * gamma_x)
         gamma = 1 / (rho^2 / (gamma_old + M_old * gamma_x) + sigma_theta^2)
 
         # compute new aggregates
         X, M = gen_aggregates(gamma, mu, theta)
-        push!(df, (;gamma, mu, theta, X, M))
+        push!(df, (; gamma, mu, theta, X, M))
     end
 
     # return
@@ -462,7 +470,8 @@ df = simulate(econ)
 
 plot(eachindex(df.mu), df.mu, lw = 2, label = L"\mu")
 plot!(eachindex(df.theta), df.theta, lw = 2, label = L"\theta")
-plot!(xlabel = L"x", ylabel = L"y", legend_title = "Variable", legend = :bottomright)
+plot!(xlabel = L"x", ylabel = L"y", legend_title = "Variable",
+      legend = :bottomright)
 ```
 
 Now let's plot the whole thing together
@@ -472,7 +481,7 @@ len = eachindex(df.theta)
 yvals = [df.theta, df.mu, df.gamma, df.M]
 vars = [L"\theta", L"\mu", L"\gamma", L"M"]
 
-plt = plot(layout = (4,1), size = (600, 600))
+plt = plot(layout = (4, 1), size = (600, 600))
 
 for i in 1:4
     plot!(plt[i], len, yvals[i], xlabel = L"t", ylabel = vars[i], label = "")
