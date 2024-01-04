@@ -54,7 +54,7 @@ The theme of this lecture, and numerical linear algebra in general, comes down t
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics, BenchmarkTools, SparseArrays, Random, Parameters
+using LinearAlgebra, Statistics, BenchmarkTools, SparseArrays, Random
 Random.seed!(42);  # seed random numbers for reproducibility
 ```
 
@@ -491,14 +491,11 @@ To manually use the QR decomposition in solving linear least squares:
 
 ```{code-cell} julia
 Af = qr(A)
-Q = Af.Q
-R = [Af.R; zeros(N - M, M)] # Stack with zeros
-@show Q * R ≈ A
-x = R \ Matrix(Q)' * b  # simplified QR solution for least squares
+@show Af.Q * Af.R ≈ A
+x = Af.R \ (Matrix(Af.Q)' * b)  # simplified QR solution for least squares
 ```
 
-This stacks the `R` with zeros, but the more specialized algorithm would not multiply directly
-in that way.
+See [here](https://discourse.julialang.org/t/qr-decomposition-with-julia-how-to/92508/8) for more, thought keep in mind that more specialized algorithm would be more efficient.
 
 In some cases, if an LU is not available for a particular matrix structure, the QR factorization
 can also be used to solve systems of equations (i.e., not just LLS).  This tends to be about 2 times slower than the LU
