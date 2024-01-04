@@ -1490,30 +1490,29 @@ This utility function is implemented in the type CRRAutility
 
 ```{code-cell} julia
 function crra_utility(;
-    beta = 0.9,
-    sigma = 2.0,
-    gamma = 2.0,
-    Pi = 0.5 * ones(2, 2),
-    G = [0.1, 0.2],
-    Theta = ones(2),
-    transfers = false
-    )
+                      beta = 0.9,
+                      sigma = 2.0,
+                      gamma = 2.0,
+                      Pi = 0.5 * ones(2, 2),
+                      G = [0.1, 0.2],
+                      Theta = ones(2),
+                      transfers = false)
     function U(c, n)
         if sigma == 1.0
             U = log(c)
         else
-            U = (c.^(1.0 .- sigma) .- 1.0) / (1.0 - sigma)
+            U = (c .^ (1.0 .- sigma) .- 1.0) / (1.0 - sigma)
         end
-        return U .- n.^(1 + gamma) / (1 + gamma)
+        return U .- n .^ (1 + gamma) / (1 + gamma)
     end
     # Derivatives of utility function
-    Uc(c,n) =  c.^(-sigma)
-    Ucc(c,n) = -sigma * c.^(-sigma - 1.0)
-    Un(c,n) = -n.^gamma
-    Unn(c,n) = -gamma * n.^(gamma - 1.0)
+    Uc(c, n) = c .^ (-sigma)
+    Ucc(c, n) = -sigma * c .^ (-sigma - 1.0)
+    Un(c, n) = -n .^ gamma
+    Unn(c, n) = -gamma * n .^ (gamma - 1.0)
     n_less_than_one = false
     return Model(beta, Pi, G, Theta, transfers,
-                U, Uc, Ucc, Un, Unn, n_less_than_one)
+                 U, Uc, Ucc, Un, Unn, n_less_than_one)
 end
 ```
 
@@ -1528,15 +1527,15 @@ We can now plot the Ramsey tax  under both realizations of time $t = 3$ governme
 using Random
 Random.seed!(42) # For reproducible results.
 
-M_time_example = crra_utility(G=[0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
-                              Theta=ones(6))            # Theta can in principle be random
+M_time_example = crra_utility(G = [0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
+                              Theta = ones(6))            # Theta can in principle be random
 
 M_time_example.Pi = [0.0 1.0 0.0 0.0 0.0 0.0;
-                    0.0 0.0 1.0 0.0 0.0 0.0;
-                    0.0 0.0 0.0 0.5 0.5 0.0;
-                    0.0 0.0 0.0 0.0 0.0 1.0;
-                    0.0 0.0 0.0 0.0 0.0 1.0;
-                    0.0 0.0 0.0 0.0 0.0 1.0]
+                     0.0 0.0 1.0 0.0 0.0 0.0;
+                     0.0 0.0 0.0 0.5 0.5 0.0;
+                     0.0 0.0 0.0 0.0 0.0 1.0;
+                     0.0 0.0 0.0 0.0 0.0 1.0;
+                     0.0 0.0 0.0 0.0 0.0 1.0]
 
 PP_seq_time = SequentialAllocation(M_time_example)  # Solve sequential problem
 
@@ -1556,38 +1555,23 @@ titles = hcat("Consumption",
               "Output")
 
 sim_seq_l_plot = [sim_seq_l[1:4]..., M_time_example.G[sHist_l],
-                  M_time_example.Theta[sHist_l].*sim_seq_l[2]]
+    M_time_example.Theta[sHist_l] .* sim_seq_l[2]]
 sim_seq_h_plot = [sim_seq_h[1:4]..., M_time_example.G[sHist_h],
-                  M_time_example.Theta[sHist_h].*sim_seq_h[2]]
-
+    M_time_example.Theta[sHist_h] .* sim_seq_h[2]]
 
 #plots = plot(layout=(3,2), size=(800,600))
 plots = [plot(), plot(), plot(), plot(), plot(), plot()]
-for i = 1:6
-    plot!(plots[i], sim_seq_l_plot[i], color=:black, lw=2,
-          marker=:circle, markersize=2, label="")
-    plot!(plots[i], sim_seq_h_plot[i], color=:red, lw=2,
-          marker=:circle, markersize=2, label="")
-    plot!(plots[i], title=titles[i], grid=true)
+for i in 1:6
+    plot!(plots[i], sim_seq_l_plot[i], color = :black, lw = 2,
+          marker = :circle, markersize = 2, label = "")
+    plot!(plots[i], sim_seq_h_plot[i], color = :red, lw = 2,
+          marker = :circle, markersize = 2, label = "")
+    plot!(plots[i], title = titles[i], grid = true)
 end
-plot(plots[1], plots[2], plots[3], plots[4], plots[5], plots[6], layout=(3,2), size=(800,600))
+plot(plots[1], plots[2], plots[3], plots[4], plots[5], plots[6],
+     layout = (3, 2), size = (800, 600))
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-  @test M_time_example.G[sHist_l] ≈ [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
-  #test M_time_example.Theta[sHist_l] .* sim_seq_l[2] ≈ [1.026385289423105, 0.9945696863679917,
-  #                                                  0.9945696863679917, 0.9945696863679917,
-  #                                                  0.9945696863679917, 0.9945696863679917,
-  #                                                  0.9945696863679917]
-  @test M_time_example.G[sHist_h] ≈ [0.1, 0.1, 0.1, 0.2, 0.1, 0.1, 0.1]
-  #test sim_seq_l[end] ≈ [1.0361020796451619, 1.111111111111111, 1.052459380877434,
-  #                       1.111111111111111, 1.111111111111111, 1.111111111111111]
-end
-```
 
 **Tax smoothing**
 
@@ -1628,11 +1612,11 @@ The following plot illustrates how the government lowers the interest rate at
 time 0 by raising consumption
 
 ```{code-cell} julia
-plot(sim_seq_l[end], color=:black, lw=2,
-        marker=:circle, markersize=2, label="")
-plot!(sim_seq_h[end], color=:red, lw=2,
-        marker=:circle, markersize=2, label="")
-plot!(title="Gross Interest Rate", grid=true)
+plot(sim_seq_l[end], color = :black, lw = 2,
+     marker = :circle, markersize = 2, label = "")
+plot!(sim_seq_h[end], color = :red, lw = 2,
+      marker = :circle, markersize = 2, label = "")
+plot!(title = "Gross Interest Rate", grid = true)
 ```
 
 ### Government Saving
@@ -1701,33 +1685,23 @@ Random.seed!(42); # For reproducible results.
 ```
 
 ```{code-cell} julia
-M2 = crra_utility(G=[0.15], Pi=ones(1, 1), Theta=[1.0])
+M2 = crra_utility(G = [0.15], Pi = ones(1, 1), Theta = [1.0])
 
 PP_seq_time0 = SequentialAllocation(M2) # solve sequential problem
 
 B_vec = range(-1.5, 1.0, length = 100)
 taxpolicy = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 2)[4] for B_ in B_vec]...)')
-interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end] for B_ in B_vec]...)')
+interest_rate = Matrix(hcat([simulate(PP_seq_time0, B_, 1, 3)[end]
+                             for B_ in B_vec]...)')
 
 titles = ["Tax Rate" "Gross Interest Rate"]
 labels = [[L"Time , $t = 0$" L"Time , $t \geq 0$"], ""]
-plots = plot(layout=(2,1), size =(700,600))
+plots = plot(layout = (2, 1), size = (700, 600))
 for (i, series) in enumerate((taxpolicy, interest_rate))
-    plot!(plots[i], B_vec, series, linewidth=2, label=labels[i])
-    plot!(plots[i], title=titles[i], grid=true, legend=:topleft)
+    plot!(plots[i], B_vec, series, linewidth = 2, label = labels[i])
+    plot!(plots[i], title = titles[i], grid = true, legend = :topleft)
 end
 plot(plots)
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-  #test B_vec[3] ≈ -1.4494949494949494
-  #test taxpolicy[2, 2] ≈ 0.0020700125847712414
-  #test interest_rate[3, 1] ≈ 1.113064964490116
-end
 ```
 
 The figure indicates  that if the government enters with  positive debt, it sets
@@ -1781,9 +1755,10 @@ B1_vec = hcat([simulate(PP_seq_time0, B_, 1, 2)[3][2] for B_ in B_vec]...)'
 # Compute the optimal policy if the government could reset
 tau1_reset = Matrix(hcat([simulate(PP_seq_time0, B1, 1, 1)[4] for B1 in B1_vec]...)')
 
-plot(B_vec, taxpolicy[:, 2], linewidth=2, label=L"\tau_1")
-plot!(B_vec, tau1_reset, linewidth=2, label=L"\tau_1^R")
-plot!(title="Tax Rate", xlabel="Initial Government Debt", legend=:topleft, grid=true)
+plot(B_vec, taxpolicy[:, 2], linewidth = 2, label = L"\tau_1")
+plot!(B_vec, tau1_reset, linewidth = 2, label = L"\tau_1^R")
+plot!(title = "Tax Rate", xlabel = "Initial Government Debt", legend = :topleft,
+      grid = true)
 ```
 
 The tax rates in the figure are equal  for only two values of initial government debt.
@@ -1819,21 +1794,21 @@ $$
 We will write a new constructor LogUtility to represent this utility function
 
 ```{code-cell} julia
-function log_utility(;beta = 0.9,
-                      psi = 0.69,
-                      Pi = 0.5 * ones(2, 2),
-                      G = [0.1, 0.2],
-                      Theta = ones(2),
-                      transfers = false)
+function log_utility(; beta = 0.9,
+                     psi = 0.69,
+                     Pi = 0.5 * ones(2, 2),
+                     G = [0.1, 0.2],
+                     Theta = ones(2),
+                     transfers = false)
     # Derivatives of utility function
-    U(c,n) = log(c) + psi * log(1 - n)
-    Uc(c,n) = 1 ./ c
-    Ucc(c,n) = -c.^(-2.0)
-    Un(c,n) = -psi ./ (1.0 .- n)
-    Unn(c,n) = -psi ./ (1.0 .- n).^2.0
+    U(c, n) = log(c) + psi * log(1 - n)
+    Uc(c, n) = 1 ./ c
+    Ucc(c, n) = -c .^ (-2.0)
+    Un(c, n) = -psi ./ (1.0 .- n)
+    Unn(c, n) = -psi ./ (1.0 .- n) .^ 2.0
     n_less_than_one = true
     return Model(beta, Pi, G, Theta, transfers,
-                U, Uc, Ucc, Un, Unn, n_less_than_one)
+                 U, Uc, Ucc, Un, Unn, n_less_than_one)
 end
 ```
 
@@ -1853,7 +1828,7 @@ Random.seed!(42); # For reproducible results.
 
 ```{code-cell} julia
 M1 = log_utility()
-mu_grid = range(-0.6,  0.0, length = 200)
+mu_grid = range(-0.6, 0.0, length = 200)
 PP_seq = SequentialAllocation(M1)         # Solve sequential problem
 PP_bel = RecursiveAllocation(M1, mu_grid)  # Solve recursive problem
 
@@ -1865,8 +1840,8 @@ sim_seq = simulate(PP_seq, 0.5, 1, T, sHist)
 sim_bel = simulate(PP_bel, 0.5, 1, T, sHist)
 
 # Plot policies
-sim_seq_plot = [sim_seq[1:4]..., M1.G[sHist], M1.Theta[sHist].*sim_seq[2]]
-sim_bel_plot = [sim_bel[1:4]..., M1.G[sHist], M1.Theta[sHist].*sim_bel[2]]
+sim_seq_plot = [sim_seq[1:4]..., M1.G[sHist], M1.Theta[sHist] .* sim_seq[2]]
+sim_bel_plot = [sim_bel[1:4]..., M1.G[sHist], M1.Theta[sHist] .* sim_bel[2]]
 
 titles = hcat("Consumption",
               "Labor Supply",
@@ -1874,34 +1849,24 @@ titles = hcat("Consumption",
               "Tax Rate",
               "Government Spending",
               "Output")
-labels = [["Sequential", "Recursive"], ["",""], ["",""], ["",""], ["",""], ["",""]]
-plots=plot(layout=(3,2), size=(850,780))
+labels = [
+    ["Sequential", "Recursive"],
+    ["", ""],
+    ["", ""],
+    ["", ""],
+    ["", ""],
+    ["", ""],
+]
+plots = plot(layout = (3, 2), size = (850, 780))
 
-for i = 1:6
-    plot!(plots[i], sim_seq_plot[i], color=:black, lw=2, marker=:circle,
-          markersize=2, label=labels[i][1])
-    plot!(plots[i], sim_bel_plot[i], color=:blue, lw=2, marker=:xcross,
-          markersize=2, label=labels[i][2])
-    plot!(plots[i], title=titles[i], grid=true, legend=:topright)
+for i in 1:6
+    plot!(plots[i], sim_seq_plot[i], color = :black, lw = 2, marker = :circle,
+          markersize = 2, label = labels[i][1])
+    plot!(plots[i], sim_bel_plot[i], color = :blue, lw = 2, marker = :xcross,
+          markersize = 2, label = labels[i][2])
+    plot!(plots[i], title = titles[i], grid = true, legend = :topright)
 end
 plot(plots)
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-  #test sim_seq_plot[1][14] ≈ 0.38396935397869975
-  #test sim_seq_plot[2][14] ≈ 0.5839693539786998
-  #test sim_seq_plot[3][14] ≈ 0.3951985593686047
-  #test sim_seq_plot[4][14] ≈ 0.3631746680706347
-  #test sim_seq_plot[5][14] ≈ 0.2
-  #test sim_seq_plot[6][14] ≈ 0.5839693539786998
-  #test sim_bel_plot[3][5] ≈ 0.5230509296608254 atol = 1e-3
-  #test sim_bel_plot[5][7] ≈ 0.1
-  #test sim_bel_plot[2][3] ≈ 0.5402933557593538 atol = 1e-3
-end
 ```
 
 As should be expected, the recursive and sequential solutions produce almost

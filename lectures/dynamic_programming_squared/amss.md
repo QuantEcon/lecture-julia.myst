@@ -44,11 +44,6 @@ In this lecture, we
 We begin with an introduction to the model.
 
 
-
-```{code-cell} julia
-using LinearAlgebra, Statistics
-```
-
 ## Competitive Equilibrium with Distorting Taxes
 
 Many but not all features of the economy are identical to those of {doc}`the Lucas-Stokey economy <../dynamic_programming_squared/opt_tax_recur>`.
@@ -390,13 +385,15 @@ on optimal taxation with state-contingent debt  sequential allocation implementa
 ---
 tags: [remove-cell]
 ---
-using Test, Random
+using Test
 ```
 
 ```{code-cell} julia
 ---
 tags: [output_scroll]
 ---
+
+using LinearAlgebra, Statistics, Random
 using QuantEcon, NLsolve, NLopt
 
 import QuantEcon.simulate
@@ -417,7 +414,6 @@ mutable struct Model{TF <: AbstractFloat,
     n_less_than_one::Bool
 end
 
-
 struct SequentialAllocation{TP <: Model,
                             TI <: Integer,
                             TV <: AbstractVector}
@@ -429,7 +425,6 @@ struct SequentialAllocation{TP <: Model,
     XiFB::TV
     zFB::TV
 end
-
 
 function SequentialAllocation(model::Model)
     beta, Pi, G, Theta = model.beta, model.Pi, model.G, model.Theta
@@ -962,6 +957,7 @@ The recursive formulation is implemented as follows
 
 ```{code-cell} julia
 
+# Interpolations.jl doesn't support irregular grids for splines
 using DataInterpolations
 
 mutable struct BellmanEquation_Recursive{TP <: Model, TI <: Integer, TR <: Real}
@@ -976,11 +972,10 @@ mutable struct BellmanEquation_Recursive{TP <: Model, TI <: Integer, TR <: Real}
     zFB::Vector{Vector{TR}}
 end
 
-
 struct RecursiveAllocation{TP <: Model,
-                        TI <: Integer,
-                        TVg <: AbstractVector,
-                        TT <: Tuple}
+                           TI <: Integer,
+                           TVg <: AbstractVector,
+                           TT <: Tuple}
     model::TP
     mc::MarkovChain
     S::TI
@@ -990,7 +985,6 @@ struct RecursiveAllocation{TP <: Model,
     Vf::Array
     policies::TT
 end
-
 
 function RecursiveAllocation(model::Model, mugrid::AbstractArray)
     G = model.G
@@ -1002,8 +996,8 @@ function RecursiveAllocation(model::Model, mugrid::AbstractArray)
     return RecursiveAllocation(model, mc, S, T, mugrid, xgrid, Vf, policies)
 end
 
-
-function solve_time1_bellman(model::Model{TR}, mugrid::AbstractArray) where {TR <: Real}
+function solve_time1_bellman(model::Model{TR},
+                             mugrid::AbstractArray) where {TR <: Real}
     Pi = model.Pi
     S = size(model.Pi, 1)
 
@@ -1012,8 +1006,8 @@ function solve_time1_bellman(model::Model{TR}, mugrid::AbstractArray) where {TR 
     PP = SequentialAllocation(model)
 
     function incomplete_allocation(PP::SequentialAllocation,
-                                mu_::AbstractFloat,
-                                s_::Integer)
+                                   mu_::AbstractFloat,
+                                   s_::Integer)
         c, n, x, V = time1_value(PP, mu_)
         return c, n, dot(Pi[s_, :], x), dot(Pi[s_, :], V)
     end
@@ -1030,20 +1024,24 @@ function solve_time1_bellman(model::Model{TR}, mugrid::AbstractArray) where {TR 
         x = Array{TR}(undef, length(mugrid))
         V = Array{TR}(undef, length(mugrid))
         for (i_mu, mu) in enumerate(mugrid)
-            c[i_mu, :], n[i_mu, :], x[i_mu], V[i_mu] =
-                incomplete_allocation(PP, mu, s_)
+            c[i_mu, :], n[i_mu, :], x[i_mu], V[i_mu] = incomplete_allocation(PP,
+                                                                             mu,
+                                                                             s_)
         end
         xprimes = repeat(x, 1, S)
         xgrid[s_, :] = x
-        for sprime = 1:S
-            splc = CubicSpline(c[:, sprime][end:-1:1], x[end:-1:1];extrapolate=true)
-            spln = CubicSpline(n[:, sprime][end:-1:1], x[end:-1:1];extrapolate=true)
-            splx = CubicSpline(xprimes[:, sprime][end:-1:1], x[end:-1:1];extrapolate=true)
+        for sprime in 1:S
+            splc = CubicSpline(c[:, sprime][end:-1:1], x[end:-1:1];
+                               extrapolate = true)
+            spln = CubicSpline(n[:, sprime][end:-1:1], x[end:-1:1];
+                               extrapolate = true)
+            splx = CubicSpline(xprimes[:, sprime][end:-1:1], x[end:-1:1];
+                               extrapolate = true)
             cf[s_, sprime] = y -> splc(y)
             nf[s_, sprime] = y -> spln(y)
             xprimef[s_, sprime] = y -> splx(y)
         end
-        splV = CubicSpline(V[end:-1:1], x[end:-1:1];extrapolate=true)
+        splV = CubicSpline(V[end:-1:1], x[end:-1:1]; extrapolate = true)
         Vf[s_] = y -> splV(y)
     end
 
@@ -1061,9 +1059,11 @@ function solve_time1_bellman(model::Model{TR}, mugrid::AbstractArray) where {TR 
         Vfnew, policies = fit_policy_function(T, PF, xgrid)
 
         diff = 0.0
-        for s=1:S
-            diff = max(diff, maximum(abs, (Vf[s].(xgrid) - Vfnew[s].(xgrid)) ./
-                                            Vf[s].(xgrid)))
+        for s in 1:S
+            diff = max(diff,
+                       maximum(abs,
+                               (Vf[s].(xgrid) - Vfnew[s].(xgrid)) ./
+                               Vf[s].(xgrid)))
         end
 
         println("diff = $diff")
@@ -1073,10 +1073,11 @@ function solve_time1_bellman(model::Model{TR}, mugrid::AbstractArray) where {TR 
     return Vf, policies, T, xgrid
 end
 
-
 function fit_policy_function(T::BellmanEquation_Recursive,
                              PF::Function,
-                             xgrid::AbstractVector{TF}) where {TF <: AbstractFloat}
+                             xgrid::AbstractVector{TF}) where {
+                                                               TF <:
+                                                               AbstractFloat}
     S = T.S
     # preallocation
     PFvec = Array{TF}(undef, 4S + 1, length(xgrid))
@@ -1090,9 +1091,9 @@ function fit_policy_function(T::BellmanEquation_Recursive,
         for (i_x, x) in enumerate(xgrid)
             PFvec[:, i_x] = PF(i_x, x, s_)
         end
-        splV = CubicSpline(PFvec[1,:], xgrid)
+        splV = CubicSpline(PFvec[1, :], xgrid)
         Vf[s_] = y -> splV(y)
-        for sprime=1:S
+        for sprime in 1:S
             splc = CubicSpline(PFvec[1 + sprime, :], xgrid)
             spln = CubicSpline(PFvec[1 + S + sprime, :], xgrid)
             splxprime = CubicSpline(PFvec[1 + 2S + sprime, :], xgrid)
@@ -1107,17 +1108,15 @@ function fit_policy_function(T::BellmanEquation_Recursive,
     return Vf, policies
 end
 
-
 function Tau(pab::RecursiveAllocation,
-            c::AbstractArray,
-        n::AbstractArray)
+             c::AbstractArray,
+             n::AbstractArray)
     model = pab.model
     Uc, Un = model.Uc(c, n), model.Un(c, n)
-    return 1. .+ Un ./ (model.Theta .* Uc)
+    return 1.0 .+ Un ./ (model.Theta .* Uc)
 end
 
 Tau(pab::RecursiveAllocation, c::Real, n::Real) = Tau(pab, [c], [n])
-
 
 function time0_allocation(pab::RecursiveAllocation, B_::Real, s0::Integer)
     T, Vf = pab.T, pab.Vf
@@ -1128,10 +1127,12 @@ function time0_allocation(pab::RecursiveAllocation, B_::Real, s0::Integer)
     return c0, n0, xprime0, T0
 end
 
-
 function simulate(pab::RecursiveAllocation,
                   B_::TF, s_0::Integer, T::Integer,
-                  sHist::Vector=simulate(pab.mc, T, init=s_0)) where {TF <: AbstractFloat}
+                  sHist::Vector = simulate(pab.mc, T, init = s_0)) where {
+                                                                          TF <:
+                                                                          AbstractFloat
+                                                                          }
     model, mc, Vf, S = pab.model, pab.mc, pab.Vf, pab.S
     Pi, Uc = model.Pi, model.Uc
     cf, nf, xprimef, TTf = pab.policies
@@ -1145,22 +1146,24 @@ function simulate(pab::RecursiveAllocation,
     muHist = Array{TF}(undef, T)
 
     #time0
-    cHist[1], nHist[1], xHist[1], THist[1]  = time0_allocation(pab, B_, s_0)
+    cHist[1], nHist[1], xHist[1], THist[1] = time0_allocation(pab, B_, s_0)
     TauHist[1] = Tau(pab, cHist[1], nHist[1])[s_0]
     Bhist[1] = B_
     muHist[1] = Vf[s_0](xHist[1])
 
     #time 1 onward
     for t in 2:T
-        s_, x, s = sHist[t-1], xHist[t-1], sHist[t]
+        s_, x, s = sHist[t - 1], xHist[t - 1], sHist[t]
         c = Array{TF}(undef, S)
         n = Array{TF}(undef, S)
         xprime = Array{TF}(undef, S)
         TT = Array{TF}(undef, S)
-        for sprime=1:S
-            c[sprime], n[sprime], xprime[sprime], TT[sprime] =
-                cf[s_, sprime](x), nf[s_, sprime](x),
-                xprimef[s_, sprime](x), TTf[s_, sprime](x)
+        for sprime in 1:S
+            c[sprime], n[sprime], xprime[sprime], TT[sprime] = cf[s_, sprime](x),
+                                                               nf[s_, sprime](x),
+                                                               xprimef[s_,
+                                                                       sprime](x),
+                                                               TTf[s_, sprime](x)
         end
 
         Tau_val = Tau(pab, c, n)[s]
@@ -1169,17 +1172,15 @@ function simulate(pab::RecursiveAllocation,
 
         muHist[t] = Vf[s](xprime[s])
 
-        cHist[t], nHist[t], Bhist[t], TauHist[t] = c[s], n[s], x/Eu_c, Tau_val
+        cHist[t], nHist[t], Bhist[t], TauHist[t] = c[s], n[s], x / Eu_c, Tau_val
         xHist[t], THist[t] = xprime[s], TT[s]
     end
     return cHist, nHist, Bhist, xHist, TauHist, THist, muHist, sHist
 end
 
-
 function BellmanEquation_Recursive(model::Model{TF},
                                    xgrid::AbstractVector{TF},
                                    policies0::Array) where {TF <: AbstractFloat}
-
     S = size(model.Pi, 1) # number of states
     xbar = [minimum(xgrid), maximum(xgrid)]
     time_0 = false
@@ -1190,17 +1191,17 @@ function BellmanEquation_Recursive(model::Model{TF},
             cs = Array{TF}(undef, S)
             ns = Array{TF}(undef, S)
             xprimes = Array{TF}(undef, S)
-            for j = 1:S
-                cs[j], ns[j], xprimes[j] = cf[s, j](x), nf[s, j](x), xprimef[s, j](x)
+            for j in 1:S
+                cs[j], ns[j], xprimes[j] = cf[s, j](x), nf[s, j](x),
+                                           xprimef[s, j](x)
             end
             z0[i_x, s] = vcat(cs, ns, xprimes, zeros(S))
         end
     end
     cFB, nFB, IFB, xFB, zFB = find_first_best(model, S, 2)
-    return BellmanEquation_Recursive(model, S, xbar, time_0, z0, cFB, nFB, xFB, zFB)
+    return BellmanEquation_Recursive(model, S, xbar, time_0, z0, cFB, nFB, xFB,
+                                     zFB)
 end
-
-
 
 function get_policies_time1(T::BellmanEquation_Recursive,
                             i_x::Integer,
@@ -1210,28 +1211,28 @@ function get_policies_time1(T::BellmanEquation_Recursive,
                             xbar::AbstractVector)
     model, S = T.model, T.S
     beta, Theta, G, Pi = model.beta, model.Theta, model.G, model.Pi
-    U,Uc,Un = model.U, model.Uc, model.Un
+    U, Uc, Un = model.U, model.Uc, model.Un
 
-    S_possible = sum(Pi[s_, :].>0)
-    sprimei_possible = findall(Pi[s_, :].>0)
+    S_possible = sum(Pi[s_, :] .> 0)
+    sprimei_possible = findall(Pi[s_, :] .> 0)
 
     function objf(z, grad)
-        c, xprime = z[1:S_possible], z[S_possible+1:2S_possible]
+        c, xprime = z[1:S_possible], z[(S_possible + 1):(2S_possible)]
         n = (c .+ G[sprimei_possible]) ./ Theta[sprimei_possible]
         Vprime = [Vf[sprimei_possible[si]](xprime[si]) for si in 1:S_possible]
         return -dot(Pi[s_, sprimei_possible], U.(c, n) + beta * Vprime)
     end
 
     function cons(out, z, grad)
-        c, xprime, TT =
-            z[1:S_possible], z[S_possible + 1:2S_possible], z[2S_possible + 1:3S_possible]
+        c, xprime, TT = z[1:S_possible], z[(S_possible + 1):(2S_possible)],
+                        z[(2S_possible + 1):(3S_possible)]
         n = (c .+ G[sprimei_possible]) ./ Theta[sprimei_possible]
         u_c = Uc.(c, n)
         Eu_c = dot(Pi[s_, sprimei_possible], u_c)
-        out .= x * u_c/Eu_c - u_c .* (c - TT) - Un(c, n) .* n - beta * xprime
+        out .= x * u_c / Eu_c - u_c .* (c - TT) - Un(c, n) .* n - beta * xprime
     end
     function cons_no_trans(out, z, grad)
-        c, xprime = z[1:S_possible], z[S_possible + 1:2S_possible]
+        c, xprime = z[1:S_possible], z[(S_possible + 1):(2S_possible)]
         n = (c .+ G[sprimei_possible]) ./ Theta[sprimei_possible]
         u_c = Uc.(c, n)
         Eu_c = dot(Pi[s_, sprimei_possible], u_c)
@@ -1239,14 +1240,15 @@ function get_policies_time1(T::BellmanEquation_Recursive,
     end
 
     if model.transfers == true
-        lb = vcat(zeros(S_possible), ones(S_possible)*xbar[1], zeros(S_possible))
+        lb = vcat(zeros(S_possible), ones(S_possible) * xbar[1],
+                  zeros(S_possible))
         if model.n_less_than_one == true
             ub = vcat(ones(S_possible) - G[sprimei_possible],
-                    ones(S_possible) * xbar[2], ones(S_possible))
+                      ones(S_possible) * xbar[2], ones(S_possible))
         else
             ub = vcat(100 * ones(S_possible),
-                    ones(S_possible) * xbar[2],
-                    100 * ones(S_possible))
+                      ones(S_possible) * xbar[2],
+                      100 * ones(S_possible))
         end
         init = vcat(T.z0[i_x, s_][sprimei_possible],
                     T.z0[i_x, s_][2S .+ sprimei_possible],
@@ -1254,9 +1256,10 @@ function get_policies_time1(T::BellmanEquation_Recursive,
         opt = Opt(:LN_COBYLA, 3S_possible)
         equality_constraint!(opt, cons, zeros(S_possible))
     else
-        lb = vcat(zeros(S_possible), ones(S_possible)*xbar[1])
+        lb = vcat(zeros(S_possible), ones(S_possible) * xbar[1])
         if model.n_less_than_one == true
-            ub = vcat(ones(S_possible)-G[sprimei_possible], ones(S_possible)*xbar[2])
+            ub = vcat(ones(S_possible) - G[sprimei_possible],
+                      ones(S_possible) * xbar[2])
         else
             ub = vcat(ones(S_possible), ones(S_possible) * xbar[2])
         end
@@ -1279,22 +1282,22 @@ function get_policies_time1(T::BellmanEquation_Recursive,
     (minf, minx, ret) = NLopt.optimize(opt, init)
 
     if ret != :SUCCESS && ret != :ROUNDOFF_LIMITED && ret != :MAXEVAL_REACHED &&
-        ret != :FTOL_REACHED && ret != :MAXTIME_REACHED
+       ret != :FTOL_REACHED && ret != :MAXTIME_REACHED
         error("optimization failed: ret = $ret")
     end
 
     T.z0[i_x, s_][sprimei_possible] = minx[1:S_possible]
-    T.z0[i_x, s_][S .+ sprimei_possible] = minx[1:S_possible] .+ G[sprimei_possible]
-    T.z0[i_x, s_][2S .+ sprimei_possible] = minx[S_possible .+ 1:2S_possible]
+    T.z0[i_x, s_][S .+ sprimei_possible] = minx[1:S_possible] .+
+                                           G[sprimei_possible]
+    T.z0[i_x, s_][2S .+ sprimei_possible] = minx[(S_possible .+ 1):(2S_possible)]
     if model.transfers == true
-        T.z0[i_x, s_][3S .+ sprimei_possible] = minx[2S_possible + 1:3S_possible]
+        T.z0[i_x, s_][3S .+ sprimei_possible] = minx[(2S_possible + 1):(3S_possible)]
     else
         T.z0[i_x, s_][3S .+ sprimei_possible] = zeros(S)
     end
 
     return vcat(-minf, T.z0[i_x, s_])
 end
-
 
 function get_policies_time0(T::BellmanEquation_Recursive,
                             B_::Real,
@@ -1311,7 +1314,7 @@ function get_policies_time0(T::BellmanEquation_Recursive,
         return -(U(c, n) + beta * Vf[s0](xprime))
     end
 
-    function cons(z,grad)
+    function cons(z, grad)
         c, xprime, TT = z[1], z[2], z[3]
         n = (c + G[s0]) / Theta[s0]
         return -Uc(c, n) * (c - B_ - TT) - Un(c, n) * n - beta * xprime
@@ -1326,13 +1329,13 @@ function get_policies_time0(T::BellmanEquation_Recursive,
             ub = [100.0, xbar[2], 100.0]
         end
         init = vcat(T.zFB[s0][1], T.zFB[s0][3], T.zFB[s0][4])
-        init = [0.95124922, -1.15926816,  0.0]
+        init = [0.95124922, -1.15926816, 0.0]
         opt = Opt(:LN_COBYLA, 3)
         equality_constraint!(opt, cons)
     else
         lb = [0.0, xbar[1]]
         if model.n_less_than_one == true
-            ub = [1-G[s0], xbar[2]]
+            ub = [1 - G[s0], xbar[2]]
         else
             ub = [100, xbar[2]]
         end
@@ -1344,7 +1347,6 @@ function get_policies_time0(T::BellmanEquation_Recursive,
     init[init .> ub] = ub[init .> ub]
     init[init .< lb] = lb[init .< lb]
 
-
     min_objective!(opt, objf)
     lower_bounds!(opt, lb)
     upper_bounds!(opt, ub)
@@ -1354,14 +1356,14 @@ function get_policies_time0(T::BellmanEquation_Recursive,
     (minf, minx, ret) = NLopt.optimize(opt, init)
 
     if ret != :SUCCESS && ret != :ROUNDOFF_LIMITED && ret != :MAXEVAL_REACHED &&
-        ret != :FTOL_REACHED
-            error("optimization failed: ret = $ret")
+       ret != :FTOL_REACHED
+        error("optimization failed: ret = $ret")
     end
 
     if model.transfers == true
-        return -minf, minx[1], minx[1]+G[s0], minx[2], minx[3]
+        return -minf, minx[1], minx[1] + G[s0], minx[2], minx[3]
     else
-        return -minf, minx[1], minx[1]+G[s0], minx[2], 0
+        return -minf, minx[1], minx[1] + G[s0], minx[2], 0
     end
 end
 ```
@@ -1429,31 +1431,30 @@ We assume the same utility parameters as in the {doc}`Lucas-Stokey economy <../d
 This utility function is implemented in the following constructor
 
 ```{code-cell} julia
-function crra_utility(;
-    beta = 0.9,
-    sigma = 2.0,
-    gamma = 2.0,
-    Pi = 0.5 * ones(2, 2),
-    G = [0.1, 0.2],
-    Theta = ones(Float64, 2),
-    transfers = false
-    )
+function CRRAModel(;
+                   beta = 0.9,
+                   sigma = 2.0,
+                   gamma = 2.0,
+                   Pi = 0.5 * ones(2, 2),
+                   G = [0.1, 0.2],
+                   Theta = ones(Float64, 2),
+                   transfers = false)
     function U(c, n)
         if sigma == 1.0
             U = log(c)
         else
-            U = (c.^(1.0 - sigma) - 1.0) / (1.0 - sigma)
+            U = (c .^ (1.0 - sigma) - 1.0) / (1.0 - sigma)
         end
-        return U - n.^(1 + gamma) / (1 + gamma)
+        return U - n .^ (1 + gamma) / (1 + gamma)
     end
     # Derivatives of utility function
-    Uc(c,n) =  c.^(-sigma)
-    Ucc(c,n) = -sigma * c.^(-sigma - 1.0)
-    Un(c,n) = -n.^gamma
-    Unn(c,n) = -gamma * n.^(gamma - 1.0)
+    Uc(c, n) = c .^ (-sigma)
+    Ucc(c, n) = -sigma * c .^ (-sigma - 1.0)
+    Un(c, n) = -n .^ gamma
+    Unn(c, n) = -gamma * n .^ (gamma - 1.0)
     n_less_than_one = false
     return Model(beta, Pi, G, Theta, transfers,
-                U, Uc, Ucc, Un, Unn, n_less_than_one)
+                 U, Uc, Ucc, Un, Unn, n_less_than_one)
 end
 ```
 
@@ -1468,10 +1469,10 @@ Paths with circles are histories in which there is peace, while those with
 triangle denote war.
 
 ```{code-cell} julia
-time_example = crra_utility(G=[0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
-                            Theta = ones(6)) # Theta can in principle be random
+time_example = CRRAModel(;G = [0.1, 0.1, 0.1, 0.2, 0.1, 0.1],
+                         Theta = ones(6)) # Theta can in principle be random
 
-time_example.Pi = [ 0.0 1.0 0.0 0.0 0.0 0.0;
+time_example.Pi = [0.0 1.0 0.0 0.0 0.0 0.0;
                    0.0 0.0 1.0 0.0 0.0 0.0;
                    0.0 0.0 0.0 0.5 0.5 0.0;
                    0.0 0.0 0.0 0.0 0.0 1.0;
@@ -1489,10 +1490,10 @@ time_bellman = RecursiveAllocation(time_example, mugrid)
 sHist_h = [1, 2, 3, 4, 6, 6, 6]
 sHist_l = [1, 2, 3, 5, 6, 6, 6]
 
-sim_seq_h = simulate(time_sequential, 1., 1, 7, sHist_h)
-sim_bel_h = simulate(time_bellman, 1., 1, 7, sHist_h)
-sim_seq_l = simulate(time_sequential, 1., 1, 7, sHist_l)
-sim_bel_l = simulate(time_bellman, 1., 1, 7, sHist_l)
+sim_seq_h = simulate(time_sequential, 1.0, 1, 7, sHist_h)
+sim_bel_h = simulate(time_bellman, 1.0, 1, 7, sHist_h)
+sim_seq_l = simulate(time_sequential, 1.0, 1, 7, sHist_l)
+sim_bel_l = simulate(time_bellman, 1.0, 1, 7, sHist_l)
 
 using Plots
 
@@ -1510,14 +1511,18 @@ sim_seq_h_plot = hcat(sim_seq_h[1:3]..., sim_seq_h[4],
 sim_bel_h_plot = hcat(sim_bel_h[1:3]..., sim_bel_h[5],
                       time_example.G[sHist_h],
                       time_example.Theta[sHist_h] .* sim_bel_h[2])
-p = plot(size = (920, 750), layout =(3, 2),
- xaxis=(0:6), grid=false, titlefont=Plots.font("sans-serif", 10))
+p = plot(size = (920, 750), layout = (3, 2),
+         xaxis = (0:6), grid = false, titlefont = Plots.font("sans-serif", 10))
 plot!(p, title = titles)
-for i=1:6
-    plot!(p[i], 0:6, sim_seq_l_plot[:, i], marker=:circle, color=:black, lab="")
-    plot!(p[i], 0:6, sim_bel_l_plot[:, i], marker=:circle, color=:red, lab="")
-    plot!(p[i], 0:6, sim_seq_h_plot[:, i], marker=:utriangle, color=:black, lab="")
-    plot!(p[i], 0:6, sim_bel_h_plot[:, i], marker=:utriangle, color=:red, lab="")
+for i in 1:6
+    plot!(p[i], 0:6, sim_seq_l_plot[:, i], marker = :circle, color = :black,
+          lab = "")
+    plot!(p[i], 0:6, sim_bel_l_plot[:, i], marker = :circle, color = :red,
+          lab = "")
+    plot!(p[i], 0:6, sim_seq_h_plot[:, i], marker = :utriangle, color = :black,
+          lab = "")
+    plot!(p[i], 0:6, sim_bel_h_plot[:, i], marker = :utriangle, color = :red,
+          lab = "")
 end
 p
 ```
@@ -1574,21 +1579,21 @@ $$
 In accordance, we will re-define our utility function
 
 ```{code-cell} julia
-function log_utility(;beta = 0.9,
-                    psi = 0.69,
-                    Pi = 0.5 * ones(2, 2),
-                    G = [0.1, 0.2],
-                    Theta = ones(2),
-                    transfers = false)
+function log_utility(; beta = 0.9,
+                     psi = 0.69,
+                     Pi = 0.5 * ones(2, 2),
+                     G = [0.1, 0.2],
+                     Theta = ones(2),
+                     transfers = false)
     # Derivatives of utility function
-    U(c,n) = log(c) + psi * log(1 - n)
-    Uc(c,n) = 1 ./ c
-    Ucc(c,n) = -c.^(-2.0)
-    Un(c,n) = -psi ./ (1.0 .- n)
-    Unn(c,n) = -psi ./ (1.0 .- n).^2.0
+    U(c, n) = log(c) + psi * log(1 - n)
+    Uc(c, n) = 1 ./ c
+    Ucc(c, n) = -c .^ (-2.0)
+    Un(c, n) = -psi ./ (1.0 .- n)
+    Unn(c, n) = -psi ./ (1.0 .- n) .^ 2.0
     n_less_than_one = true
     return Model(beta, Pi, G, Theta, transfers,
-                U, Uc, Ucc, Un, Unn, n_less_than_one)
+                 U, Uc, Ucc, Un, Unn, n_less_than_one)
 end
 ```
 
@@ -1614,22 +1619,26 @@ sim_seq = simulate(log_sequential, 0.5, 1, T, sHist)
 sim_bel = simulate(log_bellman, 0.5, 1, T, sHist)
 
 sim_seq_plot = hcat(sim_seq[1:3]...,
-            sim_seq[4], log_example.G[sHist], log_example.Theta[sHist] .* sim_seq[2])
+                    sim_seq[4], log_example.G[sHist],
+                    log_example.Theta[sHist] .* sim_seq[2])
 sim_bel_plot = hcat(sim_bel[1:3]...,
-            sim_bel[5], log_example.G[sHist], log_example.Theta[sHist] .* sim_bel[2])
+                    sim_bel[5], log_example.G[sHist],
+                    log_example.Theta[sHist] .* sim_bel[2])
 
 #plot policies
 p = plot(size = (920, 750), layout = grid(3, 2),
-         xaxis=(0:T), grid=false, titlefont=Plots.font("sans-serif", 10))
+         xaxis = (0:T), grid = false, titlefont = Plots.font("sans-serif", 10))
 labels = fill(("", ""), 6)
 labels[3] = ("Complete Market", "Incomplete Market")
 plot!(p, title = titles)
-for i = vcat(collect(1:4), 6)
-    plot!(p[i], sim_seq_plot[:, i], marker=:circle, color=:black, lab=labels[i][1])
-    plot!(p[i], sim_bel_plot[:, i], marker=:utriangle, color=:blue, lab=labels[i][2],
-          legend=:bottomright)
+for i in vcat(collect(1:4), 6)
+    plot!(p[i], sim_seq_plot[:, i], marker = :circle, color = :black,
+          lab = labels[i][1])
+    plot!(p[i], sim_bel_plot[:, i], marker = :utriangle, color = :blue,
+          lab = labels[i][2],
+          legend = :bottomright)
 end
-plot!(p[5], sim_seq_plot[:, 5], marker=:circle, color=:blue, lab="")
+plot!(p[5], sim_seq_plot[:, 5], marker = :circle, color = :blue, lab = "")
 ```
 
 When the government experiences a prolonged period of peace, it is able to reduce
@@ -1653,36 +1662,27 @@ Random.seed!(42)
 ```{code-cell} julia
 T_long = 200
 sim_seq_long = simulate(log_sequential, 0.5, 1, T_long)
-sHist_long = sim_seq_long[end-2]
+sHist_long = sim_seq_long[end - 2]
 sim_bel_long = simulate(log_bellman, 0.5, 1, T_long, sHist_long)
 sim_seq_long_plot = hcat(sim_seq_long[1:4]...,
-             log_example.G[sHist_long], log_example.Theta[sHist_long] .* sim_seq_long[2])
+                         log_example.G[sHist_long],
+                         log_example.Theta[sHist_long] .* sim_seq_long[2])
 sim_bel_long_plot = hcat(sim_bel_long[1:3]..., sim_bel_long[5],
-             log_example.G[sHist_long], log_example.Theta[sHist_long] .* sim_bel_long[2])
+                         log_example.G[sHist_long],
+                         log_example.Theta[sHist_long] .* sim_bel_long[2])
 
-p = plot(size = (920, 750), layout = (3, 2), xaxis=(0:50:T_long), grid=false,
-         titlefont=Plots.font("sans-serif", 10))
+p = plot(size = (920, 750), layout = (3, 2), xaxis = (0:50:T_long),
+         grid = false,
+         titlefont = Plots.font("sans-serif", 10))
 plot!(p, title = titles)
-for i = 1:6
-    plot!(p[i], sim_seq_long_plot[:, i], color=:black, linestyle=:solid, lab=labels[i][1])
-    plot!(p[i], sim_bel_long_plot[:, i], color=:blue, linestyle=:dot, lab=labels[i][2],
-          legend=:bottomright)
+for i in 1:6
+    plot!(p[i], sim_seq_long_plot[:, i], color = :black, linestyle = :solid,
+          lab = labels[i][1])
+    plot!(p[i], sim_bel_long_plot[:, i], color = :blue, linestyle = :dot,
+          lab = labels[i][2],
+          legend = :bottomright)
 end
 p
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-  # @test sim_seq_long_plot[50, 3] ≈ 0.3951985593686047
-  # @test sim_bel_long_plot[50, 3] ≈ 0.05684753244006188 atol = 1e-2
-  # @test sim_seq_long_plot[100, 4] ≈ 0.340233842670859
-  # @test sim_bel_long_plot[100, 4] ≈ 0.2093423366870517 atol = 1e-3
-  # @test sim_seq_long_plot[200, 2] ≈ 0.5839693539786998
-  # @test sim_bel_long_plot[200, 2] ≈ 0.6324036099550768 atol = 1e-3
-end
 ```
 
 [^fn_a]: In an allocation that solves the Ramsey problem and that levies distorting

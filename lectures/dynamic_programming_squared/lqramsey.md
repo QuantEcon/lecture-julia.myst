@@ -582,8 +582,7 @@ using Test
 ```
 
 ```{code-cell} julia
-using LaTeXStrings, QuantEcon, Plots, LinearAlgebra, Parameters
-
+using LaTeXStrings, QuantEcon, Plots, LinearAlgebra
 
 abstract type AbstractStochProcess end
 
@@ -591,7 +590,6 @@ struct ContStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
     A::Matrix{TF}
     C::Matrix{TF}
 end
-
 
 struct DiscreteStochProcess{TF <: AbstractFloat} <: AbstractStochProcess
     P::Matrix{TF}
@@ -621,9 +619,8 @@ function compute_exog_sequences(econ, x)
     return g, d, b, s, Sm
 end
 
-
 function compute_allocation(econ, Sm, nu, x, b)
-    (;Sg, Sd, Sb, Ss) = econ
+    (; Sg, Sd, Sb, Ss) = econ
     # solve for the allocation given nu and x
     Sc = 0.5 .* (Sb + Sd - Sg - nu .* Sm)
     Sl = 0.5 .* (Sb - Sd + Sg - nu .* Sm)
@@ -636,12 +633,11 @@ function compute_allocation(econ, Sm, nu, x, b)
     return Sc, Sl, c, l, p, tau, rvn
 end
 
-
 function compute_nu(a0, b0)
     disc = a0^2 - 4a0 * b0
 
     if disc >= 0
-        nu = 0.5 *(a0 - sqrt(disc)) / a0
+        nu = 0.5 * (a0 - sqrt(disc)) / a0
     else
         println("There is no Ramsey equilibrium for these parameters.")
         error("Government spending (economy.g) too low")
@@ -656,21 +652,21 @@ function compute_nu(a0, b0)
     return nu
 end
 
-
-function compute_Pi(B, R, rvn, g,xi)
-    pi = B[2:end] - R[1:end-1] .* B[1:end-1] - rvn[1:end-1] + g[1:end-1]
-    Pi = cumsum(pi .*xi)
+function compute_Pi(B, R, rvn, g, xi)
+    pi = B[2:end] - R[1:(end - 1)] .* B[1:(end - 1)] - rvn[1:(end - 1)] +
+         g[1:(end - 1)]
+    Pi = cumsum(pi .* xi)
     return pi, Pi
 end
 
-
-function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T)
+function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess},
+                       T)
     # simplify notation
-    (;beta, Sg, Sd, Sb, Ss) = econ
-    (;P, x_vals) = econ.proc
+    (; beta, Sg, Sd, Sb, Ss) = econ
+    (; P, x_vals) = econ.proc
 
     mc = MarkovChain(P)
-    state = simulate(mc, T, init=1)
+    state = simulate(mc, T, init = 1)
     x = x_vals[:, state]
 
     # Compute exogenous sequence
@@ -678,9 +674,9 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T
 
     # compute a0, b0
     ns = size(P, 1)
-    F = I - beta.*P
-    a0 = (F \ ((Sm * x_vals)'.^2))[1] ./ 2
-    H = ((Sb - Sd + Sg) * x_vals) .* ((Sg - Ss)*x_vals)
+    F = I - beta .* P
+    a0 = (F \ ((Sm * x_vals)' .^ 2))[1] ./ 2
+    H = ((Sb - Sd + Sg) * x_vals) .* ((Sg - Ss) * x_vals)
     b0 = (F \ H')[1] ./ 2
 
     # compute lagrange multiplier
@@ -690,24 +686,24 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:DiscreteStochProcess}, T
     Sc, Sl, c, l, p, tau, rvn = compute_allocation(econ, Sm, nu, x, b)
 
     # compute remaining variables
-    H = ((Sb - Sc) * x_vals) .* ((Sl - Sg) * x_vals) - (Sl * x_vals).^2
+    H = ((Sb - Sc) * x_vals) .* ((Sl - Sg) * x_vals) - (Sl * x_vals) .^ 2
     temp = dropdims(F * H', dims = 2)
     B = temp[state] ./ p
     H = dropdims(P[state, :] * ((Sb - Sc) * x_vals)', dims = 2)
     R = p ./ (beta .* H)
-    temp = dropdims(P[state, :] *((Sb - Sc) * x_vals)', dims = 2)
-   xi = p[2:end] ./ temp[1:end-1]
+    temp = dropdims(P[state, :] * ((Sb - Sc) * x_vals)', dims = 2)
+    xi = p[2:end] ./ temp[1:(end - 1)]
 
     # compute pi
     pi, Pi = compute_Pi(B, R, rvn, g, xi)
 
-    return (;g, d, b, s, c, l, p, tau, rvn, B, R, pi, Pi, xi)
+    return (; g, d, b, s, c, l, p, tau, rvn, B, R, pi, Pi, xi)
 end
 
 function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
     # simplify notation
-    (;beta, Sg, Sd, Sb, Ss) = econ
-    (;A, C) = econ.proc
+    (; beta, Sg, Sd, Sb, Ss) = econ
+    (; A, C) = econ.proc
 
     # generate an initial condition x0 satisfying x0 = A x0
     nx, nx = size(A)
@@ -722,7 +718,7 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
     w = randn(nw, T)
     x[:, 1] = x0
     for t in 2:T
-        x[:, t] = A *x[:, t-1] + C * w[:, t]
+        x[:, t] = A * x[:, t - 1] + C * w[:, t]
     end
 
     # compute exogenous sequence
@@ -731,7 +727,7 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
     # compute a0 and b0
     H = Sm'Sm
     a0 = 0.5 * var_quadratic_sum(A, C, H, beta, x0)
-    H = (Sb - Sd + Sg)'*(Sg + Ss)
+    H = (Sb - Sd + Sg)' * (Sg + Ss)
     b0 = 0.5 * var_quadratic_sum(A, C, H, beta, x0)
 
     # compute lagrange multiplier
@@ -741,51 +737,50 @@ function compute_paths(econ::Economy{<:AbstractFloat, <:ContStochProcess}, T)
     Sc, Sl, c, l, p, tau, rvn = compute_allocation(econ, Sm, nu, x, b)
 
     # compute remaining variables
-    H = Sl'Sl - (Sb - Sc)' *(Sl - Sg)
+    H = Sl'Sl - (Sb - Sc)' * (Sl - Sg)
     L = zeros(T)
     for t in eachindex(L)
         L[t] = var_quadratic_sum(A, C, H, beta, x[:, t])
     end
     B = L ./ p
-    Rinv = dropdims(beta .* (Sb- Sc)*A*x, dims = 1) ./ p
+    Rinv = dropdims(beta .* (Sb - Sc) * A * x, dims = 1) ./ p
     R = 1 ./ Rinv
     AF1 = (Sb - Sc) * x[:, 2:end]
-    AF2 = (Sb - Sc) * A * x[:, 1:end-1]
-   xi =  AF1 ./ AF2
-   xi = dropdims(xi, dims = 1)
+    AF2 = (Sb - Sc) * A * x[:, 1:(end - 1)]
+    xi = AF1 ./ AF2
+    xi = dropdims(xi, dims = 1)
 
     # compute pi
     pi, Pi = compute_Pi(B, R, rvn, g, xi)
 
-    return(;g, d, b, s, c, l, p, tau, rvn, B, R, pi, Pi, xi)
+    return (; g, d, b, s, c, l, p, tau, rvn, B, R, pi, Pi, xi)
 end
 
 function gen_fig_1(path)
     T = length(path.c)
 
-    plt_1 = plot(path.rvn, lw=2, label = L"\tau_t l_t")
-    plot!(plt_1, path.g, lw=2, label= L"g_t")
-    plot!(plt_1, path.c, lw=2, label= L"c_t")
-    plot!(xlabel="Time", grid=true)
+    plt_1 = plot(path.rvn, lw = 2, label = L"\tau_t l_t")
+    plot!(plt_1, path.g, lw = 2, label = L"g_t")
+    plot!(plt_1, path.c, lw = 2, label = L"c_t")
+    plot!(xlabel = "Time", grid = true)
 
-    plt_2 = plot(path.rvn, lw=2, label=L"\tau_t l_t")
-    plot!(plt_2, path.g, lw=2, label=L"g_t")
-    plot!(plt_2, path.B[2:end], lw=2, label=L"B_{t+1}")
-    plot!(xlabel="Time", grid=true)
+    plt_2 = plot(path.rvn, lw = 2, label = L"\tau_t l_t")
+    plot!(plt_2, path.g, lw = 2, label = L"g_t")
+    plot!(plt_2, path.B[2:end], lw = 2, label = L"B_{t+1}")
+    plot!(xlabel = "Time", grid = true)
 
-    plt_3 = plot(path.R, lw=2, label=L"R_{t-1}")
-    plot!(plt_3, xlabel="Time", grid=true)
+    plt_3 = plot(path.R, lw = 2, label = L"R_{t-1}")
+    plot!(plt_3, xlabel = "Time", grid = true)
 
-    plt_4 = plot(path.rvn, lw=2, label=L"\tau_t l_t")
-    plot!(plt_4, path.g, lw=2, label=L"g_t")
-    plot!(plt_4, path.pi, lw=2, label=L"\pi_t")
-    plot!(plt_4, xlabel="Time", grid=true)
+    plt_4 = plot(path.rvn, lw = 2, label = L"\tau_t l_t")
+    plot!(plt_4, path.g, lw = 2, label = L"g_t")
+    plot!(plt_4, path.pi, lw = 2, label = L"\pi_t")
+    plot!(plt_4, xlabel = "Time", grid = true)
 
-    plot(plt_1, plt_2, plt_3, plt_4, layout=(2,2), size = (800,600))
+    plot(plt_1, plt_2, plt_3, plt_4, layout = (2, 2), size = (800, 600))
 end
 
 function gen_fig_2(path)
-
     T = length(path.c)
 
     paths = [path.xi, path.Pi]
@@ -795,9 +790,10 @@ function gen_fig_2(path)
     plots = [plt_1, plt_2]
 
     for (plot, path, label) in zip(plots, paths, labels)
-        plot!(plot, 2:T, path, lw=2, label=label, xlabel="Time", grid=true)
+        plot!(plot, 2:T, path, lw = 2, label = label, xlabel = "Time",
+              grid = true)
     end
-    plot(plt_1, plt_2, layout=(2,1), size = (600,500))
+    plot(plt_1, plt_2, layout = (2, 1), size = (600, 500))
 end
 ```
 
@@ -842,9 +838,9 @@ Random.seed!(42)
 
 # parameters
 beta = 1 / 1.05
-rho, mg = .7, .35
+rho, mg = 0.7, 0.35
 A = [rho mg*(1 - rho); 0.0 1.0]
-C = [sqrt(1 - rho^2) * mg / 10 0.0; 0 0]
+C = [sqrt(1 - rho^2) * mg/10 0.0; 0 0]
 Sg = [1.0 0.0]
 Sd = [0.0 0.0]
 Sb = [0 2.135]
@@ -858,22 +854,6 @@ path = compute_paths(econ, T)
 gen_fig_1(path)
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-  #test path.p[3] ≈ 1.5395294981420302 atol = 1e-3 # randomness check.
-  #test path.g[31] ≈ 0.366487070014081 atol = 1e-3 # stuff we plot
-  #test path.c[36] ≈ 0.6291101011610297 atol = 1e-3
-  #test path.B[9] ≈ 0.07442403655989423 atol = 1e-3
-  #test path.rvn[27] ≈ 0.35013269833342753 atol = 1e-3
-  #test path.pi[31] ≈ -0.05846215388377568 atol = 1e-3
-  #test path.R[43] ≈ 1.0437715852385672 atol = 1e-3
-  #test path.xi[43] ≈  1.001895202392805 atol = 1e-3
-  #test path.Pi[43] ≈ -0.4185282208457552 atol = 1e-3 # plot tests
-end
-```
 
 The legends on the figures indicate the variables being tracked.
 
@@ -907,16 +887,16 @@ Random.seed!(42);
 # Parameters
 beta = 1 / 1.05
 P = [0.8 0.2 0.0
-    0.0 0.5 0.5
-    0.0 0.0 1.0]
+     0.0 0.5 0.5
+     0.0 0.0 1.0]
 
 # Possible states of the world
 # Each column is a state of the world. The rows are [g d b s 1]
 x_vals = [0.5 0.5 0.25;
-        0.0 0.0  0.0;
-        2.2 2.2  2.2;
-        0.0 0.0  0.0;
-        1.0 1.0  1.0]
+          0.0 0.0 0.0;
+          2.2 2.2 2.2;
+          0.0 0.0 0.0;
+          1.0 1.0 1.0]
 Sg = [1.0 0.0 0.0 0.0 0.0]
 Sd = [0.0 1.0 0.0 0.0 0.0]
 Sb = [0.0 0.0 1.0 0.0 0.0]
@@ -930,23 +910,6 @@ path = compute_paths(econ, T)
 gen_fig_1(path)
 ```
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-  #test path.p[3] ≈ 1.5852129146694405
-  #test path.B[13] ≈ 0.003279632025474284
-  #@test path.g ≈ [0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.25,
-  #                 0.25, 0.25]
-  #test path.rvn[7] ≈ 0.3188722725349599
-  #test path.c[2] ≈ 0.6147870853305598
-  #@test path.R ≈ [1.05, 1.05, 1.05, 1.05, 1.05, 1.0930974212983846, 1.05, 1.05, 1.05, 1.05,
-  #                1.05, 1.05, 1.05, 1.05, 1.05]
-  #@test path.xi ≈ [1.0, 1.0, 1.0, 1.0, 1.0, 0.9589548368586813, 1.0, 1.0, 1.0, 1.0, 1.0,
-  #                1.0, 1.0, 1.0]
-end
-```
 
 The call `gen_fig_2(path)` generates
 
@@ -1009,21 +972,6 @@ econ = Economy(beta, Sg, Sd, Sb, Ss, proc)
 
 T = 50
 path = compute_paths(econ, T)
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-  #test path.p[3]  ≈ 1.524261187305079
-  #test path.B[13]   ≈ -0.053219518947408805
-  #test path.g[7] ≈ 0.36908804521710115
-  #test path.rvn[7]  ≈ 0.35146870025913474
-  #test path.c[2]  ≈ 0.6259521929536346
-  #test path.R[5][1]  ≈ 1.0501742289013196
-  #test path.xi[10] ≈ 1.002202281639002
-end
 ```
 
 ```{code-cell} julia
