@@ -290,13 +290,12 @@ The next figure shows a simulation, where
 ---
 tags: [remove-cell]
 ---
-using Test, Random
+using Test
 ```
 
 ```{code-cell} julia
-using LinearAlgebra, Statistics
-using LaTeXStrings, Parameters, Plots, QuantEcon
-
+using LinearAlgebra, Statistics, Random
+using LaTeXStrings, Plots, QuantEcon, NLsolve
 ```
 
 ```{code-cell} julia
@@ -317,7 +316,7 @@ d_series = cumprod(g_series) # assumes d_0 = 1
 
 series = [x_series g_series d_series log.(d_series)]
 labels = [L"X_t" L"g_t" L"d_t" L"ln(d_t)"]
-plot(series, layout = 4, labels = labels)
+plot(series; layout = 4, labels)
 ```
 
 ```{code-cell} julia
@@ -325,10 +324,9 @@ plot(series, layout = 4, labels = labels)
 tags: [remove-cell]
 ---
 @testset begin
-    #test x_series[4] ≈ -0.669642857142857
-    #test g_series[5] ≈ 0.4094841251523643
-    #test d_series[9] ≈ 0.03514706070454392 # Near the inflection point.
-    #test log.(d_series)[72] ≈ -29.24107142857142 # Something near the end.
+    @test x_series[4] ≈ -0.22321428571428567
+    @test g_series[6] ≈ 1.2500884211272658
+    @test d_series[9] ≈ 0.5118913634883987
 end
 ```
 
@@ -409,15 +407,10 @@ mc = tauchen(n, 0.96, 0.02)
 
 K = mc.p .* exp.(mc.state_values)'
 
-v = (I - beta * K) \  (beta * K * ones(n, 1))
+v = (I - beta * K) \ (beta * K * ones(n, 1))
 
-plot(mc.state_values,
-     v,
-     lw = 2,
-     ylabel = "price-dividend ratio",
-     xlabel = "state",
-     alpha = 0.7,
-     label = L"v")
+plot(mc.state_values, v; lw = 2, ylabel = "price-dividend ratio",
+     xlabel = L"X_t", alpha = 0.7, label = L"v")
 ```
 
 ```{code-cell} julia
@@ -425,10 +418,8 @@ plot(mc.state_values,
 tags: [remove-cell]
 ---
 @testset begin
-    #test v[2] ≈ 3.4594684257743284 atol = 1e-7
-    #test v[1] ≈ 3.2560393349907755
-    #test v[5] ≈ 4.526909446326235
-    #test K[8] ≈ 8.887213530262768e-10
+    @test v[2] ≈ 3.4594684257743284
+    @test K[8] ≈ 8.887213530262768e-10
 end
 ```
 
@@ -536,41 +527,27 @@ Assuming that the spectral radius of $J$ is strictly less than $\beta^{-1}$, thi
 v = (I - \beta J)^{-1} \beta  J {\mathbb 1}
 ```
 
-We will define a function tree_price to solve for $v$ given parameters stored in
+We will define a function `tree_price` to solve for $v$ given parameters stored in
 the AssetPriceModel objects
 
+The default Markov Chain for will be a discretized AR(1) with $\rho = 0.9, \sigma = 0.02$ and discretized into 25 states using Tauchen's method.
+
 ```{code-cell} julia
-# A default Markov chain for the state process
-rho = 0.9
-sigma = 0.02
-n = 25
-default_mc = tauchen(n, rho, sigma)
-
-AssetPriceModel(;beta = 0.96, gamma = 2.0, mc = default_mc, n = size(mc.p)[1], g = exp) = (;beta, gamma, mc, n, g)
-
-# test stability of matrix Q
-function test_stability(ap, Q)
-    sr = maximum(abs, eigvals(Q))
-    if sr >= 1 / ap.beta
-        msg = "Spectral radius condition failed with radius = $sr"
-        throw(ArgumentError(msg))
-    end
+function AssetPriceModel(; beta = 0.96, gamma = 2.0, g = exp,
+                         mc = tauchen(25, 0.9, 0.02))
+    return (; beta, gamma, mc, g)
 end
 
 # price/dividend ratio of the Lucas tree
-function tree_price(ap; gamma = ap.gamma)
-    # Simplify names, set up matrices
-    (;beta, mc) = ap
-    P, y = mc.p, mc.state_values
-    y = reshape(y, 1, ap.n)
-    J = P .* ap.g.(y).^(1 - gamma)
-
-    # Make sure that a unique solution exists
-    test_stability(ap, J)
+function tree_price(ap)
+    (; beta, mc, gamma, g) = ap
+    P = mc.p
+    y = mc.state_values'
+    J = P .* g.(y) .^ (1 - gamma)
+    @assert maximum(abs, eigvals(J)) < 1 / beta # check stability
 
     # Compute v
     v = (I - beta * J) \ sum(beta * J, dims = 2)
-
     return v
 end
 ```
@@ -580,24 +557,15 @@ with a positively correlated Markov process and $g(x) = \exp(x)$
 
 ```{code-cell} julia
 gammas = [1.2, 1.4, 1.6, 1.8, 2.0]
-ap = AssetPriceModel()
-states = ap.mc.state_values
-
-lines = []
-labels = []
+p = plot(title = "Price-dividend ratio as a function of the state",
+         xlabel = L"X_t", ylabel = "price-dividend ratio")
 
 for gamma in gammas
-    v = tree_price(ap, gamma = gamma)
-    label = L"\gamma = %$gamma"
-    push!(labels, label)
-    push!(lines, v)
+    ap = AssetPriceModel(; gamma)
+    states = ap.mc.state_values
+    plot!(states, tree_price(ap); label = L"\gamma = %$gamma")
 end
-
-plot(lines,
-     labels = reshape(labels, 1, length(labels)),
-     title = "Price-dividend ratio as a function of the state",
-     ylabel = "price-dividend ratio",
-     xlabel = "state")
+p
 ```
 
 ```{code-cell} julia
@@ -605,10 +573,10 @@ plot(lines,
 tags: [remove-cell]
 ---
 @testset begin
-    #test lines[2][4] ≈ 33.36574362637905
-    #test lines[3][12] ≈ 28.52560591264372
-    #test lines[4][18] ≈ 22.38597470787489
-    #test lines[5][24] ≈ 15.81947255704859
+    ap = AssetPriceModel()
+    v = tree_price(ap)
+    @test v[5] ≈ 74.54830456854316
+    @test v[16] ≈ 29.426651157109678
 end
 ```
 
@@ -683,23 +651,22 @@ yields the solution
 p = (I - \beta M)^{-1} \beta M \zeta {\mathbb 1}
 ```
 
-The above is implemented in the function consol_price
+The above is implemented in the function `consol_price`
 
 ```{code-cell} julia
 function consol_price(ap, zeta)
-    # Simplify names, set up matrices
-    (;beta, gamma, mc, g, n) = ap
-    P, y = mc.p, mc.state_values
-    y = reshape(y, 1, n)
-    M = P .* g.(y).^(-gamma)
-
-    # Make sure that a unique solution exists
-    test_stability(ap, M)
+    (; beta, gamma, mc, g) = ap
+    P = mc.p
+    y = mc.state_values'
+    M = P .* g.(y) .^ (-gamma)
+    @assert maximum(abs, eigvals(M)) < 1 / beta
 
     # Compute price
     return (I - beta * M) \ sum(beta * zeta * M, dims = 2)
 end
 ```
+
+Note that the `sum(Q, dims=2)`  is equivalent to `Q * ones(size(Q)[1], 1)`.
 
 ### Pricing an Option to Purchase the Consol
 
@@ -767,43 +734,36 @@ T w
 = \max \{ \beta M w,\; p - p_S {\mathbb 1} \}
 $$
 
-Start at some initial $w$ and iterate to convergence with $T$.
+Start at some initial $w$ and iterate to convergence with $T$, or use a fixed point algorithm.
 
 We can find the solution with the following function call_option
 
 ```{code-cell} julia
 # price of perpetual call on consol bond
-function call_option(ap, zeta, p_s, epsilon = 1e-7)
+function call_option(ap, zeta, p_s)
+    (; beta, gamma, mc, g) = ap
+    P = mc.p
+    y = mc.state_values'
+    M = P .* g.(y) .^ (-gamma)
+    @assert maximum(abs, eigvals(M)) < 1 / beta
 
-    # Simplify names, set up matrices
-    (;beta, gamma, mc, g, n) = ap
-    P, y = mc.p, mc.state_values
-    y = reshape(y, 1, n)
-    M = P .* g.(y).^(-gamma)
-
-    # Make sure that a unique console price exists
-    test_stability(ap, M)
-
-    # Compute option price
+    # Find consol prices
     p = consol_price(ap, zeta)
-    w = zeros(ap.n, 1)
-    error = epsilon + 1
-    while (error > epsilon)
-        # Maximize across columns
-        w_new = max.(beta * M * w, p .- p_s)
-        # Find maximal difference of each component and update
-        error = maximum(abs, w - w_new)
-        w = w_new
-    end
 
-    return w
+    # Operator for fixed point, using consol prices
+    T(w) = max.(beta * M * w, p .- p_s)
+
+    # Compute option price as fixed point
+    sol = fixedpoint(T, zeros(length(y), 1))
+    converged(sol) || error("Failed to converge in $(sol.iterations) iter")
+    return sol.zero
 end
 ```
 
 Here's a plot of $w$ compared to the consol price when $P_S = 40$
 
 ```{code-cell} julia
-ap = AssetPriceModel(beta=0.9)
+ap = AssetPriceModel(; beta = 0.9)
 zeta = 1.0
 strike_price = 40.0
 
@@ -811,8 +771,9 @@ x = ap.mc.state_values
 p = consol_price(ap, zeta)
 w = call_option(ap, zeta, strike_price)
 
-plot(x, p, color = "blue", lw = 2, xlabel = "state", label = "consol price")
-plot!(x, w, color = "green", lw = 2, label = "value of call option")
+plot(x, p, color = "blue", lw = 2, xlabel = L"X_t", label = "consol price")
+plot!(x, w, color = "green", lw = 2,
+      label = "value of call option with strike at $strike_price")
 ```
 
 ```{code-cell} julia
@@ -820,8 +781,8 @@ plot!(x, w, color = "green", lw = 2, label = "value of call option")
 tags: [remove-cell]
 ---
 @testset begin
-    #test p[17] ≈ 9.302197030956606
-    #test w[20] ≈ 0.46101660813737866
+    @test p[17] ≈ 9.302197030956606
+    @test w[20] ≈ 0.4610168409491948
 end
 ```
 
@@ -832,15 +793,6 @@ where the consol prices is high --- will eventually be visited.
 
 The reason is that $\beta=0.9$, so the future is discounted relatively rapidly
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    #test x[2] ≈ -0.126178653628809
-    #test p[5] ≈ 52.85568616593254
-end
-```
 
 ### Risk Free Rates
 
@@ -957,10 +909,10 @@ Is one higher than the other?  Can you give intuition?
 
 ```{code-cell} julia
 n = 5
-P = fill(0.0125, n, n) + (0.95 - 0.0125)I
+P = fill(0.0125, n, n) + (0.95 - 0.0125) * I
 s = [0.95, 0.975, 1.0, 1.025, 1.05]  # state values
 mc = MarkovChain(P, s)
-
+g = x -> x # identity
 gamma = 2.0
 beta = 0.94
 zeta = 1.0
@@ -970,12 +922,12 @@ p_s = 150.0
 Next we'll create an instance of AssetPriceModel to feed into the functions.
 
 ```{code-cell} julia
-ap = AssetPriceModel(beta = beta, mc = mc, gamma = gamma, g = x -> x)
+ap = AssetPriceModel(; beta, mc, gamma, g)
 ```
 
+Lucas tree prices are 
 ```{code-cell} julia
-v = tree_price(ap)
-println("Lucas Tree Prices: $v\n")
+tree_price(ap)
 ```
 
 ```{code-cell} julia
@@ -983,13 +935,14 @@ println("Lucas Tree Prices: $v\n")
 tags: [remove-cell]
 ---
 @testset begin
-    #test v[2] ≈ 21.935706611219704
+    v = tree_price(ap)
+    @test v[2] ≈  21.935706611219704
 end
 ```
 
+Consol Bond Prices
 ```{code-cell} julia
-v_consol = consol_price(ap, 1.0)
-println("Consol Bond Prices: $(v_consol)\n")
+consol_price(ap, 1.0)
 ```
 
 ```{code-cell} julia
@@ -1001,8 +954,8 @@ w = call_option(ap, zeta, p_s)
 tags: [remove-cell]
 ---
 @testset begin
-    #test v_consol[1] ≈ 753.8710047641985
-    #test w[2][1] ≈ 176.83933430191294
+    @test consol_price(ap, 1.0)[1] ≈ 753.8710047641985
+    @test w[2] ≈ 176.83933430191294
 end
 ```
 
@@ -1012,19 +965,16 @@ Here's a suitable function:
 
 ```{code-cell} julia
 function finite_horizon_call_option(ap, zeta, p_s, k)
-
-    # Simplify names, set up matrices
-    (;beta, gamma, mc) = ap
-    P, y = mc.p, mc.state_values
-    y = y'
-    M = P .* ap.g.(y).^(- gamma)
-
-    # Make sure that a unique console price exists
-    test_stability(ap, M)
+    (; beta, gamma, mc) = ap
+    P = mc.p
+    y = mc.state_values'
+    M = P .* ap.g.(y) .^ (-gamma)
+    @assert maximum(abs, eigvals(M)) < 1 / beta
 
     # Compute option price
     p = consol_price(ap, zeta)
-    w = zeros(ap.n, 1)
+
+    w = zeros(length(y), 1)
     for i in 1:k
         # Maximize across columns
         w = max.(beta * M * w, p .- p_s)
@@ -1039,30 +989,18 @@ end
 tags: [remove-cell]
 ---
 @testset begin
-    #test p[3] ≈ 70.00064625026326
-    #test w[2] ≈ 176.83933430191294
+    @test finite_horizon_call_option(ap, zeta, p_s, 5)[3] ≈ 31.798938780647198
 end
 ```
 
 ```{code-cell} julia
-lines = []
-labels = []
+p = plot(title = "Value Finite Horizon Call Option", xlabel = L"t",
+         ylabel = "value")
 for k in [5, 25]
     w = finite_horizon_call_option(ap, zeta, p_s, k)
-    push!(lines, w)
-    push!(labels, L"k = %$k")
+    plot!(w; label = L"k = %$k")
 end
-plot(lines, labels = reshape(labels, 1, length(labels)))
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    #test lines[1][4] ≈ 29.859285398252347
-    #test lines[2][2] ≈ 147.00074548801277
-end
+p
 ```
 
 Not surprisingly, the option has greater value with larger $k$.
