@@ -268,7 +268,7 @@ Random.seed!(42);
 
 ```{code-cell} julia
 # Create an instance of Household
-am = Household(a_max = 20.0, r = 0.03, w = 0.956)
+am = Household(;a_max = 20.0, r = 0.03, w = 0.956)
 
 # Use the instance to build a discrete dynamic program
 am_ddp = DiscreteDP(am.R, am.Q, am.beta)
