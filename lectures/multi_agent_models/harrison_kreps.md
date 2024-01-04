@@ -290,12 +290,12 @@ Here's a function that can be used to compute these values
 using LinearAlgebra
 
 function price_single_beliefs(transition, dividend_payoff;
-                            β=.75)
+                              beta = 0.75)
     # First compute inverse piece
-    imbq_inv = inv(I - β * transition)
+    imbq_inv = inv(I - beta * transition)
 
     # Next compute prices
-    prices = β * ((imbq_inv * transition) * dividend_payoff)
+    prices = beta * ((imbq_inv * transition) * dividend_payoff)
 
     return prices
 end
@@ -416,28 +416,28 @@ Here's code to solve for $\bar p$, $\hat p_a$ and $\hat p_b$ using the iterative
 ```{code-cell} julia
 function price_optimistic_beliefs(transitions,
                                   dividend_payoff;
-                                  β=.75, max_iter=50000,
-                                  tol=1e-16)
+                                  beta = 0.75, max_iter = 50000,
+                                  tol = 1e-16)
 
     # We will guess an initial price vector of [0, 0]
-    p_new = [0,0]
-    p_old = [10.0,10.0]
+    p_new = [0, 0]
+    p_old = [10.0, 10.0]
 
     # We know this is a contraction mapping, so we can iterate to conv
-    for i ∈ 1:max_iter
+    for i in 1:max_iter
         p_old = p_new
         temp = [maximum((q * p_old) + (q * dividend_payoff))
-                            for q in transitions]
-        p_new = β * temp
+                for q in transitions]
+        p_new = beta * temp
 
         # If we succed in converging, break out of for loop
-        if maximum(sqrt, ((p_new - p_old).^2)) < 1e-12
+        if maximum(sqrt, ((p_new - p_old) .^ 2)) < 1e-12
             break
         end
     end
 
-    temp=[minimum((q * p_old) + (q * dividend_payoff)) for q in transitions]
-    ptwiddle = β * temp
+    temp = [minimum((q * p_old) + (q * dividend_payoff)) for q in transitions]
+    ptwiddle = beta * temp
 
     phat_a = [p_new[1], ptwiddle[2]]
     phat_b = [ptwiddle[1], p_new[2]]
@@ -484,22 +484,21 @@ Constraints on short sales prevent that.
 Here's code to solve for $\check p$ using iteration
 
 ```{code-cell} julia
-function price_pessimistic_beliefs(transitions,
-                                   dividend_payoff;
-                                   β=.75, max_iter=50000,
-                                   tol=1e-16)
+function price_pessimistic_beliefs(transitions, dividend_payoff; beta = 0.75,
+                                   max_iter = 50000, tol = 1e-16)
     # We will guess an initial price vector of [0, 0]
     p_new = [0, 0]
     p_old = [10.0, 10.0]
 
     # We know this is a contraction mapping, so we can iterate to conv
-    for i ∈ 1:max_iter
+    for i in 1:max_iter
         p_old = p_new
-        temp=[minimum((q * p_old) + (q* dividend_payoff)) for q in transitions]
-        p_new = β * temp
+        temp = [minimum((q * p_old) + (q * dividend_payoff))
+                for q in transitions]
+        p_new = beta * temp
 
         # If we succed in converging, break out of for loop
-        if maximum(sqrt, ((p_new - p_old).^2)) < 1e-12
+        if maximum(sqrt, ((p_new - p_old) .^ 2)) < 1e-12
             break
         end
     end
@@ -567,7 +566,8 @@ labels = ["p_a", "p_b", "p_optimistic", "p_pessimistic"]
 for (transition, label) in zip(transitions, labels)
     println(label)
     println(repeat("=", 20))
-    s0, s1 = round.(price_single_beliefs(transition, dividendreturn), digits=2)
+    s0, s1 = round.(price_single_beliefs(transition, dividendreturn),
+                    digits = 2)
     println("State 0: $s0")
     println("State 1: $s1")
     println(repeat("-", 20))
@@ -594,7 +594,7 @@ heterogeneous beliefs.
 opt_beliefs = price_optimistic_beliefs([qa, qb], dividendreturn)
 labels = ["p_optimistic", "p_hat_a", "p_hat_b"]
 
-for (p, label) ∈ zip(opt_beliefs, labels)
+for (p, label) in zip(opt_beliefs, labels)
     println(label)
     println(repeat("=", 20))
     s0, s1 = round.(p, digits = 2)

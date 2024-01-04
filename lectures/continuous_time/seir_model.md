@@ -517,4 +517,3 @@ Despite its richness, the model above is fully deterministic.  The policy $\bar{
 One way that randomness can lead to aggregate fluctuations is the granularity that comes through the discreteness of individuals.  This topic, the connection between SDEs and the Langevin equations typically used in the approximation of chemical reactions in well-mixed media is explored in further lectures on continuous time Markov chains.
 
 Instead, in the {doc}`next lecture <covid_sde>`, we will concentrate on randomness that comes from aggregate changes in behavior or policy.
-

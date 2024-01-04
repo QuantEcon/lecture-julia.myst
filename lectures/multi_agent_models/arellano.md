@@ -301,7 +301,7 @@ The code can be found below:
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using LaTeXStrings, Parameters, QuantEcon, DataFrames, Plots, Random
+using LaTeXStrings, QuantEcon, DataFrames, Plots, Random
 ```
 
 ```{code-cell} julia
@@ -312,25 +312,25 @@ using Test
 ```
 
 ```{code-cell} julia
-function ArellanoEconomy(;β = .953,
-                          γ = 2.,
-                          r = 0.017,
-                          ρ = 0.945,
-                          η = 0.025,
-                          θ = 0.282,
-                          ny = 21,
-                          nB = 251)
+function ArellanoEconomy(; beta = 0.953,
+                         gamma = 2.0,
+                         r = 0.017,
+                         rho = 0.945,
+                         eta = 0.025,
+                         theta = 0.282,
+                         ny = 21,
+                         nB = 251)
 
     # create grids
-    Bgrid = collect(range(-.4, .4, length = nB))
-    mc = tauchen(ny, ρ, η)
-    Π = mc.p
+    Bgrid = collect(range(-0.4, 0.4, length = nB))
+    mc = tauchen(ny, rho, eta)
+    Pi = mc.p
     ygrid = exp.(mc.state_values)
-    ydefgrid = min.(.969 * mean(ygrid), ygrid)
+    ydefgrid = min.(0.969 * mean(ygrid), ygrid)
 
     # define value functions
     # notice ordered different than Python to take
-    # advantage of column major layout of Julia)
+    # advantage of column major layout of Julia
     vf = zeros(nB, ny)
     vd = zeros(1, ny)
     vc = zeros(nB, ny)
@@ -338,13 +338,12 @@ function ArellanoEconomy(;β = .953,
     q = ones(nB, ny) .* (1 / (1 + r))
     defprob = zeros(nB, ny)
 
-    return (β = β, γ = γ, r = r, ρ = ρ, η = η, θ = θ, ny = ny,
-            nB = nB, ygrid = ygrid, ydefgrid = ydefgrid,
-            Bgrid = Bgrid, Π = Π, vf = vf, vd = vd, vc = vc,
-            policy = policy, q = q, defprob = defprob)
+    return (; beta, gamma, r, rho, eta, theta, ny,
+            nB, ygrid, ydefgrid, Bgrid, Pi, vf, vd, vc,
+            policy, q, defprob)
 end
 
-u(ae, c) = c^(1 - ae.γ) / (1 - ae.γ)
+u(ae, c) = c^(1 - ae.gamma) / (1 - ae.gamma)
 
 function one_step_update!(ae,
                           EV,
@@ -352,16 +351,17 @@ function one_step_update!(ae,
                           EVc)
 
     # unpack stuff
-    @unpack β, γ, r, ρ, η, θ, ny, nB = ae
-    @unpack ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = ae
-    zero_ind = searchsortedfirst(Bgrid, 0.)
+    (; beta, gamma, r, rho, eta, theta, ny, nB) = ae
+    (; ygrid, ydefgrid, Bgrid, Pi, vf, vd, vc, policy, q, defprob) = ae
+    zero_ind = searchsortedfirst(Bgrid, 0.0)
 
     for iy in 1:ny
         y = ae.ygrid[iy]
         ydef = ae.ydefgrid[iy]
 
         # value of being in default with income y
-        defval = u(ae, ydef) + β * (θ * EVc[zero_ind, iy] + (1-θ) * EVd[1, iy])
+        defval = u(ae, ydef) +
+                 beta * (theta * EVc[zero_ind, iy] + (1 - theta) * EVd[1, iy])
         ae.vd[1, iy] = defval
 
         for ib in 1:nB
@@ -369,15 +369,14 @@ function one_step_update!(ae,
 
             current_max = -1e14
             pol_ind = 0
-            for ib_next=1:nB
-                c = max(y - ae.q[ib_next, iy]*Bgrid[ib_next] + B, 1e-14)
-                m = u(ae, c) + β * EV[ib_next, iy]
+            for ib_next in 1:nB
+                c = max(y - ae.q[ib_next, iy] * Bgrid[ib_next] + B, 1e-14)
+                m = u(ae, c) + beta * EV[ib_next, iy]
 
                 if m > current_max
                     current_max = m
                     pol_ind = ib_next
                 end
-
             end
 
             # update value and policy functions
@@ -390,14 +389,14 @@ end
 
 function compute_prices!(ae)
     # unpack parameters
-    @unpack β, γ, r, ρ, η, θ, ny, nB = ae
+    (; beta, gamma, r, rho, eta, theta, ny, nB) = ae
 
     # create default values with a matching size
     vd_compat = repeat(ae.vd, nB)
     default_states = vd_compat .> ae.vc
 
     # update default probabilities and prices
-    copyto!(ae.defprob, default_states * ae.Π')
+    copyto!(ae.defprob, default_states * ae.Pi')
     copyto!(ae.q, (1 .- ae.defprob) / (1 + r))
     return
 end
@@ -405,13 +404,13 @@ end
 function vfi!(ae; tol = 1e-8, maxit = 10000)
 
     # unpack stuff
-    @unpack β, γ, r, ρ, η, θ, ny, nB = ae
-    @unpack ygrid, ydefgrid, Bgrid, Π, vf, vd, vc, policy, q, defprob = ae
-    Πt = Π'
+    (; beta, gamma, r, rho, eta, theta, ny, nB) = ae
+    (; ygrid, ydefgrid, Bgrid, Pi, vf, vd, vc, policy, q, defprob) = ae
+    Pit = Pi'
 
     # Iteration stuff
     it = 0
-    dist = 10.
+    dist = 10.0
 
     # allocate memory for update
     V_upd = similar(ae.vf)
@@ -420,11 +419,11 @@ function vfi!(ae; tol = 1e-8, maxit = 10000)
         it += 1
 
         # compute expectations for this iterations
-        # (we need Π' because of order value function dimensions)
+        # (we need Pi' because of order value function dimensions)
         copyto!(V_upd, ae.vf)
-        EV = ae.vf * Πt
-        EVd = ae.vd * Πt
-        EVc = ae.vc * Πt
+        EV = ae.vf * Pit
+        EVd = ae.vd * Pit
+        EVc = ae.vc * Pit
 
         # update value function
         one_step_update!(ae, EV, EVd, EVc)
@@ -443,20 +442,19 @@ end
 function QuantEcon.simulate(ae,
                             capT = 5000;
                             y_init = mean(ae.ygrid),
-                            B_init = mean(ae.Bgrid),
-                            )
+                            B_init = mean(ae.Bgrid),)
 
     # get initial indices
-    zero_index = searchsortedfirst(ae.Bgrid, 0.)
+    zero_index = searchsortedfirst(ae.Bgrid, 0.0)
     y_init_ind = searchsortedfirst(ae.ygrid, y_init)
     B_init_ind = searchsortedfirst(ae.Bgrid, B_init)
 
     # create a QE MarkovChain
-    mc = MarkovChain(ae.Π)
+    mc = MarkovChain(ae.Pi)
     y_sim_indices = simulate(mc, capT + 1; init = y_init_ind)
 
     # allocate and fill output
-    y_sim_val = zeros(capT+1)
+    y_sim_val = zeros(capT + 1)
     B_sim_val, q_sim_val = similar(y_sim_val), similar(y_sim_val)
     B_sim_indices = fill(0, capT + 1)
     default_status = fill(false, capT + 1)
@@ -478,7 +476,7 @@ function QuantEcon.simulate(ae,
                 default_status[t + 1] = true
                 y_sim_val[t] = ae.ydefgrid[y_sim_indices[t]]
                 B_sim_indices[t + 1] = zero_index
-                B_sim_val[t+1] = 0.
+                B_sim_val[t + 1] = 0.0
                 q_sim_val[t] = ae.q[zero_index, y_sim_indices[t]]
             else
                 default_status[t] = false
@@ -488,15 +486,15 @@ function QuantEcon.simulate(ae,
                 q_sim_val[t] = ae.q[B_sim_indices[t + 1], y_sim_indices[t]]
             end
 
-        # if you are in default
+            # if you are in default
         else
             B_sim_indices[t + 1] = zero_index
-            B_sim_val[t+1] = 0.
+            B_sim_val[t + 1] = 0.0
             y_sim_val[t] = ae.ydefgrid[y_sim_indices[t]]
             q_sim_val[t] = ae.q[zero_index, y_sim_indices[t]]
 
-            # with probability θ exit default status
-            default_status[t + 1] = rand() ≥ ae.θ
+            # with probability theta exit default status
+            default_status[t + 1] = rand() >= ae.theta
         end
     end
 
@@ -591,14 +589,14 @@ using DataFrames, Plots
 Compute the value function, policy and equilibrium prices
 
 ```{code-cell} julia
-ae = ArellanoEconomy(β = .953,     # time discount rate
-                     γ = 2.,       # risk aversion
-                     r = 0.017,    # international interest rate
-                     ρ = .945,     # persistence in output
-                     η = 0.025,    # st dev of output shock
-                     θ = 0.282,    # prob of regaining access
-                     ny = 21,      # number of points in y grid
-                     nB = 251)     # number of points in B grid
+ae = ArellanoEconomy(beta = 0.953,      # time discount rate
+                     gamma = 2.0,       # risk aversion
+                     r = 0.017,        # international interest rate
+                     rho = 0.945,       # persistence in output
+                     eta = 0.025,      # st dev of output shock
+                     theta = 0.282,    # prob of regaining access
+                     ny = 21,          # number of points in y grid
+                     nB = 251)         # number of points in B grid
 
 # now solve the model on the grid.
 vfi!(ae)
@@ -625,9 +623,9 @@ iy_high, iy_low = map(x -> searchsortedfirst(ae.ygrid, x), (high, low))
 x = zeros(0)
 q_low = zeros(0)
 q_high = zeros(0)
-for i in 1:ae.nB
+for i in 1:(ae.nB)
     b = ae.Bgrid[i]
-    if -0.35 ≤ b ≤ 0  # to match fig 3 of Arellano
+    if -0.35 <= b <= 0  # to match fig 3 of Arellano
         push!(x, b)
         push!(q_low, ae.q[i, iy_low])
         push!(q_high, ae.q[i, iy_high])
@@ -638,7 +636,8 @@ end
 plot(x, q_low, label = "Low")
 plot!(x, q_high, label = "High")
 plot!(title = L"Bond price schedule $q(y, B^\prime)$",
-      xlabel = L"B^\prime", ylabel = L"q", legend_title = L"y", legend = :topleft)
+      xlabel = L"B^\prime", ylabel = L"q", legend_title = L"y",
+      legend = :topleft)
 ```
 
 ```{code-cell} julia
@@ -658,17 +657,18 @@ Draw a plot of the value functions
 plot(ae.Bgrid, ae.vf[:, iy_low], label = "Low")
 plot!(ae.Bgrid, ae.vf[:, iy_high], label = "High")
 plot!(xlabel = L"B", ylabel = L"V(y,B)", title = "Value functions",
-      legend_title=L"y", legend = :topleft)
+      legend_title = L"y", legend = :topleft)
 ```
 
 Draw a heat map for default probability
 
 ```{code-cell} julia
-heatmap(ae.Bgrid[1:end-1],
-    ae.ygrid[2:end],
-    reshape(clamp.(vec(ae.defprob[1:end - 1, 1:end - 1]), 0, 1), 250, 20)')
+heatmap(ae.Bgrid[1:(end - 1)],
+        ae.ygrid[2:end],
+        reshape(clamp.(vec(ae.defprob[1:(end - 1), 1:(end - 1)]), 0, 1), 250,
+                20)')
 plot!(xlabel = L"B^\prime", ylabel = L"y", title = "Probability of default",
-    legend = :topleft)
+      legend = :topleft)
 ```
 
 Plot a time series of major variables simulated from the model
@@ -696,10 +696,12 @@ plots = plot(layout = (3, 1), size = (700, 800))
 # Plot the three variables, and for each each variable shading the period(s) of default
 # in grey
 for i in 1:3
-    plot!(plots[i], 1:T, y_vals[i], title = titles[i], xlabel = "time", label = "", lw = 2)
+    plot!(plots[i], 1:T, y_vals[i], title = titles[i], xlabel = "time",
+          label = "", lw = 2)
     for j in 1:length(def_start)
         plot!(plots[i], [def_start[j], def_end[j]], fill(maximum(y_vals[i]), 2),
-              fillrange = [extrema(y_vals[i])...], fcolor = :grey, falpha = 0.3, label = "")
+              fillrange = [extrema(y_vals[i])...], fcolor = :grey, falpha = 0.3,
+              label = "")
     end
 end
 
