@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9    
+  name: julia-1.10    
 ---
 
 (fundamental_types)=
@@ -1031,7 +1031,7 @@ end
 @show param_gen(; alpha = 0.2)
 ```
 
-For alternative approches:
+For alternative approaches:
 - An alternative approach, defining a new type using `struct` tends to be more prone to accidental misuse, leads to a great deal of boilerplate code, and requires a julia restart after every update.
 - You can also use the `@with_kw` in the `Parameters.jl` package, which automatically creates a function.  e.g., `param_gen = @with_kw (alpha = 0.1, beta = 0.2)` would be roughly equivalent to the above.
 

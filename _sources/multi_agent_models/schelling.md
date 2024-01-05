@@ -6,9 +6,8 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
-
 (schelling)=
 ```{raw} html
 <div id="qe-notebook-header" style="text-align:right;">
@@ -148,7 +147,7 @@ using Test, Random
 ```
 
 ```{code-cell} julia
-using Parameters, Plots, LinearAlgebra, Statistics
+using Plots, LinearAlgebra, Statistics
 
 ```
 
@@ -160,7 +159,7 @@ Random.seed!(42);
 ```
 
 ```{code-cell} julia
-Agent = @with_kw (kind, location = rand(2))
+Agent(; kind, location = rand(2)) = (; kind, location)
 
 draw_location!(a) = a.location .= rand(2)
 
@@ -179,7 +178,7 @@ function is_happy(a)
     #              partialsortperm(get_distance.(Ref(a), agents),
     #                              1:neighborhood_size))
 
-    return share ≥ preference
+    return share >= preference
 end
 
 function update!(a)
@@ -205,7 +204,8 @@ function plot_distribution(agents)
         end
     end
 
-    p = scatter(x_vals_0, y_vals_0, color = :orange, markersize = 8, alpha = 0.6)
+    p = scatter(x_vals_0, y_vals_0, color = :orange, markersize = 8,
+                alpha = 0.6)
     scatter!(x_vals_1, y_vals_1, color = :green, markersize = 8, alpha = 0.6)
     return plot!(legend = :none)
 end

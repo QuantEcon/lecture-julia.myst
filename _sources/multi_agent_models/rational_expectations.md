@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (ree)=
@@ -595,7 +595,7 @@ using Test
 ```
 
 ```{code-cell} julia
-using QuantEcon, Printf, LinearAlgebra
+using QuantEcon, LinearAlgebra
 ```
 
 To map a problem into a {doc}`discounted optimal linear control problem <../dynamic_programming/lqcontrol>`, we need to define.
@@ -662,34 +662,36 @@ Here's our solution
 # model parameters
 a0 = 100
 a1 = 0.05
-β = 0.95
-γ = 10.0
+beta = 0.95
+gamma = 10.0
 
 # beliefs
-κ0 = 95.5
-κ1 = 0.95
+kappa0 = 95.5
+kappa1 = 0.95
 
 # formulate the LQ problem
-A = [1  0  0
-     0 κ1 κ0
-     0  0  1]
+A = [1 0 0
+     0 kappa1 kappa0
+     0 0 1]
 
 B = [1.0, 0.0, 0.0]
 
-R = [    0   a1/2 -a0/2
-      a1/2      0     0
-     -a0/2      0     0]
+R = [0 a1/2 -a0/2
+     a1/2 0 0
+     -a0/2 0 0]
 
-Q = 0.5 * γ
+Q = 0.5 * gamma
 
 # solve for the optimal policy
-lq = QuantEcon.LQ(Q, R, A, B; bet = β)
+lq = QuantEcon.LQ(Q, R, A, B; bet = beta)
 P, F, d = stationary_values(lq)
 
-hh = h0, h1, h2 = -F[3], 1 - F[1], -F[2]
-
-@printf("F = [%.3f, %.3f, %.3f]\n", F[1], F[2], F[3])
-@printf("(h0, h1, h2) = [%.3f, %.3f, %.3f]\n", h0, h1, h2)
+# unpack results
+h0 = -F[3]
+h1 = 1 - F[1]
+h2 = -F[2]
+@show F
+@show h0, h1, h2;
 ```
 
 ```{code-cell} julia
@@ -748,16 +750,18 @@ candidates = ([94.0886298678, 0.923409232937],
               [95.0818452486, 0.952459076301])
 
 for (k0, k1) in candidates
-    A = [1  0  0
+    A = [1 0 0
          0 k1 k0
-         0  0  1]
-    lq = QuantEcon.LQ(Q, R, A, B; bet=β)
+         0 0 1]
+    lq = QuantEcon.LQ(Q, R, A, B; bet = beta)
     P, F, d = stationary_values(lq)
-    hh = h0, h1, h2 = -F[3], 1 - F[1], -F[2]
+    h0 = -F[3]
+    h1 = 1 - F[1]
+    h2 = -F[2]
 
     if isapprox(k0, h0; atol = 1e-4) && isapprox(k1, h1 + h2; atol = 1e-4)
-        @printf("Equilibrium pair = (%.6f, %.6f)\n", k0, k1)
-        @printf("(h0, h1, h2) = [%.6f, %.6f, %.6f]\n", h0, h1, h2)
+        println("Equilibrium pair = ($k0, $k1)")
+        @show h0, h1, h2
     end
 end
 ```
@@ -830,18 +834,19 @@ $\kappa_0 = -F_1$ and $\kappa_1 = 1-F_0$
 A = I + zeros(2, 2)
 B = [1.0, 0.0]
 
-R = [ a1 / 2.0  -a0 / 2.0
-     -a0 / 2.0        0.0]
+R = [a1/2.0 -a0/2.0
+     -a0/2.0 0.0]
 
-Q = γ / 2.0
+Q = gamma / 2.0
 
 # solve for the optimal policy
-lq = QuantEcon.LQ(Q, R, A, B; bet=β)
+lq = QuantEcon.LQ(Q, R, A, B; bet = beta)
 P, F, d = stationary_values(lq)
 
 # print the results
-κ0, κ1 = -F[2], 1 - F[1]
-println("κ0=$κ0\tκ1=$κ1")
+kappa0 = -F[2]
+kappa1 = 1 - F[1]
+@show kappa0, kappa1;
 ```
 
 ```{code-cell} julia
@@ -849,8 +854,8 @@ println("κ0=$κ0\tκ1=$κ1")
 tags: [remove-cell]
 ---
 @testset begin
-    @test κ0 ≈ 95.081845248600 rtol = 4
-    @test κ1 ≈ 0.952459076301 rtol = 4
+    @test kappa0 ≈ 95.081845248600 rtol = 4
+    @test kappa1 ≈ 0.952459076301 rtol = 4
 end
 ```
 
@@ -876,18 +881,18 @@ The problem can be solved as follows
 A = I + zeros(2, 2)
 B = [1.0, 0.0]
 
-R = [       a1   -a0 / 2.0
-     -a0 / 2.0         0.0]
+R = [a1 -a0/2.0
+     -a0/2.0 0.0]
 
-Q = γ / 2.0
+Q = gamma / 2.0
 
 # solve for the optimal policy
-lq = QuantEcon.LQ(Q, R, A, B; bet=β)
+lq = QuantEcon.LQ(Q, R, A, B; bet = beta)
 P, F, d = stationary_values(lq)
 
 # print the results
 m0, m1 = -F[2], 1 - F[1]
-println("m0=$m0\tm1=$m1")
+@show m0, m1;
 ```
 
 ```{code-cell} julia

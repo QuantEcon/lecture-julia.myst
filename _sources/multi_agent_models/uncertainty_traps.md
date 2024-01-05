@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (uncertainty_traps)=
@@ -231,22 +231,26 @@ using Test, Random
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using DataFrames, LaTeXStrings, Parameters, Plots
+using DataFrames, LaTeXStrings, Plots
 
 ```
 
 ```{code-cell} julia
-UncertaintyTrapEcon = @with_kw (a = 1.5, # risk aversion
-                                γ_x = 0.5, # production shock precision
-                                ρ = 0.99, # correlation coefficient for θ
-                                σ_θ = 0.5, # standard dev. of θ shock
-                                num_firms = 100, # number of firms
-                                σ_F = 1.5, # standard dev. of fixed costs
-                                c = -420.0, # external opportunity cost
-                                μ_init = 0.0, # initial value for μ
-                                γ_init = 4.0, # initial value for γ
-                                θ_init = 0.0, # initial value for θ
-                                σ_x = sqrt(a / γ_x)) # standard dev. of shock
+function # standard dev. of shock
+UncertaintyTrapEcon(; a = 1.5,                       # risk aversion
+                    gamma_x = 0.5,                  # production shock precision
+                    rho = 0.99,                     # correlation coefficient for theta
+                    sigma_theta = 0.5,              # standard dev. of theta shock
+                    num_firms = 100,                # number of firms
+                    sigma_F = 1.5,                  # standard dev. of fixed costs
+                    c = -420.0,                     # external opportunity cost
+                    mu_init = 0.0,                  # initial value for mu
+                    gamma_init = 4.0,               # initial value for gamma
+                    theta_init = 0.0,               # initial value for theta
+                    sigma_x = sqrt(a / gamma_x)) # standard dev. of shock
+    (; a, gamma_x, rho, sigma_theta, num_firms, sigma_F, c, mu_init, gamma_init,
+     theta_init, sigma_x)
+end
 ```
 
 In the results below we use this code to simulate time series for the major variables.
@@ -360,18 +364,19 @@ different values of $M$
 
 ```{code-cell} julia
 econ = UncertaintyTrapEcon()
-@unpack ρ, σ_θ, γ_x = econ # simplify names
+(; rho, sigma_theta, gamma_x) = econ # simplify names
 
-# grid for γ and γ_{t+1}
-γ = range(1e-10, 3, length = 200)
+# grid for gamma and gamma_{t+1}
+gamma = range(1e-10, 3, length = 200)
 M_range = 0:6
-γp = 1 ./ (ρ^2 ./ (γ .+ γ_x .* M_range') .+ σ_θ^2)
+gammap = 1 ./ (rho^2 ./ (gamma .+ gamma_x .* M_range') .+ sigma_theta^2)
 
 labels = ["0" "1" "2" "3" "4" "5" "6"]
 
-plot(γ, γ, lw = 2, label = "45 Degree")
-plot!(γ, γp, lw = 2, label = labels)
-plot!(xlabel = L"\gamma", ylabel = L"\gamma^\prime", legend_title = L"M", legend = :bottomright)
+plot(gamma, gamma, lw = 2, label = "45 Degree")
+plot!(gamma, gammap, lw = 2, label = labels)
+plot!(xlabel = L"\gamma", ylabel = L"\gamma^\prime", legend_title = L"M",
+      legend = :bottomright)
 ```
 
 ```{code-cell} julia
@@ -379,9 +384,9 @@ plot!(xlabel = L"\gamma", ylabel = L"\gamma^\prime", legend_title = L"M", legend
 tags: [remove-cell]
 ---
 @testset begin
-    @test γp[2,2] ≈ 0.46450522950184053
-    @test γp[3,3] ≈ 0.8323524432613787
-    @test γp[5,5] ≈ 1.3779664509290432
+    @test gammap[2,2] ≈ 0.46450522950184053
+    @test gammap[3,3] ≈ 0.8323524432613787
+    @test gammap[5,5] ≈ 1.3779664509290432
 end
 ```
 
@@ -396,49 +401,53 @@ is, the number of active firms and average output
 ```{code-cell} julia
 function simulate(uc, capT = 2_000)
     # unpack parameters
-    @unpack a, γ_x, ρ, σ_θ, num_firms, σ_F, c, μ_init, γ_init, θ_init, σ_x = uc
+    (; a, gamma_x, rho, sigma_theta, num_firms, sigma_F, c, mu_init, gamma_init, theta_init, sigma_x) = uc
 
     # draw standard normal shocks
     w_shocks = randn(capT)
 
     # aggregate functions
-    # auxiliary function ψ
-    function ψ(γ, μ, F)
-        temp1 = -a * (μ - F)
-        temp2 = 0.5 * a^2 / (γ + γ_x)
+    # auxiliary function psi
+    function psi(gamma, mu, F)
+        temp1 = -a * (mu - F)
+        temp2 = 0.5 * a^2 / (gamma + gamma_x)
         return (1 - exp(temp1 + temp2)) / a - c
     end
 
     # compute X, M
-    function gen_aggregates(γ, μ, θ)
-        F_vals = σ_F * randn(num_firms)
-        M = sum(ψ.(Ref(γ), Ref(μ), F_vals) .> 0) # counts number of active firms
-        if any(ψ(γ, μ, f) > 0 for f in F_vals) # ∃ an active firm
-            x_vals = θ .+ σ_x * randn(M)
+    function gen_aggregates(gamma, mu, theta)
+        F_vals = sigma_F * randn(num_firms)
+        M = sum(psi.(Ref(gamma), Ref(mu), F_vals) .> 0) # counts number of active firms
+        if any(psi(gamma, mu, f) > 0 for f in F_vals) # there is an active firm
+            x_vals = theta .+ sigma_x * randn(M)
             X = mean(x_vals)
         else
             X = 0.0
         end
-        return (X = X, M = M)
+        return (; X, M)
     end
 
     # initialize dataframe
-    X_init, M_init = gen_aggregates(γ_init, μ_init, θ_init)
-    df = DataFrame(γ = γ_init, μ = μ_init, θ = θ_init, X = X_init, M = M_init)
+    X_init, M_init = gen_aggregates(gamma_init, mu_init, theta_init)
+    df = DataFrame(gamma = gamma_init, mu = mu_init, theta = theta_init,
+                   X = X_init, M = M_init)
 
     # update dataframe
     for t in 2:capT
         # unpack old variables
-        θ_old, γ_old, μ_old, X_old, M_old = (df.θ[end], df.γ[end], df.μ[end], df.X[end], df.M[end])
+        theta_old, gamma_old, mu_old, X_old, M_old = (df.theta[end],
+                                                      df.gamma[end], df.mu[end],
+                                                      df.X[end], df.M[end])
 
         # define new beliefs
-        θ = ρ * θ_old + σ_θ * w_shocks[t-1]
-        μ = (ρ * (γ_old * μ_old + M_old * γ_x * X_old))/(γ_old + M_old * γ_x)
-        γ = 1 / (ρ^2 / (γ_old + M_old * γ_x) + σ_θ^2)
+        theta = rho * theta_old + sigma_theta * w_shocks[t - 1]
+        mu = (rho * (gamma_old * mu_old + M_old * gamma_x * X_old)) /
+             (gamma_old + M_old * gamma_x)
+        gamma = 1 / (rho^2 / (gamma_old + M_old * gamma_x) + sigma_theta^2)
 
         # compute new aggregates
-        X, M = gen_aggregates(γ, μ, θ)
-        push!(df, (γ = γ, μ = μ, θ = θ, X = X, M = M))
+        X, M = gen_aggregates(gamma, mu, theta)
+        push!(df, (; gamma, mu, theta, X, M))
     end
 
     # return
@@ -459,19 +468,20 @@ Random.seed!(42);  # set random seed for reproducible results
 ```{code-cell} julia
 df = simulate(econ)
 
-plot(eachindex(df.μ), df.μ, lw = 2, label = L"\mu")
-plot!(eachindex(df.θ), df.θ, lw = 2, label = L"\theta")
-plot!(xlabel = L"x", ylabel = L"y", legend_title = "Variable", legend = :bottomright)
+plot(eachindex(df.mu), df.mu, lw = 2, label = L"\mu")
+plot!(eachindex(df.theta), df.theta, lw = 2, label = L"\theta")
+plot!(xlabel = L"x", ylabel = L"y", legend_title = "Variable",
+      legend = :bottomright)
 ```
 
 Now let's plot the whole thing together
 
 ```{code-cell} julia
-len = eachindex(df.θ)
-yvals = [df.θ, df.μ, df.γ, df.M]
+len = eachindex(df.theta)
+yvals = [df.theta, df.mu, df.gamma, df.M]
 vars = [L"\theta", L"\mu", L"\gamma", L"M"]
 
-plt = plot(layout = (4,1), size = (600, 600))
+plt = plot(layout = (4, 1), size = (600, 600))
 
 for i in 1:4
     plot!(plt[i], len, yvals[i], xlabel = L"t", ylabel = vars[i], label = "")
@@ -484,7 +494,7 @@ plot(plt)
 ---
 tags: [remove-cell]
 ---
-mdf = DataFrame(t = eachindex(df.θ), θ = df.θ, μ = df.μ, γ = df.γ, M = df.M)
+mdf = DataFrame(t = eachindex(df.theta), theta = df.theta, mu = df.mu, gamma = df.gamma, M = df.M)
 
 @testset begin
     @test stack(mdf, collect(2:5))[:value][3] ≈ -0.49742498224730913 atol = 1e-3

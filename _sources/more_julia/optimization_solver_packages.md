@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9 
+  name: julia-1.10 
 ---
 
 (optimization_solver_packages)=
@@ -35,7 +35,7 @@ In this lecture we introduce a few of the Julia libraries that we've found parti
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using ForwardDiff, Zygote, Optim, JuMP, Ipopt, BlackBoxOptim, Roots, NLsolve, LeastSquaresOptim
+using ForwardDiff, Optim, JuMP, Ipopt, Roots, NLsolve
 using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
 ```
 
@@ -222,80 +222,17 @@ dsqrt(x) = ForwardDiff.derivative(squareroot, x)
 dsqrt(2.0)
 ```
 
-### Zygote.jl
+### Reverse-Mode AD
 
 Unlike forward-mode auto-differentiation, reverse-mode is very difficult to implement efficiently, and there are many variations on the best approach.
 
 Many reverse-mode packages are connected to machine-learning packages, since the efficient gradients of $R^N \to R$ loss functions are necessary for the gradient descent optimization algorithms used in machine learning.
 
-One recent package is [Zygote.jl](https://github.com/FluxML/Zygote.jl), which is used in the Flux.jl framework.
+At this point, Julia does not have a single consistently usable reverse-mode AD package without rough edges, but a few key ones to consider are:
 
-```{code-cell} julia
-using Zygote
-
-h(x, y) = 3x^2 + 2x + 1 + y * x - y
-gradient(h, 3.0, 5.0)
-```
-
-Here we see that Zygote has a gradient function as the interface, which returns a tuple.
-
-You could create this as an operator if you wanted to.,
-
-```{code-cell} julia
-D(f) = x -> gradient(f, x)[1]  # returns first in tuple
-
-D_sin = D(sin)
-D_sin(4.0)
-```
-
-For functions of one (Julia) variable, we can find the by simply using the `'` after a function name
-
-```{code-cell} julia
-using Statistics
-p(x) = mean(abs, x)
-p'([1.0, 3.0, -2.0])
-```
-
-Or, using the complicated iterative function we defined for the squareroot,
-
-```{code-cell} julia
-squareroot'(2.0)
-```
-
-Zygote supports combinations of vectors and scalars as the function parameters.
-
-```{code-cell} julia
-h(x, n) = (sum(x .^ n))^(1 / n)
-gradient(h, [1.0, 4.0, 6.0], 2.0)
-```
-
-The gradients can be very high dimensional.  For example, to do a simple nonlinear optimization problem
-with 1 million dimensions, solved in a few seconds.
-
-```{code-cell} julia
-using Optim, LinearAlgebra
-N = 1000000
-y = rand(N)
-lambda = 0.01
-obj(x) = sum((x .- y) .^ 2) + lambda * norm(x)
-
-x_iv = rand(N)
-function g!(G, x)
-    G .= obj'(x)
-end
-
-results = optimize(obj, g!, x_iv, LBFGS()) # or ConjugateGradient()
-println("minimum = $(results.minimum) with in " *
-        "$(results.iterations) iterations")
-```
-
-Caution: while Zygote is the most exciting reverse-mode AD implementation in Julia, it has many rough edges.
-
-- If you write a function, take its gradient, and then modify the function, you need to call `Zygote.refresh()` or else the gradient will be out of sync.  This may not apply for Julia 1.3+.
-- It provides no features for getting Jacobians, so you would have to ask for each row of the Jacobian separately.  That said, you
-  probably want to use  `ForwardDiff.jl` for Jacobians if the dimension of the output is similar to the dimension of the input.
-- You cannot, in the current release, use mutating functions (e.g. modify a value in an array/etc.) although that feature is in progress.
-- Compiling can be very slow for complicated functions.
+- [ReverseDiff.jl](https://github.com/JuliaDiff/ReverseDiff.jl), a relatively dependable but limited package.  Not really intended for standard ML-pipline usage
+- [Zygote.jl](https://github.com/FluxML/Zygote.jl), which is flexible but buggy and less reliable.  In a slow process of deprecation, but often the primary alternative.
+- [Enzyme.jl](https://enzyme.mit.edu/julia/stable/), which is the most promising (and supports both forward and reverse mode).  However, the usage is more tailored for scientific machine learning and scalar functions rather than fast GPU kernels, and it relies on a innovative (but not fully stable) approach to compilation.
 
 ## Optimization
 
@@ -482,17 +419,6 @@ println("x = ", value(x), " y = ", value(y))
 
 Another package for doing global optimization without derivatives is [BlackBoxOptim.jl](https://github.com/robertfeldt/BlackBoxOptim.jl).
 
-To see an example from the documentation
-
-```{code-cell} julia
-using BlackBoxOptim
-
-function rosenbrock2d(x)
-    return (1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2
-end
-
-results = bboptimize(rosenbrock2d; SearchRange = (-5.0, 5.0), NumDimensions = 2);
-```
 
 An example for [parallel execution](https://github.com/robertfeldt/BlackBoxOptim.jl/blob/master/examples/rosenbrock_parallel.jl) of the objective is provided.
 
@@ -586,46 +512,6 @@ If $M = N$ and we know a root $F(x^*) = 0$ to the system of equations exists, th
 
 An implementation of NLS is given in [LeastSquaresOptim.jl](https://github.com/matthieugomez/LeastSquaresOptim.jl).
 
-From the documentation
-
-```{code-cell} julia
-using LeastSquaresOptim
-function rosenbrock(x)
-    [1 - x[1], 100 * (x[2] - x[1]^2)]
-end
-LeastSquaresOptim.optimize(rosenbrock, zeros(2), Dogleg())
-```
-
-**Note:** Because there is a name clash between `Optim.jl` and this package, to use both we need to qualify the use of the `optimize` function (i.e. `LeastSquaresOptim.optimize`).
-
-Here, by default it will use AD with `ForwardDiff.jl` to calculate the Jacobian,
-but you could also provide your own calculation of the Jacobian (analytical or using finite differences) and/or calculate the function inplace.
-
-```{code-cell} julia
-function rosenbrock_f!(out, x)
-    out[1] = 1 - x[1]
-    out[2] = 100 * (x[2] - x[1]^2)
-end
-LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2),
-                                                f! = rosenbrock_f!,
-                                                output_length = 2))
-
-# if you want to use gradient
-function rosenbrock_g!(J, x)
-    J[1, 1] = -1
-    J[1, 2] = 0
-    J[2, 1] = -200 * x[1]
-    J[2, 2] = 100
-end
-LeastSquaresOptim.optimize!(LeastSquaresProblem(x = zeros(2),
-                                                f! = rosenbrock_f!,
-                                                g! = rosenbrock_g!,
-                                                output_length = 2))
-```
-
-## Additional Notes
-
-Watch [this video](https://www.youtube.com/watch?v=vAp6nUMrKYg&feature=youtu.be) from one of Julia's creators on automatic differentiation.
 
 ## Exercises
 

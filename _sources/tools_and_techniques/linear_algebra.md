@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (linear_algebra)=
@@ -402,7 +402,7 @@ $m > n$ vectors in $\mathbb R ^n$ must be linearly dependent.
 The following statements are equivalent to linear independence of $A := \{a_1, \ldots, a_k\} \subset \mathbb R ^n$.
 
 1. No vector in $A$ can be formed as a linear combination of the other elements.
-1. If $\beta_1 a_1 + \cdots \beta_k a_k = 0$ for scalars $\beta_1, \ldots, \beta_k$, then $\beta_1 = \cdots = \beta_k = 0$.
+1. If $\beta_1 a_1 + \cdots + \beta_k a_k = 0$ for scalars $\beta_1, \ldots, \beta_k$, then $\beta_1 = \cdots = \beta_k = 0$.
 
 (The zero in the first expression is the origin of $\mathbb R ^n$)
 
@@ -415,13 +415,13 @@ In other words, if $A := \{a_1, \ldots, a_k\} \subset \mathbb R ^n$ is
 linearly independent and
 
 $$
-y = \beta_1 a_1 + \cdots \beta_k a_k
+y = \beta_1 a_1 + \cdots + \beta_k a_k
 $$
 
 then no other coefficient sequence $\gamma_1, \ldots, \gamma_k$ will produce
 the same vector $y$.
 
-Indeed, if we also have $y = \gamma_1 a_1 + \cdots \gamma_k a_k$,
+Indeed, if we also have $y = \gamma_1 a_1 + \cdots + \gamma_k a_k$,
 then
 
 $$

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (dyn_stack)=
@@ -914,7 +914,8 @@ dynamic program as outlined above
 
 
 ```{code-cell} julia
-using LaTeXStrings, QuantEcon, Plots, LinearAlgebra, Statistics, Parameters, Random
+using LaTeXStrings, QuantEcon, Plots, LinearAlgebra, Statistics,
+      Random
 
 ```
 
@@ -929,16 +930,12 @@ We define named tuples and default values for the model and solver settings, and
 instantiate one copy of each
 
 ```{code-cell} julia
-model = @with_kw (a0 = 10,
-                  a1 = 2,
-                  β = 0.96,
-                  γ = 120.,
-                  n = 300)
+function model(; a0 = 10, a1 = 2, beta = 0.96, gamma = 120.0, n = 300)
+    return (; a0, a1, beta, gamma, n)
+end
 
 # things like tolerances, etc.
-settings = @with_kw (tol0 = 1e-8,
-                     tol1 = 1e-16,
-                     tol2 = 1e-2)
+settings(; tol0 = 1e-8, tol1 = 1e-16, tol2 = 1e-2) = (; tol0, tol1, tol2)
 
 defaultModel = model();
 defaultSettings = settings();
@@ -947,21 +944,26 @@ defaultSettings = settings();
 Now we can compute the actual policy using the LQ routine from QuantEcon.jl
 
 ```{code-cell} julia
-@unpack a0, a1, β, γ, n = defaultModel
-@unpack tol0, tol1, tol2 = defaultSettings
+(; a0, a1, beta, gamma, n) = defaultModel
+(; tol0, tol1, tol2) = defaultSettings
 
-βs = [β^x for x = 0:n-1]
+betas = [beta^x for x in 0:(n - 1)]
 Alhs = I + zeros(4, 4);
-Alhs[4, :] = [β * a0 / (2 * γ), -β * a1 / (2 * γ), -β * a1 / γ, β] # Euler equation coefficients
+Alhs[4, :] = [
+    beta * a0 / (2 * gamma),
+    -beta * a1 / (2 * gamma),
+    -beta * a1 / gamma,
+    beta,
+] # Euler equation coefficients
 Arhs = I + zeros(4, 4);
-Arhs[3, 4] = 1.;
+Arhs[3, 4] = 1.0;
 Alhsinv = inv(Alhs);
 
 A = Alhsinv * Arhs;
-B = Alhsinv * [0, 1, 0, 0,];
+B = Alhsinv * [0, 1, 0, 0];
 R = [0 -a0/2 0 0; -a0/2 a1 a1/2 0; 0 a1/2 0 0; 0 0 0 0];
-Q = γ;
-lq = QuantEcon.LQ(Q, R, A, B, bet=β);
+Q = gamma;
+lq = QuantEcon.LQ(Q, R, A, B, bet = beta);
 P, F, d = stationary_values(lq)
 
 P22 = P[4:end, 4:end];
@@ -970,17 +972,17 @@ P22inv = inv(P22);
 H_0_0 = -P22inv * P21;
 
 # simulate forward
-π_leader = zeros(n);
+pi_leader = zeros(n);
 z0 = [1, 1, 1];
 x0 = H_0_0 * z0;
 y0 = vcat(z0, x0);
 
 Random.seed!(1) # for reproducibility
 yt, ut = compute_sequence(lq, y0, n);
-π_matrix = R + F' * Q * F;
+pi_matrix = R + F' * Q * F;
 
 for t in 1:n
-    π_leader[t] = -(yt[:, t]' * π_matrix * yt[:, t]);
+    pi_leader[t] = -(yt[:, t]' * pi_matrix * yt[:, t])
 end
 
 println("Computed policy for Stackelberg leader: $F")
@@ -990,7 +992,7 @@ println("Computed policy for Stackelberg leader: $F")
 ---
 tags: [remove-cell]
 ---
-#test F ≈ [-1.580044538772657, 0.29461312747031404, 0.6748093760774972, 6.539705936147515]'
+@test F ≈ [-1.580044538772657, 0.29461312747031404, 0.6748093760774972, 6.539705936147515]'
 ```
 
 ### Implied Time Series for Price and Quantities
@@ -1001,12 +1003,12 @@ The following code plots the price and quantities
 q_leader = yt[2, 1:end];
 q_follower = yt[3, 1:end];
 q = q_leader + q_follower;
-p = a0 .- a1*q;
+p = a0 .- a1 * q;
 
-plot(1:n+1, [q_leader, q_follower, p],
-    title = "Output and Prices, Stackelberg Duopoly",
-    labels = ["leader output" "follower output" "price"],
-    xlabel = L"t")
+plot(1:(n + 1), [q_leader, q_follower, p],
+     title = "Output and Prices, Stackelberg Duopoly",
+     labels = ["leader output" "follower output" "price"],
+     xlabel = L"t")
 ```
 
 ### Value of Stackelberg Leader
@@ -1017,7 +1019,7 @@ We'll compute it two ways (they give identical answers -- just a check
 on coding and thinking)
 
 ```{code-cell} julia
-v_leader_forward = sum(βs .* π_leader);
+v_leader_forward = sum(betas .* pi_leader);
 v_leader_direct = -yt[:, 1]' * P * yt[:, 1];
 
 println("v_leader_forward (forward sim) is $v_leader_forward")
@@ -1028,13 +1030,13 @@ println("v_leader_direct is $v_leader_direct")
 ---
 tags: [remove-cell]
 ---
-#test v_leader_forward ≈ 150.0316212532547
-#test v_leader_direct ≈ 150.03237147548967
+@test v_leader_forward ≈ 150.0316212532547
+@test v_leader_direct ≈ 150.03237147548967
 ```
 
 ```{code-cell} julia
 # manually check whether P is an approximate fixed point
-P_next = (R + F' * Q * F + β * (A - B * F)' * P * (A - B * F));
+P_next = (R + F' * Q * F + beta * (A - B * F)' * P * (A - B * F));
 all(P - P_next .< tol0)
 ```
 
@@ -1042,14 +1044,14 @@ all(P - P_next .< tol0)
 ---
 tags: [remove-cell]
 ---
-#test all(P - P_next .< tol0)
+@test all(P - P_next .< tol0)
 ```
 
 ```{code-cell} julia
 # manually checks whether two different ways of computing the
 # value function give approximately the same answer
 v_expanded = -((y0' * R * y0 + ut[:, 1]' * Q * ut[:, 1] +
-           β * (y0' * (A - B * F)' * P * (A - B * F) * y0)));
+                beta * (y0' * (A - B * F)' * P * (A - B * F) * y0)));
 (v_leader_direct - v_expanded < tol0)[1, 1]
 ```
 
@@ -1057,7 +1059,7 @@ v_expanded = -((y0' * R * y0 + ut[:, 1]' * Q * ut[:, 1] +
 ---
 tags: [remove-cell]
 ---
-#test (v_leader_direct - v_expanded < tol0)[1, 1]
+@test (v_leader_direct - v_expanded < tol0)[1, 1]
 ```
 
 ## Exhibiting Time Inconsistency of Stackelberg Plan
@@ -1085,11 +1087,13 @@ for t in 1:n
     vt_reset_leader[t] = -yt_reset[:, t]' * P * yt_reset[:, t]
 end
 
-p1 = plot(1:n+1, [(-F * yt)', (-F * yt_reset)'], labels = ["Stackelberg Leader" L"Continuation Leader at $t$"],
-        title = "Leader Control Variable", xlabel = L"t");
-p2 = plot(1:n+1, [yt[4, :], yt_reset[4, :]], title = "Follower Control Variable", xlabel = L"t", legend = false);
+p1 = plot(1:(n + 1), [(-F * yt)', (-F * yt_reset)'],
+          labels = ["Stackelberg Leader" L"Continuation Leader at $t$"],
+          title = "Leader Control Variable", xlabel = L"t");
+p2 = plot(1:(n + 1), [yt[4, :], yt_reset[4, :]],
+          title = "Follower Control Variable", xlabel = L"t", legend = false);
 p3 = plot(1:n, [vt_leader, vt_reset_leader], legend = false,
-            xlabel = L"t", title = "Leader Value Function");
+          xlabel = L"t", title = "Leader Value Function");
 plot(p1, p2, p3, layout = (3, 1), size = (800, 600))
 ```
 
@@ -1102,14 +1106,14 @@ We check that the recursive **Big** $K$ **, little** $k$ formulation of the foll
 $\vec q_1$ that we computed when we solved the Stackelberg problem
 
 ```{code-cell} julia
-Ã = I + zeros(5, 5);
-Ã[1:4, 1:4] .= A - B * F;
-R̃ = [0 0 0 0 -a0/2; 0 0 0 0 a1/2; 0 0 0 0 0; 0 0 0 0 0; -a0/2 a1/2 0 0 a1];
-Q̃ = Q;
-B̃ = [0, 0, 0, 0, 1];
+A_tilde = I + zeros(5, 5);
+A_tilde[1:4, 1:4] .= A - B * F;
+R_tilde = [0 0 0 0 -a0/2; 0 0 0 0 a1/2; 0 0 0 0 0; 0 0 0 0 0; -a0/2 a1/2 0 0 a1];
+Q_tilde = Q;
+B_tilde = [0, 0, 0, 0, 1];
 
-lq_tilde = QuantEcon.LQ(Q̃, R̃, Ã, B̃, bet=β);
-P̃, F̃, d̃ = stationary_values(lq_tilde);
+lq_tilde = QuantEcon.LQ(Q_tilde, R_tilde, A_tilde, B_tilde, bet = beta);
+P_tilde, F_tilde, d_tilde = stationary_values(lq_tilde);
 y0_tilde = vcat(y0, y0[3]);
 yt_tilde = compute_sequence(lq_tilde, y0_tilde, n)[1];
 ```
@@ -1117,7 +1121,7 @@ yt_tilde = compute_sequence(lq_tilde, y0_tilde, n)[1];
 ```{code-cell} julia
 # checks that the recursive formulation of the follower's problem gives
 # the same solution as the original Stackelberg problem
-plot(1:n+1, [yt_tilde[5, :], yt_tilde[3, :]], labels = [L"\tilde{q}" L"q"])
+plot(1:(n + 1), [yt_tilde[5, :], yt_tilde[3, :]], labels = [L"\tilde{q}" L"q"])
 ```
 
 Note: Variables with `_tilde` are obtained from solving the follower's
@@ -1132,7 +1136,7 @@ max(abs(yt_tilde[5] - yt_tilde[3]))
 ---
 tags: [remove-cell]
 ---
-#test max(abs(yt_tilde[5] - yt_tilde[3])) ≈ 0. atol = 1e-15
+@test max(abs(yt_tilde[5] - yt_tilde[3])) ≈ 0. atol = 1e-15
 ```
 
 ```{code-cell} julia
@@ -1144,7 +1148,7 @@ yt[:, 1][end] - (yt_tilde[:, 2] - yt_tilde[:, 1])[end] < tol0
 ---
 tags: [remove-cell]
 ---
-#test yt[:, 1][end] - (yt_tilde[:, 2] - yt_tilde[:, 1])[end] < tol0
+@test yt[:, 1][end] - (yt_tilde[:, 2] - yt_tilde[:, 1])[end] < tol0
 ```
 
 ### Explanation of Alignment
@@ -1159,7 +1163,7 @@ Can you spot what features of $\tilde F$ imply this?
 Hint: remember the components of $X_t$
 
 ```{code-cell} julia
-F̃ # policy function in the follower's problem
+F_tilde # policy function in the follower's problem
 ```
 
 ```{code-cell} julia
@@ -1167,43 +1171,43 @@ P # value function in the Stackelberg problem
 ```
 
 ```{code-cell} julia
-P̃ # value function in the follower's problem
+P_tilde # value function in the follower's problem
 ```
 
 ```{code-cell} julia
 # manually check that P is an approximate fixed point
-all((P  - ((R + F' * Q * F) + β * (A - B * F)' * P * (A - B * F)) .< tol0))
+all((P - ((R + F' * Q * F) + beta * (A - B * F)' * P * (A - B * F)) .< tol0))
 ```
 
 ```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
-#test all((P  - ((R + F' * Q * F) + β * (A - B * F)' * P * (A - B * F)) .< tol0))
+@test all((P  - ((R + F' * Q * F) + beta * (A - B * F)' * P * (A - B * F)) .< tol0))
 ```
 
 ```{code-cell} julia
 # compute `P_guess` using `F_tilde_star`
-F̃_star = -[0, 0, 0, 1, 0]';
+F_tilde_star = -[0, 0, 0, 1, 0]';
 P_guess = zeros(5, 5);
 
 for i in 1:1000
-    P_guess = ((R̃ + F̃_star' * Q̃ * F̃_star) +
-               β * (Ã - B̃ * F̃_star)' * P_guess
-               * (Ã - B̃ * F̃_star));
+    P_guess = ((R_tilde + F_tilde_star' * Q_tilde * F_tilde_star) +
+               beta * (A_tilde - B_tilde * F_tilde_star)' * P_guess
+               * (A_tilde - B_tilde * F_tilde_star))
 end
 ```
 
 ```{code-cell} julia
 # value function in the follower's problem
--(y0_tilde' * P̃ * y0_tilde)[1, 1]
+-(y0_tilde' * P_tilde * y0_tilde)[1, 1]
 ```
 
 ```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
-@test -(y0_tilde' * P̃ * y0_tilde)[1, 1] ≈ 112.65590740578173
+@test -(y0_tilde' * P_tilde * y0_tilde)[1, 1] ≈ 112.65590740578173
 ```
 
 ```{code-cell} julia
@@ -1220,8 +1224,8 @@ tags: [remove-cell]
 
 ```{code-cell} julia
 # c policy using policy iteration algorithm
-F_iter = (β * inv(Q + β * B̃' * P_guess * B̃)
-      * B̃' * P_guess * Ã);
+F_iter = (beta * inv(Q + beta * B_tilde' * P_guess * B_tilde)
+          * B_tilde' * P_guess * A_tilde);
 P_iter = zeros(5, 5);
 dist_vec = zeros(5, 5);
 
@@ -1229,27 +1233,30 @@ for i in 1:100
     # compute P_iter
     dist_vec = similar(P_iter)
     for j in 1:1000
-        P_iter = (R̃ + F_iter' * Q * F_iter) + β *
-                  (Ã - B̃ * F_iter)' * P_iter *
-                  (Ã - B̃ * F_iter);
+        P_iter = (R_tilde + F_iter' * Q * F_iter) +
+                 beta *
+                 (A_tilde - B_tilde * F_iter)' * P_iter *
+                 (A_tilde - B_tilde * F_iter)
 
         # update F_iter
-        F_iter = β * inv(Q + β * B̃' * P_iter * B̃) *
-                    B̃' * P_iter * Ã;
+        F_iter = beta * inv(Q + beta * B_tilde' * P_iter * B_tilde) *
+                 B_tilde' * P_iter * A_tilde
 
-        dist_vec = P_iter - ((R̃ + F_iter' * Q * F_iter) +
-                β * (Ã - B̃ * F_iter)' * P_iter *
-                (Ã - B̃ * F_iter));
+        dist_vec = P_iter - ((R_tilde + F_iter' * Q * F_iter) +
+                    beta * (A_tilde - B_tilde * F_iter)' * P_iter *
+                    (A_tilde - B_tilde * F_iter))
     end
 end
 
 if maximum(abs.(dist_vec)) < 1e-8
-    dist_vec2 = F_iter - (β * inv(Q + β * B̃' * P_iter * B̃) * B̃' * P_iter * Ã)
-        if maximum(abs.(dist_vec2)) < 1e-8
-            @show F_iter
-        else
-            println("The policy didn't converge: try increasing the number of outer loop iterations")
-        end
+    dist_vec2 = F_iter -
+                (beta * inv(Q + beta * B_tilde' * P_iter * B_tilde) * B_tilde' *
+                 P_iter * A_tilde)
+    if maximum(abs.(dist_vec2)) < 1e-8
+        @show F_iter
+    else
+        println("The policy didn't converge: try increasing the number of outer loop iterations")
+    end
 else
     println("The policy didn't converge: try increasing the number of inner loop iterations")
 end
@@ -1259,22 +1266,23 @@ end
 yt_tilde_star = zeros(n, 5);
 yt_tilde_star[1, :] = y0_tilde;
 
-for t in 1:n-1
-    yt_tilde_star[t+1, :] = (Ã - B̃ * F̃_star) * yt_tilde_star[t, :];
+for t in 1:(n - 1)
+    yt_tilde_star[t + 1, :] = (A_tilde - B_tilde * F_tilde_star) *
+                              yt_tilde_star[t, :]
 end
 
 plot([yt_tilde_star[:, 5], yt_tilde[3, :]], labels = [L"\tilde{q}" L"q"])
 ```
 
 ```{code-cell} julia
-maximum(abs.(yt_tilde_star[:, 5] - yt_tilde[3, 1:end-1]))
+maximum(abs.(yt_tilde_star[:, 5] - yt_tilde[3, 1:(end - 1)]))
 ```
 
 ```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
-#test maximum(abs.(yt_tilde_star[:, 5] - yt_tilde[3, 1:end-1])) < 1e-15
+@test maximum(abs.(yt_tilde_star[:, 5] - yt_tilde[3, 1:end-1])) < 1e-15
 ```
 
 ## Markov Perfect Equilibrium
@@ -1317,21 +1325,21 @@ B1 = [0, 0, 1];
 B2 = [0, 1, 0];
 R1 = [0 0 -a0/2; 0 0 a1/2; -a0/2 a1/2 a1];
 R2 = [0 -a0/2 0; -a0/2 a1 a1/2; 0 a1/2 0];
-Q1 = Q2 = γ;
-S1 = S2 = W1 = W2 = M1 = M2 = 0.;
+Q1 = Q2 = gamma;
+S1 = S2 = W1 = W2 = M1 = M2 = 0.0;
 
 # solve using nnash from QE
 F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2,
-                        S1, S2, W1, W2, M1, M2,
-                        beta = β,
-                        tol = tol1);
+                       S1, S2, W1, W2, M1, M2,
+                       beta = beta,
+                       tol = tol1);
 
 # simulate forward
 AF = A - B1 * F1 - B2 * F2;
 z = zeros(3, n);
 z[:, 1] .= 1;
-for t in 1:n-1
-    z[:, t+1] = AF * z[:, t]
+for t in 1:(n - 1)
+    z[:, t + 1] = AF * z[:, t]
 end
 
 println("Policy for F1 is $F1")
@@ -1342,8 +1350,8 @@ println("Policy for F2 is $F2")
 ---
 tags: [remove-cell]
 ---
-#test round(F1[1], digits = 4) == -0.227
-#test round(F2[2], digits = 4) == 0.0945
+@test round(F1[1], digits = 4) == -0.227
+@test round(F2[2], digits = 4) == 0.0945
 ```
 
 ```{code-cell} julia
@@ -1351,7 +1359,8 @@ q1 = z[2, :];
 q2 = z[3, :];
 q = q1 + q2; # total output, MPE
 p = a0 .- a1 * q; # total price, MPE
-plot([q, p], labels = ["total ouput" "total price"], title = "Output and prices, duopoly MPE", xlabel = L"t")
+plot([q, p], labels = ["total ouput" "total price"],
+     title = "Output and prices, duopoly MPE", xlabel = L"t")
 ```
 
 ```{code-cell} julia
@@ -1370,11 +1379,11 @@ tags: [remove-cell]
 # compute values
 u1 = -F1 * z;
 u2 = -F2 * z;
-π_1 = (p .* q1)' - γ * u1.^2;
-π_2 = (p .* q2)' - γ * u2.^2;
+pi_1 = (p .* q1)' - gamma * u1 .^ 2;
+pi_2 = (p .* q2)' - gamma * u2 .^ 2;
 
-v1_forward = π_1 * βs;
-v2_forward = π_2 * βs;
+v1_forward = pi_1 * betas;
+v2_forward = pi_2 * betas;
 
 v1_direct = -z[:, 1]' * P1 * z[:, 1];
 v2_direct = -z[:, 1]' * P2 * z[:, 1];
@@ -1387,16 +1396,16 @@ println("Firm 2: Direct is $v2_direct, Forward is $(v2_forward[1])");
 ---
 tags: [remove-cell]
 ---
-#test round(v1_direct, digits = 4) == 133.3296
-#test round(v2_direct, digits = 4) == 133.3296
-#test round(v1_forward[1], digits = 4) == 133.3303
-#test round(v2_forward[1], digits = 4) == 133.3303
+@test round(v1_direct, digits = 3) == 133.329
+@test round(v2_direct, digits = 3) == 133.329
+@test round(v1_forward[1], digits = 3) == 133.330
+@test round(v2_forward[1], digits = 3) == 133.330
 ```
 
 ```{code-cell} julia
 # sanity check
-Λ_1 = A - B2 * F2;
-lq1 = QuantEcon.LQ(Q1, R1, Λ_1, B1, bet = β);
+Lambda_1 = A - B2 * F2;
+lq1 = QuantEcon.LQ(Q1, R1, Lambda_1, B1, bet = beta);
 P1_ih, F1_ih, d = stationary_values(lq1);
 
 v2_direct_alt = -z[:, 1]' * P1_ih * z[:, 1] + d;
@@ -1410,13 +1419,15 @@ vt_MPE = zeros(n);
 vt_follower = zeros(n);
 
 for t in 1:n
-    vt_MPE[t] = -z[:, t]' * P1 * z[:, t];
-    vt_follower[t] = -yt_tilde[:, t]' * P̃ * yt_tilde[:, t];
+    vt_MPE[t] = -z[:, t]' * P1 * z[:, t]
+    vt_follower[t] = -yt_tilde[:, t]' * P_tilde * yt_tilde[:, t]
 end
 
-plot([vt_MPE, vt_leader, vt_follower], labels = ["MPE" "Stackelberg leader" "Stackelberg follower"], 
-        title = "MPE vs Stackelberg Values",
-        xlabel = L"t")
+plot([vt_MPE, vt_leader, vt_follower],
+     labels = ["MPE" "Stackelberg leader" "Stackelberg follower"],
+     title = "MPE vs Stackelberg Values",
+     xlabel = L"t",
+     legend = :outertopright)
 ```
 
 ```{code-cell} julia
@@ -1428,7 +1439,7 @@ println("vt_MPE(y0) = $(vt_MPE[1])");
 
 ```{code-cell} julia
 # total difference in value b/t Stackelberg and MPE
-vt_leader[1] + vt_follower[1] - 2*vt_MPE[1]
+vt_leader[1] + vt_follower[1] - 2 * vt_MPE[1]
 ```
 
 ```{code-cell} julia

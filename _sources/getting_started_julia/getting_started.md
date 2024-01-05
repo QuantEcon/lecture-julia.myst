@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (getting_started)=
@@ -92,15 +92,15 @@ The semi-official installation method for Windows is to use [Juliaup](https://gi
 ```
 
 
-1. Download and install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation) or manually installing from [download page](http://julialang.org/downloads/), accepting all default options.  That is,
-    - Easiest method may be executing `winget install julia -s msstore` in a Windows terminal, or
-    - `curl -fsSL https://install.julialang.org | sh` on a Mac terminal.
-    - We recommend installing [manually](https://julialang.org/downloads/platform/#linux_and_freebsd) on Linux.
-    - If you have previously installed Julia manually, you will need to uninstall previous versions before switching to Juliaup.
+1. Download and install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation)
+    - Windows: easiest method is `winget install julia -s msstore` in a Windows terminal
+    - Linux/Mac: in a terminal use `curl -fsSL https://install.julialang.org | sh`
+    - If you have previously installed Julia manually, you will need to uninstall previous versions before switching to `juliaup`.
+    - Alternatively, can manually install from [download page](http://julialang.org/downloads/), accepting all default options
 
 2. Open Julia, by either
     - Navigating to Julia through your menus or desktop icons (Windows, Mac), or
-    - Opening a terminal and type `julia` (Windows; to set this up on macOS, see [here](https://julialang.org/downloads/platform/#macos); to set this up on Linux, see [here](https://julialang.org/downloads/platform/#linux_and_freebsd)).
+    - Opening a terminal and type `julia` (which should work for all OS if you used `juliaup`.  Otherwise see [here](https://julialang.org/downloads/platform/))
 
    You should now be looking at something like this
    
@@ -188,39 +188,36 @@ Becoming comfortable with VS Code and tools for source code control/software eng
 
 Next, let's install the QuantEcon lecture notes to our machine and run them (for more details on the tools we'll use, see our lecture on {doc}`version control <../software_engineering/version_control>`).
 
-While the lecture notes can be cloned within VS Code directly, we will use the command-line to begin the introduction to source control tools.
+With VS Code installed, you can easily clone the lecture notes repository
 
-1. Choose and create if necessary a convenient parent folder where you would like the notebooks directory
+1. Open the command palette with `<Ctrl+Shift+P>` and type `> Git: Clone`
+2. For the Repository URL, provide enter `https://github.com/quantecon/lecture-julia.notebooks`
+Alternatively, if you are already a user of Visual Studio Code, you can clone within VS Code by using the `> Git: Clone` command from the [command palette](command_palette).  See the lectures on [tools](../software_engineering/tools_editors.md) and [source code control](../software_engineering/version_control.md) for more details.
+3. Choose the location to clone when prompted
    - The workflow will be easiest if you clone the repo to the default location relative to the home folder for your user.
    - For example, on Windows a good choice might be `c:\Users\YOURUSERNAME\Documents\GitHub` or simply `c:\Users\YOURUSERNAME\Documents`.  On linux and macOS, your home directory `~` or `~/GitHub`.
+4. Accept the option to open in a new window when prompted
+
+```{admonition} Cloning without VS Code
+
+To use the command-line to begin the introduction to source control tools.
+
+1. Choose and create if necessary a convenient parent folder where you would like the notebooks directory, see above for suggestions.
 2. Open a new terminal for your machine and navigate to the parent folder of where you wish to store the notebooks.
    - On Windows: if using the [Windows Terminal](https://aka.ms/terminal) you can simply right-click on the directory in the File Explorer and choose to "Open in Microsoft Terminal" or, alternatively "Git Bash Here" to use the terminal provided by Git.  On macOS, see [here](https://apple.stackexchange.com/questions/11323/how-can-i-open-a-terminal-window-directly-from-my-current-finder-location) for a discussion of different approaches.
-3. Execute the following code in the terminal to download the entire suite of notebooks associated with these lectures.
-   ```{code-block} bash
-   git clone https://github.com/quantecon/lecture-julia.notebooks
-   ```
+3. Execute the following code in the terminal to download the entire suite of notebooks associated with these lectures with `git clone https://github.com/quantecon/lecture-julia.notebooks`
    This will download the repository with the notebooks into the directory `lecture-julia.notebooks` within your working directory.
-4. Then, `cd` to that location in your terminal
+4. Then, `cd` to that location in your terminal with `cd lecture-julia.notebooks`
+5. Finally, you can open this directory from your terminal in VS Code with `code .` or manually opening
+```
 
-   ```{code-block} bash
-   cd lecture-julia.notebooks
-   ```
-5. Finally, you can open this directory from your terminal with the following
-
-   ```{code-block} bash
-   code .
-   ```
-
-Which should provide a screen such as 
+If you have opened this in VS Code, it should look something like
 
 ```{figure} /_static/figures/vscode_intro_1.png
 :width: 100%
 ```
 
 
-```{admonition} Cloning Directly from VS Code
-Alternatively, if you are already a user of Visual Studio Code, you can clone within VS Code by using the `> Git: Clone` command from the [command palette](command_palette).  See the lectures on [tools](../software_engineering/tools_editors.md) and [source code control](../software_engineering/version_control.md) for more details.
-```
 
 (install_packages)=
 ## Installing Packages
@@ -251,7 +248,7 @@ Recall that you can start this directly from the [command palette](command_palet
 This process will take several minutes to download and compile all of the files used by the lectures.
 
 ```{attention}
-If the cursor is instead `(@v1.8) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
+If the cursor is instead `(@v1.10) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
 
 One benefit of using the integrated REPL is that it will set important options for launching Julia (e.g. the number of threads) and activate the local project files (i.e. the `Project.toml` file in the notebooks directory) automatically.  If you use an external REPL, you will need to set these manually.  Here you would want to run the REPL with `julia --project --threads auto`  to tell Julia to set the number of threads equal to your local machine's number of cores, and to activate the existing project.  See [here](repl_main) for more details.
 ```
@@ -311,11 +308,9 @@ As you work through the notebooks, you may wish to reset these to the most recen
 
 Additionally, if the notebooks themselves are modified as the lecture notes evolve, you can first discard any changes, and then either use `> Git: Pull` command or click on the arrow next to "main" on the bottom left of the screen to download the latest versions. Here "main" refers to the main branch of the repo where the latest versions are hosted.
 
-If the `Project.toml` or `Manifest.toml` files are modified, then after reverting you will want to redo the [instantiation](install_packages) step to ensure you have the correct versions.
-
+If the `Project.toml` or `Manifest.toml` files are modified, then after reverting you will want to redo the step to ensure you have the correct versions.  To do this, run the project, enter package management mode with `]`, ensure that `(quantecon-notebooks-julia) pkg>` is displayed, and then type `instantiate` to install the correct versions.
 
 We will explore these sorts of features, and how to use them for your own projects, in the {doc}`source code control <../software_engineering/version_control>` lecture.
-
 
 
 (julia_environment)=

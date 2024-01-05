@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (aiyagari)=
@@ -195,6 +195,7 @@ The object also includes a default set of parameters that we'll adopt unless oth
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
+using LaTeXStrings, Plots, QuantEcon
 ```
 
 ```{code-cell} julia
@@ -205,30 +206,27 @@ using Test, Random
 ```
 
 ```{code-cell} julia
-using LaTeXStrings, Parameters, Plots, QuantEcon
+function Household(; r = 0.01,
+                   w = 1.0,
+                   sigma = 1.0,
+                   beta = 0.96,
+                   z_chain = MarkovChain([0.9 0.1; 0.1 0.9], [0.1; 1.0]),
+                   a_min = 1e-10,
+                   a_max = 18.0,
+                   a_size = 200,
+                   a_vals = range(a_min, a_max, length = a_size),
+                   # -Inf is the utility of dying (0 consumption)
+                   u = sigma == 1 ? x -> log(x) :
+                       x -> (x^(1 - sigma) - 1) / (1 - sigma))
 
-```
+    # Create grids
+    z_size = length(z_chain.state_values)
+    n = a_size * z_size
+    s_vals = gridmake(a_vals, z_chain.state_values)
+    s_i_vals = gridmake(1:a_size, 1:z_size)
 
-```{code-cell} julia
-Household = @with_kw (r = 0.01,
-                      w = 1.0,
-                      σ = 1.0,
-                      β = 0.96,
-                      z_chain = MarkovChain([0.9 0.1; 0.1 0.9], [0.1; 1.0]),
-                      a_min = 1e-10,
-                      a_max = 18.0,
-                      a_size = 200,
-                      a_vals = range(a_min, a_max, length = a_size),
-                      z_size = length(z_chain.state_values),
-                      n = a_size * z_size,
-                      s_vals = gridmake(a_vals, z_chain.state_values),
-                      s_i_vals = gridmake(1:a_size, 1:z_size),
-                      u = σ == 1 ? x -> log(x) : x -> (x^(1 - σ) - 1) / (1 - σ),
-                      R = setup_R!(fill(-Inf, n, a_size), a_vals, s_vals, r, w, u),
-                      # -Inf is the utility of dying (0 consumption)
-                      Q = setup_Q!(zeros(n, a_size, n), s_i_vals, z_chain))
-
-function setup_Q!(Q, s_i_vals, z_chain)
+    # Fill in the Q and R
+    Q = zeros(n, a_size, n)
     for next_s_i in 1:size(Q, 3)
         for a_i in 1:size(Q, 2)
             for s_i in 1:size(Q, 1)
@@ -241,10 +239,8 @@ function setup_Q!(Q, s_i_vals, z_chain)
             end
         end
     end
-    return Q
-end
 
-function setup_R!(R, a_vals, s_vals, r, w, u)
+    R = fill(-Inf, n, a_size)
     for new_a_i in 1:size(R, 2)
         a_new = a_vals[new_a_i]
         for s_i in 1:size(R, 1)
@@ -256,7 +252,8 @@ function setup_R!(R, a_vals, s_vals, r, w, u)
             end
         end
     end
-    return R
+    return (; r, w, sigma, beta, z_chain, a_min, a_max, a_size, a_vals, z_size,
+            n, s_vals, s_i_vals, u, R, Q)
 end
 ```
 
@@ -271,16 +268,16 @@ Random.seed!(42);
 
 ```{code-cell} julia
 # Create an instance of Household
-am = Household(a_max = 20.0, r = 0.03, w = 0.956)
+am = Household(; a_max = 20.0, r = 0.03, w = 0.956)
 
 # Use the instance to build a discrete dynamic program
-am_ddp = DiscreteDP(am.R, am.Q, am.β)
+am_ddp = DiscreteDP(am.R, am.Q, am.beta)
 
 # Solve using policy function iteration
 results = solve(am_ddp, PFI)
 
 # Simplify names
-(;z_size, a_size, n, a_vals) = am
+(; z_size, a_size, n, a_vals) = am
 z_vals = am.z_chain.state_values
 
 # Get all optimal actions across the set of
@@ -298,10 +295,10 @@ plot!(xlabel = "current assets", ylabel = "next period assets", grid = false)
 tags: [remove-cell]
 ---
 @testset begin
-    #test a_vals[4] ≈ 0.3015075377869347
-    #test a_star[4] ≈ 0.2010050252246231
-    #test results.v[4] ≈ -27.48291672016239
-    #test z_vals ≈ [0.1, 1.0]
+    @test a_vals[4] ≈ 0.3015075377869347
+    @test a_star[4] ≈ 0.2010050252246231
+    @test results.v[4] ≈ -27.48291672016239
+    @test z_vals ≈ [0.1, 1.0]
 end
 ```
 
@@ -323,29 +320,16 @@ Random.seed!(42);
 ```
 
 ```{code-cell} julia
-# Firms' parameters
-const A = 1
-const N = 1
-const α = 0.33
-const β = 0.96
-const δ = 0.05
 
-function r_to_w(r)
-    return A * (1 - α) * (A * α / (r + δ)) ^ (α / (1 - α))
-end
+# Calculate supply of capital for a given r
+function prices_to_capital_stock(r; beta, A, N, alpha, delta, a_max)
+    # Create an instance of Household given the parameters
 
-function rd(K)
-    return A * α * (N / K) ^ (1 - α) - δ
-end
+    # Calculate the equilibrium wages
+    w = A * (1 - alpha) * (A * alpha / (r + delta))^(alpha / (1 - alpha))
+    am = Household(; beta, a_max, w, r)
 
-function prices_to_capital_stock(am, r)
-
-    # Set up problem
-    w = r_to_w(r)
-    (;a_vals, s_vals, u) = am
-    setup_R!(am.R, a_vals, s_vals, r, w, u)
-
-    aiyagari_ddp = DiscreteDP(am.R, am.Q, am.β)
+    aiyagari_ddp = DiscreteDP(am.R, am.Q, am.beta)
 
     # Compute the optimal policy
     results = solve(aiyagari_ddp, PFI)
@@ -354,33 +338,39 @@ function prices_to_capital_stock(am, r)
     stationary_probs = stationary_distributions(results.mc)[:, 1][1]
 
     # Return K
-    return dot(am.s_vals[:, 1], stationary_probs)
+    K = dot(am.s_vals[:, 1], stationary_probs)
+
+    # Return capital
+    return K
 end
 
-# Create an instance of Household
-am = Household(β = β, a_max = 20.0)
+# Inverse Demand for capital
+function r_inverse_demand(K; A, N, alpha, delta)
+    return A * alpha * (N / K)^(1 - alpha) - delta
+end
 
 # Create a grid of r values at which to compute demand and supply of capital
 r_vals = range(0.005, 0.04, length = 20)
 
+# Firms' parameters
+A = 1
+N = 1
+alpha = 0.33
+beta = 0.96
+delta = 0.05
+a_max = 20.0
+
+prices_to_capital_stock(r_vals[1]; A, N, alpha, beta, delta, a_max)
+
 # Compute supply of capital
-k_vals = prices_to_capital_stock.(Ref(am), r_vals)
+k_vals = prices_to_capital_stock.(r_vals; A, N, alpha, beta, delta, a_max)
+
+r_inverse_demand_vals = r_inverse_demand.(k_vals; A, N, alpha, delta)
 
 # Plot against demand for capital by firms
-demand = rd.(k_vals)
-labels =  ["demand for capital" "supply of capital"]
-plot(k_vals, [demand r_vals], label = labels, lw = 2, alpha = 0.6)
-plot!(xlabel = "capital", ylabel = "interest rate", xlim = (2, 14), ylim = (0.0, 0.1))
+labels = ["demand for capital" "supply of capital"]
+plot(k_vals, [r_inverse_demand_vals r_vals], label = labels, lw = 2,
+     alpha = 0.6)
+plot!(xlabel = "capital", ylabel = "interest rate", xlim = (2, 14),
+      ylim = (0.0, 0.1))
 ```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset begin
-    #test k_vals[4] ≈ 3.920775511050653
-    #test demand[4] ≈ 0.08211578674946372
-    #test r_vals[4] ≈ 0.010526315789473684
-end
-```
-

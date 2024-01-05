@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (iterative_methods_sparsity)=
@@ -457,7 +457,7 @@ equation through methods such as value-function iteration.
 The condition we will examine here is called [**diagonal dominance**](https://en.wikipedia.org/wiki/Diagonally_dominant_matrix).
 
 $$
-|A_{ii}| \geq \sum_{j\neq i} |A_{ij}| \quad\text{for all } i = 1\ldots N
+|A_{ii}| \geq \sum_{j\neq i} |A_{ij}| \quad\text{for all } i = 1, \ldots N
 $$
 
 That is, in every row, the diagonal element is weakly greater in absolute value than the sum of all of the other elements in the row.  In cases
@@ -466,7 +466,7 @@ where it is strictly greater, we say that the matrix is strictly diagonally domi
 With our example, given that $Q$ is the infinitesimal generator of a Markov chain, we know that each row sums to 0, and hence
 it is weakly diagonally dominant.
 
-However, notice that when $\rho > 0$, and since the diagonal of $Q$ is negative,  $A = rho I - Q$ makes the matrix strictly diagonally dominant.
+However, notice that when $\rho > 0$, and since the diagonal of $Q$ is negative,  $A = \rho I - Q$ makes the matrix strictly diagonally dominant.
 
 ### Jacobi Iteration
 
@@ -1070,7 +1070,7 @@ With this, we are now able to write the $Q$ operator on the $f$ vector, which is
 parameters in a named tuple generator
 
 ```{code-cell} julia
-using Parameters, BenchmarkTools
+using BenchmarkTools
 function default_params(; theta = 0.1, zeta = 0.05, rho = 0.03, N = 10, M = 6,
                         shape = Tuple(fill(N, M)),  # for reshaping vector to M-d array
                         e_m = ([CartesianIndex((1:M .== i) * 1...) for i in 1:M]))
@@ -1187,7 +1187,7 @@ $$
 If $Q$ is a matrix, we could just take its transpose to find the adoint.  However, with matrix-free methods, we need to implement the
 adjoint-vector product directly.
 
-The logic for the adjoint is that for a given $n = (n_1,\ldots, n_m, \ldots n_M)$, the $Q^T$ product for that row has terms enter when
+The logic for the adjoint is that for a given $n = (n_1,\ldots, n_m, \ldots, n_M)$, the $Q^T$ product for that row has terms enter when
 
 1. $1 < n_m \leq N$, entering into the identical $n$ except with one less customer in the $m$ position
 1. $1 \leq n_m < N$, entering into the identical $n$ except with one more customer in the $m$ position
@@ -1300,34 +1300,3 @@ end
 p = default_params(; N = 10, M = 5)
 @btime stationary_psi($p);
 ```
-
-As a final demonstration, consider calculating the full evolution of the $psi(t)$ Markov chain.  For the constant
-$Q'$ matrix, the solution to this system of equations is $\psi(t) = \exp(Q') \psi(0)$
-
-Matrix-free Krylov methods using a technique called [exponential integration](https://en.wikipedia.org/wiki/Exponential_integrator) can solve this for high-dimensional problems.
-
-For this, we can set up a `MatrixFreeOperator` for our `Q_T_mul!` function (equivalent to the `LinearMap`, but with some additional requirements for the ODE solver) and use the [LinearExponential](http://docs.juliadiffeq.org/latest/solvers/ode_solve.html#Exponential-Methods-for-Linear-and-Affine-Problems-1) time-stepping method.
-
-```{code-cell} julia
-using OrdinaryDiffEq, DiffEqOperators
-
-function solve_transition_dynamics(p, t)
-    (; N, M) = p
-
-    psi_0 = [1.0; fill(0.0, N^M - 1)]
-    O! = MatrixFreeOperator((dpsi, psi, p, t) -> Q_T_mul!(dpsi, psi, p), (p, 0.0),
-                            size = (N^M, N^M), opnorm = (p) -> 1.25)
-
-    # define the corresponding ODE problem
-    prob = ODEProblem(O!, psi_0, (0.0, t[end]), p)
-    return solve(prob, LinearExponential(krylov = :simple), tstops = t)
-end
-t = 0.0:5.0:100.0
-p = default_params(; N = 10, M = 6)
-sol = solve_transition_dynamics(p, t)
-v = solve_bellman(p)
-plot(t, [dot(sol(tval), v) for tval in t], xlabel = L"t", label = L"E_t(v)")
-```
-
-The above plot (1) calculates the full dynamics of the Markov chain from the $n_m = 1$ for all $m$ initial condition; (2) solves the dynamics of a system of a million ODEs; and (3) uses the calculation of the Bellman equation to find the expected valuation during that transition.  The entire process takes less than 30 seconds.
-

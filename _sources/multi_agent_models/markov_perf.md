@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (markov_perf)=
@@ -432,28 +432,28 @@ using QuantEcon, LinearAlgebra
 # parameters
 a0 = 10.0
 a1 = 2.0
-β = 0.96
-γ = 12.0
+beta = 0.96
+gamma = 12.0
 
 # in LQ form
-A  = I + zeros(3, 3)
+A = I + zeros(3, 3)
 B1 = [0.0, 1.0, 0.0]
 B2 = [0.0, 0.0, 1.0]
 
-R1 = [      0.0   -a0 / 2.0          0.0;
-    -a0 / 2.0          a1     a1 / 2.0;
-            0.0    a1 / 2.0          0.0]
+R1 = [0.0 -a0/2.0 0.0;
+      -a0/2.0 a1 a1/2.0;
+      0.0 a1/2.0 0.0]
 
-R2 = [      0.0          0.0      -a0 / 2.0;
-            0.0          0.0       a1 / 2.0;
-    -a0 / 2.0     a1 / 2.0             a1]
+R2 = [0.0 0.0 -a0/2.0;
+      0.0 0.0 a1/2.0;
+      -a0/2.0 a1/2.0 a1]
 
-Q1 = Q2 = γ
+Q1 = Q2 = gamma
 S1 = S2 = W1 = W2 = M1 = M2 = 0.0
 
 # solve using QE's nnash function
 F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2,
-                       beta=β)
+                       beta = beta)
 
 # display policies
 println("Computed policies for firm 1 and firm 2:")
@@ -480,8 +480,8 @@ In particular, let's take F2 as computed above, plug it into {eq}`eq_mpe_p1p` an
 We hope that the resulting policy will agree with F1 as computed above
 
 ```{code-cell} julia
-Λ1 = A - (B2 * F2)
-lq1 = QuantEcon.LQ(Q1, R1, Λ1, B1, bet=β)
+Lambda1 = A - (B2 * F2)
+lq1 = QuantEcon.LQ(Q1, R1, Lambda1, B1, bet = beta)
 P1_ih, F1_ih, d = stationary_values(lq1)
 F1_ih
 ```
@@ -493,7 +493,7 @@ tags: [remove-cell]
 @testset begin
   @test P1_ih[2, 2] ≈ 5.441368459897164
   @test d ≈ 0.0
-  @test Λ1[1, 1] ≈ 1.0 && Λ1[3, 2] ≈ -0.07584666305807419
+  @test Lambda1[1, 1] ≈ 1.0 && Lambda1[3, 2] ≈ -0.07584666305807419
   @test F1_ih ≈ [-0.6684661291052371 0.29512481789806305 0.07584666292394007]
   @test isapprox(F1, F1_ih, atol=1e-7) # Make sure the test below comes up true.
 end
@@ -504,7 +504,7 @@ This is close enough for rock and roll, as they say in the trade.
 Indeed, isapprox agrees with our assessment
 
 ```{code-cell} julia
-isapprox(F1, F1_ih, atol=1e-7)
+isapprox(F1, F1_ih, atol = 1e-7)
 ```
 
 ### Dynamics
@@ -522,22 +522,21 @@ The following program
 ```{code-cell} julia
 using LaTeXStrings, Plots
 
-
 AF = A - B1 * F1 - B2 * F2
 n = 20
 x = zeros(3, n)
 x[:, 1] = [1 1 1]
-for t in 1:n-1
-    x[:, t+1] = AF * x[:, t]
+for t in 1:(n - 1)
+    x[:, t + 1] = AF * x[:, t]
 end
 q1 = x[2, :]
 q2 = x[3, :]
 q = q1 + q2         # total output, MPE
 p = a0 .- a1 * q     # price, MPE
 
-plt = plot(q, color=:blue, lw=2, alpha=0.75, label="total output")
-plot!(plt, p, color=:green, lw=2, alpha=0.75, label="price")
-plot!(plt, title="Output and prices, duopoly MPE")
+plt = plot(q, color = :blue, lw = 2, alpha = 0.75, label = "total output")
+plot!(plt, p, color = :green, lw = 2, alpha = 0.75, label = "price")
+plot!(plt, title = "Output and prices, duopoly MPE")
 ```
 
 ```{code-cell} julia
@@ -651,9 +650,9 @@ The exercise is to calculate these matrices and compute the following figures.
 The first figure shows the dynamics of inventories for each firm when the parameters are
 
 ```{code-cell} julia
-δ = 0.02
-D = [ -1  0.5;
-     0.5   -1]
+delta = 0.02
+D = [-1 0.5;
+     0.5 -1]
 b = [25, 25]
 c1 = c2 = [1, -2, 1]
 e1 = e2 = [10, 10, 3]
@@ -683,28 +682,28 @@ First let's compute the duopoly MPE under the stated parameters
 # parameters
 a0 = 10.0
 a1 = 2.0
-β = 0.96
-γ = 12.0
+beta = 0.96
+gamma = 12.0
 
 # in LQ form
 A = I + zeros(3, 3)
 B1 = [0.0, 1.0, 0.0]
 B2 = [0.0, 0.0, 1.0]
 
-R1 = [      0.0   -a0 / 2.0         0.0;
-      -a0 / 2.0          a1    a1 / 2.0;
-            0.0    a1 / 2.0         0.0]
+R1 = [0.0 -a0/2.0 0.0;
+      -a0/2.0 a1 a1/2.0;
+      0.0 a1/2.0 0.0]
 
-R2 = [      0.0        0.0    -a0 / 2.0;
-            0.0        0.0     a1 / 2.0;
-      -a0 / 2.0   a1 / 2.0           a1]
+R2 = [0.0 0.0 -a0/2.0;
+      0.0 0.0 a1/2.0;
+      -a0/2.0 a1/2.0 a1]
 
-Q1 = Q2 = γ
+Q1 = Q2 = gamma
 S1 = S2 = W1 = W2 = M1 = M2 = 0.0
 
 # solve using QE's nnash function
 F1, F2, P1, P2 = nnash(A, B1, B2, R1, R2, Q1, Q2, S1, S2, W1, W2, M1, M2,
-                       beta=β)
+                       beta = beta)
 ```
 
 ```{code-cell} julia
@@ -783,9 +782,9 @@ resulting dynamics of $\{q_t\}$, starting at $q_0 = 2.0$.
 tags: [hide-output]
 ---
 R = a1
-Q = γ
+Q = gamma
 A = B = 1
-lq_alt = QuantEcon.LQ(Q, R, A, B, bet=β)
+lq_alt = QuantEcon.LQ(Q, R, A, B, bet=beta)
 P, F, d = stationary_values(lq_alt)
 q̄ = a0 / (2.0 * a1)
 qm = zeros(n)
@@ -814,15 +813,19 @@ end
 Let's have a look at the different time paths
 
 ```{code-cell} julia
-plt_q = plot(qm, color=:blue, lw=2, alpha=0.75, label="monopolist output")
-plot!(plt_q, q, color=:green, lw=2, alpha=0.75, label="MPE total output")
-plot!(plt_q, xlabel="time", ylabel="output", ylim=(2,4),legend=:topright)
+plt_q = plot(qm, color = :blue, lw = 2, alpha = 0.75,
+             label = "monopolist output")
+plot!(plt_q, q, color = :green, lw = 2, alpha = 0.75,
+      label = "MPE total output")
+plot!(plt_q, xlabel = "time", ylabel = "output", ylim = (2, 4),
+      legend = :topright)
 
-plt_p = plot(pm, color=:blue, lw=2, alpha=0.75, label="monopolist price")
-plot!(plt_p, p, color=:green, lw=2, alpha=0.75, label="MPE price")
-plot!(plt_p, xlabel="time", ylabel="price",legend=:topright)
+plt_p = plot(pm, color = :blue, lw = 2, alpha = 0.75,
+             label = "monopolist price")
+plot!(plt_p, p, color = :green, lw = 2, alpha = 0.75, label = "MPE price")
+plot!(plt_p, xlabel = "time", ylabel = "price", legend = :topright)
 
-plot(plt_q, plt_p, layout=(2,1), size=(700,600))
+plot(plt_q, plt_p, layout = (2, 1), size = (700, 600))
 ```
 
 ### Exercise 2
@@ -830,13 +833,13 @@ plot(plt_q, plt_p, layout=(2,1), size=(700,600))
 We treat the case $\delta = 0.02$
 
 ```{code-cell} julia
-δ = 0.02
-D = [-1  0.5;
+delta = 0.02
+D = [-1 0.5;
      0.5 -1]
 b = [25, 25]
 c1 = c2 = [1, -2, 1]
 e1 = e2 = [10, 10, 3]
-δ_1 = 1-δ
+delta_1 = 1 - delta
 ```
 
 Recalling that the control and state are
@@ -860,42 +863,42 @@ we set up the matrices as follows:
 
 ```{code-cell} julia
 # create matrices needed to compute the Nash feedback equilibrium
-A = [δ_1     0   -δ_1 * b[1];
-       0   δ_1   -δ_1 * b[2];
-       0     0             1]
+A = [delta_1 0 -delta_1*b[1];
+     0 delta_1 -delta_1*b[2];
+     0 0 1]
 
-B1 = δ_1 * [1 -D[1, 1];
-            0 -D[2, 1];
-            0        0]
-B2 = δ_1 * [0 -D[1, 2];
-            1 -D[2, 2];
-            0        0]
+B1 = delta_1 * [1 -D[1, 1];
+                0 -D[2, 1];
+                0 0]
+B2 = delta_1 * [0 -D[1, 2];
+                1 -D[2, 2];
+                0 0]
 
-R1 = -[0.5 * c1[3]   0    0.5 * c1[2];
-                 0   0              0;
-       0.5 * c1[2]   0          c1[1]]
+R1 = -[0.5*c1[3] 0 0.5*c1[2];
+       0 0 0;
+       0.5*c1[2] 0 c1[1]]
 
-R2 = -[0             0              0;
-       0   0.5 * c2[3]      0.5*c2[2];
-       0   0.5 * c2[2]          c2[1]]
+R2 = -[0 0 0;
+       0 0.5*c2[3] 0.5*c2[2];
+       0 0.5*c2[2] c2[1]]
 
-Q1 = [-0.5*e1[3]          0;
-               0    D[1, 1]]
-Q2 = [-0.5*e2[3]          0;
-               0    D[2, 2]]
+Q1 = [-0.5*e1[3] 0;
+      0 D[1, 1]]
+Q2 = [-0.5*e2[3] 0;
+      0 D[2, 2]]
 
 S1 = zeros(2, 2)
 S2 = copy(S1)
 
-W1 = [         0.0           0.0;
-               0.0           0.0;
-      -0.5 * e1[2]    b[1] / 2.0]
-W2 = [         0.0           0.0;
-               0.0           0.0;
-      -0.5 * e2[2]    b[2] / 2.0]
+W1 = [0.0 0.0;
+      0.0 0.0;
+      -0.5*e1[2] b[1]/2.0]
+W2 = [0.0 0.0;
+      0.0 0.0;
+      -0.5*e2[2] b[2]/2.0]
 
-M1 = [0.0            0.0;
-      0.0  D[1, 2] / 2.0]
+M1 = [0.0 0.0;
+      0.0 D[1, 2]/2.0]
 M2 = copy(M1)
 ```
 
@@ -943,16 +946,16 @@ corresponding to $\delta = 0.02$
 AF = A - B1 * F1 - B2 * F2
 n = 25
 x = zeros(3, n)
-x[:, 1] = [2  0  1]
-for t in 1:(n-1)
-    x[:, t+1] = AF * x[:, t]
+x[:, 1] = [2 0 1]
+for t in 1:(n - 1)
+    x[:, t + 1] = AF * x[:, t]
 end
 I1 = x[1, :]
 I2 = x[2, :]
 
-plot(I1, color=:blue, lw=2, alpha=0.75, label="inventories, firm 1")
-plot!(I2, color=:green, lw=2, alpha=0.75, label="inventories, firm 2")
-plot!(title=L"\delta = 0.02")
+plot(I1, color = :blue, lw = 2, alpha = 0.75, label = "inventories, firm 1")
+plot!(I2, color = :green, lw = 2, alpha = 0.75, label = "inventories, firm 2")
+plot!(title = L"\delta = 0.02")
 ```
 
 ```{code-cell} julia

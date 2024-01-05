@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (lake_model)=
@@ -196,9 +196,8 @@ Here's the code:
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics
-using Distributions, Expectations, NLsolve, Parameters, Plots
-using QuantEcon, Roots, Random
+using LinearAlgebra, Statistics, Distributions
+using NLsolve, Plots, QuantEcon, Roots, Random
 ```
 
 ```{code-cell} julia
@@ -208,49 +207,36 @@ tags: [remove-cell]
 using Test
 ```
 
-```{code-cell} julia
+Reusable functions for simulating linear maps and finding their fixed points
 
+```{code-cell} julia
+function simulate_linear(A, x_0, T)
+    X = zeros(length(x_0), T + 1)
+    X[:, 1] = x_0
+    for t in 2:(T + 1)
+        X[:, t] = A * X[:, t - 1]
+    end
+    return X
+end
+
+function linear_steady_state(A, x_0 = ones(size(A, 1)) / size(A, 1))
+    sol = fixedpoint(x -> A * x, x_0)
+    converged(sol) || error("Failed to converge in $(sol.iterations) iter")
+    return sol.zero
+end
 ```
 
 ```{code-cell} julia
-LakeModel = @with_kw (λ = 0.283, α = 0.013, b = 0.0124, d = 0.00822)
-
-function transition_matrices(lm)
-    (;λ, α, b, d) = lm
+function LakeModel(; lambda = 0.283, alpha = 0.013, b = 0.0124, d = 0.00822)
+    # calculate transition matrices
     g = b - d
-    A = [(1 - λ) * (1 - d) + b      (1 - d) * α + b
-        (1 - d) * λ                 (1 - d) * (1 - α)]
-    Â = A ./ (1 + g)
-    return (A = A, Â = Â)
-end
+    A = [(1 - lambda) * (1 - d)+b (1 - d) * alpha+b
+         (1 - d)*lambda (1 - d)*(1 - alpha)]
+    A_hat = A ./ (1 + g)
 
-function rate_steady_state(lm)
-    (;Â) = transition_matrices(lm)
-    sol = fixedpoint(x -> Â * x, fill(0.5, 2))
-    converged(sol) || error("Failed to converge in $(result.iterations) iterations")
-    return sol.zero
-end
-
-function simulate_stock_path(lm, X0, T)
-    (;A) = transition_matrices(lm)
-    X_path = zeros(eltype(X0), 2, T)
-    X = copy(X0)
-    for t in 1:T
-        X_path[:, t] = X
-        X = A * X
-    end
-    return X_path
-end
-
-function simulate_rate_path(lm, x0, T)
-    (;Â) = transition_matrices(lm)
-    x_path = zeros(eltype(x0), 2, T)
-    x = copy(x0)
-    for t in 1:T
-        x_path[:, t] = x
-        x = Â * x
-    end
-    return x_path
+    # Solve for fixed point to find the steady-state u and e
+    x_bar = linear_steady_state(A_hat)
+    return (; lambda, alpha, b, d, A, A_hat, x_bar)
 end
 ```
 
@@ -258,24 +244,22 @@ Let's observe these matrices for the baseline model
 
 ```{code-cell} julia
 lm = LakeModel()
-A, Â = transition_matrices(lm)
-A
+lm.A
 ```
 
 ```{code-cell} julia
-Â
+lm.A_hat
 ```
 
 And a revised model
 
 ```{code-cell} julia
-lm = LakeModel(α = 2.0)
-A, Â = transition_matrices(lm)
-A
+lm = LakeModel(; alpha = 0.2)
+lm.A
 ```
 
 ```{code-cell} julia
-Â
+lm.A_hat
 ```
 
 ```{code-cell} julia
@@ -283,8 +267,8 @@ Â
 tags: [remove-cell]
 ---
 @testset begin
-    @test lm.α ≈ 2.0
-    @test A[1][1] ≈ 0.7235062600000001
+    @test lm.alpha ≈ 0.2
+    @test lm.A[1][1] ≈ 0.7235062600000001
 end
 ```
 
@@ -303,15 +287,18 @@ U_0 = u_0 * N_0
 E_0 = e_0 * N_0
 X_0 = [U_0; E_0]
 
-X_path = simulate_stock_path(lm, X_0, T)
+X_path = simulate_linear(lm.A, X_0, T - 1)
 
 x1 = X_path[1, :]
 x2 = X_path[2, :]
-x3 = dropdims(sum(X_path, dims = 1), dims = 1)
+x3 = sum(X_path, dims = 1)'
 
-plt_unemp = plot(title = "Unemployment", 1:T, x1, color = :blue, lw = 2, grid = true, label = "")
-plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, lw = 2, grid = true, label = "")
-plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, lw = 2, grid = true, label = "")
+plt_unemp = plot(title = "Unemployment", 1:T, x1, color = :blue, lw = 2,
+                 grid = true, label = "")
+plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, lw = 2,
+               grid = true, label = "")
+plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, lw = 2,
+                 grid = true, label = "")
 
 plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 ```
@@ -343,8 +330,7 @@ This is the case for our default parameters:
 
 ```{code-cell} julia
 lm = LakeModel()
-A, Â = transition_matrices(lm)
-e, f = eigvals(Â)
+e, f = eigvals(lm.A_hat)
 abs(e), abs(f)
 ```
 
@@ -362,21 +348,23 @@ Let's look at the convergence of the unemployment and employment rate to steady 
 
 ```{code-cell} julia
 lm = LakeModel()
-e_0 = 0.92     # initial employment rate
-u_0 = 1 - e_0  # initial unemployment rate
-T = 50         # simulation length
+e_0 = 0.92 # initial employment rate
+u_0 = 1 - e_0 # initial unemployment rate
+T = 50 # simulation length
 
-xbar = rate_steady_state(lm)
+u_bar, e_bar = lm.x_bar
 x_0 = [u_0; e_0]
-x_path = simulate_rate_path(lm, x_0, T)
+x_path = simulate_linear(lm.A_hat, x_0, T - 1)
 
-plt_unemp = plot(title ="Unemployment rate", 1:T, x_path[1, :],color = :blue, lw = 2,
-                 alpha = 0.5, grid = true, label = "")
-plot!(plt_unemp, [xbar[1]], color=:red, linetype = :hline, linestyle = :dash, lw = 2, label = "")
-plt_emp = plot(title = "Employment rate", 1:T, x_path[2, :],color = :blue, lw = 2, alpha = 0.5,
-               grid = true, label = "")
-plot!(plt_emp, [xbar[2]], color=:red, linetype = :hline, linestyle = :dash, lw = 2, label = "")
-plot(plt_unemp, plt_emp, layout = (2, 1), size=(700,500))
+plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[1, :], color = :blue,
+                 lw = 2, alpha = 0.5, grid = true, label = "")
+plot!(plt_unemp, [u_bar], color = :red, linetype = :hline, linestyle = :dash,
+      lw = 2, label = "")
+plt_emp = plot(title = "Employment rate", 1:T, x_path[2, :], color = :blue,
+               lw = 2, alpha = 0.5, grid = true, label = "")
+plot!(plt_emp, [e_bar], color = :red, linetype = :hline, linestyle = :dash,
+      lw = 2, label = "")
+plot(plt_unemp, plt_emp, layout = (2, 1), size = (700, 500))
 ```
 
 ```{code-cell} julia
@@ -480,35 +468,33 @@ MarkovChain type to investigate this.
 Let's plot the path of the sample averages over 5,000 periods
 
 ```{code-cell} julia
-using QuantEcon, Roots, Random
-```
-
-```{code-cell} julia
-lm = LakeModel(d = 0, b = 0)
+lm = LakeModel(; d = 0, b = 0)
 T = 5000                        # Simulation length
 
-(;α, λ) = lm
-P = [(1 - λ)     λ
-     α      (1 - α)]
+(; alpha, lambda) = lm
+P = [(1-lambda) lambda
+     alpha (1-alpha)]
 ```
 
 ```{code-cell} julia
 Random.seed!(42)
+u_bar, e_bar = lm.x_bar
 mc = MarkovChain(P, [0; 1])     # 0=unemployed, 1=employed
-xbar = rate_steady_state(lm)
 
-s_path = simulate(mc, T; init=2)
-s̄_e = cumsum(s_path) ./ (1:T)
-s̄_u = 1 .- s̄_e
-s_bars = [s̄_u s̄_e]
+s_path = simulate(mc, T; init = 2)
+s_bar_e = cumsum(s_path) ./ (1:T)
+s_bar_u = 1 .- s_bar_e
+s_bars = [s_bar_u s_bar_e]
 
-plt_unemp = plot(title = "Percent of time unemployed", 1:T, s_bars[:,1],color = :blue, lw = 2,
-                 alpha = 0.5, label = "", grid = true)
-plot!(plt_unemp, [xbar[1]], linetype = :hline, linestyle = :dash, color=:red, lw = 2, label = "")
-plt_emp = plot(title = "Percent of time employed", 1:T, s_bars[:,2],color = :blue, lw = 2,
-               alpha = 0.5, label = "", grid = true)
-plot!(plt_emp, [xbar[2]], linetype = :hline, linestyle = :dash, color=:red, lw = 2, label = "")
-plot(plt_unemp, plt_emp, layout = (2, 1), size=(700,500))
+plt_unemp = plot(title = "Percent of time unemployed", 1:T, s_bars[:, 1],
+                 color = :blue, lw = 2, alpha = 0.5, label = "", grid = true)
+plot!(plt_unemp, [u_bar], linetype = :hline, linestyle = :dash, color = :red,
+      lw = 2, label = "")
+plt_emp = plot(title = "Percent of time employed", 1:T, s_bars[:, 2],
+               color = :blue, lw = 2, alpha = 0.5, label = "", grid = true)
+plot!(plt_emp, [e_bar], linetype = :hline, linestyle = :dash, color = :red,
+      lw = 2, label = "")
+plot(plt_unemp, plt_emp, layout = (2, 1), size = (700, 500))
 ```
 
 ```{code-cell} julia
@@ -516,8 +502,8 @@ plot(plt_unemp, plt_emp, layout = (2, 1), size=(700,500))
 tags: [remove-cell]
 ---
 @testset begin
-    #test xbar[1] ≈ 0.04391891891891919
-    #test s_bars[end,end] ≈ 0.957
+    @test u_bar ≈ 0.04391891891891919
+    @test s_bars[end,end] ≈ 0.9488
 end
 ```
 
@@ -630,159 +616,189 @@ Following {cite}`davis2006flow`, we set $\alpha$, the hazard rate of leaving emp
 We will make use of (with some tweaks) the code we wrote in the {doc}`McCall model lecture <../dynamic_programming/mccall_model>`, embedded below for convenience.
 
 ```{code-cell} julia
-function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
+function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
+                            tol = 1e-5,
                             iter = 2_000)
-    (;α, β, σ, c, γ, w, E, u) = mcm
+    (; alpha, beta, sigma, c, gamma, w, w_probs, u) = mcm
 
-    # necessary objects
-    u_w = u.(w, σ)
-    u_c = u(c, σ)
+    # pre-calculate utilities
+    u_w = u.(w, sigma)
+    u_c = u(c, sigma)
 
     # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
     function T(x)
-        V = x[1:end-1]
+        V = x[1:(end - 1)]
         U = x[end]
-        [u_w + β * ((1 - α) * V .+ α * U); u_c + β * (1 - γ) * U + β * γ * E * max.(U, V)]
+        return [u_w + beta * ((1 - alpha) * V .+ alpha * U);
+                u_c + beta * (1 - gamma) * U +
+                beta * gamma * dot(w_probs, max.(U, V))]
     end
 
     # value function iteration
     x_iv = [V_iv; U_iv] # initial x val
     xstar = fixedpoint(T, x_iv, iterations = iter, xtol = tol, m = 0).zero
-    V = xstar[1:end-1]
+    V = xstar[1:(end - 1)]
     U = xstar[end]
 
     # compute the reservation wage
     w_barindex = searchsortedfirst(V .- U, 0.0)
     if w_barindex >= length(w) # if this is true, you never want to accept
-        w̄ = Inf
+        w_bar = Inf
     else
-        w̄ = w[w_barindex] # otherwise, return the number
+        w_bar = w[w_barindex] # otherwise, return the number
     end
 
     # return a NamedTuple, so we can select values by name
-    return (V = V, U = U, w̄ = w̄)
+    return (; V, U, w_bar)
 end
 ```
 
 And the McCall object
 
 ```{code-cell} julia
-# a default utility function
-u(c, σ) = c > 0 ? (c^(1 - σ) - 1) / (1 - σ) : -10e-6
-
-# model constructor
-McCallModel = @with_kw (α = 0.2,
-                        β = 0.98, # discount rate
-                        γ = 0.7,
-                        c = 6.0, # unemployment compensation
-                        σ = 2.0,
-                        u = u, # utility function
-                        w = range(10, 20, length = 60), # wage values
-                        E = Expectation(BetaBinomial(59, 600, 400))) # distribution over wage values
+function McCallModel(; alpha, beta, gamma, c, sigma, w, w_probs,
+                     u = (c, sigma) -> c > 0 ?
+                                       (c^(1 - sigma) - 1) / (1 - sigma) :
+                                       -10e-6)
+    return (; alpha, beta, gamma, c, sigma, u, w, w_probs)
+end
 ```
 
 Now let's compute and plot welfare, employment, unemployment, and tax revenue as a
 function of the unemployment compensation rate
 
 ```{code-cell} julia
-# some global variables that will stay constant
-α = 0.013
-α_q = (1 - (1 - α)^3)
-b_param = 0.0124
-d_param = 0.00822
-β = 0.98
-γ = 1.0
-σ = 2.0
+function compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
+                                    alpha, w_pretax)
+    mcm = McCallModel(; alpha, beta, gamma, sigma, w_probs,
+                      c = c_pretax - tau, # post-tax compensation
+                      w = w_pretax .- tau)
 
-# the default wage distribution: a discretized log normal
-log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
-w_vec = range(1e-3, max_wage, length = wage_grid_size + 1)
+    (; V, U, w_bar) = solve_mccall_model(mcm)
+    accept_wage = w_pretax .- tau .> w_bar
 
-logw_dist = Normal(log(log_wage_mean), 1)
-cdf_logw = cdf.(logw_dist, log.(w_vec))
-pdf_logw = cdf_logw[2:end] - cdf_logw[1:end-1]
-
-p_vec = pdf_logw ./ sum(pdf_logw)
-w_vec = (w_vec[1:end-1] + w_vec[2:end]) / 2
-
-E = expectation(Categorical(p_vec)) # expectation object
-
-function compute_optimal_quantities(c, τ)
-    mcm = McCallModel(α = α_q,
-                      β = β,
-                      γ = γ,
-                      c = c - τ, # post-tax compensation
-                      σ = σ,
-                      w = w_vec .- τ, # post-tax wages
-                      E = E) # expectation operator
-
-    (;V, U, w̄) = solve_mccall_model(mcm)
-    indicator = wage -> wage > w̄
-    λ = γ * E * indicator.(w_vec .- τ)
-
-    return w̄, λ, V, U
+    # sum up proportion accepting the wages
+    lambda = gamma * dot(w_probs, accept_wage)
+    return w_bar, lambda, V, U
 end
 
-function compute_steady_state_quantities(c, τ)
-    w̄, λ_param, V, U = compute_optimal_quantities(c, τ)
+function compute_steady_state_quantities(c_pretax, tau; w_probs, sigma, gamma,
+                                         beta, alpha, w_pretax, b, d)
+    w_bar, lambda, V, U = compute_optimal_quantities(c_pretax, tau; w_probs,
+                                                     sigma,
+                                                     gamma, beta, alpha,
+                                                     w_pretax)
 
     # compute steady state employment and unemployment rates
-    lm = LakeModel(λ = λ_param, α = α_q, b = b_param, d = d_param)
-    x = rate_steady_state(lm)
-    u_rate, e_rate = x
+    lm = LakeModel(; lambda, alpha, b, d)
+    u_rate, e_rate = lm.x_bar
 
     # compute steady state welfare
-    indicator(wage) = wage > w̄
-    decisions = indicator.(w_vec .- τ)
-    w = (E * (V .* decisions)) / (E * decisions)
+    accept_wage = w_pretax .- tau .> w_bar
+    w = (dot(w_probs, V .* accept_wage)) / dot(w_probs, accept_wage)
     welfare = e_rate .* w + u_rate .* U
 
     return u_rate, e_rate, welfare
 end
 
-function find_balanced_budget_tax(c)
+function find_balanced_budget_tax(c_pretax; w_probs, sigma, gamma, beta, alpha,
+                                  w_pretax, b, d)
     function steady_state_budget(t)
-        u_rate, e_rate, w = compute_steady_state_quantities(c, t)
-        return t - u_rate * c
+        u_rate, e_rate, w = compute_steady_state_quantities(c_pretax, t;
+                                                            w_probs, sigma,
+                                                            gamma, beta, alpha,
+                                                            w_pretax, b, d)
+        return t - u_rate * c_pretax
     end
 
-    τ = find_zero(steady_state_budget, (0.0, 0.9c))
-    return τ
+    tau = find_zero(steady_state_budget, (0.0, 0.9 * c_pretax))
+    return tau
 end
+```
+
+Helper function to calculate for various unemployment insurance levels
+
+```{code-cell} julia
+function calculate_equilibriums(c_pretax; w_probs, sigma, gamma, beta, alpha,
+                                w_pretax, b, d)
+    tau_vec = similar(c_pretax)
+    u_vec = similar(c_pretax)
+    e_vec = similar(c_pretax)
+    welfare_vec = similar(c_pretax)
+
+    for (i, c_pre) in enumerate(c_pretax)
+        tau = find_balanced_budget_tax(c_pre; w_probs, sigma, gamma, beta,
+                                       alpha, w_pretax, b, d)
+        u_rate, e_rate, welfare = compute_steady_state_quantities(c_pre, tau;
+                                                                  w_probs,
+                                                                  sigma,
+                                                                  gamma, beta,
+                                                                  alpha,
+                                                                  w_pretax,
+                                                                  b, d)
+        tau_vec[i] = tau
+        u_vec[i] = u_rate
+        e_vec[i] = e_rate
+        welfare_vec[i] = welfare
+    end
+    return tau_vec, u_vec, e_vec, welfare_vec
+end
+```
+
+Parameters for our experiment
+
+```{code-cell} julia
+alpha_base = 0.013
+alpha = (1 - (1 - alpha_base)^3)
+b = 0.0124
+d = 0.00822
+beta = 0.98
+gamma = 1.0
+sigma = 2.0
+
+# the default wage distribution: a discretized log normal
+log_wage_mean, wage_grid_size, max_wage = 20, 200, 170
+w_pretax = range(1e-3, max_wage, length = wage_grid_size + 1)
+logw_dist = Normal(log(log_wage_mean), 1)
+cdf_logw = cdf.(logw_dist, log.(w_pretax))
+pdf_logw = cdf_logw[2:end] - cdf_logw[1:(end - 1)]
+w_probs = pdf_logw ./ sum(pdf_logw) # probabilities
+w_pretax = (w_pretax[1:(end - 1)] + w_pretax[2:end]) / 2
 
 # levels of unemployment insurance we wish to study
-Nc = 60
-c_vec = range(5, 140, length = Nc)
+c_pretax = range(5, 140, length = 60)
+tau_vec, u_vec, e_vec, welfare_vec = calculate_equilibriums(c_pretax; w_probs,
+                                                            sigma, gamma, beta,
+                                                            alpha, w_pretax, b,
+                                                            d)
 
-tax_vec = zeros(Nc)
-unempl_vec = similar(tax_vec)
-empl_vec = similar(tax_vec)
-welfare_vec = similar(tax_vec)
+# plots
+plt_unemp = plot(title = "Unemployment", c_pretax, u_vec, color = :blue,
+                 lw = 2, alpha = 0.7, label = "", grid = true)
+plt_tax = plot(title = "Tax", c_pretax, tau_vec, color = :blue, lw = 2,
+               alpha = 0.7, label = "", grid = true)
+plt_emp = plot(title = "Employment", c_pretax, e_vec, color = :blue, lw = 2,
+               alpha = 0.7, label = "", grid = true)
+plt_welf = plot(title = "Welfare", c_pretax, welfare_vec, color = :blue, lw = 2,
+                alpha = 0.7, label = "", grid = true)
 
-for i in 1:Nc
-    t = find_balanced_budget_tax(c_vec[i])
-    u_rate, e_rate, welfare = compute_steady_state_quantities(c_vec[i], t)
-    tax_vec[i] = t
-    unempl_vec[i] = u_rate
-    empl_vec[i] = e_rate
-    welfare_vec[i] = welfare
-end
-
-plt_unemp = plot(title = "Unemployment", c_vec, unempl_vec, color = :blue, lw = 2, alpha=0.7,
-                 label = "",grid = true)
-plt_tax = plot(title = "Tax", c_vec, tax_vec, color = :blue, lw = 2, alpha=0.7, label = "",
-               grid = true)
-plt_emp = plot(title = "Employment", c_vec, empl_vec, color = :blue, lw = 2, alpha=0.7, label = "",
-               grid = true)
-plt_welf = plot(title = "Welfare", c_vec, welfare_vec, color = :blue, lw = 2, alpha=0.7, label = "",
-                grid = true)
-
-plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2,2), size = (800, 700))
+plot(plt_unemp, plt_emp, plt_tax, plt_welf, layout = (2, 2), size = (800, 700))
 ```
 
 Welfare first increases and then decreases as unemployment benefits rise.
 
 The level that maximizes steady state welfare is approximately 62.
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset begin
+    @test tau_vec[2] ≈ 0.859664806251665
+    @test u_vec[10] ≈ 0.22587607040020583
+    @test e_vec[4] ≈ 0.8527180941230578
+end
+```
 
 ## Exercises
 
@@ -830,7 +846,7 @@ steady state values to x0
 
 ```{code-cell} julia
 lm = LakeModel()
-x0 = rate_steady_state(lm)
+x0 = lm.x_bar
 println("Initial Steady State: $x0")
 ```
 
@@ -844,14 +860,10 @@ T = 50
 New legislation changes $\lambda$ to $0.2$
 
 ```{code-cell} julia
-lm = LakeModel(λ = 0.2)
-```
-
-```{code-cell} julia
-xbar = rate_steady_state(lm) # new steady state
-X_path = simulate_stock_path(lm, x0 * N0, T)
-x_path = simulate_rate_path(lm, x0, T)
-println("New Steady State: $xbar")
+lm = LakeModel(; lambda = 0.2)
+X_path = simulate_linear(lm.A, x0 * N0, T - 1)
+x_path = simulate_linear(lm.A_hat, x0, T - 1)
+println("New Steady State: $(lm.x_bar)")
 ```
 
 Now plot stocks
@@ -859,14 +871,14 @@ Now plot stocks
 ```{code-cell} julia
 x1 = X_path[1, :]
 x2 = X_path[2, :]
-x3 = dropdims(sum(X_path, dims = 1), dims = 1)
+x3 = sum(X_path, dims = 1)'
 
-plt_unemp = plot(title = "Unemployment", 1:T, x1, color = :blue, grid = true, label = "",
-                 bg_inside = :lightgrey)
-plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, grid = true, label = "",
-               bg_inside = :lightgrey)
-plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, grid = true, label = "",
-                 bg_inside = :lightgrey)
+plt_unemp = plot(title = "Unemployment", 1:T, x1, color = :blue, grid = true,
+                 label = "", bg_inside = :lightgrey)
+plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, grid = true,
+               label = "", bg_inside = :lightgrey)
+plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, grid = true,
+                 label = "", bg_inside = :lightgrey)
 
 plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 ```
@@ -876,23 +888,23 @@ plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    #test x1[1] ≈ 8.266626766923284
-    #test x2[2] ≈ 91.43632870031433
-    #test x3[3] ≈ 100.83774723999996
+    @test x3[21] ≈ 108.70045145781441
+    @test x2[12] ≈ 93.05432951806618
 end
 ```
 
 And how the rates evolve
 
 ```{code-cell} julia
-plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[1,:], color = :blue, grid = true,
-                 label = "", bg_inside = :lightgrey)
-plot!(plt_unemp, [xbar[1]], linetype = :hline, linestyle = :dash, color =:red, label = "")
+plt_unemp = plot(title = "Unemployment rate", 1:T, x_path[1, :], color = :blue,
+                 grid = true, label = "", bg_inside = :lightgrey)
+plot!(plt_unemp, [u_bar], linetype = :hline, linestyle = :dash, color = :red,
+      label = "")
 
-plt_emp = plot(title = "Employment rate", 1:T, x_path[2,:], color = :blue, grid = true,
-               label = "", bg_inside = :lightgrey)
-plot!(plt_emp, [xbar[2]], linetype = :hline, linestyle = :dash, color =:red, label = "")
-
+plt_emp = plot(title = "Employment rate", 1:T, x_path[2, :], color = :blue,
+               grid = true, label = "", bg_inside = :lightgrey)
+plot!(plt_emp, [e_bar], linetype = :hline, linestyle = :dash, color = :red,
+      label = "")
 plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 ```
 
@@ -901,8 +913,8 @@ plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    #test x_path[1,3] ≈ 0.09471014989625384
-    #test x_path[2,7] ≈ 0.8936171021324064
+    @test x_path[1,3] ≈ 0.09471014989625384
+    @test x_path[2,7] ≈ 0.8936171021324064
 end
 ```
 
@@ -921,7 +933,7 @@ state
 
 ```{code-cell} julia
 lm = LakeModel()
-x0 = rate_steady_state(lm)
+x0 = lm.x_bar
 ```
 
 ```{code-cell} julia
@@ -929,23 +941,23 @@ x0 = rate_steady_state(lm)
 tags: [remove-cell]
 ---
 @testset begin
-    #test x0[1] ≈ 0.08266626766923285
+    @test x0[1] ≈ 0.08266626766923285
 end
 ```
 
 Here are the other parameters:
 
 ```{code-cell} julia
-b̂ = 0.003
-T̂ = 20
+b_hat = 0.003
+T_hat = 20
 ```
 
 Let's increase $b$ to the new value and simulate for 20 periods
 
 ```{code-cell} julia
-lm = LakeModel(b=b̂)
-X_path1 = simulate_stock_path(lm, x0 * N0, T̂)   # simulate stocks
-x_path1 = simulate_rate_path(lm, x0, T̂)         # simulate rates
+lm = LakeModel(; b = b_hat)
+X_path1 = simulate_linear(lm.A, x0 * N0, T_hat - 1)
+x_path1 = simulate_linear(lm.A_hat, x0, T_hat - 1)
 ```
 
 Now we reset $b$ to the original value and then, using the state
@@ -953,9 +965,9 @@ after 20 periods for the new initial conditions, we simulate for the
 additional 30 periods
 
 ```{code-cell} julia
-lm = LakeModel(b = 0.0124)
-X_path2 = simulate_stock_path(lm, X_path1[:, end-1], T-T̂+1)    # simulate stocks
-x_path2 = simulate_rate_path(lm, x_path1[:, end-1], T-T̂+1)     # simulate rates
+lm = LakeModel(; b = 0.0124)
+X_path2 = simulate_linear(lm.A, X_path1[:, end - 1], T - T_hat)
+x_path2 = simulate_linear(lm.A_hat, x_path1[:, end - 1], T - T_hat)
 ```
 
 Finally we combine these two paths and plot
@@ -966,20 +978,20 @@ X_path = hcat(X_path1, X_path2[:, 2:end])
 ```
 
 ```{code-cell} julia
-x1 = X_path[1,:]
-x2 = X_path[2,:]
-x3 = dropdims(sum(X_path, dims = 1), dims = 1)
+x1 = X_path[1, :]
+x2 = X_path[2, :]
+x3 = sum(X_path, dims = 1)'
 
-plt_unemp = plot(title = "Unemployment", 1:T, x1, color = :blue, lw = 2, alpha = 0.7,
-                 grid = true, label = "", bg_inside = :lightgrey)
+plt_unemp = plot(title = "Unemployment", 1:T, x1, color = :blue, lw = 2,
+                 alpha = 0.7, grid = true, label = "", bg_inside = :lightgrey)
 plot!(plt_unemp, ylims = extrema(x1) .+ (-1, 1))
 
-plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, lw = 2, alpha = 0.7, grid = true,
-               label = "", bg_inside = :lightgrey)
+plt_emp = plot(title = "Employment", 1:T, x2, color = :blue, lw = 2,
+               alpha = 0.7, grid = true, label = "", bg_inside = :lightgrey)
 plot!(plt_emp, ylims = extrema(x2) .+ (-1, 1))
 
-plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, alpha = 0.7, grid = true,
-                 label = "", bg_inside = :lightgrey)
+plt_labor = plot(title = "Labor force", 1:T, x3, color = :blue, alpha = 0.7,
+                 grid = true, label = "", bg_inside = :lightgrey)
 plot!(plt_labor, ylims = extrema(x3) .+ (-1, 1))
 plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 ```
@@ -989,23 +1001,24 @@ plot(plt_unemp, plt_emp, plt_labor, layout = (3, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    #test x1[1] ≈ 8.266626766923284
-    #test x2[2] ≈ 92.11681873319097
-    #test x3[3] ≈ 98.95872483999996
+    @test x1[1] ≈ 8.266626766923284
+    @test x2[2] ≈ 92.11681873319097
+    @test x3[3] ≈ 98.95872483999996
 end
 ```
 
 And the rates
 
 ```{code-cell} julia
-plt_unemp = plot(title = "Unemployment Rate", 1:T, x_path[1,:], color = :blue, grid = true,
-                 label = "", bg_inside = :lightgrey, lw = 2)
-plot!(plt_unemp, [x0[1]], linetype = :hline, linestyle = :dash, color =:red, label = "", lw = 2)
+plt_unemp = plot(title = "Unemployment Rate", 1:T, x_path[1, :], color = :blue,
+                 grid = true, label = "", bg_inside = :lightgrey, lw = 2)
+plot!(plt_unemp, [x0[1]], linetype = :hline, linestyle = :dash, color = :red,
+      label = "", lw = 2)
 
-plt_emp = plot(title = "Employment Rate", 1:T, x_path[2,:], color = :blue, grid = true,
-               label = "", bg_inside = :lightgrey, lw = 2)
-plot!(plt_emp, [x0[2]], linetype = :hline, linestyle = :dash, color =:red, label = "", lw = 2)
-
+plt_emp = plot(title = "Employment Rate", 1:T, x_path[2, :], color = :blue,
+               grid = true, label = "", bg_inside = :lightgrey, lw = 2)
+plot!(plt_emp, [x0[2]], linetype = :hline, linestyle = :dash, color = :red,
+      label = "", lw = 2)
 plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 ```
 
@@ -1014,8 +1027,8 @@ plot(plt_unemp, plt_emp, layout = (2, 1), size = (800, 600))
 tags: [remove-cell]
 ---
 @testset begin
-    #test x_path[1,3] ≈ 0.06791408368459205
-    #test x_path[2,7] ≈ 0.9429334437639298
+    @test x_path[1,3] ≈ 0.06791408368459205
+    @test x_path[2,7] ≈ 0.9429334437639298
 end
 ```
 

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.9
+  name: julia-1.10
 ---
 
 (estspec)=
@@ -44,12 +44,6 @@ turn is computed via the famous [fast Fourier transform](https://en.wikipedia.or
 Once the basic technique has been explained, we will apply it to the analysis of several key macroeconomic time series.
 
 For supplementary reading, see {cite}`Sargent1987` or {cite}`CryerChan2008`.
-
-
-
-```{code-cell} julia
-using LinearAlgebra, Statistics
-```
 
 (periodograms)=
 ## {index}`Periodograms <single: Periodograms>`
@@ -223,21 +217,24 @@ using Test
 
 ```{code-cell} julia
 using QuantEcon, Plots, Random
+using LinearAlgebra, Statistics
 
 Random.seed!(42) # For reproducible results.
 
 n = 40              # Data size
-ϕ = 0.5             # AR parameter
-θ = [0, -0.8]       # MA parameter
-σ = 1.0
-lp = ARMA(ϕ, θ, σ)
+phi = 0.5             # AR parameter
+theta = [0, -0.8]       # MA parameter
+sigma = 1.0
+lp = ARMA(phi, theta, sigma)
 X = simulation(lp, ts_length = n)
 
 x, y = periodogram(X)
-x_sd, y_sd = spectral_density(lp, two_pi=false, res=120)
+x_sd, y_sd = spectral_density(lp, two_pi = false, res = 120)
 
-plot(x, y,linecolor="blue", linewidth=2, linealpha=0.5, lab="periodogram")
-plot!(x_sd, y_sd, linecolor="red", linewidth=2, linealpha=0.8, lab="spectral density")
+plot(x, y, linecolor = "blue", linewidth = 2, linealpha = 0.5,
+     lab = "periodogram")
+plot!(x_sd, y_sd, linecolor = "red", linewidth = 2, linealpha = 0.8,
+      lab = "spectral density")
 ```
 
 ```{code-cell} julia
@@ -314,14 +311,15 @@ Note the smaller weights towards the edges and larger weights in the center, so 
 
 ```{code-cell} julia
 function hanning_window(M)
-    w = [0.5 - 0.5 * cos(2 * pi * n / (M - 1)) for n = 0:(M-1)]
+    w = [0.5 - 0.5 * cos(2 * pi * n / (M - 1)) for n in 0:(M - 1)]
     return w
 end
 
 window = hanning_window(25) / sum(hanning_window(25))
 x = range(-12, 12, length = 25)
-plot(x, window, color="darkblue", title="Hanning window", ylabel="Weights",
-    xlabel="Position in sequence of weights", legend=false, grid=false)
+plot(x, window, color = "darkblue", title = "Hanning window",
+     ylabel = "Weights",
+     xlabel = "Position in sequence of weights", legend = false, grid = false)
 ```
 
 ```{code-cell} julia
@@ -522,10 +520,10 @@ Random.seed!(42);  # reproducible results
 
 ```{code-cell} julia
 n = 400
-ϕ = 0.5
-θ = [0, -0.8]
-σ = 1.0
-lp = ARMA(ϕ, θ, 1.0)
+phi = 0.5
+theta = [0, -0.8]
+sigma = 1.0
+lp = ARMA(phi, theta, 1.0)
 X = simulation(lp, ts_length = n)
 
 xs = []
@@ -541,7 +539,7 @@ for (i, wl) in enumerate([15, 55, 175])  # window lengths
     push!(xs, x)
     push!(ys, y)
 
-    x_sd, y_sd = spectral_density(lp, two_pi=false, res=120)
+    x_sd, y_sd = spectral_density(lp, two_pi = false, res = 120)
     push!(x_sds, x_sd)
     push!(y_sds, y_sd)
 
@@ -566,13 +564,13 @@ end
 ```
 
 ```{code-cell} julia
-plot(xs, ys, layout=(3,1), color=:blue, alpha=0.5,
-    linewidth=2, label=["periodogram" "" ""])
-plot!(x_sds, y_sds, layout=(3,1), color=:red, alpha=0.8,
-    linewidth=2, label=["spectral density" "" ""])
-plot!(x_sms, y_sms, layout=(3,1), color=:black,
-    linewidth=2, label=["smoothed periodogram" "" ""])
-plot!(title=reshape(titles,1,length(titles)))
+plot(xs, ys, layout = (3, 1), color = :blue, alpha = 0.5,
+     linewidth = 2, label = ["periodogram" "" ""])
+plot!(x_sds, y_sds, layout = (3, 1), color = :red, alpha = 0.8,
+      linewidth = 2, label = ["spectral density" "" ""])
+plot!(x_sms, y_sms, layout = (3, 1), color = :black,
+      linewidth = 2, label = ["smoothed periodogram" "" ""])
+plot!(title = reshape(titles, 1, length(titles)))
 ```
 
 ### Exercise 2
@@ -587,26 +585,26 @@ Random.seed!(42);  # reproducible results
 ```{code-cell} julia
 lp2 = ARMA(-0.9, 0.0, 1.0)
 wl = 65
-p = plot(layout=(3,1))
+p = plot(layout = (3, 1))
 
 for i in 1:3
-    X = simulation(lp2,ts_length=150)
-    plot!(p[i],xlims = (0,pi))
+    X = simulation(lp2, ts_length = 150)
+    plot!(p[i], xlims = (0, pi))
 
-    x_sd, y_sd = spectral_density(lp2,two_pi=false, res=180)
-    plot!(p[i],x_sd, y_sd, linecolor=:red, linestyle=:solid,
-        yscale=:log10, linewidth=2, linealpha=0.75,
-        label="spectral density",legend=:topleft)
+    x_sd, y_sd = spectral_density(lp2, two_pi = false, res = 180)
+    plot!(p[i], x_sd, y_sd, linecolor = :red, linestyle = :solid,
+          yscale = :log10, linewidth = 2, linealpha = 0.75,
+          label = "spectral density", legend = :topleft)
 
     x, y_smoothed = periodogram(X, "hamming", wl)
-    plot!(p[i],x, y_smoothed, linecolor=:black, linestyle=:solid,
-        yscale=:log10, linewidth=2, linealpha=0.75,
-        label="standard smoothed periodogram",legend=:topleft)
+    plot!(p[i], x, y_smoothed, linecolor = :black, linestyle = :solid,
+          yscale = :log10, linewidth = 2, linealpha = 0.75,
+          label = "standard smoothed periodogram", legend = :topleft)
 
     x, y_ar = ar_periodogram(X, "hamming", wl)
-    plot!(p[i],x, y_ar, linecolor=:blue, linestyle=:solid,
-        yscale=:log10, linewidth=2, linealpha=0.75,
-        label="AR smoothed periodogram",legend=:topleft)
+    plot!(p[i], x, y_ar, linecolor = :blue, linestyle = :solid,
+          yscale = :log10, linewidth = 2, linealpha = 0.75,
+          label = "AR smoothed periodogram", legend = :topleft)
 end
 p
 ```
