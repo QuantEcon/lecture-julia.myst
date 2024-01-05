@@ -113,15 +113,18 @@ using Test, Random
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, LaTeXStrings, Parameters, Plots, QuantEcon
+using Distributions, LaTeXStrings, Plots, QuantEcon
 import Distributions: loglikelihood
 
 ```
 
 ```{code-cell} julia
-AMF_LSS_VAR = @with_kw (A, B, D, F = 0.0, ν = 0.0, lss = construct_ss(A, B, D, F, ν))
+function AMF_LSS_VAR(; A, B, D, F = 0.0, nu = 0.0,
+                     lss = construct_ss(A, B, D, F, nu))
+    return (; A, B, D, F, nu, lss)
+end
 
-function construct_ss(A, B, D, F, ν)
+function construct_ss(A, B, D, F, nu)
     H, g = additive_decomp(A, B, D, F)
 
     # Build A matrix for LSS
@@ -129,7 +132,7 @@ function construct_ss(A, B, D, F, ν)
     A1 = [1 0 0 0 0]       # Transition for 1
     A2 = [1 1 0 0 0]       # Transition for t
     A3 = [0 0 A 0 0]       # Transition for x_{t+1}
-    A4 = [ν 0 D 1 0]       # Transition for y_{t+1}
+    A4 = [nu 0 D 1 0]       # Transition for y_{t+1}
     A5 = [0 0 0 0 1]       # Transition for m_{t+1}
     Abar = vcat(A1, A2, A3, A4, A5)
 
@@ -142,7 +145,7 @@ function construct_ss(A, B, D, F, ν)
     G2 = [0 0 0 1 0]               # Selector for y_{t}
     G3 = [0 0 0 0 1]               # Selector for martingale
     G4 = [0 0 -g 0 0]              # Selector for stationary
-    G5 = [0 ν 0 0 0]               # Selector for trend
+    G5 = [0 nu 0 0 0]               # Selector for trend
     Gbar = vcat(G1, G2, G3, G4, G5)
 
     # Build LSS struct
@@ -159,22 +162,22 @@ function additive_decomp(A, B, D, F)
     return H, g
 end
 
-function multiplicative_decomp(A, B, D, F, ν)
+function multiplicative_decomp(A, B, D, F, nu)
     H, g = additive_decomp(A, B, D, F)
-    ν_tilde = ν + 0.5 * H^2
+    nu_tilde = nu + 0.5 * H^2
 
-    return ν_tilde, H, g
+    return nu_tilde, H, g
 end
 
 function loglikelihood_path(amf, x, y)
-    @unpack A, B, D, F = amf
+    (; A, B, D, F) = amf
     T = length(y)
     FF = F^2
     FFinv = inv(FF)
-    temp = y[2:end] - y[1:end-1] - D*x[1:end-1]
-    obs =  temp .* FFinv .* temp
+    temp = y[2:end] - y[1:(end - 1)] - D * x[1:(end - 1)]
+    obs = temp .* FFinv .* temp
     obssum = cumsum(obs)
-    scalar = (log(FF) + log(2pi)) * (1:T-1)
+    scalar = (log(FF) + log(2pi)) * (1:(T - 1))
     return -0.5 * (obssum + scalar)
 end
 
@@ -220,7 +223,7 @@ function population_means(amf, T = 150)
 
     # Pull out moment generator
     moment_generator = moment_sequence(amf.lss)
-    for (tt, x) = enumerate(moment_generator)
+    for (tt, x) in enumerate(moment_generator)
         ymeans = x[2]
         xmean[tt] = ymeans[1]
         ymean[tt] = ymeans[2]
@@ -266,13 +269,13 @@ Xmean_pop, Ymean_pop = population_means(amf, T)
 # Plot sample means vs population means
 plt_1 = plot(Xmean_t', color = :blue, label = L"(1/I) \sum_i x_t^i")
 plot!(plt_1, Xmean_pop, color = :black, label = L"E x_t")
-plot!(plt_1, title = L"x_t", xlim = (0, T), legend = :bottomleft)
+plot!(plt_1, title = L"x_t", xlim = (0, T), legend = :outertopright)
 
 plt_2 = plot(Ymean_t', color = :blue, label = L"(1/I) \sum_i x_t^i")
 plot!(plt_2, Ymean_pop, color = :black, label = L"E y_t")
-plot!(plt_2, title = L"y_t", xlim = (0, T), legend = :bottomleft)
+plot!(plt_2, title = L"y_t", xlim = (0, T), legend = :outertopright)
 
-plot(plt_1, plt_2, layout = (2, 1), size = (800,500))
+plot(plt_1, plt_2, layout = (2, 1), size = (800, 500))
 ```
 
 ### Simulating log-likelihoods
@@ -303,7 +306,7 @@ function simulate_likelihood(amf, Xit, Yit)
     I, T = size(Xit)
 
     # Allocate space
-    LLit = zeros(I, T-1)
+    LLit = zeros(I, T - 1)
 
     for i in 1:I
         LLit[i, :] = loglikelihood_path(amf, Xit[i, :], Yit[i, :])
@@ -320,7 +323,8 @@ LLmean_t = mean(LLT)
 
 plot(seriestype = :histogram, LLT, label = "")
 plot!(title = L"Distribution of $(I/T)log(L_T)|\theta_0$")
-vline!([LLmean_t], linestyle = :dash, color = :black, lw = 2, alpha = 0.6, label = "")
+vline!([LLmean_t], linestyle = :dash, color = :black, lw = 2, alpha = 0.6,
+       label = "")
 ```
 
 ```{code-cell} julia
@@ -347,13 +351,13 @@ Let's see this in a simulation
 normdist = Normal(0, F)
 mult = 1.175
 println("The pdf at +/- $mult sigma takes the value: $(pdf(normdist,mult*F))")
-println("Probability of dL being larger than 1 is approx: "*
+println("Probability of dL being larger than 1 is approx: " *
         "$(cdf(normdist,mult*F)-cdf(normdist,-mult*F))")
 
 # Compare this to the sample analogue:
-L_increment = LLit[:,2:end] - LLit[:,1:end-1]
-r,c = size(L_increment)
-frac_nonegative = sum(L_increment.>=0)/(c*r)
+L_increment = LLit[:, 2:end] - LLit[:, 1:(end - 1)]
+r, c = size(L_increment)
+frac_nonegative = sum(L_increment .>= 0) / (c * r)
 print("Fraction of dlogL being nonnegative in the sample is: $(frac_nonegative)")
 ```
 
@@ -370,7 +374,7 @@ end
 Let's also plot the conditional pdf of $\Delta y_{t+1}$
 
 ```{code-cell} julia
-xgrid = range(-1,  1, length = 100)
+xgrid = range(-1, 1, length = 100)
 println("The pdf at +/- one sigma takes the value: $(pdf(normdist, F)) ")
 plot(xgrid, pdf.(normdist, xgrid), label = "")
 plot!(title = L"Conditional pdf $f(\Delta y_{t+1} | x_t)$")
@@ -418,16 +422,17 @@ Random.seed!(42);
 
 ```{code-cell} julia
 # Create the second (wrong) alternative model
-amf2 = AMF_LSS_VAR(A = 0.9, B = 1.0, D = 0.55, F = 0.25) # parameters for θ_1 closer to θ_0
+amf2 = AMF_LSS_VAR(A = 0.9, B = 1.0, D = 0.55, F = 0.25) # parameters for theta_1 closer to theta_0
 
 # Get likelihood from each path x^{i}, y^{i}
 LLit2 = simulate_likelihood(amf2, Xit, Yit)
 
-LLT2 = 1/(T-1) * LLit2[:, end]
+LLT2 = 1 / (T - 1) * LLit2[:, end]
 LLmean_t2 = mean(LLT2)
 
 plot(seriestype = :histogram, LLT2, label = "")
-vline!([LLmean_t2], color = :black, lw = 2, linestyle = :dash, alpha = 0.6, label = "")
+vline!([LLmean_t2], color = :black, lw = 2, linestyle = :dash, alpha = 0.6,
+       label = "")
 plot!(title = L"Distribution of $(1/T)log(L_T) | \theta_1)$")
 ```
 
@@ -444,9 +449,10 @@ end
 Let's see a histogram of the log-likelihoods under the true and the alternative model (same sample paths)
 
 ```{code-cell} julia
-plot(seriestype = :histogram, LLT, bin = 50, alpha = 0.5, label = "True", normed = true)
-plot!(seriestype = :histogram, LLT2, bin = 50, alpha = 0.5, label = "Alternative",
-      normed = true)
+plot(seriestype = :histogram, LLT, bin = 50, alpha = 0.5, label = "True",
+     normed = true)
+plot!(seriestype = :histogram, LLT2, bin = 50, alpha = 0.5,
+      label = "Alternative", normed = true)
 vline!([mean(LLT)], color = :black, lw = 2, linestyle = :dash, label = "")
 vline!([mean(LLT2)], color = :black, lw = 2, linestyle = :dash, label = "")
 ```
@@ -572,8 +578,8 @@ Random.seed!(42);
 ```{code-cell} julia
 function simulate_martingale_components(amf, T = 1_000, I = 5_000)
     # Get the multiplicative decomposition
-    @unpack A, B, D, F, ν, lss = amf
-    ν, H, g = multiplicative_decomp(A, B, D, F, ν)
+    (; A, B, D, F, nu, lss) = amf
+    nu, H, g = multiplicative_decomp(A, B, D, F, nu)
 
     # Allocate space
     add_mart_comp = zeros(I, T)
@@ -585,13 +591,13 @@ function simulate_martingale_components(amf, T = 1_000, I = 5_000)
         add_mart_comp[i, :] = bar[3, :]
     end
 
-    mul_mart_comp = exp.(add_mart_comp' .- (0:T-1) * H^2 / 2)'
+    mul_mart_comp = exp.(add_mart_comp' .- (0:(T - 1)) * H^2 / 2)'
 
     return add_mart_comp, mul_mart_comp
 end
 
 # Build model
-amf_2 = AMF_LSS_VAR(A = 0.8, B = 0.001, D = 1.0, F = 0.01, ν = 0.005)
+amf_2 = AMF_LSS_VAR(A = 0.8, B = 0.001, D = 1.0, F = 0.01, nu = 0.005)
 
 amc, mmc = simulate_martingale_components(amf_2, 1_000, 5_000)
 
@@ -666,16 +672,16 @@ We will plot the densities of $\log {\widetilde M}_t$ for different values of $t
 Here is some code that tackles these tasks
 
 ```{code-cell} julia
-function Mtilde_t_density(amf, t; xmin = 1e-8, xmax = 5.0, npts = 5000)
+function Mtilde_t_density(amf, t; xmin = 1e-8, xmax = 5.0, npts = 50)
+    (; A, B, D, F, nu) = amf
 
     # Pull out the multiplicative decomposition
-    νtilde, H, g =
-        multiplicative_decomp(amf.A, amf.B, amf.D, amf.F, amf.ν)
-    H2 = H*H
+    nutilde, H, g = multiplicative_decomp(A, B, D, F, nu)
+    H2 = H * H
 
     # The distribution
     mdist = LogNormal(-t * H2 / 2, sqrt(t * H2))
-    x = range(xmin,  xmax, length = npts)
+    x = range(xmin, xmax, length = npts)
     p = pdf.(mdist, x)
 
     return x, p
@@ -684,29 +690,32 @@ end
 function logMtilde_t_density(amf, t; xmin = -15.0, xmax = 15.0, npts = 5000)
 
     # Pull out the multiplicative decomposition
-    @unpack A, B, D, F, ν = amf
-    νtilde, H, g = multiplicative_decomp(A, B, D, F, ν)
+    (; A, B, D, F, nu) = amf
+    nutilde, H, g = multiplicative_decomp(A, B, D, F, nu)
     H2 = H * H
 
     # The distribution
     lmdist = Normal(-t * H2 / 2, sqrt(t * H2))
-    x = range(xmin,  xmax, length = npts)
+    x = range(xmin, xmax, length = npts)
     p = pdf.(lmdist, x)
 
     return x, p
 end
 
 times_to_plot = [10, 100, 500, 1000, 2500, 5000]
-dens_to_plot = [Mtilde_t_density(amf_2, t, xmin=1e-8, xmax=6.0) for t in times_to_plot]
-ldens_to_plot = [logMtilde_t_density(amf_2, t, xmin=-10.0, xmax=10.0) for t in times_to_plot]
+dens_to_plot = [Mtilde_t_density(amf_2, t, xmin = 1e-8, xmax = 6.0)
+                for t in times_to_plot]
+ldens_to_plot = [logMtilde_t_density(amf_2, t, xmin = -10.0, xmax = 10.0)
+                 for t in times_to_plot]
 
 # plot_title = "Densities of M_t^tilda" is required, however, plot_title is not yet
 # supported in Plots
-plots = plot(layout = (3,2), size = (600,800))
+plots = plot(layout = (3, 2), size = (600, 800))
 
 for (it, dens_t) in enumerate(dens_to_plot)
     x, pdf = dens_t
-    plot!(plots[it], title = "Density for time (time_to_plot[it])")
+    plot!(plots[it], title = "Density for time (time_to_plot[it])",
+          titlefontsize = 10)
     plot!(plots[it], pdf, fillrange = 0, label = "")
 end
 plot(plots)
@@ -739,28 +748,29 @@ $\nu = \tilde{\nu}$.
 Here's our code
 
 ```{code-cell} julia
-function Uu(amf, δ, γ)
-    @unpack A, B, D, F, ν = amf
-    ν_tilde, H, g = multiplicative_decomp(A, B, D, F, ν)
+function Uu(amf, delta, gamma)
+    (; A, B, D, F, nu) = amf
+    nu_tilde, H, g = multiplicative_decomp(A, B, D, F, nu)
 
-    resolv = 1 / (1 - exp(-δ) * A)
+    resolv = 1 / (1 - exp(-delta) * A)
     vect = F + D * resolv * B
 
-    U_risky = exp(-δ) * resolv * D
-    u_risky = exp(-δ) / (1 - exp(-δ)) * (ν + 0.5 * (1 - γ) * (vect^2))
+    U_risky = exp(-delta) * resolv * D
+    u_risky = exp(-delta) / (1 - exp(-delta)) *
+              (nu + 0.5 * (1 - gamma) * (vect^2))
 
     U_det = 0
-    u_det = exp(-δ) / (1 - exp(-δ))  * ν_tilde
+    u_det = exp(-delta) / (1 - exp(-delta)) * nu_tilde
 
     return U_risky, u_risky, U_det, u_det
 end
 
 # Set remaining parameters
-δ = 0.02
-γ = 2.0
+delta = 0.02
+gamma = 2.0
 
 # Get coeffs
-U_r, u_r, U_d, u_d = Uu(amf_2, δ, γ)
+U_r, u_r, U_d, u_d = Uu(amf_2, delta, gamma)
 ```
 
 The values of the two processes are
