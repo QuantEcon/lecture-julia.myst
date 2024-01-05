@@ -64,7 +64,7 @@ Useful references include {cite}`Whittle1963`, {cite}`HanSar1980`, {cite}`Orfani
 
 
 ```{code-cell} julia
-using LaTeXStrings, Polynomials, Plots, Random, Parameters
+using LaTeXStrings, Polynomials, Plots, Random
 using LinearAlgebra, Statistics
 ```
 
@@ -1144,27 +1144,29 @@ using Test
 
 ```{code-cell} julia
 
-
 # set seed and generate a_t sequence
 Random.seed!(123)
 n = 100
-a_seq = sin.(range(0,  5 * pi, length = n)) .+ 2 + 0.1 * randn(n)
+a_seq = sin.(range(0, 5 * pi, length = n)) .+ 2 + 0.1 * randn(n)
 
-function plot_simulation(;gamma=0.8, m=1, h=1., y_m=2.)
-  d = gamma * [1, -1]
-  y_m = [y_m]
+function plot_simulation(; gamma = 0.8, m = 1, h = 1.0, y_m = 2.0)
+    d = gamma * [1, -1]
+    y_m = [y_m]
 
-  testlq = LQFilter(d, h, y_m)
-  y_hist, L, U, y = optimal_y(testlq, a_seq)
-  y = y[end:-1:1]  # reverse y
+    testlq = LQFilter(d, h, y_m)
+    y_hist, L, U, y = optimal_y(testlq, a_seq)
+    y = y[end:-1:1]  # reverse y
 
-  # plot simulation results
-  time = 1:length(y)
-  plt = plot(time, a_seq / h, lw=2, color=:black, alpha=0.8, marker = :circle,
-             markersize = 2, label=L"a_t")
-  plot!(plt, time, y, lw=2, color=:blue, marker = :circle,  markersize = 2, alpha=0.8,
-        label=L"y_t")
-  plot!(plt, xlabel="Time", grid=true, xlim=(0,maximum(time)), legend=:bottomleft)
+    # plot simulation results
+    time = 1:length(y)
+    plt = plot(time, a_seq / h, lw = 2, color = :black, alpha = 0.8,
+               marker = :circle,
+               markersize = 2, label = L"a_t")
+    plot!(plt, time, y, lw = 2, color = :blue, marker = :circle, markersize = 2,
+          alpha = 0.8,
+          label = L"y_t")
+    plot!(plt, xlabel = "Time", grid = true, xlim = (0, maximum(time)),
+          legend = :bottomleft)
 end
 
 plot_simulation()
@@ -1173,13 +1175,13 @@ plot_simulation()
 Here's what happens when we change $\gamma$ to 5.0
 
 ```{code-cell} julia
-plot_simulation(gamma=5.0)
+plot_simulation(gamma = 5.0)
 ```
 
 And here's $\gamma = 10$
 
 ```{code-cell} julia
-plot_simulation(gamma=10.0)
+plot_simulation(gamma = 10.0)
 ```
 
 ```{code-cell} julia

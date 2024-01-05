@@ -61,11 +61,6 @@ In this lecture we investigate these ideas using mostly elementary linear algebr
 Useful references include {cite}`Whittle1963`, {cite}`HanSar1980`, {cite}`Orfanidisoptimum1988`, {cite}`Athanasios1991`, and {cite}`Muth1960`.
 
 
-
-```{code-cell} julia
-using LinearAlgebra, Statistics
-```
-
 ## Infinite Horizon Prediction and Filtering Problems
 
 We pose two related prediction and filtering problems.
@@ -587,6 +582,7 @@ using Test
 ```
 
 ```{code-cell} julia
+using LinearAlgebra, Statistics
 using Polynomials.PolyCompat, LinearAlgebra
 import Polynomials.PolyCompat: roots, coeffs
 
@@ -594,17 +590,16 @@ function LQFilter(d, h, y_m;
                   r = nothing,
                   beta = nothing,
                   h_eps = nothing)
-
     m = length(d) - 1
     m == length(y_m) ||
         throw(ArgumentError("y_m and d must be of same length = $m"))
 
     # define the coefficients of phi up front
     phi = zeros(2m + 1)
-    for i in -m:m
-        phi[m-i+1] = sum(diag(d*d', -i))
+    for i in (-m):m
+        phi[m - i + 1] = sum(diag(d * d', -i))
     end
-    phi[m+1] = phi[m+1] + h
+    phi[m + 1] = phi[m + 1] + h
 
     # if r is given calculate the vector phi_r
     if isnothing(r)
@@ -614,12 +609,12 @@ function LQFilter(d, h, y_m;
         k = size(r, 1) - 1
         phi_r = zeros(2k + 1)
 
-        for i = -k:k
-            phi_r[k-i+1] = sum(diag(r*r', -i))
+        for i in (-k):k
+            phi_r[k - i + 1] = sum(diag(r * r', -i))
         end
 
         if isnothing(h_eps) == false
-            phi_r[k+1] = phi_r[k+1] + h_eps
+            phi_r[k + 1] = phi_r[k + 1] + h_eps
         end
     end
 
@@ -627,16 +622,15 @@ function LQFilter(d, h, y_m;
     if isnothing(beta)
         beta = 1.0
     else
-        d = beta.^(collect(0:m)/2) * d
-        y_m = y_m * beta.^(-collect(1:m)/2)
+        d = beta .^ (collect(0:m) / 2) * d
+        y_m = y_m * beta .^ (-collect(1:m) / 2)
     end
 
-    return (;d, h, y_m, m, phi, beta, phi_r, k)
+    return (; d, h, y_m, m, phi, beta, phi_r, k)
 end
 
 function construct_W_and_Wm(lqf, N)
-
-    (;d, m) = lqf
+    (; d, m) = lqf
 
     W = zeros(N + 1, N + 1)
     W_m = zeros(N + 1, m)
@@ -647,9 +641,9 @@ function construct_W_and_Wm(lqf, N)
 
     # (1) constuct the D_{m+1} matrix using the formula
 
-    for j in 1:(m+1)
-        for k in j:(m+1)
-            D_m1[j, k] = dot(d[1:j, 1], d[k-j+1:k, 1])
+    for j in 1:(m + 1)
+        for k in j:(m + 1)
+            D_m1[j, k] = dot(d[1:j, 1], d[(k - j + 1):k, 1])
         end
     end
 
@@ -660,7 +654,7 @@ function construct_W_and_Wm(lqf, N)
 
     for j in 1:m
         for i in (j + 1):(m + 1)
-            M[i, j] = D_m1[i-j, m+1]
+            M[i, j] = D_m1[i - j, m + 1]
         end
     end
     M
@@ -676,24 +670,24 @@ function construct_W_and_Wm(lqf, N)
     end
 
     for i in 1:m
-        W[N - m + i + 1 , end-(2m + 1 - i)+1:end] = phi[1:end-i]
+        W[N - m + i + 1, (end - (2m + 1 - i) + 1):end] = phi[1:(end - i)]
     end
 
     for i in 1:m
-        W_m[N - i + 2, 1:(m - i)+1] = phi[(m + 1 + i):end]
+        W_m[N - i + 2, 1:((m - i) + 1)] = phi[(m + 1 + i):end]
     end
 
     return W, W_m
 end
 
 function roots_of_characteristic(lqf)
-    (;m, phi) = lqf
+    (; m, phi) = lqf
 
     # Calculate the roots of the 2m-polynomial
     phi_poly = Poly(phi[end:-1:1])
     proots = roots(phi_poly)
     # sort the roots according to their length (in descending order)
-    roots_sorted = sort(proots, by=abs)[end:-1:1]
+    roots_sorted = sort(proots, by = abs)[end:-1:1]
     z_0 = sum(phi) / polyval(poly(proots), 1.0)
     z_1_to_m = roots_sorted[1:m]     # we need only those outside the unit circle
     lambda = 1 ./ z_1_to_m
@@ -701,7 +695,7 @@ function roots_of_characteristic(lqf)
 end
 
 function coeffs_of_c(lqf)
-    (;m) = lqf
+    (; m) = lqf
     z_1_to_m, z_0, lambda = roots_of_characteristic(lqf)
     c_0 = (z_0 * prod(z_1_to_m) * (-1.0)^m)^(0.5)
     c_coeffs = coeffs(poly(z_1_to_m)) * z_0 / c_0
@@ -713,7 +707,7 @@ function solution(lqf)
     c_0 = coeffs_of_c(lqf)[end]
     A = zeros(m)
     for j in 1:m
-        denom = 1 - lambda/lambda[j]
+        denom = 1 - lambda / lambda[j]
         A[j] = c_0^(-2) / prod(denom[1:m .!= j])
     end
     return lambda, A
@@ -727,12 +721,12 @@ function construct_V(lqf; N = nothing)
         throw(ArgumentError("N must be Integer!"))
     end
 
-    (;phi_r, k) = lqf
+    (; phi_r, k) = lqf
     V = zeros(N, N)
     for i in 1:N
         for j in 1:N
-            if abs(i-j) <= k
-                V[i, j] = phi_r[k + abs(i-j)+1]
+            if abs(i - j) <= k
+                V[i, j] = phi_r[k + abs(i - j) + 1]
             end
         end
     end
@@ -750,7 +744,7 @@ function predict(lqf, a_hist, t)
     V = construct_V(N + 1)
 
     aux_matrix = zeros(N + 1, N + 1)
-    aux_matrix[1:t+1 , 1:t+1 ] = Matrix(I, t + 1, t + 1)
+    aux_matrix[1:(t + 1), 1:(t + 1)] = Matrix(I, t + 1, t + 1)
     L = cholesky(V).U'
     Ea_hist = inv(L) * aux_matrix * L * a_hist
 
@@ -758,7 +752,7 @@ function predict(lqf, a_hist, t)
 end
 
 function optimal_y(lqf, a_hist, t = nothing)
-    (;beta, y_m, m) = lqf
+    (; beta, y_m, m) = lqf
 
     N = length(a_hist) - 1
     W, W_m = construct_W_and_Wm(lqf, N)
@@ -777,7 +771,7 @@ function optimal_y(lqf, a_hist, t = nothing)
 
         # transform the a sequence if beta is given
         if beta != 1
-            a_hist = reshape(a_hist * (beta^(collect(N:0)/ 2)), N + 1, 1)
+            a_hist = reshape(a_hist * (beta^(collect(N:0) / 2)), N + 1, 1)
         end
 
         a_bar = a_hist - W_m * y_m        # a_bar from the lecutre
@@ -788,7 +782,7 @@ function optimal_y(lqf, a_hist, t = nothing)
         y_hist = J * vcat(y_bar, y_m)     # y_hist : concatenated y_m and y_bar
         # transform the optimal sequence back if beta is given
         if beta != 1
-            y_hist = y_hist .* beta.^(- collect(-m:N)/2)
+            y_hist = y_hist .* beta .^ (-collect((-m):N) / 2)
         end
 
     else                                  # if the problem is stochastic and we look at it
@@ -829,7 +823,7 @@ y_m = zeros(m)
 d = [1.0, -2.0]
 r = [1.0, -2.0]
 h = 0.0
-example = LQFilter(d, h, y_m, r=d)
+example = LQFilter(d, h, y_m, r = d)
 ```
 
 The Wold representation is computed by example.coefficients_of_c().
@@ -860,7 +854,7 @@ and put it in $V$.
 Then we'll take a Cholesky decomposition of $V = L^{-1} L^{-1} = Li Li'$ and use it to form the vector of "moving average representations" $x = Li \varepsilon$ and the vector of "autoregressive representations" $L x = \varepsilon$
 
 ```{code-cell} julia
-V = construct_V(example,N=5)
+V = construct_V(example, N = 5)
 ```
 
 Notice how the lower rows of the "moving average representations" are converging to the appropriate infinite history Wold representation
@@ -950,7 +944,7 @@ V = construct_V(example, N = 8)
 ```{code-cell} julia
 F = cholesky(V)
 Li = F.L
-Li[end-2:end, :]
+Li[(end - 2):end, :]
 ```
 
 ```{code-cell} julia
