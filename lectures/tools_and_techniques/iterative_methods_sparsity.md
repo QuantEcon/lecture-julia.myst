@@ -1070,7 +1070,7 @@ With this, we are now able to write the $Q$ operator on the $f$ vector, which is
 parameters in a named tuple generator
 
 ```{code-cell} julia
-using Parameters, BenchmarkTools
+using BenchmarkTools
 function default_params(; theta = 0.1, zeta = 0.05, rho = 0.03, N = 10, M = 6,
                         shape = Tuple(fill(N, M)),  # for reshaping vector to M-d array
                         e_m = ([CartesianIndex((1:M .== i) * 1...) for i in 1:M]))

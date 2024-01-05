@@ -120,8 +120,8 @@ Other functions require importing all of the names from an external library
 
 ```{code-cell} julia
 n = 100
-ϵ = randn(n)
-plot(1:n, ϵ)
+ep = randn(n)
+plot(1:n, ep)
 ```
 
 Let's break this down and see how it works.
@@ -132,32 +132,35 @@ If a project file was activated (i.e., running jupyter with the project files lo
 
 The other packages `LinearAlgebra` and `Statistics` are base Julia libraries, but require an explicit using.
 
-The arguments to `plot` are the numbers `1,2, ..., n` for the x-axis, a vector `ϵ` for the y-axis, and (optional) settings.
+The arguments to `plot` are the numbers `1,2, ..., n` for the x-axis, a vector `ep` for the y-axis, and (optional) settings.
 
 The function `randn(n)` returns a column vector `n` random draws from a normal distribution with mean 0 and variance 1.
 
-### Arrays
-
+```{note}
 As a language intended for mathematical and scientific computing, Julia has
 strong support for using unicode characters.
 
-In the above case, the `ϵ` and many other symbols can be typed in most Julia editor by providing the LaTeX and `<TAB>`, i.e. `\epsilon<TAB>`.
+Rather than using a symbol such as `ep` we could have used `ϵ` and many other symbols can be typed in most Julia editor by providing the LaTeX and `<TAB>`, i.e. `\epsilon<TAB>`.
+```
+
+### Arrays
+
 
 The return type is one of the most fundamental Julia data types: an array
 
 ```{code-cell} julia
-typeof(ϵ)
+typeof(ep)
 ```
 
 ```{code-cell} julia
-ϵ[1:5]
+ep[1:5]
 ```
 
-The information from `typeof()` tells us that `ϵ` is an array of 64 bit floating point values, of dimension 1.
+The information from `typeof()` tells us that `ep` is an array of 64 bit floating point values, of dimension 1.
 
 In Julia, one-dimensional arrays are interpreted as column vectors for purposes of linear algebra.
 
-The `ϵ[1:5]` returns an array of the first 5 elements of `ϵ`.
+The `ep[1:5]` returns an array of the first 5 elements of `ep`.
 
 Notice from the above that
 
@@ -201,13 +204,13 @@ Starting with the most direct version, and pretending we are in a world where `r
 ```{code-cell} julia
 # poor style
 n = 100
-ϵ = zeros(n)
+ep = zeros(n)
 for i in 1:n
-    ϵ[i] = randn()
+    ep[i] = randn()
 end
 ```
 
-Here we first declared `ϵ` to be a vector of `n` numbers, initialized by the floating point `0.0`.
+Here we first declared `ep` to be a vector of `n` numbers, initialized by the floating point `0.0`.
 
 The `for` loop then populates this array by successive calls to `randn()`.
 
@@ -219,46 +222,47 @@ The index variable is looped over for all integers from `1:n` -- but this does n
 
 Instead, it creates an **iterator** that is looped over -- in this case the **range** of integers from `1` to `n`.
 
-While this example successfully fills in `ϵ` with the correct values, it is very indirect as the connection between the index `i` and the `ϵ` vector is unclear.
+While this example successfully fills in `ep` with the correct values, it is very indirect as the connection between the index `i` and the `ep` vector is unclear.
 
 To fix this, use `eachindex`
 
 ```{code-cell} julia
 # better style
 n = 100
-ϵ = zeros(n)
-for i in eachindex(ϵ)
-    ϵ[i] = randn()
+ep = zeros(n)
+for i in eachindex(ep)
+    ep[i] = randn()
 end
 ```
 
-Here, `eachindex(ϵ)` returns an iterator of indices which can be used to access `ϵ`.
+Here, `eachindex(ep)` returns an iterator of indices which can be used to access `ep`.
 
 While iterators are memory efficient because the elements are generated on the fly rather than stored in memory, the main benefit is (1) it can lead to code which is clearer and less prone to typos; and (2) it allows the compiler flexibility to creatively generate fast code.
 
 In Julia you can also loop directly over arrays themselves, like so
 
 ```{code-cell} julia
-ϵ_sum = 0.0 # careful to use 0.0 here, instead of 0
+ep_sum = 0.0 # careful to use 0.0 here, instead of 0
 m = 5
-for ϵ_val in ϵ[1:m]
-    ϵ_sum = ϵ_sum + ϵ_val
+for ep_val in ep[1:m]
+    ep_sum = ep_sum + ep_val
 end
-ϵ_mean = ϵ_sum / m
+ep_mean = ep_sum / m
 ```
 
-where `ϵ[1:m]` returns the elements of the vector at indices `1` to `m`.
+where `ep[1:m]` returns the elements of the vector at indices `1` to `m`.
 
 Of course, in Julia there are built in functions to perform this calculation which we can compare against
 
 ```{code-cell} julia
-ϵ_mean ≈ mean(ϵ[1:m])
-ϵ_mean ≈ sum(ϵ[1:m]) / m
+ep_mean ≈ mean(ep[1:m])
+isapprox(ep_mean, mean(ep[1:m])) # equivalent
+ep_mean ≈ sum(ep[1:m]) / m
 ```
 
-In these examples, note the use of `≈` to test equality, rather than `==`, which is appropriate for integers and other types.
+In these examples, note the use of `≈` or `isapprox` to test equality, rather than `==`, which is appropriate for integers and other types.
 
-Approximately equal, typed with `\approx<TAB>`, is the appropriate way to compare any floating point numbers due to the standard issues of [floating point math](https://floating-point-gui.de/).
+Approximately equal, typed with `\approx<TAB>`, is the appropriate way to compare any floating point numbers due to the standard issues of [floating point math](https://floating-point-gui.de/).  Note that `x ≈ y` is the same as `isapprox(x, y)`.
 
 (user_defined_functions)=
 ### User-Defined Functions
@@ -270,11 +274,11 @@ To make things more interesting, instead of directly plotting the draws from the
 ```{code-cell} julia
 # poor style
 function generatedata(n)
-    ϵ = zeros(n)
-    for i in eachindex(ϵ)
-        ϵ[i] = (randn())^2 # squaring the result
+    ep = zeros(n)
+    for i in eachindex(ep)
+        ep[i] = (randn())^2 # squaring the result
     end
-    return ϵ
+    return ep
 end
 
 data = generatedata(10)
@@ -292,13 +296,13 @@ Let us make this example slightly better by "remembering" that `randn` can retur
 ```{code-cell} julia
 # still poor style
 function generatedata(n)
-    ϵ = randn(n) # use built in function
+    ep = randn(n) # use built in function
 
-    for i in eachindex(ϵ)
-        ϵ[i] = ϵ[i]^2 # squaring the result
+    for i in eachindex(ep)
+        ep[i] = ep[i]^2 # squaring the result
     end
 
-    return ϵ
+    return ep
 end
 data = generatedata(5)
 ```
@@ -314,8 +318,8 @@ Loops of this sort are at least as efficient as vectorized approach in compiled 
 ```{code-cell} julia
 # better style
 function generatedata(n)
-    ϵ = randn(n) # use built in function
-    return ϵ .^ 2
+    ep = randn(n) # use built in function
+    return ep .^ 2
 end
 data = generatedata(5)
 ```
@@ -383,8 +387,8 @@ Here's the code
 using Distributions
 
 function plothistogram(distribution, n)
-    ϵ = rand(distribution, n)  # n draws from distribution
-    histogram(ϵ)
+    ep = rand(distribution, n)  # n draws from distribution
+    histogram(ep)
 end
 
 lp = Laplace()
