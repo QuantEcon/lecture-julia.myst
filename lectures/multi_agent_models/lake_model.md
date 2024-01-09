@@ -863,7 +863,8 @@ New legislation changes $\lambda$ to $0.2$
 lm = LakeModel(; lambda = 0.2)
 X_path = simulate_linear(lm.A, x0 * N0, T - 1)
 x_path = simulate_linear(lm.A_hat, x0, T - 1)
-println("New Steady State: $(lm.x_bar)")
+u_bar, e_bar = lm.x_bar
+println("New Steady State: [$u_bar, $e_bar]")
 ```
 
 Now plot stocks
