@@ -1,5 +1,9 @@
 # lecture-julia.myst
 
+
+some new text for studying...
+
+
 Source for julia.quantecon.org and notebooks in https://github.com/QuantEcon/lecture-julia.notebooks
 
 To contribute, you can use GitHub's online editor for small changes, and do a full local installation for large ones.
