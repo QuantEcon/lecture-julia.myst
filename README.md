@@ -2,6 +2,7 @@
 
 
 some new text for studying...
+the other additional changes.
 
 
 Source for julia.quantecon.org and notebooks in https://github.com/QuantEcon/lecture-julia.notebooks
