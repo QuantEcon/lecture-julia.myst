@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (mccall_with_sep)=
@@ -235,7 +235,8 @@ using Test
 ```{code-cell} julia
 using Distributions, LinearAlgebra, Expectations, NLsolve, Plots
 
-function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)), tol = 1e-5,
+function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
+                            tol = 1e-5,
                             iter = 2_000)
     (; alpha, beta, sigma, c, gamma, w, dist, u) = mcm
 
@@ -436,7 +437,8 @@ plot(c_vals,
 Note that we could've done the above in one pass (which would be important if, for example, the parameter space was quite large).
 
 ```{code-cell} julia
-w_bar_vals = [solve_mccall_model(McCallModel(c = cval)).w_bar for cval in c_vals];
+w_bar_vals = [solve_mccall_model(McCallModel(c = cval)).w_bar
+              for cval in c_vals];
 # doesn't allocate new arrays for models and solutions
 ```
 

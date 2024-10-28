@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (career)=
@@ -268,7 +268,8 @@ v_init = fill(100.0, wp.N, wp.N)
 func(x) = update_bellman(wp, x)
 v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
 
-plot(linetype = :surface, wp.theta, wp.epsilon, transpose(v), xlabel = L"\theta",
+plot(linetype = :surface, wp.theta, wp.epsilon, transpose(v),
+     xlabel = L"\theta",
      ylabel = L"\epsilon",
      seriescolor = :plasma, gridalpha = 1)
 ```
@@ -479,7 +480,8 @@ lvls = [0.5, 1.5, 2.5, 3.5]
 x_grid = range(0, 5, length = 50)
 y_grid = range(0, 5, length = 50)
 
-contour(x_grid, y_grid, optimal_policy', fill = true, levels = lvls, color = :Blues,
+contour(x_grid, y_grid, optimal_policy', fill = true, levels = lvls,
+        color = :Blues,
         fillalpha = 1, cbar = false)
 contour!(xlabel = L"\theta", ylabel = L"\epsilon")
 annotate!([(1.8, 2.5, text("new life", 14, :white, :center))])
@@ -497,7 +499,8 @@ lvls = [0.5, 1.5, 2.5, 3.5]
 x_grid = range(0, 5, length = 50)
 y_grid = range(0, 5, length = 50)
 
-contour(x_grid, y_grid, optimal_policy', fill = true, levels = lvls, color = :Blues,
+contour(x_grid, y_grid, optimal_policy', fill = true, levels = lvls,
+        color = :Blues,
         fillalpha = 1, cbar = false)
 contour!(xlabel = L"\theta", ylabel = L"\epsilon")
 annotate!([(1.8, 2.5, text("new life", 14, :white, :center))])
