@@ -33,7 +33,7 @@ jobs:
             ghostscript               \
             cm-super 
       - name: Set up Julia
-        uses: julia-actions/setup-julia@v1
+        uses: julia-actions/setup-julia@v2
         with:
           version: 1.11.1
       - name: Install IJulia and Setup Project
@@ -61,7 +61,7 @@ jobs:
         run: |
           jb build lectures --path-output ./ --builder=custom --custom-builder=jupyter
           zip -r download-notebooks.zip _build/jupyter
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: download-notebooks
           path: download-notebooks.zip
@@ -76,13 +76,13 @@ jobs:
         run: |
           jb build lectures --path-output ./
       - name: Deploy website to gh-pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: _build/html/
           cname: julia.quantecon.org
       - name: Upload "_build" folder (cache)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: build-publish
           path: _build
