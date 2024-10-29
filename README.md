@@ -12,12 +12,12 @@ On this website hit `.` to enter into the web editor.  From this, you can submit
 
 ## Local Development
 
-It is straightforward to install the Jupyter Book and Julia software necessary for more significant changes.
+It is straightforward to install the Jupyter Book and Julia software necessary for more significant changes.  For Windows support, it is best to use WSL.  See `[WSL Setup Instructions](./wsl.md)` for more details.
 
 ### Setup
 
 1. [Install Julia, Conda, and VS Code](https://quantecon.github.io/lecture-julia.myst/getting_started_julia/getting_started.html) following the documentation for using these notes.
-2. Modify [VS Code settings](https://quantecon.github.io/lecture-julia.myst/software_engineering/tools_editors.html#optional-extensions-and-settings) and consider [additional extensions](https://quantecon.github.io/lecture-julia.myst/software_engineering/tools_editors.html#optional-extensions).  Some others to consider are the [MyST-Markdown](https://github.com/executablebooks/myst-vs-code) and [Spell Checking](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) extensions.
+2. Modify [VS Code settings](https://quantecon.github.io/lecture-julia.myst/software_engineering/tools_editors.html#optional-extensions-and-settings) and consider [additional extensions](https://quantecon.github.io/lecture-julia.myst/software_engineering/tools_editors.html#optional-extensions).  Some others to consider are the [MyST-Markdown](https://github.com/executablebooks/myst-vs-code) and [Spell Checking](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) extensions.  You will also likely want the Python and Jupyter extensions installed
 3. Ensure that [Git](https://quantecon.github.io/lecture-julia.myst/software_engineering/version_control.html#setup) is set up correctly.  In particular, this ensures that Windows users use the Linux end-of-line characters.
 4. Clone this repository (in VS Code, you can use `<Ctrl+Shift+P>` then `Clone` then `Clone from GitHub` then choose the repo as `https://github.com/QuantEcon/lecture-julia.myst`).
 
@@ -44,30 +44,6 @@ It is straightforward to install the Jupyter Book and Julia software necessary f
      julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
      ```
 
-     On Windows, run the following instead:
-
-     ```bash
-     julia --project=lectures --threads auto -e "using Pkg; Pkg.instantiate();"
-     ```
-
-## Formatting code
-Julia code blocks in the myst `.md` files can be formatted using a script in this folder.  To manually do so, insure you have the `] add JuliaFormatter` within your default julia environment, then call on the commandline like
-    
-```bash 
-julia format_myst.jl lectures/getting_started_julia/getting_started.md
-```
-
-As a helper, you can call a shell script to do it for an entire folder
-
-```bash
-bash format_all_directory.sh lectures/dynamic_programming
-```
-
-or to also do the unicode substitutions
-
-```bash
-bash format_all_directory.sh lectures/dynamic_programming true
-```
 
 **(Optional) REPL Integration**
 With [MyST-Markdown](https://github.com/executablebooks/myst-vs-code) and [Julia](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia) installed, you can ensure that pressing `<Ctrl-Enter>` on lines of code are sent to a Julia REPL.
@@ -100,7 +76,7 @@ jb build lectures
 ```
 
 This will take a while. But it will populate your cache, so future iteration is faster.
-
+<!--
 It is suggested to use WSL on Windows On Windows, if you get the following error:
 
 ```
@@ -110,6 +86,7 @@ ImportError: DLL load failed while importing win32api: The specified procedure c
 then run `conda install pywin32` and build the lectures again.
 
 If you have [Live Preview](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server) installed, then go to `_build/html/index.html` in the explorer, and right-click to choose `Live Preview: Show Preview`.
+-->
 
 ### Cleaning Lectures
 To clean up (i.e., delete the build)
@@ -134,3 +111,22 @@ jb clean lectures --all
 After execution, you can find the generated `.ipynb` and `.jl` files in `_build/jupyter_execute` for each lecture.
 - To see errors, you can open these in JupyterLab, the Jupyter support within VS Code, etc.
 - If using the Julia REPL in VS Code, make sure to do `] activate lectures` prior to testing to ensure the packages are activated.  This is not necessary when opening in Jupyter.
+
+## Formatting code
+Julia code blocks in the myst `.md` files can be formatted using a script in this folder.  To manually do so, insure you have the `] add JuliaFormatter` within your default julia environment, then call on the commandline like
+    
+```bash 
+julia format_myst.jl lectures/getting_started_julia/getting_started.md
+```
+
+As a helper, you can call a shell script to do it for an entire folder
+
+```bash
+bash format_all_directory.sh lectures/dynamic_programming
+```
+
+or to also do the unicode substitutions
+
+```bash
+bash format_all_directory.sh lectures/dynamic_programming true
+```

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (odu)=
@@ -298,7 +298,8 @@ function res_wage_operator!(sp, phi, out)
 
     for (i, _pi) in enumerate(sp.pi_grid)
         function integrand(x)
-            max.(x, phi_f.(q.(Ref(sp), x, _pi))) .* (_pi * f(x) + (1 - _pi) * g(x))
+            max.(x, phi_f.(q.(Ref(sp), x, _pi))) .*
+            (_pi * f(x) + (1 - _pi) * g(x))
         end
         integral = do_quad(integrand, q_nodes, q_weights)
         out[i] = (1 - beta) * c + beta * integral
@@ -364,7 +365,8 @@ function plot_policy_function(; w_plot_grid_size = 100,
     w_plot_grid = range(0, sp.w_max, length = w_plot_grid_size)
     Z = [pf(w_plot_grid[j], pi_plot_grid[i])
          for j in 1:w_plot_grid_size, i in 1:pi_plot_grid_size]
-    p = contour(pi_plot_grid, w_plot_grid, Z, levels = 1, alpha = 0.6, fill = true,
+    p = contour(pi_plot_grid, w_plot_grid, Z, levels = 1, alpha = 0.6,
+                fill = true,
                 size = (400, 400), c = :coolwarm)
     plot!(xlabel = L"\pi", ylabel = "wage", xguidefont = font(12), cbar = false)
     annotate!(0.4, 1.0, "reject")
@@ -565,7 +567,8 @@ plot(sp.pi_grid, w_bar, linewidth = 2, color = :black,
      fillrange = 0, fillalpha = 0.15, fillcolor = :blue)
 plot!(sp.pi_grid, 2 * ones(length(w_bar)), linewidth = 0, fillrange = w_bar,
       fillalpha = 0.12, fillcolor = :green, legend = :none)
-plot!(ylims = (0, 2), annotations = [(0.42, 1.2, "reject"),
+plot!(ylims = (0, 2),
+      annotations = [(0.42, 1.2, "reject"),
           (0.7, 1.8, "accept")])
 ```
 
@@ -607,7 +610,8 @@ function update!(ag, H)
         if w >= w_bar(ag._pi)
             ag.employed = 1
         else
-            ag._pi = 1.0 ./ (1 .+ ((1 - ag._pi) .* sp.g(w)) ./ (ag._pi * sp.f(w)))
+            ag._pi = 1.0 ./
+                     (1 .+ ((1 - ag._pi) .* sp.g(w)) ./ (ag._pi * sp.f(w)))
         end
     end
     nothing

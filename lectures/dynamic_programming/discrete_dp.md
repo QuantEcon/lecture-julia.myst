@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (discrete_dp)=
@@ -822,7 +822,8 @@ solution of the original continuous model. Here's the exact solution:
 c = f(grid) - grid[sigma]
 
 ab = alpha * beta
-c1 = (log(1 - alpha * beta) + log(alpha * beta) * alpha * beta / (1 - alpha * beta)) /
+c1 = (log(1 - alpha * beta) +
+      log(alpha * beta) * alpha * beta / (1 - alpha * beta)) /
      (1 - beta)
 c2 = alpha / (1 - alpha * beta)
 

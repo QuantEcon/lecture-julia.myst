@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (lqc)=
@@ -1381,7 +1381,8 @@ lq_retired = QuantEcon.LQ(Q, R, A, B, C; bet = beta, capT = T - K, rf = Rf)
 
 # since update_values!() changes its argument in place, we need another identical instance
 # just to get the correct value function
-lq_retired_proxy = QuantEcon.LQ(Q, R, A, B, C; bet = beta, capT = T - K, rf = Rf)
+lq_retired_proxy = QuantEcon.LQ(Q, R, A, B, C; bet = beta, capT = T - K,
+                                rf = Rf)
 
 # iterate back to start of retirement, record final value function
 for i in 1:(T - K)
