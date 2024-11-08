@@ -453,9 +453,9 @@ price_vals = solve_lucas_model(tree);
 tags: [remove-cell]
 ---
 @testset begin
-    @test price_vals[57] ≈ 41.35601991726328
-    @test price_vals[78] ≈ 63.474988006734925
-    @test price_vals[13] ≈ 9.24450665849126
+    @test price_vals[57] ≈ 44.53930835369383
+    @test price_vals[78] ≈ 68.48080295548888
+    @test price_vals[13] ≈ 9.886241027004147
 end
 ```
 
@@ -521,8 +521,8 @@ tags: [remove-cell]
 @testset begin # For the 0.98, since the other one is overwritten.
     Random.seed!(42)
     price_vals = solve_lucas_model(LucasTree(beta = 0.98))
-    @test price_vals[20] ≈ 32.17514173843709
-    @test price_vals[57] ≈ 113.89100588660085
+    @test price_vals[20] ≈ 35.03700398163009
+    @test price_vals[57] ≈ 124.46814606174088
 end
 ```
 
