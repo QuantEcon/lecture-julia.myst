@@ -38,7 +38,10 @@ It is straightforward to install the Jupyter Book and Julia software necessary f
     - Choose the interpreter with `lecture-julia.myst` which should now be automatically activated in the terminal.
     - If the interpreter does not show up in the drop-down, close and reopen VS Code, then try again. Alternatively, you can run this step at the end of the setup process.
         - Whenever reopening VS Code, re-run `conda activate lecture-julia.myst` to ensure the environment remains active.
-9.  Install the Julia packages required for the lecture notes.
+9.  Ensure that IJulia is installed for the main Julia environment
+    - Ensure you have the conda environment activated with `conda activate lecture-julia.myst`
+    - To do this, run `julia` in the terminal and then `] add IJulia` in the Julia REPL.  You will want to do this in the main environment and not the `lectures` environment, as used below.
+10.  Install the Julia packages required for the lecture notes.
 
      ```bash
      julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
@@ -60,6 +63,19 @@ If you installed the REPL Integration above, then in a `.md` file,
 3. Then, assuming that you set up the keybindings above, you can send a line of code in the markdown to the REPL with `<Ctrl-Enter>`.
 
 Code can be executed line by line, or you can select a chunk of code and execute it.
+
+## Executing Intermediate Code in Jupyter Notebooks
+From a built jupyterbook, you can navigate to the `.ipynb` used for the generation.  The files are located in `lectures/_build/jupyter_execute/dynamic_programming/mccall_model.ipynb` etc.
+
+There are two options:
+
+1. With the Julia vscode extension installed, open the file and run code cells.
+  - The formatting will be incorrect, but the code will be.
+  - The first time you run this you may need to choose the kernel.  Assuming you installed with juliaup, you should be able to choose `Julia` as the kernel and the juliaup installed julia version
+  - This will automatically activate the appropriate project and manifest file.
+2. With your conda environment activated, go `cd lectures` then `jupyter lab`
+  - Navigate to the files in jupyter itself.  Because you ran this in the environment with the `Project.toml` and `Manifest.toml` files, the environment should be activated correctly.
+  - If you have any issues, it is likely that you need to activate the environment in the terminal, or that you have note done the `] add IJulia` step from a julia REPL (whihc must be done in the default environment, i.e. not activated in `lectures`).
 
 ## Example Operations
 ### Building the lectures
