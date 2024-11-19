@@ -52,9 +52,13 @@ If you have already installed Jupyter, Julia, and Git and have experience with t
   - Open a Jupyter notebook within the downloaded notebooks
   - Install the necessary packages in a Julia REPL with `using Pkg; Pkg.instantiate()`
 
+
 At that point, you could directly move on to the {doc}`julia by example <../getting_started_julia/julia_by_example>` lecture.
 
 However, as we strongly recommend becoming familiar with VS Code as a transition towards using more advanced tools and to support better software engineering workflows, so consider walking through the rest of these instructions.
+
+Alternatively, you can simply install Julia, VS Code, Git, and the Julia extension for VS Code and use the notebooks {ref}`directly without an installation of Python  <running_vscode_kernel>`.
+
 ```
 
 For those with little to no programming experience (e.g. you have never used a loop or "if" statement) see the list of [introductory resources](intro_resources).
@@ -80,7 +84,9 @@ If you have not previously installed Conda or Jupyter, then
 2. If given the option for your operating system, let Conda add Python to your PATH environment variables.
 
 ```{note}
-While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.  Alternatively you can let `IJulia` install its own version of Conda by following [these instructions](https://julialang.github.io/IJulia.jl/dev/manual/running/), or use the direct support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) - which does no Python installation at all.
+While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.  Alternatively you can let `IJulia` install its own version of Conda by following [these instructions](https://julialang.github.io/IJulia.jl/dev/manual/running/).
+
+Finally, there is direct support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) with **no Python installation**. See {ref}`VS Code Julia Kernel  <running_vscode_kernel>`.
 ```
 
 (intro_repl)=
@@ -248,7 +254,7 @@ Recall that you can start this directly from the [command palette](command_palet
 This process will take several minutes to download and compile all of the files used by the lectures.
 
 ```{attention}
-If the cursor is instead `(@v1.10) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
+If the cursor is instead `(@v1.11) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
 
 One benefit of using the integrated REPL is that it will set important options for launching Julia (e.g. the number of threads) and activate the local project files (i.e. the `Project.toml` file in the notebooks directory) automatically.  If you use an external REPL, you will need to set these manually.  Here you would want to run the REPL with `julia --project --threads auto`  to tell Julia to set the number of threads equal to your local machine's number of cores, and to activate the existing project.  See [here](repl_main) for more details.
 ```
@@ -520,3 +526,23 @@ which provides a static HTML representations of notebooks.
 
 QuantEcon also hosts the [QuantEcon Notes](http://notes.quantecon.org/) website, where you can upload and share your notebooks with other economists and the QuantEcon community.
 
+(running_vscode_kernel)=
+## Running the VS Code Julia Kernel
+The Jupyter Extension for VS Code supports Julia directly without the need for a Python installation.
+
+With cloned notebooks, open a `.ipynb` file directly in VS Code.  Depending on your setup, you may see a request to choose the kernel for executing the notebook.
+
+To do so, click on the `Choose Kernel` or `Select Another Kernel...` which may display an option such as
+
+   ```{figure} /_static/figures/vscode_julia_kernel.png
+   :width: 80%
+   ```
+
+Choose the `Julia`  kernel, rather than the `Jupyter Kernel...` to bypass the Python Jupyter setup.  If successful, you will see the kernel name as `Julia 1.11 channel` or something similar.
+
+With the kernel selected, you will be able to run cells in the VS Code UI with similar features to Jupyter Lab.  For example, below shows the results of play icon next to a code cell, which will `Execute Cell` and display the results inline.
+
+
+   ```{figure} /_static/figures/vscode_jupyter_kernel_execute.png
+   :width: 100%
+   ```
