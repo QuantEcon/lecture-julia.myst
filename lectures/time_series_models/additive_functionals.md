@@ -645,7 +645,8 @@ function plot_martingale_paths(T, mpath, mbounds;
     # plot martingale component
     ub = mbounds[2, :]
     lb = mbounds[1, :]
-    #plot!(plt, lb, fillrange = ub, alpha = 0.25, color = :magenta, label = "")
+    
+    plot!(plt, ub, fillrange = lb, alpha = 0.25, color = :magenta, label = "")
     plot!(plt, seriestype = :hline, [horline], color = :black,
           linestyle = :dash, label = "")
     plot!(plt, trange, Matrix(mpath'), linewidth = 0.25, color = :black,
@@ -662,7 +663,7 @@ For now, we just plot $y_t$ and $x_t$, postponing until later a description of e
 ---
 tags: [remove-cell]
 ---
-Random.seed!(42);
+Random.seed!(43);
 ```
 
 ```{code-cell} julia
@@ -938,12 +939,6 @@ $\widetilde M_t$ of the multiplicative decomposition has a peculiar property.
 
 The following simulation of many paths of $\widetilde M_t$ illustrates this property
 
-```{code-cell} julia
----
-tags: [remove-cell]
----
-Random.seed!(10021987);
-```
 
 ```{code-cell} julia
 plt = plot_martingales(amf, 12000)
