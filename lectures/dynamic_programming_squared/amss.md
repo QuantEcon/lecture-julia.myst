@@ -1517,7 +1517,7 @@ sim_seq_h_plot = hcat(sim_seq_h[1:3]..., sim_seq_h[4],
 sim_bel_h_plot = hcat(sim_bel_h[1:3]..., sim_bel_h[5],
                       time_example.G[sHist_h],
                       time_example.Theta[sHist_h] .* sim_bel_h[2])
-p = plot(layout = (3, 2),
+p = plot(size = (700, 600), layout = (3, 2),
          xaxis = (0:6), grid = false, titlefont = Plots.font("sans-serif", 10))
 plot!(p, title = titles)
 for i in 1:6
@@ -1632,7 +1632,7 @@ sim_bel_plot = hcat(sim_bel[1:3]...,
                     log_example.Theta[sHist] .* sim_bel[2])
 
 #plot policies
-p = plot(layout = grid(3, 2),
+p = plot(size = (700, 600), layout = grid(3, 2),
          xaxis = (0:T), grid = false, titlefont = Plots.font("sans-serif", 10))
 labels = fill(("", ""), 6)
 labels[3] = ("Complete Market", "Incomplete Market")
@@ -1677,7 +1677,7 @@ sim_bel_long_plot = hcat(sim_bel_long[1:3]..., sim_bel_long[5],
                          log_example.G[sHist_long],
                          log_example.Theta[sHist_long] .* sim_bel_long[2])
 
-p = plot(layout = (3, 2), xaxis = (0:50:T_long),
+p = plot(size = (700, 600), layout = (3, 2), xaxis = (0:50:T_long),
          grid = false,
          titlefont = Plots.font("sans-serif", 10))
 plot!(p, title = titles)
