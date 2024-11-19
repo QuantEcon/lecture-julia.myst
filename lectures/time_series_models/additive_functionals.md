@@ -566,7 +566,8 @@ function plot_martingales(amf, T, npaths = 25)
               plot_martingale_paths(T, mpath_mult[(li + 1):ui, :],
                                     mbounds_mult[(LI + 1):UI, :], horline = 1))
         plot!(mart_figs[ii + 1],
-              title = L"Martingale components for many paths of $y_{ii + 1}$")
+              title = L"Martingale components for many paths of $y_{ii + 1}$",
+              titlefontsize = 12)
     end
 
     return mart_figs
@@ -594,7 +595,8 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
     end
     plot!(plots[1], seriestype = :hline, [horline], color = :black,
           linestyle = :dash, label = "")
-    plot!(plots[1], title = "One Path of All Variables", legend = :topleft)
+    plot!(plots[1], title = "One Path of All Variables", legend = :topleft,
+          titlefontsize = 12)    
 
     # plot martingale component
     plot!(plots[2], trange, mpath[1, :], color = :magenta, label = "")
@@ -605,7 +607,8 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
           label = "")
     plot!(plots[2], seriestype = :hline, [horline], color = :black,
           linestyle = :dash, label = "")
-    plot!(plots[2], title = "Martingale Components for Many Paths")
+    plot!(plots[2], title = "Martingale Components for Many Paths",
+          titlefontsize = 12)
 
     # plot stationary component
     plot!(plots[3], spath[1, :], color = :green, label = "")
@@ -616,7 +619,8 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
           label = "")
     plot!(plots[3], seriestype = :hline, [horline], color = :black,
           linestyle = :dash, label = "")
-    plot!(plots[3], title = "Stationary Components for Many Paths")
+    plot!(plots[3], title = "Stationary Components for Many Paths",
+          titlefontsize = 12)
 
     # plot trend component
     if show_trend == true
@@ -624,7 +628,8 @@ function plot_given_paths(T, ypath, mpath, spath, tpath, mbounds, sbounds;
     end
     plot!(plots[4], seriestype = :hline, [horline], color = :black,
           linestyle = :dash, label = "")
-    plot!(plots[4], title = "Trend Components for Many Paths")
+    plot!(plots[4], title = "Trend Components for Many Paths",
+          titlefontsize = 12)
 
     return plots
 end
@@ -685,16 +690,16 @@ x, y = simulate(amf.lss, T)
 plt_1 = plot()
 plt_2 = plot()
 plots = [plt_1, plt_2]
-# plots = plot(layout = (2, 1))
 
 plot!(plots[1], 1:T, y[amf.nx + 1, :], color = :black, lw = 2, label = "")
-plot!(plots[1], title = L"A particular path of $y_t$")
+plot!(plots[1], title = L"A particular path of $y_t$",
+          titlefontsize = 12)
 plot!(plots[2], 1:T, y[1, :], color = :green, lw = 2, label = "")
 plot!(plots[2], seriestype = :hline, [0], color = :black, lw = 2,
       linestyle = :dashdot, label = "")
-plot!(plots[2], title = L"Associated path of $x_t$")
-# plot(plots)
-plot(plots[1], plots[2], layout = (2, 1), size = (700, 500))
+plot!(plots[2], title = L"Associated path of $x_t$",
+          titlefontsize = 12)
+plot(plots[1], plots[2], layout = (2, 1), size = (700, 600))
 ```
 
 ```{code-cell} julia
