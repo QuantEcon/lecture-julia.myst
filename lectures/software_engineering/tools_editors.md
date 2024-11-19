@@ -28,6 +28,8 @@ While Jupyter notebooks are a great way to get started with the language, eventu
 
 While you can use source code control, run terminals and the REPL ("Read-Evaluate-Print Loop") without VS Code, we will concentrate on using it as a full IDE for all of these features.
 
+See [Modern Julia Workflows](https://modernjuliaworkflows.org/) for alternative approaches.
+
 (install_vscode)=
 ## Installing VS Code
 
