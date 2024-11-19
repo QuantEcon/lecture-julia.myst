@@ -1309,12 +1309,18 @@ function get_policies_time0(T::BellmanEquation_Recursive,
     U, Uc, Un = model.U, model.Uc, model.Un
 
     function objf(z, grad)
+        if any(isnan, z)
+            return -Inf
+        end
         c, xprime = z[1], z[2]
         n = (c + G[s0]) / Theta[s0]
         return -(U(c, n) + beta * Vf[s0](xprime))
     end
 
     function cons(z, grad)
+        if any(isnan, z)
+            return -Inf
+        end
         c, xprime, TT = z[1], z[2], z[3]
         n = (c + G[s0]) / Theta[s0]
         return -Uc(c, n) * (c - B_ - TT) - Un(c, n) * n - beta * xprime
