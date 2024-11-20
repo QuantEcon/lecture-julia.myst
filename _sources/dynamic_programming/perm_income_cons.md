@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (perm_income_cons)=
@@ -705,7 +705,8 @@ By altering initial conditions, we shall remove this transient in our second exa
 ```{code-cell} julia
 function cointegration_figure(bsim, csim)
     # create figure
-    plot((1 - beta) * bsim[1, :] + csim[1, :], color = :black, lw = 2, label = "")
+    plot((1 - beta) * bsim[1, :] + csim[1, :], color = :black, lw = 2,
+         label = "")
     plot!((1 - beta) * bsim' + csim', color = :black, alpha = 0.1, label = "")
     plot!(title = "Cointegration of Assets and Consumption", xlabel = L"t")
 end

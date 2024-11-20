@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (egm_policy_iter)=
@@ -191,7 +191,8 @@ function K!(Kg, g, grid, beta, u_prime, f, f_prime, shocks)
     # solve for updated consumption value #
     for (i, y) in enumerate(grid)
         function h(c)
-            vals = u_prime.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .* shocks
+            vals = u_prime.(g_func.(f(y - c) * shocks)) .* f_prime(y - c) .*
+                   shocks
             return u_prime(c) - beta * mean(vals)
         end
         Kg[i] = find_zero(h, (1e-10, y - 1e-10))
@@ -229,7 +230,8 @@ function Model(; alpha = 0.65, # productivity parameter
                f = k -> k^alpha, # production function
                f_prime = k -> alpha * k^(alpha - 1), # f'
                grid = range(grid_min, grid_max, length = grid_size)) # grid
-    return (; alpha, beta, gamma, mu, s, grid_min, grid_max, grid_size, u, u_prime,
+    return (; alpha, beta, gamma, mu, s, grid_min, grid_max, grid_size, u,
+            u_prime,
             f, f_prime, grid)
 end
 ```
@@ -351,7 +353,8 @@ function check_convergence(m, shocks, c_star, g_init, n_iter)
           color = RGBA(0, 0, 0, 1), lw = 2, alpha = 0.6,
           label = L"initial condition $c(y) = y$")
     for i in 1:n_iter
-        new_g = coleman_egm(g, k_grid, m.beta, m.u_prime, m.u_prime, m.f, m.f_prime,
+        new_g = coleman_egm(g, k_grid, m.beta, m.u_prime, m.u_prime, m.f,
+                            m.f_prime,
                             shocks)
         g = new_g
         plot!(plt, k_grid, new_g.(k_grid), alpha = 0.6,
@@ -399,7 +402,9 @@ end
 Here's the result
 
 ```{code-cell} julia
-crra_coleman(g, m, shocks) = K(g, m.grid, m.beta, m.u_prime, m.f, m.f_prime, shocks)
+function crra_coleman(g, m, shocks)
+    K(g, m.grid, m.beta, m.u_prime, m.f, m.f_prime, shocks)
+end
 function crra_coleman_egm(g, m, shocks)
     coleman_egm(g, m.grid, m.beta, m.u_prime,
                 u_prime_inv, m.f, m.f_prime, shocks)

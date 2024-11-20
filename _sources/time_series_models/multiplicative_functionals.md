@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (multiplicative_functionals)=
@@ -422,7 +422,8 @@ Random.seed!(42);
 
 ```{code-cell} julia
 # Create the second (wrong) alternative model
-amf2 = AMF_LSS_VAR(A = 0.9, B = 1.0, D = 0.55, F = 0.25) # parameters for theta_1 closer to theta_0
+# parameters for theta_1 closer to theta_0
+amf2 = AMF_LSS_VAR(A = 0.9, B = 1.0, D = 0.55, F = 0.25)
 
 # Get likelihood from each path x^{i}, y^{i}
 LLit2 = simulate_likelihood(amf2, Xit, Yit)
@@ -604,10 +605,10 @@ amc, mmc = simulate_martingale_components(amf_2, 1_000, 5_000)
 amcT = amc[:, end]
 mmcT = mmc[:, end]
 
-println("The (min, mean, max) of additive Martingale component in period T is")
+println("The (min, mean, max) of additive Martingale component in period T:")
 println("\t ($(minimum(amcT)), $(mean(amcT)), $(maximum(amcT)))")
 
-println("The (min, mean, max) of multiplicative Martingale component in period T is")
+println("The (min, mean, max) of multiplicative Martingale component in period T:")
 println("\t ($(minimum(mmcT)), $(mean(mmcT)), $(maximum(mmcT)))")
 ```
 
@@ -708,13 +709,11 @@ dens_to_plot = [Mtilde_t_density(amf_2, t, xmin = 1e-8, xmax = 6.0)
 ldens_to_plot = [logMtilde_t_density(amf_2, t, xmin = -10.0, xmax = 10.0)
                  for t in times_to_plot]
 
-# plot_title = "Densities of M_t^tilda" is required, however, plot_title is not yet
-# supported in Plots
 plots = plot(layout = (3, 2), size = (600, 800))
 
 for (it, dens_t) in enumerate(dens_to_plot)
     x, pdf = dens_t
-    plot!(plots[it], title = "Density for time (time_to_plot[it])",
+    plot!(plots[it], title = "Density for time $(times_to_plot[it])",
           titlefontsize = 10)
     plot!(plots[it], pdf, fillrange = 0, label = "")
 end

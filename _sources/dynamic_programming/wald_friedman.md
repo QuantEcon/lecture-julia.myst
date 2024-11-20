@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (wald_friedman)=
@@ -464,7 +464,8 @@ function decision_rule(d0, d1, L0, L1, c)
             @printf("Accept x1 if p <= %.2f\nContinue to draw if %.2f <= p <= %.2f
                     \nAccept x0 if p >= %.2f", beta, beta, alpha, alpha)
         else
-            @printf("Accept x1 if p <= %.2f\nAccept x0 if p >= %.2f", beta, alpha)
+            @printf("Accept x1 if p <= %.2f\nAccept x0 if p >= %.2f", beta,
+                    alpha)
         end
     end
     return (alpha, beta)
@@ -509,7 +510,7 @@ function simulation(problem)
     return return_output ? (alpha, beta, outcomes, costs, trials) : nothing
 end
 
-function Problem(;d0 = Beta(1, 1), d1 = Beta(9, 9),
+function Problem(; d0 = Beta(1, 1), d1 = Beta(9, 9),
                  L0 = 2, L1 = 2,
                  c = 0.2, p = 0.5,
                  n = 100, return_output = false)
@@ -582,7 +583,7 @@ Before you look, think about what will happen:
 
 ```{code-cell} julia
 Random.seed!(0);
-simulation(Problem(;c = 0.4));
+simulation(Problem(; c = 0.4));
 ```
 
 Notice what happens?

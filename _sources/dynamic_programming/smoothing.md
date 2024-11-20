@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (smoothing)=
@@ -588,18 +588,22 @@ cp = ConsumptionProblem()
 c_bar, b1, b2 = consumption_complete(cp)
 debt_complete = [b1, b2]
 
-c_path, debt_path, y_path, s_path = consumption_incomplete(cp, N_simul = N_simul)
+c_path, debt_path, y_path, s_path = consumption_incomplete(cp,
+                                                           N_simul = N_simul)
 
-plt_cons = plot(title = "Consumption paths", xlabel = "Periods", ylim = [1.4, 2.1])
+plt_cons = plot(title = "Consumption paths", xlabel = "Periods",
+                ylim = [1.4, 2.1])
 plot!(plt_cons, 1:N_simul, c_path, label = "incomplete market", lw = 2)
-plot!(plt_cons, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
+plot!(plt_cons, 1:N_simul, fill(c_bar, N_simul), label = "complete market",
+      lw = 2)
 plot!(plt_cons, 1:N_simul, y_path, label = "income", lw = 2, alpha = 0.6,
       linestyle = :dash)
 plot!(plt_cons, legend = :bottom)
 
 plt_debt = plot(title = "Debt paths", xlabel = "Periods")
 plot!(plt_debt, 1:N_simul, debt_path, label = "incomplete market")
-plot!(plt_debt, 1:N_simul, debt_complete[s_path], label = "complete market", lw = 2)
+plot!(plt_debt, 1:N_simul, debt_complete[s_path], label = "complete market",
+      lw = 2)
 plot!(plt_debt, 1:N_simul, y_path, label = "income", lw = 2, alpha = 0.6,
       linestyle = :dash)
 plot!(plt_debt, legend = :bottomleft)
@@ -635,14 +639,16 @@ We can simply relabel variables to acquire tax-smoothing interpretations of our 
 plt_tax = plot(title = "Tax collection paths", x_label = "Periods",
                ylim = [1.4, 2.1])
 plot!(plt_tax, 1:N_simul, c_path, label = "incomplete market", lw = 2)
-plot!(plt_tax, 1:N_simul, fill(c_bar, N_simul), label = "complete market", lw = 2)
+plot!(plt_tax, 1:N_simul, fill(c_bar, N_simul), label = "complete market",
+      lw = 2)
 plot!(plt_tax, 1:N_simul, y_path, label = "govt expenditures", alpha = 0.6,
       linestyle = :dash,
       lw = 2)
 
 plt_gov = plot(title = "Government assets paths", x_label = "Periods")
 plot!(plt_gov, 1:N_simul, debt_path, label = "incomplete market", lw = 2)
-plot!(plt_gov, 1:N_simul, debt_complete[s_path], label = "complete market", lw = 2)
+plot!(plt_gov, 1:N_simul, debt_complete[s_path], label = "complete market",
+      lw = 2)
 plot!(plt_gov, 1:N_simul, y_path, label = "govt expenditures", alpha = 0.6,
       linestyle = :dash,
       lw = 2)
@@ -974,7 +980,8 @@ out = complete_ss(beta, b0, x0, A, C, S_y, 150)
 c_hist_com, b_hist_com, y_hist_com, x_hist_com = out
 
 # Consumption plots
-plt_cons = plot(title = "Cons and income", xlabel = "Periods", ylim = [-5.0, 110])
+plt_cons = plot(title = "Cons and income", xlabel = "Periods",
+                ylim = [-5.0, 110])
 plot!(plt_cons, 1:N_simul, c_hist_com, label = "consumption", lw = 2)
 plot!(plt_cons, 1:N_simul, y_hist_com, label = "income",
       lw = 2, alpha = 0.6, linestyle = :dash)

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (tools_editors)=
@@ -27,6 +27,8 @@ kernelspec:
 While Jupyter notebooks are a great way to get started with the language, eventually you will want to use more powerful tools.  Visual Studio Code (VS Code) in particular, is the most popular open source editor for programming - with a huge set of extensions and strong industry support.
 
 While you can use source code control, run terminals and the REPL ("Read-Evaluate-Print Loop") without VS Code, we will concentrate on using it as a full IDE for all of these features.
+
+See [Modern Julia Workflows](https://modernjuliaworkflows.org/) for alternative approaches.
 
 (install_vscode)=
 ## Installing VS Code

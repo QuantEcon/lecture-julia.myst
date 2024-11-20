@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (mccall)=
@@ -370,7 +370,8 @@ One approach to solving the model is to directly implement this sort of iteratio
 between successive iterates is below tol
 
 ```{code-cell} julia
-function compute_reservation_wage_direct(params; v_iv = collect(w ./ (1 - beta)),
+function compute_reservation_wage_direct(params;
+                                         v_iv = collect(w ./ (1 - beta)),
                                          max_iter = 500, tol = 1e-6)
     (; c, beta, w) = params
 
@@ -428,7 +429,9 @@ This coding pattern, where `expression || error("failure)` first checks the expr
 Let's compute the reservation wage at the default parameters
 
 ```{code-cell} julia
-mcm(; c = 25.0, beta = 0.99, w = range(10.0, 60.0, length = n + 1)) = (; c, beta, w)
+function mcm(; c = 25.0, beta = 0.99, w = range(10.0, 60.0, length = n + 1))
+    (; c, beta, w)
+end
 
 compute_reservation_wage(mcm()) # call with default parameters
 ```

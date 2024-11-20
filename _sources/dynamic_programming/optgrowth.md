@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.10
+  name: julia-1.11
 ---
 
 (optgrowth)=
@@ -483,7 +483,8 @@ f_grid = range(0, 1, length = 150)
 Af = LinearInterpolation(c_grid, f(c_grid))
 
 plt = plot(xlim = (0, 1), ylim = (0, 6))
-plot!(plt, f, f_grid, color = :blue, lw = 2, alpha = 0.8, label = "true function")
+plot!(plt, f, f_grid, color = :blue, lw = 2, alpha = 0.8,
+      label = "true function")
 plot!(plt, f_grid, Af.(f_grid), color = :green, lw = 2, alpha = 0.8,
       label = "linear approximation")
 plot!(plt, f, c_grid, seriestype = :sticks, linestyle = :dash, linewidth = 2,
@@ -659,7 +660,8 @@ We are clearly getting closer.
 We can write a function that computes the exact fixed point
 
 ```{code-cell} julia
-function solve_optgrowth(initial_w; p, iterations = 500, m = 3, show_trace = false)
+function solve_optgrowth(initial_w; p, iterations = 500, m = 3,
+                         show_trace = false)
     results = fixedpoint(w -> T(w; p).w, initial_w; iterations, m, show_trace) # Anderson iteration
     v_star = results.zero
     sigma = T(results.zero; p).sigma
@@ -785,7 +787,8 @@ for beta in beta_vals
     sigma_func = LinearInterpolation(p.y, sol.sigma)
     y = simulate_og(sigma_func, p, y0, ts_length)
 
-    plot!(plt, 0:(ts_length - 1), y, lw = 2, alpha = 0.6, label = L"\beta = %$beta")
+    plot!(plt, 0:(ts_length - 1), y, lw = 2, alpha = 0.6,
+          label = L"\beta = %$beta")
 end
 plt
 ```
