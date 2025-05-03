@@ -228,7 +228,7 @@ D_i = (1 - r)^i D_0  \ \text{ for } i \geq 0
 ```
 
 Equation {eq}`geomseries` expresses $D_i$ as the $i$ th term in the
-product of $D_0$ and the geometric series
+product of $D_0$ and the geometric progression
 
 $$
 1, (1-r), (1-r)^2, \cdots
