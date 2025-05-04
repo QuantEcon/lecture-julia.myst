@@ -78,9 +78,7 @@ If you have not previously installed Conda or Jupyter, then
 2. If given the option for your operating system, let Conda add Python to your PATH environment variables.
 
 ```{note}
-While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.
-
-More advanced users should consider switching to the new Python package manager [UV](https://github.com/astral-sh/uv)
+While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.  More advanced users should consider switching to the [uv](https://github.com/astral-sh/uv) package manager.
 
 In addition, there is direct support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) with **no Python installation**. See {ref}`VS Code Julia Kernel  <running_vscode_kernel>`.
 
@@ -93,13 +91,7 @@ After Jupyter is installed, you can install Julia.
 ```{note}
 The "official" installation for Julia is now [Juliaup](https://github.com/JuliaLang/juliaup), which makes it easier to upgrade and manage concurrent Julia versions.  See [here](https://github.com/JuliaLang/juliaup#using-juliaup) for a list of commands, such as `juliaup update` to upgrade to the latest available Julia version after installation, or ways to switch to newer Julia versions after they are released.
 
-**Troubleshooting** On Mac/Linux, if you have permissions issues on the installation use `sudo curl -fsSL https://install.julialang.org | sh`.  If there are permissions issus, [see here](https://github.com/JuliaLang/juliaup/wiki/Permission-problems-during-setup) which suggests executing the following and then retrying the installation.
-
-    ```
-    sudo chown $(id -u):$(id -g) ~/.bashrc
-    sudo chown $(id -u):$(id -g) ~/.zshrc
-    sudo chown $(id -u):$(id -g) ~/.bash_profile
-    ```
+**Troubleshooting:** On Mac/Linux, if you have permissions issues on the installation use `sudo curl -fsSL https://install.julialang.org | sh`.  If there are still permissions issus, [see here](https://github.com/JuliaLang/juliaup/wiki/Permission-problems-during-setup) suggests executing `sudo chown $(id -u):$(id -g) ~/.bashrc`, `sudo chown $(id -u):$(id -g) ~/.zshrc`, and `sudo chown $(id -u):$(id -g) ~/.bash_profile` then retry the installation.
 ```
 
 1. Download and install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation)
