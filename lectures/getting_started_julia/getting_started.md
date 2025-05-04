@@ -69,12 +69,6 @@ For those with little to no programming experience (e.g. you have never used a l
 In this section, we will describe the installation of Julia and Jupyter on your desktop.
 
 
-```{tip}
-On Windows, you probably want to install the new open-source [Windows Terminal](https://github.com/microsoft/terminal).  See [here](https://aka.ms/terminal) for installation instructions, and select the option to add the explorer context menu if provided.
-
-It provides a much more modern terminal with better font support for Julia, and with better operating system integration.  For example, you can right-click on a folder in the File Explorer and choose `Open in Microsoft Terminal` to start a terminal in that location.  Rather than providing a particular shell directly, it hosts those that are available in your setup (e.g., PowerShell, Git Bash, Ubuntu Bash in WSL).
-```
-
 (install_jupyter)=
 ### Installing Jupyter
 [Anaconda](https://www.anaconda.com/) provides an easy to install package of jupyter, python, and many data science tools.
@@ -84,23 +78,33 @@ If you have not previously installed Conda or Jupyter, then
 2. If given the option for your operating system, let Conda add Python to your PATH environment variables.
 
 ```{note}
-While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.  Alternatively you can let `IJulia` install its own version of Conda by following [these instructions](https://julialang.github.io/IJulia.jl/dev/manual/running/).
+While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.
 
-Finally, there is direct support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) with **no Python installation**. See {ref}`VS Code Julia Kernel  <running_vscode_kernel>`.
+More advanced users should consider switching to the new Python package manager [UV](https://github.com/astral-sh/uv)
+
+In addition, there is direct support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) with **no Python installation**. See {ref}`VS Code Julia Kernel  <running_vscode_kernel>`.
+
 ```
 
 (intro_repl)=
 ### Install Julia
-After Conda is installed, you can install Julia.
+After Jupyter is installed, you can install Julia.
 
 ```{note}
-The semi-official installation method for Windows is to use [Juliaup](https://github.com/JuliaLang/juliaup), which makes it easier to upgrade and manage concurrent Julia versions.  Support on Mac and Linux is prerelease.  See [here](https://github.com/JuliaLang/juliaup#using-juliaup) for a list of commands, such as `juliaup update` to upgrade to the latest available Julia version after installation, or ways to switch to newer Julia versions after they are released.
+The "official" installation for Julia is now [Juliaup](https://github.com/JuliaLang/juliaup), which makes it easier to upgrade and manage concurrent Julia versions.  See [here](https://github.com/JuliaLang/juliaup#using-juliaup) for a list of commands, such as `juliaup update` to upgrade to the latest available Julia version after installation, or ways to switch to newer Julia versions after they are released.
+
+**Troubleshooting** On Mac/Linux, if you have permissions issues on the installation use `sudo curl -fsSL https://install.julialang.org | sh`.  If there are permissions issus, [see here](https://github.com/JuliaLang/juliaup/wiki/Permission-problems-during-setup) which suggests executing the following and then retrying the installation.
+
+    ```
+    sudo chown $(id -u):$(id -g) ~/.bashrc
+    sudo chown $(id -u):$(id -g) ~/.zshrc
+    sudo chown $(id -u):$(id -g) ~/.bash_profile
+    ```
 ```
 
-
 1. Download and install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation)
-    - Windows: easiest method is `winget install julia -s msstore` in a Windows terminal
-    - Linux/Mac: in a terminal use `curl -fsSL https://install.julialang.org | sh`
+    - Windows: easiest method is `winget install julia -s msstore` in a terminal
+    - Linux/Mac: in a terminal use `curl -fsSL https://install.julialang.org | sh`.  To open a terminal on macOS press `Cmd + Space` to open Spotlight, then type `Terminal`, or use the Launchpad
     - If you have previously installed Julia manually, you will need to uninstall previous versions before switching to `juliaup`.
     - Alternatively, can manually install from [download page](http://julialang.org/downloads/), accepting all default options
 
