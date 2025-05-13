@@ -29,9 +29,9 @@ kernelspec:
 
 ## Overview
 
-In a {doc}`previous lecture <../introduction_dynamics/finite_markov>` we learned about finite Markov chains, a relatively elementary class of stochastic dynamic models.
+In this lecture, we will study the case of continuous (i.e., uncountable) state Markov chains.
 
-The present lecture extends this analysis to continuous (i.e., uncountable) state Markov chains.
+A {doc}`previous lecture <../introduction_dynamics/finite_markov>` will cover finite Markov chains, a relatively elementary class of stochastic dynamic models.
 
 Most stochastic dynamic models studied by economists either fit directly into this class or can be represented as continuous state Markov chains after minor modifications.
 
