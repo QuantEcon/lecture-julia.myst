@@ -991,7 +991,7 @@ T = 40    # Compute density of k_t at 1,...,T+1
 xmax = 6.5
 ygrid = range(0.01, xmax, length = 150)
 laes_plot = zeros(length(ygrid), 4T)
-colors = []
+colors = zeros(RGBA,1,4*T);
 for i in 1:4
     k = zeros(n, T)
     A = rand!(phi, zeros(n, T))
@@ -1009,13 +1009,11 @@ for i in 1:4
     for j in 1:T
         psi = laes[j]
         laes_plot[:, ind] = lae_est(psi, ygrid)
+        colors[ind]=RGBA(0, 0, 0, 1 - (j - 1) / T)
         ind = ind + 4
-        push!(colors, RGBA(0, 0, 0, 1 - (j - 1) / T))
     end
 end
 
-#colors = reshape(reshape(colors, T, 4)', 4*T, 1)
-colors = reshape(colors, 1, length(colors))
 plot(ygrid, laes_plot, layout = (2, 2), color = colors,
      legend = :none, xlabel = "capital", xlims = (0, xmax))
 ```
