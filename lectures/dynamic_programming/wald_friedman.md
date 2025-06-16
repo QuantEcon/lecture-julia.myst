@@ -361,7 +361,7 @@ Later, doing this will help us obey **the don't repeat yourself (DRY)** golden r
 Let's code this problem up and solve it.
 
 We implement the cost functions for each choice considered in the
-Bellman equation {eq}`new3`.
+Bellman equation {eq}`new5`.
 
 First, consider the cost associated to accepting either distribution and
 compare the minimum of the two to the expected benefit of drawing again.
@@ -475,6 +475,11 @@ end
 We can simulate an agent facing a problem and the outcome with the following function
 
 ```{code-cell} julia
+
+function bayes_new_draw_update(p, d0, d1,v)
+    p * pdf(d0, v) / pdf(MixtureModel([d0, d1], [p, one(p) - p]), v)
+end
+
 function simulation(problem)
     (; d0, d1, L0, L1, c, p, n, return_output) = problem
     alpha, beta = decision_rule(d0, d1, L0, L1, c)
@@ -492,7 +497,7 @@ function simulation(problem)
         while iszero(choice)
             t += 1
             outcome = rand(d)
-            p = bayes_update(p, d0, d1)
+            p = bayes_new_draw_update(p, d0, d1,outcome)
             if p <= beta
                 choice = 1
             elseif p >= alpha
