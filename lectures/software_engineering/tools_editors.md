@@ -131,7 +131,7 @@ Because the REPL and the files are synchronized, you can modify functions and si
 Next we will go through simple use of the plotting and package management.
 
 ```{note}
-VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to `(@v1.8) pkg>` rather than `(hello_world) pkg >` then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose `] activate .`.
+VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to `(@v1.12) pkg>` rather than `(hello_world) pkg >` then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose `] activate .`.
 
 You can always see the current package location and details with `] st`.  See [Julia Environments](jl_packages) for more details.
 ```
@@ -240,11 +240,11 @@ The most important choice is the `--project` toggle which determines whether you
 
 To emphasize this point, this is an example of the `]st ` showing the global environment has only the bare minimum of packages installed.  With this workflow, all other packages are installed only when a given project is activated.
 ```{code-block} none
-(@v1.8) pkg> st
-      Status `C:\Users\jesse\.julia\environments\v1.8\Project.toml`
-[7073ff75] IJulia v1.23.2
-[14b8a8f1] PkgTemplates v0.7.18
-[295af30f] Revise v3.1.19
+(@v1.11) pkg> st
+Status `~/.julia/environments/v1.11/Project.toml`
+  [7073ff75] IJulia v1.30.6
+  [14b8a8f1] PkgTemplates v0.7.56
+  [295af30f] Revise v3.10.0
 ```
 
 ```{note}
@@ -297,8 +297,8 @@ As we saw before, `]` brings you into package mode.  Some of the key choices are
 
 * `] instantiate` (or `using Pkg; Pkg.instantiate()` in the normal julia mode) will check if you have all of the packages and versions mentioned in the `Project.toml` and `Manifest.toml` files, and install as required.
   - This feature will let you reproduce the entire environment and, if a `Manifest.toml` is available, the exact package versions used for a project.  For example, these lecture notes use [Project.toml](https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Project.toml) and [Manifest.toml](https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Manifest.toml) - which you likely instantiated during installation after downloading these notebooks.
-* `] add Expectations` will add a package (here, `Expectations.jl`) to the activated project file (or the global environment if none is activated).
-* Likewise, `] rm Expectations` will remove that package.
+* `] add Distributions` will add a package (here, `Distributions.jl`) to the activated project file (or the global environment if none is activated).
+* Likewise, `] rm Distributions` will remove that package.
 * `] st` will show you a snapshot of what you have installed.
 * `] up` will upgrade versions of your packages to the latest versions possible given the graph of compatibility used in each.
 
@@ -318,9 +318,8 @@ The following are some optional choices, not all directly connected to Julia.
 While not required for these lectures, consider installing the following extensions.  As before, you can search for them on the Marketplace or choose `Install` from the webpages themselves.
 
 1. [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter): VS Code increasingly supports Jupyter notebooks directly, and this extension provides the ability to open and edit `.ipynb` notebook files without installing Conda and running `jupyter lab`.
-1. [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens): An extension that provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code)
 2. [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github): while VS Code supports the git {doc}`version control <../software_engineering/version_control>` natively, these extension provides additional features for working with repositories on GitHub itself.
-3. [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one): For editing the markdown format, such as `README.md` and similar files.
+3. [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot): AI-assisted code completion.  See [GitHub Education Pack](https://education.github.com/pack) for free access if you are a student or educator.
 
 (vscode_latex)=
 ### VS Code as a LaTeX Editor
@@ -381,20 +380,3 @@ Finally, when using source code control, you will want to make sure you add the 
 *.pdf
 ```
 Ignoring the `*.pdf` is optional but strongly encouraged as it will ensure you don't clog the repository with the binary pdf files, and make collaboration easier by preventing clashes on this file.
-
-### Font Choices
-
-Beyond their general use, the integrated terminals will use fonts installed within VS Code.  Given that Julia code supports mathematical notation, the extra support in good fonts can be helpful.
-- [JuliaMono](https://juliamono.netlify.app/download/) and  [Cascadia Code](https://github.com/microsoft/cascadia-code) and [Fira Code](https://github.com/tonsky/FiraCode) are all good options.
-- You can adapt [these](https://juliamono.netlify.app/faq/#vs-code) or [these](https://techstacker.com/change-vscode-code-font/) instructions depending on the font choice.
-
-If on Windows, for your external terminal consider installing [Windows Terminal](https://aka.ms/terminal), which is built to support [Cascadia](https://docs.microsoft.com/en-us/windows/terminal/cascadia-code) and [Powerline](https://docs.microsoft.com/en-us/windows/terminal/tutorials/powerline-setup) fonts.
-
-### Remote and Collaborative Extensions
-
-If you ever need to use clusters or work with reproducible [containers](https://code.visualstudio.com/docs/remote/containers), VS Code has strong support for those features.  Key extensions for these are:
-- [VS LiveShare](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare-pack): Collaborative coding within VS Code.
-- [Remote Extensions Pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack): Tools to access remote servers, local containers.  Install [OpenSSH](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse) if required.
-- [SFTP](https://marketplace.visualstudio.com/iems?itemName=liximomo.sftp): Secure copying of files to supported cloud services.
-
-Windows users will find good support to access a local linux installation with the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) and the associated [VS Code Extension](https://code.visualstudio.com/docs/remote/wsl-tutorial).
