@@ -47,7 +47,7 @@ Once separation enters the picture, the agent comes to view
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Expectations, LaTeXStrings,NLsolve, Plots
+using Distributions, LaTeXStrings, NLsolve, Plots
 ```
 
 ## The Model
@@ -233,12 +233,12 @@ using Test
 ```
 
 ```{code-cell} julia
-using Distributions, LinearAlgebra, Expectations, NLsolve, Plots
+using Distributions, LinearAlgebra, NLsolve, Plots
 
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
                             tol = 1e-5,
                             iter = 2_000)
-    (; alpha, beta, sigma, c, gamma, w, dist, u) = mcm
+    (; alpha, beta, sigma, c, gamma, w, dist, u, p) = mcm
 
     # parameter validation
     @assert c > 0.0
@@ -247,14 +247,13 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
     # necessary objects
     u_w = mcm.u.(w, sigma)
     u_c = mcm.u(c, sigma)
-    E = expectation(dist) # expectation operator for wage distribution
 
     # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
     function T(x)
         V = x[1:(end - 1)]
         U = x[end]
         [u_w + beta * ((1 - alpha) * V .+ alpha * U);
-         u_c + beta * (1 - gamma) * U + beta * gamma * E * max.(U, V)]
+         u_c + beta * (1 - gamma) * U + beta * gamma * dot(max.(U, V), p)]
     end
 
     # value function iteration
@@ -293,7 +292,8 @@ function McCallModel(; alpha = 0.2,
                      u = (c, sigma) -> (c^(1 - sigma) - 1) / (1 - sigma),
                      w = range(10, 20, length = 60), # wage values
                      dist = BetaBinomial(59, 600, 400)) # distribution over wage values
-    return (; alpha, beta, gamma, c, sigma, u, w, dist)
+    p = pdf.(dist, support(dist))
+    return (; alpha, beta, gamma, c, sigma, u, w, dist, p)
 end
 ```
 

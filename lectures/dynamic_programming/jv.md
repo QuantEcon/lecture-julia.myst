@@ -44,7 +44,7 @@ kernelspec:
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Interpolations, Expectations
+using Distributions, Interpolations
 using LaTeXStrings, Plots, NLsolve, Random
 
 ```
@@ -194,8 +194,9 @@ function JvWorker(; A = 1.4,
     pi_func = sqrt
     F = Beta(2, 2)
 
-    # expectation operator
-    E = expectation(F)
+    # probability vector and support for manual expectation
+    w = support(F)
+    p = pdf.(F, w)
 
     # Set up grid over the state space for DP
     # Max of grid is the max of a large quantile value for F and the
@@ -207,13 +208,13 @@ function JvWorker(; A = 1.4,
     x_grid = range(epsilon, grid_max, length = grid_size)
 
     return (; A, alpha, beta, x_grid, G,
-            pi_func, F, E, epsilon)
+            pi_func, F, w, p, epsilon)
 end
 
-function T!(jv, V, new_V::AbstractVector)
+function T!(jv, V, new_V)
 
     # simplify notation
-    (; G, pi_func, F, beta, E, epsilon) = jv
+    (; G, pi_func, beta, w, p, epsilon) = jv
 
     # prepare interpoland of value function
     Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc = Line())
@@ -225,19 +226,18 @@ function T!(jv, V, new_V::AbstractVector)
     max_phi = 1.0
     search_grid = range(epsilon, 1.0, length = 15)
 
+    # objective function
+    function w_x(x, s, phi)
+        h(u) = Vf(max(G(x, phi), u))
+        integral = dot(h.(w), p)
+        q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
+        return -x * (1.0 - phi - s) - beta * q
+    end
+
     for (i, x) in enumerate(jv.x_grid)
-        function w(z)
-            s, phi = z
-            h(u) = Vf(max(G(x, phi), u))
-            integral = E(h)
-            q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
-
-            return -x * (1.0 - phi - s) - beta * q
-        end
-
         for s in search_grid
             for phi in search_grid
-                cur_val = ifelse(s + phi <= 1.0, -w((s, phi)), -1.0)
+                cur_val = ifelse(s + phi <= 1.0, -w_x(x, s, phi), -1.0)
                 if cur_val > max_val
                     max_val, max_s, max_phi = cur_val, s, phi
                 end
@@ -248,10 +248,10 @@ function T!(jv, V, new_V::AbstractVector)
     end
 end
 
-function T!(jv, V, out::Tuple{AbstractVector, AbstractVector})
+function T!(jv, V, out::Tuple)
 
     # simplify notation
-    (; G, pi_func, F, beta, E, epsilon) = jv
+    (; G, pi_func, beta, w, p, epsilon) = jv
 
     # prepare interpoland of value function
     Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc = Line())
@@ -266,19 +266,18 @@ function T!(jv, V, out::Tuple{AbstractVector, AbstractVector})
     max_phi = 1.0
     search_grid = range(epsilon, 1.0, length = 15)
 
+    # objective function
+    function w_x(x, s, phi)
+        h(u) = Vf(max(G(x, phi), u))
+        integral = dot(h.(w), p)
+        q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
+        return -x * (1.0 - phi - s) - beta * q
+    end
+
     for (i, x) in enumerate(jv.x_grid)
-        function w(z)
-            s, phi = z
-            h(u) = Vf(max(G(x, phi), u))
-            integral = E(h)
-            q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
-
-            return -x * (1.0 - phi - s) - beta * q
-        end
-
         for s in search_grid
             for phi in search_grid
-                cur_val = ifelse(s + phi <= 1.0, -w((s, phi)), -1.0)
+                cur_val = ifelse(s + phi <= 1.0, -w_x(x, s, phi), -1.0)
                 if cur_val > max_val
                     max_val, max_s, max_phi = cur_val, s, phi
                 end

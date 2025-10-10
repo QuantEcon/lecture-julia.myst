@@ -44,7 +44,7 @@ Also see {doc}`data and statistical packages <../more_julia/data_statistical_pac
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using QuadGK, FastGaussQuadrature, Distributions, Expectations
+using QuadGK, FastGaussQuadrature, Distributions
 using Interpolations, Plots,  ProgressMeter
 ```
 
@@ -81,26 +81,6 @@ f(x) = x^2
 ```
 
 The only problem with the `FastGaussQuadrature` package is that you will need to deal with affine transformations to the non-default domains yourself.
-
-### Expectations
-
-If the calculations of the numerical integral is simply for calculating mathematical expectations of a particular distribution, then [Expectations.jl](https://github.com/QuantEcon/Expectations.jl) provides a convenient interface.
-
-Under the hood, it is finding the appropriate Gaussian quadrature scheme for the distribution using `FastGaussQuadrature`.
-
-```{code-cell} julia
-using Distributions, Expectations
-dist = Normal()
-E = expectation(dist)
-f(x) = x
-@show E(f) #i.e. identity
-
-# Or using as a linear operator
-f(x) = x^2
-x = nodes(E)
-w = weights(E)
-E * f.(x) == f.(x) ⋅ w
-```
 
 ## Interpolation
 
