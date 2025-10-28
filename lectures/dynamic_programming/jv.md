@@ -174,58 +174,7 @@ Now let's turn to implementation, and see if we can match our predictions.
 ```{index} single: On-the-Job Search; Programming Implementation
 ```
 
-The following code solves the DP problem described above. The code is written to be relatively generic---and hence reusable.
-
-* For example, we use generic $G(x,\phi)$ instead of specific $A (x \phi)^{\alpha}$.
-We write a constructor called `JvWorker` that
-
-* packages all the parameters and other basic attributes of a given model
-* implements the method `T` for value function iteration
-
-The `T` method
-takes a candidate value function $V$ and updates it to $TV$ via
-
-$$
-TV(x)
-= - \min_{s + \phi \leq 1} w(s, \phi)
-$$
-
-where
-
-```{math}
-:label: defw
-
-w(s, \phi)
- := - \left\{
-         x (1 - s - \phi) + \beta (1 - \pi(s)) V[G(x, \phi)] +
-         \beta \pi(s) \int V[G(x, \phi) \vee u] F(du)
-\right\}
-```
-
-Here we are minimizing instead of maximizing to fit with optimization routines.
-
-When we represent $V$, it will be with a Julia array `V` giving values on grid `x_grid`.
-
-But to evaluate the right-hand side of {eq}`defw`, we need a function, so
-we replace the arrays `V` and `x_grid` with a function `Vf` that gives linear
-interpolation of `V` on `x_grid`.
-
-Hence in the preliminaries of `T`
-
-* from the array `V` we define a linear interpolation `Vf` of its values
-    * `c1` is used to implement the constraint $s + \phi \leq 1$
-    * `c2` is used to implement $s \geq \epsilon$, a numerically stable
-      
-      alternative to the true constraint $s \geq 0$
-    * `c3` does the same for $\phi$
-
-Inside the `for` loop, for each `x` in the grid over the state space, we
-set up the function $w(z) = w(s, \phi)$ defined in {eq}`defw`.
-
-The function is minimized over all feasible $(s, \phi)$ pairs, either by brute-force search over a grid, or specialized solver routines.
-
-The latter is much faster, but convergence to the global optimum is not
-guaranteed.  Grid search is a simple way to check results.
+The following code solves the DP problem described above
 
 ```{code-cell} julia
 ---
@@ -325,17 +274,12 @@ function T!(jv, V, out::Tuple)
         return -x * (1.0 - phi - s) - beta * q
     end
 
-    for (i, x) in enumerate(x_grid)
-        max_val = -Inf
-        best_s, best_phi = 0.0, 0.0
-        for s in search_grid, phi in search_grid
-            if s + phi <= 1.0
-                integrand(u) = Vf.(max.(G(x, phi), u)) .* f.(u)
-                integral = do_quad(integrand, nodes, weights)
-                q = pi_func(s) * integral + (1 - pi_func(s)) * Vf(G(x, phi))
-                val = x * (1 - s - phi) + beta * q
-                if val > max_val
-                    max_val, max_s, max_phi = val, s, phi
+    for (i, x) in enumerate(jv.x_grid)
+        for s in search_grid
+            for phi in search_grid
+                cur_val = ifelse(s + phi <= 1.0, -w_x(x, s, phi), -1.0)
+                if cur_val > max_val
+                    max_val, max_s, max_phi = cur_val, s, phi
                 end
             end
         end
@@ -350,6 +294,65 @@ function T(jv, V; ret_policies = false)
     return out
 end
 ```
+
+The code is written to be relatively generic---and hence reusable.
+
+* For example, we use generic $G(x,\phi)$ instead of specific $A (x \phi)^{\alpha}$.
+
+Regarding the imports
+
+* `fixed_quad` is a simple non-adaptive integration routine
+* `fmin_slsqp` is a minimization routine that permits inequality constraints
+
+Next we write a constructor called `JvWorker` that
+
+* packages all the parameters and other basic attributes of a given model
+* implements the method `T` for value function iteration
+
+The `T` method
+takes a candidate value function $V$ and updates it to $TV$ via
+
+$$
+TV(x)
+= - \min_{s + \phi \leq 1} w(s, \phi)
+$$
+
+where
+
+```{math}
+:label: defw
+
+w(s, \phi)
+ := - \left\{
+         x (1 - s - \phi) + \beta (1 - \pi(s)) V[G(x, \phi)] +
+         \beta \pi(s) \int V[G(x, \phi) \vee u] F(du)
+\right\}
+```
+
+Here we are minimizing instead of maximizing to fit with optimization routines.
+
+When we represent $V$, it will be with a Julia array `V` giving values on grid `x_grid`.
+
+But to evaluate the right-hand side of {eq}`defw`, we need a function, so
+we replace the arrays `V` and `x_grid` with a function `Vf` that gives linear
+interpolation of `V` on `x_grid`.
+
+Hence in the preliminaries of `T`
+
+* from the array `V` we define a linear interpolation `Vf` of its values
+    * `c1` is used to implement the constraint $s + \phi \leq 1$
+    * `c2` is used to implement $s \geq \epsilon$, a numerically stable
+      
+      alternative to the true constraint $s \geq 0$
+    * `c3` does the same for $\phi$
+
+Inside the `for` loop, for each `x` in the grid over the state space, we
+set up the function $w(z) = w(s, \phi)$ defined in {eq}`defw`.
+
+The function is minimized over all feasible $(s, \phi)$ pairs, either by brute-force search over a grid, or specialized solver routines.
+
+The latter is much faster, but convergence to the global optimum is not
+guaranteed.  Grid search is a simple way to check results.
 
 ## Solving for Policies
 
