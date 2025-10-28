@@ -43,8 +43,8 @@ Also see {doc}`data and statistical packages <../more_julia/data_statistical_pac
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics
-using QuadGK, FastGaussQuadrature, Distributions
+using LinearAlgebra, Statistics, Distributions
+using QuadGK, FastGaussQuadrature, SpecialFunctions
 using Interpolations, Plots,  ProgressMeter
 ```
 
@@ -72,15 +72,52 @@ Alternatively, many integrals can be done efficiently with (non-adaptive) [Gauss
 For example, using [FastGaussQuadrature.jl](https://github.com/ajt60gaibb/FastGaussQuadrature.jl)
 
 ```{code-cell} julia
-using FastGaussQuadrature
-x, w = gausslegendre(100_000); # i.e. find 100,000 nodes
+x, w = FastGaussQuadrature.gausslegendre(100_000); # i.e. find 100,000 nodes
 
 # integrates f(x) = x^2 from -1 to 1
 f(x) = x^2
-@show w ⋅ f.(x); # calculate integral
+@show dot(w, f.(x)); # calculate integral
 ```
 
-The only problem with the `FastGaussQuadrature` package is that you will need to deal with affine transformations to the non-default domains yourself.
+With the `FastGaussQuadrature` package you may need to deal with affine transformations to the non-default domains yourself.
+
+
+Another commonly used quadrature well suited to random variables with bounded support is [Gauss–Jacobi quadrature](https://en.wikipedia.org/wiki/Gauss–Jacobi_quadrature).
+
+It provides nodes $s_n\in[-1,1]$ and weights $\omega_n$ for
+$$
+\int_{-1}^1 g(s)\,(1-s)^{a}(1+s)^{b}\,ds \;\approx\; \sum_{n=1}^N \omega_n\, g(s_n).
+$$
+
+For $X\sim\mathrm{Beta}(\alpha,\beta)$,
+$$
+\mathbb{E}[f(X)] = \int_0^1 f(x)\,\frac{x^{\alpha-1}(1-x)^{\beta-1}}{B(\alpha,\beta)}\,dx,
+$$
+with the change of variables $s=2x-1$ (so $x=(s+1)/2$, $dx=ds/2$). This yields Gauss–Jacobi exponents $a=\beta-1$, $b=\alpha-1$ and a factor $C=2^{-(\alpha+\beta-1)}/B(\alpha,\beta)$:
+$$
+\mathbb{E}[f(X)] \;\approx\; C\sum_{n=1}^N \omega_n\, f\!\left(\tfrac{s_n+1}{2}\right).
+$$
+
+```{code-cell} julia
+function gauss_jacobi(F::Beta, N)
+    s, wj = FastGaussQuadrature.gaussjacobi(N, F.β - 1, F.α - 1)
+    x = (s .+ 1) ./ 2
+    C = 2.0^(-(F.α + F.β - 1.0)) / SpecialFunctions.beta(F.α, F.β)
+    w = C .* wj
+    return x, w
+end
+
+N = 32
+F = Beta(2, 2)
+F2 = Beta(0.5, 1.2)
+x, w = gauss_jacobi(F, N)
+x2, w2 = gauss_jacobi(F2, N)
+f(x) = x^2
+@show dot(w, f.(x)), mean(f.(rand(F, 1000)))
+@show dot(w2, f.(x2)), mean(f.(rand(F2, 1000)));
+```
+
+
 
 ## Interpolation
 

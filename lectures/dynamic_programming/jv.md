@@ -45,6 +45,7 @@ tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
 using Distributions, Interpolations
+using FastGaussQuadrature, SpecialFunctions
 using LaTeXStrings, Plots, NLsolve, Random
 
 ```
@@ -128,6 +129,33 @@ with default parameter values
 
 The Beta(2,2) distribution is supported on $(0,1)$.  It has a unimodal, symmetric density peaked at 0.5.
 
+### Quadrature
+In order to calculate expectations over the continuously valued $F$ distribution, we need to either draw values
+and use Monte Carlo integration, or discretize.
+
+[Gaussian Quadrature](https://en.wikipedia.org/wiki/Gaussian_quadrature) methods use orthogonal polynomials to generate $N$ nodes, $x$ and weights, $w$, to calculate integrals of the form $\int f(x) dx \approx \sum_{n=1}^N w_n f(x_n)$ for various bounded domains.
+
+Here we will use [Gauss-Jacobi Quadrature](https://en.wikipedia.org/wiki/Gauss–Jacobi_quadrature) which is ideal for expectations over beta.
+
+See {doc}`general packages <../more_julia/general_packages>` for details on the derivation in this particular case.
+
+```{code-cell} julia
+function gauss_jacobi(F::Beta, N)
+    s, wj = FastGaussQuadrature.gaussjacobi(N, F.β - 1, F.α - 1)
+    x = (s .+ 1) ./ 2
+    C = 2.0^(-(F.α + F.β - 1.0)) / SpecialFunctions.beta(F.α, F.β)
+    w = C .* wj
+    return x, w
+end
+f(x) = x^2
+F = Beta(2,2)
+x, w = gauss_jacobi(F, 20)
+# compare to monte-carlo integration
+@show dot(w, f.(x)), mean(f.(rand(F, 1000)));
+```
+
+
+
 (jvboecalc)=
 ### Back-of-the-Envelope Calculations
 
@@ -184,19 +212,19 @@ using Test
 ```
 
 ```{code-cell} julia
-# model object
-function JvWorker(; A = 1.4,
+function jv_worker(; A = 1.4,
                   alpha = 0.6,
                   beta = 0.96,
                   grid_size = 50,
+                  quad_size = 30,
                   epsilon = 1e-4)
     G(x, phi) = A .* (x .* phi) .^ alpha
     pi_func = sqrt
     F = Beta(2, 2)
 
-    # probability vector and support for manual expectation
-    w = support(F)
-    p = pdf.(F, w)
+    # Discretize the grid using Gauss-Jacobi quadrature
+    # u are nodes, w are weights.
+    u, w = gauss_jacobi(F, quad_size)
 
     # Set up grid over the state space for DP
     # Max of grid is the max of a large quantile value for F and the
@@ -208,13 +236,13 @@ function JvWorker(; A = 1.4,
     x_grid = range(epsilon, grid_max, length = grid_size)
 
     return (; A, alpha, beta, x_grid, G,
-            pi_func, F, w, p, epsilon)
+            pi_func, F, u, w, epsilon)
 end
 
 function T!(jv, V, new_V)
 
     # simplify notation
-    (; G, pi_func, beta, w, p, epsilon) = jv
+    (; G, pi_func, beta, u, w, epsilon) = jv
 
     # prepare interpoland of value function
     Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc = Line())
@@ -228,8 +256,8 @@ function T!(jv, V, new_V)
 
     # objective function
     function w_x(x, s, phi)
-        h(u) = Vf(max(G(x, phi), u))
-        integral = dot(h.(w), p)
+        h(u_val) = Vf(max(G(x, phi), u_val))
+        integral = dot(h.(u), w) # using quadrature weights/values
         q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
         return -x * (1.0 - phi - s) - beta * q
     end
@@ -251,7 +279,7 @@ end
 function T!(jv, V, out::Tuple)
 
     # simplify notation
-    (; G, pi_func, beta, w, p, epsilon) = jv
+    (; G, pi_func, beta, u, w, epsilon) = jv
 
     # prepare interpoland of value function
     Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc = Line())
@@ -269,7 +297,7 @@ function T!(jv, V, out::Tuple)
     # objective function
     function w_x(x, s, phi)
         h(u) = Vf(max(G(x, phi), u))
-        integral = dot(h.(w), p)
+        integral = dot(h.(u), w)
         q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
         return -x * (1.0 - phi - s) - beta * q
     end
@@ -304,7 +332,7 @@ Regarding the imports
 * `fixed_quad` is a simple non-adaptive integration routine
 * `fmin_slsqp` is a minimization routine that permits inequality constraints
 
-Next we write a constructor called `JvWorker` that
+Next we write a constructor called `jv_worker` that
 
 * packages all the parameters and other basic attributes of a given model
 * implements the method `T` for value function iteration
@@ -364,7 +392,7 @@ Let's plot the optimal policies and see what they look like.
 The code is as follows
 
 ```{code-cell} julia
-wp = JvWorker(grid_size = 25)
+wp = jv_worker(;grid_size = 25)
 v_init = collect(wp.x_grid) .* 0.5
 
 f(x) = T(wp, x)
@@ -464,7 +492,7 @@ Can you give a rough interpretation for the value that you see?
 Here's code to produce the 45 degree diagram
 
 ```{code-cell} julia
-wp = JvWorker(grid_size = 25)
+wp = jv_worker(grid_size = 25)
 # simplify notation
 (; G, pi_func, F) = wp
 
@@ -548,7 +576,7 @@ $\phi_t = \phi(x_t) \approx 0.6$.
 ### Exercise 2
 
 ```{code-cell} julia
-wp = JvWorker(grid_size = 25)
+wp = jv_worker(grid_size = 25)
 
 xbar(phi) = (wp.A * phi^wp.alpha)^(1.0 / (1.0 - wp.alpha))
 
