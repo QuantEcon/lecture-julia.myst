@@ -161,11 +161,11 @@ The bottom panel presents mixtures of these distributions, with various mixing p
 
 
 ```{code-cell} julia
----
+--- 
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, LaTeXStrings, Printf, Random, Roots, Plots
+using Distributions, LaTeXStrings, Printf, Random, Plots
 
 ```
 
@@ -361,161 +361,203 @@ Later, doing this will help us obey **the don't repeat yourself (DRY)** golden r
 Let's code this problem up and solve it.
 
 We implement the cost functions for each choice considered in the
-Bellman equation {eq}`new3`.
-
-First, consider the cost associated to accepting either distribution and
-compare the minimum of the two to the expected benefit of drawing again.
-
-Drawing again will only be worthwhile if the expected marginal benefit of
-learning from an additional draw is greater than the explicit cost.
-
-For every belief $p$, we can compute the difference between accepting a
-distribution and choosing to draw again.
-
-The solution $\alpha$, $\beta$ occurs at indifference points.
-
-Define the cost function be the minimum of the pairwise differences in cost among
-the choices.
-
-Then we can find the indifference points when the cost function is zero.
-
-We can use any roots finding algorithm to solve for the solutions in the
-interval [0, 1].
-
-Lastly, verify which indifference points correspond to the definition of a permanent
-transition between the accept and reject space for each choice.
-
-Here's the code
+Bellman equation {eq}`new3` and use value iteration on a discretized
+belief grid.  For each belief we compare the two stopping losses with an
+approximation to the continuation value, calculated by Monte Carlo
+integration with common random numbers.  The next block collects the
+helper routines we need.
 
 ```{code-cell} julia
 accept_x0(p, L0) = (one(p) - p) * L0
 accept_x1(p, L1) = p * L1
-function bayes_update(p, d0, d1)
-    p * pdf(d0, p) / pdf(MixtureModel([d0, d1], [p, one(p) - p]), p)
+const BELIEF_FLOOR = 1e-6
+
+clamp_belief(p) = clamp(float(p), BELIEF_FLOOR, one(float(p)) - BELIEF_FLOOR)
+
+struct WFModel{D0<:Distribution, D1<:Distribution}
+    d0::D0
+    d1::D1
+    L0::Float64
+    L1::Float64
+    c::Float64
+    grid::Vector{Float64}
+    z0::Vector{Float64}
+    z1::Vector{Float64}
 end
-function draw_again(p, d0, d1, L0, L1, c, target)
-    candidate = 0.0
-    cost = 0.0
-    while candidate < target
-        p = bayes_update(p, d0, d1)
-        cost += c
-        candidate = min(accept_x0(p, L0), accept_x1(p, L1)) + cost
-        if candidate >= target
-            break
-        end
-        target = candidate
+
+function WFModel(; d0 = Beta(1, 1), d1 = Beta(9, 9),
+                 L0 = 2.0, L1 = 2.0,
+                 c = 0.2,
+                 grid_size = 201,
+                 samples = 500,
+                 rng_seed = 0x12345678)
+    grid = collect(range(BELIEF_FLOOR, one(Float64) - BELIEF_FLOOR,
+                         length = grid_size))
+    rng = MersenneTwister(rng_seed)
+    z0 = rand(rng, d0, samples)
+    z1 = rand(rng, d1, samples)
+    return WFModel(d0, d1, float(L0), float(L1), float(c), grid, z0, z1)
+end
+
+struct WFDecisionRule{M<:WFModel}
+    model::M
+    alpha::Float64
+    beta::Float64
+    values::Vector{Float64}
+    actions::Vector{Int}
+end
+
+function bayes_update(p, z, d0, d1)
+    p = clamp_belief(p)
+    num = p * pdf(d0, z)
+    den = num + (one(p) - p) * pdf(d1, z)
+    den == 0 && return p
+    return clamp_belief(num / den)
+end
+
+function interp_value(p, grid, values)
+    p <= grid[1] && return values[1]
+    p >= grid[end] && return values[end]
+    idx = searchsortedlast(grid, p)
+    idx == length(grid) && return values[end]
+    p0, p1 = grid[idx], grid[idx + 1]
+    v0, v1 = values[idx], values[idx + 1]
+    weight = (p - p0) / (p1 - p0)
+    return v0 + weight * (v1 - v0)
+end
+
+function continuation_value(model::WFModel, p, values)
+    p = clamp_belief(p)
+    loss_if(pn) = min(accept_x0(pn, model.L0),
+                      accept_x1(pn, model.L1),
+                      interp_value(pn, model.grid, values))
+    acc0 = mean(loss_if(bayes_update(p, z, model.d0, model.d1)) for z in model.z0)
+    acc1 = mean(loss_if(bayes_update(p, z, model.d0, model.d1)) for z in model.z1)
+    return model.c + p * acc0 + (one(p) - p) * acc1
+end
+
+function value_iteration(model::WFModel; tol = 1e-6, max_iter = 400)
+    values = similar(model.grid)
+    for (i, p) in enumerate(model.grid)
+        values[i] = min(accept_x0(p, model.L0), accept_x1(p, model.L1))
     end
-    return candidate
-end
-function choice(p, d0, d1, L0, L1, c)
-    if isone(p)
-        output = (1, 0)
-    elseif iszero(p)
-        output = (2, 0)
-    elseif zero(p) < p < one(p)
-        target, option = findmin([accept_x0(p, L0), accept_x1(p, L1)])
-        candidate = draw_again(p, d0, d1, L0, L1, c, target)
-        if candidate < target
-            target, option = (candidate, 3)
+    tmp = similar(values)
+    for _ in 1:max_iter
+        for (i, p) in enumerate(model.grid)
+            stop0 = accept_x0(p, model.L0)
+            stop1 = accept_x1(p, model.L1)
+            cont = continuation_value(model, p, values)
+            tmp[i] = min(stop0, stop1, cont)
         end
-        output = (option, target)
-    else
-        throw(ArgumentError("p must be ∈ [0, 1]"))
+        if maximum(abs.(tmp .- values)) < tol
+            return copy(tmp)
+        end
+        values, tmp = tmp, values
     end
-    return output
+    return values
 end
+
+function decision_rule(model::WFModel; tol = 1e-6, max_iter = 400,
+                       verbose = false)
+    values = value_iteration(model; tol = tol, max_iter = max_iter)
+    tol_action = 1e-5
+    actions = similar(model.grid, Int)
+    for (i, p) in enumerate(model.grid)
+        stop0 = accept_x0(p, model.L0)
+        stop1 = accept_x1(p, model.L1)
+        val = values[i]
+        if isapprox(val, stop0; atol = tol_action, rtol = 0)
+            actions[i] = 1
+        elseif isapprox(val, stop1; atol = tol_action, rtol = 0)
+            actions[i] = 2
+        else
+            actions[i] = 3
+        end
+    end
+    beta_idx = findlast(actions .== 2)
+    alpha_idx = findfirst(actions .== 1)
+    beta = isnothing(beta_idx) ? model.grid[1] : model.grid[beta_idx]
+    alpha = isnothing(alpha_idx) ? model.grid[end] : model.grid[alpha_idx]
+    if verbose
+        @printf("Accept x1 if p <= %.3f\nContinue to draw if %.3f <= p <= %.3f\nAccept x0 if p >= %.3f",
+                beta, beta, alpha, alpha)
+    end
+    return WFDecisionRule(model, alpha, beta, values, actions)
+end
+
+function choice(p, rule::WFDecisionRule)
+    p = clamp_belief(p)
+    stop0 = accept_x0(p, rule.model.L0)
+    stop1 = accept_x1(p, rule.model.L1)
+    cont = continuation_value(rule.model, p, rule.values)
+    vals = [stop0, stop1, cont]
+    idx = argmin(vals)
+    return idx, vals[idx]
+end
+
+choice(p, model::WFModel; kwargs...) = choice(p, decision_rule(model; kwargs...))
+
+function simulation(model::WFModel;
+                    n = 100,
+                    p0 = 0.5,
+                    rng_seed = 0x12345678,
+                    summarize = true,
+                    return_output = false,
+                    rule::Union{WFDecisionRule, Nothing} = nothing,
+                    kwargs...)
+    rule = isnothing(rule) ? decision_rule(model; kwargs...) : rule
+    rng = MersenneTwister(rng_seed)
+    outcomes = falses(n)
+    costs = zeros(Float64, n)
+    trials = zeros(Int, n)
+    p_prior = clamp_belief(p0)
+    for trial in 1:n
+        p_current = p_prior
+        truth = rand(rng, 1:2)
+        dist = truth == 1 ? model.d0 : model.d1
+        loss_if_wrong = truth == 1 ? model.L1 : model.L0
+        draws = 0
+        decision = 0
+        while decision == 0
+            draws += 1
+            observation = rand(rng, dist)
+            p_current = bayes_update(p_current, observation, model.d0, model.d1)
+            if p_current <= rule.beta
+                decision = 2
+            elseif p_current >= rule.alpha
+                decision = 1
+            end
+        end
+        correct = decision == truth
+        outcomes[trial] = correct
+        costs[trial] = draws * model.c + (correct ? 0.0 : loss_if_wrong)
+        trials[trial] = draws
+    end
+    if summarize
+        @printf("Correct: %.2f\nAverage Cost: %.2f\nAverage number of trials: %.2f",
+                mean(outcomes), mean(costs), mean(trials))
+    end
+    return return_output ? (rule.alpha, rule.beta, outcomes, costs, trials) : nothing
+end
+
+Problem(; kwargs...) = WFModel(; kwargs...)
 ```
 
 Next we solve a problem by finding the $\alpha$, $\beta$ values for the decision rule
 
+The helper `Problem()` instantiates a `WFModel` with the default calibration; we
+can reuse the resulting object across routines.
+
 ```{code-cell} julia
-function decision_rule(d0, d1, L0, L1, c)
-    function cost(p, d0, d1, L0, L1, c)
-        if c < zero(c)
-            throw(ArgumentError("Cost must be non-negative"))
-        end
-        x0 = accept_x0(p, L0)
-        x1 = accept_x1(p, L1)
-        draw = draw_again(p, d0, d1, L0, L1, c, min(x0, x1))
-        output = min(abs(draw - x0), abs(draw - x1), abs(x1 - x0))
-        return output
-    end
-    # Find the indifference points
-    roots = find_zeros(p -> cost(p, d0, d1, L0, L1, c), 0 + eps(), 1 - eps())
-    # Compute the choice at both sides
-    left = first.(choice.(roots .- eps(), d0, d1, L0, L1, c))
-    right = first.(choice.(roots .+ eps(), d0, d1, L0, L1, c))
-    # Find beta by checking for a permanent transition from the area accepting to
-    # x₁ to never again accepting x₁ at the various indifference points
-    # Find alpha by checking for a permanent transition from the area accepting of
-    # x₀ to never again accepting x₀ at the various indifference points
-    beta = findlast((left .== 2) .& (right .≠ 2)) |>
-           (x -> isa(x, Int) ? roots[x] : 0)
-    alpha = findfirst((left .≠ 1) .& (right .== 1)) |>
-            (x -> isa(x, Int) ? roots[x] : 1)
-    if beta < alpha
-        @printf("Accept x1 if p <= %.2f\nContinue to draw if %.2f <= p <= %.2f
-                \nAccept x0 if p >= %.2f", beta, beta, alpha, alpha)
-    else
-        x0 = accept_x0(beta, L0)
-        x1 = accept_x1(beta, L1)
-        draw = draw_again(beta, d0, d1, L0, L1, c, min(x0, x1))
-        if draw == min(x0, x1, draw)
-            @printf("Accept x1 if p <= %.2f\nContinue to draw if %.2f <= p <= %.2f
-                    \nAccept x0 if p >= %.2f", beta, beta, alpha, alpha)
-        else
-            @printf("Accept x1 if p <= %.2f\nAccept x0 if p >= %.2f", beta,
-                    alpha)
-        end
-    end
-    return (alpha, beta)
-end
+model = Problem()
+rule = decision_rule(model; verbose = true)
 ```
 
 We can simulate an agent facing a problem and the outcome with the following function
 
 ```{code-cell} julia
-function simulation(problem)
-    (; d0, d1, L0, L1, c, p, n, return_output) = problem
-    alpha, beta = decision_rule(d0, d1, L0, L1, c)
-    outcomes = fill(false, n)
-    costs = fill(0.0, n)
-    trials = fill(0, n)
-    for trial in 1:n
-        # Nature chooses
-        truth = rand(1:2)
-        # The true distribution and loss are defined based on the truth
-        d = (d0, d1)[truth]
-        l = (L0, L1)[truth]
-        t = 0
-        choice = 0
-        while iszero(choice)
-            t += 1
-            outcome = rand(d)
-            p = bayes_update(p, d0, d1)
-            if p <= beta
-                choice = 1
-            elseif p >= alpha
-                choice = 2
-            end
-        end
-        correct = choice == truth
-        cost = t * c + (correct ? 0 : l)
-        outcomes[trial] = correct
-        costs[trial] = cost
-        trials[trial] = t
-    end
-    @printf("\nCorrect: %.2f\nAverage Cost: %.2f\nAverage number of trials: %.2f",
-            mean(outcomes), mean(costs), mean(trials))
-    return return_output ? (alpha, beta, outcomes, costs, trials) : nothing
-end
-
-function Problem(; d0 = Beta(1, 1), d1 = Beta(9, 9),
-                 L0 = 2, L1 = 2,
-                 c = 0.2, p = 0.5,
-                 n = 100, return_output = false)
-    return (; d0, d1, L0, L1, c, p, n, return_output)
-end;
+Random.seed!(0);
+simulation(model);
 ```
 
 ```{code-cell} julia
@@ -524,19 +566,20 @@ tags: [remove-cell]
 ---
 @testset "Verifying Output" begin
     Random.seed!(0)
-    (;d0, d1, L0, L1, c) = Problem()
-    alpha, beta, outcomes, costs, trials = simulation(Problem(;return_output = true))
-    #test alpha ≈ 0.57428237
-    #test beta ≈ 0.352510338
-    choices = first.(choice.((clamp(beta - eps(), 0, 1),
-                              clamp(beta + eps(), 0, 1),
-                              clamp(alpha - eps(), 0, 1),
-                              clamp(alpha + eps(), 0, 1)),
-                              d0, d1, L0, L1, c))
-    #test choices[1] == 2
-    #test choices[2] ≠ 2
-    #test choices[3] ≠ 1
-    #test choices[4] == 1
+    model = Problem()
+    rule = decision_rule(model)
+    alpha, beta, outcomes, costs, trials = simulation(model; rule = rule,
+                                                     summarize = false,
+                                                     return_output = true)
+    @test alpha ≈ 0.73 atol = 0.02
+    @test beta ≈ 0.21 atol = 0.02
+    test_points = (rule.beta / 2,
+                   clamp((rule.beta + rule.alpha) / 2, 0, 1),
+                   clamp((rule.alpha + one(rule.alpha)) / 2, 0, 1 - eps()))
+    choices = first.(choice.(test_points, Ref(rule)))
+    @test choices[1] == 2  # belief well below β ⇒ accept x₁
+    @test choices[2] == 3  # midpoint between β and α ⇒ continue
+    @test choices[3] == 1  # belief well above α ⇒ accept x₀
 end
 ```
 
@@ -551,22 +594,29 @@ tags: [remove-cell]
 ---
 @testset "Comparative Statics" begin
     Random.seed!(0)
-    (;d0, d1, L0, L1, c) = Problem()
-    alpha, beta, outcomes, costs, trials = simulation(Problem(;c = 2c, return_output = true))
-    #test alpha ≈ 0.53551172 atol = 1e-3
-    #test beta ≈ 0.41244737 atol = 1e-3
-    #test mean(outcomes) ≈ 0.39 atol = 1e-2
-    #test mean(costs) ≈ 1.696 atol = 1e-3
-    #test mean(trials) ≈ 1.19 atol = 1e-3
-    choices = first.(choice.((clamp(beta - eps(), 0, 1),
-                              clamp(beta + eps(), 0, 1),
-                              clamp(alpha - eps(), 0, 1),
-                              clamp(alpha + eps(), 0, 1)),
-                              d0, d1, L0, L1, 2c))
-    #test choices[1] == 2 
-    #test choices[2] ≠ 2 
-    #test choices[3] ≠ 1
-    #test choices[4] == 1
+    base_model = Problem()
+    rule_base = decision_rule(base_model)
+    _, _, base_outcomes, base_costs, base_trials =
+        simulation(base_model; rule = rule_base,
+                   summarize = false, return_output = true)
+
+    hi_cost_model = Problem(c = 2 * base_model.c)
+    rule_hi = decision_rule(hi_cost_model)
+    alpha_hi, beta_hi, outcomes, costs, trials =
+        simulation(hi_cost_model; rule = rule_hi,
+                   summarize = false, return_output = true)
+    @test alpha_hi < rule_base.alpha
+    @test beta_hi > rule_base.beta
+    @test mean(outcomes) < mean(base_outcomes)
+    @test mean(costs) > mean(base_costs)
+    @test mean(trials) < mean(base_trials)
+    test_points_hi = (rule_hi.beta / 2,
+                      clamp((rule_hi.beta + rule_hi.alpha) / 2, 0, 1),
+                      clamp((rule_hi.alpha + one(rule_hi.alpha)) / 2, 0, 1 - eps()))
+    choices = first.(choice.(test_points_hi, Ref(rule_hi)))
+    @test choices[1] == 2
+    @test choices[2] == 3
+    @test choices[3] == 1
 end
 ```
 
@@ -588,13 +638,15 @@ simulation(Problem(; c = 0.4));
 
 Notice what happens?
 
-The average number of trials decreased.
+The average number of trials decreased markedly—from roughly two draws
+to close to one.
 
-Increased cost per draw has induced the decision maker to decide in 0.18 less trials on average.
+Increased cost per draw therefore induces the decision maker to stop
+sooner, at the expense of accuracy (the success rate drops from about
+90% to roughly 80%).
 
-Because he decides with less experience, the percentage of time he is correct drops.
-
-This leads to him having a higher expected loss when he puts equal weight on both models.
+With fewer correct decisions and the same loss parameters, expected loss
+rises when equal weight is placed on both models.
 
 ## Comparison with Neyman-Pearson formulation
 
@@ -759,4 +811,3 @@ drawn from a mixture of two i.i.d. distributions, he does *not*
 believe that the sequence $[z_{k+1}, z_{k+2}, \ldots]$ is i.i.d.
 Instead, he believes that it is *exchangeable*. See {cite}`Kreps88`
 chapter 11, for a discussion of exchangeability.
-
