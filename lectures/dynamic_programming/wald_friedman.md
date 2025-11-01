@@ -616,7 +616,7 @@ Notice what happens?
 
 The average number of trials decreased.
 
-Increased cost per draw has induced the decision maker to decide in 0.18 less trials on average.
+Increased cost per draw has induced the decision maker to decide in 0.72 less trials on average.
 
 Because he decides with less experience, the percentage of time he is correct drops.
 
