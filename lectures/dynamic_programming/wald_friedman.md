@@ -165,7 +165,7 @@ The bottom panel presents mixtures of these distributions, with various mixing p
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics, Interpolations, NLsolve
-using Distributions, LaTeXStrings, Printf, Random, Plots, FastGaussQuadrature, SpecialFunctions
+using Distributions, LaTeXStrings, Random, Plots, FastGaussQuadrature, SpecialFunctions
 
 ```
 
@@ -380,7 +380,7 @@ function gauss_jacobi_dist(F::Beta, N)
     return x, C .* wj
 end
 
-function WFProblem(; d0 = Beta(1, 1), d1 = Beta(9, 9),
+function wf_problem(; d0 = Beta(1, 1), d1 = Beta(9, 9),
                    L0 = 2.0, L1 = 2.0,
                    c = 0.2,
                    grid_size = 201,
@@ -426,7 +426,7 @@ function and the associated decision rule.
 ```{code-cell} julia
 function T(problem, v)
     (; belief_grid, L0, L1) = problem
-    vf = extrapolate(interpolate((belief_grid,), v, Gridded(Linear())), Flat())
+    vf = LinearInterpolation(belief_grid, v, extrapolation_bc = Flat())
     out = similar(v)
 
     for (i, p) in enumerate(belief_grid)
@@ -445,7 +445,7 @@ end
 
 function decision_rule(problem; tol = 1e-6, max_iter = 400, verbose = false)
     values = value_iteration(problem; tol = tol, max_iter = max_iter)
-    vf = extrapolate(interpolate((problem.belief_grid,), values, Gridded(Linear())), Flat())
+    vf = LinearInterpolation(belief_grid, v, extrapolation_bc = Flat())
 
     (; belief_grid, L0, L1) = problem
     actions = similar(belief_grid, Int)
@@ -465,8 +465,9 @@ function decision_rule(problem; tol = 1e-6, max_iter = 400, verbose = false)
     alpha = isnothing(alpha_idx) ? belief_grid[end] : belief_grid[alpha_idx]
 
     if verbose
-        @printf("Accept x1 if p <= %.3f\nContinue to draw if %.3f <= p <= %.3f\nAccept x0 if p >= %.3f",
-                beta, beta, alpha, alpha)
+        println("Accept x1 if p <= $(round(beta, digits=3))")
+        println("Continue to draw if $(round(alpha, digits=3)) <= p <= $(round(beta, digits=3))")
+        println("Accept x0 if p >= $(round(alpha, digits=3))")
     end
 
     return (; problem, alpha, beta, values, actions, vf)
@@ -527,14 +528,13 @@ function simulator(problem;
     end
 
     if summarize
-        @printf("Correct: %.2f\nAverage Cost: %.2f\nAverage number of trials: %.2f",
-                mean(outcomes), mean(costs), mean(trials))
+        println("Correct: $(round(mean(outcomes), digits=2)), ",
+            "Average Cost: $(round(mean(costs), digits=2)), ",
+            "Average number of trials: $(round(mean(trials), digits=2))")
     end
 
     return return_output ? (rule.alpha, rule.beta, outcomes, costs, trials) : nothing
 end
-
-Problem(; kwargs...) = WFProblem(; kwargs...)
 ```
 
 ```{code-cell} julia
