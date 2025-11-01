@@ -609,7 +609,7 @@ Before you look, think about what will happen:
 
 ```{code-cell} julia
 Random.seed!(0);
-simulation(Problem(; c = 0.4));
+simulator(Problem(; c = 0.4));
 ```
 
 Notice what happens?
