@@ -243,7 +243,8 @@ contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false,
          color = :lighttest, cbar = false)
 contour!(x_grid, y_grid, two_args_to_pdf(newdist), fill = false, levels = 7,
          color = :grays, cbar = false)
-contour!(x_grid, y_grid, two_args_to_pdf(dist), fill = false, levels = 7, lw = 1,
+contour!(x_grid, y_grid, two_args_to_pdf(dist), fill = false, levels = 7,
+         lw = 1,
          color = :grays, cbar = false)
 ```
 
@@ -649,6 +650,7 @@ end
 ---
 tags: [remove-cell]
 ---
+using Random
 Random.seed!(42);  # reproducible results
 ```
 

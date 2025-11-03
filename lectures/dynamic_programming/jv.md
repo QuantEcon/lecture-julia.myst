@@ -148,7 +148,7 @@ function gauss_jacobi(F::Beta, N)
     return x, w
 end
 f(x) = x^2
-F = Beta(2,2)
+F = Beta(2, 2)
 x, w = gauss_jacobi(F, 20)
 # compare to monte-carlo integration
 @show dot(w, f.(x)), mean(f.(rand(F, 1000)));
@@ -213,11 +213,11 @@ using Test
 
 ```{code-cell} julia
 function jv_worker(; A = 1.4,
-                  alpha = 0.6,
-                  beta = 0.96,
-                  grid_size = 50,
-                  quad_size = 30,
-                  epsilon = 1e-4)
+                   alpha = 0.6,
+                   beta = 0.96,
+                   grid_size = 50,
+                   quad_size = 30,
+                   epsilon = 1e-4)
     G(x, phi) = A .* (x .* phi) .^ alpha
     pi_func = sqrt
     F = Beta(2, 2)
@@ -382,6 +382,7 @@ The function is minimized over all feasible $(s, \phi)$ pairs, either by brute-f
 The latter is much faster, but convergence to the global optimum is not
 guaranteed.  Grid search is a simple way to check results.
 
+(jv_solve)=
 ## Solving for Policies
 
 ```{index} single: On-the-Job Search; Solving for Policies
@@ -392,7 +393,7 @@ Let's plot the optimal policies and see what they look like.
 The code is as follows
 
 ```{code-cell} julia
-wp = jv_worker(;grid_size = 25)
+wp = jv_worker(; grid_size = 25)
 v_init = collect(wp.x_grid) .* 0.5
 
 f(x) = T(wp, x)
@@ -567,7 +568,7 @@ Looking at the dynamics, we can see that
 
 Referring back to the figure here.
 
-[https://julia.quantecon.org/dynamic_programming/jv.html#Solving-for-Policies](https://julia.quantecon.org/dynamic_programming/jv.html#Solving-for-Policies)
+[ref]`section <jv_solve>`
 
 we see that $x_t \approx 1$ means that
 $s_t = s(x_t) \approx 0$ and

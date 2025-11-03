@@ -617,8 +617,7 @@ We will make use of (with some tweaks) the code we wrote in the {doc}`McCall mod
 
 ```{code-cell} julia
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
-                            tol = 1e-5,
-                            iter = 2_000)
+                            tol = 1e-5, iter = 2_000)
     (; alpha, beta, sigma, c, gamma, w, w_probs, u) = mcm
 
     # pre-calculate utilities
@@ -656,10 +655,10 @@ end
 And the McCall object
 
 ```{code-cell} julia
-function McCallModel(; alpha, beta, gamma, c, sigma, w, w_probs,
-                     u = (c, sigma) -> c > 0 ?
-                                       (c^(1 - sigma) - 1) / (1 - sigma) :
-                                       -10e-6)
+function mcall_model(; alpha, beta, gamma, c, sigma, w, w_probs,
+                     u = (c,
+                          sigma) -> c > 0 ? (c^(1 - sigma) - 1) / (1 - sigma) :
+                                    -10e-6)
     return (; alpha, beta, gamma, c, sigma, u, w, w_probs)
 end
 ```
@@ -670,7 +669,7 @@ function of the unemployment compensation rate
 ```{code-cell} julia
 function compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
                                     alpha, w_pretax)
-    mcm = McCallModel(; alpha, beta, gamma, sigma, w_probs,
+    mcm = mcall_model(; alpha, beta, gamma, sigma, w_probs,
                       c = c_pretax - tau, # post-tax compensation
                       w = w_pretax .- tau)
 
@@ -684,10 +683,9 @@ end
 
 function compute_steady_state_quantities(c_pretax, tau; w_probs, sigma, gamma,
                                          beta, alpha, w_pretax, b, d)
-    w_bar, lambda, V, U = compute_optimal_quantities(c_pretax, tau; w_probs,
-                                                     sigma,
-                                                     gamma, beta, alpha,
-                                                     w_pretax)
+    w_bar, lambda, V,
+    U = compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
+                                   alpha, w_pretax)
 
     # compute steady state employment and unemployment rates
     lm = LakeModel(; lambda, alpha, b, d)
@@ -704,10 +702,11 @@ end
 function find_balanced_budget_tax(c_pretax; w_probs, sigma, gamma, beta, alpha,
                                   w_pretax, b, d)
     function steady_state_budget(t)
-        u_rate, e_rate, w = compute_steady_state_quantities(c_pretax, t;
-                                                            w_probs, sigma,
-                                                            gamma, beta, alpha,
-                                                            w_pretax, b, d)
+        u_rate, e_rate,
+        w = compute_steady_state_quantities(c_pretax, t;
+                                            w_probs, sigma,
+                                            gamma, beta, alpha,
+                                            w_pretax, b, d)
         return t - u_rate * c_pretax
     end
 
@@ -729,13 +728,14 @@ function calculate_equilibriums(c_pretax; w_probs, sigma, gamma, beta, alpha,
     for (i, c_pre) in enumerate(c_pretax)
         tau = find_balanced_budget_tax(c_pre; w_probs, sigma, gamma, beta,
                                        alpha, w_pretax, b, d)
-        u_rate, e_rate, welfare = compute_steady_state_quantities(c_pre, tau;
-                                                                  w_probs,
-                                                                  sigma,
-                                                                  gamma, beta,
-                                                                  alpha,
-                                                                  w_pretax,
-                                                                  b, d)
+        u_rate, e_rate,
+        welfare = compute_steady_state_quantities(c_pre, tau;
+                                                  w_probs,
+                                                  sigma,
+                                                  gamma, beta,
+                                                  alpha,
+                                                  w_pretax,
+                                                  b, d)
         tau_vec[i] = tau
         u_vec[i] = u_rate
         e_vec[i] = e_rate
@@ -767,10 +767,11 @@ w_pretax = (w_pretax[1:(end - 1)] + w_pretax[2:end]) / 2
 
 # levels of unemployment insurance we wish to study
 c_pretax = range(5, 140, length = 60)
-tau_vec, u_vec, e_vec, welfare_vec = calculate_equilibriums(c_pretax; w_probs,
-                                                            sigma, gamma, beta,
-                                                            alpha, w_pretax, b,
-                                                            d)
+tau_vec, u_vec, e_vec,
+welfare_vec = calculate_equilibriums(c_pretax; w_probs,
+                                     sigma, gamma, beta,
+                                     alpha, w_pretax, b,
+                                     d)
 
 # plots
 plt_unemp = plot(title = "Unemployment", c_pretax, u_vec, color = :blue,
