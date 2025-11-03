@@ -45,7 +45,7 @@ tags: [hide-output]
 ---
 using LinearAlgebra, Statistics, Distributions
 using QuadGK, FastGaussQuadrature, SpecialFunctions
-using Interpolations, Plots,  ProgressMeter
+using Interpolations, Plots
 ```
 
 ## Numerical Integration
