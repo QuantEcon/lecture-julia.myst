@@ -85,15 +85,19 @@ With the `FastGaussQuadrature` package you may need to deal with affine transfor
 Another commonly used quadrature well suited to random variables with bounded support is [Gauss–Jacobi quadrature](https://en.wikipedia.org/wiki/Gauss–Jacobi_quadrature).
 
 It provides nodes $s_n\in[-1,1]$ and weights $\omega_n$ for
+
 $$
 \int_{-1}^1 g(s)\,(1-s)^{a}(1+s)^{b}\,ds \;\approx\; \sum_{n=1}^N \omega_n\, g(s_n).
 $$
 
 For $X\sim\mathrm{Beta}(\alpha,\beta)$,
+
 $$
 \mathbb{E}[f(X)] = \int_0^1 f(x)\,\frac{x^{\alpha-1}(1-x)^{\beta-1}}{B(\alpha,\beta)}\,dx,
 $$
+
 with the change of variables $s=2x-1$ (so $x=(s+1)/2$, $dx=ds/2$). This yields Gauss–Jacobi exponents $a=\beta-1$, $b=\alpha-1$ and a factor $C=2^{-(\alpha+\beta-1)}/B(\alpha,\beta)$:
+
 $$
 \mathbb{E}[f(X)] \;\approx\; C\sum_{n=1}^N \omega_n\, f\!\left(\tfrac{s_n+1}{2}\right).
 $$
@@ -217,22 +221,4 @@ Routines are available for
 * Schur factorization, etc.
 
 See [here](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/) for further details.
-
-## General Tools
-
-### ProgressMeter.jl
-
-For long-running operations, you can use the [ProgressMeter.jl](https://github.com/timholy/ProgressMeter.jl) package.
-
-To use the package, you simply put a macro in front of `for` loops, etc.
-
-From the documentation
-
-```{code-cell} julia
-using ProgressMeter
-
-@showprogress 1 "Computing..." for i in 1:50
-    sleep(0.1) # some computation....
-end
-```
 

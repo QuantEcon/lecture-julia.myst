@@ -650,6 +650,7 @@ end
 ---
 tags: [remove-cell]
 ---
+using Random
 Random.seed!(42);  # reproducible results
 ```
 

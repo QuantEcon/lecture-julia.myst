@@ -382,6 +382,7 @@ The function is minimized over all feasible $(s, \phi)$ pairs, either by brute-f
 The latter is much faster, but convergence to the global optimum is not
 guaranteed.  Grid search is a simple way to check results.
 
+(jv_solve)=
 ## Solving for Policies
 
 ```{index} single: On-the-Job Search; Solving for Policies
@@ -567,7 +568,7 @@ Looking at the dynamics, we can see that
 
 Referring back to the figure here.
 
-[https://julia.quantecon.org/dynamic_programming/jv.html#Solving-for-Policies](https://julia.quantecon.org/dynamic_programming/jv.html#Solving-for-Policies)
+[ref]`section <jv_solve>`
 
 we see that $x_t \approx 1$ means that
 $s_t = s(x_t) \approx 0$ and
