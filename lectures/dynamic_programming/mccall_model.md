@@ -428,11 +428,11 @@ This coding pattern, where `expression || error("failure)` first checks the expr
 Let's compute the reservation wage at the default parameters
 
 ```{code-cell} julia
-function mcm(; c = 25.0, beta = 0.99, w = range(10.0, 60.0, length = n + 1))
+function mcall_model(; c = 25.0, beta = 0.99, w = range(10.0, 60.0, length = n + 1))
     (; c, beta, w)
 end
 
-compute_reservation_wage(mcm()) # call with default parameters
+compute_reservation_wage(mcall_model()) # call with default parameters
 ```
 
 ```{code-cell} julia
@@ -440,8 +440,8 @@ compute_reservation_wage(mcm()) # call with default parameters
 tags: [remove-cell]
 ---
 @testset "Reservation Wage Tests" begin
-    @test compute_reservation_wage(mcm()) ≈ 47.316499766546215
-    @test compute_reservation_wage_direct(mcm()) ≈ 47.31649975736077
+    @test compute_reservation_wage(mcall_model()) ≈ 47.316499766546215
+    @test compute_reservation_wage_direct(mcall_model()) ≈ 47.31649975736077
 end
 ```
 
@@ -462,7 +462,7 @@ beta_vals = range(0.9, 0.99, length = grid_size)
 
 for (i, c) in enumerate(c_vals)
     for (j, beta) in enumerate(beta_vals)
-        R[i, j] = compute_reservation_wage(mcm(; c, beta); m = 0)
+        R[i, j] = compute_reservation_wage(mcall_model(; c, beta); m = 0)
     end
 end
 ```
@@ -608,7 +608,7 @@ compute_reservation_wage_psi2(c, beta)
 tags: [remove-cell]
 ---
 @testset begin
-    mcmp = mcm()
+    mcmp = mcall_model()
     @test compute_reservation_wage(mcmp) ≈ 47.316499766546215
     @test compute_reservation_wage_psi(mcmp.c, mcmp.beta) ≈ 47.31649976654623
     @test compute_reservation_wage_psi2(mcmp.c, mcmp.beta) ≈ 47.31649976654623

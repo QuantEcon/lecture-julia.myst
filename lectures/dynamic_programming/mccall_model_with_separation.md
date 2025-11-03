@@ -284,7 +284,7 @@ Let's plot the approximate solutions $U$ and $V$ to see what they look like.
 We'll use the default parameterizations found in the code above.
 
 ```{code-cell} julia
-function McCallModel(; alpha = 0.2,
+function mcall_model(; alpha = 0.2,
                      beta = 0.98, # discount rate
                      gamma = 0.7,
                      c = 6.0, # unemployment compensation
@@ -300,7 +300,7 @@ end
 ```{code-cell} julia
 # plots setting
 
-mcm = McCallModel()
+mcm = mcall_model()
 (; V, U) = solve_mccall_model(mcm)
 U_vec = fill(U, length(mcm.w))
 
@@ -352,7 +352,7 @@ In each instance below we'll show you a figure and then ask you to reproduce it 
 
 First, let's look at how $\bar w$ varies with unemployment compensation.
 
-In the figure below, we use the default parameters in the McCallModel tuple, apart from
+In the figure below, we use the default parameters in the mcall_model tuple, apart from
 c (which takes the values given on the horizontal axis)
 
 ```{figure} /_static/figures/mccall_resw_c.png
@@ -421,7 +421,7 @@ $\beta$ and $\alpha$ and plot the results like so
 ```{code-cell} julia
 c_vals = range(2, 12, length = 25)
 
-models = [McCallModel(c = cval) for cval in c_vals]
+models = [mcall_model(c = cval) for cval in c_vals]
 sols = solve_mccall_model.(models)
 w_bar_vals = [sol.w_bar for sol in sols]
 
@@ -437,7 +437,7 @@ plot(c_vals,
 Note that we could've done the above in one pass (which would be important if, for example, the parameter space was quite large).
 
 ```{code-cell} julia
-w_bar_vals = [solve_mccall_model(McCallModel(c = cval)).w_bar
+w_bar_vals = [solve_mccall_model(mcall_model(c = cval)).w_bar
               for cval in c_vals];
 # doesn't allocate new arrays for models and solutions
 ```
@@ -461,7 +461,7 @@ Similar to above, we can plot $\bar w$ against $\gamma$ as follows
 ```{code-cell} julia
 gamma_vals = range(0.05, 0.95, length = 25)
 
-models = [McCallModel(gamma = gammaval) for gammaval in gamma_vals]
+models = [mcall_model(gamma = gammaval) for gammaval in gamma_vals]
 sols = solve_mccall_model.(models)
 w_bar_vals = [sol.w_bar for sol in sols]
 
