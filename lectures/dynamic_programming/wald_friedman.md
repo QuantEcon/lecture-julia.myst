@@ -165,7 +165,7 @@ The bottom panel presents mixtures of these distributions, with various mixing p
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics, Interpolations, NLsolve
-using Distributions, LaTeXStrings, Random, Plots, FastGaussQuadrature, SpecialFunctions
+using Distributions, LaTeXStrings, Random, Plots, FastGaussQuadrature, SpecialFunctions, StatsPlots
 
 ```
 
@@ -177,19 +177,15 @@ using Test
 ```
 
 ```{code-cell} julia
-using StatsPlots
-
-begin
-    base_dist = [Beta(1, 1), Beta(3, 3)]
-    mixed_dist = MixtureModel.(Ref(base_dist),
-                               (p -> [p, one(p) - p]).(0.25:0.25:0.75))
-    plot(plot(base_dist, labels = [L"f_0" L"f_1"],
-              title = "Original Distributions"),
-         plot(mixed_dist, labels = [L"1/4-3/4" L"1/2-1/2" L"3/4-1/4"],
-              title = "Distribution Mixtures"),
-         # Global settings across both plots
-         ylab = "Density", ylim = (0, 2), layout = (2, 1))
-end
+base_dist = [Beta(1, 1), Beta(3, 3)]
+mixed_dist = MixtureModel.(Ref(base_dist),
+                           (p -> [p, one(p) - p]).(0.25:0.25:0.75))
+plot(plot(base_dist, labels = [L"f_0" L"f_1"],
+          title = "Original Distributions"),
+     plot(mixed_dist, labels = [L"1/4-3/4" L"1/2-1/2" L"3/4-1/4"],
+          title = "Distribution Mixtures"),
+     # Global settings across both plots
+     ylab = "Density", ylim = (0, 2), layout = (2, 1))
 ```
 
 ### Losses and costs
@@ -380,26 +376,14 @@ function gauss_jacobi_dist(F::Beta, N)
     return x, C .* wj
 end
 
-function wf_problem(; d0 = Beta(1, 1), d1 = Beta(9, 9),
-                   L0 = 2.0, L1 = 2.0,
-                   c = 0.2,
-                   grid_size = 201,
-                   quad_order = 31)
-    belief_grid = collect(range(BELIEF_FLOOR,
-                                one(Float64) - BELIEF_FLOOR,
+function wf_problem(; d0 = Beta(1, 1), d1 = Beta(9, 9), L0 = 2.0, L1 = 2.0,
+                    c = 0.2, grid_size = 201, quad_order = 31)
+    belief_grid = collect(range(BELIEF_FLOOR, one(Float64) - BELIEF_FLOOR,
                                 length = grid_size))
     nodes0, weights0 = gauss_jacobi_dist(d0, quad_order)
     nodes1, weights1 = gauss_jacobi_dist(d1, quad_order)
-    return (; d0,
-            d1,
-            L0 = float(L0),
-            L1 = float(L1),
-            c = float(c),
-            belief_grid,
-            nodes0,
-            weights0,
-            nodes1,
-            weights1)
+    return (; d0, d1, L0 = float(L0), L1 = float(L1), c = float(c), belief_grid,
+            nodes0, weights0, nodes1, weights1)
 end
 
 function posterior_belief(problem, p, z)
@@ -412,8 +396,8 @@ end
 function continuation_value(problem, p, vf)
     (; c, nodes0, weights0, nodes1, weights1) = problem
 
-    loss(nodes, weights) =
-      dot(weights, vf.(posterior_belief.(Ref(problem), p, nodes)))
+    loss(nodes,
+         weights) = dot(weights, vf.(posterior_belief.(Ref(problem), p, nodes)))
 
     return c + p * loss(nodes0, weights0) +
            (one(p) - p) * loss(nodes1, weights1)
@@ -445,9 +429,8 @@ end
 
 function decision_rule(problem; tol = 1e-6, max_iter = 400, verbose = false)
     values = value_iteration(problem; tol = tol, max_iter = max_iter)
-    vf = LinearInterpolation(belief_grid, v, extrapolation_bc = Flat())
-
     (; belief_grid, L0, L1) = problem
+    vf = LinearInterpolation(belief_grid, values, extrapolation_bc = Flat())
     actions = similar(belief_grid, Int)
 
     for (i, p) in enumerate(belief_grid)
@@ -466,7 +449,7 @@ function decision_rule(problem; tol = 1e-6, max_iter = 400, verbose = false)
 
     if verbose
         println("Accept x1 if p <= $(round(beta, digits=3))")
-        println("Continue to draw if $(round(alpha, digits=3)) <= p <= $(round(beta, digits=3))")
+        println("Continue to draw if $(round(beta, digits=3)) <= p <= $(round(alpha, digits=3))")
         println("Accept x0 if p >= $(round(alpha, digits=3))")
     end
 
@@ -483,15 +466,9 @@ function choice(p, rule)
     return idx, vals[idx]
 end
 
-function simulator(problem;
-                    n = 100,
-                    p0 = 0.5,
-                    rng_seed = 0x12345678,
-                    summarize = true,
-                    return_output = false,
-                    rule = nothing,
-                    kwargs...)
-    rule = isnothing(rule) ? decision_rule(problem; kwargs...) : rule
+function simulator(problem; n = 100, p0 = 0.5, rng_seed = 0x12345678,
+                   summarize = true, return_output = false, rule = nothing)
+    rule = isnothing(rule) ? decision_rule(problem) : rule
     (; d0, d1, L0, L1, c) = rule.problem
 
     rng = MersenneTwister(rng_seed)
@@ -529,11 +506,12 @@ function simulator(problem;
 
     if summarize
         println("Correct: $(round(mean(outcomes), digits=2)), ",
-            "Average Cost: $(round(mean(costs), digits=2)), ",
-            "Average number of trials: $(round(mean(trials), digits=2))")
+                "Average Cost: $(round(mean(costs), digits=2)), ",
+                "Average number of trials: $(round(mean(trials), digits=2))")
     end
 
-    return return_output ? (rule.alpha, rule.beta, outcomes, costs, trials) : nothing
+    return return_output ? (rule.alpha, rule.beta, outcomes, costs, trials) :
+           nothing
 end
 ```
 
@@ -543,15 +521,13 @@ tags: [remove-cell]
 ---
 @testset "Verifying Output" begin
     Random.seed!(0)
-    model = Problem()
+    model = wf_problem()
     rule = decision_rule(model)
     alpha, beta, outcomes, costs, trials =
         simulator(model; rule = rule, summarize = false, return_output = true)
     @test alpha ≈ 0.73 atol = 0.02
     @test beta ≈ 0.21 atol = 0.02
-    test_points = (rule.beta / 2,
-                   clamp((rule.beta + rule.alpha) / 2, 0, 1),
-                   clamp((rule.alpha + one(rule.alpha)) / 2, 0, 1 - eps()))
+    test_points = (rule.beta / 2, clamp((rule.beta + rule.alpha) / 2, 0, 1), clamp((rule.alpha + one(rule.alpha)) / 2, 0, 1 - eps()))
     choices = first.(choice.(test_points, Ref(rule)))
     @test choices[1] == 2
     @test choices[2] == 3
@@ -561,7 +537,7 @@ end
 
 ```{code-cell} julia
 Random.seed!(0);
-simulator(Problem());
+simulator(wf_problem());
 ```
 
 ```{code-cell} julia
@@ -570,25 +546,19 @@ tags: [remove-cell]
 ---
 @testset "Comparative Statics" begin
     Random.seed!(0)
-    base_model = Problem()
+    base_model = wf_problem()
     rule_base = decision_rule(base_model)
-    _, _, base_outcomes, base_costs, base_trials =
-        simulator(base_model; rule = rule_base,
-                  summarize = false, return_output = true)
+    _, _, base_outcomes, base_costs, base_trials = simulator(base_model; rule = rule_base, summarize = false, return_output = true)
 
-    hi_cost_model = Problem(c = 2 * base_model.c)
+    hi_cost_model = wf_problem(c = 2 * base_model.c)
     rule_hi = decision_rule(hi_cost_model)
-    alpha_hi, beta_hi, outcomes, costs, trials =
-        simulator(hi_cost_model; rule = rule_hi,
-                  summarize = false, return_output = true)
+    alpha_hi, beta_hi, outcomes, costs, trials = simulator(hi_cost_model; rule = rule_hi, summarize = false, return_output = true)
     @test alpha_hi < rule_base.alpha
     @test beta_hi > rule_base.beta
     @test mean(outcomes) < mean(base_outcomes)
     @test mean(costs) > mean(base_costs)
     @test mean(trials) < mean(base_trials)
-    test_points_hi = (rule_hi.beta / 2,
-                      clamp((rule_hi.beta + rule_hi.alpha) / 2, 0, 1),
-                      clamp((rule_hi.alpha + one(rule_hi.alpha)) / 2, 0, 1 - eps()))
+    test_points_hi = (rule_hi.beta / 2,clamp((rule_hi.beta + rule_hi.alpha) / 2, 0, 1), clamp((rule_hi.alpha + one(rule_hi.alpha)) / 2, 0, 1 - eps()))
     choices = first.(choice.(test_points_hi, Ref(rule_hi)))
     @test choices[1] == 2
     @test choices[2] == 3
@@ -609,7 +579,7 @@ Before you look, think about what will happen:
 
 ```{code-cell} julia
 Random.seed!(0);
-simulator(Problem(; c = 0.4));
+simulator(wf_problem(; c = 0.4));
 ```
 
 Notice what happens?
