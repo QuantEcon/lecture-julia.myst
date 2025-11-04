@@ -518,10 +518,6 @@ As expected, the distribution smooths out into a bell curve as $n$ increases.
 
 We leave you to investigate its contents if you wish to know more.
 
-If you run the file from the ordinary Julia or IJulia shell, the figure should pop up in a
-window that you can rotate with your mouse, giving different views on the
-density sequence.
-
 (multivariate_clt)=
 ### The Multivariate Case
 
