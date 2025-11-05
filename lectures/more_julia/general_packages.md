@@ -125,7 +125,7 @@ f(x) = x^2
 
 ## Gauss Hermite
 
-Finally, many expectations are of the form $\mathbb{E}\left[f(X)\right]$ where $X \sim N(0,1)$.  Alternatively, integrals of the form $\int_{-\infty}^{\infty}f(x) exp(-x^2) dx$.
+Many expectations are of the form $\mathbb{E}\left[f(X)\right]\approx \sum_{n=1}^N w_n f(x_n)$ where $X \sim N(0,1)$.  Alternatively, integrals of the form $\int_{-\infty}^{\infty}f(x) exp(-x^2) dx$.
 
 Gauss-hermite quadrature provides weights and nodes of this form, where the `normalize = true` argument provides the appropriate rescaling for the normal distribution.
 
@@ -147,6 +147,55 @@ f(x) = x^2
 @show dot(w, f.(x)), mean(f.(rand(Normal(1.0, 0.1), 1000)))
 @show dot(w2, f.(x2)), mean(f.(rand(Normal(0.0, 0.05), 1000))); 
 ```
+
+## Gauss Laguerre
+
+Another quadrature scheme appropriate integrals defined on $[0,\infty]$ is Gauss Laguerre, which approximates integrals of the form $\int_0^{\infty} f(x) x^{\alpha} \exp(-x) dx \approx \sum_{n=1}^N w_n f(x_n)$.
+
+One application is to calculate expectations of exponential variables.  The PDF of an exponential distribution with parameter $\theta$ is $f(x;\theta) = \frac{1}{\theta}\exp(-x/\theta)$.  With a change of variables we can use Gauss Laguerre quadrature
+
+```{code-cell} julia
+function gauss_laguerre_exponential(N, theta)
+    #   E[f(X)] = \int_0^\infty f(x) (1/theta) e^{-x/theta} dx = \int_0^\infty f(theta*y) e^{-y} dy.
+    s, w = FastGaussQuadrature.gausslaguerre(N)  # alpha = 0 (default)
+    x = theta .* s
+    return x, w
+end
+
+N = 64
+theta = 0.5
+x, w = gauss_laguerre_exponential(N, theta)
+f(x) = x^2 + 1
+@show dot(w, f.(x)), mean(f.(rand(Exponential(theta), 1_000)))
+```
+
+Similarly, the Gamma distribution with shape parameter $\alpha$ and scale $\theta$ has PDF $f(x; \alpha, \theta) = \frac{x^{\alpha-1} e^{-x/\theta}}{\Gamma(\alpha) \theta^\alpha}$ for $x > 0$ with $\Gamma(\cdot)$ the Gamma special function.
+
+Using a change of variable and Gauss Laguerre quadrature
+
+```{code-cell} julia
+function gauss_laguerre_gamma(N, alpha, theta)
+  # For Gamma(shape=alpha, scale=theta) with pdf
+  #   x^{alpha-1} e^{-x/theta} / (Gamma(alpha) theta^alpha)
+  # change variable y = x/theta -> x = theta*y, dx = theta dy
+  # E[f(X)] = 1/Gamma(alpha) * ∫_0^∞ f(theta*y) y^{alpha-1} e^{-y} dy
+  # FastGaussQuadrature.gausslaguerre(N, a) returns nodes/weights for
+  # ∫_0^∞ g(y) y^a e^{-y} dy, so pass a = alpha - 1.
+
+  s, w = FastGaussQuadrature.gausslaguerre(N, alpha - 1)
+  x = theta .* s
+  w = w ./ SpecialFunctions.gamma(alpha)
+  return x, w
+end
+
+N = 256
+alpha = 7.0
+theta = 1.1
+x, w = gauss_laguerre_gamma(N, alpha, theta)
+f(x) = x^2 + 1
+@show dot(w, f.(x)), mean(f.(rand(Gamma(alpha, theta), 100_000)))
+```
+
 
 
 ## Interpolation
@@ -201,7 +250,7 @@ y = log.(x) # corresponding y points
 
 interp = LinearInterpolation(x, y)
 
-xf = log.(range(1, exp(4), length = 100)) .+ 1 # finer grid
+xf = log.(range(1,m exp(4), length = 100)) .+ 1 # finer grid
 
 plot(xf, interp.(xf), label = "linear")
 scatter!(x, y, label = "sampled data", markersize = 4, size = (800, 400))
