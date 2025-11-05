@@ -65,7 +65,7 @@ This is an adaptive Gauss-Kronrod integration technique that's relatively accura
 
 However, its adaptive implementation makes it slow and not well suited to inner loops.
 
-### Gaussian Quadrature
+### Gauss Legendre
 
 Alternatively, many integrals can be done efficiently with (non-adaptive) [Gaussian quadrature](https://en.wikipedia.org/wiki/Gaussian_quadrature).
 
@@ -81,6 +81,8 @@ f(x) = x^2
 
 With the `FastGaussQuadrature` package you may need to deal with affine transformations to the non-default domains yourself.
 
+
+### Gauss Legendre
 
 Another commonly used quadrature well suited to random variables with bounded support is [Gauss–Jacobi quadrature](https://en.wikipedia.org/wiki/Gauss–Jacobi_quadrature).
 
@@ -121,6 +123,30 @@ f(x) = x^2
 @show dot(w2, f.(x2)), mean(f.(rand(F2, 1000)));
 ```
 
+## Gauss Hermite
+
+Finally, many expectations are of the form $\mathbb{E}\left[f(X)\right]$ where $X \sim N(0,1)$.  Alternatively, integrals of the form $\int_{-\infty}^{\infty}f(x) exp(-x^2) dx$.
+
+Gauss-hermite quadrature provides weights and nodes of this form, where the `normalize = true` argument provides the appropriate rescaling for the normal distribution.
+
+Through a change of variables this can be used to calculate expectations of $N(\mu,\sigma^2)$ variables, through
+
+```{code-cell} julia
+function gauss_hermite_normal(N::Integer, mu::Real, sigma::Real)
+  s, w = FastGaussQuadrature.gausshermite(N; normalize = true)
+
+  # X ~ N(mu, sigma^2), X \sim mu + sigma N(0,1) we transform the standard-normal nodes
+  x = mu .+ sigma .* s
+  return x, w
+end
+
+N = 32
+x, w = gauss_hermite_normal(N, 1.0, 0.1)
+x2, w2 = gauss_hermite_normal(N, 0.0, 0.05)
+f(x) = x^2
+@show dot(w, f.(x)), mean(f.(rand(Normal(1.0, 0.1), 1000)))
+@show dot(w2, f.(x2)), mean(f.(rand(Normal(0.0, 0.05), 1000))); 
+```
 
 
 ## Interpolation
