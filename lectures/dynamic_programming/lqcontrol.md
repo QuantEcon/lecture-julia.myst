@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (lqc)=
@@ -42,7 +42,7 @@ These themes appear repeatedly below.
 Mathematically, LQ control problems are closely related to {doc}`the Kalman filter <../introduction_dynamics/kalman>`.
 
 * Recursive formulations of linear-quadratic control problems and Kalman filtering problems both involve matrix **Riccati equations**.
-* Classical formulations of linear control and linear filtering problems make use of similar matrix decompositions (see for example {doc}`this lecture <../time_series_models/lu_tricks>` and {doc}`this lecture <../time_series_models/classical_filtering>`).
+* Classical formulations of linear control and linear filtering problems make use of similar matrix decompositions.
 
 In reading what follows, it will be useful to have some familiarity with
 
