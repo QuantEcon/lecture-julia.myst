@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (numerical_linear_algebra)=
@@ -420,7 +420,7 @@ With sparsity, the computational order is related to the number of non-zeros rat
 
 For real, symmetric, [positive semi-definite](https://en.wikipedia.org/wiki/Definiteness_of_a_matrix) matrices, a Cholesky decomposition is a specialized example of an LU decomposition where $L = U'$.
 
-The Cholesky is directly useful on its own (e.g., {doc}`Classical Control with Linear Algebra <../time_series_models/classical_filtering>`), but it is also an efficient factorization to use in solving symmetric positive semi-definite systems.
+The Cholesky is directly useful on its own, but it is also an efficient factorization to use in solving symmetric positive semi-definite systems.
 
 As always, symmetry allows specialized algorithms.
 
