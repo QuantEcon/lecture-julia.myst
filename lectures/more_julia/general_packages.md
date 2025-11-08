@@ -250,7 +250,7 @@ y = log.(x) # corresponding y points
 
 interp = LinearInterpolation(x, y)
 
-xf = log.(range(1,m exp(4), length = 100)) .+ 1 # finer grid
+xf = log.(range(1,exp(4), length = 100)) .+ 1 # finer grid
 
 plot(xf, interp.(xf), label = "linear")
 scatter!(x, y, label = "sampled data", markersize = 4, size = (800, 400))
