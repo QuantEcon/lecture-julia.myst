@@ -407,7 +407,8 @@ function T!(cp, V, out; ret_policy = false)
     z_idx = 1:length(z_vals)
 
     # value function when the shock index is z_i
-    vf = extrapolate(interpolate((asset_grid, z_idx), V, Gridded(Linear())), Interpolations.Flat())
+    vf = extrapolate(interpolate((asset_grid, z_idx), V, Gridded(Linear())),
+                     Interpolations.Flat())
 
     opt_lb = 1e-8
 
@@ -444,7 +445,8 @@ function K!(cp, c, out)
     gam = R * beta
 
     # policy function when the shock index is z_i
-    cf = extrapolate(interpolate((asset_grid, z_idx), c, Gridded(Linear())), Interpolations.Flat())
+    cf = extrapolate(interpolate((asset_grid, z_idx), c, Gridded(Linear())),
+                     Interpolations.Flat())
 
     # compute lower_bound for optimization
     opt_lb = 1e-8
@@ -525,7 +527,7 @@ In the Julia console, a comparison of the operators can be made as follows
 
 ```{code-cell} julia
 cp = ConsumerProblem()
-v, c, = initialize(cp)
+v, c = initialize(cp)
 ```
 
 ```{code-cell} julia
@@ -739,12 +741,12 @@ function compute_asset_series(cp, T = 500_000; verbose = false)
     (; Pi, z_vals, R) = cp  # simplify names
     z_idx = 1:length(z_vals)
     v_init, c_init = initialize(cp)
-    
+
     sol = fixedpoint(x -> K(cp, x), c_init)
     c = sol.zero
 
-    cf = extrapolate(interpolate((cp.asset_grid, z_idx), c, Gridded(Linear())), Interpolations.Flat()
-    )
+    cf = extrapolate(interpolate((cp.asset_grid, z_idx), c, Gridded(Linear())),
+                     Interpolations.Flat())
 
     a = zeros(T + 1)
     z_seq = simulate(MarkovChain(Pi), T)
