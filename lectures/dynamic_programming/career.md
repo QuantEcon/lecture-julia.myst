@@ -43,7 +43,7 @@ This exposition draws on the presentation in {cite}`Ljungqvist2012`, section 6.5
 
 
 ```{code-cell} julia
-using LinearAlgebra, Statistics
+using LinearAlgebra, Statistics, NLsolve
 ```
 
 ## Model
@@ -154,7 +154,7 @@ using Test
 ```
 
 ```{code-cell} julia
-using LaTeXStrings, Plots, QuantEcon, Distributions
+using LaTeXStrings, Plots, Distributions
 
 n = 50
 a_vals = [0.5, 1, 100]
@@ -266,7 +266,8 @@ Here's the value function
 wp = CareerWorkerProblem()
 v_init = fill(100.0, wp.N, wp.N)
 func(x) = update_bellman(wp, x)
-v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
+sol = fixedpoint(func, v_init)
+v = sol.zero
 
 plot(linetype = :surface, wp.theta, wp.epsilon, transpose(v),
      xlabel = L"\theta",
@@ -309,7 +310,7 @@ In particular, modulo randomness, reproduce the following figure (where the hori
 :width: 100%
 ```
 
-Hint: To generate the draws from the distributions $F$ and $G$, use the type [DiscreteRV](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/discrete_rv.jl).
+Hint: To generate the draws from the distributions $F$ and $G$, you can use the `Categorical` distribution from the `Distributions` package.
 
 (career_ex2)=
 ### Exercise 2
@@ -357,15 +358,16 @@ wp = CareerWorkerProblem()
 function solve_wp(wp)
     v_init = fill(100.0, wp.N, wp.N)
     func(x) = update_bellman(wp, x)
-    v = compute_fixed_point(func, v_init, max_iter = 500, verbose = false)
+    sol = fixedpoint(func, v_init)
+    v = sol.zero
     optimal_policy = get_greedy(wp, v)
     return v, optimal_policy
 end
 
 v, optimal_policy = solve_wp(wp)
 
-F = DiscreteRV(wp.F_probs)
-G = DiscreteRV(wp.G_probs)
+F = Categorical(wp.F_probs)
+G = Categorical(wp.G_probs)
 
 function gen_path(T = 20)
     i = j = 1
@@ -375,9 +377,9 @@ function gen_path(T = 20)
     for t in 1:T
         # do nothing if stay put
         if optimal_policy[i, j] == 2 # new job
-            j = rand(G)[1]
+            j = rand(G)
         elseif optimal_policy[i, j] == 3 # new life
-            i, j = rand(F)[1], rand(G)[1]
+            i, j = rand(F), rand(G)
         end
         push!(theta_ind, i)
         push!(epsilon_ind, j)
@@ -512,4 +514,3 @@ You will see that the region for which the worker
 will stay put has grown because the distribution for $\epsilon$
 has become more concentrated around the mean, making high-paying jobs
 less realistic.
-
