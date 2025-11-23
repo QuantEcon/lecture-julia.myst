@@ -407,9 +407,8 @@ function T!(cp, V, out; ret_policy = false)
     z_idx = 1:length(z_vals)
 
     # value function when the shock index is z_i
-    vf = extrapolate(interpolate((asset_grid, z_idx), V, Gridded(Linear())),
-                     Interpolations.Flat())
-
+    vf = LinearInterpolation((asset_grid, z_idx), V;
+                             extrapolation_bc = Interpolations.Flat())
     opt_lb = 1e-8
 
     # solve for RHS of Bellman equation
@@ -445,8 +444,8 @@ function K!(cp, c, out)
     gam = R * beta
 
     # policy function when the shock index is z_i
-    cf = extrapolate(interpolate((asset_grid, z_idx), c, Gridded(Linear())),
-                     Interpolations.Flat())
+    cf = LinearInterpolation((asset_grid, z_idx), c;
+                             extrapolation_bc = Interpolations.Flat())
 
     # compute lower_bound for optimization
     opt_lb = 1e-8
@@ -745,8 +744,8 @@ function compute_asset_series(cp, T = 500_000; verbose = false)
     sol = fixedpoint(x -> K(cp, x), c_init)
     c = sol.zero
 
-    cf = extrapolate(interpolate((cp.asset_grid, z_idx), c, Gridded(Linear())),
-                     Interpolations.Flat())
+    cf = LinearInterpolation((cp.asset_grid, z_idx), c;
+                             extrapolation_bc = Interpolations.Flat())
 
     a = zeros(T + 1)
     z_seq = simulate(MarkovChain(Pi), T)
