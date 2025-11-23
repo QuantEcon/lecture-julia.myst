@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (tools_editors)=
@@ -240,8 +240,8 @@ The most important choice is the `--project` toggle which determines whether you
 
 To emphasize this point, this is an example of the `]st ` showing the global environment has only the bare minimum of packages installed.  With this workflow, all other packages are installed only when a given project is activated.
 ```{code-block} none
-(@v1.11) pkg> st
-Status `~/.julia/environments/v1.11/Project.toml`
+(@v1.12) pkg> st
+Status `~/.julia/environments/v1.12/Project.toml`
   [7073ff75] IJulia v1.30.6
   [14b8a8f1] PkgTemplates v0.7.56
   [295af30f] Revise v3.10.0

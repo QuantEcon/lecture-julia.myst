@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (getting_started)=
@@ -250,7 +250,7 @@ Recall that you can start this directly from the [command palette](command_palet
 This process will take several minutes to download and compile all of the files used by the lectures.
 
 ```{attention}
-If the cursor is instead `(@v1.11) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
+If the cursor is instead `(@v1.12) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
 
 One benefit of using the integrated REPL is that it will set important options for launching Julia (e.g. the number of threads) and activate the local project files (i.e. the `Project.toml` file in the notebooks directory) automatically.  If you use an external REPL, you will need to set these manually.  Here you would want to run the REPL with `julia --project --threads auto`  to tell Julia to set the number of threads equal to your local machine's number of cores, and to activate the existing project.  See [here](repl_main) for more details.
 ```
@@ -534,7 +534,7 @@ To do so, click on the `Choose Kernel` or `Select Another Kernel...` which may d
    :width: 80%
    ```
 
-Choose the `Julia`  kernel, rather than the `Jupyter Kernel...` to bypass the Python Jupyter setup.  If successful, you will see the kernel name as `Julia 1.11 channel` or something similar.
+Choose the `Julia`  kernel, rather than the `Jupyter Kernel...` to bypass the Python Jupyter setup.  If successful, you will see the kernel name as `Julia 1.12 channel` or something similar.
 
 With the kernel selected, you will be able to run cells in the VS Code UI with similar features to Jupyter Lab.  For example, below shows the results of play icon next to a code cell, which will `Execute Cell` and display the results inline.
 

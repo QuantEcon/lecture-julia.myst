@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11 
+  name: julia-1.12 
 ---
 
 (optimization_solver_packages)=
@@ -35,7 +35,7 @@ In this lecture we introduce a few of the Julia libraries that we've found parti
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using ForwardDiff, Optim, JuMP, Ipopt, Roots, NLsolve
+using ForwardDiff, Optim, Roots, NLsolve
 using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
 ```
 
@@ -191,7 +191,6 @@ If you then follow all of the same scalar operations above with a seeded dual nu
 Dual-numbers are at the heart of one of the AD packages we have already seen.
 
 ```{code-cell} julia
-using ForwardDiff
 h(x) = sin(x[1]) + x[1] * x[2] + sinh(x[1] * x[2]) # multivariate.
 x = [1.4 2.2]
 @show ForwardDiff.gradient(h, x) # use AD, seeds from x
@@ -217,7 +216,6 @@ squareroot(2.0)
 ```
 
 ```{code-cell} julia
-using ForwardDiff
 dsqrt(x) = ForwardDiff.derivative(squareroot, x)
 dsqrt(2.0)
 ```
@@ -232,7 +230,7 @@ At this point, Julia does not have a single consistently usable reverse-mode AD 
 
 - [ReverseDiff.jl](https://github.com/JuliaDiff/ReverseDiff.jl), a relatively dependable but limited package.  Not really intended for standard ML-pipline usage
 - [Zygote.jl](https://github.com/FluxML/Zygote.jl), which is flexible but buggy and less reliable.  In a slow process of deprecation, but often the primary alternative.
-- [Enzyme.jl](https://enzyme.mit.edu/julia/stable/), which is the most promising (and supports both forward and reverse mode).  However, the usage is more tailored for scientific machine learning and scalar functions rather than fast GPU kernels, and it relies on a innovative (but not fully stable) approach to compilation.
+- [Enzyme.jl](https://enzyme.mit.edu/julia/stable/), which is the most promising (and supports both forward and reverse mode).  However, as it works at a lower level of the compiler, it cannot support all Julia code.  In particular, it prefers in-place rather than "pure" functions.
 
 ## Optimization
 
@@ -256,7 +254,6 @@ maximization, so if a function is called `optimize` it will mean minimization.
 defaults to a robust hybrid optimization routine called [Brent's method](https://en.wikipedia.org/wiki/Brent%27s_method).
 
 ```{code-cell} julia
-using Optim
 using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
 
 result = optimize(x -> x^2, -2.0, 1.0)
@@ -273,18 +270,6 @@ result.minimum
 The first line is a logical OR between `converged(result)` and `error("...")`.
 
 If the convergence check passes, the logical sentence is true, and it will proceed to the next line; if not, it will throw the error.
-
-Or to maximize
-
-```{code-cell} julia
-f(x) = -x^2
-result = maximize(f, -2.0, 1.0)
-converged(result) || error("Failed to converge in $(iterations(result)) iterations")
-xmin = maximizer(result)
-fmax = maximum(result)
-```
-
-**Note:** Notice that we call `optimize` results using `result.minimizer`, and `maximize` results using `maximizer(result)`.
 
 #### Unconstrained Multivariate Optimization
 
@@ -369,7 +354,7 @@ The following is an example of calling a linear objective with a nonlinear const
 
 Here `Ipopt` stands for `Interior Point OPTimizer`, a [nonlinear solver](https://github.com/JuliaOpt/Ipopt.jl) in Julia
 
-```{code-cell} julia
+```{code-block} julia
 using JuMP, Ipopt
 # solve
 # max( x[1] + x[2] )
@@ -394,7 +379,7 @@ JuMP.register(m, :squareroot, 1, squareroot, autodiff = true)
 
 And this is an example of a quadratic objective
 
-```{code-cell} julia
+```{code-block} julia
 # solve
 # min (1-x)^2 + (100(y-x^2)^2)
 # st x + y >= 10
@@ -548,7 +533,7 @@ f(x, y) = 3.0 + x + y
 x = DualNumber(2.0, 1.0)  # x -> 2.0 + 1.0\epsilon
 y = DualNumber(3.0, 0.0)  # i.e. y = 3.0, no derivative
 
-# seeded calculates both teh function and the d/dx gradient!
+# seeded calculates both the function and the d/dx gradient!
 f(x, y)
 ```
 
