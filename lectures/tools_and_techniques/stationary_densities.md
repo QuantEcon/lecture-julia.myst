@@ -433,7 +433,11 @@ In fact much stronger convergence results are true (see, for example, [this pape
 
 ### Implementation
 
-We'll implement a lightweight helper `lae_est(p, X, ygrid)` that returns the right-hand side of {eq}`statd_lae1`, averaging the kernel $p$ over simulated draws `X` on a grid `ygrid`.
+We'll implement a function `lae_est(p, X, ygrid)` that returns the right-hand side of {eq}`statd_lae1`, averaging the kernel $p$ over simulated draws `X` on a grid `ygrid`
+
+* `p` is the stochastic kernel
+* `X` is a vector of draws of the previous-period state
+* `ygrid` is a vector of evaluation points
 
 The reshaping inside `lae_est` ensures the computation is vectorized, so passing an array for `ygrid` yields elementwise evaluation without manual loops.
 
@@ -488,7 +492,7 @@ for t in 1:(T - 1)
     k[:, t + 1] = s * A[:, t] .* k[:, t] .^ alpha + (1 - delta) .* k[:, t]
 end
 
-# Collect T look-ahead samples using this data, one for each date t
+# Store draws for each date t
 laes = [k[:, t] for t in T:-1:1]
 
 # Plot
@@ -1010,7 +1014,7 @@ for i in 1:4
         k[:, t + 1] = s * A[:, t] .* k[:, t] .^ alpha + (1 - delta) .* k[:, t]
     end
 
-    # Collect T look-ahead samples using this data, one for each date t
+    # Store draws for each date t
     laes = [k[:, t] for t in T:-1:1]
     ind = i
     for j in 1:T
