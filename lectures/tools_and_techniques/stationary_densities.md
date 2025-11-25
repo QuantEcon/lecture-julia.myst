@@ -432,9 +432,7 @@ In fact much stronger convergence results are true (see, for example, [this pape
 ```
 
 ### Implementation
-We'll implement a function lae_est(p, X, ygrid) that returns the right-hand side of {eq}statd_lae1, averaging the kernel $p$ over simulated draws X on a grid ygrid (see [here](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lae.jl) for the original implementation)
-
-The reshaping inside `lae_est` ensures the computation is vectorized, so passing an array for `ygrid` yields elementwise evaluation without manual loops.
+We'll implement a function `lae_est(p, X, ygrid)` that returns the right-hand side of {eq}`statd_lae1`, averaging the kernel $p$ over simulated draws `X` on a grid `ygrid` (see [here](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lae.jl) for the original implementation)
 
 ### Example
 
