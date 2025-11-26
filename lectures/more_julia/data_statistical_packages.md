@@ -18,7 +18,7 @@ kernelspec:
 </div>
 ```
 
-# Data and Statistics Packages
+# General, Data, and Statistics Packages
 
 ```{contents} Contents
 :depth: 2

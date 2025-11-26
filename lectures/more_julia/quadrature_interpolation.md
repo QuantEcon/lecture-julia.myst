@@ -9,7 +9,7 @@ kernelspec:
   name: julia-1.12
 ---
 
-(general_packages)=
+(quadrature_interpolation)=
 ```{raw} html
 <div id="qe-notebook-header" style="text-align:right;">
         <a href="https://quantecon.org/" title="quantecon.org">
@@ -18,7 +18,7 @@ kernelspec:
 </div>
 ```
 
-# General Purpose Packages
+# Quadrature and Interpolation
 
 ```{contents} Contents
 :depth: 2
@@ -34,9 +34,9 @@ As a result, most Julia libraries are written exclusively in Julia.
 
 Not only does this make the libraries more portable, it makes them much easier to dive into, read, learn from and modify.
 
-In this lecture we introduce a few of the Julia libraries that we've found particularly useful for quantitative work in economics.
+See {doc}`general, data, and statistical packages <../more_julia/data_statistical_packages>` and {doc}`optimization, solver, and related packages <../more_julia/optimization_solver_packages>` for more domain specific packages.
 
-Also see {doc}`data and statistical packages <../more_julia/data_statistical_packages>` and {doc}`optimization, solver, and related packages <../more_julia/optimization_solver_packages>` for more domain specific packages.
+In this section we will explore the related concepts of Quadrature and Interpolation.
 
 
 ```{code-cell} julia
@@ -280,20 +280,3 @@ interp_cubic = CubicSplineInterpolation((xs, ys), A)
 ```
 
 See [Interpolations.jl documentation](https://github.com/JuliaMath/Interpolations.jl#convenience-notation) for more details on options and settings.
-
-## Linear Algebra
-
-### Standard Library
-
-The standard library contains many useful routines for linear algebra, in
-addition to standard functions such as `det()`, `inv()`, `factorize()`, etc.
-
-Routines are available for
-
-* Cholesky factorization
-* LU decomposition
-* Singular value decomposition,
-* Schur factorization, etc.
-
-See [here](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/) for further details.
-
