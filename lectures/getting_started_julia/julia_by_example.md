@@ -930,6 +930,8 @@ until $| x^{n+1} - x^n|$ is below a tolerance
 
 For those impatient to use more advanced features of Julia, implement a version of Exercise 8(a) where `f_prime` is calculated with auto-differentiation.
 
+See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for more.
+
 ```{code-cell} julia
 using ForwardDiff
 

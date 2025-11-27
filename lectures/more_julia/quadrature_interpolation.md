@@ -26,17 +26,7 @@ kernelspec:
 
 ## Overview
 
-Julia has both a large number of useful, well written libraries and many incomplete poorly maintained proofs of concept.
-
-A major advantage of Julia libraries is that, because Julia itself is sufficiently fast, there is less need to mix in low level languages like C and Fortran.
-
-As a result, most Julia libraries are written exclusively in Julia.
-
-Not only does this make the libraries more portable, it makes them much easier to dive into, read, learn from and modify.
-
-See {doc}`general, data, and statistical packages <../more_julia/data_statistical_packages>` and {doc}`optimization, solver, and related packages <../more_julia/optimization_solver_packages>` for more domain specific packages.
-
-In this section we will explore the related concepts of Quadrature and Interpolation.
+In this section we will explore the related concepts of quadrature, interpolation, and discretization of continuous functions and distributions.
 
 
 ```{code-cell} julia
@@ -133,11 +123,11 @@ Through a change of variables this can be used to calculate expectations of $N(\
 
 ```{code-cell} julia
 function gauss_hermite_normal(N::Integer, mu::Real, sigma::Real)
-  s, w = FastGaussQuadrature.gausshermite(N; normalize = true)
+    s, w = FastGaussQuadrature.gausshermite(N; normalize = true)
 
-  # X ~ N(mu, sigma^2), X \sim mu + sigma N(0,1) we transform the standard-normal nodes
-  x = mu .+ sigma .* s
-  return x, w
+    # X ~ N(mu, sigma^2), X \sim mu + sigma N(0,1) we transform the standard-normal nodes
+    x = mu .+ sigma .* s
+    return x, w
 end
 
 N = 32
@@ -145,7 +135,7 @@ x, w = gauss_hermite_normal(N, 1.0, 0.1)
 x2, w2 = gauss_hermite_normal(N, 0.0, 0.05)
 f(x) = x^2
 @show dot(w, f.(x)), mean(f.(rand(Normal(1.0, 0.1), 1000)))
-@show dot(w2, f.(x2)), mean(f.(rand(Normal(0.0, 0.05), 1000))); 
+@show dot(w2, f.(x2)), mean(f.(rand(Normal(0.0, 0.05), 1000)));
 ```
 
 ## Gauss Laguerre
@@ -175,17 +165,17 @@ Using a change of variable and Gauss Laguerre quadrature
 
 ```{code-cell} julia
 function gauss_laguerre_gamma(N, alpha, theta)
-  # For Gamma(shape=alpha, scale=theta) with pdf
-  #   x^{alpha-1} e^{-x/theta} / (Gamma(alpha) theta^alpha)
-  # change variable y = x/theta -> x = theta*y, dx = theta dy
-  # E[f(X)] = 1/Gamma(alpha) * ∫_0^∞ f(theta*y) y^{alpha-1} e^{-y} dy
-  # FastGaussQuadrature.gausslaguerre(N, a) returns nodes/weights for
-  # ∫_0^∞ g(y) y^a e^{-y} dy, so pass a = alpha - 1.
+    # For Gamma(shape=alpha, scale=theta) with pdf
+    #   x^{alpha-1} e^{-x/theta} / (Gamma(alpha) theta^alpha)
+    # change variable y = x/theta -> x = theta*y, dx = theta dy
+    # E[f(X)] = 1/Gamma(alpha) * ∫_0^∞ f(theta*y) y^{alpha-1} e^{-y} dy
+    # FastGaussQuadrature.gausslaguerre(N, a) returns nodes/weights for
+    # ∫_0^∞ g(y) y^a e^{-y} dy, so pass a = alpha - 1.
 
-  s, w = FastGaussQuadrature.gausslaguerre(N, alpha - 1)
-  x = theta .* s
-  w = w ./ SpecialFunctions.gamma(alpha)
-  return x, w
+    s, w = FastGaussQuadrature.gausslaguerre(N, alpha - 1)
+    x = theta .* s
+    w = w ./ SpecialFunctions.gamma(alpha)
+    return x, w
 end
 
 N = 256
@@ -250,7 +240,7 @@ y = log.(x) # corresponding y points
 
 interp = LinearInterpolation(x, y)
 
-xf = log.(range(1,exp(4), length = 100)) .+ 1 # finer grid
+xf = log.(range(1, exp(4), length = 100)) .+ 1 # finer grid
 
 plot(xf, interp.(xf), label = "linear")
 scatter!(x, y, label = "sampled data", markersize = 4, size = (800, 400))
@@ -280,3 +270,161 @@ interp_cubic = CubicSplineInterpolation((xs, ys), A)
 ```
 
 See [Interpolations.jl documentation](https://github.com/JuliaMath/Interpolations.jl#convenience-notation) for more details on options and settings.
+
+
+## Discretization of Stochastic Processes
+
+In many cases a stochastic process is defined on a continuous space, but numerical algorithms are ideal if the space is discretized.
+
+For a Markov process in discrete time, this leads to a Markov chain.  See {doc}`Finite Markov Chains <../introduction_dynamics/finite_markov>` for more details.
+### Discretizing an AR(1) Process
+
+Markov chains are routinely generated as discrete approximations to {doc}`AR(1) processes <../introduction_dynamics/ar1_processes>` of the form
+
+$$
+X_{t+1} = \rho X_t + \mu + \sigma W_{t+1}
+$$
+
+Here $W_{t+1}$ is assumed to be i.i.d. and $N(0, 1)$.
+
+When $|\rho| < 1$, the process is stationary with unconditional mean $\mu_X$ and standard deviation $\sigma_X$:
+
+$$
+\mu_X = \frac{\mu}{1-\rho}, \quad \sigma_X = \frac{\sigma}{\sqrt{1 - \rho^2}}
+$$
+
+The goal of a discretization is to find a set of discrete states, $\{x_1, \ldots, x_N\}$, and a stochastic transition matrix $P$ which best approximates the continuous dynamics.
+
+Typically, these approximations adapt the grid of states to the variance of the stationary distribution to ensure sufficient coverage. This is usually parameterized by choosing $m > 0$ standard deviations on both sides of the stationary distribution to cover.
+
+### Tauchen's Method (1986)
+
+Tauchen's method {cite}`Tauchen1986` is the most common method for approximating this process with a finite state Markov chain.
+
+Standard implementations often simplify the calculation by discretizing the zero-mean process $Z_t = X_t - \mu_X$ first, and then shifting the resulting grid.  This is equivalent due to the linearity of the AR(1) process.
+
+The zero-mean dynamics are:
+
+$$
+Z_{t+1} = \rho Z_t + \sigma W_{t+1}
+$$
+
+The grid for $Z$, denoted $z := \{z_1, \ldots, z_N\}$, is constructed to cover $[-m \sigma_X, + m \sigma_X]$. The points are evenly spaced with step size $d$:
+
+$$
+d = \frac{z_N - z_1}{N-1}
+$$
+
+We associate each state $z_j$ with the interval $[z_j - d/2, z_j + d/2]$. To construct the transition matrix $P$, we calculate the probability of moving from $z_n$ to the interval associated with $z_j$.
+
+Let $F$ be the CDF of the standard normal distribution.
+
+Since $Z_{t+1} | Z_t = z_n \sim \mathcal{N}(\rho z_n, \sigma^2)$, we standardize with $\sigma$.
+
+1. For interior points $j = 2, \ldots, N-1$:
+
+$$
+P_{nj} \approx \mathbb{P}(z_j - d/2 \leq Z_{t+1} \leq z_j + d/2\,|\,Z_t = z_n) = F\left(\frac{z_j + d/2 - \rho z_n}{\sigma}\right) - F\left(\frac{z_j - d/2 - \rho z_n}{\sigma}\right)
+$$
+
+2. For the left boundary $j = 1$:
+
+$$
+P_{n1} \approx \mathbb{P}(Z_{t+1} \leq z_1 + d/2\,|\,Z_t = z_n) = F\left(\frac{z_1 + d/2 - \rho z_n}{\sigma}\right)
+$$
+
+3. For the right boundary $j = N$:
+
+$$
+P_{nN} \approx \mathbb{P}(Z_{t+1} \geq z_N - d/2\,|\,Z_t = z_n) = 1 - F\left(\frac{z_N - d/2 - \rho z_n}{\sigma}\right)
+$$
+
+Finally, the state vector for the original process $X$ is recovered by shifting the grid: $x_n = z_n + \mu_X$.
+
+The following code implements this procedure using Julia's vectorization syntax.
+
+```{code-cell} julia
+function tauchen(N, rho, sigma, mu, m = 3)
+    @assert abs(rho) < 1
+    mu_X = mu / (1 - rho)
+    sigma_X = sigma / sqrt(1 - rho^2)
+
+    # zero-centered grid and midpoints as cutoffs
+    z = range(-m*sigma_X, m*sigma_X, length = N)
+    d = step(z)
+    midpoints = (z[1:(end - 1)] .+ d/2)'
+    means = rho .* z
+    Z_scores = (midpoints .- means) ./ sigma
+
+    # Construct P: [Left Tail, Interval Diffs, Right Tail]
+    F = cdf.(Normal(), Z_scores)
+    P = [F[:, 1] diff(F, dims = 2) (1 .- F[:, end])]
+
+    return P, z .+ mu_X # return shifted values
+end
+```
+
+As an example, consider the AR(1) process with parameters $\rho = 0.9$, $\mu = 0.2$, and $\sigma = 0.1$.
+
+We can check that all rows of the transition matrix sum to one, and inspect the transition probabilities from a particular state.
+
+```{code-cell} julia
+rho = 0.9
+mu = 0.2
+sigma = 0.1
+N = 5
+P, x = tauchen(N, rho, sigma, mu)
+@show x
+println("Row sums of P: ", sum(P, dims = 2))
+
+state_index = 3
+println("Transition probabilities from state x = $(x[state_index]):")
+for j in 1:N
+    println("  to x = $(x[j]): P = $(P[state_index, j])")
+end
+```
+
+---
+tags: [remove-cell]
+---
+```{code-cell} julia
+# using Test, QuantEcon
+# @testset begin
+#   # Use same parameters
+#   mc_qe = QuantEcon.tauchen(N, rho, sigma, mu)
+#   P_qe = mc_qe.p
+#   x_qe = mc_qe.state_values
+#   # Check they match up to numerical precision
+#   @test maximum(abs.(P - P_qe)) < 1e-10
+#   @test maximum(abs.(x - x_qe)) < 1e-10
+# end
+```
+
+
+Note that the majority of the mass is concentrated around the diagonal, reflecting the high persistence of the AR(1) process with $\rho = 0.9$.
+
+We can visualize these sorts of transition matrices as a heatmap to get a better sense of the structure.
+
+Adding more states and an even more persistent process to show  improves show the approximation of the continuous process.
+
+```{code-cell} julia
+N = 50
+rho = 0.98
+mu = 0.1
+P, x = tauchen(N, rho, sigma, mu)
+
+heatmap(x, x, P,
+    xlabel = "To State", ylabel = "From State",
+    title = "Transition Matrix Heatmap", colorbar_title = "Probability")
+```
+
+Note that the transition matrix is highly concentrated close to the diagonal.
+
+The exception are those close to the first and last rows, which are at the boundaries of the truncated state space.
+
+```{code-cell} julia
+threshold = 1E-6
+num_nonzero = sum(P .> threshold)
+println("Proportion of transitions > $threshold: ", num_nonzero / (N^2))
+```
+
