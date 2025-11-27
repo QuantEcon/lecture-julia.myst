@@ -137,7 +137,7 @@ and use Monte Carlo integration, or discretize.
 
 Here we will use [Gauss-Jacobi Quadrature](https://en.wikipedia.org/wiki/Gauss–Jacobi_quadrature) which is ideal for expectations over beta.
 
-See {doc}`general packages <../more_julia/general_packages>` for details on the derivation in this particular case.
+See {doc}`quadrature and interpolation <../more_julia/quadrature_interpolation>` for details on the derivation in this particular case.
 
 ```{code-cell} julia
 function gauss_jacobi(F::Beta, N)
