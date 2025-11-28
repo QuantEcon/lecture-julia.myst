@@ -405,10 +405,10 @@ Note that the majority of the mass is concentrated around the diagonal, reflecti
 
 We can visualize these sorts of transition matrices as a heatmap to get a better sense of the structure.
 
-Adding more states and an even more persistent process to show  improves show the approximation of the continuous process.
+Below we add more states to make it closer to the continuous process and increase the persistence.
 
 ```{code-cell} julia
-N = 50
+N = 100
 rho = 0.98
 mu = 0.1
 (;P, x) = tauchen(N, rho, sigma, mu)
@@ -421,6 +421,8 @@ heatmap(x, x, P,
 Note that the transition matrix is highly concentrated close to the diagonal.
 
 The exception are those close to the first and last rows, which are at the boundaries of the truncated state space.
+
+Below we see that the majority of the transition probabilities are close to zero.
 
 ```{code-cell} julia
 threshold = 1E-6
