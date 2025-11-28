@@ -612,26 +612,59 @@ These actions will also apply, separately, to any branches and Pull Requests (PR
 
 Separate testing and CI is one of the primary motivations for creating a branch when collaborating on a project.
 
-To demonstrate this
+To demonstrate this, we can first create a new branch on our local machine.
 
-* Create a new branch on VS Code called `my-feature` (i.e., click on the `main` branch at the bottom of the screen to enter the branch selection, then choose to make a new one).
+To do so, click on the `main` branch at the bottom of the VS Code window to open the branch selection menu.
 
-* In `MyProject.jl`, change the function in `foo` from `sin(x)` to `cos(x)`.  Note that this will change the result of `foo(0)`.
+It should look something like the following
+
+```{figure} /_static/figures/ci_5_1.png
+:width: 100%
+```
+
+With "Create new branch..." name a branch `my-feature` and ensure it is based off of the `main` branch.  The change in the branch in the bottom-left of the VS Code window
+
+In `MyProject.jl`, change the default value of `mu` to `0.0`.  i.e.,
+
+```{code-block} julia
+function norm_pdf_val(x, mu = 0.0, sigma = 2.0)
+    d = Normal(mu, sigma)
+    return pdf(d, x)
+end
+```
+
+Then we will push this change to github server.
+
 
 ```{figure} /_static/figures/ci_5.png
 :width: 100%
 ```
-* Commit this change to your local branch with the commit message.
-* Then, imagine that rather than running `] test` - which would have shown this error given our previous unit test, you pushed it to the server.  As always, do this by selecting the publish arrow next to `my-feature` at the bottom of the screen.  You can create a Pull Request in that GUI, or just go back to the webpage where it asked you if you wish to "Compare and Pull Request".
 
+Type in a Commit message such as `Modified default mu`, and "Commit" and "Publish Branch"
 
-After you create the pull request, you will see it in available on the web.  After a few minutes, the unit test will execute and you will see an output such as 
+```{note}
+Of course, one would typically run `] test` locally before pushing changes to the server to ensure that your new branch didn't break any existing code
+```
+
+After publishing this to the server, go back to the GitHub webpage for the repository and refresh if necessary.  The screen will now look something like
+
 
 ```{figure} /_static/figures/ci_6.png
 :width: 100%
 ```
 
-Unlike in the previous example, the pull request will have a red X indicating that one of the actions failed.
+* Click on the "Compare & pull request" button to create a new PR from the `my-feature` branch to the `main` branch, add in an optional description, and then "Create pull request".
+
+```{figure} /_static/figures/ci_6_2.png
+:width: 100%
+```
+
+After the PR is created, it will automatically trigger the CI to run the tests on the branch.  Unlike in the previous example, the pull request will have a red X indicating that one of the actions failed.
+
+```{figure} /_static/figures/ci_6_3.png
+:width: 100%
+```
+
 
 If this were done by a collaborator, you could go to the "Files Changed" tab, see the code modifications for commits in this PR, and then add a comment on these inline for discussion (using the `@` to tag an individual so they are emailed)
 
@@ -639,89 +672,105 @@ If this were done by a collaborator, you could go to the "Files Changed" tab, se
 :width: 100%
 ```
 
-At that point, you or your collaborators can easily switch to the branch associated with the PR (i.e. `my-feature` in the above screenshot), make changes, and test them.
+At that point, you or your collaborators can easily switch to the branch associated with the PR (i.e. `my-feature` in the above screenshot), make changes, remember to run `] test` locally to ensure everything is working, and then Commit the change and sync to the server.
 
+```{figure} /_static/figures/ci_7_2.png
+:width: 100%
+```
 
-If you go back to VS Code and change the `cos` back to `sin` and commit with a message (e.g. `Fixed bug`) then the PR will rerun the CI.
+If you go back to the webpage of the PR, you will see that the new commit has triggered the CI to run again and it is now passing the tests.
 
-In this case, you will see that while the `Modified foo` broke the CI, the `Fixed bug` commit passed, and has a green checkmark after it completes its run.
 ```{figure} /_static/figures/ci_8.png
 :width: 100%
 ```
 
-Furthermore, since the previous comment was made on a line of code that was changed after the comment was made, it says the comment is "Outdated".  When collaborating, the "Resolve conversation" option would let you close these sorts of issues as they are found.
-
-Reselect your `main` branch in VS Code to make further changes there rather than on the `my-feature` branch.
+At this point you could "Merge the pull request" and delete the branch.  Ensure you reselect your `main` branch in VS Code to make further changes there rather than on the `my-feature` branch.
 
 
 ### Code Coverage
 
 At this point, the `Codecov` badge in the README likely says `codecov | unknown` since the repository has not been added there.
 
-Click on that badge, which should take you to the `Codecov` website where you can login if required, and select particular commits or PRs.
+Click on that badge, which should take you to the `Codecov` website where you can login with GitHub (and authorize access if necessary).
 
-For example, on our previous PR we can see that it detected the change from the `cos` back to `sin` and that the coverage is 100% (i.e., every line of code in the package is executed by a test)
+If you do not see your repository listed, you may be able to search for it.
 
 ```{figure} /_static/figures/codecov_1.png
 :width: 100%
 ```
 
+Choose "Configure" and use GitHub Actions.  Scroll down to Step 3 to see a token (blurred out below)
 
-To see the impact of additional code in the package, go back to your `main` branch, add in a new function such as 
-```{code-block} julia
-function bar()
-    return 10
-end
-```
-and then commit and push to the server.
-
-After the CI executes, you will notice that the unit tests still pass despite the additional function.
-
-However, if you click on the code coverage badge again and look at the main branch (or that particular commit) you will see that the code coverage has decreased substantially.
 
 ```{figure} /_static/figures/codecov_2.png
 :width: 100%
 ```
 
-Furthermore, it highlights in red the new code in this commit which led to the lowered code coverage.  In this case, the `bar` function had nothing in `runtests.jl` that was calling it.  This can help you ensure that all of the code paths (not just entire functions) are called in one test or another in your unit tests.
 
-### Jupyter Workflow
+Click on the "add token as repository secret" link which will bring you to the correct place in the github webpage to type in the `CODECOV_TOKEN` and associated value.
 
-We can also work with the package, and activated project file, from a Jupyter notebook for analysis and exploration.
 
-In general, Jupyter should be used sparingly as it does not support a tight workflow for collaboration since it does not have an equivalent for the CI, and changes to the Jupyter notebook cannot be discussed inline and analyzed using the workflow above.
-
-However, if source code is fairly stable and you are working on just the analysis and visualization of results (where introducing bugs is unlikely), it is a very useful tool.
-
-Assuming that we have the `IJulia` package and conda installed, as in the basic lecture note setup, if we start a terminal in VS Code we will be able to start Jupyter in the right directory.
-
-- Create a new terminal for your operating system by choosing the `+` button on the terminals pane, then type `jupyter lab` to start Jupyter, then open the webpage
-
-```{figure} /_static/figures/vscode_jupyter_1.png
+```{figure} /_static/figures/codecov_3.png
 :width: 100%
 ```
 
-- Create a new notebook in Jupyter in the main folder (or a subfolder) and add code to use `MyProject` and call `foo`.
+After saving the token, the github repository will show something like
 
-```{figure} /_static/figures/vscode_jupyter_2.png
+```{figure} /_static/figures/codecov_4.png
 :width: 100%
 ```
 
-Crucially, note that the `MyProject` package and anything else in the `Project.toml` file is available since Jupyter automatically activates the project file local to jupyter notebooks.
+To trigger the code coverage, we can now make a small change directly to the `main` branch which adds a function without any associated tests.
 
-Be sure to add `.ipynb_checkpoints/*` to your `.gitignore` file, so that's not checked in.
+Go back to VS Code, and ensure you are in the `main` rather than `my-feature` branch.  Then change the `src/MyProject.jl` file to add in a new function
+
+```{code-block} julia
+module MyProject
+
+using Distributions
+
+function norm_pdf_val(x, mu = 1.0, sigma = 2.0)
+    d = Normal(mu, sigma)
+    return pdf(d, x)
+end
+
+function norm_cdf_val(x, mu = 1.0, sigma = 2.0)
+    d = Normal(mu, sigma)
+    return cdf(d, x)
+end
+
+export norm_pdf_val, norm_cdf_val
+
+end
+```
+
+Add a Commit message such as "Added cdf support" and Sync Changes
 
 
-While you would typically modify the Jupyter notebooks after the core code is stable, with `Revise.jl` it is possible to have it automatically load changes to the package itself.
-
-To do this
-- Execute `using Revise` prior to the `using MyProject` (note that VS Code's REPL does the `using Revise` automatically, if it is available).
-- Then run `foo(0)` to see the old code
-- Then modify the text of the package itself, such as changing the string in the `foo` function
-- Run `foo(0)` again to see the change.
+```{figure} /_static/figures/codecov_5.png
+:width: 100%
+```
 
 
-```{figure} /_static/figures/vscode_jupyter_3.png
+After the CI executes, you will notice that the unit tests still pass despite the additional function.
+
+However, if you click on the code coverage badge again and look at the main branch (or that particular commit) you will see that the code coverage has only 50% coverage total.
+
+If you click on the file itself, it highlights which lines were executed (in green) and which were not (in red).
+
+```{figure} /_static/figures/codecov_6.png
+:width: 100%
+```
+
+To fix this issue, the unit testing file can be modified to add an additional test as in
+
+```{figure} /_static/figures/codecov_7.png
+:width: 100%
+```
+
+After pushing this to the server and waiting for CI to execute the unit test and the code coverage,  click again on the codecov badge (which will eventually say `codecov | 100%` in green) to see that now all lines are covered.
+
+```{figure} /_static/figures/codecov_8.png
 :width: 100%
 ```
 
@@ -823,6 +872,36 @@ By using `<Shift+Enter>` in VS Code or Jupyter on the testset, you will execute 
 
 To learn more about test sets, see [the docs](https://docs.julialang.org/en/v1/stdlib/Test/index.html#Working-with-Test-Sets-1/).
 
+### Formatting
+
+Most modern programming languages have software to automatically format code to a consistent style.  This is useful for readability, but it also ensure that the diffs in version control are not polluted by changes in whitespace or other formatting.
+
+For Python, common choices are [black](https://black.readthedocs.io/en/stable/) or the lightning fast [Ruff](https://github.com/astral-sh/ruff?tab=readme-ov-file#ruff) - which is black compatible.
+
+For Julia, the primary choice is [JuliaFormatter.jl](https://github.com/juliautils/JuliaFormatter.jl) which you would have installed in the global environment above with `] add JuliaFormatter`.  Ensure this is at the global rather than project level since it is a tool run by VS Code rather than within the project itself.
+
+In the generated package above, you will see a `.JuliaFormatter.toml` file which contains only a line to use `style = "sciml"`.  See [here](https://domluna.github.io/JuliaFormatter.jl/stable/config/) for more information on configuration options.
+
+To use the formatter in VS Code with the Julia Extension, open up the `src/MyProject.jl` file, and then use the command palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac) to select `Format Document`.  Choose `Julia (default)` as in
+
+```{figure} /_static/figures/julia_formatter_1.png
+:width: 100%
+```
+
+Next, in the source file modify the code to have inconsistent spacing, such as
+
+```{figure} /_static/figures/julia_formatter_2.png
+:width: 100%
+```
+
+Then again use the `> Format Document` command, which will reformat the code to be consistent with the style specified in the `.JuliaFormatter.toml` file.
+
+Optionally, you can:
+
+*  Set the formatter to run automatically on save by going to the settings (`Ctrl+,` or `Cmd+,` on Mac), searching for `format on save`, and enabling the `Editor: Format On Save` option.
+*  Add in a Github action to automatically check formatting on pushes and PRs.  See [here](https://github.com/julia-actions/julia-format)
+
+
 ## Exercises
 
 ### Exercise 1
@@ -859,12 +938,3 @@ For the tests, you should have at the very minimum
 And anything else you can think of.  You should be able to run `] test` for the project to check that the test-suite is running, and then ensure that it is running automatically on GitHub Actions CI.
 
 Push a commit to the repository which breaks one of the tests and see what the GitHub Actions CI reports after running the build.
-
-<!-- 
-# TODO: I think this is out of date, but mabye there aer better ones now?
-
-### Exercise 2
-
-Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watch?v=QVmU29rCjaA) from Chris Rackauckas.  The demonstration goes through many of the same concepts as this lecture, but with more background in test-driven development and providing more details for open-source projects.. 
--->
-
