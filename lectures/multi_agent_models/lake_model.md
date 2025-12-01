@@ -197,7 +197,7 @@ Here's the code:
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics, Distributions
-using NLsolve, Plots, QuantEcon, Roots, Random
+using NLsolve, Plots, Roots, Random
 ```
 
 ```{code-cell} julia
@@ -227,7 +227,7 @@ end
 ```
 
 ```{code-cell} julia
-function LakeModel(; lambda = 0.283, alpha = 0.013, b = 0.0124, d = 0.00822)
+function lake_model(; lambda = 0.283, alpha = 0.013, b = 0.0124, d = 0.00822)
     # calculate transition matrices
     g = b - d
     A = [(1 - lambda) * (1 - d)+b (1 - d) * alpha+b
@@ -243,7 +243,7 @@ end
 Let's observe these matrices for the baseline model
 
 ```{code-cell} julia
-lm = LakeModel()
+lm = lake_model()
 lm.A
 ```
 
@@ -254,7 +254,7 @@ lm.A_hat
 And a revised model
 
 ```{code-cell} julia
-lm = LakeModel(; alpha = 0.2)
+lm = lake_model(; alpha = 0.2)
 lm.A
 ```
 
@@ -277,7 +277,7 @@ end
 Let's run a simulation under the default parameters (see above) starting from $X_0 = (12, 138)$
 
 ```{code-cell} julia
-lm = LakeModel()
+lm = lake_model()
 N_0 = 150      # population
 e_0 = 0.92     # initial employment rate
 u_0 = 1 - e_0  # initial unemployment rate
@@ -329,7 +329,7 @@ We also have $x_t \to \bar x$ as $t \to \infty$ provided that the remaining eige
 This is the case for our default parameters:
 
 ```{code-cell} julia
-lm = LakeModel()
+lm = lake_model()
 e, f = eigvals(lm.A_hat)
 abs(e), abs(f)
 ```
@@ -347,7 +347,7 @@ end
 Let's look at the convergence of the unemployment and employment rate to steady state levels (dashed red line)
 
 ```{code-cell} julia
-lm = LakeModel()
+lm = lake_model()
 e_0 = 0.92 # initial employment rate
 u_0 = 1 - e_0 # initial unemployment rate
 T = 50 # simulation length
@@ -462,13 +462,29 @@ Thus, the percentages of time that an  infinitely lived worker  spends employed 
 
 How long does it take for time series sample averages to converge to cross sectional averages?
 
-We can use [QuantEcon.jl's](http://quantecon.org/quantecon-jl)
-MarkovChain type to investigate this.
+We can use a simple simulator to generate sample paths.
+
+```{code-cell} julia
+function simulate_markov_chain(P, X_0, T)
+    N = size(P, 1)
+    num_chains = length(X_0)
+    P_dist = [Categorical(P[i, :]) for i in 1:N]
+    X = zeros(Int, num_chains, T + 1)
+    X[:, 1] .= X_0
+    for t in 1:T
+        for n in 1:num_chains
+            X[n, t+1] = rand(P_dist[X[n, t]])
+        end
+    end
+    return X
+end
+```
+
 
 Let's plot the path of the sample averages over 5,000 periods
 
 ```{code-cell} julia
-lm = LakeModel(; d = 0, b = 0)
+lm = lake_model(; d = 0, b = 0)
 T = 5000                        # Simulation length
 
 (; alpha, lambda) = lm
@@ -479,9 +495,10 @@ P = [(1-lambda) lambda
 ```{code-cell} julia
 Random.seed!(42)
 u_bar, e_bar = lm.x_bar
-mc = MarkovChain(P, [0; 1])     # 0=unemployed, 1=employed
+X = simulate_markov_chain(P, [2], T)
+states = [0, 1]
+s_path = states[X[1, 2:end]]  # map indices to 0/1 labels
 
-s_path = simulate(mc, T; init = 2)
 s_bar_e = cumsum(s_path) ./ (1:T)
 s_bar_u = 1 .- s_bar_e
 s_bars = [s_bar_u s_bar_e]
@@ -618,19 +635,19 @@ We will make use of (with some tweaks) the code we wrote in the {doc}`McCall mod
 ```{code-cell} julia
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
                             tol = 1e-5, iter = 2_000)
-    (; alpha, beta, sigma, c, gamma, w, w_probs, u) = mcm
-
-    # pre-calculate utilities
-    u_w = u.(w, sigma)
-    u_c = u(c, sigma)
-
+    (; alpha, beta, sigma, c, gamma, w, u, w_probs) = mcm
+    
+    @assert c > 0.0
+    u_w = mcm.u.(w, sigma)
+    u_c = mcm.u(c, sigma)
     # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
     function T(x)
         V = x[1:(end - 1)]
         U = x[end]
-        return [u_w + beta * ((1 - alpha) * V .+ alpha * U);
-                u_c + beta * (1 - gamma) * U +
-                beta * gamma * dot(w_probs, max.(U, V))]
+        V_p = u_w + beta * ((1 - alpha) * V .+ alpha * U)
+        U_p = u_c + beta * (1 - gamma) * U +
+              beta * gamma * sum(max(U, V[i]) * w_probs[i] for i in 1:length(w))
+        return [V_p; U_p]
     end
 
     # value function iteration
@@ -640,11 +657,11 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
     U = xstar[end]
 
     # compute the reservation wage
-    w_barindex = searchsortedfirst(V .- U, 0.0)
-    if w_barindex >= length(w) # if this is true, you never want to accept
+    wbarindex = searchsortedfirst(V .- U, 0.0)
+    if wbarindex >= length(w) # if this is true, you never want to accept
         w_bar = Inf
     else
-        w_bar = w[w_barindex] # otherwise, return the number
+        w_bar = w[wbarindex] # otherwise, return the number
     end
 
     # return a NamedTuple, so we can select values by name
@@ -655,10 +672,10 @@ end
 And the McCall object
 
 ```{code-cell} julia
-function mcall_model(; alpha, beta, gamma, c, sigma, w, w_probs,
-                     u = (c,
-                          sigma) -> c > 0 ? (c^(1 - sigma) - 1) / (1 - sigma) :
-                                    -10e-6)
+function mccall_model(; alpha, beta, gamma, c, sigma, w, w_probs,
+                      u = (c,
+                           sigma) -> c > 0 ? (c^(1 - sigma) - 1) / (1 - sigma) :
+                                     -10e-6)
     return (; alpha, beta, gamma, c, sigma, u, w, w_probs)
 end
 ```
@@ -669,31 +686,30 @@ function of the unemployment compensation rate
 ```{code-cell} julia
 function compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
                                     alpha, w_pretax)
-    mcm = mcall_model(; alpha, beta, gamma, sigma, w_probs,
-                      c = c_pretax - tau, # post-tax compensation
-                      w = w_pretax .- tau)
+    mcm = mccall_model(; alpha, beta, gamma, sigma, w_probs, c = c_pretax - tau,
+                       w = w_pretax .- tau)
 
     (; V, U, w_bar) = solve_mccall_model(mcm)
     accept_wage = w_pretax .- tau .> w_bar
 
     # sum up proportion accepting the wages
-    lambda = gamma * dot(w_probs, accept_wage)
-    return w_bar, lambda, V, U
+    lambda = gamma * dot(mcm.p, accept_wage)
+    return w_bar, lambda, V, U, mcm.p
 end
 
 function compute_steady_state_quantities(c_pretax, tau; w_probs, sigma, gamma,
                                          beta, alpha, w_pretax, b, d)
-    w_bar, lambda, V,
-    U = compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
+    w_bar, lambda, V, U,
+    p = compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
                                    alpha, w_pretax)
 
     # compute steady state employment and unemployment rates
-    lm = LakeModel(; lambda, alpha, b, d)
+    lm = lake_model(; lambda, alpha, b, d)
     u_rate, e_rate = lm.x_bar
 
     # compute steady state welfare
     accept_wage = w_pretax .- tau .> w_bar
-    w = (dot(w_probs, V .* accept_wage)) / dot(w_probs, accept_wage)
+    w = (dot(p, V .* accept_wage)) / dot(p, accept_wage)
     welfare = e_rate .* w + u_rate .* U
 
     return u_rate, e_rate, welfare
@@ -703,10 +719,8 @@ function find_balanced_budget_tax(c_pretax; w_probs, sigma, gamma, beta, alpha,
                                   w_pretax, b, d)
     function steady_state_budget(t)
         u_rate, e_rate,
-        w = compute_steady_state_quantities(c_pretax, t;
-                                            w_probs, sigma,
-                                            gamma, beta, alpha,
-                                            w_pretax, b, d)
+        w = compute_steady_state_quantities(c_pretax, t; w_probs, sigma, gamma,
+                                            beta, alpha, w_pretax, b, d)
         return t - u_rate * c_pretax
     end
 
@@ -729,12 +743,8 @@ function calculate_equilibriums(c_pretax; w_probs, sigma, gamma, beta, alpha,
         tau = find_balanced_budget_tax(c_pre; w_probs, sigma, gamma, beta,
                                        alpha, w_pretax, b, d)
         u_rate, e_rate,
-        welfare = compute_steady_state_quantities(c_pre, tau;
-                                                  w_probs,
-                                                  sigma,
-                                                  gamma, beta,
-                                                  alpha,
-                                                  w_pretax,
+        welfare = compute_steady_state_quantities(c_pre, tau; w_probs, sigma,
+                                                  gamma, beta, alpha, w_pretax,
                                                   b, d)
         tau_vec[i] = tau
         u_vec[i] = u_rate
@@ -768,10 +778,8 @@ w_pretax = (w_pretax[1:(end - 1)] + w_pretax[2:end]) / 2
 # levels of unemployment insurance we wish to study
 c_pretax = range(5, 140, length = 60)
 tau_vec, u_vec, e_vec,
-welfare_vec = calculate_equilibriums(c_pretax; w_probs,
-                                     sigma, gamma, beta,
-                                     alpha, w_pretax, b,
-                                     d)
+welfare_vec = calculate_equilibriums(c_pretax; w_probs, sigma, gamma, beta,
+                                     alpha, w_pretax, b, d)
 
 # plots
 plt_unemp = plot(title = "Unemployment", c_pretax, u_vec, color = :blue,
@@ -846,7 +854,7 @@ We begin by constructing an object containing the default parameters and assigni
 steady state values to x0
 
 ```{code-cell} julia
-lm = LakeModel()
+lm = lake_model()
 x0 = lm.x_bar
 println("Initial Steady State: $x0")
 ```
@@ -861,7 +869,7 @@ T = 50
 New legislation changes $\lambda$ to $0.2$
 
 ```{code-cell} julia
-lm = LakeModel(; lambda = 0.2)
+lm = lake_model(; lambda = 0.2)
 X_path = simulate_linear(lm.A, x0 * N0, T - 1)
 x_path = simulate_linear(lm.A_hat, x0, T - 1)
 u_bar, e_bar = lm.x_bar
@@ -934,7 +942,7 @@ Let's start off at the baseline parameterization and record the steady
 state
 
 ```{code-cell} julia
-lm = LakeModel()
+lm = lake_model()
 x0 = lm.x_bar
 ```
 
@@ -957,7 +965,7 @@ T_hat = 20
 Let's increase $b$ to the new value and simulate for 20 periods
 
 ```{code-cell} julia
-lm = LakeModel(; b = b_hat)
+lm = lake_model(; b = b_hat)
 X_path1 = simulate_linear(lm.A, x0 * N0, T_hat - 1)
 x_path1 = simulate_linear(lm.A_hat, x0, T_hat - 1)
 ```
@@ -967,7 +975,7 @@ after 20 periods for the new initial conditions, we simulate for the
 additional 30 periods
 
 ```{code-cell} julia
-lm = LakeModel(; b = 0.0124)
+lm = lake_model(; b = 0.0124)
 X_path2 = simulate_linear(lm.A, X_path1[:, end - 1], T - T_hat)
 x_path2 = simulate_linear(lm.A_hat, x_path1[:, end - 1], T - T_hat)
 ```
@@ -1033,4 +1041,3 @@ tags: [remove-cell]
     @test x_path[2,7] ≈ 0.9429334437639298
 end
 ```
-
