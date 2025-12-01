@@ -636,7 +636,7 @@ We will make use of (with some tweaks) the code we wrote in the {doc}`McCall mod
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
                             tol = 1e-5, iter = 2_000)
     (; alpha, beta, sigma, c, gamma, w, u, w_probs) = mcm
-    
+
     @assert c > 0.0
     u_w = mcm.u.(w, sigma)
     u_c = mcm.u(c, sigma)
@@ -693,8 +693,8 @@ function compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
     accept_wage = w_pretax .- tau .> w_bar
 
     # sum up proportion accepting the wages
-    lambda = gamma * dot(mcm.p, accept_wage)
-    return w_bar, lambda, V, U, mcm.p
+    lambda = gamma * dot(mcm.w_probs, accept_wage)
+    return w_bar, lambda, V, U, mcm.w_probs
 end
 
 function compute_steady_state_quantities(c_pretax, tau; w_probs, sigma, gamma,

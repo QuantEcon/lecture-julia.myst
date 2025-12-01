@@ -253,7 +253,8 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
         V = x[1:(end - 1)]
         U = x[end]
         V_p = u_w + beta * ((1 - alpha) * V .+ alpha * U)
-        U_p = u_c + beta * (1 - gamma) * U + beta * gamma * sum(max(U, V[i]) * p[i] for i in 1:length(w))
+        U_p = u_c + beta * (1 - gamma) * U +
+              beta * gamma * sum(max(U, V[i]) * p[i] for i in 1:length(w))
         return [V_p; U_p]
     end
 
