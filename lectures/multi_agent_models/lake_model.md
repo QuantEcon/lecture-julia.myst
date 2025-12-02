@@ -638,8 +638,8 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
     (; alpha, beta, sigma, c, gamma, w, u, w_probs) = mcm
 
     @assert c > 0.0
-    u_w = mcm.u.(w, sigma)
-    u_c = mcm.u(c, sigma)
+    u_w = mcm.u.(w)
+    u_c = mcm.u(c)
     # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
     function T(x)
         V = x[1:(end - 1)]
