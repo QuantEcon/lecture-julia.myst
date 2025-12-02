@@ -647,6 +647,7 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
         V_p = u_w + beta * ((1 - alpha) * V .+ alpha * U)
         U_p = u_c + beta * (1 - gamma) * U +
               beta * gamma * sum(max(U, V[i]) * w_probs[i] for i in 1:length(w))
+        # return [u_w + beta * ((1 - alpha) * V .+ alpha * U); u_c + beta * (1 - gamma) * U + beta * gamma * dot(w_probs, max.(U, V))]
         return [V_p; U_p]
     end
 
@@ -657,11 +658,11 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
     U = xstar[end]
 
     # compute the reservation wage
-    wbarindex = searchsortedfirst(V .- U, 0.0)
-    if wbarindex >= length(w) # if this is true, you never want to accept
+    w_bar_index = searchsortedfirst(V .- U, 0.0)
+    if w_bar_index >= length(w) # if this is true, you never want to accept
         w_bar = Inf
     else
-        w_bar = w[wbarindex] # otherwise, return the number
+        w_bar = w[w_bar_index] # otherwise, return the number
     end
 
     # return a NamedTuple, so we can select values by name
@@ -672,10 +673,10 @@ end
 And the McCall object
 
 ```{code-cell} julia
+u_crra(c, sigma) = c > 0 ? (c^(1 - sigma) - 1) / (1 - sigma) : -10e-6
+
 function mccall_model(; alpha, beta, gamma, c, sigma, w, w_probs,
-                      u = (c,
-                           sigma) -> c > 0 ? (c^(1 - sigma) - 1) / (1 - sigma) :
-                                     -10e-6)
+                      u = c -> u_crra(c, sigma))
     return (; alpha, beta, gamma, c, sigma, u, w, w_probs)
 end
 ```
@@ -688,20 +689,20 @@ function compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
                                     alpha, w_pretax)
     mcm = mccall_model(; alpha, beta, gamma, sigma, w_probs, c = c_pretax - tau,
                        w = w_pretax .- tau)
-
+    w_probs = mcm.w_probs
     (; V, U, w_bar) = solve_mccall_model(mcm)
     accept_wage = w_pretax .- tau .> w_bar
 
     # sum up proportion accepting the wages
-    lambda = gamma * dot(mcm.w_probs, accept_wage)
-    return w_bar, lambda, V, U, mcm.w_probs
+    lambda = gamma * dot(w_probs, accept_wage)
+    return w_bar, lambda, V, U, w_probs
 end
 
 function compute_steady_state_quantities(c_pretax, tau; w_probs, sigma, gamma,
                                          beta, alpha, w_pretax, b, d)
     w_bar, lambda, V, U,
-    p = compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma, beta,
-                                   alpha, w_pretax)
+    w_probs = compute_optimal_quantities(c_pretax, tau; w_probs, sigma, gamma,
+                                         beta, alpha, w_pretax)
 
     # compute steady state employment and unemployment rates
     lm = lake_model(; lambda, alpha, b, d)
@@ -709,7 +710,7 @@ function compute_steady_state_quantities(c_pretax, tau; w_probs, sigma, gamma,
 
     # compute steady state welfare
     accept_wage = w_pretax .- tau .> w_bar
-    w = (dot(p, V .* accept_wage)) / dot(p, accept_wage)
+    w = (dot(w_probs, V .* accept_wage)) / dot(w_probs, accept_wage)
     welfare = e_rate .* w + u_rate .* U
 
     return u_rate, e_rate, welfare
