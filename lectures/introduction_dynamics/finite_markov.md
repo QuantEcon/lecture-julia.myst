@@ -35,16 +35,13 @@ Markov chains are one of the most useful classes of stochastic processes, being
 You will find them in many of the workhorse models of economics and finance.
 
 In this lecture we review some of the theory of Markov chains.
-
-We will also introduce some of the high quality routines for working with Markov chains available in [QuantEcon.jl](http://quantecon.org/quantecon-jl).
+QuantEcon.jl provides high quality routines for working with Markov chains, but we'll stick to lightweight versions built from scratch here; for a production-ready reference implementation, see the [QuantEcon.jl Markov utilities](https://github.com/QuantEcon/QuantEcon.jl/tree/master/src/markov).
 
 Prerequisite knowledge is basic probability and linear algebra.
 
-
-
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Plots, Printf, QuantEcon, Random
+using Distributions, Plots, Printf, Random, Graphs
 
 ```
 
@@ -200,11 +197,7 @@ One natural way to answer questions about Markov chains is to simulate them.
 
 (To approximate the probability of event $E$, we can simulate many times and count the fraction of times that $E$ occurs)
 
-Nice functionality for simulating Markov chains exists in [QuantEcon.jl](http://quantecon.org/quantecon-jl).
-
-* Efficient, bundled with lots of other useful routines for handling Markov chains.
-
-However, it's also a good exercise to roll our own routines --- let's do that first and then come back to the methods in [QuantEcon.jl](http://quantecon.org/quantecon-jl).
+QuantEcon.jl ships efficient routines for simulating Markov chains (see the [reference code](https://github.com/QuantEcon/QuantEcon.jl/tree/master/src/markov)), but it's also a good exercise to roll our own routines.
 
 In these exercises we'll take the state space to be $S = 1,\ldots, n$.
 
@@ -302,62 +295,6 @@ tags: [remove-cell]
     @test P ≈ [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
     # @test X[1:5] == [1, 2, 2, 1, 1]
 end
-```
-
-### Using QuantEcon's Routines
-
-As discussed above, [QuantEcon.jl](http://quantecon.org/quantecon-jl) has routines for handling Markov chains, including simulation.
-
-Here's an illustration using the same P as the preceding example
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-Random.seed!(42);  # For reproducibility
-```
-
-```{code-cell} julia
-P = [0.4 0.6; 0.2 0.8];
-mc = MarkovChain(P)
-X = simulate(mc, 100_000);
-mu_2 = count(X .== 1) / length(X) # or mean(x -> x == 1, X)
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset "QE Sample Path Test" begin
-    @test P ≈ [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
-    @test X[1:5] == [2, 2, 2, 2, 2]
-    #test mu_1 ≈ mu_2 atol = 1e-2
-end
-```
-
-#### Adding state values and initial conditions
-
-If we wish to, we can provide a specification of state values to `MarkovChain`.
-
-These state values can be integers, floats, or even strings.
-
-The following code illustrates
-
-```{code-cell} julia
-mc = MarkovChain(P, ["unemployed", "employed"])
-simulate(mc, 4, init = 1) # start at state 1
-```
-
-```{code-cell} julia
-simulate(mc, 4, init = 2) # start at state 2
-```
-
-```{code-cell} julia
-simulate(mc, 4) # start with randomly chosen initial condition
-```
-
-```{code-cell} julia
-simulate_indices(mc, 4)
 ```
 
 (mc_md)=
@@ -505,6 +442,73 @@ The cross-sectional distribution records the fractions of workers employed and u
 
 The same distribution also describes the fractions of  a particular worker's career spent being employed and unemployed, respectively.
 
+(mc_tools)=
+### Helper functions
+
+Before turning to irreducibility and aperiodicity, let's collect a few helper functions that operate directly on the transition matrix.
+We rely on [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl) to expose connectivity, periodicity, and stationary distributions without pulling in the heavier QuantEcon.jl dependency (see their [reference implementation](https://github.com/QuantEcon/QuantEcon.jl/tree/master/src/markov) for more features).
+
+```{code-cell} julia
+function transition_graph(P)
+    n, m = size(P)
+    @assert n == m "Transition matrix must be square"
+    g = DiGraph(n)
+    for i in 1:n, j in 1:n
+        if P[i, j] > 0
+            add_edge!(g, i, j)
+        end
+    end
+    return g
+end
+
+function communication_classes(P)
+    classes = [sort!(collect(c)) for c in strongly_connected_components(transition_graph(P))]
+    sort!(classes, by = first)
+    return classes
+end
+
+is_irreducible(P) = length(communication_classes(P)) == 1
+
+function state_period(P, state; max_iter = 200)
+    n, m = size(P)
+    @assert n == m "Transition matrix must be square"
+    T = Matrix{Float64}(P)
+    current = Matrix{Float64}(I, n, n)
+    g = 0
+    for k in 1:max_iter
+        current = current * T
+        if current[state, state] > 0
+            g = gcd(g, k)
+        end
+    end
+    return g
+end
+
+function period(P; max_iter = 200)
+    n, m = size(P)
+    @assert n == m "Transition matrix must be square"
+    p = 0
+    for s in 1:n
+        p = gcd(p, state_period(P, s; max_iter = max_iter))
+    end
+    return p
+end
+
+is_aperiodic(P) = period(P) == 1
+
+function stationary_distributions(P)
+    n, m = size(P)
+    @assert n == m "Transition matrix must be square"
+    ev = eigen(Matrix{Float64}(P'))
+    idxs = findall(λ -> isapprox(λ, 1), ev.values)
+    @assert !isempty(idxs) "No unit eigenvalue found for the transition matrix"
+    return [let v = real.(ev.vectors[:, idx]); vec(v ./ sum(v)) end for idx in idxs]
+end
+```
+`transition_graph` converts a transition matrix into a `DiGraph` so that we can use graph connectivity tools; Graphs.jl does not ship a dedicated helper for stochastic matrices, but the conversion is just adding directed edges wherever $P_{ij} > 0$.
+The `state_period` routine returns the greatest common divisor of all return times to a given state (computed up to `max_iter`), mirroring the definition in, e.g., the [periodicity entry on Wikipedia](https://en.wikipedia.org/wiki/Markov_chain#Periodicity).
+By default the period calculation searches up to `max_iter = 200` steps; increase it if your chain mixes slowly.
+
 ## {index}`Irreducibility and Aperiodicity <single: Irreducibility and Aperiodicity>`
 
 ```{index} single: Markov Chains; Irreducibility, Aperiodicity
@@ -561,12 +565,11 @@ $$
 It's clear from the graph that this stochastic matrix is irreducible: we can
 reach any state from any other state eventually.
 
-We can also test this using [QuantEcon.jl](http://quantecon.org/quantecon-jl)'s MarkovChain class
+We can also test this using our helper from {ref}`mc_tools`
 
 ```{code-cell} julia
 P = [0.9 0.1 0.0; 0.4 0.4 0.2; 0.1 0.1 0.8];
-mc = MarkovChain(P)
-is_irreducible(mc)
+is_irreducible(P)
 ```
 
 ```{code-cell} julia
@@ -574,7 +577,8 @@ is_irreducible(mc)
 tags: [remove-cell]
 ---
 @testset "Irreducibility Check" begin
-    @test is_irreducible(mc) == true
+    @test is_irreducible(P)
+    @test communication_classes(P) == [[1, 2, 3]]
 end
 ```
 
@@ -590,8 +594,7 @@ Let's confirm this
 
 ```{code-cell} julia
 P = [1.0 0.0 0.0; 0.1 0.8 0.1; 0.0 0.2 0.8];
-mc = MarkovChain(P);
-is_irreducible(mc)
+is_irreducible(P)
 ```
 
 ```{code-cell} julia
@@ -599,14 +602,15 @@ is_irreducible(mc)
 tags: [remove-cell]
 ---
 @testset "Checking reducibility" begin
-    @test !is_irreducible(mc)
+    @test !is_irreducible(P)
+    @test communication_classes(P) == [[1], [2, 3]]
 end
 ```
 
 We can also determine the "communication classes," or the sets of communicating states (where communication refers to a nonzero probability of moving in each direction).
 
 ```{code-cell} julia
-communication_classes(mc)
+communication_classes(P)
 ```
 
 It might be clear to you already that irreducibility is going to be important in terms of long run outcomes.
@@ -629,8 +633,7 @@ The chain cycles with period 3:
 
 ```{code-cell} julia
 P = [0 1 0; 0 0 1; 1 0 0];
-mc = MarkovChain(P);
-period(mc)
+period(P)
 ```
 
 ```{code-cell} julia
@@ -638,7 +641,7 @@ period(mc)
 tags: [remove-cell]
 ---
 @testset "Periodicity Check" begin
-    @test period(mc) == 3 # Confirm that everything is behaving as expected.
+    @test period(P) == 3 # Confirm that everything is behaving as expected.
 end
 ```
 
@@ -667,8 +670,7 @@ P[1, 2] = 1;
 P[2, 1] = P[2, 3] = 0.5;
 P[3, 2] = P[3, 4] = 0.5;
 P[4, 3] = 1;
-mc = MarkovChain(P);
-period(mc)
+period(P)
 ```
 
 ```{code-cell} julia
@@ -677,12 +679,12 @@ tags: [remove-cell]
 ---
 @testset "checking period" begin
     @test P[2,1] ≈ 0.5
-    @test period(mc) == 2
+    @test period(P) == 2
 end
 ```
 
 ```{code-cell} julia
-is_aperiodic(mc)
+is_aperiodic(P)
 ```
 
 ```{code-cell} julia
@@ -690,7 +692,7 @@ is_aperiodic(mc)
 tags: [remove-cell]
 ---
 @testset "check if aperiodic" begin
-    @test !is_aperiodic(mc)
+    @test !is_aperiodic(P)
 end
 ```
 
@@ -798,12 +800,23 @@ But the zero vector solves this equation.
 
 Hence we need to impose the restriction that the solution must be a probability distribution.
 
-A suitable algorithm is implemented in [QuantEcon.jl](http://quantecon.org/quantecon-jl) --- the next code block illustrates
+The helper `stationary_distributions` we wrote in {ref}`mc_tools` selects the eigenvectors of $P'$ with unit eigenvalue and normalizes each to sum to one (use the first element if the stationary distribution is unique).
 
 ```{code-cell} julia
 P = [0.4 0.6; 0.2 0.8];
-mc = MarkovChain(P);
-stationary_distributions(mc)
+stationary_distributions(P)[1]
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Stationary distribution solver" begin
+    P = [0.4 0.6; 0.2 0.8]
+    sd = stationary_distributions(P)[1]
+    @test sum(sd) ≈ 1.0
+    @test sd[1] ≈ 0.25 atol = 1e-8
+end
 ```
 
 The stationary distribution is unique.
@@ -839,8 +852,7 @@ for i in 1:t
     psi = psi * P # update distribution
 end
 
-mc = MarkovChain(P)
-psi_star = stationary_distributions(mc)[1]
+psi_star = stationary_distributions(P)[1]
 x_star, y_star, z_star = psi_star # unpack the stationary dist
 plt = scatter([x_vals; x_star], [y_vals; y_star], [z_vals; z_star], color = colors,
               gridalpha = 0.5, legend = :none)
@@ -1177,12 +1189,11 @@ N = 10_000
 p_bar = beta / (alpha + beta) # steady-state probabilities
 P = [1-alpha alpha
      beta 1-beta] # stochastic matrix
-mc = MarkovChain(P)
 labels = ["start unemployed", "start employed"]
 y_vals = Array{Vector}(undef, 2) # sample paths holder
 
 for x0 in 1:2
-    X = simulate_indices(mc, N; init = x0) # generate the sample path
+    X = mc_sample_path(P; init = x0, sample_size = N) # generate the sample path
     X_bar = cumsum(X .== 1) ./ (1:N) # compute state fraction. ./ required for precedence
     y_vals[x0] = X_bar .- p_bar # plot divergence from steady state
 end
@@ -1232,8 +1243,7 @@ end
 # create the corresponding stochastic matrix
 P = Q ./ sum(Q, dims = 2)
 
-mc = MarkovChain(P)
-r = stationary_distributions(mc)[1] # stationary distribution
+r = stationary_distributions(P)[1] # stationary distribution
 ranked_pages = Dict(zip(keys(web_graph_data), r)) # results holder
 
 # print solution
