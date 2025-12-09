@@ -58,6 +58,8 @@ Some resources for users with little to no programming experience are the:
    - This may be less gentle of an introduction for new users given the tooling choices.
 
 However, if you have even introductory experience with any programming language (e.g. you do not need to review what a loop, array, variable, or conditional "if" statement is), you should be able to start directly with these lectures.
+
+As you progress into modeling with differential equations and the broader SciML ecosystem, keep the [Scientific Modeling Cheat Sheet](https://sciml.github.io/Scientific_Modeling_Cheatsheet/scientific_modeling_cheatsheet) handy; it summarizes common modeling patterns, solver options, and callbacks you'll use later in the notes.
 ### Approach
 
 In this lecture we will write and then pick apart small Julia programs.
@@ -1140,5 +1142,4 @@ for i in 1:100
 end
 println("There were $(length(vals)) below 0.5")
 ```
-
 
