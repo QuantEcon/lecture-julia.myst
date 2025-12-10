@@ -42,6 +42,10 @@ using Interpolations, Plots
 
 Many applications require directly calculating a numerical derivative and calculating expectations.
 
+### General Packages
+
+Julia's [Integrals.jl](https://github.com/SciML/Integrals.jl) provides a unified interface to many quadrature backends and is differentiable with common AD systems (e.g. Zygote, ForwardDiff, Enzyme), which can be useful when an integral appears inside an optimization or learning problem.
+
 ### Adaptive Quadrature
 
 A high accuracy solution for calculating numerical integrals is [QuadGK](https://github.com/JuliaMath/QuadGK.jl).
@@ -429,4 +433,3 @@ threshold = 1E-6
 num_nonzero = sum(P .> threshold)
 println("Proportion of transitions > $threshold: ", num_nonzero / (N^2))
 ```
-
