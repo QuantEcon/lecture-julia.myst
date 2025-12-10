@@ -439,6 +439,17 @@ The cross-sectional distribution records the fractions of workers employed and u
 
 The same distribution also describes the fractions of  a particular worker's career spent being employed and unemployed, respectively.
 
+
+## {index}`Irreducibility and Aperiodicity <single: Irreducibility and Aperiodicity>`
+
+```{index} single: Markov Chains; Irreducibility, Aperiodicity
+```
+
+Irreducibility and aperiodicity are central concepts of modern Markov chain theory.
+
+Let's see what they're about.
+
+
 (mc_tools)=
 ### Helper functions
 
@@ -511,15 +522,6 @@ end
 The `state_period` routine returns the greatest common divisor of all return times to a given state (computed up to `max_iter`), mirroring the definition in, e.g., the [periodicity entry on Wikipedia](https://en.wikipedia.org/wiki/Markov_chain#Periodicity).
 By default the period calculation searches up to `max_iter = 200` steps; increase it if your chain mixes slowly.
 
-## {index}`Irreducibility and Aperiodicity <single: Irreducibility and Aperiodicity>`
-
-```{index} single: Markov Chains; Irreducibility, Aperiodicity
-```
-
-Irreducibility and aperiodicity are central concepts of modern Markov chain theory.
-
-Let's see what they're about.
-
 ### Irreducibility
 
 Let $P$ be a fixed stochastic matrix.
@@ -570,7 +572,9 @@ reach any state from any other state eventually.
 We can also test this using our helper from {ref}`mc_tools`
 
 ```{code-cell} julia
-P = [0.9 0.1 0.0; 0.4 0.4 0.2; 0.1 0.1 0.8];
+P = [0.9 0.1 0.0;
+     0.4 0.4 0.2;
+     0.1 0.1 0.8];
 is_irreducible(P)
 ```
 
@@ -595,7 +599,9 @@ This stochastic matrix is not irreducible, since, for example, rich is not acces
 Let's confirm this
 
 ```{code-cell} julia
-P = [1.0 0.0 0.0; 0.1 0.8 0.1; 0.0 0.2 0.8];
+P = [1.0 0.0 0.0;
+     0.1 0.8 0.1;
+     0.0 0.2 0.8];
 is_irreducible(P)
 ```
 
@@ -634,7 +640,9 @@ Here's a trivial example with three states
 The chain cycles with period 3:
 
 ```{code-cell} julia
-P = [0 1 0; 0 0 1; 1 0 0];
+P = [0 1 0;
+     0 0 1;
+     1 0 0];
 period(P)
 ```
 
@@ -805,7 +813,9 @@ Hence we need to impose the restriction that the solution must be a probability 
 The helper `stationary_distributions` we wrote in {ref}`mc_tools` selects the eigenvectors of $P'$ with unit eigenvalue and normalizes each to sum to one (use the first element if the stationary distribution is unique).
 
 ```{code-cell} julia
-P = [0.4 0.6; 0.2 0.8];
+P = [0.4 0.6;
+     0.2 0.8];
+@show length(stationary_distributions(P))
 stationary_distributions(P)[1]
 ```
 
@@ -837,15 +847,15 @@ The convergence in the theorem is illustrated in the next figure
 ```{code-cell} julia
 P = [0.971 0.029 0.000;
      0.145 0.778 0.077;
-     0.000 0.508 0.492] # stochastic matrix
+     0.000 0.508 0.492]
 
 psi = [0.0 0.2 0.8] # initial distribution
 
-t = 20 # path length
+t = 20
 x_vals = zeros(t)
 y_vals = similar(x_vals)
 z_vals = similar(x_vals)
-colors = [repeat([:red], 20); :black] # for plotting
+colors = [repeat([:red], 20); :black]
 
 for i in 1:t
     x_vals[i] = psi[1]
