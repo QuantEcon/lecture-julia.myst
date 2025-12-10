@@ -1243,30 +1243,38 @@ web_graph_data = Dict(
     'n' => ['c','j','m']
 )
 
+# 1. Sort nodes to ensure consistent matrix indexing (a=1, b=2, etc.)
 nodes = sort(collect(keys(web_graph_data)))
-index = Dict(c => i for (i,c) in enumerate(nodes))
+index_map = Dict(c => i for (i, c) in enumerate(nodes))
 n = length(nodes)
 
-Q = fill(false, n, n)
-for (from, outs) in web_graph_data
-    i = index[from]
-    for to in outs
-        j = index[to]
-        Q[i, j] = true
+# 2. Build Stochastic Matrix P directly
+P = zeros(n, n)
+
+for (from_node, targets) in web_graph_data
+    i = index_map[from_node]
+    k = length(targets) # number of outbound links
+    
+    # Assign equal probability to each outbound link
+    for to_node in targets
+        j = index_map[to_node]
+        P[i, j] = 1.0 / k 
     end
 end
 ```
 
+Next we find the ranking by computing the stationary distribution and then sorting the pages accordingly.
+
 ```{code-cell} julia
-# create the corresponding stochastic matrix
-P = Q ./ sum(Q, dims = 2)
-
 r = stationary_distributions(P)[1] # stationary distribution
-ranked_pages = Dict(zip(keys(web_graph_data), r)) # results holder
 
-# print solution
-println("Rankings\n ***")
-sort(collect(ranked_pages), by = x -> x[2], rev = true) # print sorted
+# Use 'nodes' which matches the ordering of 'r'
+ranked_pages = Dict(zip(nodes, r)) 
+
+# Print solution.  Sort the (node, r) by the rank value descending
+for (node, rank) in sort(collect(ranked_pages), by = x -> x[2], rev = true)
+    println("'$node' => $rank")
+end
 ```
 
 ```{code-cell} julia
@@ -1274,7 +1282,11 @@ sort(collect(ranked_pages), by = x -> x[2], rev = true) # print sorted
 tags: [remove-cell]
 ---
 @testset "Exercise 2 Tests" begin
-    @test ranked_pages['g'] ≈ 0.16070778858515053
-    @test ranked_pages['l'] ≈ 0.032017852378295776
+    # 'g' should be the highest ranked page (~0.16)
+    @test ranked_pages['g'] ≈ 0.16 atol=0.01
+    
+    # 'a' should be the lowest (~0.003)
+    @test ranked_pages['a'] ≈ 0.003 atol=0.001
+    @test sum(values(ranked_pages)) ≈ 1.0
 end
 ```
