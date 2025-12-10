@@ -272,7 +272,7 @@ f(x) = x > 0.0 ? x : 0.0
 
 Which shows that, when called with an integer, the type could be that integer or the floating point `0.0`.
 
-On the other hand, if we use change the function to return `0` if x <= 0, it is type-unstable with  floating point.
+On the other hand, if we use change the function to return `0` if `x <= 0`, it is type-unstable with  floating point.
 
 ```{code-cell} julia
 f(x) = x > 0.0 ? x : 0
@@ -280,8 +280,6 @@ f(x) = x > 0.0 ? x : 0
 ```
 
 The solution is to use the `zero(x)` function which returns the additive identity element of type `x`.
-
-On the other hand, if we change the function to return `0` if `x <= 0`, it is type-unstable with  floating point.
 
 ```{code-cell} julia
 @show zero(2.3)
