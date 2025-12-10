@@ -475,9 +475,7 @@ Looking at the dynamics, we can see that
 - As $x_t$ increases the dynamics become deterministic, and
   $x_t$ converges to a steady state value close to 1
 
-Referring back to the figure here.
-
-{ref}`section <jv_solve>`
+Referring back to the figure {ref}`here <jv_solve>`
 
 we see that $x_t \approx 1$ means that
 $s_t = s(x_t) \approx 0$ and
