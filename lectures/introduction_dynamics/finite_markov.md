@@ -35,7 +35,7 @@ Markov chains are one of the most useful classes of stochastic processes, being
 You will find them in many of the workhorse models of economics and finance.
 
 In this lecture we review some of the theory of Markov chains.
-QuantEcon.jl provides high quality routines for working with Markov chains, but we'll stick to lightweight versions built from scratch here; for a production-ready reference implementation, see the [QuantEcon.jl Markov utilities](https://github.com/QuantEcon/QuantEcon.jl/tree/master/src/markov).
+[QuantEcon.jl](https://github.com/QuantEcon/QuantEcon.jl/tree/master/src/markov) provides routines for working with Markov chains, but we'll stick to lightweight versions built from scratch here.
 
 Prerequisite knowledge is basic probability and linear algebra.
 
@@ -196,8 +196,6 @@ Here "ng" is normal growth, "mr" is mild recession, etc.
 One natural way to answer questions about Markov chains is to simulate them.
 
 (To approximate the probability of event $E$, we can simulate many times and count the fraction of times that $E$ occurs)
-
-QuantEcon.jl ships efficient routines for simulating Markov chains (see the [reference code](https://github.com/QuantEcon/QuantEcon.jl/tree/master/src/markov)), but it's also a good exercise to roll our own routines.
 
 In these exercises we'll take the state space to be $S = 1,\ldots, n$.
 
@@ -446,7 +444,7 @@ The same distribution also describes the fractions of  a particular worker's car
 ### Helper functions
 
 Before turning to irreducibility and aperiodicity, let's collect a few helper functions that operate directly on the transition matrix.
-We rely on [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl) to expose connectivity, periodicity, and stationary distributions without pulling in the heavier QuantEcon.jl dependency (see their [reference implementation](https://github.com/QuantEcon/QuantEcon.jl/tree/master/src/markov) for more features).
+We rely on [Graphs.jl](https://github.com/JuliaGraphs/Graphs.jl) to expose connectivity, periodicity, and stationary distributions.  See [here](https://github.com/QuantEcon/QuantEcon.jl/tree/master/src/markov) for `QuantEcon.jl`'s implementation.
 
 ```{code-cell} julia
 function transition_graph(P)
@@ -502,7 +500,12 @@ function stationary_distributions(P)
     ev = eigen(Matrix{Float64}(P'))
     idxs = findall(λ -> isapprox(λ, 1), ev.values)
     @assert !isempty(idxs) "No unit eigenvalue found for the transition matrix"
-    return [let v = real.(ev.vectors[:, idx]); vec(v ./ sum(v)) end for idx in idxs]
+    dists = Vector{Vector{Float64}}()
+    for idx in idxs
+        v = real.(ev.vectors[:, idx])
+        push!(dists, vec(v ./ sum(v)))
+    end
+    return dists
 end
 ```
 `transition_graph` converts a transition matrix into a `DiGraph` so that we can use graph connectivity tools; Graphs.jl does not ship a dedicated helper for stochastic matrices, but the conversion is just adding directed edges wherever $P_{ij} > 0$.
