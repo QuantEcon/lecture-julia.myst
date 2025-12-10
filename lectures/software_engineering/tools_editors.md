@@ -319,23 +319,27 @@ While not required for these lectures, consider installing the following extensi
 2. [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github): while VS Code supports the git {doc}`version control <../software_engineering/version_control>` natively, these extension provides additional features for working with repositories on GitHub itself.
 3. [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot): AI-assisted code completion.  See [GitHub Education Pack](https://education.github.com/pack) for free access if you are a student or educator.
 4. [OpenAI Codex](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt): official ChatGPT-powered coding agent for VS Code.  Works best if you already have ChatGPT Plus/Pro (or higher) and provides Copilot-like chat, edits, and inline help inside the editor.
-
 (llm_instructions)=
 ### Using LLMs with VS Code
 
-Both GitHub Copilot and OpenAI Codex can provide completions, refactors, and documentation suggestions directly in VS Code.  See the [Copilot docs](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-repository-instructions) and the [Codex IDE docs](https://developers.openai.com/codex/ide) for full setup and feature lists.
+GitHub Copilot, Google Gemini Code Assist, and OpenAI Codex can provide completions, refactors, and documentation suggestions directly in VS Code.
 
-For consistent answers across a project you can add short "instructions" files that the assistants read before responding:
-- GitHub Copilot: place `.github/copilot-instructions.md` in the repo root to define project-wide guidance (file name and location are fixed; see the Copilot docs above).  You can also create a personal `global-copilot-instructions.md` in your user settings directory if you want defaults across repos.
-- OpenAI Codex: Codex looks for `AGENTS.md` (or `AGENTS.override.md`) starting from your repo root and up to the current directory, plus a global copy at `~/.codex/AGENTS.md` (Codex home defaults to `~/.codex`, but you can point `CODEX_HOME` elsewhere if you want it under `~/.openai`).  You can add other fallback names - such as `instructions.md` at the repo root - via `project_doc_fallback_filenames` in `~/.codex/config.toml`.  See the [AGENTS.md guide](https://developers.openai.com/codex/guides/agents-md) for details.
+For consistent answers across a project you can add short "instructions" files that the assistants read to understand your style and constraints:
 
-A minimal example you can adapt (drop this same content into `.github/copilot-instructions.md` and/or `AGENTS.md`):
+- **GitHub Copilot**: Place `.github/copilot-instructions.md` in the repo root to define project-wide guidance (file name and location are fixed; see the [Copilot docs](https://docs.github.com/en/copilot/customizing-copilot/adding-custom-instructions-for-github-copilot)). You can also create a personal `global-copilot-instructions.md` in your user settings directory if you want defaults across repos.
+- **Google Gemini**:
+  - **VS Code**: Install the [Gemini Code Assist](https://cloud.google.com/code/docs/vscode/install) extension (part of Google Cloud Code). While Gemini does not yet auto-ingest a hidden config file, the convention is to place a `GEMINI.md` in your repo root and explicitly reference it (e.g., keep it open or `@mention` it) at the start of a session.
+  - **CLI**: You can use the [Google Cloud CLI](https://cloud.google.com/sdk/gcloud/reference/gemini) (`gcloud gemini ...`) for pipe-based operations, or use the API directly. For repo-chat on the command line, many use community tools (like `llm` or `aider`) configured with a Gemini API key.
+- **OpenAI Codex**: Codex looks for `AGENTS.md` (or `AGENTS.override.md`) starting from your repo root and up to the current directory, plus a global copy at `~/.codex/AGENTS.md` (Codex home defaults to `~/.codex`, but you can point `CODEX_HOME` elsewhere if you want it under `~/.openai`). You can add other fallback names—such as `instructions.md` at the repo root—via `project_doc_fallback_filenames` in `~/.codex/config.toml`. See the [AGENTS.md guide](https://developers.openai.com/codex/guides/agents-md) for details.
+
+A minimal example you can adapt (drop this same content into `.github/copilot-instructions.md`, `GEMINI.md`, and/or `AGENTS.md`):
+
 ```markdown
 ## Project context
 - Julia lectures and demos targeting Julia 1.12.
 
 ## Style
-- Follow the SciML style guide where applicable: https://docs.sciml.ai/SciMLStyle/stable/.
+- Follow the SciML style guide where applicable: [https://docs.sciml.ai/SciMLStyle/stable/](https://docs.sciml.ai/SciMLStyle/stable/).
 - Use snake_case for files, functions, and variables; 4-space indent; concise comments.
 - Prefer pure functions and keep logic inside modules.
 
@@ -352,7 +356,6 @@ A minimal example you can adapt (drop this same content into `.github/copilot-in
 
 ## Safety
 - Avoid destructive git commands; prefer minimal diffs (apply_patch) and cite file paths/lines.
-```
 
 (vscode_latex)=
 ### VS Code as a LaTeX Editor
