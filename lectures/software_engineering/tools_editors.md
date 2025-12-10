@@ -319,8 +319,9 @@ While not required for these lectures, consider installing the following extensi
 2. [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github): while VS Code supports the git {doc}`version control <../software_engineering/version_control>` natively, these extension provides additional features for working with repositories on GitHub itself.
 3. [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot): AI-assisted code completion.  See [GitHub Education Pack](https://education.github.com/pack) for free access if you are a student or educator.
 4. [OpenAI Codex](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt): official ChatGPT-powered coding agent for VS Code.  Works best if you already have ChatGPT Plus/Pro (or higher) and provides Copilot-like chat, edits, and inline help inside the editor.
+
 (llm_instructions)=
-### Using LLMs with VS Code
+## Using LLMs with VS Code
 
 GitHub Copilot, Google Gemini Code Assist, and OpenAI Codex can provide completions, refactors, and documentation suggestions directly in VS Code.
 
@@ -356,9 +357,10 @@ A minimal example you can adapt (drop this same content into `.github/copilot-in
 
 ## Safety
 - Avoid destructive git commands; prefer minimal diffs (apply_patch) and cite file paths/lines.
+```
 
 (vscode_latex)=
-### VS Code as a LaTeX Editor
+## VS Code as a LaTeX Editor
 
 VS Code has an outstanding LaTeX editing extension, which provides a good way to become comfortable with the tool and managing source code online.
 1. Install a recent copy of tex
