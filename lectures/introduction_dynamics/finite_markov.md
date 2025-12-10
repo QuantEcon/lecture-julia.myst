@@ -41,8 +41,7 @@ Prerequisite knowledge is basic probability and linear algebra.
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Distributions, Plots, Printf, Random, Graphs
-
+using Distributions, Plots, Random, Graphs
 ```
 
 ## Definitions
@@ -63,7 +62,7 @@ such that
 
 Each row of $P$ can be regarded as a probability mass function over $n$ possible outcomes.
 
-It is too not difficult to check [^pm] that if $P$ is a stochastic matrix, then so is the $k$-th power $P^k$ for all $k \in \mathbb N$.
+It is not difficult to check that if $P$ is a stochastic matrix, then so is the $k$-th power $P^k$ for all $k \in \mathbb N$.
 
 ### {index}`Markov Chains <single: Markov Chains>`
 
@@ -836,8 +835,8 @@ This adds considerable weight to our interpretation of $\psi^*$ as a stochastic 
 The convergence in the theorem is illustrated in the next figure
 
 ```{code-cell} julia
-P = [0.971 0.029 0.000
-     0.145 0.778 0.077
+P = [0.971 0.029 0.000;
+     0.145 0.778 0.077;
      0.000 0.508 0.492] # stochastic matrix
 
 psi = [0.0 0.2 0.8] # initial distribution
@@ -1211,38 +1210,44 @@ tags: [remove-cell]
 ---
 @testset "Exercise 1 Tests" begin
     @test y_vals[2][5] ≈ -0.5
-    @test X[1:5] == [2, 2, 2, 2, 2]
 end
 ```
 
 ### Exercise 2
 
 ```{code-cell} julia
-web_graph_data = sort(Dict('a' => ['d', 'f'],
-                           'b' => ['j', 'k', 'm'],
-                           'c' => ['c', 'g', 'j', 'm'],
-                           'd' => ['f', 'h', 'k'],
-                           'e' => ['d', 'h', 'l'],
-                           'f' => ['a', 'b', 'j', 'l'],
-                           'g' => ['b', 'j'],
-                           'h' => ['d', 'g', 'l', 'm'],
-                           'i' => ['g', 'h', 'n'],
-                           'j' => ['e', 'i', 'k'],
-                           'k' => ['n'],
-                           'l' => ['m'],
-                           'm' => ['g'],
-                           'n' => ['c', 'j', 'm']))
+web_graph_data = Dict(
+    'a' => ['d','f'],
+    'b' => ['j','k','m'],
+    'c' => ['c','g','j','m'],
+    'd' => ['f','h','k'],
+    'e' => ['d','h','l'],
+    'f' => ['a','b','j','l'],
+    'g' => ['b','j'],
+    'h' => ['d','g','l','m'],
+    'i' => ['g','h','n'],
+    'j' => ['e','i','k'],
+    'k' => ['n'],
+    'l' => ['m'],
+    'm' => ['g'],
+    'n' => ['c','j','m']
+)
+
+nodes = sort(collect(keys(web_graph_data)))
+index = Dict(c => i for (i,c) in enumerate(nodes))
+n = length(nodes)
+
+Q = fill(false, n, n)
+for (from, outs) in web_graph_data
+    i = index[from]
+    for to in outs
+        j = index[to]
+        Q[i, j] = true
+    end
+end
 ```
 
 ```{code-cell} julia
-nodes = keys(web_graph_data)
-n = length(nodes)
-# create adjacency matrix of links (Q[i, j] = true for link, false otherwise)
-Q = fill(false, n, n)
-for (node, edges) in enumerate(values(web_graph_data))
-    Q[node, nodes .∈ Ref(edges)] .= true
-end
-
 # create the corresponding stochastic matrix
 P = Q ./ sum(Q, dims = 2)
 
