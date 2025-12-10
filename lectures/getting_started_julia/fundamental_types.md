@@ -1345,11 +1345,11 @@ S = A S A' + Q
 
 This kind of equation is known as a **discrete time Lyapunov equation**.
 
-The [QuantEcon package](http://quantecon.org/quantecon-jl)
-provides a function called `solve_discrete_lyapunov` that implements a fast
-"doubling" algorithm to solve this equation.
+The [MatrixEquations package](https://github.com/andreasvarga/MatrixEquations.jl)
+provides a function called `lyapd` that solves this equation, returning the
+matrix `S` satisfying `S = A * S * A' + Q` (equivalently `A * S * A' - S + Q = 0`).
 
-Test your iterative method against `solve_discrete_lyapunov` using matrices
+Test your iterative method against `lyapd` using matrices
 
 $$
 A =
@@ -1481,17 +1481,15 @@ Let's compute the asymptotic variance
 our_solution = compute_asymptotic_var(A, Sigma)
 ```
 
-Now let's do the same thing using QuantEcon's `solve_discrete_lyapunov()` function and check we get the same result.
+Now let's do the same thing using MatrixEquations.jl's `lyapd` function and check we get the same result.
 
 ```{code-cell} julia
 ---
 tags: [hide-output]
 ---
-using QuantEcon
+using MatrixEquations
 ```
 
 ```{code-cell} julia
-norm(our_solution - solve_discrete_lyapunov(A, Sigma * Sigma'))
+norm(our_solution - lyapd(A, Sigma * Sigma'))
 ```
-
-
