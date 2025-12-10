@@ -213,69 +213,58 @@ using Test
 
 ```{code-cell} julia
 function jv_worker(; A = 1.4,
-                   alpha = 0.6,
-                   beta = 0.96,
-                   grid_size = 50,
-                   quad_size = 30,
-                   epsilon = 1e-4)
-    G(x, phi) = A .* (x .* phi) .^ alpha
+                     alpha = 0.6,
+                     beta = 0.96,
+                     grid_size = 50,
+                     quad_size = 30,
+                     search_grid_size = 15,
+                     epsilon = 1e-4)
+    G(x, phi) = A * (x * phi)^alpha
     pi_func = sqrt
     F = Beta(2, 2)
 
-    # Discretize the grid using Gauss-Jacobi quadrature
-    # u are nodes, w are weights.
     u, w = gauss_jacobi(F, quad_size)
 
-    # Set up grid over the state space for DP
-    # Max of grid is the max of a large quantile value for F and the
-    # fixed point y = G(y, 1).
     grid_max = max(A^(1.0 / (1.0 - alpha)), quantile(F, 1 - epsilon))
-
-    # range for range(epsilon, grid_max, grid_size). Needed for
-    # CoordInterpGrid below
     x_grid = range(epsilon, grid_max, length = grid_size)
+    search_grid = range(epsilon, 1.0, length = search_grid_size)
 
-    return (; A, alpha, beta, x_grid, G,
-            pi_func, F, u, w, epsilon)
+    # Pre-calculate the flat list of valid (s, phi) tuples which are feasible
+    choices = vec([(s, phi) for s in search_grid, phi in search_grid if s + phi <= 1.0])
+
+    return (; A, alpha, beta, x_grid, choices, G,
+              pi_func, F, u, w, epsilon)
 end
 
 function T(jv, V)
-    (; G, pi_func, beta, u, w, epsilon, x_grid) = jv
+    (; G, pi_func, beta, u, w, choices, x_grid) = jv
     Vf = LinearInterpolation(x_grid, V, extrapolation_bc = Line())
-    search_grid = range(epsilon, 1.0, length = 15)
 
-    function bellman(x, s, phi)
+    # Objective takes a tuple 'c' which contains (s, phi)
+    function objective(x, c)
+        s, phi = c 
         g_val = G(x, phi)
-        integral = dot(Vf.(max.(g_val, u)), w)
+        integral = sum(w[j] * Vf(max(g_val, u[j])) for j in eachindex(u))
         continuation = (1.0 - pi_func(s)) * Vf(g_val) + pi_func(s) * integral
         return x * (1.0 - s - phi) + beta * continuation
     end
 
-    new_V = similar(V)
-    s_policy = similar(V)
-    phi_policy = similar(V)
+    # Pre-allocate output arrays
+    new_V = similar(x_grid)
+    s_policy = similar(x_grid)
+    phi_policy = similar(x_grid)
 
+    # Loop over states
     for (i, x) in enumerate(x_grid)
-        best_val = -Inf
-        best_s = epsilon
-        best_phi = epsilon
+        # Broadcast: evaluate 'objective' for this 'x' across all 'choices'
+        vals = objective.(x, choices)
+        
+        # Find the best value and its index
+        v_max, idx = findmax(vals)
 
-        for s in search_grid
-            remaining = 1.0 - s
-            for phi in search_grid
-                if phi > remaining
-                    continue
-                end
-                val = bellman(x, s, phi)
-                if val > best_val
-                    best_val, best_s, best_phi = val, s, phi
-                end
-            end
-        end
-
-        new_V[i] = best_val
-        s_policy[i] = best_s
-        phi_policy[i] = best_phi
+        # Store results
+        new_V[i] = v_max
+        s_policy[i], phi_policy[i] = choices[idx] # Unpack the tuple
     end
 
     return new_V, (s_policy, phi_policy)
@@ -488,7 +477,7 @@ Looking at the dynamics, we can see that
 
 Referring back to the figure here.
 
-[ref]`section <jv_solve>`
+{ref}`section <jv_solve>`
 
 we see that $x_t \approx 1$ means that
 $s_t = s(x_t) \approx 0$ and
