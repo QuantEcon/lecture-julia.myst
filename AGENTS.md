@@ -20,6 +20,8 @@ Follow the QuantEcon `style.md` guide strictly:
   - Use fenced code blocks with correct language identifiers
   - Do not mix Markdown and code execution in ambiguous ways
   - Preserve section structure, callouts, and MyST directives
+- Never use `begin` blocks for function definitions.  Use either short-form or standard `function ... end` syntax.
+- Don't use `&&` when a conditional would be clearer.  Prefer `if phi > remaining; continue;end` to `phi > remaining && continue`
 
 If unsure about style, imitate existing notebooks in `lectures/`.
 
