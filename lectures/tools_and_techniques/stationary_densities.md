@@ -29,9 +29,9 @@ kernelspec:
 
 ## Overview
 
-In a {doc}`previous lecture <../introduction_dynamics/finite_markov>` we learned about finite Markov chains, a relatively elementary class of stochastic dynamic models.
+In this lecture, we will study the case of continuous (i.e., uncountable) state Markov chains.
 
-The present lecture extends this analysis to continuous (i.e., uncountable) state Markov chains.
+A {doc}`previous lecture <../introduction_dynamics/finite_markov>` will cover finite Markov chains, a relatively elementary class of stochastic dynamic models.
 
 Most stochastic dynamic models studied by economists either fit directly into this class or can be represented as continuous state Markov chains after minor modifications.
 
@@ -53,8 +53,7 @@ In particular,
 * Is there a notion of "steady state" or "long run equilibrium" that's applicable to the model?
     * If so, how can we compute it?
 
-Answering these questions will lead us to revisit many of the topics that occupied us in the finite state case,
-such as simulation, distribution dynamics, stability, ergodicity, etc.
+Answering these questions will lead us to explore topics such as simulation, distribution dynamics, stability, and ergodicity.
 
 ```{note}
 For some people, the term "Markov chain" always refers to a process with a
@@ -88,9 +87,7 @@ Once we've built some intuition we'll cover the general case.
 
 ### Definitions and Basic Properties
 
-In our {doc}`lecture on finite Markov chains <../introduction_dynamics/finite_markov>`, we studied discrete time Markov chains that evolve on a finite state space $S$.
-
-In this setting, the dynamics of the model are described by a stochastic matrix --- a nonnegative square matrix $P = P[i, j]$ such that each row $P[i, \cdot]$ sums to one.
+We can start by considering a finite state space $S$. In this setting, the dynamics of the model are described by a stochastic matrix --- a nonnegative square matrix $P = P[i, j]$ such that each row $P[i, \cdot]$ sums to one.
 
 The interpretation of $P$ is that $P[i, j]$ represents the
 probability of transitioning from state $i$ to state $j$ in one
@@ -270,16 +267,15 @@ $\sigma(x) = s f(x)$ is strictly positive for all $s$ as required)
 
 ### Distribution Dynamics
 
-In {ref}`this section <mc_md>` of our lecture on **finite** Markov chains, we
-asked the following question: If
+Later in {ref}`another section <mc_md>` of our lecture on **finite** Markov chains, we
+will explore the following question: If
 
 1. $\{X_t\}$ is a Markov chain with stochastic matrix $P$
 1. the distribution of $X_t$ is known to be $\psi_t$
 
 then what is the distribution of $X_{t+1}$?
 
-Letting $\psi_{t+1}$ denote the distribution of $X_{t+1}$, the
-answer {ref}`we gave <mc_fdd>` was that
+Letting $\psi_{t+1}$ denote the distribution of $X_{t+1}$, we will show that
 
 $$
 \psi_{t+1}[j] = \sum_{i \in S} P[i,j] \psi_t[i]
@@ -520,7 +516,7 @@ Notice that the sequence of densities shown in the figure seems to be
 converging --- more on this in just a moment.
 
 Another quick comment is that each of these distributions could be interpreted
-as a cross sectional distribution (recall {ref}`this discussion <mc_eg1-1>`).
+as a cross sectional distribution (see {ref}`this discussion <mc_eg1-1>`).
 
 ## Beyond Densities
 
@@ -600,17 +596,12 @@ One good option is simulation as before, combined with the [empirical distributi
 
 ## Stability
 
-In our {doc}`lecture <../introduction_dynamics/finite_markov>` on finite Markov chains we also studied stationarity, stability and ergodicity.
+In this section, we will explore three concepts: stationarity, stability, and ergodicity. Our focus will be specifically on the density case (as in {ref}`this section <statd_density_case>`), where the stochastic kernel is a family of densities. The general case is relatively similar --- references are given below.
 
-Here we will cover the same topics for the continuous case.
-
-We will, however, treat only the density case (as in {ref}`this section <statd_density_case>`), where the stochastic kernel is a family of densities.
-
-The general case is relatively similar --- references are given below.
 
 ### Theoretical Results
 
-Analogous to {ref}`the finite case <mc_stat_dd>`, given a stochastic kernel $p$ and corresponding Markov operator as
+Given a stochastic kernel $p$ and corresponding Markov operator as
 defined in {eq}`def_dmo`, a density $\psi^*$ on $S$ is called
 *stationary* for $P$ if it is a fixed point of the operator $P$.
 
@@ -629,7 +620,7 @@ the distribution of $X_0$ is $\psi^*$, then, in view of
 
 Hence $\psi^*$ is the stochastic equivalent of a steady state.
 
-In the finite case, we learned that at least one stationary distribution exists, although there may be many.
+In the finite case, we will learn that at least one stationary distribution exists, although there may be many.
 
 When the state space is infinite, the situation is more complicated.
 
@@ -994,7 +985,7 @@ T = 40    # Compute density of k_t at 1,...,T+1
 xmax = 6.5
 ygrid = range(0.01, xmax, length = 150)
 laes_plot = zeros(length(ygrid), 4T)
-colors = []
+colors = zeros(RGBA,1,4*T);
 for i in 1:4
     k = zeros(n, T)
     A = rand!(phi, zeros(n, T))
@@ -1010,15 +1001,13 @@ for i in 1:4
     laes = [k[:, t] for t in T:-1:1]
     ind = i
     for j in 1:T
-        lae = laes[j]
-        laes_plot[:, ind] = lae_est(p_growth, lae, ygrid)
+        psi = laes[j]
+        laes_plot[:, ind] = lae_est(psi, ygrid)
+        colors[ind]=RGBA(0, 0, 0, 1 - (j - 1) / T)
         ind = ind + 4
-        push!(colors, RGBA(0, 0, 0, 1 - (j - 1) / T))
     end
 end
 
-#colors = reshape(reshape(colors, T, 4)', 4*T, 1)
-colors = reshape(colors, 1, length(colors))
 plot(ygrid, laes_plot, layout = (2, 2), color = colors,
      legend = :none, xlabel = "capital", xlims = (0, xmax))
 ```

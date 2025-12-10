@@ -239,87 +239,46 @@ function jv_worker(; A = 1.4,
             pi_func, F, u, w, epsilon)
 end
 
-function T!(jv, V, new_V)
-
-    # simplify notation
-    (; G, pi_func, beta, u, w, epsilon) = jv
-
-    # prepare interpoland of value function
-    Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc = Line())
-
-    # instantiate the linesearch variables
-    max_val = -1.0
-    cur_val = 0.0
-    max_s = 1.0
-    max_phi = 1.0
+function T(jv, V)
+    (; G, pi_func, beta, u, w, epsilon, x_grid) = jv
+    Vf = LinearInterpolation(x_grid, V, extrapolation_bc = Line())
     search_grid = range(epsilon, 1.0, length = 15)
 
-    # objective function
-    function w_x(x, s, phi)
-        h(u_val) = Vf(max(G(x, phi), u_val))
-        integral = dot(h.(u), w) # using quadrature weights/values
-        q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
-        return -x * (1.0 - phi - s) - beta * q
+    function bellman(x, s, phi)
+        g_val = G(x, phi)
+        integral = dot(Vf.(max.(g_val, u)), w)
+        continuation = (1.0 - pi_func(s)) * Vf(g_val) + pi_func(s) * integral
+        return x * (1.0 - s - phi) + beta * continuation
     end
 
-    for (i, x) in enumerate(jv.x_grid)
+    new_V = similar(V)
+    s_policy = similar(V)
+    phi_policy = similar(V)
+
+    for (i, x) in enumerate(x_grid)
+        best_val = -Inf
+        best_s = epsilon
+        best_phi = epsilon
+
         for s in search_grid
+            remaining = 1.0 - s
             for phi in search_grid
-                cur_val = ifelse(s + phi <= 1.0, -w_x(x, s, phi), -1.0)
-                if cur_val > max_val
-                    max_val, max_s, max_phi = cur_val, s, phi
+                if phi > remaining
+                    continue
+                end
+                val = bellman(x, s, phi)
+                if val > best_val
+                    best_val, best_s, best_phi = val, s, phi
                 end
             end
         end
 
-        new_V[i] = max_val
-    end
-end
-
-function T!(jv, V, out::Tuple)
-
-    # simplify notation
-    (; G, pi_func, beta, u, w, epsilon) = jv
-
-    # prepare interpoland of value function
-    Vf = LinearInterpolation(jv.x_grid, V, extrapolation_bc = Line())
-
-    # instantiate variables
-    s_policy, phi_policy = out[1], out[2]
-
-    # instantiate the linesearch variables
-    max_val = -1.0
-    cur_val = 0.0
-    max_s = 1.0
-    max_phi = 1.0
-    search_grid = range(epsilon, 1.0, length = 15)
-
-    # objective function
-    function w_x(x, s, phi)
-        h(u) = Vf(max(G(x, phi), u))
-        integral = dot(h.(u), w)
-        q = pi_func(s) * integral + (1.0 - pi_func(s)) * Vf(G(x, phi))
-        return -x * (1.0 - phi - s) - beta * q
+        new_V[i] = best_val
+        s_policy[i] = best_s
+        phi_policy[i] = best_phi
     end
 
-    for (i, x) in enumerate(jv.x_grid)
-        for s in search_grid
-            for phi in search_grid
-                cur_val = ifelse(s + phi <= 1.0, -w_x(x, s, phi), -1.0)
-                if cur_val > max_val
-                    max_val, max_s, max_phi = cur_val, s, phi
-                end
-            end
-        end
-
-        s_policy[i], phi_policy[i] = max_s, max_phi
-    end
-end
-
-function T(jv, V; ret_policies = false)
-    out = ifelse(ret_policies, (similar(V), similar(V)), similar(V))
-    T!(jv, V, out)
-    return out
+    return new_V, (s_policy, phi_policy)
 end
 ```
 
@@ -327,60 +286,22 @@ The code is written to be relatively generic---and hence reusable.
 
 * For example, we use generic $G(x,\phi)$ instead of specific $A (x \phi)^{\alpha}$.
 
-Regarding the imports
-
-* `fixed_quad` is a simple non-adaptive integration routine
-* `fmin_slsqp` is a minimization routine that permits inequality constraints
-
-Next we write a constructor called `jv_worker` that
-
-* packages all the parameters and other basic attributes of a given model
-* implements the method `T` for value function iteration
-
-The `T` method
-takes a candidate value function $V$ and updates it to $TV$ via
-
-$$
-TV(x)
-= - \min_{s + \phi \leq 1} w(s, \phi)
-$$
-
-where
+Function `jv_worker` packages all parameters for the model. The Bellman
+operator $T$ acts on a candidate value function via {eq}`jvbell`. In
+code, `T` returns a fresh value array together with policies for $s$ and
+$\phi$ on the state grid. It builds a linear interpolant `Vf` on
+`x_grid` and then evaluates
 
 ```{math}
-:label: defw
-
-w(s, \phi)
- := - \left\{
-         x (1 - s - \phi) + \beta (1 - \pi(s)) V[G(x, \phi)] +
-         \beta \pi(s) \int V[G(x, \phi) \vee u] F(du)
-\right\}
+w(s, \phi) =
+ x (1 - s - \phi) + \beta (1 - \pi(s)) V[G(x, \phi)] +
+ \beta \pi(s) \int V[G(x, \phi) \vee u] F(du)
 ```
 
-Here we are minimizing instead of maximizing to fit with optimization routines.
-
-When we represent $V$, it will be with a Julia array `V` giving values on grid `x_grid`.
-
-But to evaluate the right-hand side of {eq}`defw`, we need a function, so
-we replace the arrays `V` and `x_grid` with a function `Vf` that gives linear
-interpolation of `V` on `x_grid`.
-
-Hence in the preliminaries of `T`
-
-* from the array `V` we define a linear interpolation `Vf` of its values
-    * `c1` is used to implement the constraint $s + \phi \leq 1$
-    * `c2` is used to implement $s \geq \epsilon$, a numerically stable
-      
-      alternative to the true constraint $s \geq 0$
-    * `c3` does the same for $\phi$
-
-Inside the `for` loop, for each `x` in the grid over the state space, we
-set up the function $w(z) = w(s, \phi)$ defined in {eq}`defw`.
-
-The function is minimized over all feasible $(s, \phi)$ pairs, either by brute-force search over a grid, or specialized solver routines.
-
-The latter is much faster, but convergence to the global optimum is not
-guaranteed.  Grid search is a simple way to check results.
+on a coarse feasible grid, taking the maximizer over $s + \phi \leq 1$.
+Expectations are computed with the quadrature nodes `u` and weights `w`.
+The second return value collects the maximizing $s(x)$ and $\phi(x)$ at
+each state.
 
 (jv_solve)=
 ## Solving for Policies
@@ -396,11 +317,10 @@ The code is as follows
 wp = jv_worker(; grid_size = 25)
 v_init = collect(wp.x_grid) .* 0.5
 
-f(x) = T(wp, x)
-V = fixedpoint(f, v_init)
+V = fixedpoint(v -> T(wp, v)[1], v_init)
 sol_V = V.zero
 
-s_policy, phi_policy = T(wp, sol_V, ret_policies = true)
+_, (s_policy, phi_policy) = T(wp, sol_V)
 
 # plot solution
 p = plot(wp.x_grid, [phi_policy s_policy sol_V],
@@ -498,10 +418,10 @@ wp = jv_worker(grid_size = 25)
 (; G, pi_func, F) = wp
 
 v_init = collect(wp.x_grid) * 0.5
-f2(x) = T(wp, x)
+f2(v) = T(wp, v)[1]
 V2 = fixedpoint(f2, v_init)
 sol_V2 = V2.zero
-s_policy, phi_policy = T(wp, sol_V2, ret_policies = true)
+_, (s_policy, phi_policy) = T(wp, sol_V2)
 
 # Turn the policy function arrays into CoordInterpGrid objects for interpolation
 s = LinearInterpolation(wp.x_grid, s_policy, extrapolation_bc = Line())
@@ -598,4 +518,3 @@ of the worker with $\beta = 0.96$.
 
 This seems reasonable, and helps us confirm that our dynamic programming
 solutions are probably correct.
-
