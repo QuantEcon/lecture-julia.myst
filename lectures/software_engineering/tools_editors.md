@@ -56,9 +56,7 @@ Open the settings with `> Preferences: Open User Settings` (see above for openin
 As a few optional suggestions for working with the settings,
 
 - In the settings, search for `Tab Size` and you should find `Editor: Tab Size` which you can modify to 4.
-- Search for `quick open` and change `Workbench > Editor: Enable Preview from Quick Open` and consider setting it to false, though this is a matter of personal taste.
 - If you are on Windows, search for `eol` and change `Files: Eol` to be `\n`.
-- While it is a personal taste, consider enabling the [bracket colorizer](https://code.visualstudio.com/updates/v1_60#_high-performance-bracket-pair-colorization) by finding the `bracketPairColorization` setting.
 
 A key feature of VS Code is that it can synchronize your extensions and settings across all of your computers, and even when used in-browser (e.g. with [GitHub CodeSpaces](https://github.com/features/codespaces)).  To turn on,
 - Ensure you have a [GitHub account](https://github.com/), which will be useful for {doc}`further lectures <../software_engineering/version_control>`
@@ -320,9 +318,49 @@ While not required for these lectures, consider installing the following extensi
 1. [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter): VS Code increasingly supports Jupyter notebooks directly, and this extension provides the ability to open and edit `.ipynb` notebook files without installing Conda and running `jupyter lab`.
 2. [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github): while VS Code supports the git {doc}`version control <../software_engineering/version_control>` natively, these extension provides additional features for working with repositories on GitHub itself.
 3. [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot): AI-assisted code completion.  See [GitHub Education Pack](https://education.github.com/pack) for free access if you are a student or educator.
+4. [OpenAI Codex](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt): official ChatGPT-powered coding agent for VS Code.  Works best if you already have ChatGPT Plus/Pro (or higher) and provides Copilot-like chat, edits, and inline help inside the editor.
+
+(llm_instructions)=
+## Using LLMs with VS Code
+
+GitHub Copilot, Google Gemini Code Assist, and OpenAI Codex can provide completions, refactors, and documentation suggestions directly in VS Code.
+
+For consistent answers across a project you can add short "instructions" files that the assistants read to understand your style and constraints:
+
+- **GitHub Copilot**: Place `.github/copilot-instructions.md` in the repo root to define project-wide guidance (file name and location are fixed; see the [Copilot docs](https://docs.github.com/en/copilot/customizing-copilot/adding-custom-instructions-for-github-copilot)). You can also create a personal `global-copilot-instructions.md` in your user settings directory if you want defaults across repos.
+- **Google Gemini**:
+  - **VS Code**: Install the [Gemini Code Assist](https://cloud.google.com/code/docs/vscode/install) extension (part of Google Cloud Code). While Gemini does not yet auto-ingest a hidden config file, the convention is to place a `GEMINI.md` in your repo root and explicitly reference it (e.g., keep it open or `@mention` it) at the start of a session.
+  - **CLI**: You can use the [Google Cloud CLI](https://cloud.google.com/sdk/gcloud/reference/gemini) (`gcloud gemini ...`) for pipe-based operations, or use the API directly. For repo-chat on the command line, many use community tools (like `llm` or `aider`) configured with a Gemini API key.
+- **OpenAI Codex**: Codex looks for `AGENTS.md` (or `AGENTS.override.md`) starting from your repo root and up to the current directory, plus a global copy at `~/.codex/AGENTS.md` (Codex home defaults to `~/.codex`, but you can point `CODEX_HOME` elsewhere if you want it under `~/.openai`). You can add other fallback names—such as `instructions.md` at the repo root—via `project_doc_fallback_filenames` in `~/.codex/config.toml`. See the [AGENTS.md guide](https://developers.openai.com/codex/guides/agents-md) for details.
+
+A minimal example you can adapt (drop this same content into `.github/copilot-instructions.md`, `GEMINI.md`, and/or `AGENTS.md`):
+
+```markdown
+## Project context
+- Julia lectures and demos targeting Julia 1.12.
+
+## Style
+- Follow the SciML style guide where applicable: [https://docs.sciml.ai/SciMLStyle/stable/](https://docs.sciml.ai/SciMLStyle/stable/).
+- Use snake_case for files, functions, and variables; 4-space indent; concise comments.
+- Prefer pure functions and keep logic inside modules.
+
+## Tests
+- Always add or update unit tests with code changes.
+- Recommend `julia --project -e 'using Pkg; Pkg.test()'` before claiming completion; if tests are slow, state what would be run.
+
+## Structure
+- Keep the existing layout:
+  - /src for package code
+  - /test for tests
+  - Project.toml and Manifest.toml tracked and updated only as needed
+- Avoid adding new top-level folders unless requested.
+
+## Safety
+- Avoid destructive git commands; prefer minimal diffs (apply_patch) and cite file paths/lines.
+```
 
 (vscode_latex)=
-### VS Code as a LaTeX Editor
+## VS Code as a LaTeX Editor
 
 VS Code has an outstanding LaTeX editing extension, which provides a good way to become comfortable with the tool and managing source code online.
 1. Install a recent copy of tex
