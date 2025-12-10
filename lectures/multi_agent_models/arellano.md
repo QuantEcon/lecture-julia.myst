@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (arellano)=
@@ -289,7 +289,7 @@ Here is a more detailed description of our algorithm:
 
 We use simple discretization on a grid of asset holdings and income levels.
 
-The output process is discretized using [Tauchen's quadrature method](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/markov_approx.jl).
+The output process is discretized using Tauchen's method (see {doc}`this lecture <../more_julia/quadrature_interpolation>`)
 
 The code can be found below:
 

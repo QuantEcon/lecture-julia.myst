@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (testing)=
@@ -67,31 +67,18 @@ In addition, you will find the testing workflow as an essential element of worki
 This lecture assumes you have completed the setup of VS Code and Git in the  {doc}`version control <../software_engineering/version_control>` and  {doc}`tools <../software_engineering/tools_editors>`  lectures.  In particular,
 - Ensure you have setup a GitHub account, and connected it to VS Code.
 - Installed and setup VS Code's Julia extension.
-- Set ` git config --global user.email "you@example.com"`, `git config --global user.name "Your Name"` and `git config --global github.user "YOURGITHUBNAME"` in your terminal.
+- Ensure you have completed the `git` configuration steps in your terminal
+  ```{code-block} bash
+  git config --global user.email "you@example.com"
+  git config --global user.name "Your Name"   
+  git config --global github.user "GITHUBUSERNAME"   
+  ```
 
+The only other service that is necessary for the complete software engineering stack is a code coverage provider such as [Codecov](https://about.codecov.io/sign-up/)
 
-The only other service that is necessary for the complete software engineering stack is a code coverage provider.
+- Installation instructions are [here](https://docs.codecov.com/docs/quick-start#getting-started).
+- You may need to provide permissions for Codecov to access GitHub, follow the provided authorization instructions.
 
-For these lectures, visit [Codecov website](https://about.codecov.io/sign-up/).
-
-Installation instructions are [here](https://docs.codecov.com/docs/quick-start#getting-started).
-
-To summarize: sign up, and sign into it with `GitHub`.  You may need to provide permissions for Codecov to access GitHub, follow the provided authorization instructions.
-
-```{figure} /_static/figures/codecov-1.png
-:width: 100%
-```
-<!-- 
-TODO: I think this has changed and we should do it later in the workflow?
-
-Next, for any private repositories you can click "add a repository" and *enable private scope* (this allows Codecov to service your private projects).
-
-The result should be
-
-```{figure} /_static/figures/codecov-2.png
-:width: 50%
-``` 
--->
 
 (testing_pkg_installation)=
 ### PkgTemplates.jl and Revise.jl
@@ -103,25 +90,22 @@ If you have activated the notebook repositories, then `PkgTemplates.jl` will alr
 Otherwise, start a `julia` REPL outside of a particular project (or do an `] activate` to deactivate the existing project, and use the global environment) and
 * Install [PkgTemplates](https://juliaci.github.io/PkgTemplates.jl/stable/) and [Revise](https://github.com/timholy/Revise.jl) with 
 ```{code-block} julia
-] add PkgTemplates Revise
+] add PkgTemplates Revise JuliaFormatter
 ```
 
-While we typically insist on having very few packages in the global environment, and always working with a `Project.toml` file, `PkgTemplates` is primarily used without an existing project.
+While we typically insist on having very few packages in the global environment, and always working with a `Project.toml` file, `PkgTemplates` needs to be used in the global environment as it will create those files.
 
 While the [Revise.jl](https://github.com/timholy/Revise.jl) package is optional, it is strongly encouraged since it automatically compiling functions in your package as they are changed.  See [below](editing_package_code) for more.
+
+Similarly, [JuliaFormatter.jl](https://github.com/domluna/JuliaFormatter.jl) is optional, but recommended to maintain consistent code style.
 
 
 (project_setup)=
 ## Project Setup
 
-To create a project, first choose the parent directory where you wish to create the project
+To create a project, first choose the parent directory where you wish to create the project, and navigate to this parent directory in a terminal.
 
-* In an external terminal, navigate to this parent directory.
-```{note}
-On Windows, given that you have installed Git you could right click on the folder in explorer and choose `Git Bash Here`.  Even better, install the [Windows Terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started) and choose `Open in Windows Terminal`.
-```
-
-* Start a julia terminal with `julia`
+* Start a julia terminal with `julia`, making sure you are in the global environment (i.e. not in an activated project).
 
 * Then run
 
@@ -133,15 +117,15 @@ using PkgTemplates
 
 This specifies metadata like the license we'll be using (MIT by default), the location, etc.
 
-
 We will create this with a number of useful options, but see [the documentation](https://juliaci.github.io/PkgTemplates.jl/stable/user/#A-More-Complicated-Example-1) for more.
 
 ```{code-block} julia
-t = Template(;dir = ".", julia = v"1.9",
+t = Template(;dir = ".", julia = v"1.12",
               plugins = [
                 Git(; manifest=true, branch = "main"),
                 Codecov(),
                 GitHubActions(),
+                Formatter(; style = "sciml"),
                 !CompatHelper,
                 !TagBot
               ])
@@ -159,7 +143,7 @@ Alternatively, `PkgTemplates` has an interactive mode, which you can prompt with
 t("MyProject")
 ```
 
-* Open the project in VS Code by right-clicking in the explorer for the new `MyProject` folder, or exiting the Julia REPL (via `exit()`) and then
+* Open the project in VS Code by either using your finder/explorer, or  exiting the Julia REPL (via `exit()`) and then
 ```{code-block} bash
 cd MyProject
 code .
@@ -175,7 +159,7 @@ The project should open in VS Code, and look something like
 
 The next step is to add this project to Git version control.
 
-* First, we will need to create an empty GitHub Repository of the same name (but with a `.jl` extension).   Choose the `+` button to "Create a new repository"
+* First, we will need to create an empty GitHub Repository of the same name (but with a `.jl` extension).   Choose to create a "new" repository from the Repositories tab on GitHub.
 
 ```{figure} /_static/figures/new_package_vscode_2.png
 :width: 100%
@@ -186,7 +170,7 @@ In particular, ensure that
 
 * The repo you create should have the same name as the project we added (except with a `.jl` extension).
 * We should leave the boxes unchecked for the `README.md`, `LICENSE`, and `.gitignore`, since these are handled by `PkgTemplates`.
-* If available, Grant access to `CodeCov` for this new repository.
+* Select the "Choose GiHub Apps" and give access to Codecov if available.
 
 Then, we can now publish the generated package in VS Code to this empty repository.
 
@@ -196,7 +180,8 @@ Choose the icon to publish the branch as we did in previous lectures
 :width: 100%
 ```
 
-Do not accept the request to create a `Pull Request` when you push the branch.
+Refresh the webpage on GitHub, and you should see the files appear in the repository.
+
 
 At which point, if you refresh the webpage, it should be filled with the generated files
 ```{figure} /_static/figures/new_package_vscode_4.png
@@ -207,34 +192,32 @@ Furthermore, you will see a badge either saying `CI | passing` or `CI | unknown`
 
 These badges provide a summary of the current state of the `main` branch relative to the GitHub Actions, as we will see below.  If a repository has broken any tests on the main branch, it will show `CI | failed` in red.
 
-(add_to_global)=
-### (Optionally) Adding the Package to the Global Environment
+Finally, you may notice some Pull Requests have already been created, depending on the versions.  These come from GitHub Actions such as `CompatHelper` which automatically check for updates to dependencies.  For example,
 
-Optionally, you may wish to be able to use your package within other projects on your computer.
-
-To do this, you can add it to the main environment by starting Julia in the `MyProject` folder, and without activating the project (i.e. just `julia`).
-
-Then
-
-```{code-block} julia
-] dev .
+```{figure} /_static/figures/new_package_vscode_4_2.png
+:width: 100%
 ```
 
-Given this, other julia code can use `using MyProject` and, because the global environment stacks on any project files, it will be available.
+If you see those, you typically can open them and immediately choose to "Merge Pull Request".
 
-You can see the change reflected in our default package list by running `] st`
+After merging, you will need to update your local repository to pull the changes.  For example, VS Code may now show there are changes
 
-```{code-block} bash
-      Status `C:\Users\jesse\.julia\environments\v1.9\Project.toml`
-  [7073ff75] IJulia v1.23.2
-  [a361046e] MyProject v0.1.0 `..\..\..\Documents\GitHub\MyProject`
-  [14b8a8f1] PkgTemplates v0.7.18
-  [295af30f] Revise v3.1.19  
+
+```{figure} /_static/figures/new_package_vscode_4_3.png
+:width: 100%
 ```
 
-For more on the package mode, see the {doc}`tools and editors <../software_engineering/tools_editors>` lecture.
+If so, "Sync Changes" to update your local git repository.
 
-However, this step not required if you wish to use this package as a self-contained project.
+
+```{note}
+As always in Julia, it is best to avoid any packages other than `IJulia, Revise, PkgTemplates, JuliaFormatter`, etc. in your global environment. Everything project specific should be added to the `Project.toml` file of a particular project to ensure maximum reproducibility.
+
+Because of this, we advise not to use `] dev .` to add your local package to the global environment.
+
+Assuming you had a local installation of a different package in a parallel directory to this, with its own `Project.toml` file, you can point it at the local copy of `MyProject` with first activating the new one, and then `] dev ../MyProject`
+```
+
 ## Project Structure
 
 Let's unpack the structure of the generated project
@@ -244,10 +227,10 @@ Let's unpack the structure of the generated project
   
   ```{code-block} julia
   module MyProject
-  
-  greet() = print("Hello World!")
-  
-  end # module
+
+  # Write your package code here.
+
+  end
   ```
   
 * Likewise, the `test` directory should have only one file (`runtests.jl`), which reads
@@ -255,9 +238,9 @@ Let's unpack the structure of the generated project
   ```{code-block} julia
   using MyProject
   using Test
-  
+
   @testset "MyProject.jl" begin
-      # Write your own tests here.
+      # Write your tests here.
   end
   ```
   
@@ -274,48 +257,55 @@ In particular, the `Project.toml` contains a list of dependencies, and the `Mani
 
 ### GitHub Actions and CI
 
-The final file is a GitHub Actions file in the `.github/workflows` folder, called `CI.yml` with the text similar to
+The final file is a GitHub Actions file in the `.github/workflows` folder, called `CI.yml` with the text similar to the following (though it may change over time as new versions of the actions are released):
+
 ```{code-block} yaml
 name: CI
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - main
+    tags: ['*']
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 jobs:
   test:
-    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    permissions: # needed to allow julia-actions/cache to proactively delete old caches that it has created
+      actions: write
+      contents: read
     strategy:
       fail-fast: false
       matrix:
         version:
-          - '1.9'
-          - 'nightly'
+          - '1.12'
+          - 'pre'
         os:
           - ubuntu-latest
         arch:
-          - x64          
+          - x64
     steps:
-      - uses: actions/checkout@v2
-      - uses: julia-actions/setup-julia@v1
+      - uses: actions/checkout@v6
+      - uses: julia-actions/setup-julia@v2
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
-      - uses: actions/cache@v1
-        env:
-          cache-name: cache-artifacts
-        with:
-          path: ~/.julia/artifacts
-          key: ${{ runner.os }}-test-${{ env.cache-name }}-${{ hashFiles('**/Project.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-test-${{ env.cache-name }}-
-            ${{ runner.os }}-test-
-            ${{ runner.os }}-
+      - uses: julia-actions/cache@v2
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
       - uses: julia-actions/julia-processcoverage@v1
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v5
         with:
-          file: lcov.info
+          files: lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
 ```
 
 This file provides the rules for continuous integration running on changes to this repository.  You will not need to modify it.
@@ -324,9 +314,9 @@ To summarize some of the features, the
 
 * `push` and `pull_request` at the top says that any push to the repository or creation of a pull request will trigger this workflow.
 * `matrix` establishes the set of operating systems, architectures, and Julia versions to test
-* `actions/cache` speeds up execution by storing dependent packages and artifacts
-* `julia-runtest` will execute the `test/runtests.jl` automatically and determine whether it is successful
-* `codecov/codecov-action` analyzes which lines of code were executed by `test/runtests.jl` and uploads to Codecov
+* `julia-actions/cache` speeds up execution by storing dependent packages and artifacts
+* `julia-actions/julia-runtest` will execute the `test/runtests.jl` automatically and determine whether it is successful
+* `julia-actions/julia-processcoverage` and `codecov/codecov-action` analyzes which lines of code were executed by `test/runtests.jl` and uploads to Codecov
 
 ## Project Workflow
 
@@ -336,7 +326,7 @@ To summarize some of the features, the
 
 As {ref}`before <jl_packages>`, the `.toml` files define an *environment* for our project, or a set of files which represent the dependency information.
 
-The actual files are written in the [TOML language](https://github.com/toml-lang/toml), which is a lightweight format to specify configuration options.
+The files are written in the [TOML language](https://github.com/toml-lang/toml), which is a lightweight format to specify configuration options.
 
 This information is the name of every package we depend on, along with the exact versions of those packages.
 
@@ -351,43 +341,82 @@ See the [Pkg docs](https://docs.julialang.org/en/v1/stdlib/Pkg/) for more inform
 
 For now, let's just try adding a dependency.  Recall the package operations described in the {doc}`tools and editors <../software_engineering/tools_editors>` lecture.
 
-* Within VS Code, start a REPL (e.g. `> Julia: Start REPL`), type `]` to enter the Pkg mode.  Verify that the cursor says `(My Project) pkg>` to ensure that it has activated your particular project.  Otherwise, if it says `(@1.9) pkg>`, then you have launched Julia outside of VSCode or through a different mechanism, and you might need to ensure you are in the correct directory and then `] activate .` to activate the project file in it.
-* Then, add in the `Expectations.jl` package
+* Within VS Code, start a REPL (e.g. `> Julia: Start REPL`), type `]` to enter the Pkg mode.  Verify that the cursor says `(My Project) pkg>` to ensure that it has activated your particular project.  Otherwise, if it says `(@1.12) pkg>`, then you have launched Julia outside of VSCode or through a different mechanism, and you might need to ensure you are in the correct directory and then `] activate .` to activate the project file in it.
+* Then, add in the `Distributions.jl` package, which be downloaded, and the `LinearAlgebra` and `Test` package which is part of the standard library, but still needs to be added to the project file.
+
+```{code-block} julia
+] add Distributions LinearAlgebra Test
+```
+
+It will install a web of dependencies for those packages, and the console should look something like
 
 ```{figure} /_static/figures/vscode_add_package.png
 :width: 100%
 ```
 
-After installing a large web of dependencies, this tells Julia to write the results of package operations to the activated `Project.toml` file, which should now include text such as
+When complete, the Julia `Project.toml` file, which should now now be similar to
 ```toml
+name = "MyProject"
+uuid = "b6623268-9a17-423c-b045-25aa7927e6ad"
+version = "1.0.0-DEV"
+authors = ["Jesse Perla <jesseperla@gmail.com> and contributors"]
+
 [deps]
-Expectations = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+Distributions = "0.25.122"
+LinearAlgebra = "1.12.0"
+Test = "1.11.0"
+julia = "1.12"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
 ```
 
-From this point, anytime the project is activated, the [Expectations.jl](https://github.com/QuantEcon/Expectations.jl) package will be available with `using Expectations`.
+From this point, anytime the project is activated, the `Distributions, LinearAlgebra` and `Test` packages will be available for use with `using` statements.
 
 Furthermore, different projects could use different versions of this package.   We could add additional instructions on [compatability](https://pkgdocs.julialang.org/dev/compatibility/) within the file if we choose.
 
-But almost more importantly, the `Manifest.toml` file now contains a complete snapshot of the particular `Expectations` package and every other dependency used in your project.
+But almost more importantly, the `Manifest.toml` file now contains a complete snapshot of the particular `Distributions` package and every other dependency used in your project.
 
 For example, the following is an example snippet of one manifest here:
 ```toml
-[[Expectations]]
-deps = ["Compat", "Distributions", "FastGaussQuadrature", "LinearAlgebra", "SpecialFunctions"]
-git-tree-sha1 = "0f906c5edffe266acbf471734ac942d4aa9b7235"
-uuid = "2fe49d83-0758-5602-8f54-1f90ad0d522b"
-version = "1.7.1"
 
-[[FastGaussQuadrature]]
-deps = ["LinearAlgebra", "SpecialFunctions", "StaticArrays"]
-git-tree-sha1 = "5829b25887e53fb6730a9df2ff89ed24baa6abf6"
-uuid = "442a2c76-b920-505d-bb47-c5924d526838"
-version = "0.4.7"
+[[deps.Distributions]]
+deps = ["AliasTables", "FillArrays", "LinearAlgebra", "PDMats", "Printf", "QuadGK", "Random", "SpecialFunctions", "Statistics", "StatsAPI", "StatsBase", "StatsFuns"]
+git-tree-sha1 = "3bc002af51045ca3b47d2e1787d6ce02e68b943a"
+uuid = "31c24e10-a181-5473-b8eb-7969acd0382f"
+version = "0.25.122"
+
+    [deps.Distributions.extensions]
+    DistributionsChainRulesCoreExt = "ChainRulesCore"
+    DistributionsDensityInterfaceExt = "DensityInterface"
+    DistributionsTestExt = "Test"
+
+    [deps.Distributions.weakdeps]
+    ChainRulesCore = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
+    DensityInterface = "b429d917-457f-4dbc-8f4c-0cc954292b1d"
+    Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+...
+[[deps.FillArrays]]
+deps = ["LinearAlgebra"]
+git-tree-sha1 = "5bfcd42851cf2f1b303f51525a54dc5e98d408a3"
+uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
+version = "1.15.0"
+weakdeps = ["PDMats", "SparseArrays", "Statistics"]
+...
 ```
 This shows that that the current manifest has:
-- version 1.7.1 of the `Expectations` packages
-- the `Expectations` package at this version has a variety of dependencies (i.e. `deps = `) such as the `FastGaussQuadrature`.
-- the `FastGaussQuadrature` package at version `0.4.7` which itself has `StaticArrays` as a dependency, etc.
+- version 0.25.122 of the `Distributions` packages
+- it depends on a variety of other packages including `LinearAlgebra` and `FillArrays`
+- the `FillArrays` package is at version 1.15.0, and itself depends on `LinearAlgebra`
+- etc.
 
 The manifest file then provides a fully reproducible environment with which someone can install not only the specific version of this package, but also a feasible network of all dependencies which all fulfill the compatability requirements of each.
 
@@ -412,42 +441,25 @@ This will be part of a coherent set of strategies to ensure everything is reprod
 (editing_package_code)=
 ### Writing Code in the Package
 
-First, in the REPL add support for the `Distributions.jl` package and Julia unit testing
-
-```{code-block} julia
-] add Distributions Test
-```
-
-Which should provide output such as
-
-```{figure} /_static/figures/vscode_add_package_2.png
-:width: 100%
-```
-
-
-While it will add the package to the `Project.toml`, unlike the previous package operation, this will not install any new packages.  The reason is that `Distributions.jl` was already in the manifest as a dependency of `Expectations.jl` - and hence the network of packages already supports it.
-
-
-Next, modify the `src/MyProject.jl` to include
+Modify the `src/MyProject.jl` to include
 
 ```{code-block} julia
 module MyProject
 
-using Expectations, Distributions
+using Distributions
 
-function foo(mu = 1., sigma = 2.)
+function norm_pdf_val(x, mu = 1.0, sigma = 2.0)
     d = Normal(mu, sigma)
-    E = expectation(d)
-    return E(x -> sin(x))
+    return pdf(d, x)
 end
 
-export foo
+export norm_pdf_val
 
 end # module
 ```
 
 ```{note}
-This defines a function, `foo` in the package, and exports it so that it is available to be called directly with `foo()` after `using MyProject`.  Alternatively, you can leave off the `export foo` and instead call the function with the package name as a prefix `MyProject.foo()`.
+This defines a function, `norm_pdf_val` in the package, and exports it so that it is available to be called directly with `norm_pdf_val()` after `using MyProject`.  Alternatively, you can leave off the `export norm_pdf_val` and instead call the function with the package name as a prefix `MyProject.norm_pdf_val()`.
 ```
 
 Then, we can call this function within a REPL by first including our package
@@ -456,7 +468,7 @@ Then, we can call this function within a REPL by first including our package
 using MyProject
 ```
 
-Then calling `foo()` with the default arguments in the REPL.  This should lead to something like
+Then calling `norm_pdf_val(1.5)`.  This should lead to something like
 
 ```{figure} /_static/figures/vscode_run_package_1.png
 :width: 100%
@@ -465,15 +477,14 @@ Then calling `foo()` with the default arguments in the REPL.  This should lead t
 Next, we will change the function in the package and call it again in the REPL:
 * Modify the `foo` function definition to add `println("Modified foo definition")` inside the function
 ```{code-block} julia
-function foo(mu = 1., sigma = 2.)
-    println("Modified foo definition")
+function norm_pdf_val(x, mu = 1.0, sigma = 2.0)
+    println("Modified definition")    
     d = Normal(mu, sigma)
-    E = expectation(d)
-    return E(x -> sin(x))
+    return pdf(d, x)
 end
 ```
 
-And then call the `foo()` function again in the REPL, which shows that it is now using the modified function.
+And then call the `norm_pdf_val(1.5)` function again in the REPL, which shows that it is now using the modified function.
 
 ```{figure} /_static/figures/vscode_run_package_2.png
 :width: 100%
@@ -486,19 +497,23 @@ This behavior, where modifying code within the package is detected and immediate
 Regardless, if you modify functions **outside of** the package (e.g. a function in the `runtests.jl`) you will need to use the `<Shift+Enter>` to compile it, as Revise only tracks code within loaded packages.
 ```
 
-Consider that when writing this function, we may be checking its behavior in the REPL.  For example, we know from theory that the symmetry of the `sin` function means the expectation of the `sin` of a mean-zero normal (i.e. `foo(0)`) should be close to zero.
+To ensure our implementation is correct, we can use the `Test` package built-into julia, and added to our project file above.  The `@test` macro within it verifies a condition, and fails if it is incorrect.
 
-To check this, we can use the `Test` package built-into julia, and added to our project file above.  The `@test` macro within it verifies a condition, and fails if it is incorrect.
-
-In the REPL, use the `Test` package and then check that `foo(0)` is close to 0.
+In the REPL, use the `Test` package and then check that `norm_pdf_val(1.5)` is close to the value computed by the known formula for the normal density.
 ```{code-block} julia
-using Test, MyProject
-@test foo(0) < 1E-16
+using Test, MyProject, Distributions
+@test norm_pdf_val(1.5) ≈ pdf(Normal(1.0, 2.0), 1.5)
 ```
 
 Which should show that the "Test Passed".
 ```{figure} /_static/figures/vscode_run_package_3.png
 :width: 100%
+```
+
+```{note}
+To test floating points, you typically will want to use the `≈` operator (typed with `\approx<Tab>`) rather than `==`, since floating point arithmetic can lead to small round-off errors.  This is equivalent to `isapprox()`.
+
+See the [Julia documentation](https://docs.julialang.org/en/v1/base/math/#Base.isapprox) and [here](test_module) for more information.
 ```
 
 (editing_test_code)=
@@ -508,12 +523,24 @@ The core of test driven development is that if a value was worth checking once, 
 
 For this reason, the change to this workflow means moving much of the code you would use to explore in a Jupyter notebook into the `runtests.jl` (or files they `include`) themselves.
 
-The `@testset` are just optional ways to group the tests, and are not required for organization.
+Update your `test/runtests.jl` file to include the following code:
 
-- In `test/runtests.jl`, move the `@test foo(0) < 1E-16`  inside of the `@testset`, which you can rename.  The testsets are optional, but can provide easy ways to group tests and execute many at once within VS Code.
+```{code-block} julia
+using MyProject
+using Test
+using Distributions
+
+@testset "MyProject.jl" begin
+    @test norm_pdf_val(1.0) ≈ pdf(Normal(1.0, 2.0), 1.0)
+end
+
+```
+
+- The `@testset` are just optional ways to group the tests, and are not required for organization.
+
 - Then `<Shift-Enter>` through each line of the `runtests.jl` file.  As you execute each line of code, it will provide the result or a checkmark to indicate success
 
-At the end, you should have output within the REPL that the test you added passed.
+You should have output within both the REPL and the editor that the test passed.
 ```{figure} /_static/figures/vscode_run_package_4.png
 :width: 100%
 ```
@@ -531,7 +558,7 @@ As you develop your project, you may find yourself adding in many small checks a
 
 To do this, the package mode in Julia has a convenient function which will create a separate environment using your Project/Manifest and execute the entire `runtests.jl` function.
 
-If you have already activated the project, then `] test` is sufficient.  Otherwise, if you added it to the [global environment](add_to_global), you could type `] test MyProject`.
+If you have already activated the project, then `] test` will run it, likely after setting up a temporary environment and reinstalling packages.
 
 Run this test to see the output.
 ```{figure} /_static/figures/vscode_run_package_5.png
@@ -540,7 +567,15 @@ Run this test to see the output.
 
 This shows that the individual test passed, but also that the entire test suite was without errors.
 
-Now that we have a functional test suite, it is a good time to upload our code to the server.  Create a commit, and push all changes to the server.
+Now that we have a functional test suite, it is a good time to upload our code to the server.
+
+In VS Code add in a commit message, such as `Added unit test and dependencies`, which should look something like
+
+```{figure} /_static/figures/vscode_run_package_6.png
+:width: 100%
+```
+
+Push the Commit button and Sync changes.
 
 If you reload the webpage, you will notice that the commit is now on the server, but also that a small orange circle is next to the commit.  
 
@@ -577,26 +612,59 @@ These actions will also apply, separately, to any branches and Pull Requests (PR
 
 Separate testing and CI is one of the primary motivations for creating a branch when collaborating on a project.
 
-To demonstrate this
+To demonstrate this, we can first create a new branch on our local machine.
 
-* Create a new branch on VS Code called `my-feature` (i.e., click on the `main` branch at the bottom of the screen to enter the branch selection, then choose to make a new one).
+To do so, click on the `main` branch at the bottom of the VS Code window to open the branch selection menu.
 
-* In `MyProject.jl`, change the function in `foo` from `sin(x)` to `cos(x)`.  Note that this will change the result of `foo(0)`.
+It should look something like the following
+
+```{figure} /_static/figures/ci_5_1.png
+:width: 100%
+```
+
+With "Create new branch..." name a branch `my-feature` and ensure it is based off of the `main` branch.  The change in the branch in the bottom-left of the VS Code window
+
+In `MyProject.jl`, change the default value of `mu` to `0.0`.  i.e.,
+
+```{code-block} julia
+function norm_pdf_val(x, mu = 0.0, sigma = 2.0)
+    d = Normal(mu, sigma)
+    return pdf(d, x)
+end
+```
+
+Then we will push this change to github server.
+
 
 ```{figure} /_static/figures/ci_5.png
 :width: 100%
 ```
-* Commit this change to your local branch with the commit message.
-* Then, imagine that rather than running `] test` - which would have shown this error given our previous unit test, you pushed it to the server.  As always, do this by selecting the publish arrow next to `my-feature` at the bottom of the screen.  You can create a Pull Request in that GUI, or just go back to the webpage where it asked you if you wish to "Compare and Pull Request".
 
+Type in a Commit message such as `Modified default mu`, and "Commit" and "Publish Branch"
 
-After you create the pull request, you will see it in available on the web.  After a few minutes, the unit test will execute and you will see an output such as 
+```{note}
+Of course, one would typically run `] test` locally before pushing changes to the server to ensure that your new branch didn't break any existing code
+```
+
+After publishing this to the server, go back to the GitHub webpage for the repository and refresh if necessary.  The screen will now look something like
+
 
 ```{figure} /_static/figures/ci_6.png
 :width: 100%
 ```
 
-Unlike in the previous example, the pull request will have a red X indicating that one of the actions failed.
+* Click on the "Compare & pull request" button to create a new PR from the `my-feature` branch to the `main` branch, add in an optional description, and then "Create pull request".
+
+```{figure} /_static/figures/ci_6_2.png
+:width: 100%
+```
+
+After the PR is created, it will automatically trigger the CI to run the tests on the branch.  Unlike in the previous example, the pull request will have a red X indicating that one of the actions failed.
+
+```{figure} /_static/figures/ci_6_3.png
+:width: 100%
+```
+
 
 If this were done by a collaborator, you could go to the "Files Changed" tab, see the code modifications for commits in this PR, and then add a comment on these inline for discussion (using the `@` to tag an individual so they are emailed)
 
@@ -604,89 +672,105 @@ If this were done by a collaborator, you could go to the "Files Changed" tab, se
 :width: 100%
 ```
 
-At that point, you or your collaborators can easily switch to the branch associated with the PR (i.e. `my-feature` in the above screenshot), make changes, and test them.
+At that point, you or your collaborators can easily switch to the branch associated with the PR (i.e. `my-feature` in the above screenshot), make changes, remember to run `] test` locally to ensure everything is working, and then Commit the change and sync to the server.
 
+```{figure} /_static/figures/ci_7_2.png
+:width: 100%
+```
 
-If you go back to VS Code and change the `cos` back to `sin` and commit with a message (e.g. `Fixed bug`) then the PR will rerun the CI.
+If you go back to the webpage of the PR, you will see that the new commit has triggered the CI to run again and it is now passing the tests.
 
-In this case, you will see that while the `Modified foo` broke the CI, the `Fixed bug` commit passed, and has a green checkmark after it completes its run.
 ```{figure} /_static/figures/ci_8.png
 :width: 100%
 ```
 
-Furthermore, since the previous comment was made on a line of code that was changed after the comment was made, it says the comment is "Outdated".  When collaborating, the "Resolve conversation" option would let you close these sorts of issues as they are found.
-
-Reselect your `main` branch in VS Code to make further changes there rather than on the `my-feature` branch.
+At this point you could "Merge the pull request" and delete the branch.  Ensure you reselect your `main` branch in VS Code to make further changes there rather than on the `my-feature` branch.
 
 
 ### Code Coverage
 
 At this point, the `Codecov` badge in the README likely says `codecov | unknown` since the repository has not been added there.
 
-Click on that badge, which should take you to the `Codecov` website where you can login if required, and select particular commits or PRs.
+Click on that badge, which should take you to the `Codecov` website where you can login with GitHub (and authorize access if necessary).
 
-For example, on our previous PR we can see that it detected the change from the `cos` back to `sin` and that the coverage is 100% (i.e., every line of code in the package is executed by a test)
+If you do not see your repository listed, you may be able to search for it.
 
 ```{figure} /_static/figures/codecov_1.png
 :width: 100%
 ```
 
+Choose "Configure" and use GitHub Actions.  Scroll down to Step 3 to see a token (blurred out below)
 
-To see the impact of additional code in the package, go back to your `main` branch, add in a new function such as 
-```{code-block} julia
-function bar()
-    return 10
-end
-```
-and then commit and push to the server.
-
-After the CI executes, you will notice that the unit tests still pass despite the additional function.
-
-However, if you click on the code coverage badge again and look at the main branch (or that particular commit) you will see that the code coverage has decreased substantially.
 
 ```{figure} /_static/figures/codecov_2.png
 :width: 100%
 ```
 
-Furthermore, it highlights in red the new code in this commit which led to the lowered code coverage.  In this case, the `bar` function had nothing in `runtests.jl` that was calling it.  This can help you ensure that all of the code paths (not just entire functions) are called in one test or another in your unit tests.
 
-### Jupyter Workflow
+Click on the "add token as repository secret" link which will bring you to the correct place in the github webpage to type in the `CODECOV_TOKEN` and associated value.
 
-We can also work with the package, and activated project file, from a Jupyter notebook for analysis and exploration.
 
-In general, Jupyter should be used sparingly as it does not support a tight workflow for collaboration since it does not have an equivalent for the CI, and changes to the Jupyter notebook cannot be discussed inline and analyzed using the workflow above.
-
-However, if source code is fairly stable and you are working on just the analysis and visualization of results (where introducing bugs is unlikely), it is a very useful tool.
-
-Assuming that we have the `IJulia` package and conda installed, as in the basic lecture note setup, if we start a terminal in VS Code we will be able to start Jupyter in the right directory.
-
-- Create a new terminal for your operating system by choosing the `+` button on the terminals pane, then type `jupyter lab` to start Jupyter, then open the webpage
-
-```{figure} /_static/figures/vscode_jupyter_1.png
+```{figure} /_static/figures/codecov_3.png
 :width: 100%
 ```
 
-- Create a new notebook in Jupyter in the main folder (or a subfolder) and add code to use `MyProject` and call `foo`.
+After saving the token, the github repository will show something like
 
-```{figure} /_static/figures/vscode_jupyter_2.png
+```{figure} /_static/figures/codecov_4.png
 :width: 100%
 ```
 
-Crucially, note that the `MyProject` package and anything else in the `Project.toml` file is available since Jupyter automatically activates the project file local to jupyter notebooks.
+To trigger the code coverage, we can now make a small change directly to the `main` branch which adds a function without any associated tests.
 
-Be sure to add `.ipynb_checkpoints/*` to your `.gitignore` file, so that's not checked in.
+Go back to VS Code, and ensure you are in the `main` rather than `my-feature` branch.  Then change the `src/MyProject.jl` file to add in a new function
+
+```{code-block} julia
+module MyProject
+
+using Distributions
+
+function norm_pdf_val(x, mu = 1.0, sigma = 2.0)
+    d = Normal(mu, sigma)
+    return pdf(d, x)
+end
+
+function norm_cdf_val(x, mu = 1.0, sigma = 2.0)
+    d = Normal(mu, sigma)
+    return cdf(d, x)
+end
+
+export norm_pdf_val, norm_cdf_val
+
+end
+```
+
+Add a Commit message such as "Added cdf support" and Sync Changes
 
 
-While you would typically modify the Jupyter notebooks after the core code is stable, with `Revise.jl` it is possible to have it automatically load changes to the package itself.
-
-To do this
-- Execute `using Revise` prior to the `using MyProject` (note that VS Code's REPL does the `using Revise` automatically, if it is available).
-- Then run `foo(0)` to see the old code
-- Then modify the text of the package itself, such as changing the string in the `foo` function
-- Run `foo(0)` again to see the change.
+```{figure} /_static/figures/codecov_5.png
+:width: 100%
+```
 
 
-```{figure} /_static/figures/vscode_jupyter_3.png
+After the CI executes, you will notice that the unit tests still pass despite the additional function.
+
+However, if you click on the code coverage badge again and look at the main branch (or that particular commit) you will see that the code coverage has only 50% coverage total.
+
+If you click on the file itself, it highlights which lines were executed (in green) and which were not (in red).
+
+```{figure} /_static/figures/codecov_6.png
+:width: 100%
+```
+
+To fix this issue, the unit testing file can be modified to add an additional test as in
+
+```{figure} /_static/figures/codecov_7.png
+:width: 100%
+```
+
+After pushing this to the server and waiting for CI to execute the unit test and the code coverage,  click again on the codecov badge (which will eventually say `codecov | 100%` in green) to see that now all lines are covered.
+
+```{figure} /_static/figures/codecov_8.png
 :width: 100%
 ```
 
@@ -700,6 +784,7 @@ As discussed, there are a few different kinds of test, each with different purpo
 
 In general, well-written unit tests (which also guard against regression, for example by comparing function output to hardcoded values) are sufficient for most small projects.
 
+(test_module)=
 ### The `Test` Module
 
 Julia provides testing features through a built-in package called `Test`, which we get by `using Test`.
@@ -787,6 +872,36 @@ By using `<Shift+Enter>` in VS Code or Jupyter on the testset, you will execute 
 
 To learn more about test sets, see [the docs](https://docs.julialang.org/en/v1/stdlib/Test/index.html#Working-with-Test-Sets-1/).
 
+### Formatting
+
+Most modern programming languages have software to automatically format code to a consistent style.  This is useful for readability, but it also ensure that the diffs in version control are not polluted by changes in whitespace or other formatting.
+
+For Python, common choices are [black](https://black.readthedocs.io/en/stable/) or the lightning fast [Ruff](https://github.com/astral-sh/ruff?tab=readme-ov-file#ruff) - which is black compatible.
+
+For Julia, the primary choice is [JuliaFormatter.jl](https://github.com/juliautils/JuliaFormatter.jl) which you would have installed in the global environment above with `] add JuliaFormatter`.  Ensure this is at the global rather than project level since it is a tool run by VS Code rather than within the project itself.
+
+In the generated package above, you will see a `.JuliaFormatter.toml` file which contains only a line to use `style = "sciml"`.  See [here](https://domluna.github.io/JuliaFormatter.jl/stable/config/) for more information on configuration options.
+
+To use the formatter in VS Code with the Julia Extension, open up the `src/MyProject.jl` file, and then use the command palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on Mac) to select `Format Document`.  Choose `Julia (default)` as in
+
+```{figure} /_static/figures/julia_formatter_1.png
+:width: 100%
+```
+
+Next, in the source file modify the code to have inconsistent spacing, such as
+
+```{figure} /_static/figures/julia_formatter_2.png
+:width: 100%
+```
+
+Then again use the `> Format Document` command, which will reformat the code to be consistent with the style specified in the `.JuliaFormatter.toml` file.
+
+Optionally, you can:
+
+*  Set the formatter to run automatically on save by going to the settings (`Ctrl+,` or `Cmd+,` on Mac), searching for `format on save`, and enabling the `Editor: Format On Save` option.
+*  Add in a Github action to automatically check formatting on pushes and PRs.  See [here](https://github.com/julia-actions/julia-format)
+
+
 ## Exercises
 
 ### Exercise 1
@@ -823,12 +938,3 @@ For the tests, you should have at the very minimum
 And anything else you can think of.  You should be able to run `] test` for the project to check that the test-suite is running, and then ensure that it is running automatically on GitHub Actions CI.
 
 Push a commit to the repository which breaks one of the tests and see what the GitHub Actions CI reports after running the build.
-
-<!-- 
-# TODO: I think this is out of date, but mabye there aer better ones now?
-
-### Exercise 2
-
-Watch the youtube video [Developing Julia Packages](https://www.youtube.com/watch?v=QVmU29rCjaA) from Chris Rackauckas.  The demonstration goes through many of the same concepts as this lecture, but with more background in test-driven development and providing more details for open-source projects.. 
--->
-

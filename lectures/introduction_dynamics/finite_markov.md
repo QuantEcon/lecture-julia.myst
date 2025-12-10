@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (mc)=
@@ -1156,69 +1156,6 @@ and return the list of pages ordered by rank.
 
 When you solve for the ranking, you will find that the highest ranked node is in fact `g`, while the lowest is `a`.
 
-(mc_ex3)=
-### Exercise 3
-
-In numerical work it is sometimes convenient to replace a continuous model with a discrete one.
-
-In particular, Markov chains are routinely generated as discrete approximations to AR(1) processes of the form
-
-$$
-y_{t+1} = \rho y_t + u_{t+1}
-$$
-
-Here ${u_t}$ is assumed to be i.i.d. and $N(0, \sigma_u^2)$.
-
-The variance of the stationary probability distribution of $\{ y_t \}$ is
-
-$$
-\sigma_y^2 := \frac{\sigma_u^2}{1-\rho^2}
-$$
-
-Tauchen's method {cite}`Tauchen1986` is the most common method for approximating this continuous state process with a finite state Markov chain.
-
-A routine for this already exists in [QuantEcon.jl](http://quantecon.org/quantecon-jl) but let's write our own version as an exercise.
-
-As a first step we choose
-
-* $n$, the number of states for the discrete approximation
-* $m$, an integer that parameterizes the width of the state space
-
-Next we create a state space $\{x_0, \ldots, x_{n-1}\} \subset \mathbb R$
-and a stochastic $n \times n$ matrix $P$ such that
-
-* $x_0 = - m \, \sigma_y$
-* $x_{n-1} = m \, \sigma_y$
-* $x_{i+1} = x_i + s$ where $s = (x_{n-1} - x_0) / (n - 1)$
-
-Let $F$ be the cumulative distribution function of the normal distribution $N(0, \sigma_u^2)$.
-
-The values $P(x_i, x_j)$ are computed to approximate the AR(1) process --- omitting the derivation, the rules are as follows:
-
-1. If $j = 0$, then set
-
-$$
-P(x_i, x_j) = P(x_i, x_0) = F(x_0-\rho x_i + s/2)
-$$
-
-1. If $j = n-1$, then set
-
-$$
-P(x_i, x_j) = P(x_i, x_{n-1}) = 1 - F(x_{n-1} - \rho x_i - s/2)
-$$
-
-1. Otherwise, set
-
-$$
-P(x_i, x_j) = F(x_j - \rho x_i + s/2) - F(x_j - \rho x_i - s/2)
-$$
-
-The exercise is to write a function `approx_markov(rho, sigma_u, m = 3, n = 7)` that returns
-$\{x_0, \ldots, x_{n-1}\} \subset \mathbb R$ and $n \times n$ matrix
-$P$ as described above.
-
-* Even better, write a function that returns an instance of [QuantEcon.jl's](http://quantecon.org/quantecon-jl) MarkovChain type.
-
 ## Solutions
 
 ### Exercise 1
@@ -1313,10 +1250,3 @@ tags: [remove-cell]
     @test ranked_pages['l'] ≈ 0.032017852378295776
 end
 ```
-
-### Exercise 3
-
-A solution from [QuantEcon.jl](https://github.com/QuantEcon/QuantEcon.jl) can be found [here](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/markov/markov_approx.jl).
-
-[^pm]: Hint: First show that if $P$ and $Q$ are stochastic matrices then so is their product --- to check the row sums, try postmultiplying by a column vector of ones.  Finally, argue that $P^n$ is a stochastic matrix using induction.
-

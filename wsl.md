@@ -4,6 +4,26 @@ Editing on Windows is not entirely supported due to python/sphinx issues.  Inste
 ## Setup WSL and VS Code
 
 1. To get "Ubuntu on Windows" and other linux kernels see [instructions](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
+
+- Fresh install quick path (PowerShell as Administrator):
+    ```
+    wsl --install -d Ubuntu
+    ```
+    - **Note:** When typing your UNIX password during setup, nothing will appear on screen. This is normal — just type and press Enter.
+
+    - If installation fails, ensure required features are enabled (Powershell as administrator):
+        ```
+        dism /online /get-features /format:table | findstr /i "Microsoft-Windows-Subsystem-Linux"
+        dism /online /get-features /format:table | findstr /i "VirtualMachinePlatform"
+        ```
+        - If either is Disabled, enable and reboot:
+
+        ```
+         dism /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+         dism /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+
+        ```
+
 2. Install [VSCode](https://code.visualstudio.com/) with remote WSL support on windows
  - See [VS Code Remote Editing](https://code.visualstudio.com/docs/remote/remote-overview)
  - [VS Code Remote WSL](https://code.visualstudio.com/docs/remote/wsl#_opening-a-terminal-in-wsl)
@@ -36,7 +56,7 @@ Editing on Windows is not entirely supported due to python/sphinx issues.  Inste
     sudo apt-get upgrade
     sudo apt install make gcc unzip
     sudo apt-get update
-    sudo apt-get install libxt6 libxrender1 libgl1-mesa-glx libqt5widgets5 
+    sudo apt install -y libxt6 libxrender1 libgl1 libgl1-mesa-dri libqt5widgets5
     ```
 3. Install conda with the updated version of
 ```
@@ -51,7 +71,7 @@ bash Anaconda3-2024.06-1-Linux-x86_64.sh
     curl -fsSL https://install.julialang.org | sh
     ```
 5. Install key VSCode extensions (which are a separate set of installations for WSL vs. Windows)
-    - Search for `python, julia, myst-markdown, Jupyter, python` and if you have support `GitHub Copilot, GitHub Copilot Chat`
+    - Search for `python, julia, MyST-Markdown, Jupyter` and if you have support `GitHub Copilot, GitHub Copilot Chat`
     - Usually requires restart VS Code
 6. In a terminal, create a virtual environment for conda and install packages
     ```bash

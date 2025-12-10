@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (statd)=
@@ -41,8 +41,7 @@ In this lecture, our focus will be on continuous Markov models that
 * are often nonlinear
 
 The fact that we accommodate nonlinear models here is significant, because
-linear stochastic models have their own highly developed tool set, as we'll
-see {doc}`later on <../time_series_models/arma>`.
+linear stochastic models have their own highly developed tool set.
 
 The question that interests us most is: Given a particular stochastic dynamic
 model, how will the state of the system evolve over time?
@@ -67,8 +66,8 @@ Markov process.
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics
-using KernelDensity, Distributions, LaTeXStrings, Plots, QuantEcon, Random
+using LinearAlgebra, Statistics, Distributions, LaTeXStrings, Plots, StatsPlots,
+      Random
 ```
 
 (statd_density_case)=
@@ -428,17 +427,7 @@ In fact much stronger convergence results are true (see, for example, [this pape
 ```
 
 ### Implementation
-
-A function which calls an `LAE` type for estimating densities by this technique can be found in [lae.jl](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lae.jl).
-
-This function returns the right-hand side of {eq}`statd_lae1` using
-
-* an object of type `LAE` that stores the stochastic kernel and the observations
-* the value $y$ as its second argument
-
-The function is vectorized, in the sense that if `psi` is such an instance and `y` is an array, then the call `psi(y)` acts elementwise.
-
-(This is the reason that we reshaped `X` and `y` inside the type --- to make vectorization work)
+We'll implement a function `lae_est(p, X, ygrid)` that returns the right-hand side of {eq}`statd_lae1`, averaging the kernel $p$ over simulated draws `X` on a grid `ygrid` (see [here](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lae.jl) for the original implementation)
 
 ### Example
 
@@ -452,8 +441,6 @@ using Test
 ```
 
 ```{code-cell} julia
-using Distributions, StatsPlots, Plots, QuantEcon, Random
-
 Random.seed!(42) # For deterministic results.
 
 s = 0.2
@@ -473,6 +460,13 @@ function p(x, y)
     return pdf.(phi, pdf_arg) ./ d
 end
 
+function lae_est(p, X, ygrid)
+    Xmat = reshape(X, :, 1)
+    Ymat = reshape(ygrid, 1, :)
+    psi_vals = mean(p.(Xmat, Ymat), dims = 1)
+    return dropdims(psi_vals, dims = 1)
+end
+
 n = 10000  # Number of observations at each date t
 T = 30     # Compute density of k_t at 1,...,T+1
 
@@ -486,16 +480,16 @@ for t in 1:(T - 1)
     k[:, t + 1] = s * A[:, t] .* k[:, t] .^ alpha + (1 - delta) .* k[:, t]
 end
 
-# Generate T instances of LAE using this data, one for each date t
-laes = [LAE(p, k[:, t]) for t in T:-1:1]
+# Store draws for each date t
+laes = [k[:, t] for t in T:-1:1]
 
 # Plot
 ygrid = range(0.01, 4, length = 200)
 laes_plot = []
 colors = []
 for i in 1:T
-    psi = laes[i]
-    push!(laes_plot, lae_est(psi, ygrid))
+    lae = laes[i]
+    push!(laes_plot, lae_est(p, lae, ygrid))
     push!(colors, RGBA(0, 0, 0, 1 - (i - 1) / T))
 end
 plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2,
@@ -934,7 +928,7 @@ for t in 1:(n - 1)
     X[t + 1] = theta * abs(X[t]) + d * Z[t]
 end
 
-psi_est(a) = lae_est(LAE(p_TAR, X), a)
+psi_est(a) = lae_est(p_TAR, X, a)
 k_est = kde(X)
 
 ys = range(-3, 3, length = 200)
@@ -1003,8 +997,8 @@ for i in 1:4
         k[:, t + 1] = s * A[:, t] .* k[:, t] .^ alpha + (1 - delta) .* k[:, t]
     end
 
-    # Generate T instances of LAE using this data, one for each date t
-    laes = [LAE(p_growth, k[:, t]) for t in T:-1:1]
+    # Store draws for each date t
+    laes = [k[:, t] for t in T:-1:1]
     ind = i
     for j in 1:T
         psi = laes[j]
@@ -1096,4 +1090,3 @@ By the definition of $V$, we have $F_V(v) = \mathbb P \{ a + b U \leq v \} = \ma
 In other words, $F_V(v) = F_U ( (v - a)/b )$.
 
 Differentiating with respect to $v$ yields {eq}`statd_dv`.
-

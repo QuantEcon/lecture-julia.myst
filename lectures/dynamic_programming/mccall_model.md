@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (mccall)=
@@ -291,7 +291,7 @@ generates a sequence that converges to the fixed point.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Expectations, LaTeXStrings
+using Distributions, LaTeXStrings
 using NLsolve, Roots, Random, Plots
 ```
 
@@ -312,27 +312,26 @@ Here's the distribution of wage offers we'll work with
 n = 50
 dist = BetaBinomial(n, 200, 100) # probability distribution
 @show support(dist)
+p = pdf.(dist, support(dist))
 w = range(10.0, 60.0, length = n + 1) # linearly space wages
 
 using StatsPlots
-plt = plot(w, pdf.(dist, support(dist)), xlabel = "wages",
+plt = plot(w, p, xlabel = "wages",
            ylabel = "probabilities", legend = false)
 ```
 
 We can explore taking expectations over this distribution
 
 ```{code-cell} julia
-E = expectation(dist) # expectation operator
-
-# exploring the properties of the operator
+# exploring expectations via direct dot products
 wage(i) = w[i + 1] # +1 to map from support of 0
-E_w = E(wage)
-E_w_2 = E(i -> wage(i)^2) - E_w^2 # variance
+w = wage.(support(dist))
+E_w = dot(p, w)
+E_w_2 = dot(p, w .^ 2) - E_w^2 # variance
 @show E_w, E_w_2
 
-# use operator with left-multiply
-@show E * w # the `w` are values assigned for the discrete states
-@show dot(pdf.(dist, support(dist)), w); # identical calculation
+# could also use sum with elementwise product
+@show sum(p .* w);
 ```
 
 To implement our algorithm, let's have a look at the sequence of approximate value functions that
@@ -351,8 +350,8 @@ num_plots = 6
 
 # Operator
 # Broadcasts over the w, fixes the v
-T(v) = max.(w / (1 - beta), c + beta * E * v)
-# alternatively, T(v) = [max(wval/(1 - beta), c + beta * E*v) for wval in w]
+T(v) = max.(w / (1 - beta), c + beta * dot(v, p))
+# alternatively, T(v) = [max(w_val/(1 - beta), c + beta * dot(v, p)) for w_val in w]
 
 # fill in  matrix of vs
 vs = zeros(n + 1, 6) # data to fill
@@ -376,7 +375,7 @@ function compute_reservation_wage_direct(params;
     (; c, beta, w) = params
 
     # create a closure for the T operator
-    T(v) = max.(w / (1 - beta), c + beta * E * v) # (5) fixing the parameter values
+    T(v) = max.(w / (1 - beta), c + beta * dot(v, p)) # (5) fixing the parameter values
 
     v = copy(v_iv) # copy to prevent v_iv modification
     v_next = similar(v)
@@ -389,7 +388,7 @@ function compute_reservation_wage_direct(params;
         v .= v_next  # copy contents into v
     end
     # now compute the reservation wage
-    return (1 - beta) * (c + beta * E * v) # (2)
+    return (1 - beta) * (c + beta * dot(v, p)) # (2)
 end
 ```
 
@@ -413,12 +412,12 @@ In this case, we can use the `fixedpoint` algorithm discussed in {doc}`our Julia
 function compute_reservation_wage(params; v_iv = collect(w ./ (1 - beta)),
                                   iterations = 500, ftol = 1e-6, m = 1)
     (; c, beta, w) = params
-    T(v) = max.(w / (1 - beta), c + beta * E * v) # (5) fixing the parameter values
+    T(v) = max.(w / (1 - beta), c + beta * dot(v, p)) # (5) fixing the parameter values
 
     sol = fixedpoint(T, v_iv; iterations, ftol, m) # (5)
     sol.f_converged || error("Failed to converge")
     v_star = sol.zero
-    return (1 - beta) * (c + beta * E * v_star) # (3)
+    return (1 - beta) * (c + beta * dot(v_star, p)) # (3)
 end
 ```
 
@@ -429,11 +428,11 @@ This coding pattern, where `expression || error("failure)` first checks the expr
 Let's compute the reservation wage at the default parameters
 
 ```{code-cell} julia
-function mcm(; c = 25.0, beta = 0.99, w = range(10.0, 60.0, length = n + 1))
+function mcall_model(; c = 25.0, beta = 0.99, w = range(10.0, 60.0, length = n + 1))
     (; c, beta, w)
 end
 
-compute_reservation_wage(mcm()) # call with default parameters
+compute_reservation_wage(mcall_model()) # call with default parameters
 ```
 
 ```{code-cell} julia
@@ -441,8 +440,8 @@ compute_reservation_wage(mcm()) # call with default parameters
 tags: [remove-cell]
 ---
 @testset "Reservation Wage Tests" begin
-    @test compute_reservation_wage(mcm()) ≈ 47.316499766546215
-    @test compute_reservation_wage_direct(mcm()) ≈ 47.31649975736077
+    @test compute_reservation_wage(mcall_model()) ≈ 47.316499766546215
+    @test compute_reservation_wage_direct(mcall_model()) ≈ 47.31649975736077
 end
 ```
 
@@ -463,7 +462,7 @@ beta_vals = range(0.9, 0.99, length = grid_size)
 
 for (i, c) in enumerate(c_vals)
     for (j, beta) in enumerate(beta_vals)
-        R[i, j] = compute_reservation_wage(mcm(; c, beta); m = 0)
+        R[i, j] = compute_reservation_wage(mcall_model(; c, beta); m = 0)
     end
 end
 ```
@@ -578,9 +577,9 @@ The big difference here, however, is that we're iterating on a single number, ra
 Here's an implementation:
 
 ```{code-cell} julia
-function compute_reservation_wage_psi(c, beta; psi_iv = E * w ./ (1 - beta),
+function compute_reservation_wage_psi(c, beta; psi_iv = dot(w, p) / (1 - beta),
                                       iterations = 500, ftol = 1e-5, m = 1)
-    T_psi(psi) = [c + beta * E * max.((w ./ (1 - beta)), psi[1])] # (7)
+    T_psi(psi) = [c + beta * dot(max.((w ./ (1 - beta)), psi[1]), p)] # (7)
     # using vectors since fixedpoint doesn't support scalar
     sol = fixedpoint(T_psi, [psi_iv]; iterations, ftol, m)
     sol.f_converged || error("Failed to converge")
@@ -595,9 +594,9 @@ You can use this code to solve the exercise below.
 Another option is to solve for the root of the  $T_{\psi}(\psi) - \psi$ equation
 
 ```{code-cell} julia
-function compute_reservation_wage_psi2(c, beta; psi_iv = E * w ./ (1 - beta),
+function compute_reservation_wage_psi2(c, beta; psi_iv = dot(w, p) / (1 - beta),
                                        maxiters = 500, rtol = 1e-5)
-    root_psi(psi) = c + beta * E * max.((w ./ (1 - beta)), psi) - psi # (7)
+    root_psi(psi) = c + beta * dot(max.((w ./ (1 - beta)), psi), p) - psi # (7)
     psi_star = find_zero(root_psi, psi_iv; maxiters, rtol)
     return (1 - beta) * psi_star # (2)
 end
@@ -609,7 +608,7 @@ compute_reservation_wage_psi2(c, beta)
 tags: [remove-cell]
 ---
 @testset begin
-    mcmp = mcm()
+    mcmp = mcall_model()
     @test compute_reservation_wage(mcmp) ≈ 47.316499766546215
     @test compute_reservation_wage_psi(mcmp.c, mcmp.beta) ≈ 47.31649976654623
     @test compute_reservation_wage_psi2(mcmp.c, mcmp.beta) ≈ 47.31649976654623

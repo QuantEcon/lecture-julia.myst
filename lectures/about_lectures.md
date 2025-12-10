@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (about)=
@@ -45,10 +45,18 @@ While Julia has many features of a general purpose language, its specialization 
 using Matlab or Fortran than using a general purpose language - giving it an advantage in being closer
 to both mathematical notation and direct implementation of mathematical abstractions.
 
+Julia has both a large number of useful, well written libraries and many incomplete poorly maintained proofs of concept.
+
+A major advantage of Julia libraries is that, because Julia itself is sufficiently fast, there is less need to mix in low level languages like C and Fortran.
+
+As a result, most Julia libraries are written exclusively in Julia.
+
+Not only does this make the libraries more portable, it makes them much easier to dive into, read, learn from and modify.
+
 ### A Word of Caution
 
 The disadvantage of specialization is that Julia tends to be used by domain experts, and consequently
-the ecosystem and language for non-mathematical/non-scientfic computing tasks is inferior to Python.
+the ecosystem and language for non-mathematical/non-scientific computing tasks is inferior to Python.
 
 Another disadvantage is that, since it tends to be used by experts and is on the cutting edge, the tooling is
 much more fragile and rudimentary than Matlab.
@@ -58,12 +66,6 @@ carefully managed for [version compatibility](https://semver.org/).  However, ca
 not expect the development tools to quite as stable, or to be comparable to Matlab.
 
 Nevertheless, the end-result will always be elegant and grounded in mathematical notation and abstractions.
-
-For these reasons, Julia is most appropriate at this time for researchers who want to:
-
-1. invest in a language likely to mature in the 3-5 year timeline
-1. use one of the many amazing packages that Julia makes possible (and are frequently impossible in other languages)
-1. write sufficiently specialized algorithms that the quirks of the environment are much less important than the end-result
 
 ## Advantages of Julia
 
@@ -76,15 +78,12 @@ The advantages of the language itself show clearly in the high quality packages,
 - Interval Constraint Programming and rigorous root finding: [IntervalRootFinding.jl](https://github.com/JuliaIntervals/IntervalRootFinding.jl)
 - GPUs: [CuArrays.jl](https://github.com/JuliaGPU/CuArrays.jl)
 - Linear algebra for large-systems (e.g. structured matrices, matrix-free methods, etc.): [IterativeSolvers.jl](https://juliamath.github.io/IterativeSolvers.jl/dev/), [BlockBandedMatrices.jl](https://github.com/JuliaMatrices/BlockBandedMatrices.jl), [InfiniteLinearAlgebra.jl](https://github.com/JuliaMatrices/InfiniteLinearAlgebra.jl), and many others
-- Automatic differentiation: [Zygote.jl](https://github.com/FluxML/Zygote.jl) and [ForwardDiff.jl](https://github.com/JuliaDiff/ForwardDiff.jl)
+- Automatic differentiation: [ForwardDiff.jl](https://github.com/JuliaDiff/ForwardDiff.jl) and [Enzyme.jl](https://github.com/EnzymeAD/Enzyme.jl)
 
 These are in addition to the many mundane but essential packages available.  While there are examples of these packages in other languages, no
 other language can achieve the combination of performance, mathematical notation, and composition that Julia provides.
 
 The composition of packages is especially important, and is made possible through Julia's use of something called [multiple-dispatch](https://en.wikipedia.org/wiki/Multiple_dispatch).
-
-The promise of Julia is that you write clean mathematical code, and have the same code automatically work with automatic-differentiation, interval arithmetic, and GPU arrays--all of which may be used in
-cutting edge algorithms in packages and combined seamlessly.
 
 ## Open Source
 

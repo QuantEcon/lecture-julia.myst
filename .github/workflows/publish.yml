@@ -9,9 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.11
       - name: Install Python Dependencies
@@ -35,7 +35,7 @@ jobs:
       - name: Set up Julia
         uses: julia-actions/setup-julia@v2
         with:
-          version: 1.11.1
+          version: 1.12.2
       - name: Install IJulia and Setup Project
         shell: bash
         run: |
@@ -43,7 +43,7 @@ jobs:
           julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
       # Download Jupyter Book Cache
       - name: Download "build" folder (cache)
-        uses: dawidd6/action-download-artifact@v9
+        uses: dawidd6/action-download-artifact@v11
         with:
           workflow: cache.yml
           branch: main
@@ -61,7 +61,7 @@ jobs:
         run: |
           jb build lectures --path-output ./ --builder=custom --custom-builder=jupyter
           zip -r download-notebooks.zip _build/jupyter
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: download-notebooks
           path: download-notebooks.zip
@@ -75,6 +75,32 @@ jobs:
         shell: bash -l {0}
         run: |
           jb build lectures --path-output ./
+      # Create HTML archive for release assets
+      - name: Create HTML archive
+        shell: bash -l {0}
+        run: |
+          tar -czf lecture-julia-html-${{ github.ref_name }}.tar.gz -C _build/html .
+          sha256sum lecture-julia-html-${{ github.ref_name }}.tar.gz > html-checksum.txt
+          
+          # Create metadata manifest
+          cat > html-manifest.json << EOF
+          {
+            "tag": "${{ github.ref_name }}",
+            "commit": "${{ github.sha }}",
+            "timestamp": "$(date -Iseconds)",
+            "size_mb": $(du -sm _build/html | cut -f1),
+            "file_count": $(find _build/html -type f | wc -l)
+          }
+          EOF
+      - name: Upload archives to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            lecture-julia-html-${{ github.ref_name }}.tar.gz
+            html-checksum.txt
+            html-manifest.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy website to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
@@ -82,7 +108,7 @@ jobs:
           publish_dir: _build/html/
           cname: julia.quantecon.org
       - name: Upload "_build" folder (cache)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build-publish
           path: _build

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (short_path)=
@@ -154,6 +154,12 @@ In general, this sequence converges to $J$---the proof is omitted.
 Use the algorithm given above to find the optimal path (and its cost) for the
 following graph.
 
+The graph is **directed**: from each node you may move only to the destinations
+listed in its adjacency list (e.g., you can travel from `0` to `1`, but not from
+`1` back to `0` unless that edge is explicitly listed).  Treat node `0` as the
+start and node `99` as the destination.  As an extension, you can symmetrize the
+edges to create an undirected version and compare the resulting path and cost.
+
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
@@ -279,56 +285,55 @@ The cost from node 68 to node 71 is 1.66 and so on.
 ### Exercise 1
 
 ```{code-cell} julia
-function update_J!(J, graph)
-    next_J = Dict()
-    for node in keys(graph)
-        if node == 99
-            next_J[node] = 0
-        else
-            next_J[node] = minimum(cost + J[dest] for (dest, cost) in graph[node])
-        end
-    end
-    return next_J
-end
-
-function print_best_path(J, graph)
-    sum_costs = 0.0
-    current_location, destination = extrema(keys(graph))
-    while current_location != destination
-        println("node $current_location")
-        running_min = 1e10
-        minimizer_dest = Inf
-        minimizer_cost = 1e10
-        for (dest, cost) in graph[current_location]
-            cost_of_path = cost + J[dest]
-            if cost_of_path < running_min
-                running_min = cost_of_path
-                minimizer_cost = cost
-                minimizer_dest = dest
+function value_iteration(graph; dest = maximum(keys(graph)))
+    J = Dict(node => (node == dest ? 0.0 : Inf) for node in keys(graph))
+    updated = true
+    while updated
+        updated = false
+        for (node, edges) in graph
+            node == dest && continue
+            best = minimum(cost + J[child] for (child, cost) in edges)
+            if best != J[node]
+                J[node] = best
+                updated = true
             end
         end
-
-        current_location = minimizer_dest
-        sum_costs += minimizer_cost
     end
-
-    sum_costs = round(sum_costs, digits = 2)
-
-    println("node $destination\nCost: $sum_costs")
+    return J
 end
 
-J = Dict((node => Inf) for node in keys(graph))
-
-while true
-    next_J = update_J!(J, graph)
-    if next_J == J
-        break
-    else
-        J = next_J
+function best_path(J, graph; start = minimum(keys(graph)), dest = maximum(keys(graph)))
+    path = Int[]
+    cost = 0.0
+    current = start
+    while current != dest
+        push!(path, current)
+        edges = graph[current]
+        next_node, edge_cost = edges[1]
+        best_total = edge_cost + J[next_node]
+        for (child, c) in Iterators.drop(edges, 1)
+            total = c + J[child]
+            if total < best_total
+                best_total = total
+                next_node = child
+                edge_cost = c
+            end
+        end
+        current = next_node
+        cost += edge_cost
     end
+    push!(path, dest)
+    return path, cost
 end
 
-print_best_path(J, graph)
+J = value_iteration(graph)
+path, total_cost = best_path(J, graph)
+total_cost = round(total_cost; digits = 2)
+
+for node in path
+    println("node $node")
+end
+println("Cost: $total_cost")
 ```
 
 ```{code-cell} julia
@@ -359,4 +364,3 @@ sum_costs = round(sum_costs, digits = 2)
 
 @test sum_costs ≈ 160.55
 ```
-

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (ifp)=
@@ -375,8 +375,8 @@ using Test
 ```
 
 ```{code-cell} julia
-using LinearAlgebra, Statistics
-using BenchmarkTools, LaTeXStrings, Optim, Plots, QuantEcon, Random
+using LinearAlgebra, Statistics, Interpolations, NLsolve
+using BenchmarkTools, LaTeXStrings, Optim, Plots, Random, QuantEcon
 using Optim: converged, maximum, maximizer, minimizer, iterations
 
 ```
@@ -407,8 +407,8 @@ function T!(cp, V, out; ret_policy = false)
     z_idx = 1:length(z_vals)
 
     # value function when the shock index is z_i
-    vf = interp(asset_grid, V)
-
+    vf = LinearInterpolation((asset_grid, z_idx), V;
+                             extrapolation_bc = Interpolations.Flat())
     opt_lb = 1e-8
 
     # solve for RHS of Bellman equation
@@ -444,7 +444,8 @@ function K!(cp, c, out)
     gam = R * beta
 
     # policy function when the shock index is z_i
-    cf = interp(asset_grid, c)
+    cf = LinearInterpolation((asset_grid, z_idx), c;
+                             extrapolation_bc = Interpolations.Flat())
 
     # compute lower_bound for optimization
     opt_lb = 1e-8
@@ -525,7 +526,7 @@ In the Julia console, a comparison of the operators can be made as follows
 
 ```{code-cell} julia
 cp = ConsumerProblem()
-v, c, = initialize(cp)
+v, c = initialize(cp)
 ```
 
 ```{code-cell} julia
@@ -577,10 +578,9 @@ The following figure is a 45 degree diagram showing the law of motion for assets
 m = ConsumerProblem(r = 0.03, grid_max = 4)
 v_init, c_init = initialize(m)
 
-c = compute_fixed_point(c -> K(m, c),
-                        c_init,
-                        max_iter = 150,
-                        verbose = false)
+sol = fixedpoint(c -> K(m, c), c_init)
+c = sol.zero
+
 a = m.asset_grid
 R, z_vals = m.R, m.z_vals
 
@@ -711,10 +711,9 @@ legends = []
 for r_val in r_vals
     cp = ConsumerProblem(r = r_val)
     v_init, c_init = initialize(cp)
-    c = compute_fixed_point(x -> K(cp, x),
-                            c_init,
-                            max_iter = 150,
-                            verbose = false)
+    sol = fixedpoint(x -> K(cp, x), c_init)
+    c = sol.zero
+
     traces = push!(traces, c[:, 1])
     legends = push!(legends, L"r = %$(round(r_val, digits = 3))")
 end
@@ -741,10 +740,12 @@ function compute_asset_series(cp, T = 500_000; verbose = false)
     (; Pi, z_vals, R) = cp  # simplify names
     z_idx = 1:length(z_vals)
     v_init, c_init = initialize(cp)
-    c = compute_fixed_point(x -> K(cp, x), c_init,
-                            max_iter = 150, verbose = false)
 
-    cf = interp(cp.asset_grid, c)
+    sol = fixedpoint(x -> K(cp, x), c_init)
+    c = sol.zero
+
+    cf = LinearInterpolation((cp.asset_grid, z_idx), c;
+                             extrapolation_bc = Interpolations.Flat())
 
     a = zeros(T + 1)
     z_seq = simulate(MarkovChain(Pi), T)
@@ -804,4 +805,3 @@ tags: [remove-cell]
     #test ys[1] ≈ 0.0:0.0016666666666666668:0.04 atol = 1e-4
 end
 ```
-
