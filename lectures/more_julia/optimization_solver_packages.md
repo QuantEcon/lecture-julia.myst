@@ -18,7 +18,7 @@ kernelspec:
 </div>
 ```
 
-# Solvers, Optimizers
+# Optimization and Solving Systems of Equations
 
 ```{contents} Contents
 :depth: 2
