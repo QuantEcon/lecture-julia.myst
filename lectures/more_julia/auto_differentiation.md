@@ -367,6 +367,49 @@ This last point is important.  As your functions will be non-allocating, you nee
 
 ### Examples
 
+### Convenience Functions
+Enzyme provides [convenience functions](https://enzymead.github.io/Enzyme.jl/dev/#Convenience-functions-(gradient,-jacobian,-hessian)) to create zero-initialized shadows for you and to call `autodiff` with common patterns.
+
+Following that documentation, we define a scalar valued function of a vector input.
+
+When using Reverse-mode AD the forward pass needs to calculate the "primal" value, and we can request the function to return both.
+
+```{code-cell} julia
+rosenbrock(x) = (1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2
+
+# Use Reverse-mode  AD
+x = [1.0, 2.0]
+@show gradient(Reverse, rosenbrock, x)
+# Return a tuple with the "primal" (i.e., function value) and grad
+@show gradient(ReverseWithPrimal, rosenbrock, x);
+```
+
+With a preallocated gradient vector, we can use an in-place version
+```{code-cell} julia
+dx = Enzyme.make_zero(x) # or just zeros(size(x)), but this is more bulletproof
+gradient!(Reverse, dx, rosenbrock, x)
+@show dx;
+```
+
+Similarly, we can execute forward-mode AD to get the gradient.  Unlike Reverse mode, this will call the `autodiff` for each input dimension.
+
+```{code-cell} julia
+@show gradient(Forward, rosenbrock, [1.0, 2.0])
+@show gradient(ForwardWithPrimal, rosenbrock, [1.0, 2.0]);
+```
+
+In the case of vector-valued functions, we can fill a Jacobian matrix.  If calling with `Forward`, each column of the Jacobian is filled in a separate pass.  If calling with `Reverse`, each row is filled in a separate pass.
+
+```{code-cell} julia
+f(x) = [(1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2;
+        x[1] * x[2]]
+@show jacobian(Forward, f, x)
+@show jacobian(Reverse, f, x)
+@show jacobian(ReverseWithPrimal, f, x);
+```
+
+See [here](https://enzymead.github.io/Enzyme.jl/dev/#Hessian-Vector-Product-Convenience-functions) for more examples such as Hessian-vector products.
+
 ### Simple Forward Mode
 Forward mode propagates derivatives alongside the primal calculation. It is ideal for low-dimensional inputs.
 
@@ -392,7 +435,7 @@ print("∂f/∂x = ", dx)
 Note that in Forward mode for scalar outputs, you often look at the return value.  However, for array inputs, Enzyme conventions usually focus on Reverse mode.
 
 
-### Reverse Mode (Gradients)
+### Reverse Mode
 Reverse mode computes the gradient of the output with respect to *all* inputs in a single pass.
 
 ```{code-cell} julia
@@ -412,6 +455,14 @@ autodiff(Reverse, calc, Duplicated(x, dx), Duplicated(y, dy))
 
 @show dx  # Should be 2*x -> [2.0, 4.0, 6.0]
 @show dy;  # Should be 1.0 -> [1.0, 1.0, 1.0]
+```
+
+As it requires calculation of the primal in the forward pass, as with the convenience functions you can request it to be returned, and then examine the shadows.
+
+```{code-cell} julia
+dx = Enzyme.make_zero(x)
+dy = Enzyme.make_zero(y)
+autodiff(ReverseWithPrimal, calc, Duplicated(x, dx), Duplicated(y, dy))
 ```
 
 ### Handling Mutation and Buffers
