@@ -123,6 +123,7 @@ AI tools should:
 When uncertain:
 - Follow patterns already present in similar notebooks.
 - Test execution with `jb build lectures`.
+- Activate with `.venv` first if it exists.
 - Refer to the style guide.
 - Prefer conservative, minimally invasive edits.
 - Prioritize correctness of executed notebooks.
