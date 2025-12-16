@@ -51,6 +51,7 @@ function kalman!(mu, Sigma, y, mu_0, Sigma_0, A, C, G, H, cache; perturb_diagona
     N, T1 = size(mu)
     M, T_obs = size(y)
     T = T_obs
+    logconst = M * log(2π)
 
     @inbounds for i in 1:N
         mu[i, 1] = mu_0[i]
@@ -107,10 +108,12 @@ function kalman!(mu, Sigma, y, mu_0, Sigma_0, A, C, G, H, cache; perturb_diagona
         # log likelihood contribution: -0.5 (M log(2π) + logdet(S) + ν' S^{-1} ν)
         copyto!(cache.innovation_solved, cache.innovation)
         ldiv!(F, cache.innovation_solved)
-        # logdet(S) = 2 * sum(log, diag(U)) for the upper-triangular factor U from S = U'U
-        logdetS = 2 * sum(log, diag(F.U))
+        logdetS = zero(eltype(mu))
+        @inbounds @simd for i in 1:M
+            logdetS += 2 * log(F.U[i, i])
+        end
         quad = dot(cache.innovation_solved, cache.innovation_solved)
-        loglik -= 0.5 * (M * log(2π) + logdetS + quad)
+        loglik -= 0.5 * (logconst + logdetS + quad)
     end
 
     return loglik
@@ -211,6 +214,13 @@ mu_alloc = zeros(N, Tobs + 1)
 Sigma_alloc = zeros(N, N, Tobs + 1)
 cache_alloc = alloc_cache(N, M)
 allocs_kalman = @allocated kalman!(mu_alloc, Sigma_alloc, y_obs, mu_0, Sigma_0, A, C, G, H, cache_alloc)
+@test allocs_kalman == 0
+
+mu_wrapper = zeros(N, Tobs + 1)
+Sigma_wrapper = zeros(N, N, Tobs + 1)
+cache_wrapper = alloc_cache(N, M)
+allocs_wrapper = @allocated final_mean_sum(y_obs, mu_0, Sigma_0, A, C, G, H, mu_wrapper, Sigma_wrapper, cache_wrapper)
+@test allocs_wrapper == 0
 
 # Reverse-mode sensitivity of final mean to mu_0
 dmu_0 = Enzyme.make_zero(mu_0)
