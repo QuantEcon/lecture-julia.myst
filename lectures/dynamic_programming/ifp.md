@@ -376,7 +376,8 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics, Interpolations, NLsolve
-using BenchmarkTools, LaTeXStrings, Optim, Plots, Random, QuantEcon
+using BenchmarkTools, LaTeXStrings, Optim, Plots, Random
+using Distributions
 using Optim: converged, maximum, maximizer, minimizer, iterations
 
 ```
@@ -635,7 +636,7 @@ Your task is to replicate the figure
 * Parameters are as discussed above
 * The histogram in the figure used a single time series $\{a_t\}$ of length 500,000
 * Given the length of this time series, the initial condition $(a_0, z_0)$ will not matter
-* You might find it helpful to use the `MarkovChain` type from `quantecon`
+* You might find it helpful to represent the income process as a Markov chain via its transition matrix $\Pi$ and simulate state indices directly
 
 (ifp_ex4)=
 ### Exercise 4
@@ -748,7 +749,21 @@ function compute_asset_series(cp, T = 500_000; verbose = false)
                              extrapolation_bc = Interpolations.Flat())
 
     a = zeros(T + 1)
-    z_seq = simulate(MarkovChain(Pi), T)
+    function simulate_markov_chain(P, X_0, T)
+        N = size(P, 1)
+        num_chains = length(X_0)
+        P_dist = [Categorical(P[i, :]) for i in 1:N]
+        X = zeros(Int, num_chains, T + 1)
+        X[:, 1] .= X_0
+        for t in 1:T
+            for n in 1:num_chains
+                X[n, t + 1] = rand(P_dist[X[n, t]])
+            end
+        end
+        return X
+    end
+
+    z_seq = vec(simulate_markov_chain(Pi, [1], T))
     for t in 1:T
         i_z = z_seq[t]
         a[t + 1] = R * a[t] + z_vals[i_z] - cf(a[t], i_z)

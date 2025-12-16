@@ -301,7 +301,8 @@ The code can be found below:
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using LaTeXStrings, QuantEcon, DataFrames, Plots, Random
+using LaTeXStrings, DataFrames, Plots, Random
+using Distributions
 ```
 
 ```{code-cell} julia
@@ -309,6 +310,34 @@ using LaTeXStrings, QuantEcon, DataFrames, Plots, Random
 tags: [remove-cell]
 ---
 using Test
+```
+
+We'll reuse the Tauchen discretization routine introduced and explained in {doc}`this lecture <../more_julia/quadrature_interpolation>`.
+
+```{code-cell} julia
+function tauchen(N, rho, sigma, mu, m = 3)
+    mu_X = mu / (1 - rho)
+    sigma_X = sigma / sqrt(1 - rho^2)
+    z = range(-m * sigma_X, m * sigma_X, length = N)
+    midpoints = (z[1:(end - 1)] .+ step(z) / 2)'
+    F = cdf.(Normal(), (midpoints .- rho .* z) ./ sigma)
+    P = [F[:, 1] diff(F, dims = 2) (1 .- F[:, end])]
+    return (; P, mu_X, sigma_X, x = z .+ mu_X)
+end
+
+function simulate_markov_chain(P, X_0, T)
+    N = size(P, 1)
+    num_chains = length(X_0)
+    P_dist = [Categorical(P[i, :]) for i in 1:N]
+    X = zeros(Int, num_chains, T + 1)
+    X[:, 1] .= X_0
+    for t in 1:T
+        for n in 1:num_chains
+            X[n, t + 1] = rand(P_dist[X[n, t]])
+        end
+    end
+    return X
+end
 ```
 
 ```{code-cell} julia
@@ -323,9 +352,8 @@ function ArellanoEconomy(; beta = 0.953,
 
     # create grids
     Bgrid = collect(range(-0.4, 0.4, length = nB))
-    mc = tauchen(ny, rho, eta)
-    Pi = mc.p
-    ygrid = exp.(mc.state_values)
+    (; P, x) = tauchen(ny, rho, eta, 0.0)
+    ygrid = exp.(x)
     ydefgrid = min.(0.969 * mean(ygrid), ygrid)
 
     # define value functions
@@ -339,7 +367,7 @@ function ArellanoEconomy(; beta = 0.953,
     defprob = zeros(nB, ny)
 
     return (; beta, gamma, r, rho, eta, theta, ny,
-            nB, ygrid, ydefgrid, Bgrid, Pi, vf, vd, vc,
+        nB, ygrid, ydefgrid, Bgrid, P, vf, vd, vc,
             policy, q, defprob)
 end
 
@@ -352,7 +380,7 @@ function one_step_update!(ae,
 
     # unpack stuff
     (; beta, gamma, r, rho, eta, theta, ny, nB) = ae
-    (; ygrid, ydefgrid, Bgrid, Pi, vf, vd, vc, policy, q, defprob) = ae
+    (; ygrid, ydefgrid, Bgrid, P, vf, vd, vc, policy, q, defprob) = ae
     zero_ind = searchsortedfirst(Bgrid, 0.0)
 
     for iy in 1:ny
@@ -396,7 +424,7 @@ function compute_prices!(ae)
     default_states = vd_compat .> ae.vc
 
     # update default probabilities and prices
-    copyto!(ae.defprob, default_states * ae.Pi')
+    copyto!(ae.defprob, default_states * ae.P')
     copyto!(ae.q, (1 .- ae.defprob) / (1 + r))
     return
 end
@@ -405,8 +433,8 @@ function vfi!(ae; tol = 1e-8, maxit = 10000)
 
     # unpack stuff
     (; beta, gamma, r, rho, eta, theta, ny, nB) = ae
-    (; ygrid, ydefgrid, Bgrid, Pi, vf, vd, vc, policy, q, defprob) = ae
-    Pit = Pi'
+    (; ygrid, ydefgrid, Bgrid, P, vf, vd, vc, policy, q, defprob) = ae
+    Pt = P'
 
     # Iteration stuff
     it = 0
@@ -419,11 +447,11 @@ function vfi!(ae; tol = 1e-8, maxit = 10000)
         it += 1
 
         # compute expectations for this iterations
-        # (we need Pi' because of order value function dimensions)
+    # (we need P' because of order value function dimensions)
         copyto!(V_upd, ae.vf)
-        EV = ae.vf * Pit
-        EVd = ae.vd * Pit
-        EVc = ae.vc * Pit
+    EV = ae.vf * Pt
+    EVd = ae.vd * Pt
+    EVc = ae.vc * Pt
 
         # update value function
         one_step_update!(ae, EV, EVd, EVc)
@@ -439,7 +467,7 @@ function vfi!(ae; tol = 1e-8, maxit = 10000)
     end
 end
 
-function QuantEcon.simulate(ae,
+function simulate(ae,
                             capT = 5000;
                             y_init = mean(ae.ygrid),
                             B_init = mean(ae.Bgrid),)
@@ -449,9 +477,7 @@ function QuantEcon.simulate(ae,
     y_init_ind = searchsortedfirst(ae.ygrid, y_init)
     B_init_ind = searchsortedfirst(ae.Bgrid, B_init)
 
-    # create a QE MarkovChain
-    mc = MarkovChain(ae.Pi)
-    y_sim_indices = simulate(mc, capT + 1; init = y_init_ind)
+    y_sim_indices = vec(simulate_markov_chain(ae.P, [y_init_ind], capT))
 
     # allocate and fill output
     y_sim_val = zeros(capT + 1)
@@ -463,7 +489,7 @@ function QuantEcon.simulate(ae,
 
     for t in 1:capT
         # get today's indexes
-        yi, Bi = y_sim_indices[t], B_sim_indices[t]
+    yi, Bi = y_sim_indices[t], B_sim_indices[t]
         defstat = default_status[t]
 
         # if you are not in default
@@ -723,4 +749,3 @@ tags: [remove-cell]
     # @test default_vec[240] == false
 end
 ```
-
