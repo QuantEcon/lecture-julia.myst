@@ -353,7 +353,8 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Plots, QuantEcon, Random
+using Plots, Random, QuantEcon
+using Distributions
 
 ```
 
@@ -385,15 +386,26 @@ end
 function consumption_incomplete(cp; N_simul = 150)
     (; beta, P, y, b0) = cp
 
-    # for the simulation use the MarkovChain type
-    mc = MarkovChain(P)
+  # simulate Markov state indices
+  function simulate_markov_chain(P, X_0, T)
+    N = size(P, 1)
+    num_chains = length(X_0)
+    P_dist = [Categorical(P[i, :]) for i in 1:N]
+    X = zeros(Int, num_chains, T + 1)
+    X[:, 1] .= X_0
+    for t in 1:T
+      for n in 1:num_chains
+        X[n, t + 1] = rand(P_dist[X[n, t]])
+      end
+    end
+    return X
+  end
 
     # useful variables
     y = y
     v = inv(I - beta * P) * y
 
-    # simulate state path
-    s_path = simulate(mc, N_simul, init = 1)
+  s_path = vec(simulate_markov_chain(P, [1], N_simul))[2:end]
 
     # store consumption and debt path
     b_path, c_path = ones(N_simul + 1), ones(N_simul)
