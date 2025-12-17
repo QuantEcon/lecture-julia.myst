@@ -203,13 +203,12 @@ With complicated code, we first need to ensure the code is type-stable.  The fol
 Next we check that it does not allocate any memory during execution.
 
 ```{code-cell} julia
+using BenchmarkTools
 function count_allocs()
-    return @allocated simulate_lss!(x, y, model, x_0, w, v)
+    return simulate_lss!(x, y, model, x_0, w, v)
 end
-@test count_allocs() == 0
+@btime count_allocs()
 ```
-
-Note that `@allocated` can be misleading if used in a Jupyter notebook and must be wrapped in a function to get reliable results, or used with `@btime` from `BenchmarkTools.jl`.
 
 Finally, for complicated functions such as simulations, we cannot
 assume that Enzyme (or any AD system) will necessarily be correct.
@@ -223,16 +222,14 @@ function test_forward_simulate_lss!(x, y, model, x_0, w, v)
     simulate_lss!(x, y, model, x_0, w, v)
     return x, y
 end
-test_forward(
-    test_forward_simulate_lss!,
-    Duplicated,
-    (x, Duplicated),
-    (y, Duplicated),
-    (model, Const),
-    (x_0, Duplicated),
-    (w, Const),
-    (v, Const) 
-)
+test_forward(test_forward_simulate_lss!,
+             Duplicated,
+             (x, Duplicated),
+             (y, Duplicated),
+             (model, Const),
+             (x_0, Duplicated),
+             (w, Const),
+             (v, Const))
 ```
 
 Unlike `test_forward`, the automatic checks on reverse-mode AD with `test_reverse` require a scalar output, which we discuss below in the calibration section.
@@ -284,25 +281,23 @@ As before, for complicated functions we may want to check that the gradients are
 
 ```{code-cell} julia
 test_reverse(g,
-    Active,
-    (x_rev, Duplicated),
-    (y_rev, Duplicated),
-    (model, Const),
-    (x_0, Const),
-    (w, Duplicated),
-    (v, Duplicated)
-)
+             Active,
+             (x_rev, Duplicated),
+             (y_rev, Duplicated),
+             (model, Const),
+             (x_0, Const),
+             (w, Duplicated),
+             (v, Duplicated))
 
 # Or with a different set of arguments
 test_reverse(g,
-    Active,
-    (x_rev, Duplicated),
-    (y_rev, Duplicated),
-    (model, Duplicated),
-    (x_0, Duplicated),
-    (w, Const),
-    (v, Const)
-)
+             Active,
+             (x_rev, Duplicated),
+             (y_rev, Duplicated),
+             (model, Duplicated),
+             (x_0, Duplicated),
+             (w, Const),
+             (v, Const))
 ```
 In all cases we must ensure the mutated arguments are passed as `Duplicated`.
 

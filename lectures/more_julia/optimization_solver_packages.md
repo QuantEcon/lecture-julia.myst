@@ -26,7 +26,7 @@ kernelspec:
 
 ## Overview
 
-In this lecture we introduce a few of the Julia libraries for solving optimization problems, systems of equations, and finding fixed-points.
+In this lecture we introduce a few of the Julia libraries for solving optimization problems, systems of equations, and finding fixed points.
 
 See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for more on calculating gradients and Jacobians for these types of algorithms.
 
@@ -35,8 +35,10 @@ See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for more on
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics
+using LinearAlgebra, Statistics, BenchmarkTools
 using ForwardDiff, Optim, Roots, NLsolve
+using FixedPointAcceleration, NonlinearSolve
+using Optimization, OptimizationOptimJL, ForwardDiff, Enzyme
 using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
 ```
 
@@ -51,7 +53,7 @@ The other reason is that different types of optimization problems require differ
 ### Optim.jl
 
 A good pure-Julia solution for the (unconstrained or box-bounded) optimization of
-univariate and multivariate function is the [Optim.jl](https://github.com/JuliaNLSolvers/Optim.jl) package.
+univariate and multivariate functions is the [Optim.jl](https://github.com/JuliaNLSolvers/Optim.jl) package.
 
 By default, the algorithms in `Optim.jl` target minimization rather than
 maximization, so if a function is called `optimize` it will mean minimization.
@@ -92,7 +94,7 @@ x_iv = [0.0, 0.0]
 results = optimize(f, x_iv) # i.e. optimize(f, x_iv, NelderMead())
 ```
 
-The default algorithm in `NelderMead`, which is derivative-free and hence requires many function evaluations.
+The default algorithm is `NelderMead`, which is derivative-free and hence requires many function evaluations.
 
 To change the algorithm type to [L-BFGS](http://julianlsolvers.github.io/Optim.jl/stable/algo/lbfgs/)
 
@@ -106,7 +108,7 @@ Note that this has fewer iterations.
 
 As no derivative was given, it used [finite differences](https://en.wikipedia.org/wiki/Finite_difference) to approximate the gradient of `f(x)`.
 
-However, since most of the algorithms require derivatives, you will often want to use auto differentiation or pass analytical gradients if possible.
+However, since most of the algorithms require derivatives, you will often want to use automatic differentiation or pass analytical gradients if possible.
 
 ```{code-cell} julia
 f(x) = (1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2
@@ -141,7 +143,7 @@ x_iv = [0.0, 0.0]
 results = optimize(f, x_iv, SimulatedAnnealing()) # or ParticleSwarm() or NelderMead()
 ```
 
-However, you will note that this did not converge, as stochastic methods typically require many more iterations as a tradeoff for their global-convergence properties.
+However, you will note that this did not converge, as stochastic methods typically require many more iterations as a tradeoff for their global convergence properties.
 
 See the [maximum likelihood](http://julianlsolvers.github.io/Optim.jl/stable/examples/generated/maxlikenlm/)
 example and the accompanying [Jupyter notebook](https://nbviewer.jupyter.org/github/JuliaNLSolvers/Optim.jl/blob/gh-pages/v0.15.3/examples/generated/maxlikenlm.ipynb).
@@ -151,7 +153,7 @@ example and the accompanying [Jupyter notebook](https://nbviewer.jupyter.org/git
 The [JuMP.jl](https://github.com/JuliaOpt/JuMP.jl) package is an ambitious implementation of a modelling language for optimization problems in Julia.
 
 In that sense, it is more like an AMPL (or Pyomo) built on top of the Julia
-language with macros, and able to use a variety of different commerical and open source solvers.
+language with macros, and able to use a variety of different commercial and open-source solvers.
 
 If you have a linear, quadratic, conic, mixed-integer linear, etc. problem then this will likely be the ideal "meta-package" for calling various solvers.
 
@@ -224,7 +226,6 @@ Algorithms require loading additional packages for one of the [supported optimiz
 From the [documentation](https://docs.sciml.ai/Optimization/stable/getting_started/):
 
 ```{code-cell} julia
-using Optimization, OptimizationOptimJL, ForwardDiff
 rosenbrock(u, p) = (p[1] - u[1])^2 + p[2] * (u[2] - u[1]^2)^2
 u0 = zeros(2)
 p = [1.0, 100.0]
@@ -243,10 +244,9 @@ prob = OptimizationProblem(f_fd, u0, p)
 sol = solve(prob, BFGS())
 ```
 
-Or with `Enzyme.jl`, which has slower compilation times but p
+Or with `Enzyme.jl`, which has slower compilation times but provides another AD backend
 
 ```{code-cell} julia
-using Enzyme
 f_enzyme = OptimizationFunction(rosenbrock, Optimization.AutoEnzyme())
 prob = OptimizationProblem(f_enzyme, u0, p)
 sol = solve(prob, BFGS())
@@ -254,7 +254,169 @@ sol = solve(prob, BFGS())
 
 Finally, [the documentation](https://docs.sciml.ai/Optimization/stable/) for a variety of other examples and features, such as constrained optimization.
 
-## Systems of Equations and Least Squares
+
+## NonlinearSolve.jl Meta-Package
+Within the [SciML](https://sciml.ai/) ecosystem, the [NonlinearSolve.jl](https://github.com/SciML/NonlinearSolve.jl) package provides a unified interface for solving nonlinear systems of equations. It builds on top of other SciML packages and offers advanced features such as automatic differentiation, various solver algorithms, and support for large-scale problems.  Furthermore, as with `Optimization.jl`, it has convenient integration with automatic differentiation (as well as implementing AD for the solver itself, with respect to parameters).
+
+In general, we suggest using this meta-package where possible as it provides a well-maintained interface amenable to switching out solvers in the future. 
+
+### Basic Examples
+
+Here we adapt examples directly from the [documentation](https://docs.sciml.ai/NonlinearSolve/stable/).
+
+First we can solve a system of equations as a closure over a constant `c`.
+
+```{code-cell} julia
+c = 2.0
+f(u, p) = u .* u .- c # p ignored
+u0 = [1.0, 1.0]
+prob = NonlinearProblem(f, u0) # defaults to p = nothing
+sol = solve(prob, NewtonRaphson())
+```
+In this case, the `p` argument (which can hold parameters) is ignored, but needs to be present in SciML problems.
+
+The `NewtonRaphson()` method is a built-in solver, and not an external package.  We can access the results through `sol.u` and see other information such as the return code
+
+```{code-cell} julia
+@show sol.u
+@show sol.retcode
+sol.stats
+```
+
+
+We can see further details on the algorithm itself, and see that it uses `ForwardDiff.jl` by default since `NewtonRaphson()` requires a Jacobian.
+
+```{code-cell} julia
+sol.alg
+```
+
+You can see the performance of this algorithm in this context, which uses a large number of allocations relative to the simplicity of the problem.
+
+```{code-cell} julia
+@benchmark solve($prob, NewtonRaphson())
+```
+
+### Using Parameters and Inplace Functions
+SciML interfaces prefer to cleanly separate a function argument and a parameter argument, which makes it easier to handle parameterized problems and ensure flexible code.
+
+To use this, we rewrite our example above to use the previously ignored parameter `p`.
+
+```{code-cell} julia
+f(u, p) = u .* u .- p
+u0 = [1.0, 1.0]
+p = 2.0
+prob = NonlinearProblem(f, u0, p) # pass the `p`
+```
+
+Note that the `prob` shows In-place: true.
+
+Benchmarking this version.
+
+```{code-cell} julia
+@btime solve($prob, NewtonRaphson())
+```
+
+This may or may not have better performance than the previous version which used the closure.
+
+Regardless, it will still have many allocations, which can be a significant fraction of the runtime for problems small or large.
+
+To support this, the SciML ecosystem has a bias towards in-place functions.  Here we add another version of the function `f!(du, u, p)` to be in-place, modifying the first argument, which the solver detects.
+
+```{code-cell} julia
+function f!(du, u, p)
+    du .= u .* u .- p
+end
+prob = NonlinearProblem(f!, u0, p)
+@btime solve($prob, NewtonRaphson())
+```
+
+Note the decrease in allocations, and possibly time depending on your system.
+
+### Patterns for Parameters
+
+The `p` argument can be anything, including named tuples, vectors, or a single value as above.
+
+A common pattern appropriate for more complicated code is to use a named tuple packing and unpacking.
+
+```{code-cell} julia
+function f_nt(u, p)
+    (; c) = p # unpack any arguments in the named tuple
+    return u .* u .- c
+end
+
+p_nt = (c = 2.0,) # named tuple
+prob_nt = NonlinearProblem(f_nt, u0, p_nt)
+@btime solve($prob_nt, NewtonRaphson())
+```
+
+
+### Small Systems
+For small systems, the solver is able to use [StaticArrays.jl](https://github.com/JuliaArrays/StaticArrays.jl) which can further improve performance.  These fixed-size arrays require using the out-of-place formulation, but otherwise require no special handling.
+
+```{code-cell} julia
+using StaticArrays
+f_SA(u, p) = SA[u[1] * u[1] - p, u[2] * u[2] - p] # rewrote without broadcasting
+u0_static = SA[1.0, 1.0] # static array
+prob = NonlinearProblem(f_SA, u0_static, p)
+```
+
+Note that the problem shows that this is `In-place: false` and operates on the `SVector{2, Float64}` type.
+
+Next we can benchmark this version, where we can use a simpler non-allocating solver designed for small systems, `SimpleNewtonRaphson()`.  See [the docs](https://docs.sciml.ai/NonlinearSolve/stable/native/simplenonlinearsolve/) for more details on solvers optimized for non-allocating algorithms.
+
+```{code-cell} julia
+@btime solve($prob, SimpleNewtonRaphson())
+```
+
+Depending on your system, you may find this is 100 to 1000x faster than the original version using closures and allocations.
+
+```{note}
+In principle it should be equivalent to use our previous `f` instead of `f_SA`, but depending on package and compiler versions it may not achieve the full 0 allocations.  Regardless, try the generic function first before porting over to a new function.  The `SimpleNewtonRaphson()` function is also specialized to avoid any internal allocations for small systems, but you will even see some benefits with `NewtonRaphson()`.
+```
+
+### Using Other Solvers
+While it has some pre-built solvers, as we used above, it is primarily intended as a meta-package.  To use one of the many [external solver packages](https://docs.sciml.ai/NonlinearSolve/stable/solvers/nonlinear_system_solvers/) you simply need to ensure the package is in your Project file and then include it.
+
+For example, we can use the Anderson Acceleration in [FixedPointAcceleration.jl's wrapper](https://docs.sciml.ai/NonlinearSolve/stable/api/fixedpointacceleration/)
+
+```{code-cell} julia
+using FixedPointAcceleration
+prob = NonlinearProblem(f, u0, p)
+@btime solve($prob, FixedPointAccelerationJL())
+@btime solve($prob, FixedPointAccelerationJL(; algorithm = :Simple))
+```
+
+The default algorithm in this case is `:Anderson`, but we can also use `:Simple` fixed-point iteration.
+
+In this case, the fixed-point iteration algorithm is slower than the gradient-based Newton-Raphson, but shows the flexibility in cases where gradients are not available.
+
+```{note}
+While there is a [NLsolve.jl wrapper](https://docs.sciml.ai/NonlinearSolve/stable/api/nlsolve/), it seems to have a less robust implementation of Anderson than some of the other packages.
+```
+
+### Bracketing Solvers and Rootfinding Problems
+
+The `NonlinearProblem` type is intended for algorithms which use an initial condition (and may or may not use derivatives).
+
+For some one-dimensional problems it is more convenient to use one of the [bracketing methods](https://docs.sciml.ai/NonlinearSolve/stable/solvers/bracketing_solvers/#bracketing)
+
+For example, from the [documentation](https://docs.sciml.ai/NonlinearSolve/stable/tutorials/getting_started/#Problem-Type-2:-Solving-Interval-Rootfinding-Problems-with-Bracketing-Methods),
+
+```{code-cell} julia
+f_bracketed(u, p) = u * u - p
+uspan = (1.0, 2.0) # brackets
+p = 2.0
+prob = IntervalNonlinearProblem(f_bracketed, uspan, p)
+sol = solve(prob)
+```
+
+In general, this should be preferred to using the `Roots.jl` package below, as it may provide a more consistent interface.
+
+
+## Systems of Equations and Fixed Points
+
+Julia has a variety of packages you can directly use for solving systems of equations and finding fixed points.  Many of these packages can also be used as backends for the `NonlinearSolve.jl` meta-package described above.
+
 
 ### Roots.jl
 
@@ -323,23 +485,3 @@ results = nlsolve(f!, [0.1; 1.2], autodiff = :forward)
 println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in " *
         "$(results.iterations) iterations and $(results.f_calls) function calls")
 ```
-
-## LeastSquaresOptim.jl
-
-Many optimization problems can be solved using linear or nonlinear least squares.
-
-Let $x \in R^N$ and $F(x) : R^N \to R^M$ with $M \geq N$, then the nonlinear least squares problem is
-
-$$
-\min_x F(x)^T F(x)
-$$
-
-While $F(x)^T F(x) \to R$, and hence this problem could technically use any nonlinear optimizer, it is useful to exploit the structure of the problem.
-
-In particular, the Jacobian of $F(x)$, can be used to approximate the Hessian of the objective.
-
-As with most nonlinear optimization problems, the benefits will typically become evident only when analytical or automatic differentiation is possible.
-
-If $M = N$ and we know a root $F(x^*) = 0$ to the system of equations exists, then NLS is the defacto method for solving large **systems of equations**.
-
-An implementation of NLS is given in [LeastSquaresOptim.jl](https://github.com/matthieugomez/LeastSquaresOptim.jl).

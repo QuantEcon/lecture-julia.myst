@@ -316,7 +316,8 @@ x_next
 Even without Enzyme, checking type-stability and allocations helps catch AD pain points early.
 
 ```{code-cell} julia
-# warm-up to avoid counting compilation
+using BenchmarkTools
+# warm-up
 step!(x_next, x, A, cache)
 
 # Should have no type instability warnings
@@ -324,13 +325,14 @@ step!(x_next, x, A, cache)
 
 # Should allocate zero bytes
 function count_allocs()
-   return @allocated step!(x_next, x, A, cache)
+    return step!(x_next, x, A, cache)
 end
-println("Number of allocated bytes: $(count_allocs())");
+@btime count_allocs()
 ```
+This should show that 0 bytes are allocated.
 
 ```{note}
-The `@allocated` directly in Jupyter notebooks can be misleading. Either wrap in a function as above, or use `@btime` from `BenchmarkTools.jl` for more reliable measurements.
+Outside of a notebook environment, such as in the REPL, you can use `@allocated step!(x_next, x, A, cache)` directly.  However, notebook environments it can give misleading results since it may include notebook cell overhead.
 ```
 
 The same patterns apply to more complex routines: keep buffers explicit, avoid temporary slices, and rely on in-place linear algebra to minimize allocations that can break reverse-mode AD.
