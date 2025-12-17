@@ -33,7 +33,7 @@ kernelspec:
 
 This lecture provides an introduction to differentiable simulation of dynamic systems in Julia using Enzyme.jl.  See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for background on in-place patterns and Enzyme wrappers.
 
-It builds on the **linear state space** models we introduced in {doc}`linear models <linear_models>` and the {doc}`kalman filter <kalman>`. 
+It builds on the **linear state space** models we introduced in {doc}`linear models <../introduction_dynamics/linear_models>` and the {doc}`kalman filter <../introduction_dynamics/kalman>`. 
 
 
 Example applications of these methods include:
@@ -43,7 +43,9 @@ Example applications of these methods include:
 * estimation
 
 
-**Caution** : Enzyme.jl is under active development.  Some of the patterns shown here may change in future releases.  See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for the latest best practices.
+**Caution** : The code in this section is significantly more advanced than some of the other lectures, and required some experience with both auto-differentiation concepts and a more detailed understanding of type-safety and memory management in Julia.
+
+[Enzyme.jl](https://enzyme.mit.edu/julia/stable/) is under active development and while state-of-the-art it is often bleeding-edge.  Some of the patterns shown here may change in future releases.  See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for the latest best practices.
 
 In practice, you may find using an LLM to be very valuable for navigating the perplexing error messages of Enzyme.jl.  Compilation times can be very slow, and performance intuition is not always straightforward.
 
@@ -53,13 +55,13 @@ In practice, you may find using an LLM to be very valuable for navigating the pe
 tags: [hide-output]
 ---
 using LinearAlgebra, Random, Plots, Test, Enzyme, Statistics
-using Optimization, OptimizationOptimJL
+using Optimization, OptimizationOptimJL, EnzymeTestUtils
 ```
 
 (simm_lss)=
 ## Simulating a Linear State Space Model
 
-Take the following parameterizatin of a linear state space model
+Take the following parameterization of a linear state space model
 
 $$
 x_{t+1} = A x_t + C w_{t+1}, \qquad
@@ -134,11 +136,13 @@ y = zeros(M, T + 1)
 simulate_lss!(x, y, model, x_0, w, v)
 
 time = 0:T
-plot(time, x', lw = 2, xlabel = "t", ylabel = "state", label = ["x1" "x2" "x3"], title = "State Paths")
+plot(time, x', lw = 2, xlabel = "t", ylabel = "state", label = ["x1" "x2" "x3"],
+     title = "State Paths")
 ```
 
 ```{code-cell} julia
-plot(time, y', lw = 2, xlabel = "t", ylabel = "observation", label = ["y1" "y2"], title = "Observation Paths")
+plot(time, y', lw = 2, xlabel = "t", ylabel = "observation",
+     label = ["y1" "y2"], title = "Observation Paths")
 ```
 
 (simm_lss_diff)=
@@ -148,25 +152,23 @@ Forward-mode in Enzyme is convenient for impulse-style effects: for example, her
 
 ```{code-cell} julia
 # forward-mode on w[1]
-x_fw = zeros(N, T + 1)
-y_fw = zeros(M, T + 1)
-dx_fw = Enzyme.make_zero(x_fw)
-dy_fw = Enzyme.make_zero(y_fw)
+x = zeros(N, T + 1)
+y = zeros(M, T + 1)
+dx = Enzyme.make_zero(x)
+dy = Enzyme.make_zero(y)
 dw = Enzyme.make_zero(w)
 dw[1] = 1.0                         # unit perturbation to first shock
 
-autodiff(
-    Forward,
-    simulate_lss!,
-    Duplicated(x_fw, dx_fw),
-    Duplicated(y_fw, dy_fw),
-    Const(model), # leaving model fixed
-    Const(x_0), # leaving initial state fixed
-    Duplicated(w, dw), # perturbing w
-    Const(v), # leaving v fixed
-)
+autodiff(Forward,
+         simulate_lss!,
+         Duplicated(x, dx),
+         Duplicated(y, dy),
+         Const(model), # leaving model fixed
+         Const(x_0), # leaving initial state fixed
+         Duplicated(w, dw), # perturbing w
+         Const(v))
 
-dx_fw[:, 1:3]   # early-state sensitivities (impulse response flavor)
+dx[:, 1:3]   # early-state sensitivities (impulse response flavor)
 ```
 
 Batch tangents let us reuse one primal evaluation while seeding multiple partials. Below we differentiate with respect to two entries of $A$ in one call; Enzyme accumulates the tangents into separate shadow arrays.
@@ -178,18 +180,58 @@ dmodels = (Enzyme.make_zero(model), Enzyme.make_zero(model))
 dmodels[1].A[1] = 1.0
 dmodels[2].A[2] = 1.0
 
-autodiff(
-    Forward,
-    simulate_lss!,
-    BatchDuplicated(x, dx_batch), # batch duplicated to match dmodels
-    BatchDuplicated(y, dy_batch),
-    BatchDuplicated(model, dmodels),
-    Const(x_0),
-    Const(w),
-    Const(v),
-)
+autodiff(Forward,
+         simulate_lss!,
+         BatchDuplicated(x, dx_batch), # batch duplicated to match dmodels
+         BatchDuplicated(y, dy_batch),
+         BatchDuplicated(model, dmodels),
+         Const(x_0),
+         Const(w),
+         Const(v))
 @show dy_batch[1], dy_batch[2];
 ```
+
+
+### Checking Type Stability and Allocations
+
+With complicated code, we first need to ensure the code is type-stable.  The following call is silent, which indicates there are no type-stability issues.
+
+```{code-cell} julia
+@inferred simulate_lss!(x, y, model, x_0, w, v)
+```
+
+Next we check that it does not allocate any memory during execution.
+
+```{code-cell} julia
+n_alloc = @allocated simulate_lss!(x, y, model, x_0, w, v)
+@test n_alloc == 0
+```
+
+Finally, in the case of complicated functions such as simulations, we cannot
+assume that Enzyme (or any AD system) will necessarily be correct.
+
+To aid in this, the `EnzymeTestUtils` provides utilities for this purpose which automatically check against finite-difference approximations using the appropriate seeding.
+
+When using in-place functions mutating the arguments `test_forward` requires that you pass any mutated arguments as output of the function itself, which can be done by a small wrapper.
+
+```{code-cell} julia
+function test_forward_simulate_lss!(x, y, model, x_0, w, v)
+    simulate_lss!(x, y, model, x_0, w, v)
+    return x, y
+end
+test_forward(
+    test_forward_simulate_lss!,
+    Duplicated,
+    (x, Duplicated),
+    (y, Duplicated),
+    (model, Const),
+    (x_0, Duplicated),
+    (w, Const),
+    (v, Const) 
+)
+```
+
+Unlike `test_forward`, the automatic checks on reverse-mode AD with `test_reverse` require a scalar output, which we discuss below in the calibration section.
 
 ### Differentiating Functions of Simulation
 
@@ -218,16 +260,14 @@ dy_rev = Enzyme.make_zero(y_rev)
 dw_rev = Enzyme.make_zero(w)
 dv_rev = Enzyme.make_zero(v)
 
-autodiff(
-    Reverse,
-    g,
-    Duplicated(x_rev, dx_rev), # output/buffer
-    Duplicated(y_rev, dy_rev), # output/buffer
-    Const(model),
-    Const(x_0),
-    Duplicated(w, dw_rev),   # active shocks
-    Duplicated(v, dv_rev),   # active shocks
-)
+autodiff(Reverse,
+         g,
+         Duplicated(x_rev, dx_rev), # output/buffer
+         Duplicated(y_rev, dy_rev), # output/buffer
+         Const(model),
+         Const(x_0),
+         Duplicated(w, dw_rev),   # active shocks
+         Duplicated(v, dv_rev))
 
 @show g(x, y, model, x_0, w, v)
 
@@ -235,6 +275,45 @@ dw_rev # sensitivity wrt evolution shock
 ```
 
 These small examples mirror the larger workflow: write allocation-free, in-place simulations, seed tangents with `Duplicated`, and use forward or reverse mode depending on whether you want many outputs per input (forward) or many inputs to one scalar (reverse).
+
+As before, for complicated functions we may want to check that the gradients are correct using finite differences.
+
+```{code-cell} julia
+test_reverse(g,
+    Active,
+    (x_rev, Duplicated),
+    (y_rev, Duplicated),
+    (model, Const),
+    (x_0, Const),
+    (w, Duplicated),
+    (v, Duplicated)
+)
+
+# Or with a different set of arguments
+test_reverse(g,
+    Active,
+    (x_rev, Duplicated),
+    (y_rev, Duplicated),
+    (model, Duplicated),
+    (x_0, Duplicated),
+    (w, Const),
+    (v, Const)
+)
+```
+In all cases we must ensure the mutated arguments are passed as `Duplicated`.
+
+Functions which internally use buffers can allocate them, but will need to ensure that the buffers are of the appropriate type (i.e., duplicated if they are active).  This can be achieved with the `eltype`
+
+```{code-cell} julia
+function g2(model, x_0, w, v)
+    x = zeros(eltype(x_0), N, T + 1)
+    y = zeros(eltype(x_0), M, T + 1)
+    simulate_lss!(x, y, model, x_0, w, v)
+    return mean_first_observation(y)
+end
+g2(model, x_0, w, v)
+gradient(Reverse, g2, model, x_0, w, v)
+```
 
 
 ### Calibration
@@ -279,7 +358,6 @@ function simulate_lss!(x, y, A, C, G, H, x_0, w, v)
     return nothing
 end
 
-
 function parameterized_A(a)
     return [a 0.1 0.0; 0.0 0.7 0.1; 0.0 0.0 0.6]
 end
@@ -288,14 +366,14 @@ function loss(u, p)
     (; x_0, w, v, y_target, C, G, H) = p
     T = size(w, 2)
     a = u[1]
-        
+
     A = parameterized_A(a)
-    
+
     # Allocate buffers and simulate
     x = zeros(eltype(A), length(x_0), T + 1)
     y = zeros(eltype(A), size(G, 1), T + 1)
     simulate_lss!(x, y, A, C, G, H, x_0, w, v)
-    
+
     y_mean = mean_first_observation(y)
     return (y_mean - y_target)^2
 end
@@ -310,7 +388,7 @@ There are a few tricks to note here, which work around challenges with using Enz
 - For the buffers, note the use of `eltype(A)` which will ensure the correct type since the `A` matrix will itself be differentiable.
 
 
-Using this setup, we can create the `p` parameter named tuple, none of which will be differentiable, and then use the LBFGS otimizer in OptimizationOptimJL to find the optimal `a` value.
+Using this setup, we can create the `p` parameter named tuple, none of which will be differentiable, and then use the LBFGS optimizer in OptimizationOptimJL to find the optimal `a` value.
 
 ```{code-cell} julia 
 y_target = 0.0
@@ -337,24 +415,24 @@ println("Final a=$(sol.u[1]), Loss: $(loss(sol.u, p))")
 ```{code-cell} julia
 
 function loss_2(u, p)
-    
+
     # Unpack constants
     (; x_0, w, v, y_target, C, G, H) = p
     T = size(w, 2)
     a = u[1]
-        
+
     A = parameterized_A(a) # A is Active (depends on u)
-    
+
     # Trick: "Launder" the constants by copying them.
     # Creates new locals which Enzyme sees these as "Local Active Variables"
-    # Now build the struct with homogenous (all local) variables
-    model = (; A, C=copy(C), G=copy(G), H=copy(H))
-    
+    # Now build the struct with homogeneous (all local) variables
+    model = (; A, C = copy(C), G = copy(G), H = copy(H))
+
     # Allocate buffers and simulate
     x = zeros(eltype(A), length(x_0), T + 1)
     y = zeros(eltype(A), size(G, 1), T + 1)
     simulate_lss!(x, y, model, x_0, w, v)
-    
+
     y_mean = mean_first_observation(y)
     return (y_mean - y_target)^2
 end

@@ -227,7 +227,7 @@ Many reverse-mode packages are connected to machine-learning packages, since the
 
 At this point, Julia does not have a single consistently usable reverse-mode AD package without rough edges, but a few key ones to consider are:
 
-- [ReverseDiff.jl](https://github.com/JuliaDiff/ReverseDiff.jl), a relatively dependable but limited package.  Not really intended for standard ML-pipline usage
+- [ReverseDiff.jl](https://github.com/JuliaDiff/ReverseDiff.jl), a relatively dependable but limited package.  Not really intended for standard ML-pipeline usage
 - [Zygote.jl](https://github.com/FluxML/Zygote.jl), which is flexible but buggy and less reliable.  In a slow process of deprecation, but often the primary alternative.
 - [Enzyme.jl](https://enzyme.mit.edu/julia/stable/), which is the most promising (and supports both forward and reverse mode).  However, as it works at a lower level of the compiler, it cannot support all Julia code.  In particular, it prefers in-place rather than "pure" functions.
 
@@ -297,7 +297,7 @@ function step!(x_next, x, A, cache)
     @views mul!(cache.tmp, A, x) # cache.tmp = A * x
     @inbounds for i in eachindex(cache.tmp)
         # loops, are encouraged, but careful to avoid temp allocations
-        cache.tmp[i] += 0.1 * i 
+        cache.tmp[i] += 0.1 * i
     end
     copy!(x_next, cache.tmp) # x_next = cache.tmp
     return nothing
@@ -350,7 +350,8 @@ When calling `autodiff`, every argument needs an "Activity" wrapper. To determin
     * **Yes (Array/Struct):** Use `Duplicated(x, dx)`. You must provide the shadow memory `dx`.
 
 2.  **Is the argument mutated (written to) inside the function?**
-    * **Yes:** You **must** use `Duplicated(x, dx)`, even if you don't care about its gradient (e.g., temporary workspaces/buffers). Enzyme needs the shadow `dx` to store intermediate adjoints during the reverse pass.
+    * **Yes, and I need to know the value:** Use `Duplicated(x, dx)`. Enzyme needs the shadow `dx` to store intermediate adjoints during the reverse pass.
+    * **Yes, and I do not need to access the value:** You could still use `Duplicated(x, dx)` or `DuplicatedNoNeed(x, dx)` which may avoid some calculations required to calculate `x` if you are not using it directly.
 
 This last point is important.  As your functions will be non-allocating, you need to ensure there is a "shadow" for any arguments that are used, even if they are just temporary buffers.
 
@@ -361,6 +362,7 @@ This last point is important.  As your functions will be non-allocating, you nee
 | `Const(x)` | Constants / Config | Read-only | None | [Ref](https://enzyme.mit.edu/julia/stable/api/#EnzymeCore.Const) |
 | `Active(x)` | Scalars (Float64) | Read-only | Returned | [Ref](https://enzyme.mit.edu/julia/stable/api/#EnzymeCore.Active) |
 | `Duplicated(x, dx)` | Arrays / Mutated Buffers | Read/Write | **Explicit** | [Ref](https://enzyme.mit.edu/julia/stable/api/#EnzymeCore.Duplicated) |
+| `DuplicatedNoNeed(x, dx)` | Mutated Buffers, ignoring `x` | Read/Write | **Explicit** | [Ref](https://enzyme.mit.edu/julia/stable/api/#EnzymeCore.DuplicatedNoNeed) |
 | `BatchDuplicated` | Vectorized Derivatives | Read/Write | Tuple of Shadows | [Ref](https://enzyme.mit.edu/julia/stable/api/#EnzymeCore.BatchDuplicated) |
 
 ---
@@ -440,7 +442,7 @@ Reverse mode computes the gradient of the output with respect to *all* inputs in
 
 ```{code-cell} julia
 # Define function
-calc(x, y) = sum(x.^2 .+ y)
+calc(x, y) = sum(x .^ 2 .+ y)
 
 x = [1.0, 2.0, 3.0]
 y = [0.5, 0.5, 0.5]
@@ -470,7 +472,7 @@ This is the most common pitfall. If a function modifies an argument (like `out` 
 
 ```{code-cell} julia
 function axpy!(y, A, x)
-    mul!(y, A, x) 
+    mul!(y, A, x)
     return nothing
 end
 
@@ -489,16 +491,15 @@ y = zeros(2)
 # Enzyme will calculate ∂(sum)/∂y and populate dy for us.
 dx = Enzyme.make_zero(x)
 dA = Enzyme.make_zero(A)
-dy = Enzyme.make_zero(y) 
+dy = Enzyme.make_zero(y)
 
 # 3. Calculate Gradient
 #    We differentiate 'compute_loss!'.
 #    Since it returns a scalar (Active), Enzyme automatically seeds it with 1.0.
-autodiff(Reverse, compute_loss!, 
-    Duplicated(y, dy),   # Intermediate buffer (Enzyme handles the backprop!)
-    Duplicated(A, dA),   # Parameter we want gradient for
-    Duplicated(x, dx)    # Input we want gradient for
-)
+autodiff(Reverse, compute_loss!,
+         Duplicated(y, dy),   # Intermediate buffer (Enzyme handles the backprop!)
+         Duplicated(A, dA),   # Parameter we want gradient for
+         Duplicated(x, dx))
 
 @show dx   # ∂(sum(y))/∂x
 @show dA;  # ∂(sum(y))/∂A
