@@ -364,7 +364,7 @@ function tauchen(N, rho, sigma, mu, m = 3)
     F = cdf.(Normal(), Z_scores)
     P = [F[:, 1] diff(F, dims = 2) (1 .- F[:, end])]
     x = z .+ mu_X
-    return (;P, mu_X, sigma_X, x)
+    return (; P, mu_X, sigma_X, x)
 end
 ```
 
@@ -377,7 +377,7 @@ rho = 0.9
 mu = 0.2
 sigma = 0.1
 N = 5
-(;P, x) = tauchen(N, rho, sigma, mu)
+(; P, x) = tauchen(N, rho, sigma, mu)
 @show x
 println("Row sums of P: ", sum(P, dims = 2))
 
@@ -415,11 +415,11 @@ Below we add more states to make it closer to the continuous process and increas
 N = 100
 rho = 0.98
 mu = 0.1
-(;P, x) = tauchen(N, rho, sigma, mu)
+(; P, x) = tauchen(N, rho, sigma, mu)
 
 heatmap(x, x, P,
-    xlabel = "To State", ylabel = "From State",
-    title = "Transition Matrix Heatmap", colorbar_title = "Probability")
+        xlabel = "To State", ylabel = "From State",
+        title = "Transition Matrix Heatmap", colorbar_title = "Probability")
 ```
 
 Note that the transition matrix is highly concentrated close to the diagonal.

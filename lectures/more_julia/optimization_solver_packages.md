@@ -18,7 +18,7 @@ kernelspec:
 </div>
 ```
 
-# Solvers, Optimizers
+# Optimization and Solving Systems of Equations
 
 ```{contents} Contents
 :depth: 2
@@ -70,7 +70,8 @@ result = optimize(x -> x^2, -2.0, 1.0)
 Always check if the results converged, and throw errors otherwise
 
 ```{code-cell} julia
-converged(result) || error("Failed to converge in $(iterations(result)) iterations")
+converged(result) ||
+    error("Failed to converge in $(iterations(result)) iterations")
 xmin = result.minimizer
 result.minimum
 ```
