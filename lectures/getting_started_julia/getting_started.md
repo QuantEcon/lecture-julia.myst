@@ -34,6 +34,23 @@ It is not strictly required for running the lectures, but we will strongly encou
 
 As the most popular and best-supported open-source code editor, it provides a large number of useful features and extensions.  We will begin to use it as a primary editor in the {doc}`tools lecture <../software_engineering/tools_editors>`.
 
+## TL;DR
+For those with more experience, Julia and the lectures can be installed without any installation Jupyter or Python:
+
+1. Install [Git](https://git-scm.com/install/)
+2. Install [VS Code](https://code.visualstudio.com/)
+3. Install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation)
+   - Windows: `winget install julia -s msstore` in a terminal
+   - Linux/Mac: `curl -fsSL https://install.julialang.org | sh` in a terminal
+4. Install the [VS Code Julia extension](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia)
+5. In VS Code, open the command palette with `<Ctrl+Shift+P>` and type `> Git: Clone` to clone the repository `https://github.com/quantecon/lecture-julia.notebooks` in a new window
+6. Start a Julia REPL in the integrated terminal with `> Julia: Start REPL` from the command palette, then enter package mode with `]` and then type `instantiate`.
+  - That process will take several minutes to download and compile all of the packages used in the lectures.
+7. Open any of the `.ipynb` files in VS Code and select the `Julia` in the `Julia 1.12 channel` challenge (i.e., not the Jupyter channels if you have them installed) when prompted to run the notebooks directly within VS Code
+
+At that point, you can directly move on to the {doc}`julia by example <../getting_started_julia/julia_by_example>` lecture.
+
+
 ## A Note on Jupyter
 
 Like Python and R, and unlike products such as Matlab and Stata, there is a looser connection between Julia as a programming language and Julia as a specific development environment.
@@ -45,21 +62,6 @@ While you will eventually use other editors, there are some advantages to starti
 * Conversion tools to generate PDF slides, static HTML, etc.
 
 We'll discuss the workflow on these features in the [next section](julia_environment)
-
-```{admonition} Quick installation for experienced users
-If you have already installed Jupyter, Julia, and Git and have experience with these tools, you can 
-  - Get the notebooks' repositories with `git clone https://github.com/quantecon/lecture-julia.notebooks` 
-  - Open a Jupyter notebook within the downloaded notebooks
-  - Install the necessary packages in a Julia REPL with `using Pkg; Pkg.instantiate()`
-
-
-At that point, you could directly move on to the {doc}`julia by example <../getting_started_julia/julia_by_example>` lecture.
-
-However, as we strongly recommend becoming familiar with VS Code as a transition towards using more advanced tools and to support better software engineering workflows, so consider walking through the rest of these instructions.
-
-Alternatively, you can simply install Julia, VS Code, Git, and the Julia extension for VS Code and use the notebooks {ref}`directly without an installation of Python  <running_vscode_kernel>`.
-
-```
 
 For those with little to no programming experience (e.g. you have never used a loop or "if" statement) see the list of [introductory resources](intro_resources).
 
@@ -143,7 +145,7 @@ We will explore these topics in detail in the lectures on {doc}`source code cont
 First, we will install [Git](more_on_git), which has become the industry standard open-source version-control tool.  This lets you download both the files and the entire version history from a server (e.g. on GitHub) to your desktop.
 
 
-1. Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/) and accept the default arguments.
+1. Install [Git](https://git-scm.com/install/) and accept the default arguments.
    - If you allow Git to add to your path, then you can run it with the `git` command, but we will frequently use the built-in VS Code features.
 3. (Optional) Install [VS Code](https://code.visualstudio.com/) for your platform and open it
    - On Windows, during install under `Select Additional Tasks`, choose all options that begin with `Add "Open with Code" action`. This lets you open VS Code from inside File Explorer folders directly.

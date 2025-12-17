@@ -326,7 +326,8 @@ step!(x_next, x, A, cache)
 @show @inferred step!(x_next, x, A, cache)
 
 # Should allocate zero bytes
-@show @allocated step!(x_next, x, A, cache);
+n_alloc = @allocated step!(x_next, x, A, cache)
+println("Number of allocated bytes: $n_alloc");
 ```
 
 The same patterns apply to more complex routines: keep buffers explicit, avoid temporary slices, and rely on in-place linear algebra to minimize allocations that can break reverse-mode AD.
