@@ -26,7 +26,7 @@ kernelspec:
 
 ## Overview
 
-In this lecture we will discuss auto-differentiation in Julia, and introduce some key packages.
+In this lecture, we discuss auto-differentiation in Julia and introduce some key packages.
 
 
 
@@ -49,12 +49,11 @@ Stepping back, there are three ways to calculate the gradient or Jacobian
 * Analytic derivatives / Symbolic differentiation
     * You can sometimes calculate the derivative on pen-and-paper, and potentially simplify the expression.
     * In effect, repeated applications of the chain rule, product rule, etc.
-    * It is sometimes, though not always, the most accurate and fastest option if there are algebraic simplifications.
-    * Sometimes symbolic integration on the computer a good solution, if the package can handle your functions. Doing algebra by hand is tedious and error-prone, but
-      is sometimes invaluable.
+    * It is sometimes the most accurate and fastest option if there are algebraic simplifications.
+    * Sometimes, symbolic computation on the computer is a good solution if the package can handle your functions. Doing algebra by hand is tedious and error-prone, but sometimes invaluable.
 * Finite differences
     * Evaluate the function at least $N+1$ times to get the gradient -- Jacobians are even worse.
-    * Large $\Delta$ is numerically stable but inaccurate, too small of $\Delta$ is numerically unstable but more accurate.
+    * Large $\Delta$ is numerically stable but inaccurate; too small is numerically unstable but more accurate.
     * Choosing the $\Delta$ is hard, so use packages such as [DiffEqDiffTools.jl](https://github.com/JuliaDiffEq/DiffEqDiffTools.jl).
     * If a function is $R^N \to R$ for a large $N$, this requires $O(N)$ function evaluations.
 
@@ -179,9 +178,9 @@ $$
 Using the generic programming in Julia, it is easy to define a new dual number type which can encapsulate the pair $(x, x')$ and provide a definitions for
 all of the basic operations.  Each definition then has the chain-rule built into it.
 
-With this approach, the "seed" process is simple the creation of the $\epsilon$ for the underlying variable.
+With this approach, the "seed" process is simply the creation of the $\epsilon$ for the underlying variable.
 
-So if we have the function $f(x_1, x_2)$ and we wanted to find the derivative $\partial_{x_1} f(3.8, 6.9)$ then then we would seed them with the dual numbers $x_1 \to (3.8, 1)$ and $x_2 \to (6.9, 0)$.
+So if we have the function $f(x_1, x_2)$ and we wanted to find the derivative $\partial_{x_1} f(3.8, 6.9)$, we would seed them with the dual numbers $x_1 \to (3.8, 1)$ and $x_2 \to (6.9, 0)$.
 
 If you then follow all of the same scalar operations above with a seeded dual number, it will calculate both the function value and the derivative in a single "sweep" and without modifying any of your (generic) code.
 
@@ -190,7 +189,7 @@ If you then follow all of the same scalar operations above with a seeded dual nu
 Dual-numbers are at the heart of one of the AD packages we have already seen.
 
 ```{code-cell} julia
-h(x) = sin(x[1]) + x[1] * x[2] + sinh(x[1] * x[2]) # multivariate.
+h(x) = sin(x[1]) + x[1] * x[2] + sinh(x[1] * x[2]) # multivariate
 x = [1.4 2.2]
 @show ForwardDiff.gradient(h, x) # use AD, seeds from x
 
@@ -221,15 +220,16 @@ dsqrt(2.0)
 
 ### Reverse-Mode AD
 
-Unlike forward-mode auto-differentiation, reverse-mode is very difficult to implement efficiently, and there are many variations on the best approach.
+Unlike forward-mode auto-differentiation, reverse-mode is very difficult to implement efficiently, and many variations on the best approach exist.
 
 Many reverse-mode packages are connected to machine-learning packages, since the efficient gradients of $R^N \to R$ loss functions are necessary for the gradient descent optimization algorithms used in machine learning.
 
-At this point, Julia does not have a single consistently usable reverse-mode AD package without rough edges, but a few key ones to consider are:
+At this point, Julia lacks a single, consistently usable reverse-mode AD package without rough edges. However, a few key options to consider are:
 
-- [ReverseDiff.jl](https://github.com/JuliaDiff/ReverseDiff.jl), a relatively dependable but limited package.  Not really intended for standard ML-pipeline usage
-- [Zygote.jl](https://github.com/FluxML/Zygote.jl), which is flexible but buggy and less reliable.  In a slow process of deprecation, but often the primary alternative.
-- [Enzyme.jl](https://enzyme.mit.edu/julia/stable/), which is the most promising (and supports both forward and reverse mode).  However, as it works at a lower level of the compiler, it cannot support all Julia code.  In particular, it prefers in-place rather than "pure" functions.
+- [ReverseDiff.jl](https://github.com/JuliaDiff/ReverseDiff.jl), a relatively dependable but limited package.  Not really intended for standard ML-pipeline usage or scientific computing.
+- [Zygote.jl](https://github.com/FluxML/Zygote.jl), which is flexible but buggy and less reliable. It is undergoing deprecation but often remains a common alternative.
+- [Mooncake.jl](https://github.com/chalk-lab/Mooncake.jl), a promising Julia-native AD package, which might be a cleaner and better maintained alternative to Zygote.jl.
+- [Enzyme.jl](https://enzyme.mit.edu/julia/stable/), which is the most promising and supports both forward and reverse mode. However, as it operates at a lower compiler level, it cannot support all Julia code. In particular, it favors in-place functions over "pure" functions.
 
 ## Introduction to Enzyme
 
@@ -239,12 +239,11 @@ At this point, Julia does not have a single consistently usable reverse-mode AD 
 **Caution** : Enzyme.jl is under active development.  Some of the patterns shown here may change in future releases.  In practice, you may find using an LLM to be very valuable for navigating the perplexing error messages of Enzyme.jl.  Compilation times can be very slow, and performance intuition is not always straightforward.
 ```
 
-However, with this power it makes usage a little more challenging as you need to ensure the compiler code generated by Julia conforms to certain patterns.
+However, this power does make usage somewhat more challenging, as you need to ensure the compiler-generated code conforms to certain patterns.
 
 It supports both **Forward Mode** (best for $N \to \text{Many}$ derivatives) and **Reverse Mode** (best for gradients of scalar loss functions, $N \to 1$), and nested differentiation (e.g., Hessians).
 
-While `ForwardDiff.jl` is often easier for simple problems, Enzyme is
-capable of high-performance differentiation typically used in scientific computing and scientific machine learning (e.g., differentiable simulations and sensitivity analysis of differential equations).
+While `ForwardDiff.jl` is often easier for simple problems, Enzyme is capable of high-performance differentiation typically used in scientific computing and scientific machine learning (e.g., differentiable simulations and sensitivity analysis of differential equations).
 
 ### Comparison to the Python Ecosystem
 
@@ -254,24 +253,22 @@ Relative to JAX and PyTorch, Enzyme is often faster and more flexible for specia
 One current advantage of Enzyme is that it has traditionally been difficult to write mutating code in JAX, which is essential in many scientific computing applications. The JAX ecosystem has been making progress on this limitation through mechanisms like "hijax" support in [JAX NNX](https://flax.readthedocs.io/en/latest/nnx_basics.html). This mechanism allows users to write standard Python classes with **in-place mutation**, which the library then automatically transforms into JAX-compatible functional code during compilation. However, this remains experimental, whereas Enzyme handles mutation directly.
 ```
 
-
-
 ### Lux.jl: Neural Networks in Julia
 
-While not designed for "bread-and-butter" deep learning pipelines out of the box, Enzyme can be paired with frameworks like [Lux.jl](https://github.com/LuxDL/Lux.jl) to handle deep learning tasks and implement neural networks.
+While not designed for standard deep learning pipelines out of the box, Enzyme can be paired with frameworks like [Lux.jl](https://github.com/LuxDL/Lux.jl) to handle deep learning tasks and implement neural networks.
 
 Unlike Pytorch and the default behavior of JAX's [Flax NNX](https://flax.readthedocs.io/en/latest/nnx_basics.html), the Lux.jl framework does not use implicit differentiable arguments within the neural network layers.
 
-Instead, the differentiable parameters are explicitly passed and separated from non-differentiable arguments.  This is consistent with the split/merge pattern in [JAX NNX](https://flax.readthedocs.io/en/latest/guides/performance.html#functional-training-loop).
+Instead, the differentiable parameters are explicitly passed and separated from non-differentiable arguments. This is consistent with the split/merge pattern in [JAX NNX](https://flax.readthedocs.io/en/latest/guides/performance.html#functional-training-loop).
 
 ### Reactant.jl: The Bridge to TPUs and XLA
 A recent addition to this ecosystem is [Reactant.jl](https://github.com/EnzymeAD/Reactant.jl).
 
 While Enzyme optimizes code for the CPU (and CUDA via LLVM), Reactant is designed to compile Julia code for high-performance accelerators like TPUs, as well as multi-node GPU clusters.
 
-In particular, Reactant is a compiler frontend that lowers Julia code (and Enzyme gradients) into MLIR (Multi-Level Intermediate Representation) and StableHLO.  This targets the exact same compiler stack as JAX. In particular, JAX traces Python code to generate HLO/StableHLO, which is then compiled by XLA (Accelerated Linear Algebra). Reactant does the same for Julia and allows it to emit the same IR that JAX generates.
+In particular, Reactant is a compiler frontend that lowers Julia code (and Enzyme gradients) into MLIR (Multi-Level Intermediate Representation) and StableHLO. This targets the exact same compiler stack as JAX. In particular, JAX traces Python code to generate HLO/StableHLO, which is then compiled by XLA (Accelerated Linear Algebra). Reactant does the same for Julia and allows it to emit the same IR that JAX generates.
 
-This allows Julia users to leverage the XLA compiler's massive optimizations for linear algebra and convolution, run natively on Google TPUs, and execute on large-scale distributed clusters, all while writing standard Julia code.  However, this is in early stages of development and should not be considered as a general replacement for standard Python ML frameworks and use-cases.
+This allows Julia users to leverage the XLA compiler's massive optimizations for linear algebra and convolution, run natively on Google TPUs, and execute on large-scale distributed clusters, all while writing standard Julia code. However, this is in early stages of development and should not be considered as a general replacement for standard Python ML frameworks and use-cases.
 
 See [the Lux.jl documentation](https://github.com/LuxDL/Lux.jl?tab=readme-ov-file#reactant--enzyme) for an example combining Lux, Reactant, and Enzyme for a single Neural Network.
 
@@ -279,24 +276,24 @@ See [the Lux.jl documentation](https://github.com/LuxDL/Lux.jl?tab=readme-ov-fil
 
 Enzyme-friendly code looks like ordinary Julia with a few discipline rules: mutate into preallocated buffers, avoid hidden allocations, and keep inputs type-stable.
 
-In general, these are also good practices for achieving very high-performance Julia code in many cases, so there is no trade-off in making code high-performance vs. Enzyme-differentiable.  However, these tend to be more
-advanced patterns than an introductory Julia user might be used to.
+In general, these practices also lead to very high-performance Julia code, so making code Enzyme-differentiable and high-performance often go hand-in-hand. However, these tend to be more advanced patterns than an introductory Julia user might be used to.
 
 A common pattern is `f!(out, inputs..., cache)` where `cache` holds temporary work arrays passed last.
 
-In many cases the biggest change is to use in-place linear algebra, many of which have corresponding highly optimized BLAS/LAPACK routines.  For example,
-- `mul!(y, A, x)` implements the out-of-place math `y = A * x` without allocating;
-- Use the 5-arg form `mul!(Y, A, B, α, β)` to compute `Y = α * A * B + β * Y` in-place (see the [mul! docs](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/#LinearAlgebra.mul!))
+In many cases the biggest change is to use in-place linear algebra, many of which have corresponding highly optimized BLAS/LAPACK routines. For example:
+- `mul!(y, A, x)` implements the out-of-place math `y = A * x` without allocating
+- Use the 5-arg form `mul!(Y, A, B, α, β)` to compute `Y = α * A * B + β * Y` in-place (see [mul! docs](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/#LinearAlgebra.mul!))
 - Use `ldiv!(y, A, x)` for the in-place solve corresponding to `y = A \ x` (see [ldiv! docs](https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/#LinearAlgebra.ldiv!))
-- Use column-wise access or `@views` when slicing to avoid copies, and write into existing storage with `copy!` or `.=` rather than rebinding.
+- Use column-wise access or `@views` when slicing to avoid copies
 - Pass buffers explicitly to keep the function allocation-free; even a simple `cache = (; tmp = similar(x))` helps for temporary workspaces.
+- When in doubt, use a loop.  Since it operates on compiled Julia code, Enzyme can differentiate through loops efficiently.
 
 ```{code-cell} julia
 # in-place linear step with an explicit workspace
 function step!(x_next, x, A, cache)
     @views mul!(cache.tmp, A, x) # cache.tmp = A * x
     @inbounds for i in eachindex(cache.tmp)
-        # loops, are encouraged, but careful to avoid temp allocations
+        # loops are encouraged, but be careful to avoid temp allocations
         cache.tmp[i] += 0.1 * i
     end
     copy!(x_next, cache.tmp) # x_next = cache.tmp
@@ -326,8 +323,14 @@ step!(x_next, x, A, cache)
 @show @inferred step!(x_next, x, A, cache)
 
 # Should allocate zero bytes
-n_alloc = @allocated step!(x_next, x, A, cache)
-println("Number of allocated bytes: $n_alloc");
+function count_allocs()
+   return @allocated step!(x_next, x, A, cache)
+end
+println("Number of allocated bytes: $(count_allocs())");
+```
+
+```{note}
+The `@allocated` directly in Jupyter notebooks can be misleading. Either wrap in a function as above, or use `@btime` from `BenchmarkTools.jl` for more reliable measurements.
 ```
 
 The same patterns apply to more complex routines: keep buffers explicit, avoid temporary slices, and rely on in-place linear algebra to minimize allocations that can break reverse-mode AD.
@@ -343,7 +346,7 @@ To use Enzyme effectively, you must manually annotate your function arguments to
 
 
 ### Fundamental Rules of Activity
-When calling `autodiff`, every argument needs an "Activity" wrapper. To determine how you annotate them, consider:
+When calling `autodiff`, every argument needs an "Activity" wrapper to tell Enzyme how to handle it.
 
 1.  **Are you differentiating with respect to this argument?**
     * **No:** Use `Const(x)`. This tells Enzyme the value is constant and its derivative is zero.
@@ -354,7 +357,7 @@ When calling `autodiff`, every argument needs an "Activity" wrapper. To determin
     * **Yes, and I need to know the value:** Use `Duplicated(x, dx)`. Enzyme needs the shadow `dx` to store intermediate adjoints during the reverse pass.
     * **Yes, and I do not need to access the value:** You could still use `Duplicated(x, dx)` or `DuplicatedNoNeed(x, dx)` which may avoid some calculations required to calculate `x` if you are not using it directly.
 
-This last point is important.  As your functions will be non-allocating, you need to ensure there is a "shadow" for any arguments that are used, even if they are just temporary buffers.
+This last point is important. As your functions are non-allocating, you need to ensure there is a "shadow" for any arguments that are used, even if they are just temporary buffers.
 
 ### Argument Wrappers (Quick Reference)
 
@@ -380,7 +383,7 @@ When using Reverse-mode AD the forward pass needs to calculate the "primal" valu
 ```{code-cell} julia
 rosenbrock(x) = (1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2
 
-# Use Reverse-mode  AD
+# Use Reverse-mode AD
 x = [1.0, 2.0]
 @show gradient(Reverse, rosenbrock, x)
 # Return a tuple with the "primal" (i.e., function value) and grad
@@ -394,14 +397,14 @@ gradient!(Reverse, dx, rosenbrock, x)
 @show dx;
 ```
 
-Similarly, we can execute forward-mode AD to get the gradient.  Unlike Reverse mode, this will call the `autodiff` for each input dimension.
+Similarly, we can execute forward-mode AD to get the gradient. Unlike Reverse mode, this calls `autodiff` for each input dimension.
 
 ```{code-cell} julia
 @show gradient(Forward, rosenbrock, [1.0, 2.0])
 @show gradient(ForwardWithPrimal, rosenbrock, [1.0, 2.0]);
 ```
 
-In the case of vector-valued functions, we can fill a Jacobian matrix.  If calling with `Forward`, each column of the Jacobian is filled in a separate pass.  If calling with `Reverse`, each row is filled in a separate pass.
+In the case of vector-valued functions, we can fill a Jacobian matrix. If calling with `Forward`, each column of the Jacobian is filled in a separate pass. If calling with `Reverse`, each row is filled in a separate pass.
 
 ```{code-cell} julia
 f(x) = [(1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2;
@@ -435,7 +438,7 @@ autodiff(Forward, f, Duplicated(x, dx), Const(y))
 # Result: Returns nothing (void), but the function executed.
 print("∂f/∂x = ", dx)
 ```
-Note that in Forward mode for scalar outputs, you often look at the return value.  However, for array inputs, Enzyme conventions usually focus on Reverse mode.
+Note that in Forward mode for scalar outputs, you often examine the return value. However, for array inputs, Enzyme conventions typically focus on Reverse mode.
 
 
 ### Reverse Mode
@@ -460,7 +463,7 @@ autodiff(Reverse, calc, Duplicated(x, dx), Duplicated(y, dy))
 @show dy;  # Should be 1.0 -> [1.0, 1.0, 1.0]
 ```
 
-As it requires calculation of the primal in the forward pass, as with the convenience functions you can request it to be returned, and then examine the shadows.
+Since it requires calculating the primal in the forward pass, you can request it to be returned, as with the convenience functions, and then examine the shadows.
 
 ```{code-cell} julia
 dx = Enzyme.make_zero(x)
@@ -510,8 +513,7 @@ autodiff(Reverse, compute_loss!,
 
 ### Exercise 1
 
-Doing a simple implementation of forward-mode auto-differentiation is very easy in Julia since it is generic.  In this exercise, you
-will fill in a few of the operations required for a simple AD implementation.
+Implementing forward-mode auto-differentiation is very easy in Julia since it is generic. In this exercise, you will fill in a few of the operations required for a simple AD implementation.
 
 First, we need to provide a type to hold the dual.
 
@@ -524,7 +526,7 @@ end
 
 Here we have made it a subtype of `Real` so that it can pass through functions expecting Reals.
 
-We can add on a variety of chain rule definitions by importing in the appropriate functions and adding DualNumber versions.  For example
+We can add a variety of chain rule definitions by importing the appropriate functions and adding DualNumber versions. For example
 
 ```{code-cell} julia
 import Base: +, *, -, ^, exp
@@ -547,5 +549,5 @@ f(x, y)
 
 For this assignment:
 
-1. Add in AD rules for the other operations: `*, -, ^, exp`.
-1. Come up with some examples of univariate and multivariate functions combining those operations and use your AD implementation to find the derivatives.
+1. Add AD rules for the other operations: `*`, `-`, `^`, `exp`.
+2. Come up with some examples of univariate and multivariate functions combining those operations and use your AD implementation to find the derivatives.

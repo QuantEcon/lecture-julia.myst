@@ -43,11 +43,11 @@ Example applications of these methods include:
 * estimation
 
 
-**Caution** : The code in this section is significantly more advanced than some of the other lectures, and required some experience with both auto-differentiation concepts and a more detailed understanding of type-safety and memory management in Julia.
+**Caution** : The code in this section is significantly more advanced than some of the other lectures, and requires some experience with both auto-differentiation concepts and a more detailed understanding of type-safety and memory management in Julia.
 
-[Enzyme.jl](https://enzyme.mit.edu/julia/stable/) is under active development and while state-of-the-art it is often bleeding-edge.  Some of the patterns shown here may change in future releases.  See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for the latest best practices.
+[Enzyme.jl](https://enzyme.mit.edu/julia/stable/) is under active development and while state-of-the-art, it is often bleeding-edge. Some of the patterns shown here may change in future releases. See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for the latest best practices.
 
-In practice, you may find using an LLM to be very valuable for navigating the perplexing error messages of Enzyme.jl.  Compilation times can be very slow, and performance intuition is not always straightforward.
+In practice, you may find using an LLM valuable for navigating the perplexing error messages of Enzyme.jl. Compilation times can be very slow, and performance intuition is not always straightforward.
 
 
 ```{code-cell} julia
@@ -203,11 +203,15 @@ With complicated code, we first need to ensure the code is type-stable.  The fol
 Next we check that it does not allocate any memory during execution.
 
 ```{code-cell} julia
-n_alloc = @allocated simulate_lss!(x, y, model, x_0, w, v)
-@test n_alloc == 0
+function count_allocs()
+    return @allocated simulate_lss!(x, y, model, x_0, w, v)
+end
+@test count_allocs() == 0
 ```
 
-Finally, in the case of complicated functions such as simulations, we cannot
+Note that `@allocated` can be misleading if used in a Jupyter notebook and must be wrapped in a function to get reliable results, or used with `@btime` from `BenchmarkTools.jl`.
+
+Finally, for complicated functions such as simulations, we cannot
 assume that Enzyme (or any AD system) will necessarily be correct.
 
 To aid in this, the `EnzymeTestUtils` provides utilities for this purpose which automatically check against finite-difference approximations using the appropriate seeding.
@@ -274,7 +278,7 @@ autodiff(Reverse,
 dw_rev # sensitivity wrt evolution shock
 ```
 
-These small examples mirror the larger workflow: write allocation-free, in-place simulations, seed tangents with `Duplicated`, and use forward or reverse mode depending on whether you want many outputs per input (forward) or many inputs to one scalar (reverse).
+These examples mirror the larger workflow: write allocation-free, in-place simulations, seed tangents with `Duplicated`, and use forward or reverse mode depending on whether you want many outputs per input (forward) or many inputs to one scalar (reverse).
 
 As before, for complicated functions we may want to check that the gradients are correct using finite differences.
 
@@ -323,7 +327,7 @@ Reverse-mode in particular can be useful for calibration with simulated dynamics
 For example, consider if the our $A$ matrix was parameterized by a scalar $a$ in its upper left corner, and we wanted to calibrate $a$ so that the time average of the first observation matched a target value $y^* = 0$.
 
 
-For some technical reasons discussed below, we rewrite the simulation to take the model parameters individually rather than as a named tuple.  A version which works with the original function is given below.
+For some technical reasons discussed below, we rewrite the simulation to take the model parameters individually rather than as a named tuple. A version that works with the original function is given below.
 
 ```{code-cell} julia
 function simulate_lss!(x, y, A, C, G, H, x_0, w, v)
@@ -382,10 +386,10 @@ end
 
 There are a few tricks to note here, which work around challenges with using Enzyme in its current state.
 
-- With the SciML packages, such as [Optimization.jl](https://github.com/SciML/Optimization.jl) the `AutoEnzyme()` will automatically determine which variables to mark as `Active`, etc. following certain patterns
-- In particular, `p` holds parameters which are assumed to be constant during optimization, while `u` holds the optimization variables.
-- Enzyme generally avoids allocations, but it is necessary here since we need to make a new model given the appropriate `a` value.
-- For the buffers, note the use of `eltype(A)` which will ensure the correct type since the `A` matrix will itself be differentiable.
+- With the SciML packages, such as [Optimization.jl](https://github.com/SciML/Optimization.jl), the `AutoEnzyme()` automatically determines which variables to mark as `Active` following certain patterns
+- In particular, `p` holds parameters assumed to be constant during optimization, while `u` holds the optimization variables.
+- Enzyme generally avoids allocations, but allocation is necessary here since we need to create a new model with the appropriate `a` value.
+- For the buffers, note the use of `eltype(A)` to ensure the correct type, since the `A` matrix itself will be differentiable.
 
 
 Using this setup, we can create the `p` parameter named tuple, none of which will be differentiable, and then use the LBFGS optimizer in OptimizationOptimJL to find the optimal `a` value.
@@ -438,9 +442,9 @@ function loss_2(u, p)
 end
 ```
 
-This version uses our original `simulate_lss!` function which takes a named tuple for the model parameters.  Note that it contains a trick where the constant parameters `C`, `G`, and `H` are "laundered" by copying them into new local variables before building the named tuple.  This ensures that Enzyme can properly analyze which variables are active vs. constant when creating the named tuple.
+This version uses our original `simulate_lss!` function, which takes a named tuple for the model parameters. Note that it contains a trick where the constant parameters `C`, `G`, and `H` are "laundered" by copying them into new local variables before building the named tuple. This ensures that Enzyme can properly analyze which variables are active versus constant when creating the named tuple.
 
-The `simulate_loss!` which splits out the `A` matrix might be more efficient for large $C, G, H$ since it avoids the copies, but it may not matter in practice.
+The `simulate_lss!` approach that splits out the `A` matrix might be more efficient for large $C, G, H$ since it avoids the copies, but it may not matter in practice.
 
 The other code is identical with this new loss.
 

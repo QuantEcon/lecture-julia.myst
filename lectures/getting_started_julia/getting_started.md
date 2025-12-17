@@ -35,7 +35,7 @@ It is not strictly required for running the lectures, but we will strongly encou
 As the most popular and best-supported open-source code editor, it provides a large number of useful features and extensions.  We will begin to use it as a primary editor in the {doc}`tools lecture <../software_engineering/tools_editors>`.
 
 ## TL;DR
-For those with more experience, Julia and the lectures can be installed without any installation Jupyter or Python:
+Julia and the lecture notebooks can be installed without Jupyter or Python:
 
 1. Install [Git](https://git-scm.com/install/)
 2. Install [VS Code](https://code.visualstudio.com/)
@@ -48,7 +48,7 @@ For those with more experience, Julia and the lectures can be installed without 
   - That process will take several minutes to download and compile all of the packages used in the lectures.
 7. Open any of the `.ipynb` files in VS Code and select the `Julia` in the `Julia 1.12 channel` challenge (i.e., not the Jupyter channels if you have them installed) when prompted to run the notebooks directly within VS Code
 
-At that point, you can directly move on to the {doc}`julia by example <../getting_started_julia/julia_by_example>` lecture.
+At that point, you can directly move o the {doc}`julia by example <../getting_started_julia/julia_by_example>` lecture.
 
 
 ## A Note on Jupyter

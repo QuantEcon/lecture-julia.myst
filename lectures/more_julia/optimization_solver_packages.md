@@ -18,7 +18,7 @@ kernelspec:
 </div>
 ```
 
-# Optimization and Solving Systems of Equations
+# Optimization and Nonlinear Solvers
 
 ```{contents} Contents
 :depth: 2
@@ -215,6 +215,44 @@ Another package for doing global optimization without derivatives is [BlackBoxOp
 
 
 An example for [parallel execution](https://github.com/robertfeldt/BlackBoxOptim.jl/blob/master/examples/rosenbrock_parallel.jl) of the objective is provided.
+
+## Optimization.jl Meta-Package
+The [Optimization.jl](https://github.com/SciML/Optimization.jl) package provides a common interface to a variety of optimization packages in Julia.  As part of the [SciML](https://sciml.ai/) ecosystem, it is designed to work seamlessly with other SciML tools, and to provide differentiable optimization routines that can be used in conjunction with automatic differentiation packages.
+
+Algorithms require loading additional packages for one of the [supported optimizers](https://docs.sciml.ai/Optimization/stable/#Overview-of-the-solver-packages-in-alphabetical-order), such as `OptimizationOptimJL.jl`, which wraps the `Optim.jl` package.
+
+From the [documentation](https://docs.sciml.ai/Optimization/stable/getting_started/):
+
+```{code-cell} julia
+using Optimization, OptimizationOptimJL, ForwardDiff
+rosenbrock(u, p) = (p[1] - u[1])^2 + p[2] * (u[2] - u[1]^2)^2
+u0 = zeros(2)
+p = [1.0, 100.0]
+prob = OptimizationProblem(rosenbrock, u0, p)
+sol = solve(prob, NelderMead())
+sol
+```
+
+The separation of the argument, `u`, and the parameters, `p`, is common in SciML and provides methods to cleanly handle parameterized problems.
+
+Function wrappers also provide easy integration with automatic differentiation such as `ForwardDiff.jl`.
+
+```{code-cell} julia
+f = OptimizationFunction(rosenbrock, Optimization.AutoForwardDiff())
+prob = OptimizationProblem(f, u0, p)
+sol = solve(prob, BFGS())
+```
+
+Or with `Enzyme.jl`, which has slower compilation times but p
+
+```{code-cell} julia
+using Enzyme
+f = OptimizationFunction(rosenbrock, Optimization.AutoEnzyme())
+prob = OptimizationProblem(f, u0, p)
+sol = solve(prob, BFGS())
+```
+
+Finally, [the documentation](https://docs.sciml.ai/Optimization/stable/) for a variety of other examples and features, such as constrained optimization.
 
 ## Systems of Equations and Least Squares
 
