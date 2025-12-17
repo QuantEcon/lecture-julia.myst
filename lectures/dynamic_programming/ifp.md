@@ -375,6 +375,9 @@ using Test
 ```
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics, Interpolations, NLsolve
 using BenchmarkTools, LaTeXStrings, Optim, Plots, Random
 using Distributions
