@@ -238,8 +238,8 @@ The separation of the argument, `u`, and the parameters, `p`, is common in SciML
 Function wrappers also provide easy integration with automatic differentiation such as `ForwardDiff.jl`.
 
 ```{code-cell} julia
-f = OptimizationFunction(rosenbrock, Optimization.AutoForwardDiff())
-prob = OptimizationProblem(f, u0, p)
+f_fd = OptimizationFunction(rosenbrock, Optimization.AutoForwardDiff())
+prob = OptimizationProblem(f_fd, u0, p)
 sol = solve(prob, BFGS())
 ```
 
@@ -247,8 +247,8 @@ Or with `Enzyme.jl`, which has slower compilation times but p
 
 ```{code-cell} julia
 using Enzyme
-f = OptimizationFunction(rosenbrock, Optimization.AutoEnzyme())
-prob = OptimizationProblem(f, u0, p)
+f_enzyme = OptimizationFunction(rosenbrock, Optimization.AutoEnzyme())
+prob = OptimizationProblem(f_enzyme, u0, p)
 sol = solve(prob, BFGS())
 ```
 

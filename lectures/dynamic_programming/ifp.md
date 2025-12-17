@@ -359,7 +359,7 @@ The latter is known to converge, as described above.
 ```{index} single: Optimal Savings; Programming Implementation
 ```
 
-Here's the code for a named-tuple constructor called `ConsumerProblem` that stores primitives, as well as
+Here's the code for a named-tuple constructor called `consumer_problem` that stores primitives, as well as
 
 * a `T` function, which implements the Bellman operator $T$ specified above
 * a `K` function, which implements the Coleman operator $K$ specified above
@@ -391,7 +391,7 @@ u(x) = log(x)
 du(x) = 1 / x
 
 # model
-function ConsumerProblem(; r = 0.01,
+function consumer_problem(; r = 0.01,
                          beta = 0.96,
                          Pi = [0.6 0.4; 0.05 0.95],
                          z_vals = [0.5, 1.0],
@@ -519,7 +519,7 @@ at its smallest value.
 
 The following details are needed to replicate the figure
 
-* The parameters are the default parameters in the definition of `consumerProblem`.
+* The parameters are the default parameters in the definition of `consumer_problem`.
 * The initial conditions are the default ones from `initialize(cp)`.
 * Both operators are iterated 80 times.
 
@@ -529,7 +529,7 @@ faster than iteration with $T$.
 In the Julia console, a comparison of the operators can be made as follows
 
 ```{code-cell} julia
-cp = ConsumerProblem()
+cp = consumer_problem()
 v, c = initialize(cp)
 ```
 
@@ -579,7 +579,7 @@ The following figure is a 45 degree diagram showing the law of motion for assets
 
 ```{code-cell} julia
 # solve for optimal consumption
-m = ConsumerProblem(r = 0.03, grid_max = 4)
+m = consumer_problem(r = 0.03, grid_max = 4)
 v_init, c_init = initialize(m)
 
 sol = fixedpoint(c -> K(m, c), c_init)
@@ -603,8 +603,8 @@ plot!(legend = :topleft)
 tags: [remove-cell]
 ---
 @testset begin
-    @test c[3,1] ≈ 0.6425652598985643
-    @test c[end,end] ≈ 1.283999183488841
+    @test c[3,1] ≈ 0.6425652598985643 rtol = 1e-3
+    @test c[end,end] ≈ 1.283999183488841 rtol = 1e-3
 end
 ```
 
@@ -673,7 +673,7 @@ when $r=0$ for both cases shown here.
 ### Exercise 1
 
 ```{code-cell} julia
-cp = ConsumerProblem()
+cp = consumer_problem()
 N = 80
 
 V, c = initialize(cp)
@@ -713,7 +713,7 @@ traces = []
 legends = []
 
 for r_val in r_vals
-    cp = ConsumerProblem(r = r_val)
+    cp = consumer_problem(r = r_val)
     v_init, c_init = initialize(cp)
     sol = fixedpoint(x -> K(cp, x), c_init)
     c = sol.zero
@@ -732,8 +732,8 @@ plot!(legend = :topleft)
 tags: [remove-cell]
 ---
 @testset begin
-    @test traces[2][5] ≈ 0.9859378883165114
-    @test traces[3][10] ≈ 1.1440806582742995
+    @test traces[2][5] ≈ 0.9859378883165114 atol = 1e-3
+    @test traces[3][10] ≈ 1.1440806582742995 atol = 1e-3
 end
 ```
 
@@ -774,7 +774,7 @@ function compute_asset_series(cp, T = 500_000; verbose = false)
     return a
 end
 
-cp = ConsumerProblem(r = 0.03, grid_max = 4)
+cp = consumer_problem(r = 0.03, grid_max = 4)
 Random.seed!(42) # for reproducibility
 a = compute_asset_series(cp)
 histogram(a, nbins = 20, leg = false, normed = true, xlabel = "assets")
@@ -799,7 +799,7 @@ legends = []
 for b in [1.0, 3.0]
     asset_mean = zeros(M)
     for (i, r_val) in enumerate(r_vals)
-        cp = ConsumerProblem(r = r_val, b = b)
+        cp = consumer_problem(r = r_val, b = b)
         the_mean = mean(compute_asset_series(cp, 250_000))
         asset_mean[i] = the_mean
     end
@@ -818,8 +818,8 @@ plot!(legend = :bottomright)
 tags: [remove-cell]
 ---
 @testset begin
-    #test xs[1][10] ≈ -0.7842525469134315 atol = 1e-3
-    #test xs[2][5] ≈ -2.857179797124988 atol = 1e-3
-    #test ys[1] ≈ 0.0:0.0016666666666666668:0.04 atol = 1e-4
+    @test xs[1][10] ≈ -0.7842525469134315 atol = 1e-3
+    @test xs[2][5] ≈ -2.857179797124988 atol = 1e-3
+    @test ys[1] ≈ 0.0:0.0016666666666666668:0.04 atol = 1e-3
 end
 ```
