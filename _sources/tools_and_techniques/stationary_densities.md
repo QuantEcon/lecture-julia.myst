@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (statd)=
@@ -29,9 +29,9 @@ kernelspec:
 
 ## Overview
 
-In a {doc}`previous lecture <../introduction_dynamics/finite_markov>` we learned about finite Markov chains, a relatively elementary class of stochastic dynamic models.
+In this lecture, we will study the case of continuous (i.e., uncountable) state Markov chains.
 
-The present lecture extends this analysis to continuous (i.e., uncountable) state Markov chains.
+A {doc}`previous lecture <../introduction_dynamics/finite_markov>` will cover finite Markov chains, a relatively elementary class of stochastic dynamic models.
 
 Most stochastic dynamic models studied by economists either fit directly into this class or can be represented as continuous state Markov chains after minor modifications.
 
@@ -41,8 +41,7 @@ In this lecture, our focus will be on continuous Markov models that
 * are often nonlinear
 
 The fact that we accommodate nonlinear models here is significant, because
-linear stochastic models have their own highly developed tool set, as we'll
-see {doc}`later on <../time_series_models/arma>`.
+linear stochastic models have their own highly developed tool set.
 
 The question that interests us most is: Given a particular stochastic dynamic
 model, how will the state of the system evolve over time?
@@ -54,8 +53,7 @@ In particular,
 * Is there a notion of "steady state" or "long run equilibrium" that's applicable to the model?
     * If so, how can we compute it?
 
-Answering these questions will lead us to revisit many of the topics that occupied us in the finite state case,
-such as simulation, distribution dynamics, stability, ergodicity, etc.
+Answering these questions will lead us to explore topics such as simulation, distribution dynamics, stability, and ergodicity.
 
 ```{note}
 For some people, the term "Markov chain" always refers to a process with a
@@ -68,8 +66,8 @@ Markov process.
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics
-using KernelDensity, Distributions, LaTeXStrings, Plots, QuantEcon, Random
+using LinearAlgebra, Statistics, Distributions, LaTeXStrings, Plots, StatsPlots,
+      Random
 ```
 
 (statd_density_case)=
@@ -89,9 +87,7 @@ Once we've built some intuition we'll cover the general case.
 
 ### Definitions and Basic Properties
 
-In our {doc}`lecture on finite Markov chains <../introduction_dynamics/finite_markov>`, we studied discrete time Markov chains that evolve on a finite state space $S$.
-
-In this setting, the dynamics of the model are described by a stochastic matrix --- a nonnegative square matrix $P = P[i, j]$ such that each row $P[i, \cdot]$ sums to one.
+We can start by considering a finite state space $S$. In this setting, the dynamics of the model are described by a stochastic matrix --- a nonnegative square matrix $P = P[i, j]$ such that each row $P[i, \cdot]$ sums to one.
 
 The interpretation of $P$ is that $P[i, j]$ represents the
 probability of transitioning from state $i$ to state $j$ in one
@@ -271,16 +267,15 @@ $\sigma(x) = s f(x)$ is strictly positive for all $s$ as required)
 
 ### Distribution Dynamics
 
-In {ref}`this section <mc_md>` of our lecture on **finite** Markov chains, we
-asked the following question: If
+Later in {ref}`another section <mc_md>` of our lecture on **finite** Markov chains, we
+will explore the following question: If
 
 1. $\{X_t\}$ is a Markov chain with stochastic matrix $P$
 1. the distribution of $X_t$ is known to be $\psi_t$
 
 then what is the distribution of $X_{t+1}$?
 
-Letting $\psi_{t+1}$ denote the distribution of $X_{t+1}$, the
-answer {ref}`we gave <mc_fdd>` was that
+Letting $\psi_{t+1}$ denote the distribution of $X_{t+1}$, we will show that
 
 $$
 \psi_{t+1}[j] = \sum_{i \in S} P[i,j] \psi_t[i]
@@ -432,17 +427,7 @@ In fact much stronger convergence results are true (see, for example, [this pape
 ```
 
 ### Implementation
-
-A function which calls an `LAE` type for estimating densities by this technique can be found in [lae.jl](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lae.jl).
-
-This function returns the right-hand side of {eq}`statd_lae1` using
-
-* an object of type `LAE` that stores the stochastic kernel and the observations
-* the value $y$ as its second argument
-
-The function is vectorized, in the sense that if `psi` is such an instance and `y` is an array, then the call `psi(y)` acts elementwise.
-
-(This is the reason that we reshaped `X` and `y` inside the type --- to make vectorization work)
+We'll implement a function `lae_est(p, X, ygrid)` that returns the right-hand side of {eq}`statd_lae1`, averaging the kernel $p$ over simulated draws `X` on a grid `ygrid` (see [here](https://github.com/QuantEcon/QuantEcon.jl/blob/master/src/lae.jl) for the original implementation)
 
 ### Example
 
@@ -456,8 +441,6 @@ using Test
 ```
 
 ```{code-cell} julia
-using Distributions, StatsPlots, Plots, QuantEcon, Random
-
 Random.seed!(42) # For deterministic results.
 
 s = 0.2
@@ -477,6 +460,13 @@ function p(x, y)
     return pdf.(phi, pdf_arg) ./ d
 end
 
+function lae_est(p, X, ygrid)
+    Xmat = reshape(X, :, 1)
+    Ymat = reshape(ygrid, 1, :)
+    psi_vals = mean(p.(Xmat, Ymat), dims = 1)
+    return dropdims(psi_vals, dims = 1)
+end
+
 n = 10000  # Number of observations at each date t
 T = 30     # Compute density of k_t at 1,...,T+1
 
@@ -490,16 +480,16 @@ for t in 1:(T - 1)
     k[:, t + 1] = s * A[:, t] .* k[:, t] .^ alpha + (1 - delta) .* k[:, t]
 end
 
-# Generate T instances of LAE using this data, one for each date t
-laes = [LAE(p, k[:, t]) for t in T:-1:1]
+# Store draws for each date t
+laes = [k[:, t] for t in T:-1:1]
 
 # Plot
 ygrid = range(0.01, 4, length = 200)
 laes_plot = []
 colors = []
 for i in 1:T
-    psi = laes[i]
-    push!(laes_plot, lae_est(psi, ygrid))
+    lae = laes[i]
+    push!(laes_plot, lae_est(p, lae, ygrid))
     push!(colors, RGBA(0, 0, 0, 1 - (i - 1) / T))
 end
 plot(ygrid, laes_plot, color = reshape(colors, 1, length(colors)), lw = 2,
@@ -513,7 +503,7 @@ plot!(title = t)
 tags: [remove-cell]
 ---
 @testset "First Figure Tests" begin
-    # @test laes[2].X[4] ≈ 2.606090690969538
+    # @test laes[2][4] ≈ 2.606090690969538
     @test length(ygrid) == 200 && ygrid[1] ≈ 0.01 && ygrid[end] ≈ 4.0
     # @test k[5, 5] ≈ 0.8597155601089135
 end
@@ -526,7 +516,7 @@ Notice that the sequence of densities shown in the figure seems to be
 converging --- more on this in just a moment.
 
 Another quick comment is that each of these distributions could be interpreted
-as a cross sectional distribution (recall {ref}`this discussion <mc_eg1-1>`).
+as a cross sectional distribution (see {ref}`this discussion <mc_eg1-1>`).
 
 ## Beyond Densities
 
@@ -606,17 +596,12 @@ One good option is simulation as before, combined with the [empirical distributi
 
 ## Stability
 
-In our {doc}`lecture <../introduction_dynamics/finite_markov>` on finite Markov chains we also studied stationarity, stability and ergodicity.
+In this section, we will explore three concepts: stationarity, stability, and ergodicity. Our focus will be specifically on the density case (as in {ref}`this section <statd_density_case>`), where the stochastic kernel is a family of densities. The general case is relatively similar --- references are given below.
 
-Here we will cover the same topics for the continuous case.
-
-We will, however, treat only the density case (as in {ref}`this section <statd_density_case>`), where the stochastic kernel is a family of densities.
-
-The general case is relatively similar --- references are given below.
 
 ### Theoretical Results
 
-Analogous to {ref}`the finite case <mc_stat_dd>`, given a stochastic kernel $p$ and corresponding Markov operator as
+Given a stochastic kernel $p$ and corresponding Markov operator as
 defined in {eq}`def_dmo`, a density $\psi^*$ on $S$ is called
 *stationary* for $P$ if it is a fixed point of the operator $P$.
 
@@ -635,7 +620,7 @@ the distribution of $X_0$ is $\psi^*$, then, in view of
 
 Hence $\psi^*$ is the stochastic equivalent of a steady state.
 
-In the finite case, we learned that at least one stationary distribution exists, although there may be many.
+In the finite case, we will learn that at least one stationary distribution exists, although there may be many.
 
 When the state space is infinite, the situation is more complicated.
 
@@ -943,7 +928,7 @@ for t in 1:(n - 1)
     X[t + 1] = theta * abs(X[t]) + d * Z[t]
 end
 
-psi_est(a) = lae_est(LAE(p_TAR, X), a)
+psi_est(a) = lae_est(p_TAR, X, a)
 k_est = kde(X)
 
 ys = range(-3, 3, length = 200)
@@ -1000,7 +985,7 @@ T = 40    # Compute density of k_t at 1,...,T+1
 xmax = 6.5
 ygrid = range(0.01, xmax, length = 150)
 laes_plot = zeros(length(ygrid), 4T)
-colors = []
+colors = zeros(RGBA,1,4*T);
 for i in 1:4
     k = zeros(n, T)
     A = rand!(phi, zeros(n, T))
@@ -1012,19 +997,17 @@ for i in 1:4
         k[:, t + 1] = s * A[:, t] .* k[:, t] .^ alpha + (1 - delta) .* k[:, t]
     end
 
-    # Generate T instances of LAE using this data, one for each date t
-    laes = [LAE(p_growth, k[:, t]) for t in T:-1:1]
+    # Store draws for each date t
+    laes = [k[:, t] for t in T:-1:1]
     ind = i
     for j in 1:T
         psi = laes[j]
-        laes_plot[:, ind] = lae_est(psi, ygrid)
+        laes_plot[:, ind] = lae_est(p_growth, psi, ygrid)
+        colors[ind]=RGBA(0, 0, 0, 1 - (j - 1) / T)
         ind = ind + 4
-        push!(colors, RGBA(0, 0, 0, 1 - (j - 1) / T))
     end
 end
 
-#colors = reshape(reshape(colors, T, 4)', 4*T, 1)
-colors = reshape(colors, 1, length(colors))
 plot(ygrid, laes_plot, layout = (2, 2), color = colors,
      legend = :none, xlabel = "capital", xlims = (0, xmax))
 ```
@@ -1107,4 +1090,3 @@ By the definition of $V$, we have $F_V(v) = \mathbb P \{ a + b U \leq v \} = \ma
 In other words, $F_V(v) = F_U ( (v - a)/b )$.
 
 Differentiating with respect to $v$ yields {eq}`statd_dv`.
-

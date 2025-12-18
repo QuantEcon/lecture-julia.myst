@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (version_control)=
@@ -85,7 +85,7 @@ Since these lecture notes are intended to provide a minimal path to using the te
 
 The fundamental object in GitHub is a *repository* (or "repo") -- this is the master directory for a project.
 
-One example of a repo is the QuantEcon [Expectations.jl](https://github.com/quantecon/expectations.jl/) package.
+One example of a repo is the Distributions [Distributions.jl](https://github.com/JuliaStats/Distributions.jl) package.
 
 On the machine, a repo is a normal directory, along with a subdirectory called `.git` which contains the history of changes.
 
@@ -111,9 +111,9 @@ In addition, each GitHub repository usually comes with a few standard text files
 
 * A `.gitignore` file, which lists files/extensions/directories that GitHub shouldn't try to track (e.g., LaTeX compilation byproducts).
 * A `README.md` file, which is a [Markdown](https://guides.github.com/features/mastering-markdown/) file which GitHub displays by default as the homepage when accessing the repository online.
-* A `LICENSE.txt` file, which describes the terms under which the repository's contents are made available.
+* A `LICENSE.md` file, which describes the terms under which the repository's contents are made available.
 
-For an example of all three, see the [Expectations.jl](https://github.com/quantecon/expectations.jl/) repo.
+For an example of all three, see the [Distributions.jl](https://github.com/JuliaStats/Distributions.jl) repo.
 
 (new_repo_workflow)=
 ## Individual Workflow

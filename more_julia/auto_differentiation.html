@@ -1,0 +1,1590 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>7. Automatic Differentiation &#8212; Quantitative Economics with Julia</title>
+    <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    
+        <script>
+            MathJax = {
+            loader: {load: ['[tex]/boldsymbol', '[tex]/textmacros']},
+            tex: {
+                packages: {'[+]': ['boldsymbol', 'textmacros']},
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                processEscapes: true,
+                macros: {
+                    "argmax" : "arg\\,max",
+                    "argmin" : "arg\\,min",
+                    "col"    : "col",
+                    "Span"   :  "span",
+                    "epsilon": "\\varepsilon",
+                    "EE": "\\mathbb{E}",
+                    "PP": "\\mathbb{P}",
+                    "RR": "\\mathbb{R}",
+                    "NN": "\\mathbb{N}",
+                    "ZZ": "\\mathbb{Z}",
+                    "aA": "\\mathcal{A}",
+                    "bB": "\\mathcal{B}",
+                    "cC": "\\mathcal{C}",
+                    "dD": "\\mathcal{D}",
+                    "eE": "\\mathcal{E}",
+                    "fF": "\\mathcal{F}",
+                    "gG": "\\mathcal{G}",
+                    "hH": "\\mathcal{H}",
+                }
+            },
+            svg: {
+                fontCache: 'global',
+                scale: 0.92,
+                displayAlign: "center",
+            },
+            };
+        </script>
+    
+    
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/quantecon-book-theme.css?digest=b09b2da44b9015b4fa76ea072fa2d8f7faee5492" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/scripts/quantecon-book-theme.js?digest=eed9c059a3ee152aae2353ec732f0a6d12e6aa07"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script async="async" src="https://www.googletagmanager.com/gtag/js?id=G-3PCWRLGWND"></script>
+    <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', 'G-3PCWRLGWND');
+            </script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'more_julia/auto_differentiation';</script>
+    <link rel="canonical" href="https://julia.quantecon.org/more_julia/auto_differentiation.html" />
+    <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="8. Quadrature and Interpolation" href="quadrature_interpolation.html" />
+    <link rel="prev" title="6. Generic Programming" href="generic_programming.html" />
+
+<!-- Normal Meta Tags -->
+<meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
+<meta name="keywords" content="Julia, QuantEcon, Quantitative Economics, Economics, Sloan, Alfred P. Sloan Foundation, Tom J. Sargent, John Stachurski" />
+<meta name="description" content=This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia. />
+
+<!-- Twitter tags -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@quantecon" />
+<meta name="twitter:title" content="Automatic Differentiation"/>
+<meta name="twitter:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia.">
+<meta name="twitter:creator" content="@quantecon">
+<meta name="twitter:image" content="https://assets.quantecon.org/img/qe-twitter-logo.png">
+
+<!-- Opengraph tags -->
+<meta property="og:title" content="Automatic Differentiation" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://julia.quantecon.org/more_julia/auto_differentiation.html" />
+<meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
+<meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
+<meta property="og:site_name" content="Quantitative Economics with Julia" />
+<meta name="theme-color" content="#ffffff" />
+
+  </head>
+<body>
+
+
+    <span id="top"></span>
+
+    <div class="qe-wrapper">
+
+        <div class="qe-main">
+
+            <div class="qe-page" id=more_julia/auto_differentiation>
+
+                <div class="qe-page__toc">
+
+                    <div class="inner">
+
+                        
+                        <div class="qe-page__toc-header">
+                            On this page
+                        </div>
+
+
+                        <nav id="bd-toc-nav" class="qe-page__toc-nav">
+                            <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">7.1. Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-differentiable-programming">7.2. Introduction to Differentiable Programming</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#forward-mode-automatic-differentiation">7.2.1. Forward-Mode Automatic Differentiation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#forward-mode-with-dual-numbers">7.2.2. Forward-Mode with Dual Numbers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#forwarddiff-jl">7.2.3. ForwardDiff.jl</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-mode-ad">7.2.4. Reverse-Mode AD</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-enzyme">7.3. Introduction to Enzyme</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparison-to-the-python-ecosystem">7.3.1. Comparison to the Python Ecosystem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lux-jl-neural-networks-in-julia">7.3.2. Lux.jl: Neural Networks in Julia</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reactant-jl-the-bridge-to-tpus-and-xla">7.3.3. Reactant.jl: The Bridge to TPUs and XLA</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-enzyme-differentiable-code">7.3.4. Writing Enzyme-Differentiable Code</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-concepts-terminology">7.3.5. Core Concepts &amp; Terminology</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-primal-vs-the-shadow">7.3.6. The Primal vs. The Shadow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamental-rules-of-activity">7.3.7. Fundamental Rules of Activity</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#argument-wrappers-quick-reference">7.3.8. Argument Wrappers (Quick Reference)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">7.3.9. Examples</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#convenience-functions">7.3.10. Convenience Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-forward-mode">7.3.11. Simple Forward Mode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-mode">7.3.12. Reverse Mode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#handling-mutation-and-buffers">7.3.13. Handling Mutation and Buffers</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">7.4. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1">7.4.1. Exercise 1</a></li>
+</ul>
+</li>
+</ul>
+                            <p class="logo">
+                                
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/qe-logo-large.png" class="logo logo-img" alt="logo"></a>
+                                    
+                                    <a href=https://quantecon.org><img src="../_static/quantecon-logo-transparent.png" class="dark-logo-img" alt="logo"></a>
+                                    
+                                    
+                                
+                            </p>
+
+                            <p class="powered">Powered by <a href="https://jupyterbook.org/">Jupyter Book</a></p>
+
+                        </nav>
+
+                        <div class="qe-page__toc-footer">
+                            
+                            
+                            <p><a href="#top"><strong>Back to top</strong></a></p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="qe-page__header">
+
+                    <div class="qe-page__header-copy">
+
+                        <p class="qe-page__header-heading"><a href="../intro.html">Quantitative Economics with Julia</a></p>
+
+                        <p class="qe-page__header-subheading">Automatic Differentiation</p>
+
+                    </div>
+                    <!-- length 2, since its a string and empty dict has length 2 - {} -->
+                        <p class="qe-page__header-authors" font-size="18">
+                            
+                                
+                                    <a href="https://www.jesseperla.com" target="_blank"><span>Jesse Perla</span></a>,
+                                
+                            
+                                
+                                    <a href="http://www.tomsargent.com/" target="_blank"><span>Thomas J. Sargent</span></a>,
+                                
+                            
+                                
+                                    and <a href="https://johnstachurski.net/" target="_blank"><span>John Stachurski</span></a>
+                                
+                            
+                        </p>
+
+
+                </div> <!-- .page__header -->
+
+
+
+                
+                <main class="qe-page__content" role="main">
+                    
+                    <div>
+                        
+  <div id="qe-notebook-header" style="text-align:right;">
+        <a href="https://quantecon.org/" title="quantecon.org">
+                <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
+        </a>
+</div><section class="tex2jax_ignore mathjax_ignore" id="automatic-differentiation">
+<h1><a class="toc-backref" href="#id1"><span class="section-number">7. </span>Automatic Differentiation</a><a class="headerlink" href="#automatic-differentiation" title="Permalink to this heading">#</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#automatic-differentiation" id="id1">Automatic Differentiation</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id2">Overview</a></p></li>
+<li><p><a class="reference internal" href="#introduction-to-differentiable-programming" id="id3">Introduction to Differentiable Programming</a></p></li>
+<li><p><a class="reference internal" href="#introduction-to-enzyme" id="id4">Introduction to Enzyme</a></p></li>
+<li><p><a class="reference internal" href="#exercises" id="id5">Exercises</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="overview">
+<h2><a class="toc-backref" href="#id2"><span class="section-number">7.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h2>
+<p>In this lecture, we discuss auto-differentiation in Julia and introduce some key packages.</p>
+<div class="cell tag_hide-output docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="p">,</span><span class="w"> </span><span class="n">Enzyme</span><span class="p">,</span><span class="w"> </span><span class="n">Test</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="introduction-to-differentiable-programming">
+<h2><a class="toc-backref" href="#id3"><span class="section-number">7.2. </span>Introduction to Differentiable Programming</a><a class="headerlink" href="#introduction-to-differentiable-programming" title="Permalink to this heading">#</a></h2>
+<p>The promise of differentiable programming is that we can move towards taking the derivatives of almost arbitrarily
+complicated computer programs, rather than simply thinking about the derivatives of mathematical functions.  Differentiable
+programming is the natural evolution of automatic differentiation (AD, sometimes called algorithmic differentiation).</p>
+<p>Stepping back, there are three ways to calculate the gradient or Jacobian</p>
+<ul class="simple">
+<li><p>Analytic derivatives / Symbolic differentiation</p>
+<ul>
+<li><p>You can sometimes calculate the derivative on pen-and-paper, and potentially simplify the expression.</p></li>
+<li><p>In effect, repeated applications of the chain rule, product rule, etc.</p></li>
+<li><p>It is sometimes the most accurate and fastest option if there are algebraic simplifications.</p></li>
+<li><p>Sometimes, symbolic computation on the computer is a good solution if the package can handle your functions. Doing algebra by hand is tedious and error-prone, but sometimes invaluable.</p></li>
+</ul>
+</li>
+<li><p>Finite differences</p>
+<ul>
+<li><p>Evaluate the function at least <span class="math notranslate nohighlight">\(N+1\)</span> times to get the gradient – Jacobians are even worse.</p></li>
+<li><p>Large <span class="math notranslate nohighlight">\(\Delta\)</span> is numerically stable but inaccurate; too small is numerically unstable but more accurate.</p></li>
+<li><p>Choosing the <span class="math notranslate nohighlight">\(\Delta\)</span> is hard, so use packages such as <a class="reference external" href="https://github.com/JuliaDiffEq/DiffEqDiffTools.jl">DiffEqDiffTools.jl</a>.</p></li>
+<li><p>If a function is <span class="math notranslate nohighlight">\(R^N \to R\)</span> for a large <span class="math notranslate nohighlight">\(N\)</span>, this requires <span class="math notranslate nohighlight">\(O(N)\)</span> function evaluations.</p></li>
+</ul>
+</li>
+</ul>
+<div class="math notranslate nohighlight">
+\[
+\partial_{x_i}f(x_1,\ldots x_N) \approx \frac{f(x_1,\ldots x_i + \Delta,\ldots x_N) - f(x_1,\ldots x_i,\ldots x_N)}{\Delta}
+\]</div>
+<ul class="simple">
+<li><p>Automatic Differentiation</p>
+<ul>
+<li><p>The same as analytic/symbolic differentiation, but where the <strong>chain rule</strong> is calculated <strong>numerically</strong> rather than symbolically.</p></li>
+<li><p>Just as with analytic derivatives, can establish rules for the derivatives of individual functions (e.g. <span class="math notranslate nohighlight">\(d\left(sin(x)\right)\)</span> to <span class="math notranslate nohighlight">\(cos(x) dx\)</span>) for intrinsic derivatives.</p></li>
+</ul>
+</li>
+</ul>
+<p>AD has two basic approaches, which are variations on the order of evaluating the chain rule: reverse and forward mode (although mixed mode is possible).</p>
+<ol class="arabic simple">
+<li><p>If a function is <span class="math notranslate nohighlight">\(R^N \to R\)</span>, then <strong>reverse-mode</strong> AD can find the gradient in <span class="math notranslate nohighlight">\(O(1)\)</span> sweep (where a “sweep” is <span class="math notranslate nohighlight">\(O(1)\)</span> function evaluations).</p></li>
+<li><p>If a function is <span class="math notranslate nohighlight">\(R \to R^N\)</span>, then <strong>forward-mode</strong> AD can find the jacobian in <span class="math notranslate nohighlight">\(O(1)\)</span> sweeps.</p></li>
+</ol>
+<p>We will explore two types of automatic differentiation in Julia (and discuss a few packages which implement them).  For both, remember the <a class="reference external" href="https://en.wikipedia.org/wiki/Chain_rule">chain rule</a></p>
+<div class="math notranslate nohighlight">
+\[
+\frac{dy}{dx} = \frac{dy}{dw} \cdot \frac{dw}{dx}
+\]</div>
+<p>Forward-mode starts the calculation from the left with <span class="math notranslate nohighlight">\(\frac{dy}{dw}\)</span> first, which then calculates the product with <span class="math notranslate nohighlight">\(\frac{dw}{dx}\)</span>.  On the other hand, reverse mode starts on the right hand side with <span class="math notranslate nohighlight">\(\frac{dw}{dx}\)</span> and works backwards.</p>
+<p>Take an example a function with fundamental operations and known analytical derivatives</p>
+<div class="math notranslate nohighlight">
+\[
+f(x_1, x_2) = x_1 x_2 + \sin(x_1)
+\]</div>
+<p>And rewrite this as a function which contains a sequence of simple operations and temporaries.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span><span class="w"> </span><span class="n">x_2</span><span class="p">)</span>
+<span class="w">    </span><span class="n">w_1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_1</span>
+<span class="w">    </span><span class="n">w_2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_2</span>
+<span class="w">    </span><span class="n">w_3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w_1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">w_2</span>
+<span class="w">    </span><span class="n">w_4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">w_1</span><span class="p">)</span>
+<span class="w">    </span><span class="n">w_5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">w_3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">w_4</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">w_5</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f (generic function with 1 method)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here we can identify all of the underlying functions (<code class="docutils literal notranslate"><span class="pre">*,</span> <span class="pre">sin,</span> <span class="pre">+</span></code>), and see if each has an
+intrinsic derivative.  While these are obvious, with Julia we could come up with all sorts of differentiation rules for arbitrarily
+complicated combinations and compositions of intrinsic operations.  In fact, there is even <a class="reference external" href="https://github.com/JuliaDiff/ChainRules.jl">a package</a> for registering more.</p>
+<section id="forward-mode-automatic-differentiation">
+<h3><span class="section-number">7.2.1. </span>Forward-Mode Automatic Differentiation<a class="headerlink" href="#forward-mode-automatic-differentiation" title="Permalink to this heading">#</a></h3>
+<p>In forward-mode AD, you first fix the variable you are interested in (called “seeding”), and then evaluate the chain rule in left-to-right order.</p>
+<p>For example, with our <span class="math notranslate nohighlight">\(f(x_1, x_2)\)</span> example above, if we wanted to calculate the derivative with respect to <span class="math notranslate nohighlight">\(x_1\)</span> then
+we can seed the setup accordingly.  <span class="math notranslate nohighlight">\(\frac{\partial  w_1}{\partial  x_1} = 1\)</span> since we are taking the derivative of it, while <span class="math notranslate nohighlight">\(\frac{\partial  w_2}{\partial  x_1} = 0\)</span>.</p>
+<p>Following through with these, redo all of the calculations for the derivative in parallel with the function itself.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{array}{l|l}
+f(x_1, x_2) &amp;
+\frac{\partial f(x_1,x_2)}{\partial x_1}
+\\
+\hline
+w_1 = x_1 &amp;
+\frac{\partial  w_1}{\partial  x_1} = 1 \text{ (seed)}\\
+w_2 = x_2 &amp;
+\frac{\partial   w_2}{\partial  x_1} = 0 \text{ (seed)}
+\\
+w_3 = w_1 \cdot w_2 &amp;
+\frac{\partial  w_3}{\partial x_1} = w_2 \cdot \frac{\partial   w_1}{\partial  x_1} + w_1 \cdot \frac{\partial   w_2}{\partial  x_1}
+\\
+w_4 = \sin w_1 &amp;
+\frac{\partial   w_4}{\partial x_1} = \cos w_1 \cdot \frac{\partial  w_1}{\partial x_1}
+\\
+w_5 = w_3 + w_4 &amp;
+\frac{\partial  w_5}{\partial x_1} = \frac{\partial  w_3}{\partial x_1} + \frac{\partial  w_4}{\partial x_1}
+\end{array}
+\end{split}\]</div>
+<p>Since these two could be done at the same time, we say there is “one pass” required for this calculation.</p>
+<p>Generalizing a little, if the function was vector-valued, then that single pass would get the entire row of the Jacobian in that single pass.  Hence for a <span class="math notranslate nohighlight">\(R^N \to R^M\)</span> function, requires <span class="math notranslate nohighlight">\(N\)</span> passes to get a dense Jacobian using forward-mode AD.</p>
+<p>How can you implement forward-mode AD?  It turns out to be fairly easy with a generic programming language to make a simple example (while the devil is in the details for
+a high-performance implementation).</p>
+</section>
+<section id="forward-mode-with-dual-numbers">
+<h3><span class="section-number">7.2.2. </span>Forward-Mode with Dual Numbers<a class="headerlink" href="#forward-mode-with-dual-numbers" title="Permalink to this heading">#</a></h3>
+<p>One way to implement forward-mode AD is to use <a class="reference external" href="https://en.wikipedia.org/wiki/Dual_number">dual numbers</a>.</p>
+<p>Instead of working with just a real number, e.g. <span class="math notranslate nohighlight">\(x\)</span>, we will augment each with an infinitesimal <span class="math notranslate nohighlight">\(\epsilon\)</span> and use <span class="math notranslate nohighlight">\(x + \epsilon\)</span>.</p>
+<p>From Taylor’s theorem,</p>
+<div class="math notranslate nohighlight">
+\[
+f(x + \epsilon) = f(x) + f'(x)\epsilon + O(\epsilon^2)
+\]</div>
+<p>where we will define the infinitesimal such that <span class="math notranslate nohighlight">\(\epsilon^2 = 0\)</span>.</p>
+<p>With this definition, we can write a general rule for differentiation of <span class="math notranslate nohighlight">\(g(x,y)\)</span> as the chain rule for the total derivative</p>
+<div class="math notranslate nohighlight">
+\[
+g(x + \epsilon, y + \epsilon) = g(x, y) + (\partial_x g(x,y) + \partial_y g(x,y))\epsilon
+\]</div>
+<p>But, note that if we keep track of the constant in front of the <span class="math notranslate nohighlight">\(\epsilon\)</span> terms (e.g. a <span class="math notranslate nohighlight">\(x'\)</span> and <span class="math notranslate nohighlight">\(y'\)</span>)</p>
+<div class="math notranslate nohighlight">
+\[
+g(x + x'\epsilon, y + y'\epsilon) = g(x, y) + (\partial_x g(x,y)x' + \partial_y g(x,y)y')\epsilon
+\]</div>
+<p>This is simply the chain rule.  A few more examples</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}
+\begin{aligned}
+        (x + x'\epsilon) + (y + y'\epsilon) &amp;= (x + y) + (x' + y')\epsilon\\
+(x + x'\epsilon)\times(y + y'\epsilon) &amp;= (xy) + (x'y + y'x)\epsilon\\
+\exp(x + x'\epsilon) &amp;= \exp(x) + (x'\exp(x))\epsilon\\
+        \end{aligned}
+\end{split}\]</div>
+<p>Using the generic programming in Julia, it is easy to define a new dual number type which can encapsulate the pair <span class="math notranslate nohighlight">\((x, x')\)</span> and provide a definitions for
+all of the basic operations.  Each definition then has the chain-rule built into it.</p>
+<p>With this approach, the “seed” process is simply the creation of the <span class="math notranslate nohighlight">\(\epsilon\)</span> for the underlying variable.</p>
+<p>So if we have the function <span class="math notranslate nohighlight">\(f(x_1, x_2)\)</span> and we wanted to find the derivative <span class="math notranslate nohighlight">\(\partial_{x_1} f(3.8, 6.9)\)</span>, we would seed them with the dual numbers <span class="math notranslate nohighlight">\(x_1 \to (3.8, 1)\)</span> and <span class="math notranslate nohighlight">\(x_2 \to (6.9, 0)\)</span>.</p>
+<p>If you then follow all of the same scalar operations above with a seeded dual number, it will calculate both the function value and the derivative in a single “sweep” and without modifying any of your (generic) code.</p>
+</section>
+<section id="forwarddiff-jl">
+<h3><span class="section-number">7.2.3. </span>ForwardDiff.jl<a class="headerlink" href="#forwarddiff-jl" title="Permalink to this heading">#</a></h3>
+<p>Dual-numbers are at the heart of one of the AD packages we have already seen.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">h</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">sinh</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="w"> </span><span class="c"># multivariate</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.4</span><span class="w"> </span><span class="mf">2.2</span><span class="p">]</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c"># use AD, seeds from x</span>
+
+<span class="c">#Or, can use complicated functions of many variables</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">sin</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">prod</span><span class="p">(</span><span class="n">tan</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">sqrt</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="n">g</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span><span class="w"> </span><span class="c"># g() is now the gradient</span>
+<span class="n">g</span><span class="p">(</span><span class="n">rand</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span><span class="w"> </span><span class="c"># gradient at a random point</span>
+<span class="c"># ForwardDiff.hessian(f,x&#39;) # or the hessian</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ForwardDiff.gradient(h, x) = [26.35476496103098 16.663053156992287]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Float64}:
+ 1.0223895336213846
+ 0.6381842072139465
+ 0.9702628358435225
+ 0.7435237800711872
+ 1.1844121694582914
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can even auto-differentiate complicated functions with embedded iterations.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">squareroot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c">#pretending we don&#39;t know sqrt()</span>
+<span class="w">    </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c"># Initial starting point for Newton’s method</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="n">abs</span><span class="p">(</span><span class="n">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">1e-13</span>
+<span class="w">        </span><span class="n">z</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">z</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">z</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="n">z</span><span class="p">)</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">z</span>
+<span class="k">end</span>
+<span class="n">squareroot</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.4142135623730951
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">dsqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="o">.</span><span class="n">derivative</span><span class="p">(</span><span class="n">squareroot</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="n">dsqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.35355339059327373
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="reverse-mode-ad">
+<h3><span class="section-number">7.2.4. </span>Reverse-Mode AD<a class="headerlink" href="#reverse-mode-ad" title="Permalink to this heading">#</a></h3>
+<p>Unlike forward-mode auto-differentiation, reverse-mode is very difficult to implement efficiently, and many variations on the best approach exist.</p>
+<p>Many reverse-mode packages are connected to machine-learning packages, since the efficient gradients of <span class="math notranslate nohighlight">\(R^N \to R\)</span> loss functions are necessary for the gradient descent optimization algorithms used in machine learning.</p>
+<p>At this point, Julia lacks a single, consistently usable reverse-mode AD package without rough edges. However, a few key options to consider are:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/JuliaDiff/ReverseDiff.jl">ReverseDiff.jl</a>, a relatively dependable but limited package.  Not really intended for standard ML-pipeline usage or scientific computing.</p></li>
+<li><p><a class="reference external" href="https://github.com/FluxML/Zygote.jl">Zygote.jl</a>, which is flexible but buggy and less reliable. It is undergoing deprecation but often remains a common alternative.</p></li>
+<li><p><a class="reference external" href="https://github.com/chalk-lab/Mooncake.jl">Mooncake.jl</a>, a promising Julia-native AD package, which might be a cleaner and better maintained alternative to Zygote.jl.</p></li>
+<li><p><a class="reference external" href="https://enzyme.mit.edu/julia/stable/">Enzyme.jl</a>, which is the most promising and supports both forward and reverse mode. However, as it operates at a lower compiler level, it cannot support all Julia code. In particular, it favors in-place functions over “pure” functions.</p></li>
+</ul>
+</section>
+</section>
+<section id="introduction-to-enzyme">
+<h2><a class="toc-backref" href="#id4"><span class="section-number">7.3. </span>Introduction to Enzyme</a><a class="headerlink" href="#introduction-to-enzyme" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://enzyme.mit.edu/julia/stable/">Enzyme.jl</a> is a high-performance automatic differentiation (AD) tool that operates at the LLVM level (compiler IR) rather than the source code level. This allows it to differentiate through low-level optimizations, mutation, and foreign function calls where other AD tools might fail.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Caution</strong> : Enzyme.jl is under active development.  Some of the patterns shown here may change in future releases.  In practice, you may find using an LLM to be very valuable for navigating the perplexing error messages of Enzyme.jl.  Compilation times can be very slow, and performance intuition is not always straightforward.</p>
+</div>
+<p>However, this power does make usage somewhat more challenging, as you need to ensure the compiler-generated code conforms to certain patterns.</p>
+<p>It supports both <strong>Forward Mode</strong> (best for <span class="math notranslate nohighlight">\(N \to \text{Many}\)</span> derivatives) and <strong>Reverse Mode</strong> (best for gradients of scalar loss functions, <span class="math notranslate nohighlight">\(N \to 1\)</span>), and nested differentiation (e.g., Hessians).</p>
+<p>While <code class="docutils literal notranslate"><span class="pre">ForwardDiff.jl</span></code> is often easier for simple problems, Enzyme is capable of high-performance differentiation typically used in scientific computing and scientific machine learning (e.g., differentiable simulations and sensitivity analysis of differential equations).</p>
+<section id="comparison-to-the-python-ecosystem">
+<h3><span class="section-number">7.3.1. </span>Comparison to the Python Ecosystem<a class="headerlink" href="#comparison-to-the-python-ecosystem" title="Permalink to this heading">#</a></h3>
+<p>Relative to JAX and PyTorch, Enzyme is often faster and more flexible for specialized algorithms in scientific computing (e.g., ODE solvers, physical simulations) because it differentiates at the LLVM level rather than the operation level. However, Enzyme itself is a low-level tool; it lacks the high-level layers for managing neural network state and batching found in PyTorch.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>One current advantage of Enzyme is that it has traditionally been difficult to write mutating code in JAX, which is essential in many scientific computing applications. The JAX ecosystem has been making progress on this limitation through mechanisms like “hijax” support in <a class="reference external" href="https://flax.readthedocs.io/en/latest/nnx_basics.html">JAX NNX</a>. This mechanism allows users to write standard Python classes with <strong>in-place mutation</strong>, which the library then automatically transforms into JAX-compatible functional code during compilation. However, this remains experimental, whereas Enzyme handles mutation directly.</p>
+</div>
+</section>
+<section id="lux-jl-neural-networks-in-julia">
+<h3><span class="section-number">7.3.2. </span>Lux.jl: Neural Networks in Julia<a class="headerlink" href="#lux-jl-neural-networks-in-julia" title="Permalink to this heading">#</a></h3>
+<p>While not designed for standard deep learning pipelines out of the box, Enzyme can be paired with frameworks like <a class="reference external" href="https://github.com/LuxDL/Lux.jl">Lux.jl</a> to handle deep learning tasks and implement neural networks.</p>
+<p>Unlike Pytorch and the default behavior of JAX’s <a class="reference external" href="https://flax.readthedocs.io/en/latest/nnx_basics.html">Flax NNX</a>, the Lux.jl framework does not use implicit differentiable arguments within the neural network layers.</p>
+<p>Instead, the differentiable parameters are explicitly passed and separated from non-differentiable arguments. This is consistent with the split/merge pattern in <a class="reference external" href="https://flax.readthedocs.io/en/latest/guides/performance.html#functional-training-loop">JAX NNX</a>.</p>
+</section>
+<section id="reactant-jl-the-bridge-to-tpus-and-xla">
+<h3><span class="section-number">7.3.3. </span>Reactant.jl: The Bridge to TPUs and XLA<a class="headerlink" href="#reactant-jl-the-bridge-to-tpus-and-xla" title="Permalink to this heading">#</a></h3>
+<p>A recent addition to this ecosystem is <a class="reference external" href="https://github.com/EnzymeAD/Reactant.jl">Reactant.jl</a>.</p>
+<p>While Enzyme optimizes code for the CPU (and CUDA via LLVM), Reactant is designed to compile Julia code for high-performance accelerators like TPUs, as well as multi-node GPU clusters.</p>
+<p>In particular, Reactant is a compiler frontend that lowers Julia code (and Enzyme gradients) into MLIR (Multi-Level Intermediate Representation) and StableHLO. This targets the exact same compiler stack as JAX. In particular, JAX traces Python code to generate HLO/StableHLO, which is then compiled by XLA (Accelerated Linear Algebra). Reactant does the same for Julia and allows it to emit the same IR that JAX generates.</p>
+<p>This allows Julia users to leverage the XLA compiler’s massive optimizations for linear algebra and convolution, run natively on Google TPUs, and execute on large-scale distributed clusters, all while writing standard Julia code. However, this is in early stages of development and should not be considered as a general replacement for standard Python ML frameworks and use-cases.</p>
+<p>See <a class="reference external" href="https://github.com/LuxDL/Lux.jl?tab=readme-ov-file#reactant--enzyme">the Lux.jl documentation</a> for an example combining Lux, Reactant, and Enzyme for a single Neural Network.</p>
+</section>
+<section id="writing-enzyme-differentiable-code">
+<h3><span class="section-number">7.3.4. </span>Writing Enzyme-Differentiable Code<a class="headerlink" href="#writing-enzyme-differentiable-code" title="Permalink to this heading">#</a></h3>
+<p>Enzyme-friendly code looks like ordinary Julia with a few discipline rules: mutate into preallocated buffers, avoid hidden allocations, and keep inputs type-stable.</p>
+<p>In general, these practices also lead to very high-performance Julia code, so making code Enzyme-differentiable and high-performance often go hand-in-hand. However, these tend to be more advanced patterns than an introductory Julia user might be used to.</p>
+<p>A common pattern is <code class="docutils literal notranslate"><span class="pre">f!(out,</span> <span class="pre">inputs...,</span> <span class="pre">cache)</span></code> where <code class="docutils literal notranslate"><span class="pre">cache</span></code> holds temporary work arrays passed last.</p>
+<p>In many cases the biggest change is to use in-place linear algebra, many of which have corresponding highly optimized BLAS/LAPACK routines. For example:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mul!(y,</span> <span class="pre">A,</span> <span class="pre">x)</span></code> implements the out-of-place math <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">A</span> <span class="pre">*</span> <span class="pre">x</span></code> without allocating</p></li>
+<li><p>Use the 5-arg form <code class="docutils literal notranslate"><span class="pre">mul!(Y,</span> <span class="pre">A,</span> <span class="pre">B,</span> <span class="pre">α,</span> <span class="pre">β)</span></code> to compute <code class="docutils literal notranslate"><span class="pre">Y</span> <span class="pre">=</span> <span class="pre">α</span> <span class="pre">*</span> <span class="pre">A</span> <span class="pre">*</span> <span class="pre">B</span> <span class="pre">+</span> <span class="pre">β</span> <span class="pre">*</span> <span class="pre">Y</span></code> in-place (see <a class="reference external" href="https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/#LinearAlgebra.mul!">mul! docs</a>)</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">ldiv!(y,</span> <span class="pre">A,</span> <span class="pre">x)</span></code> for the in-place solve corresponding to <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">A</span> <span class="pre">\</span> <span class="pre">x</span></code> (see <a class="reference external" href="https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/#LinearAlgebra.ldiv!">ldiv! docs</a>)</p></li>
+<li><p>Use column-wise access or <code class="docutils literal notranslate"><span class="pre">&#64;views</span></code> when slicing to avoid copies</p></li>
+<li><p>Pass buffers explicitly to keep the function allocation-free; even a simple <code class="docutils literal notranslate"><span class="pre">cache</span> <span class="pre">=</span> <span class="pre">(;</span> <span class="pre">tmp</span> <span class="pre">=</span> <span class="pre">similar(x))</span></code> helps for temporary workspaces.</p></li>
+<li><p>When in doubt, use a loop.  Since it operates on compiled Julia code, Enzyme can differentiate through loops efficiently.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># in-place linear step with an explicit workspace</span>
+<span class="k">function</span><span class="w"> </span><span class="n">step!</span><span class="p">(</span><span class="n">x_next</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">cache</span><span class="p">)</span>
+<span class="w">    </span><span class="nd">@views</span><span class="w"> </span><span class="n">mul!</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">tmp</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c"># cache.tmp = A * x</span>
+<span class="w">    </span><span class="nd">@inbounds</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">eachindex</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">tmp</span><span class="p">)</span>
+<span class="w">        </span><span class="c"># loops are encouraged, but be careful to avoid temp allocations</span>
+<span class="w">        </span><span class="n">cache</span><span class="o">.</span><span class="n">tmp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span>
+<span class="w">    </span><span class="k">end</span>
+<span class="w">    </span><span class="n">copy!</span><span class="p">(</span><span class="n">x_next</span><span class="p">,</span><span class="w"> </span><span class="n">cache</span><span class="o">.</span><span class="n">tmp</span><span class="p">)</span><span class="w"> </span><span class="c"># x_next = cache.tmp</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">nothing</span>
+<span class="k">end</span>
+
+<span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.9</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">     </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.8</span><span class="w"> </span><span class="mf">0.1</span>
+<span class="w">     </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">0.7</span><span class="p">]</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">x_next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">similar</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="c"># Pass preallocated cache/buffers as individual arguments</span>
+<span class="c"># as named tuples, or as typesafe structs.</span>
+<span class="n">cache</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="n">tmp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+
+<span class="n">step!</span><span class="p">(</span><span class="n">x_next</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">cache</span><span class="p">)</span>
+<span class="n">x_next</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
+ 1.0961466536012916
+ 0.39386860518948097
+ 0.307118720351144
+</pre></div>
+</div>
+</div>
+</div>
+<p>Even without Enzyme, checking type-stability and allocations helps catch AD pain points early.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span>
+<span class="c"># warm-up</span>
+<span class="n">step!</span><span class="p">(</span><span class="n">x_next</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">cache</span><span class="p">)</span>
+
+<span class="c"># Should have no type instability warnings</span>
+<span class="nd">@show</span><span class="w"> </span><span class="nd">@inferred</span><span class="w"> </span><span class="n">step!</span><span class="p">(</span><span class="n">x_next</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">cache</span><span class="p">)</span>
+
+<span class="c"># Should allocate zero bytes</span>
+<span class="k">function</span><span class="w"> </span><span class="n">count_allocs</span><span class="p">()</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">step!</span><span class="p">(</span><span class="n">x_next</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">cache</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="nd">@btime</span><span class="w"> </span><span class="n">count_allocs</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>#= In[7]:6 =# @inferred(step!(x_next, x, A, cache)) = nothing
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>68.040 ns (0 allocations: 0 bytes)
+</pre></div>
+</div>
+</div>
+</div>
+<p>This should show that 0 bytes are allocated.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Outside of a notebook environment, such as in the REPL, you can use <code class="docutils literal notranslate"><span class="pre">&#64;allocated</span> <span class="pre">step!(x_next,</span> <span class="pre">x,</span> <span class="pre">A,</span> <span class="pre">cache)</span></code> directly.  However, notebook environments it can give misleading results since it may include notebook cell overhead.</p>
+</div>
+<p>The same patterns apply to more complex routines: keep buffers explicit, avoid temporary slices, and rely on in-place linear algebra to minimize allocations that can break reverse-mode AD.</p>
+</section>
+<section id="core-concepts-terminology">
+<h3><span class="section-number">7.3.5. </span>Core Concepts &amp; Terminology<a class="headerlink" href="#core-concepts-terminology" title="Permalink to this heading">#</a></h3>
+<p>To use Enzyme effectively, you must manually annotate your function arguments to tell the compiler how to handle them for a particular derivative.</p>
+</section>
+<section id="the-primal-vs-the-shadow">
+<h3><span class="section-number">7.3.6. </span>The Primal vs. The Shadow<a class="headerlink" href="#the-primal-vs-the-shadow" title="Permalink to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Primal:</strong> The values or variables used in the main computation (e.g., your input vector <code class="docutils literal notranslate"><span class="pre">x</span></code> or buffer <code class="docutils literal notranslate"><span class="pre">b</span></code>).</p></li>
+<li><p><strong>Shadow:</strong> The separate memory location where derivatives are accumulated (e.g., <code class="docutils literal notranslate"><span class="pre">dx</span></code> or <code class="docutils literal notranslate"><span class="pre">db</span></code>).</p></li>
+</ul>
+</section>
+<section id="fundamental-rules-of-activity">
+<h3><span class="section-number">7.3.7. </span>Fundamental Rules of Activity<a class="headerlink" href="#fundamental-rules-of-activity" title="Permalink to this heading">#</a></h3>
+<p>When calling <code class="docutils literal notranslate"><span class="pre">autodiff</span></code>, every argument needs an “Activity” wrapper to tell Enzyme how to handle it.</p>
+<ol class="arabic simple">
+<li><p><strong>Are you differentiating with respect to this argument?</strong></p>
+<ul class="simple">
+<li><p><strong>No:</strong> Use <code class="docutils literal notranslate"><span class="pre">Const(x)</span></code>. This tells Enzyme the value is constant and its derivative is zero.</p></li>
+<li><p><strong>Yes (Scalar):</strong> Use <code class="docutils literal notranslate"><span class="pre">Active(x)</span></code>. Enzyme will return the derivative directly.</p></li>
+<li><p><strong>Yes (Array/Struct):</strong> Use <code class="docutils literal notranslate"><span class="pre">Duplicated(x,</span> <span class="pre">dx)</span></code>. You must provide the shadow memory <code class="docutils literal notranslate"><span class="pre">dx</span></code>.</p></li>
+</ul>
+</li>
+<li><p><strong>Is the argument mutated (written to) inside the function?</strong></p>
+<ul class="simple">
+<li><p><strong>Yes, and I need to know the value:</strong> Use <code class="docutils literal notranslate"><span class="pre">Duplicated(x,</span> <span class="pre">dx)</span></code>. Enzyme needs the shadow <code class="docutils literal notranslate"><span class="pre">dx</span></code> to store intermediate adjoints during the reverse pass.</p></li>
+<li><p><strong>Yes, and I do not need to access the value:</strong> You could still use <code class="docutils literal notranslate"><span class="pre">Duplicated(x,</span> <span class="pre">dx)</span></code> or <code class="docutils literal notranslate"><span class="pre">DuplicatedNoNeed(x,</span> <span class="pre">dx)</span></code> which may avoid some calculations required to calculate <code class="docutils literal notranslate"><span class="pre">x</span></code> if you are not using it directly.</p></li>
+</ul>
+</li>
+</ol>
+<p>This last point is important. As your functions are non-allocating, you need to ensure there is a “shadow” for any arguments that are used, even if they are just temporary buffers.</p>
+</section>
+<section id="argument-wrappers-quick-reference">
+<h3><span class="section-number">7.3.8. </span>Argument Wrappers (Quick Reference)<a class="headerlink" href="#argument-wrappers-quick-reference" title="Permalink to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="text-left head"><p>Wrapper</p></th>
+<th class="text-left head"><p>Usage</p></th>
+<th class="text-left head"><p>Primal</p></th>
+<th class="text-left head"><p>Shadow</p></th>
+<th class="text-left head"><p>Docs</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Const(x)</span></code></p></td>
+<td class="text-left"><p>Constants / Config</p></td>
+<td class="text-left"><p>Read-only</p></td>
+<td class="text-left"><p>None</p></td>
+<td class="text-left"><p><a class="reference external" href="https://enzyme.mit.edu/julia/stable/api/#EnzymeCore.Const">Ref</a></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Active(x)</span></code></p></td>
+<td class="text-left"><p>Scalars (Float64)</p></td>
+<td class="text-left"><p>Read-only</p></td>
+<td class="text-left"><p>Returned</p></td>
+<td class="text-left"><p><a class="reference external" href="https://enzyme.mit.edu/julia/stable/api/#EnzymeCore.Active">Ref</a></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">Duplicated(x,</span> <span class="pre">dx)</span></code></p></td>
+<td class="text-left"><p>Arrays / Mutated Buffers</p></td>
+<td class="text-left"><p>Read/Write</p></td>
+<td class="text-left"><p><strong>Explicit</strong></p></td>
+<td class="text-left"><p><a class="reference external" href="https://enzyme.mit.edu/julia/stable/api/#EnzymeCore.Duplicated">Ref</a></p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">DuplicatedNoNeed(x,</span> <span class="pre">dx)</span></code></p></td>
+<td class="text-left"><p>Mutated Buffers, ignoring <code class="docutils literal notranslate"><span class="pre">x</span></code></p></td>
+<td class="text-left"><p>Read/Write</p></td>
+<td class="text-left"><p><strong>Explicit</strong></p></td>
+<td class="text-left"><p><a class="reference external" href="https://enzyme.mit.edu/julia/stable/api/#EnzymeCore.DuplicatedNoNeed">Ref</a></p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">BatchDuplicated</span></code></p></td>
+<td class="text-left"><p>Vectorized Derivatives</p></td>
+<td class="text-left"><p>Read/Write</p></td>
+<td class="text-left"><p>Tuple of Shadows</p></td>
+<td class="text-left"><p><a class="reference external" href="https://enzyme.mit.edu/julia/stable/api/#EnzymeCore.BatchDuplicated">Ref</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<hr class="docutils" />
+<section id="examples">
+<h3><span class="section-number">7.3.9. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h3>
+</section>
+<section id="convenience-functions">
+<h3><span class="section-number">7.3.10. </span>Convenience Functions<a class="headerlink" href="#convenience-functions" title="Permalink to this heading">#</a></h3>
+<p>Enzyme provides <a class="reference external" href="https://enzymead.github.io/Enzyme.jl/dev/#Convenience-functions-(gradient,-jacobian,-hessian)">convenience functions</a> to create zero-initialized shadows for you and to call <code class="docutils literal notranslate"><span class="pre">autodiff</span></code> with common patterns.</p>
+<p>Following that documentation, we define a scalar valued function of a vector input.</p>
+<p>When using Reverse-mode AD the forward pass needs to calculate the “primal” value, and we can request the function to return both.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">rosenbrock</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span>
+
+<span class="c"># Use Reverse-mode AD</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">gradient</span><span class="p">(</span><span class="n">Reverse</span><span class="p">,</span><span class="w"> </span><span class="n">rosenbrock</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="c"># Return a tuple with the &quot;primal&quot; (i.e., function value) and grad</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">gradient</span><span class="p">(</span><span class="n">ReverseWithPrimal</span><span class="p">,</span><span class="w"> </span><span class="n">rosenbrock</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>gradient(Reverse, rosenbrock, x) = ([-400.0, 200.0],)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>gradient(ReverseWithPrimal, rosenbrock, x) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(derivs = ([-400.0, 200.0],), val = 100.0)
+</pre></div>
+</div>
+</div>
+</div>
+<p>With a preallocated gradient vector, we can use an in-place version</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">dx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c"># or just zeros(size(x)), but this is more bulletproof</span>
+<span class="n">gradient!</span><span class="p">(</span><span class="n">Reverse</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">,</span><span class="w"> </span><span class="n">rosenbrock</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">dx</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dx = [-400.0, 200.0]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Similarly, we can execute forward-mode AD to get the gradient. Unlike Reverse mode, this calls <code class="docutils literal notranslate"><span class="pre">autodiff</span></code> for each input dimension.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@show</span><span class="w"> </span><span class="n">gradient</span><span class="p">(</span><span class="n">Forward</span><span class="p">,</span><span class="w"> </span><span class="n">rosenbrock</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">])</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">gradient</span><span class="p">(</span><span class="n">ForwardWithPrimal</span><span class="p">,</span><span class="w"> </span><span class="n">rosenbrock</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>gradient(Forward, rosenbrock, [1.0, 2.0]) = ([-400.0, 200.0],)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>gradient(ForwardWithPrimal, rosenbrock, [1.0, 2.0]) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(derivs = ([-400.0, 200.0],), val = 100.0)
+</pre></div>
+</div>
+</div>
+</div>
+<p>In the case of vector-valued functions, we can fill a Jacobian matrix. If calling with <code class="docutils literal notranslate"><span class="pre">Forward</span></code>, each column of the Jacobian is filled in a separate pass. If calling with <code class="docutils literal notranslate"><span class="pre">Reverse</span></code>, each row is filled in a separate pass.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[(</span><span class="mf">1.0</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">^</span><span class="mi">2</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">100.0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">^</span><span class="mi">2</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="p">;</span>
+<span class="w">        </span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">jacobian</span><span class="p">(</span><span class="n">Forward</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">jacobian</span><span class="p">(</span><span class="n">Reverse</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">jacobian</span><span class="p">(</span><span class="n">ReverseWithPrimal</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>jacobian(Forward, f, x) = ([-400.0 200.0; 2.0 1.0],)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>jacobian(Reverse, f, x) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>([-400.0 200.0; 2.0 1.0],)
+jacobian(ReverseWithPrimal, f, x) = (derivs = ([-400.0 200.0; 2.0 1.0],), val = [100.0, 2.0])
+</pre></div>
+</div>
+</div>
+</div>
+<p>See <a class="reference external" href="https://enzymead.github.io/Enzyme.jl/dev/#Hessian-Vector-Product-Convenience-functions">here</a> for more examples such as Hessian-vector products.</p>
+</section>
+<section id="simple-forward-mode">
+<h3><span class="section-number">7.3.11. </span>Simple Forward Mode<a class="headerlink" href="#simple-forward-mode" title="Permalink to this heading">#</a></h3>
+<p>Forward mode propagates derivatives alongside the primal calculation. It is ideal for low-dimensional inputs.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Enzyme</span><span class="p">,</span><span class="w"> </span><span class="n">LinearAlgebra</span>
+
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">.*</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.5</span><span class="p">]</span>
+
+<span class="c"># We want ∂f/∂x (holding y constant).</span>
+<span class="c"># 1. Create Shadow for x (seed with 1.0s to get full gradient)</span>
+<span class="n">dx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="c"># 2. Call autodiff with respect to x</span>
+<span class="c"># Note: y is Const, x is Duplicated (Array)</span>
+<span class="n">autodiff</span><span class="p">(</span><span class="n">Forward</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">),</span><span class="w"> </span><span class="n">Const</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+
+<span class="c"># Result: Returns nothing (void), but the function executed.</span>
+<span class="n">print</span><span class="p">(</span><span class="s">&quot;∂f/∂x = &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>∂f/∂x = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.0, 1.0, 1.0]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that in Forward mode for scalar outputs, you often examine the return value. However, for array inputs, Enzyme conventions typically focus on Reverse mode.</p>
+</section>
+<section id="reverse-mode">
+<h3><span class="section-number">7.3.12. </span>Reverse Mode<a class="headerlink" href="#reverse-mode" title="Permalink to this heading">#</a></h3>
+<p>Reverse mode computes the gradient of the output with respect to <em>all</em> inputs in a single pass.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Define function</span>
+<span class="n">calc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">.^</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">.+</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">0.5</span><span class="p">]</span>
+
+<span class="c"># 1. Initialize Shadows with Zeros</span>
+<span class="n">dx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="c"># ∂f/∂x will accumulate here</span>
+<span class="n">dy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="c"># ∂f/∂y will accumulate here</span>
+
+<span class="c"># 2. Call autodiff</span>
+<span class="c"># In this case we find the gradient for all arguments</span>
+<span class="n">autodiff</span><span class="p">(</span><span class="n">Reverse</span><span class="p">,</span><span class="w"> </span><span class="n">calc</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">),</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">dy</span><span class="p">))</span>
+
+<span class="nd">@show</span><span class="w"> </span><span class="n">dx</span><span class="w">  </span><span class="c"># Should be 2*x -&gt; [2.0, 4.0, 6.0]</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">dy</span><span class="p">;</span><span class="w">  </span><span class="c"># Should be 1.0 -&gt; [1.0, 1.0, 1.0]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dx = [2.0, 4.0, 6.0]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dy = [1.0, 1.0, 1.0]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Since it requires calculating the primal in the forward pass, you can request it to be returned, as with the convenience functions, and then examine the shadows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">dx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">dy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">autodiff</span><span class="p">(</span><span class="n">ReverseWithPrimal</span><span class="p">,</span><span class="w"> </span><span class="n">calc</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">),</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">dy</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>((nothing, nothing), 15.5)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="handling-mutation-and-buffers">
+<h3><span class="section-number">7.3.13. </span>Handling Mutation and Buffers<a class="headerlink" href="#handling-mutation-and-buffers" title="Permalink to this heading">#</a></h3>
+<p>This is the most common pitfall. If a function modifies an argument (like <code class="docutils literal notranslate"><span class="pre">out</span></code> or a workspace buffer), both the Primal and Shadow must be valid.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">axpy!</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="n">mul!</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">nothing</span>
+<span class="k">end</span>
+
+<span class="c"># 2. Loss calls the mutating function, but returns a scalar (the loss).</span>
+<span class="k">function</span><span class="w"> </span><span class="n">compute_loss!</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="n">axpy!</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">sum</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="c"># We want the gradient of THIS scalar</span>
+<span class="k">end</span>
+
+<span class="c"># Setup Data</span>
+<span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">2.0</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w"> </span><span class="mf">0.0</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span>
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">]</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="c"># Setup Shadows</span>
+<span class="c"># Enzyme will calculate ∂(sum)/∂y and populate dy for us.</span>
+<span class="n">dx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">dA</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">dy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+<span class="c"># 3. Calculate Gradient</span>
+<span class="c">#    We differentiate &#39;compute_loss!&#39;.</span>
+<span class="c">#    Since it returns a scalar (Active), Enzyme automatically seeds it with 1.0.</span>
+<span class="n">autodiff</span><span class="p">(</span><span class="n">Reverse</span><span class="p">,</span><span class="w"> </span><span class="n">compute_loss!</span><span class="p">,</span>
+<span class="w">         </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">dy</span><span class="p">),</span><span class="w">   </span><span class="c"># Intermediate buffer (Enzyme handles the backprop!)</span>
+<span class="w">         </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">dA</span><span class="p">),</span><span class="w">   </span><span class="c"># Parameter we want gradient for</span>
+<span class="w">         </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">))</span>
+
+<span class="nd">@show</span><span class="w"> </span><span class="n">dx</span><span class="w">   </span><span class="c"># ∂(sum(y))/∂x</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">dA</span><span class="p">;</span><span class="w">  </span><span class="c"># ∂(sum(y))/∂A</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dx = [2.0, 3.0]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dA = [1.0 1.0; 1.0 1.0]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="exercises">
+<h2><a class="toc-backref" href="#id5"><span class="section-number">7.4. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
+<section id="exercise-1">
+<h3><span class="section-number">7.4.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this heading">#</a></h3>
+<p>Implementing forward-mode auto-differentiation is very easy in Julia since it is generic. In this exercise, you will fill in a few of the operations required for a simple AD implementation.</p>
+<p>First, we need to provide a type to hold the dual.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">struct</span> <span class="kt">DualNumber</span><span class="p">{</span><span class="kt">T</span><span class="p">}</span><span class="w"> </span><span class="o">&lt;:</span><span class="w"> </span><span class="kt">Real</span>
+<span class="w">    </span><span class="n">val</span><span class="o">::</span><span class="kt">T</span>
+<span class="w">    </span><span class="n">ϵ</span><span class="o">::</span><span class="kt">T</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here we have made it a subtype of <code class="docutils literal notranslate"><span class="pre">Real</span></code> so that it can pass through functions expecting Reals.</p>
+<p>We can add a variety of chain rule definitions by importing the appropriate functions and adding DualNumber versions. For example</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="n">Base</span><span class="o">:</span><span class="w"> </span><span class="o">+</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="p">,</span><span class="w"> </span><span class="o">^</span><span class="p">,</span><span class="w"> </span><span class="n">exp</span>
+<span class="o">+</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DualNumber</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="o">.</span><span class="n">val</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">.</span><span class="n">ϵ</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span><span class="o">.</span><span class="n">ϵ</span><span class="p">)</span><span class="w">  </span><span class="c"># dual addition</span>
+<span class="o">+</span><span class="p">(</span><span class="n">x</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="o">::</span><span class="kt">Number</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DualNumber</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">.</span><span class="n">ϵ</span><span class="p">)</span><span class="w">  </span><span class="c"># i.e. scalar addition, not dual</span>
+<span class="o">+</span><span class="p">(</span><span class="n">a</span><span class="o">::</span><span class="kt">Number</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">::</span><span class="kt">DualNumber</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DualNumber</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">val</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">.</span><span class="n">ϵ</span><span class="p">)</span><span class="w">  </span><span class="c"># i.e. scalar addition, not dual</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>+ (generic function with 237 methods)
+</pre></div>
+</div>
+</div>
+</div>
+<p>With that, we can seed a dual number and find simple derivatives,</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">3.0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">y</span>
+
+<span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DualNumber</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">)</span><span class="w">  </span><span class="c"># x -&gt; 2.0 + 1.0\epsilon</span>
+<span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DualNumber</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.0</span><span class="p">)</span><span class="w">  </span><span class="c"># i.e. y = 3.0, no derivative</span>
+
+<span class="c"># seeded calculates both the function and the d/dx gradient!</span>
+<span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>DualNumber{Float64}(8.0, 1.0)
+</pre></div>
+</div>
+</div>
+</div>
+<p>For this assignment:</p>
+<ol class="arabic simple">
+<li><p>Add AD rules for the other operations: <code class="docutils literal notranslate"><span class="pre">*</span></code>, <code class="docutils literal notranslate"><span class="pre">-</span></code>, <code class="docutils literal notranslate"><span class="pre">^</span></code>, <code class="docutils literal notranslate"><span class="pre">exp</span></code>.</p></li>
+<li><p>Come up with some examples of univariate and multivariate functions combining those operations and use your AD implementation to find the derivatives.</p></li>
+</ol>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "julia-1.12"
+        },
+        kernelOptions: {
+            name: "julia-1.12",
+            path: "./more_julia"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'julia-1.12'</script>
+
+                    </div>
+                    
+                </main> <!-- .page__content -->
+                
+
+
+                <footer class="qe-page__footer">
+
+                    <p><a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="https://licensebuttons.net/l/by-sa/4.0/80x15.png"></a></p>
+
+                    <p>Creative Commons License &ndash; This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International.</p>
+
+                </footer> <!-- .page__footer -->
+
+            </div> <!-- .page -->
+
+            
+
+            
+            <div class="qe-sidebar bd-sidebar inactive" id="site-navigation">
+
+                <div class="qe-sidebar__header">
+
+
+                    Contents
+
+                </div>
+
+                <nav class="qe-sidebar__nav" id="qe-sidebar-nav" aria-label="Main navigation">
+                    <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Getting Started with Julia
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/getting_started.html">
+   1. Setting up Your Julia Environment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_by_example.html">
+   2. Introductory Examples
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/julia_essentials.html">
+   3. Julia Essentials
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/fundamental_types.html">
+   4. Arrays, Tuples, Ranges, and Other Fundamental Types
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../getting_started_julia/introduction_to_types.html">
+   5. Introduction to Types and Generic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Package Ecosystem
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="generic_programming.html">
+   6. Generic Programming
+  </a>
+ </li>
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   7. Automatic Differentiation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="quadrature_interpolation.html">
+   8. Quadrature and Interpolation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="data_statistical_packages.html">
+   9. General, Data, and Statistics Packages
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="optimization_solver_packages.html">
+   10. Optimization and Nonlinear Solvers
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Software Engineering
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/tools_editors.html">
+   11. Visual Studio Code and Other Tools
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/version_control.html">
+   12. GitHub, Version Control and Collaboration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/testing.html">
+   13. Packages, Testing, and Continuous Integration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../software_engineering/need_for_speed.html">
+   14. The Need for Speed
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Tools and Techniques
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/geom_series.html">
+   15. Geometric Series for Elementary Economics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
+   16. Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
+   17. Orthogonal Projections and Their Applications
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
+   18. LLN and CLT
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
+   19. Continuous State Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
+   20. Numerical Linear Algebra and Factorizations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
+   21. Krylov Methods and Matrix Conditioning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../tools_and_techniques/differentiable_dynamics.html">
+   22. Differentiating Models of Economic Dynamics
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction to Dynamics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
+   23. Dynamics in One Dimension
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
+   24. AR1 Processes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
+   25. Finite Markov Chains
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/linear_models.html">
+   26. Linear State Space Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
+   27. Wealth Distribution Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/kalman.html">
+   28. A First Look at the Kalman Filter
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../introduction_dynamics/short_path.html">
+   29. Shortest Paths
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Dynamic Programming
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model.html">
+   30. Job Search I: The McCall Search Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
+   31. Job Search II: Search and Separation
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
+   32. A Problem that Stumped Milton Friedman
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/odu.html">
+   33. Job Search III: Search with Learning
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/career.html">
+   34. Job Search IV: Modeling Career Choice
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/jv.html">
+   35. Job Search V: On-the-Job Search
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/optgrowth.html">
+   36. Optimal Growth I: The Stochastic Optimal Growth Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
+   37. Optimal Growth II: Time Iteration
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
+   38. Optimal Growth III: The Endogenous Grid Method
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
+   39. LQ Dynamic Programming Problems
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income.html">
+   40. Optimal Savings I: The Permanent Income Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
+   41. Optimal Savings II: LQ Techniques
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/smoothing.html">
+   42. Consumption and Tax Smoothing with Complete and Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/ifp.html">
+   43. Optimal Savings III: Occasionally Binding Constraints
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/robustness.html">
+   44. Robustness
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
+   45. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Modeling in Continuous Time
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/seir_model.html">
+   46. Modeling COVID 19 with Differential Equations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../continuous_time/covid_sde.html">
+   47. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Multiple Agent Models
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/schelling.html">
+   48. Schelling’s Segregation Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lake_model.html">
+   49. A Lake Model of Employment and Unemployment
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
+   50. Rational Expectations Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_perf.html">
+   51. Markov Perfect Equilibrium
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/markov_asset.html">
+   52. Asset Pricing I: Finite State Models
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/lucas_model.html">
+   53. Asset Pricing II: The Lucas Asset Pricing Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
+   54. Asset Pricing III:  Incomplete Markets
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
+   55. Uncertainty Traps
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/aiyagari.html">
+   56. The Aiyagari Model
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/arellano.html">
+   57. Default Risk and Income Fluctuations
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../multi_agent_models/matsuyama.html">
+   58. Globalization and Cycles
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Other
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about_lectures.html">
+   59. About these Lectures
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../troubleshooting.html">
+   60. Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../zreferences.html">
+   61. References
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../status.html">
+   62. Execution Statistics
+  </a>
+ </li>
+</ul>
+
+                </nav>
+
+                <div class="qe-sidebar__footer">
+
+                </div>
+
+            </div> <!-- .sidebar -->
+            
+        </div> <!-- .main -->
+
+        <div class="qe-toolbar">
+
+            <div class="qe-toolbar__inner">
+
+                <ul class="qe-toolbar__main">
+                    <li data-tippy-content="Table of Contents" class="btn__sidebar"><i data-feather="menu"></i></li>
+                    <li data-tippy-content="Home"><a href="../intro.html"><i data-feather="home"></i></a></li>
+                    <li class="btn__qelogo"><a href="https://quantecon.org" title=""><span class="show-for-sr">QuantEcon</span></a></li>
+                </ul>
+
+                <ul class="qe-toolbar__links">
+                    <li class="btn__search">
+                        <form action="../search.html" method="get">
+                            <input type="search" class="form-control" name="q" id="search-input" placeholder="Search..." aria-label="Search..." autocomplete="off" accesskey="k">
+                            <i data-feather="search" id="search-icon"></i>
+                        </form>
+                    </li>
+                    <li data-tippy-content="Fullscreen" class="btn__fullscreen"><i data-feather="maximize"></i></li>
+                    <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
+                    <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
+                    <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
+                    <li data-tippy-content="Download Notebook"><a href="/_notebooks/more_julia/auto_differentiation.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li class="settings-button" id="settingsButton"><div data-tippy-content="Launch Notebook"><i data-feather="play-circle"></i></div></li>
+                        <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/quantecon/lecture-julia.myst/blob/main/lectures/more_julia/auto_differentiation.md" download><i data-feather="github"></i></a></li>
+                </ul>
+
+            </div>
+
+        </div> <!-- .toolbar -->
+        <div id="downloadPDFModal" style="display: none;">
+            <ul class="pdf-options" style="display: block;">
+                <li class="download-pdf-book" onClick="window.print()">
+                    <p>Lecture (PDF)</p>
+                </li>
+                <li class="download-pdf-file">
+                    <a href="" download><p>Book (PDF)</p></a>
+                </li>
+            </ul>
+        </div>
+        <div id="settingsModal" style="display: none;">
+            <p class="modal-title"> Notebook Launcher </p>
+            <div class="modal-desc">
+            <p>
+                Choose public or private cloud service for "Launch" button.
+            </p>
+            </div>
+            <p class="modal-subtitle">Select a server</p>
+            <ul class="modal-servers">
+            <li class="active launcher-public">
+                <span class="label">Public</span>
+                <select id="launcher-public-input">
+                
+                    <option value="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/more_julia/auto_differentiation.ipynb">Colab</option>
+                
+                </select>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            <li class="launcher-private">
+                <span class="label">Private</span>
+                <input type="text" id="launcher-private-input" data-repourl="https://github.com/quantecon/lecture-julia.notebooks" data-urlpath="tree/lecture-julia.notebooks/more_julia/auto_differentiation.ipynb" data-branch=main>
+                <i class="fas fa-check-circle"></i>
+            </li>
+            </ul>
+            <p class="launch"><a href="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/more_julia/auto_differentiation.ipynb" id="advancedLaunchButton" target="_blank">Launch Notebook</a></p>
+            <script>
+                // QuantEcon Notebook Launcher
+                const launcherTypeElements = document.querySelectorAll('#settingsModal .modal-servers li');
+                // Highlight the server type if previous selection exists
+                if (typeof localStorage.launcherType !== 'undefined') {
+                  for (var i = 0; i < launcherTypeElements.length; i++) {
+                    launcherTypeElements[i].classList.remove('active');
+                    if ( launcherTypeElements[i].classList.contains(localStorage.launcherType) ) {
+                      launcherTypeElements[i].classList.add('active');
+                    }
+                  }
+                }
+                // Highlight server type on click and set local storage value
+                for (var i = 0; i < launcherTypeElements.length; i++) {
+                  launcherTypeElements[i].addEventListener('click', function() {
+                    for (var j = 0; j < launcherTypeElements.length; j++) {
+                      launcherTypeElements[j].classList.remove('active');
+                    }
+                    this.classList.add('active');
+                    if ( this.classList.contains('launcher-private') ) {
+                      localStorage.launcherType = 'launcher-private';
+                    } else if ( this.classList.contains('launcher-public') ) {
+                      localStorage.launcherType = 'launcher-public';
+                    }
+                    setLaunchServer();
+                  })
+                }
+                const launcherPublic = document.getElementById('launcher-public-input');
+                const launcherPrivate = document.getElementById('launcher-private-input');
+                const pageName = "more_julia/auto_differentiation";
+                const repoURL = "https://github.com/quantecon/lecture-julia.notebooks";
+                const urlPath = "tree/lecture-julia.notebooks/more_julia/auto_differentiation.ipynb";
+                const branch = "main"
+                const launchNotebookLink = document.getElementById('advancedLaunchButton');
+
+                // Highlight public server option if previous selection exists
+                if (typeof localStorage.launcherPublic !== 'undefined') {
+                  launcherPublic.value = localStorage.launcherPublic;
+                }
+                // Update local storage upon public server selection
+                launcherPublic.addEventListener('change', (event) => {
+                  setLaunchServer();
+                });
+                // Populate private server input if previous entry exists
+                if (typeof localStorage.launcherPrivate !== 'undefined') {
+                  launcherPrivate.value = localStorage.launcherPrivate;
+                }
+                // Update local storage when a private server is entered
+                launcherPrivate.addEventListener('input', (event) => {
+                  setLaunchServer();
+                });
+
+                // Function to update the "Launch Notebook" link href
+                function setLaunchServer() {
+                  launchNotebookLink.removeAttribute("style")
+                  if ( localStorage.launcherType == 'launcher-private' ) {
+                    let repoPrefix = "/jupyter/hub/user-redirect/git-pull?repo=" + repoURL + "&branch=" + branch + "&urlpath=" + urlPath;
+                    launcherPrivateValue = launcherPrivate.value
+                    if (!launcherPrivateValue) {
+                        launchNotebookLink.removeAttribute("href")
+                        launchNotebookLink.style.background = "grey"
+                        return
+                    }
+                    localStorage.launcherPrivate = launcherPrivateValue;
+                    privateServer = localStorage.launcherPrivate.replace(/\/$/, "")
+                    if (!privateServer.includes("http")) {
+                        privateServer = "http://" + privateServer
+                    }
+                    launchNotebookLinkURL = privateServer + repoPrefix;
+                  } else if ( localStorage.launcherType == 'launcher-public' ) {
+                    launcherPublicValue = launcherPublic.options[launcherPublic.selectedIndex].value;
+                    localStorage.launcherPublic = launcherPublicValue;
+                    launchNotebookLinkURL = localStorage.launcherPublic;
+                  }
+                  if (launchNotebookLinkURL) launchNotebookLink.href = launchNotebookLinkURL;
+                }
+                // Check if user has previously selected a server
+                if ( (typeof localStorage.launcherPrivate !== 'undefined') || (typeof localStorage.launcherPublic !== 'undefined') ) {
+                  setLaunchServer();
+                }
+                </script>
+
+        </div>
+
+    </div> <!-- .wrapper-->
+  </body>
+</html>

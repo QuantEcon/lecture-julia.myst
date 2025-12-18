@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (seir_model)=
@@ -59,6 +59,8 @@ using Test # Put this before any code in the lecture.
 ```
 
 In addition, we will be exploring the [Ordinary Differential Equations](https://diffeq.sciml.ai/dev/tutorials/ode_example/) package within the [SciML ecosystem](https://github.com/SciML/).
+
+For a compact overview of the modeling patterns, solver options, and callbacks used in SciML, see the [Scientific Modeling Cheat Sheet](https://sciml.github.io/Scientific_Modeling_Cheatsheet/scientific_modeling_cheatsheet).
 
 ```{code-cell} julia
 using LaTeXStrings, LinearAlgebra, Random, SparseArrays, Statistics

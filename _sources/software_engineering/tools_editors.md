@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (tools_editors)=
@@ -56,9 +56,7 @@ Open the settings with `> Preferences: Open User Settings` (see above for openin
 As a few optional suggestions for working with the settings,
 
 - In the settings, search for `Tab Size` and you should find `Editor: Tab Size` which you can modify to 4.
-- Search for `quick open` and change `Workbench > Editor: Enable Preview from Quick Open` and consider setting it to false, though this is a matter of personal taste.
 - If you are on Windows, search for `eol` and change `Files: Eol` to be `\n`.
-- While it is a personal taste, consider enabling the [bracket colorizer](https://code.visualstudio.com/updates/v1_60#_high-performance-bracket-pair-colorization) by finding the `bracketPairColorization` setting.
 
 A key feature of VS Code is that it can synchronize your extensions and settings across all of your computers, and even when used in-browser (e.g. with [GitHub CodeSpaces](https://github.com/features/codespaces)).  To turn on,
 - Ensure you have a [GitHub account](https://github.com/), which will be useful for {doc}`further lectures <../software_engineering/version_control>`
@@ -131,7 +129,7 @@ Because the REPL and the files are synchronized, you can modify functions and si
 Next we will go through simple use of the plotting and package management.
 
 ```{note}
-VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to `(@v1.8) pkg>` rather than `(hello_world) pkg >` then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose `] activate .`.
+VS Code typically activates the current project correctly.  However, when choosing to enter the package mode, if the prompt changes to `(@v1.12) pkg>` rather than `(hello_world) pkg >` then you will need to manually activate the project.  In that case, ensure that you are in the correct location and choose `] activate .`.
 
 You can always see the current package location and details with `] st`.  See [Julia Environments](jl_packages) for more details.
 ```
@@ -240,11 +238,11 @@ The most important choice is the `--project` toggle which determines whether you
 
 To emphasize this point, this is an example of the `]st ` showing the global environment has only the bare minimum of packages installed.  With this workflow, all other packages are installed only when a given project is activated.
 ```{code-block} none
-(@v1.8) pkg> st
-      Status `C:\Users\jesse\.julia\environments\v1.8\Project.toml`
-[7073ff75] IJulia v1.23.2
-[14b8a8f1] PkgTemplates v0.7.18
-[295af30f] Revise v3.1.19
+(@v1.12) pkg> st
+Status `~/.julia/environments/v1.12/Project.toml`
+  [7073ff75] IJulia v1.30.6
+  [14b8a8f1] PkgTemplates v0.7.56
+  [295af30f] Revise v3.10.0
 ```
 
 ```{note}
@@ -297,8 +295,8 @@ As we saw before, `]` brings you into package mode.  Some of the key choices are
 
 * `] instantiate` (or `using Pkg; Pkg.instantiate()` in the normal julia mode) will check if you have all of the packages and versions mentioned in the `Project.toml` and `Manifest.toml` files, and install as required.
   - This feature will let you reproduce the entire environment and, if a `Manifest.toml` is available, the exact package versions used for a project.  For example, these lecture notes use [Project.toml](https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Project.toml) and [Manifest.toml](https://github.com/QuantEcon/lecture-julia.notebooks/blob/main/Manifest.toml) - which you likely instantiated during installation after downloading these notebooks.
-* `] add Expectations` will add a package (here, `Expectations.jl`) to the activated project file (or the global environment if none is activated).
-* Likewise, `] rm Expectations` will remove that package.
+* `] add Distributions` will add a package (here, `Distributions.jl`) to the activated project file (or the global environment if none is activated).
+* Likewise, `] rm Distributions` will remove that package.
 * `] st` will show you a snapshot of what you have installed.
 * `] up` will upgrade versions of your packages to the latest versions possible given the graph of compatibility used in each.
 
@@ -318,12 +316,51 @@ The following are some optional choices, not all directly connected to Julia.
 While not required for these lectures, consider installing the following extensions.  As before, you can search for them on the Marketplace or choose `Install` from the webpages themselves.
 
 1. [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter): VS Code increasingly supports Jupyter notebooks directly, and this extension provides the ability to open and edit `.ipynb` notebook files without installing Conda and running `jupyter lab`.
-1. [GitLens](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens): An extension that provides an enormous amount of detail on exact code changes within github repositories (e.g., seamless information on the time and individual who [last modified](https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens#current-line-blame-) each line of code)
 2. [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github): while VS Code supports the git {doc}`version control <../software_engineering/version_control>` natively, these extension provides additional features for working with repositories on GitHub itself.
-3. [Markdown All in One](https://marketplace.visualstudio.com/items?itemName=yzhang.markdown-all-in-one): For editing the markdown format, such as `README.md` and similar files.
+3. [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot): AI-assisted code completion.  See [GitHub Education Pack](https://education.github.com/pack) for free access if you are a student or educator.
+4. [OpenAI Codex](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt): official ChatGPT-powered coding agent for VS Code.  Works best if you already have ChatGPT Plus/Pro (or higher) and provides Copilot-like chat, edits, and inline help inside the editor.
+
+(llm_instructions)=
+## Using LLMs with VS Code
+
+GitHub Copilot, Google Gemini Code Assist, and OpenAI Codex can provide completions, refactors, and documentation suggestions directly in VS Code.
+
+For consistent answers across a project you can add short "instructions" files that the assistants read to understand your style and constraints:
+
+- **GitHub Copilot**: Place `.github/copilot-instructions.md` in the repo root to define project-wide guidance (file name and location are fixed; see the [Copilot docs](https://docs.github.com/en/copilot/customizing-copilot/adding-custom-instructions-for-github-copilot)). You can also create a personal `global-copilot-instructions.md` in your user settings directory if you want defaults across repos.
+- **Google Gemini**:
+  - **VS Code**: Install the [Gemini Code Assist](https://cloud.google.com/code/docs/vscode/install) extension (part of Google Cloud Code). While Gemini does not yet auto-ingest a hidden config file, the convention is to place a `GEMINI.md` in your repo root and explicitly reference it (e.g., keep it open or `@mention` it) at the start of a session.
+  - **CLI**: You can use the [Google Cloud CLI](https://cloud.google.com/sdk/gcloud/reference/gemini) (`gcloud gemini ...`) for pipe-based operations, or use the API directly. For repo-chat on the command line, many use community tools (like `llm` or `aider`) configured with a Gemini API key.
+- **OpenAI Codex**: Codex looks for `AGENTS.md` (or `AGENTS.override.md`) starting from your repo root and up to the current directory, plus a global copy at `~/.codex/AGENTS.md` (Codex home defaults to `~/.codex`, but you can point `CODEX_HOME` elsewhere if you want it under `~/.openai`). You can add other fallback names—such as `instructions.md` at the repo root—via `project_doc_fallback_filenames` in `~/.codex/config.toml`. See the [AGENTS.md guide](https://developers.openai.com/codex/guides/agents-md) for details.
+
+A minimal example you can adapt (drop this same content into `.github/copilot-instructions.md`, `GEMINI.md`, and/or `AGENTS.md`):
+
+```markdown
+## Project context
+- Julia lectures and demos targeting Julia 1.12.
+
+## Style
+- Follow the SciML style guide where applicable: [https://docs.sciml.ai/SciMLStyle/stable/](https://docs.sciml.ai/SciMLStyle/stable/).
+- Use snake_case for files, functions, and variables; 4-space indent; concise comments.
+- Prefer pure functions and keep logic inside modules.
+
+## Tests
+- Always add or update unit tests with code changes.
+- Recommend `julia --project -e 'using Pkg; Pkg.test()'` before claiming completion; if tests are slow, state what would be run.
+
+## Structure
+- Keep the existing layout:
+  - /src for package code
+  - /test for tests
+  - Project.toml and Manifest.toml tracked and updated only as needed
+- Avoid adding new top-level folders unless requested.
+
+## Safety
+- Avoid destructive git commands; prefer minimal diffs (apply_patch) and cite file paths/lines.
+```
 
 (vscode_latex)=
-### VS Code as a LaTeX Editor
+## VS Code as a LaTeX Editor
 
 VS Code has an outstanding LaTeX editing extension, which provides a good way to become comfortable with the tool and managing source code online.
 1. Install a recent copy of tex
@@ -381,20 +418,3 @@ Finally, when using source code control, you will want to make sure you add the 
 *.pdf
 ```
 Ignoring the `*.pdf` is optional but strongly encouraged as it will ensure you don't clog the repository with the binary pdf files, and make collaboration easier by preventing clashes on this file.
-
-### Font Choices
-
-Beyond their general use, the integrated terminals will use fonts installed within VS Code.  Given that Julia code supports mathematical notation, the extra support in good fonts can be helpful.
-- [JuliaMono](https://juliamono.netlify.app/download/) and  [Cascadia Code](https://github.com/microsoft/cascadia-code) and [Fira Code](https://github.com/tonsky/FiraCode) are all good options.
-- You can adapt [these](https://juliamono.netlify.app/faq/#vs-code) or [these](https://techstacker.com/change-vscode-code-font/) instructions depending on the font choice.
-
-If on Windows, for your external terminal consider installing [Windows Terminal](https://aka.ms/terminal), which is built to support [Cascadia](https://docs.microsoft.com/en-us/windows/terminal/cascadia-code) and [Powerline](https://docs.microsoft.com/en-us/windows/terminal/tutorials/powerline-setup) fonts.
-
-### Remote and Collaborative Extensions
-
-If you ever need to use clusters or work with reproducible [containers](https://code.visualstudio.com/docs/remote/containers), VS Code has strong support for those features.  Key extensions for these are:
-- [VS LiveShare](https://marketplace.visualstudio.com/items?itemName=MS-vsliveshare.vsliveshare-pack): Collaborative coding within VS Code.
-- [Remote Extensions Pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack): Tools to access remote servers, local containers.  Install [OpenSSH](https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse) if required.
-- [SFTP](https://marketplace.visualstudio.com/iems?itemName=liximomo.sftp): Secure copying of files to supported cloud services.
-
-Windows users will find good support to access a local linux installation with the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) and the associated [VS Code Extension](https://code.visualstudio.com/docs/remote/wsl-tutorial).

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (mass)=
@@ -282,7 +282,7 @@ You can think of
 
 The next figure shows a simulation, where
 
-* $\{X_t\}$ evolves as a discretized AR1 process produced using {ref}`Tauchen's method <mc_ex3>`
+* $\{X_t\}$ evolves as a discretized AR1 process produced using {doc}`this lecture <../more_julia/quadrature_interpolation>`
 * $g_t = \exp(X_t)$, so that $\ln g_t = X_t$ is the growth rate
 
 
@@ -295,7 +295,36 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics, Random
-using LaTeXStrings, Plots, QuantEcon, NLsolve
+using LaTeXStrings, Plots, NLsolve
+using Distributions
+```
+
+We'll reuse the Tauchen discretization routine introduced and explained in {doc}`this lecture <../more_julia/quadrature_interpolation>`.
+
+```{code-cell} julia
+function tauchen(N, rho, sigma, mu, m = 3)
+    mu_X = mu / (1 - rho)
+    sigma_X = sigma / sqrt(1 - rho^2)
+    z = range(-m * sigma_X, m * sigma_X, length = N)
+    midpoints = (z[1:(end - 1)] .+ step(z) / 2)'
+    F = cdf.(Normal(), (midpoints .- rho .* z) ./ sigma)
+    P = [F[:, 1] diff(F, dims = 2) (1 .- F[:, end])]
+    return (; P, mu_X, sigma_X, x = z .+ mu_X)
+end
+
+function simulate_markov_chain(P, X_0, T)
+    N = size(P, 1)
+    num_chains = length(X_0)
+    P_dist = [Categorical(P[i, :]) for i in 1:N]
+    X = zeros(Int, num_chains, T + 1)
+    X[:, 1] .= X_0
+    for t in 1:T
+        for n in 1:num_chains
+            X[n, t + 1] = rand(P_dist[X[n, t]])
+        end
+    end
+    return X
+end
 ```
 
 ```{code-cell} julia
@@ -307,10 +336,11 @@ Random.seed!(42);
 
 ```{code-cell} julia
 n = 25
-mc = tauchen(n, 0.96, 0.25)
+(; P, x) = tauchen(n, 0.96, 0.25, 0.0)
 sim_length = 80
 
-x_series = simulate(mc, sim_length; init = round(Int, n / 2))
+x_ind = vec(simulate_markov_chain(P, [round(Int, n / 2)], sim_length))
+x_series = x[x_ind]
 g_series = exp.(x_series)
 d_series = cumprod(g_series) # assumes d_0 = 1
 
@@ -396,20 +426,20 @@ v = (I - \beta K)^{-1} \beta K{\mathbb 1}
 
 Let's calculate and plot the price-dividend ratio at a set of parameters.
 
-As before, we'll generate $\{X_t\}$  as a {ref}`discretized AR1 process <mc_ex3>` and set $g_t = \exp(X_t)$.
+As before, we'll generate $\{X_t\}$  as a discretized AR1 process (see {doc}`this lecture <../more_julia/quadrature_interpolation>`) and set $g_t = \exp(X_t)$.
 
 Here's the code, including a test of the spectral radius condition
 
 ```{code-cell} julia
 n = 25  # size of state space
 beta = 0.9
-mc = tauchen(n, 0.96, 0.02)
+(; P, x) = tauchen(n, 0.96, 0.02, 0.0)
 
-K = mc.p .* exp.(mc.state_values)'
+K = P .* exp.(x)'
 
 v = (I - beta * K) \ (beta * K * ones(n, 1))
 
-plot(mc.state_values, v; lw = 2, ylabel = "price-dividend ratio",
+plot(x, v; lw = 2, ylabel = "price-dividend ratio",
      xlabel = L"X_t", alpha = 0.7, label = L"v")
 ```
 
@@ -528,21 +558,21 @@ v = (I - \beta J)^{-1} \beta  J {\mathbb 1}
 ```
 
 We will define a function `tree_price` to solve for $v$ given parameters stored in
-the AssetPriceModel objects
+the `asset_price_model` objects
 
 The default Markov Chain for will be a discretized AR(1) with $\rho = 0.9, \sigma = 0.02$ and discretized into 25 states using Tauchen's method.
 
 ```{code-cell} julia
-function AssetPriceModel(; beta = 0.96, gamma = 2.0, g = exp,
-                         mc = tauchen(25, 0.9, 0.02))
-    return (; beta, gamma, mc, g)
+function asset_price_model(; beta = 0.96, gamma = 2.0, g = exp,
+                           n = 25, rho = 0.9, sigma = 0.02, mu = 0.0)
+    (; P, x) = tauchen(n, rho, sigma, mu)
+    return (; beta, gamma, g, P, x)
 end
 
 # price/dividend ratio of the Lucas tree
 function tree_price(ap)
-    (; beta, mc, gamma, g) = ap
-    P = mc.p
-    y = mc.state_values'
+    (; beta, P, x, gamma, g) = ap
+    y = x'
     J = P .* g.(y) .^ (1 - gamma)
     @assert maximum(abs, eigvals(J)) < 1 / beta # check stability
 
@@ -561,8 +591,8 @@ p = plot(title = "Price-dividend ratio as a function of the state",
          xlabel = L"X_t", ylabel = "price-dividend ratio")
 
 for gamma in gammas
-    ap = AssetPriceModel(; gamma)
-    states = ap.mc.state_values
+    ap = asset_price_model(; gamma)
+    states = ap.x
     plot!(states, tree_price(ap); label = L"\gamma = %$gamma")
 end
 p
@@ -573,7 +603,7 @@ p
 tags: [remove-cell]
 ---
 @testset begin
-    ap = AssetPriceModel()
+    ap = asset_price_model()
     v = tree_price(ap)
     @test v[5] ≈ 74.54830456854316
     @test v[16] ≈ 29.426651157109678
@@ -655,9 +685,8 @@ The above is implemented in the function `consol_price`
 
 ```{code-cell} julia
 function consol_price(ap, zeta)
-    (; beta, gamma, mc, g) = ap
-    P = mc.p
-    y = mc.state_values'
+    (; beta, gamma, P, x, g) = ap
+    y = x'
     M = P .* g.(y) .^ (-gamma)
     @assert maximum(abs, eigvals(M)) < 1 / beta
 
@@ -741,9 +770,8 @@ We can find the solution with the following function call_option
 ```{code-cell} julia
 # price of perpetual call on consol bond
 function call_option(ap, zeta, p_s)
-    (; beta, gamma, mc, g) = ap
-    P = mc.p
-    y = mc.state_values'
+    (; beta, gamma, P, x, g) = ap
+    y = x'
     M = P .* g.(y) .^ (-gamma)
     @assert maximum(abs, eigvals(M)) < 1 / beta
 
@@ -763,11 +791,11 @@ end
 Here's a plot of $w$ compared to the consol price when $P_S = 40$
 
 ```{code-cell} julia
-ap = AssetPriceModel(; beta = 0.9)
+ap = asset_price_model(; beta = 0.9)
 zeta = 1.0
 strike_price = 40.0
 
-x = ap.mc.state_values
+x = ap.x
 p = consol_price(ap, zeta)
 w = call_option(ap, zeta, strike_price)
 
@@ -911,7 +939,6 @@ Is one higher than the other?  Can you give intuition?
 n = 5
 P = fill(0.0125, n, n) + (0.95 - 0.0125) * I
 s = [0.95, 0.975, 1.0, 1.025, 1.05]  # state values
-mc = MarkovChain(P, s)
 g = x -> x # identity
 gamma = 2.0
 beta = 0.94
@@ -919,10 +946,10 @@ zeta = 1.0
 p_s = 150.0
 ```
 
-Next we'll create an instance of AssetPriceModel to feed into the functions.
+Next we'll create an instance of `asset_price_model` (a NamedTuple of parameters) to feed into the functions.
 
 ```{code-cell} julia
-ap = AssetPriceModel(; beta, mc, gamma, g)
+ap = (; beta, gamma, g, P, x = s)
 ```
 
 Lucas tree prices are 
@@ -965,9 +992,8 @@ Here's a suitable function:
 
 ```{code-cell} julia
 function finite_horizon_call_option(ap, zeta, p_s, k)
-    (; beta, gamma, mc) = ap
-    P = mc.p
-    y = mc.state_values'
+    (; beta, gamma, P, x) = ap
+    y = x'
     M = P .* ap.g.(y) .^ (-gamma)
     @assert maximum(abs, eigvals(M)) < 1 / beta
 

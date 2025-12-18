@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11 
+  name: julia-1.12 
 ---
 
 (optimization_solver_packages)=
@@ -18,7 +18,7 @@ kernelspec:
 </div>
 ```
 
-# Solvers, Optimizers, and Automatic Differentiation
+# Optimization and Nonlinear Solvers
 
 ```{contents} Contents
 :depth: 2
@@ -26,213 +26,21 @@ kernelspec:
 
 ## Overview
 
-In this lecture we introduce a few of the Julia libraries that we've found particularly useful for quantitative work in economics.
+In this lecture we introduce a few of the Julia libraries for solving optimization problems, systems of equations, and finding fixed points.
 
+See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for more on calculating gradients and Jacobians for these types of algorithms.
 
 
 ```{code-cell} julia
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics
-using ForwardDiff, Optim, JuMP, Ipopt, Roots, NLsolve
+using LinearAlgebra, Statistics, BenchmarkTools
+using ForwardDiff, Optim, Roots, NLsolve
+using FixedPointAcceleration, NonlinearSolve
+using Optimization, OptimizationOptimJL, ForwardDiff, Enzyme
 using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
 ```
-
-## Introduction to Differentiable Programming
-
-The promise of differentiable programming is that we can move towards taking the derivatives of almost arbitrarily
-complicated computer programs, rather than simply thinking about the derivatives of mathematical functions.  Differentiable
-programming is the natural evolution of automatic differentiation (AD, sometimes called algorithmic differentiation).
-
-Stepping back, there are three ways to calculate the gradient or Jacobian
-
-* Analytic derivatives / Symbolic differentiation
-    * You can sometimes calculate the derivative on pen-and-paper, and potentially simplify the expression.
-    * In effect, repeated applications of the chain rule, product rule, etc.
-    * It is sometimes, though not always, the most accurate and fastest option if there are algebraic simplifications.
-    * Sometimes symbolic integration on the computer a good solution, if the package can handle your functions. Doing algebra by hand is tedious and error-prone, but
-      is sometimes invaluable.
-* Finite differences
-    * Evaluate the function at least $N+1$ times to get the gradient -- Jacobians are even worse.
-    * Large $\Delta$ is numerically stable but inaccurate, too small of $\Delta$ is numerically unstable but more accurate.
-    * Choosing the $\Delta$ is hard, so use packages such as [DiffEqDiffTools.jl](https://github.com/JuliaDiffEq/DiffEqDiffTools.jl).
-    * If a function is $R^N \to R$ for a large $N$, this requires $O(N)$ function evaluations.
-
-$$
-\partial_{x_i}f(x_1,\ldots x_N) \approx \frac{f(x_1,\ldots x_i + \Delta,\ldots x_N) - f(x_1,\ldots x_i,\ldots x_N)}{\Delta}
-$$
-
-* Automatic Differentiation
-    * The same as analytic/symbolic differentiation, but where the **chain rule** is calculated **numerically** rather than symbolically.
-    * Just as with analytic derivatives, can establish rules for the derivatives of individual functions (e.g. $d\left(sin(x)\right)$ to $cos(x) dx$) for intrinsic derivatives.
-
-AD has two basic approaches, which are variations on the order of evaluating the chain rule: reverse and forward mode (although mixed mode is possible).
-
-1. If a function is $R^N \to R$, then **reverse-mode** AD can find the gradient in $O(1)$ sweep (where a "sweep" is $O(1)$ function evaluations).
-1. If a function is $R \to R^N$, then **forward-mode** AD can find the jacobian in $O(1)$ sweeps.
-
-We will explore two types of automatic differentiation in Julia (and discuss a few packages which implement them).  For both, remember the [chain rule](https://en.wikipedia.org/wiki/Chain_rule)
-
-$$
-\frac{dy}{dx} = \frac{dy}{dw} \cdot \frac{dw}{dx}
-$$
-
-Forward-mode starts the calculation from the left with $\frac{dy}{dw}$ first, which then calculates the product with $\frac{dw}{dx}$.  On the other hand, reverse mode starts on the right hand side with $\frac{dw}{dx}$ and works backwards.
-
-Take an example a function with fundamental operations and known analytical derivatives
-
-$$
-f(x_1, x_2) = x_1 x_2 + \sin(x_1)
-$$
-
-And rewrite this as a function which contains a sequence of simple operations and temporaries.
-
-```{code-cell} julia
-function f(x_1, x_2)
-    w_1 = x_1
-    w_2 = x_2
-    w_3 = w_1 * w_2
-    w_4 = sin(w_1)
-    w_5 = w_3 + w_4
-    return w_5
-end
-```
-
-Here we can identify all of the underlying functions (`*, sin, +`), and see if each has an
-intrinsic derivative.  While these are obvious, with Julia we could come up with all sorts of differentiation rules for arbitrarily
-complicated combinations and compositions of intrinsic operations.  In fact, there is even [a package](https://github.com/JuliaDiff/ChainRules.jl) for registering more.
-
-### Forward-Mode Automatic Differentiation
-
-In forward-mode AD, you first fix the variable you are interested in (called "seeding"), and then evaluate the chain rule in left-to-right order.
-
-For example, with our $f(x_1, x_2)$ example above, if we wanted to calculate the derivative with respect to $x_1$ then
-we can seed the setup accordingly.  $\frac{\partial  w_1}{\partial  x_1} = 1$ since we are taking the derivative of it, while $\frac{\partial  w_2}{\partial  x_1} = 0$.
-
-Following through with these, redo all of the calculations for the derivative in parallel with the function itself.
-
-$$
-\begin{array}{l|l}
-f(x_1, x_2) &
-\frac{\partial f(x_1,x_2)}{\partial x_1}
-\\
-\hline
-w_1 = x_1 &
-\frac{\partial  w_1}{\partial  x_1} = 1 \text{ (seed)}\\
-w_2 = x_2 &
-\frac{\partial   w_2}{\partial  x_1} = 0 \text{ (seed)}
-\\
-w_3 = w_1 \cdot w_2 &
-\frac{\partial  w_3}{\partial x_1} = w_2 \cdot \frac{\partial   w_1}{\partial  x_1} + w_1 \cdot \frac{\partial   w_2}{\partial  x_1}
-\\
-w_4 = \sin w_1 &
-\frac{\partial   w_4}{\partial x_1} = \cos w_1 \cdot \frac{\partial  w_1}{\partial x_1}
-\\
-w_5 = w_3 + w_4 &
-\frac{\partial  w_5}{\partial x_1} = \frac{\partial  w_3}{\partial x_1} + \frac{\partial  w_4}{\partial x_1}
-\end{array}
-$$
-
-Since these two could be done at the same time, we say there is "one pass" required for this calculation.
-
-Generalizing a little, if the function was vector-valued, then that single pass would get the entire row of the Jacobian in that single pass.  Hence for a $R^N \to R^M$ function, requires $N$ passes to get a dense Jacobian using forward-mode AD.
-
-How can you implement forward-mode AD?  It turns out to be fairly easy with a generic programming language to make a simple example (while the devil is in the details for
-a high-performance implementation).
-
-### Forward-Mode with Dual Numbers
-
-One way to implement forward-mode AD is to use [dual numbers](https://en.wikipedia.org/wiki/Dual_number).
-
-Instead of working with just a real number, e.g. $x$, we will augment each with an infinitesimal $\epsilon$ and use $x + \epsilon$.
-
-From Taylor's theorem,
-
-$$
-f(x + \epsilon) = f(x) + f'(x)\epsilon + O(\epsilon^2)
-$$
-
-where we will define the infinitesimal such that $\epsilon^2 = 0$.
-
-With this definition, we can write a general rule for differentiation of $g(x,y)$ as the chain rule for the total derivative
-
-$$
-g(x + \epsilon, y + \epsilon) = g(x, y) + (\partial_x g(x,y) + \partial_y g(x,y))\epsilon
-$$
-
-But, note that if we keep track of the constant in front of the $\epsilon$ terms (e.g. a $x'$ and $y'$)
-
-$$
-g(x + x'\epsilon, y + y'\epsilon) = g(x, y) + (\partial_x g(x,y)x' + \partial_y g(x,y)y')\epsilon
-$$
-
-This is simply the chain rule.  A few more examples
-
-$$
-\begin{aligned}
-        (x + x'\epsilon) + (y + y'\epsilon) &= (x + y) + (x' + y')\epsilon\\
-(x + x'\epsilon)\times(y + y'\epsilon) &= (xy) + (x'y + y'x)\epsilon\\
-\exp(x + x'\epsilon) &= \exp(x) + (x'\exp(x))\epsilon\\
-        \end{aligned}
-$$
-
-Using the generic programming in Julia, it is easy to define a new dual number type which can encapsulate the pair $(x, x')$ and provide a definitions for
-all of the basic operations.  Each definition then has the chain-rule built into it.
-
-With this approach, the "seed" process is simple the creation of the $\epsilon$ for the underlying variable.
-
-So if we have the function $f(x_1, x_2)$ and we wanted to find the derivative $\partial_{x_1} f(3.8, 6.9)$ then then we would seed them with the dual numbers $x_1 \to (3.8, 1)$ and $x_2 \to (6.9, 0)$.
-
-If you then follow all of the same scalar operations above with a seeded dual number, it will calculate both the function value and the derivative in a single "sweep" and without modifying any of your (generic) code.
-
-### ForwardDiff.jl
-
-Dual-numbers are at the heart of one of the AD packages we have already seen.
-
-```{code-cell} julia
-using ForwardDiff
-h(x) = sin(x[1]) + x[1] * x[2] + sinh(x[1] * x[2]) # multivariate.
-x = [1.4 2.2]
-@show ForwardDiff.gradient(h, x) # use AD, seeds from x
-
-#Or, can use complicated functions of many variables
-f(x) = sum(sin, x) + prod(tan, x) * sum(sqrt, x)
-g = (x) -> ForwardDiff.gradient(f, x); # g() is now the gradient
-g(rand(5)) # gradient at a random point
-# ForwardDiff.hessian(f,x') # or the hessian
-```
-
-We can even auto-differentiate complicated functions with embedded iterations.
-
-```{code-cell} julia
-function squareroot(x) #pretending we don't know sqrt()
-    z = copy(x) # Initial starting point for Newton’s method
-    while abs(z * z - x) > 1e-13
-        z = z - (z * z - x) / (2z)
-    end
-    return z
-end
-squareroot(2.0)
-```
-
-```{code-cell} julia
-using ForwardDiff
-dsqrt(x) = ForwardDiff.derivative(squareroot, x)
-dsqrt(2.0)
-```
-
-### Reverse-Mode AD
-
-Unlike forward-mode auto-differentiation, reverse-mode is very difficult to implement efficiently, and there are many variations on the best approach.
-
-Many reverse-mode packages are connected to machine-learning packages, since the efficient gradients of $R^N \to R$ loss functions are necessary for the gradient descent optimization algorithms used in machine learning.
-
-At this point, Julia does not have a single consistently usable reverse-mode AD package without rough edges, but a few key ones to consider are:
-
-- [ReverseDiff.jl](https://github.com/JuliaDiff/ReverseDiff.jl), a relatively dependable but limited package.  Not really intended for standard ML-pipline usage
-- [Zygote.jl](https://github.com/FluxML/Zygote.jl), which is flexible but buggy and less reliable.  In a slow process of deprecation, but often the primary alternative.
-- [Enzyme.jl](https://enzyme.mit.edu/julia/stable/), which is the most promising (and supports both forward and reverse mode).  However, the usage is more tailored for scientific machine learning and scalar functions rather than fast GPU kernels, and it relies on a innovative (but not fully stable) approach to compilation.
 
 ## Optimization
 
@@ -245,7 +53,7 @@ The other reason is that different types of optimization problems require differ
 ### Optim.jl
 
 A good pure-Julia solution for the (unconstrained or box-bounded) optimization of
-univariate and multivariate function is the [Optim.jl](https://github.com/JuliaNLSolvers/Optim.jl) package.
+univariate and multivariate functions is the [Optim.jl](https://github.com/JuliaNLSolvers/Optim.jl) package.
 
 By default, the algorithms in `Optim.jl` target minimization rather than
 maximization, so if a function is called `optimize` it will mean minimization.
@@ -256,7 +64,6 @@ maximization, so if a function is called `optimize` it will mean minimization.
 defaults to a robust hybrid optimization routine called [Brent's method](https://en.wikipedia.org/wiki/Brent%27s_method).
 
 ```{code-cell} julia
-using Optim
 using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
 
 result = optimize(x -> x^2, -2.0, 1.0)
@@ -265,7 +72,8 @@ result = optimize(x -> x^2, -2.0, 1.0)
 Always check if the results converged, and throw errors otherwise
 
 ```{code-cell} julia
-converged(result) || error("Failed to converge in $(iterations(result)) iterations")
+converged(result) ||
+    error("Failed to converge in $(iterations(result)) iterations")
 xmin = result.minimizer
 result.minimum
 ```
@@ -273,18 +81,6 @@ result.minimum
 The first line is a logical OR between `converged(result)` and `error("...")`.
 
 If the convergence check passes, the logical sentence is true, and it will proceed to the next line; if not, it will throw the error.
-
-Or to maximize
-
-```{code-cell} julia
-f(x) = -x^2
-result = maximize(f, -2.0, 1.0)
-converged(result) || error("Failed to converge in $(iterations(result)) iterations")
-xmin = maximizer(result)
-fmax = maximum(result)
-```
-
-**Note:** Notice that we call `optimize` results using `result.minimizer`, and `maximize` results using `maximizer(result)`.
 
 #### Unconstrained Multivariate Optimization
 
@@ -298,7 +94,7 @@ x_iv = [0.0, 0.0]
 results = optimize(f, x_iv) # i.e. optimize(f, x_iv, NelderMead())
 ```
 
-The default algorithm in `NelderMead`, which is derivative-free and hence requires many function evaluations.
+The default algorithm is `NelderMead`, which is derivative-free and hence requires many function evaluations.
 
 To change the algorithm type to [L-BFGS](http://julianlsolvers.github.io/Optim.jl/stable/algo/lbfgs/)
 
@@ -312,7 +108,7 @@ Note that this has fewer iterations.
 
 As no derivative was given, it used [finite differences](https://en.wikipedia.org/wiki/Finite_difference) to approximate the gradient of `f(x)`.
 
-However, since most of the algorithms require derivatives, you will often want to use auto differentiation or pass analytical gradients if possible.
+However, since most of the algorithms require derivatives, you will often want to use automatic differentiation or pass analytical gradients if possible.
 
 ```{code-cell} julia
 f(x) = (1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2
@@ -347,7 +143,7 @@ x_iv = [0.0, 0.0]
 results = optimize(f, x_iv, SimulatedAnnealing()) # or ParticleSwarm() or NelderMead()
 ```
 
-However, you will note that this did not converge, as stochastic methods typically require many more iterations as a tradeoff for their global-convergence properties.
+However, you will note that this did not converge, as stochastic methods typically require many more iterations as a tradeoff for their global convergence properties.
 
 See the [maximum likelihood](http://julianlsolvers.github.io/Optim.jl/stable/examples/generated/maxlikenlm/)
 example and the accompanying [Jupyter notebook](https://nbviewer.jupyter.org/github/JuliaNLSolvers/Optim.jl/blob/gh-pages/v0.15.3/examples/generated/maxlikenlm.ipynb).
@@ -357,7 +153,7 @@ example and the accompanying [Jupyter notebook](https://nbviewer.jupyter.org/git
 The [JuMP.jl](https://github.com/JuliaOpt/JuMP.jl) package is an ambitious implementation of a modelling language for optimization problems in Julia.
 
 In that sense, it is more like an AMPL (or Pyomo) built on top of the Julia
-language with macros, and able to use a variety of different commerical and open source solvers.
+language with macros, and able to use a variety of different commercial and open-source solvers.
 
 If you have a linear, quadratic, conic, mixed-integer linear, etc. problem then this will likely be the ideal "meta-package" for calling various solvers.
 
@@ -369,7 +165,7 @@ The following is an example of calling a linear objective with a nonlinear const
 
 Here `Ipopt` stands for `Interior Point OPTimizer`, a [nonlinear solver](https://github.com/JuliaOpt/Ipopt.jl) in Julia
 
-```{code-cell} julia
+```{code-block} julia
 using JuMP, Ipopt
 # solve
 # max( x[1] + x[2] )
@@ -394,7 +190,7 @@ JuMP.register(m, :squareroot, 1, squareroot, autodiff = true)
 
 And this is an example of a quadratic objective
 
-```{code-cell} julia
+```{code-block} julia
 # solve
 # min (1-x)^2 + (100(y-x^2)^2)
 # st x + y >= 10
@@ -422,7 +218,205 @@ Another package for doing global optimization without derivatives is [BlackBoxOp
 
 An example for [parallel execution](https://github.com/robertfeldt/BlackBoxOptim.jl/blob/master/examples/rosenbrock_parallel.jl) of the objective is provided.
 
-## Systems of Equations and Least Squares
+## Optimization.jl Meta-Package
+The [Optimization.jl](https://github.com/SciML/Optimization.jl) package provides a common interface to a variety of optimization packages in Julia.  As part of the [SciML](https://sciml.ai/) ecosystem, it is designed to work seamlessly with other SciML tools, and to provide differentiable optimization routines that can be used in conjunction with automatic differentiation packages.
+
+Algorithms require loading additional packages for one of the [supported optimizers](https://docs.sciml.ai/Optimization/stable/#Overview-of-the-solver-packages-in-alphabetical-order), such as `OptimizationOptimJL.jl`, which wraps the `Optim.jl` package.
+
+From the [documentation](https://docs.sciml.ai/Optimization/stable/getting_started/):
+
+```{code-cell} julia
+rosenbrock(u, p) = (p[1] - u[1])^2 + p[2] * (u[2] - u[1]^2)^2
+u0 = zeros(2)
+p = [1.0, 100.0]
+prob = OptimizationProblem(rosenbrock, u0, p)
+sol = solve(prob, NelderMead())
+sol
+```
+
+The separation of the argument, `u`, and the parameters, `p`, is common in SciML and provides methods to cleanly handle parameterized problems.
+
+Function wrappers also provide easy integration with automatic differentiation such as `ForwardDiff.jl`.
+
+```{code-cell} julia
+f_fd = OptimizationFunction(rosenbrock, Optimization.AutoForwardDiff())
+prob = OptimizationProblem(f_fd, u0, p)
+sol = solve(prob, BFGS())
+```
+
+Or with `Enzyme.jl`, which has slower compilation times but provides another AD backend
+
+```{code-cell} julia
+f_enzyme = OptimizationFunction(rosenbrock, Optimization.AutoEnzyme())
+prob = OptimizationProblem(f_enzyme, u0, p)
+sol = solve(prob, BFGS())
+```
+
+Finally, [the documentation](https://docs.sciml.ai/Optimization/stable/) for a variety of other examples and features, such as constrained optimization.
+
+
+## NonlinearSolve.jl Meta-Package
+Within the [SciML](https://sciml.ai/) ecosystem, the [NonlinearSolve.jl](https://github.com/SciML/NonlinearSolve.jl) package provides a unified interface for solving nonlinear systems of equations. It builds on top of other SciML packages and offers advanced features such as automatic differentiation, various solver algorithms, and support for large-scale problems.  Furthermore, as with `Optimization.jl`, it has convenient integration with automatic differentiation (as well as implementing AD for the solver itself, with respect to parameters).
+
+In general, we suggest using this meta-package where possible as it provides a well-maintained interface amenable to switching out solvers in the future. 
+
+### Basic Examples
+
+Here we adapt examples directly from the [documentation](https://docs.sciml.ai/NonlinearSolve/stable/).
+
+First we can solve a system of equations as a closure over a constant `c`.
+
+```{code-cell} julia
+c = 2.0
+f(u, p) = u .* u .- c # p ignored
+u0 = [1.0, 1.0]
+prob = NonlinearProblem(f, u0) # defaults to p = nothing
+sol = solve(prob, NewtonRaphson())
+```
+In this case, the `p` argument (which can hold parameters) is ignored, but needs to be present in SciML problems.
+
+The `NewtonRaphson()` method is a built-in solver, and not an external package.  We can access the results through `sol.u` and see other information such as the return code
+
+```{code-cell} julia
+@show sol.u
+@show sol.retcode
+sol.stats
+```
+
+
+We can see further details on the algorithm itself, and see that it uses `ForwardDiff.jl` by default since `NewtonRaphson()` requires a Jacobian.
+
+```{code-cell} julia
+sol.alg
+```
+
+You can see the performance of this algorithm in this context, which uses a large number of allocations relative to the simplicity of the problem.
+
+```{code-cell} julia
+@benchmark solve($prob, NewtonRaphson())
+```
+
+### Using Parameters and Inplace Functions
+SciML interfaces prefer to cleanly separate a function argument and a parameter argument, which makes it easier to handle parameterized problems and ensure flexible code.
+
+To use this, we rewrite our example above to use the previously ignored parameter `p`.
+
+```{code-cell} julia
+f(u, p) = u .* u .- p
+u0 = [1.0, 1.0]
+p = 2.0
+prob = NonlinearProblem(f, u0, p) # pass the `p`
+```
+
+Note that the `prob` shows In-place: true.
+
+Benchmarking this version.
+
+```{code-cell} julia
+@btime solve($prob, NewtonRaphson())
+```
+
+This may or may not have better performance than the previous version which used the closure.
+
+Regardless, it will still have many allocations, which can be a significant fraction of the runtime for problems small or large.
+
+To support this, the SciML ecosystem has a bias towards in-place functions.  Here we add another version of the function `f!(du, u, p)` to be in-place, modifying the first argument, which the solver detects.
+
+```{code-cell} julia
+function f!(du, u, p)
+    du .= u .* u .- p
+end
+prob = NonlinearProblem(f!, u0, p)
+@btime solve($prob, NewtonRaphson())
+```
+
+Note the decrease in allocations, and possibly time depending on your system.
+
+### Patterns for Parameters
+
+The `p` argument can be anything, including named tuples, vectors, or a single value as above.
+
+A common pattern appropriate for more complicated code is to use a named tuple packing and unpacking.
+
+```{code-cell} julia
+function f_nt(u, p)
+    (; c) = p # unpack any arguments in the named tuple
+    return u .* u .- c
+end
+
+p_nt = (c = 2.0,) # named tuple
+prob_nt = NonlinearProblem(f_nt, u0, p_nt)
+@btime solve($prob_nt, NewtonRaphson())
+```
+
+
+### Small Systems
+For small systems, the solver is able to use [StaticArrays.jl](https://github.com/JuliaArrays/StaticArrays.jl) which can further improve performance.  These fixed-size arrays require using the out-of-place formulation, but otherwise require no special handling.
+
+```{code-cell} julia
+using StaticArrays
+f_SA(u, p) = SA[u[1] * u[1] - p, u[2] * u[2] - p] # rewrote without broadcasting
+u0_static = SA[1.0, 1.0] # static array
+prob = NonlinearProblem(f_SA, u0_static, p)
+```
+
+Note that the problem shows that this is `In-place: false` and operates on the `SVector{2, Float64}` type.
+
+Next we can benchmark this version, where we can use a simpler non-allocating solver designed for small systems, `SimpleNewtonRaphson()`.  See [the docs](https://docs.sciml.ai/NonlinearSolve/stable/native/simplenonlinearsolve/) for more details on solvers optimized for non-allocating algorithms.
+
+```{code-cell} julia
+@btime solve($prob, SimpleNewtonRaphson())
+```
+
+Depending on your system, you may find this is 100 to 1000x faster than the original version using closures and allocations.
+
+```{note}
+In principle it should be equivalent to use our previous `f` instead of `f_SA`, but depending on package and compiler versions it may not achieve the full 0 allocations.  Regardless, try the generic function first before porting over to a new function.  The `SimpleNewtonRaphson()` function is also specialized to avoid any internal allocations for small systems, but you will even see some benefits with `NewtonRaphson()`.
+```
+
+### Using Other Solvers
+While it has some pre-built solvers, as we used above, it is primarily intended as a meta-package.  To use one of the many [external solver packages](https://docs.sciml.ai/NonlinearSolve/stable/solvers/nonlinear_system_solvers/) you simply need to ensure the package is in your Project file and then include it.
+
+For example, we can use the Anderson Acceleration in [FixedPointAcceleration.jl's wrapper](https://docs.sciml.ai/NonlinearSolve/stable/api/fixedpointacceleration/)
+
+```{code-cell} julia
+using FixedPointAcceleration
+prob = NonlinearProblem(f, u0, p)
+@btime solve($prob, FixedPointAccelerationJL())
+@btime solve($prob, FixedPointAccelerationJL(; algorithm = :Simple))
+```
+
+The default algorithm in this case is `:Anderson`, but we can also use `:Simple` fixed-point iteration.
+
+In this case, the fixed-point iteration algorithm is slower than the gradient-based Newton-Raphson, but shows the flexibility in cases where gradients are not available.
+
+```{note}
+While there is a [NLsolve.jl wrapper](https://docs.sciml.ai/NonlinearSolve/stable/api/nlsolve/), it seems to have a less robust implementation of Anderson than some of the other packages.
+```
+
+### Bracketing Solvers and Rootfinding Problems
+
+The `NonlinearProblem` type is intended for algorithms which use an initial condition (and may or may not use derivatives).
+
+For some one-dimensional problems it is more convenient to use one of the [bracketing methods](https://docs.sciml.ai/NonlinearSolve/stable/solvers/bracketing_solvers/#bracketing)
+
+For example, from the [documentation](https://docs.sciml.ai/NonlinearSolve/stable/tutorials/getting_started/#Problem-Type-2:-Solving-Interval-Rootfinding-Problems-with-Bracketing-Methods),
+
+```{code-cell} julia
+f_bracketed(u, p) = u * u - p
+uspan = (1.0, 2.0) # brackets
+p = 2.0
+prob = IntervalNonlinearProblem(f_bracketed, uspan, p)
+sol = solve(prob)
+```
+
+In general, this should be preferred to using the `Roots.jl` package below, as it may provide a more consistent interface.
+
+
+## Systems of Equations and Fixed Points
+
+Julia has a variety of packages you can directly use for solving systems of equations and finding fixed points.  Many of these packages can also be used as backends for the `NonlinearSolve.jl` meta-package described above.
+
 
 ### Roots.jl
 
@@ -491,69 +485,3 @@ results = nlsolve(f!, [0.1; 1.2], autodiff = :forward)
 println("converged=$(NLsolve.converged(results)) at root=$(results.zero) in " *
         "$(results.iterations) iterations and $(results.f_calls) function calls")
 ```
-
-## LeastSquaresOptim.jl
-
-Many optimization problems can be solved using linear or nonlinear least squares.
-
-Let $x \in R^N$ and $F(x) : R^N \to R^M$ with $M \geq N$, then the nonlinear least squares problem is
-
-$$
-\min_x F(x)^T F(x)
-$$
-
-While $F(x)^T F(x) \to R$, and hence this problem could technically use any nonlinear optimizer, it is useful to exploit the structure of the problem.
-
-In particular, the Jacobian of $F(x)$, can be used to approximate the Hessian of the objective.
-
-As with most nonlinear optimization problems, the benefits will typically become evident only when analytical or automatic differentiation is possible.
-
-If $M = N$ and we know a root $F(x^*) = 0$ to the system of equations exists, then NLS is the defacto method for solving large **systems of equations**.
-
-An implementation of NLS is given in [LeastSquaresOptim.jl](https://github.com/matthieugomez/LeastSquaresOptim.jl).
-
-
-## Exercises
-
-### Exercise 1
-
-Doing a simple implementation of forward-mode auto-differentiation is very easy in Julia since it is generic.  In this exercise, you
-will fill in a few of the operations required for a simple AD implementation.
-
-First, we need to provide a type to hold the dual.
-
-```{code-cell} julia
-struct DualNumber{T} <: Real
-    val::T
-    ϵ::T
-end
-```
-
-Here we have made it a subtype of `Real` so that it can pass through functions expecting Reals.
-
-We can add on a variety of chain rule definitions by importing in the appropriate functions and adding DualNumber versions.  For example
-
-```{code-cell} julia
-import Base: +, *, -, ^, exp
-+(x::DualNumber, y::DualNumber) = DualNumber(x.val + y.val, x.ϵ + y.ϵ)  # dual addition
-+(x::DualNumber, a::Number) = DualNumber(x.val + a, x.ϵ)  # i.e. scalar addition, not dual
-+(a::Number, x::DualNumber) = DualNumber(x.val + a, x.ϵ)  # i.e. scalar addition, not dual
-```
-
-With that, we can seed a dual number and find simple derivatives,
-
-```{code-cell} julia
-f(x, y) = 3.0 + x + y
-
-x = DualNumber(2.0, 1.0)  # x -> 2.0 + 1.0\epsilon
-y = DualNumber(3.0, 0.0)  # i.e. y = 3.0, no derivative
-
-# seeded calculates both teh function and the d/dx gradient!
-f(x, y)
-```
-
-For this assignment:
-
-1. Add in AD rules for the other operations: `*, -, ^, exp`.
-1. Come up with some examples of univariate and multivariate functions combining those operations and use your AD implementation to find the derivatives.
-

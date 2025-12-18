@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (mccall_with_sep)=
@@ -47,7 +47,7 @@ Once separation enters the picture, the agent comes to view
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
-using Distributions, Expectations, LaTeXStrings,NLsolve, Plots
+using Distributions, LaTeXStrings, NLsolve, Plots
 ```
 
 ## The Model
@@ -233,12 +233,12 @@ using Test
 ```
 
 ```{code-cell} julia
-using Distributions, LinearAlgebra, Expectations, NLsolve, Plots
+using Distributions, LinearAlgebra, NLsolve, Plots
 
 function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
                             tol = 1e-5,
                             iter = 2_000)
-    (; alpha, beta, sigma, c, gamma, w, dist, u) = mcm
+    (; alpha, beta, sigma, c, gamma, w, dist, u, p) = mcm
 
     # parameter validation
     @assert c > 0.0
@@ -247,14 +247,15 @@ function solve_mccall_model(mcm; U_iv = 1.0, V_iv = ones(length(mcm.w)),
     # necessary objects
     u_w = mcm.u.(w, sigma)
     u_c = mcm.u(c, sigma)
-    E = expectation(dist) # expectation operator for wage distribution
 
     # Bellman operator T. Fixed point is x* s.t. T(x*) = x*
     function T(x)
         V = x[1:(end - 1)]
         U = x[end]
-        [u_w + beta * ((1 - alpha) * V .+ alpha * U);
-         u_c + beta * (1 - gamma) * U + beta * gamma * E * max.(U, V)]
+        V_p = u_w + beta * ((1 - alpha) * V .+ alpha * U)
+        U_p = u_c + beta * (1 - gamma) * U +
+              beta * gamma * sum(max(U, V[i]) * p[i] for i in 1:length(w))
+        return [V_p; U_p]
     end
 
     # value function iteration
@@ -285,7 +286,7 @@ Let's plot the approximate solutions $U$ and $V$ to see what they look like.
 We'll use the default parameterizations found in the code above.
 
 ```{code-cell} julia
-function McCallModel(; alpha = 0.2,
+function mcall_model(; alpha = 0.2,
                      beta = 0.98, # discount rate
                      gamma = 0.7,
                      c = 6.0, # unemployment compensation
@@ -293,14 +294,15 @@ function McCallModel(; alpha = 0.2,
                      u = (c, sigma) -> (c^(1 - sigma) - 1) / (1 - sigma),
                      w = range(10, 20, length = 60), # wage values
                      dist = BetaBinomial(59, 600, 400)) # distribution over wage values
-    return (; alpha, beta, gamma, c, sigma, u, w, dist)
+    p = pdf.(dist, support(dist))
+    return (; alpha, beta, gamma, c, sigma, u, w, dist, p)
 end
 ```
 
 ```{code-cell} julia
 # plots setting
 
-mcm = McCallModel()
+mcm = mcall_model()
 (; V, U) = solve_mccall_model(mcm)
 U_vec = fill(U, length(mcm.w))
 
@@ -352,7 +354,7 @@ In each instance below we'll show you a figure and then ask you to reproduce it 
 
 First, let's look at how $\bar w$ varies with unemployment compensation.
 
-In the figure below, we use the default parameters in the McCallModel tuple, apart from
+In the figure below, we use the default parameters in the mcall_model tuple, apart from
 c (which takes the values given on the horizontal axis)
 
 ```{figure} /_static/figures/mccall_resw_c.png
@@ -421,7 +423,7 @@ $\beta$ and $\alpha$ and plot the results like so
 ```{code-cell} julia
 c_vals = range(2, 12, length = 25)
 
-models = [McCallModel(c = cval) for cval in c_vals]
+models = [mcall_model(c = cval) for cval in c_vals]
 sols = solve_mccall_model.(models)
 w_bar_vals = [sol.w_bar for sol in sols]
 
@@ -437,7 +439,7 @@ plot(c_vals,
 Note that we could've done the above in one pass (which would be important if, for example, the parameter space was quite large).
 
 ```{code-cell} julia
-w_bar_vals = [solve_mccall_model(McCallModel(c = cval)).w_bar
+w_bar_vals = [solve_mccall_model(mcall_model(c = cval)).w_bar
               for cval in c_vals];
 # doesn't allocate new arrays for models and solutions
 ```
@@ -461,7 +463,7 @@ Similar to above, we can plot $\bar w$ against $\gamma$ as follows
 ```{code-cell} julia
 gamma_vals = range(0.05, 0.95, length = 25)
 
-models = [McCallModel(gamma = gammaval) for gammaval in gamma_vals]
+models = [mcall_model(gamma = gammaval) for gammaval in gamma_vals]
 sols = solve_mccall_model.(models)
 w_bar_vals = [sol.w_bar for sol in sols]
 

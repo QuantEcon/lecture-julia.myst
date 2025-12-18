@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (smoothing)=
@@ -77,14 +77,11 @@ We'll spend most of this lecture studying the finite-state Markov specification,
 
 ### Relationship to Other Lectures
 
-This lecture can be viewed as a followup to {doc}`Optimal Savings II: LQ Techniques <perm_income_cons>` and  a warm up for a model of tax smoothing described in {doc}`opt_tax_recur <../dynamic_programming_squared/opt_tax_recur>`.
-
-Linear-quadratic versions of the Lucas-Stokey tax-smoothing model are described in {doc}`lqramsey <../dynamic_programming_squared/lqramsey>`.
+This lecture can be viewed as a followup to {doc}`Optimal Savings II: LQ Techniques <perm_income_cons>`.
 
 The key differences between those lectures and this one are
 
 * Here the decision maker takes all prices as exogenous, meaning that his decisions do not affect them.
-* In {doc}`lqramsey <../dynamic_programming_squared/lqramsey>` and {doc}`opt_tax_recur <../dynamic_programming_squared/opt_tax_recur>`, the decision maker -- the government in the case of these lectures -- recognizes that his decisions affect prices.
 
 So these later lectures are partly about how the government should  manipulate prices of government debt.
 
@@ -356,7 +353,8 @@ using Test
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
-using Plots, QuantEcon, Random
+using Plots, Random, QuantEcon
+using Distributions
 
 ```
 
@@ -388,15 +386,26 @@ end
 function consumption_incomplete(cp; N_simul = 150)
     (; beta, P, y, b0) = cp
 
-    # for the simulation use the MarkovChain type
-    mc = MarkovChain(P)
+  # simulate Markov state indices
+  function simulate_markov_chain(P, X_0, T)
+    N = size(P, 1)
+    num_chains = length(X_0)
+    P_dist = [Categorical(P[i, :]) for i in 1:N]
+    X = zeros(Int, num_chains, T + 1)
+    X[:, 1] .= X_0
+    for t in 1:T
+      for n in 1:num_chains
+        X[n, t + 1] = rand(P_dist[X[n, t]])
+      end
+    end
+    return X
+  end
 
     # useful variables
     y = y
     v = inv(I - beta * P) * y
 
-    # simulate state path
-    s_path = simulate(mc, N_simul, init = 1)
+  s_path = vec(simulate_markov_chain(P, [1], N_simul))[2:end]
 
     # store consumption and debt path
     b_path, c_path = ones(N_simul + 1), ones(N_simul)
@@ -1029,11 +1038,3 @@ lecture on  the {doc}`permanent income model <../dynamic_programming/perm_income
 In that version, consumption follows a random walk and the consumer's debt follows a process with a unit root.
 
 We leave it to the reader to apply the usual isomorphism to deduce the corresponding implications for a tax-smoothing model like Barro's {cite}`Barro1979`.
-
-### Government Manipulation of  Arrow Securities Prices
-
-In {doc}`optimal taxation in an LQ economy <../dynamic_programming_squared/lqramsey>` and {doc}`recursive optimal taxation <../dynamic_programming_squared/opt_tax_recur>`, we study **complete-markets**
-models in which the government recognizes that it can manipulate  Arrow securities prices.
-
-In {doc}`optimal taxation with incomplete markets <../dynamic_programming_squared/amss>`, we study an **incomplete-markets** model in which the government  manipulates asset prices.
-

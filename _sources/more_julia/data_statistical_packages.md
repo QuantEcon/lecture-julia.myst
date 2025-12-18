@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (data_statistical_packages)=
@@ -18,7 +18,7 @@ kernelspec:
 </div>
 ```
 
-# Data and Statistics Packages
+# General, Data, and Statistics Packages
 
 ```{contents} Contents
 :depth: 2
@@ -39,9 +39,7 @@ This list is not exhaustive, and others can be found in organizations such as [J
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics
-using DataFrames, RDatasets, DataFramesMeta, CategoricalArrays, Query
-using GLM
+using LinearAlgebra, Statistics, DataFrames
 ```
 
 ## DataFrames
@@ -62,7 +60,7 @@ There are a few different ways to create a DataFrame.
 The first is to set up columns and construct a dataframe by assigning names
 
 ```{code-cell} julia
-using DataFrames, RDatasets  # RDatasets provides good standard data examples from R
+using DataFrames
 
 # note use of missing
 commodities = ["crude", "gas", "gold", "silver"]
@@ -145,9 +143,11 @@ df2.col1 .= coalesce.(df2.col1, 0.0) # replace all missing with 0.0
 
 ### Manipulating and Transforming DataFrames
 
-One way to do an additional calculation with a `DataFrame` is to tuse the `@transform` macro from `DataFramesMeta.jl`.
+One way to do an additional calculation with a `DataFrame` is to use the `@transform` macro from `DataFramesMeta.jl`.
 
-```{code-cell} julia
+The following are code only blocks, which would require installation of the packages in a separate environment.
+
+```{code-block} julia
 using DataFramesMeta
 f(x) = x^2
 df2 = @transform(df2, :col2=f.(:col1))
@@ -157,7 +157,7 @@ df2 = @transform(df2, :col2=f.(:col1))
 
 For data that is [categorical](https://juliadata.github.io/DataFrames.jl/stable/man/categorical/)
 
-```{code-cell} julia
+```{code-block} julia
 using CategoricalArrays
 id = [1, 2, 3, 4]
 y = ["old", "young", "young", "old"]
@@ -165,7 +165,7 @@ y = CategoricalArray(y)
 df = DataFrame(id = id, y = y)
 ```
 
-```{code-cell} julia
+```{code-block} julia
 levels(df.y)
 ```
 
@@ -177,43 +177,6 @@ One set of them is the [QueryVerse](https://github.com/queryverse).
 
 **Note:** The QueryVerse, in the same spirit as R's tidyverse, makes heavy use of the pipeline syntax `|>`.
 
-```{code-cell} julia
-x = 3.0
-f(x) = x^2
-g(x) = log(x)
-
-@show g(f(x))
-@show x |> f |> g; # pipes nest function calls
-```
-
-To give an example directly from the source of the LINQ inspired [Query.jl](http://www.queryverse.org/Query.jl/stable/)
-
-```{code-cell} julia
-using Query
-
-df = DataFrame(name = ["John", "Sally", "Kirk"],
-               age = [23.0, 42.0, 59.0],
-               children = [3, 5, 2])
-
-x = @from i in df begin
-    @where i.age > 50
-    @select {i.name, i.children}
-    @collect DataFrame
-end
-```
-
-While it is possible to just use the `Plots.jl` library, there are other options for displaying tabular data -- such as [VegaLite.jl](https://github.com/queryverse/VegaLite.jl).
-<!--
-```{code-cell} julia
-using RDatasets, VegaLite
-iris = dataset("datasets", "iris")
-
-iris |> @vlplot(:point,
-                x=:PetalLength,
-                y=:PetalWidth,
-                color=:Species)
-```
--->
 ## Statistics and Econometrics
 
 While Julia is not intended as a replacement for R, Stata, and similar specialty languages, it has a growing number of packages aimed at statistics and econometrics.
@@ -229,7 +192,7 @@ A few to point out
 
 To run linear regressions and similar statistics, use the [GLM](http://juliastats.github.io/GLM.jl/latest/) package.
 
-```{code-cell} julia
+```{code-block} julia
 using GLM
 
 x = randn(100)
@@ -242,28 +205,8 @@ To display the results in a useful tables for LaTeX and the REPL, use
 [RegressionTables](https://github.com/jmboehm/RegressionTables.jl/) for output
 similar to the Stata package esttab and the R package stargazer.
 
-```{code-cell} julia
+```{code-block} julia
 using RegressionTables
 regtable(ols)
 # regtable(ols,  renderSettings = latexOutput()) # for LaTex output
 ```
-
-### Fixed Effects
-
-While Julia may be overkill for estimating a simple linear regression,
-fixed-effects estimation with dummies for multiple variables are much more computationally intensive.
-
-For a 2-way fixed-effect, taking the example directly from the documentation using [cigarette consumption data](https://github.com/johnmyleswhite/RDatasets.jl/blob/master/doc/plm/rst/Cigar.rst)
-
-```{code-cell} julia
-using FixedEffectModels
-cigar = dataset("plm", "Cigar")
-cigar.StateCategorical = categorical(cigar.State)
-cigar.YearCategorical = categorical(cigar.Year)
-fixedeffectresults = reg(cigar,
-                         @formula(Sales~NDI + fe(StateCategorical) +
-                                        fe(YearCategorical)),
-                         weights = :Pop, Vcov.cluster(:State))
-regtable(fixedeffectresults)
-```
-

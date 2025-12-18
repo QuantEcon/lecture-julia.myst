@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (odu)=
@@ -160,8 +160,8 @@ using Test # At the head of every lecture.
 ```
 
 ```{code-cell} julia
-using LinearAlgebra, Statistics
-using Distributions, LaTeXStrings, Plots, QuantEcon, Interpolations
+using LinearAlgebra, Statistics, SpecialFunctions
+using Distributions, LaTeXStrings, Plots, Interpolations, FastGaussQuadrature, NLsolve
 
 w_max = 2
 x = range(0, w_max, length = 200)
@@ -209,7 +209,13 @@ The code is as follows.
 
 (odu_vfi_code)=
 ```{code-cell} julia
-# use key word argment
+function gauss_jacobi_dist(F::Beta, N)
+    s, wj = FastGaussQuadrature.gaussjacobi(N, F.β - 1, F.α - 1)
+    x = (s .+ 1) ./ 2
+    C = 2.0^(-(F.α + F.β - 1.0)) / SpecialFunctions.beta(F.α, F.β)
+    return x, C .* wj
+end
+
 function SearchProblem(; beta = 0.95, c = 0.6, F_a = 1, F_b = 1,
                        G_a = 3, G_b = 1.2, w_max = 2.0,
                        w_grid_size = 40, pi_grid_size = 40)
@@ -226,7 +232,9 @@ function SearchProblem(; beta = 0.95, c = 0.6, F_a = 1, F_b = 1,
     w_grid = range(0, w_max, length = w_grid_size)
     pi_grid = range(pi_min, pi_max, length = pi_grid_size)
 
-    nodes, weights = qnwlege(21, 0.0, w_max)
+    nodes, weights = gauss_jacobi_dist(F, 21)  # or G; both share support [0, w_max]
+    nodes .*= w_max
+    weights .*= w_max
 
     return (; beta, c, F, G, f,
             g, n_w = w_grid_size, w_max,
@@ -251,21 +259,15 @@ function T!(sp, v, out;
     vf = extrapolate(interpolate((sp.w_grid, sp.pi_grid), v,
                                  Gridded(Linear())), Flat())
 
-    # set up quadrature nodes/weights
-    # q_nodes, q_weights = qnwlege(21, 0.0, sp.w_max)
-
     for (w_i, w) in enumerate(sp.w_grid)
         # calculate v1
         v1 = w / (1 - beta)
 
         for (pi_j, _pi) in enumerate(sp.pi_grid)
-            # calculate v2
-            function integrand(m)
-                [vf(m[i], q.(Ref(sp), m[i], _pi)) *
-                 (_pi * f(m[i]) + (1 - _pi) * g(m[i])) for i in 1:length(m)]
-            end
-            integral = do_quad(integrand, nodes, weights)
-            # integral = do_quad(integrand, q_nodes, q_weights)
+            vals = vf.(nodes, q.(Ref(sp), nodes, _pi))
+            density = _pi * f.(nodes) + (1 - _pi) * g.(nodes)
+            integral = dot(weights, vals .* density)
+
             v2 = c + beta * integral
 
             # return policy if asked for, otherwise return max of values
@@ -294,14 +296,13 @@ function res_wage_operator!(sp, phi, out)
     phi_f = LinearInterpolation(sp.pi_grid, phi, extrapolation_bc = Line())
 
     # set up quadrature nodes/weights
-    q_nodes, q_weights = qnwlege(7, 0.0, sp.w_max)
+    q_nodes, q_weights = sp.quad_nodes, sp.quad_weights
 
     for (i, _pi) in enumerate(sp.pi_grid)
-        function integrand(x)
-            max.(x, phi_f.(q.(Ref(sp), x, _pi))) .*
-            (_pi * f(x) + (1 - _pi) * g(x))
-        end
-        integral = do_quad(integrand, q_nodes, q_weights)
+        vals = max.(q_nodes, phi_f.(q.(Ref(sp), q_nodes, _pi)))
+        density = _pi * f.(q_nodes) + (1 - _pi) * g.(q_nodes)
+        integral = dot(q_weights, vals .* density)
+
         out[i] = (1 - beta) * c + beta * integral
     end
 end
@@ -331,7 +332,7 @@ Here's the value function:
 sp = SearchProblem(; w_grid_size = 100, pi_grid_size = 100)
 v_init = fill(sp.c / (1 - sp.beta), sp.n_w, sp.n_pi)
 f(x) = T(sp, x)
-v = compute_fixed_point(f, v_init)
+v = fixedpoint(v -> T(sp, v), v_init).zero
 policy = get_greedy(sp, v)
 
 # Make functions for the linear interpolants of these
@@ -561,7 +562,7 @@ sp = SearchProblem(pi_grid_size = 50)
 
 phi_init = ones(sp.n_pi)
 f_ex1(x) = res_wage_operator(sp, x)
-w_bar = compute_fixed_point(f_ex1, phi_init)
+w_bar = fixedpoint(f_ex1, phi_init).zero
 
 plot(sp.pi_grid, w_bar, linewidth = 2, color = :black,
      fillrange = 0, fillalpha = 0.15, fillcolor = :blue)
@@ -592,7 +593,7 @@ Random.seed!(42)
 sp = SearchProblem(pi_grid_size = 50, F_a = 1, F_b = 1)
 phi_init = ones(sp.n_pi)
 g(x) = res_wage_operator(sp, x)
-w_bar_vals = compute_fixed_point(g, phi_init)
+w_bar_vals = fixedpoint(g, phi_init).zero
 w_bar = extrapolate(interpolate((sp.pi_grid,), w_bar_vals,
                                 Gridded(Linear())), Flat())
 
@@ -655,4 +656,3 @@ end
 plot(unempl_rate, linewidth = 2, label = "unemployment rate")
 vline!([change_date], color = :red, label = "")
 ```
-

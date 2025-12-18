@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (getting_started)=
@@ -34,6 +34,23 @@ It is not strictly required for running the lectures, but we will strongly encou
 
 As the most popular and best-supported open-source code editor, it provides a large number of useful features and extensions.  We will begin to use it as a primary editor in the {doc}`tools lecture <../software_engineering/tools_editors>`.
 
+## TL;DR
+Julia and the lecture notebooks can be installed without Jupyter or Python:
+
+1. Install [Git](https://git-scm.com/install/)
+2. Install [VS Code](https://code.visualstudio.com/)
+3. Install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation)
+   - Windows: `winget install julia -s msstore` in a terminal
+   - Linux/Mac: `curl -fsSL https://install.julialang.org | sh` in a terminal
+4. Install the [VS Code Julia extension](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia)
+5. In VS Code, open the command palette with `<Ctrl+Shift+P>` and type `> Git: Clone` to clone the repository `https://github.com/quantecon/lecture-julia.notebooks` in a new window
+6. Start a Julia REPL in the integrated terminal with `> Julia: Start REPL` from the command palette, then enter package mode with `]` and then type `instantiate`.
+  - That process will take several minutes to download and compile all of the packages used in the lectures.
+7. Open any of the `.ipynb` files in VS Code and select the `Julia` in the `Julia 1.12 channel` challenge (i.e., not the Jupyter channels if you have them installed) when prompted to run the notebooks directly within VS Code
+
+At that point, you can directly move o the {doc}`julia by example <../getting_started_julia/julia_by_example>` lecture.
+
+
 ## A Note on Jupyter
 
 Like Python and R, and unlike products such as Matlab and Stata, there is a looser connection between Julia as a programming language and Julia as a specific development environment.
@@ -46,21 +63,6 @@ While you will eventually use other editors, there are some advantages to starti
 
 We'll discuss the workflow on these features in the [next section](julia_environment)
 
-```{admonition} Quick installation for experienced users
-If you have already installed Jupyter, Julia, and Git and have experience with these tools, you can 
-  - Get the notebooks' repositories with `git clone https://github.com/quantecon/lecture-julia.notebooks` 
-  - Open a Jupyter notebook within the downloaded notebooks
-  - Install the necessary packages in a Julia REPL with `using Pkg; Pkg.instantiate()`
-
-
-At that point, you could directly move on to the {doc}`julia by example <../getting_started_julia/julia_by_example>` lecture.
-
-However, as we strongly recommend becoming familiar with VS Code as a transition towards using more advanced tools and to support better software engineering workflows, so consider walking through the rest of these instructions.
-
-Alternatively, you can simply install Julia, VS Code, Git, and the Julia extension for VS Code and use the notebooks {ref}`directly without an installation of Python  <running_vscode_kernel>`.
-
-```
-
 For those with little to no programming experience (e.g. you have never used a loop or "if" statement) see the list of [introductory resources](intro_resources).
 
 (jl_jupyterlocal)=
@@ -68,12 +70,6 @@ For those with little to no programming experience (e.g. you have never used a l
 
 In this section, we will describe the installation of Julia and Jupyter on your desktop.
 
-
-```{tip}
-On Windows, you probably want to install the new open-source [Windows Terminal](https://github.com/microsoft/terminal).  See [here](https://aka.ms/terminal) for installation instructions, and select the option to add the explorer context menu if provided.
-
-It provides a much more modern terminal with better font support for Julia, and with better operating system integration.  For example, you can right-click on a folder in the File Explorer and choose `Open in Microsoft Terminal` to start a terminal in that location.  Rather than providing a particular shell directly, it hosts those that are available in your setup (e.g., PowerShell, Git Bash, Ubuntu Bash in WSL).
-```
 
 (install_jupyter)=
 ### Installing Jupyter
@@ -84,23 +80,25 @@ If you have not previously installed Conda or Jupyter, then
 2. If given the option for your operating system, let Conda add Python to your PATH environment variables.
 
 ```{note}
-While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.  Alternatively you can let `IJulia` install its own version of Conda by following [these instructions](https://julialang.github.io/IJulia.jl/dev/manual/running/).
+While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.  More advanced users should consider switching to the [uv](https://github.com/astral-sh/uv) package manager.
 
-Finally, there is direct support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) with **no Python installation**. See {ref}`VS Code Julia Kernel  <running_vscode_kernel>`.
+In addition, there is direct support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) with **no Python installation**. See {ref}`VS Code Julia Kernel  <running_vscode_kernel>`.
+
 ```
 
 (intro_repl)=
 ### Install Julia
-After Conda is installed, you can install Julia.
+After Jupyter is installed, you can install Julia.
 
 ```{note}
-The semi-official installation method for Windows is to use [Juliaup](https://github.com/JuliaLang/juliaup), which makes it easier to upgrade and manage concurrent Julia versions.  Support on Mac and Linux is prerelease.  See [here](https://github.com/JuliaLang/juliaup#using-juliaup) for a list of commands, such as `juliaup update` to upgrade to the latest available Julia version after installation, or ways to switch to newer Julia versions after they are released.
+The "official" installation for Julia is now [Juliaup](https://github.com/JuliaLang/juliaup), which makes it easier to upgrade and manage concurrent Julia versions.  See [here](https://github.com/JuliaLang/juliaup#using-juliaup) for a list of commands, such as `juliaup update` to upgrade to the latest available Julia version after installation, or ways to switch to newer Julia versions after they are released.
+
+**Troubleshooting:** On Mac/Linux, if you have permissions issues on the installation use `sudo curl -fsSL https://install.julialang.org | sh`.  If there are still permissions issus, [see here](https://github.com/JuliaLang/juliaup/wiki/Permission-problems-during-setup) suggests executing `sudo chown $(id -u):$(id -g) ~/.bashrc`, `sudo chown $(id -u):$(id -g) ~/.zshrc`, and `sudo chown $(id -u):$(id -g) ~/.bash_profile` then retry the installation.
 ```
 
-
 1. Download and install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation)
-    - Windows: easiest method is `winget install julia -s msstore` in a Windows terminal
-    - Linux/Mac: in a terminal use `curl -fsSL https://install.julialang.org | sh`
+    - Windows: easiest method is `winget install julia -s msstore` in a terminal
+    - Linux/Mac: in a terminal use `curl -fsSL https://install.julialang.org | sh`.  To open a terminal on macOS press `Cmd + Space` to open Spotlight, then type `Terminal`, or use the Launchpad
     - If you have previously installed Julia manually, you will need to uninstall previous versions before switching to `juliaup`.
     - Alternatively, can manually install from [download page](http://julialang.org/downloads/), accepting all default options
 
@@ -147,7 +145,7 @@ We will explore these topics in detail in the lectures on {doc}`source code cont
 First, we will install [Git](more_on_git), which has become the industry standard open-source version-control tool.  This lets you download both the files and the entire version history from a server (e.g. on GitHub) to your desktop.
 
 
-1. Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git/) and accept the default arguments.
+1. Install [Git](https://git-scm.com/install/) and accept the default arguments.
    - If you allow Git to add to your path, then you can run it with the `git` command, but we will frequently use the built-in VS Code features.
 3. (Optional) Install [VS Code](https://code.visualstudio.com/) for your platform and open it
    - On Windows, during install under `Select Additional Tasks`, choose all options that begin with `Add "Open with Code" action`. This lets you open VS Code from inside File Explorer folders directly.
@@ -254,7 +252,7 @@ Recall that you can start this directly from the [command palette](command_palet
 This process will take several minutes to download and compile all of the files used by the lectures.
 
 ```{attention}
-If the cursor is instead `(@v1.11) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
+If the cursor is instead `(@v1.12) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
 
 One benefit of using the integrated REPL is that it will set important options for launching Julia (e.g. the number of threads) and activate the local project files (i.e. the `Project.toml` file in the notebooks directory) automatically.  If you use an external REPL, you will need to set these manually.  Here you would want to run the REPL with `julia --project --threads auto`  to tell Julia to set the number of threads equal to your local machine's number of cores, and to activate the existing project.  See [here](repl_main) for more details.
 ```
@@ -538,7 +536,7 @@ To do so, click on the `Choose Kernel` or `Select Another Kernel...` which may d
    :width: 80%
    ```
 
-Choose the `Julia`  kernel, rather than the `Jupyter Kernel...` to bypass the Python Jupyter setup.  If successful, you will see the kernel name as `Julia 1.11 channel` or something similar.
+Choose the `Julia`  kernel, rather than the `Jupyter Kernel...` to bypass the Python Jupyter setup.  If successful, you will see the kernel name as `Julia 1.12 channel` or something similar.
 
 With the kernel selected, you will be able to run cells in the VS Code UI with similar features to Jupyter Lab.  For example, below shows the results of play icon next to a code cell, which will `Execute Cell` and display the results inline.
 

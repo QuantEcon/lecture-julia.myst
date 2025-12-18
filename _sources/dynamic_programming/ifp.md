@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.11
+  name: julia-1.12
 ---
 
 (ifp)=
@@ -359,7 +359,7 @@ The latter is known to converge, as described above.
 ```{index} single: Optimal Savings; Programming Implementation
 ```
 
-Here's the code for a named-tuple constructor called `ConsumerProblem` that stores primitives, as well as
+Here's the code for a named-tuple constructor called `consumer_problem` that stores primitives, as well as
 
 * a `T` function, which implements the Bellman operator $T$ specified above
 * a `K` function, which implements the Coleman operator $K$ specified above
@@ -375,8 +375,12 @@ using Test
 ```
 
 ```{code-cell} julia
-using LinearAlgebra, Statistics
-using BenchmarkTools, LaTeXStrings, Optim, Plots, QuantEcon, Random
+---
+tags: [hide-output]
+---
+using LinearAlgebra, Statistics, Interpolations, NLsolve
+using BenchmarkTools, LaTeXStrings, Optim, Plots, Random
+using Distributions
 using Optim: converged, maximum, maximizer, minimizer, iterations
 
 ```
@@ -387,7 +391,7 @@ u(x) = log(x)
 du(x) = 1 / x
 
 # model
-function ConsumerProblem(; r = 0.01,
+function consumer_problem(; r = 0.01,
                          beta = 0.96,
                          Pi = [0.6 0.4; 0.05 0.95],
                          z_vals = [0.5, 1.0],
@@ -407,8 +411,8 @@ function T!(cp, V, out; ret_policy = false)
     z_idx = 1:length(z_vals)
 
     # value function when the shock index is z_i
-    vf = interp(asset_grid, V)
-
+    vf = LinearInterpolation((asset_grid, z_idx), V;
+                             extrapolation_bc = Interpolations.Flat())
     opt_lb = 1e-8
 
     # solve for RHS of Bellman equation
@@ -444,7 +448,8 @@ function K!(cp, c, out)
     gam = R * beta
 
     # policy function when the shock index is z_i
-    cf = interp(asset_grid, c)
+    cf = LinearInterpolation((asset_grid, z_idx), c;
+                             extrapolation_bc = Interpolations.Flat())
 
     # compute lower_bound for optimization
     opt_lb = 1e-8
@@ -514,7 +519,7 @@ at its smallest value.
 
 The following details are needed to replicate the figure
 
-* The parameters are the default parameters in the definition of `consumerProblem`.
+* The parameters are the default parameters in the definition of `consumer_problem`.
 * The initial conditions are the default ones from `initialize(cp)`.
 * Both operators are iterated 80 times.
 
@@ -524,8 +529,8 @@ faster than iteration with $T$.
 In the Julia console, a comparison of the operators can be made as follows
 
 ```{code-cell} julia
-cp = ConsumerProblem()
-v, c, = initialize(cp)
+cp = consumer_problem()
+v, c = initialize(cp)
 ```
 
 ```{code-cell} julia
@@ -574,13 +579,12 @@ The following figure is a 45 degree diagram showing the law of motion for assets
 
 ```{code-cell} julia
 # solve for optimal consumption
-m = ConsumerProblem(r = 0.03, grid_max = 4)
+m = consumer_problem(r = 0.03, grid_max = 4)
 v_init, c_init = initialize(m)
 
-c = compute_fixed_point(c -> K(m, c),
-                        c_init,
-                        max_iter = 150,
-                        verbose = false)
+sol = fixedpoint(c -> K(m, c), c_init)
+c = sol.zero
+
 a = m.asset_grid
 R, z_vals = m.R, m.z_vals
 
@@ -599,8 +603,8 @@ plot!(legend = :topleft)
 tags: [remove-cell]
 ---
 @testset begin
-    @test c[3,1] ≈ 0.6425652598985643
-    @test c[end,end] ≈ 1.283999183488841
+    @test c[3,1] ≈ 0.6425652598985643 rtol = 1e-3
+    @test c[end,end] ≈ 1.283999183488841 rtol = 1e-3
 end
 ```
 
@@ -635,7 +639,7 @@ Your task is to replicate the figure
 * Parameters are as discussed above
 * The histogram in the figure used a single time series $\{a_t\}$ of length 500,000
 * Given the length of this time series, the initial condition $(a_0, z_0)$ will not matter
-* You might find it helpful to use the `MarkovChain` type from `quantecon`
+* You might find it helpful to represent the income process as a Markov chain via its transition matrix $\Pi$ and simulate state indices directly
 
 (ifp_ex4)=
 ### Exercise 4
@@ -669,7 +673,7 @@ when $r=0$ for both cases shown here.
 ### Exercise 1
 
 ```{code-cell} julia
-cp = ConsumerProblem()
+cp = consumer_problem()
 N = 80
 
 V, c = initialize(cp)
@@ -709,12 +713,11 @@ traces = []
 legends = []
 
 for r_val in r_vals
-    cp = ConsumerProblem(r = r_val)
+    cp = consumer_problem(r = r_val)
     v_init, c_init = initialize(cp)
-    c = compute_fixed_point(x -> K(cp, x),
-                            c_init,
-                            max_iter = 150,
-                            verbose = false)
+    sol = fixedpoint(x -> K(cp, x), c_init)
+    c = sol.zero
+
     traces = push!(traces, c[:, 1])
     legends = push!(legends, L"r = %$(round(r_val, digits = 3))")
 end
@@ -729,8 +732,8 @@ plot!(legend = :topleft)
 tags: [remove-cell]
 ---
 @testset begin
-    @test traces[2][5] ≈ 0.9859378883165114
-    @test traces[3][10] ≈ 1.1440806582742995
+    @test traces[2][5] ≈ 0.9859378883165114 atol = 1e-3
+    @test traces[3][10] ≈ 1.1440806582742995 atol = 1e-3
 end
 ```
 
@@ -741,13 +744,29 @@ function compute_asset_series(cp, T = 500_000; verbose = false)
     (; Pi, z_vals, R) = cp  # simplify names
     z_idx = 1:length(z_vals)
     v_init, c_init = initialize(cp)
-    c = compute_fixed_point(x -> K(cp, x), c_init,
-                            max_iter = 150, verbose = false)
 
-    cf = interp(cp.asset_grid, c)
+    sol = fixedpoint(x -> K(cp, x), c_init)
+    c = sol.zero
+
+    cf = LinearInterpolation((cp.asset_grid, z_idx), c;
+                             extrapolation_bc = Interpolations.Flat())
 
     a = zeros(T + 1)
-    z_seq = simulate(MarkovChain(Pi), T)
+    function simulate_markov_chain(P, X_0, T)
+        N = size(P, 1)
+        num_chains = length(X_0)
+        P_dist = [Categorical(P[i, :]) for i in 1:N]
+        X = zeros(Int, num_chains, T + 1)
+        X[:, 1] .= X_0
+        for t in 1:T
+            for n in 1:num_chains
+                X[n, t + 1] = rand(P_dist[X[n, t]])
+            end
+        end
+        return X
+    end
+
+    z_seq = vec(simulate_markov_chain(Pi, [1], T))
     for t in 1:T
         i_z = z_seq[t]
         a[t + 1] = R * a[t] + z_vals[i_z] - cf(a[t], i_z)
@@ -755,7 +774,7 @@ function compute_asset_series(cp, T = 500_000; verbose = false)
     return a
 end
 
-cp = ConsumerProblem(r = 0.03, grid_max = 4)
+cp = consumer_problem(r = 0.03, grid_max = 4)
 Random.seed!(42) # for reproducibility
 a = compute_asset_series(cp)
 histogram(a, nbins = 20, leg = false, normed = true, xlabel = "assets")
@@ -780,7 +799,7 @@ legends = []
 for b in [1.0, 3.0]
     asset_mean = zeros(M)
     for (i, r_val) in enumerate(r_vals)
-        cp = ConsumerProblem(r = r_val, b = b)
+        cp = consumer_problem(r = r_val, b = b)
         the_mean = mean(compute_asset_series(cp, 250_000))
         asset_mean[i] = the_mean
     end
@@ -799,9 +818,8 @@ plot!(legend = :bottomright)
 tags: [remove-cell]
 ---
 @testset begin
-    #test xs[1][10] ≈ -0.7842525469134315 atol = 1e-3
-    #test xs[2][5] ≈ -2.857179797124988 atol = 1e-3
-    #test ys[1] ≈ 0.0:0.0016666666666666668:0.04 atol = 1e-4
+    @test xs[1][10] ≈ -0.7842525469134315 atol = 1e-3
+    @test xs[2][5] ≈ -2.857179797124988 atol = 1e-3
+    @test ys[1] ≈ 0.0:0.0016666666666666668:0.04 atol = 1e-3
 end
 ```
-
