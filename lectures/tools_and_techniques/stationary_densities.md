@@ -503,7 +503,7 @@ plot!(title = t)
 tags: [remove-cell]
 ---
 @testset "First Figure Tests" begin
-    # @test laes[2].X[4] ≈ 2.606090690969538
+    # @test laes[2][4] ≈ 2.606090690969538
     @test length(ygrid) == 200 && ygrid[1] ≈ 0.01 && ygrid[end] ≈ 4.0
     # @test k[5, 5] ≈ 0.8597155601089135
 end
@@ -1002,7 +1002,7 @@ for i in 1:4
     ind = i
     for j in 1:T
         psi = laes[j]
-        laes_plot[:, ind] = lae_est(psi, ygrid)
+        laes_plot[:, ind] = lae_est(p_growth, psi, ygrid)
         colors[ind]=RGBA(0, 0, 0, 1 - (j - 1) / T)
         ind = ind + 4
     end
