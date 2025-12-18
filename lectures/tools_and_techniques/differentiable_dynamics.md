@@ -87,7 +87,7 @@ function simulate_lss!(x, y, model, x_0, w, v)
     @assert size(H, 1) == M
     @assert length(x_0) == N
 
-    # Enzyme has challenges with activity analysis on broadcasting assignments
+    @views copyto!(x[:,1], x_0)
     @inbounds for i in 1:N
         x[i, 1] = x_0[i]
     end
@@ -105,6 +105,16 @@ function simulate_lss!(x, y, model, x_0, w, v)
 
     return nothing
 end
+```
+
+```{note}
+The `copyto!` line will fail for certain combinations of `x_0` and `x` activity patterns in Enzyme.  In particular, if `Const(x_0)` with `Duplicated(x, dx)`.  It is usually innocuous to allocate a `Duplicated(x_0, dx_0)` that is unused, but you could also replace with a loop:
+```{code-block} julia
+    @inbounds for i in 1:N
+        x[i, 1] = x_0[i]
+    end
+```
+See the {doc}`auto-differentiation <../more_julia/auto_differentiation>` lecture for details.
 ```
 
 Crucially, this function modifies the preallocated `x` and `y` arrays in place without any allocations.
@@ -155,6 +165,7 @@ Forward-mode in Enzyme is convenient for impulse-style effects: for example, her
 x = zeros(N, T + 1)
 y = zeros(M, T + 1)
 dx = Enzyme.make_zero(x)
+dx_0 = Enzyme.make_zero(x_0)
 dy = Enzyme.make_zero(y)
 dw = Enzyme.make_zero(w)
 dw[1] = 1.0                         # unit perturbation to first shock
@@ -164,7 +175,7 @@ autodiff(Forward,
          Duplicated(x, dx),
          Duplicated(y, dy),
          Const(model), # leaving model fixed
-         Const(x_0), # leaving initial state fixed
+         Duplicated(x_0, dx_0), # won't perturb
          Duplicated(w, dw), # perturbing w
          Const(v))
 

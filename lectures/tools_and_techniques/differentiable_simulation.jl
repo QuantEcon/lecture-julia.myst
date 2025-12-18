@@ -25,7 +25,7 @@ function simulate_lss!(x, y, model::LSS, x_0, w, v)
     @assert y_cols == T + 1
     @assert length(x_0) == N
     
-    # Enzyme has challenges with activity analysis on broadcasting assignments
+    # Enzyme can't handle broadcasting on assignments if activity of x_0 and x mismatch
     @inbounds for i in 1:N
         x[i, 1] = x_0[i]
     end

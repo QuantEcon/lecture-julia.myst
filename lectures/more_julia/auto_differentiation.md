@@ -418,7 +418,7 @@ f(x) = [(1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2;
 
 See [here](https://enzymead.github.io/Enzyme.jl/dev/#Hessian-Vector-Product-Convenience-functions) for more examples such as Hessian-vector products.
 
-### Simple Forward Mode
+### Forward Mode
 Forward mode propagates derivatives alongside the primal calculation. It is ideal for low-dimensional inputs.
 
 ```{code-cell} julia
