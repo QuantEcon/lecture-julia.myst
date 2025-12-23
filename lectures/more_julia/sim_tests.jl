@@ -1,6 +1,9 @@
-using LinearAlgebra, Random, Test, Enzyme, Statistics
-using BenchmarkTools
-using EnzymeTestUtils
+using LinearAlgebra, Random, Test, Enzyme, Statistics, EnzymeTestUtils, BenchmarkTools
+
+# Note on inline:
+# Sometimes a little speed, but a lot of it is to help the AD system reason, especially
+# when using composite types like the model in `p`.  The challenge is that
+# otherwise it has trouble with having parts of `p` be Const and parts Duplicated.
 
 # =============================================================================
 # Generic state-space model simulator (in-place)
@@ -113,21 +116,22 @@ end
 # Model parameters and initial conditions
 # =============================================================================
 
-N = 20
-M = 10
-K = 5
-L = 3
-T = 500
+N = 5
+M = 2
+K = 2
+L = 2
+T = 100
 
-A = rand(N, N)
-C = 0.1 .* randn(N, K)
+A = rand(N, N) .- 0.5
+println("Spectral radius of A: ", maximum(abs, eigvals(A)))
+C = 0.1 .* rand(N, K)
 G = rand(M, N)
-H = 0.05 .* randn(M, L)
+H = 0.05 .* rand(M, L)
 model = (; A, C, G, H)
 
-x_0 = randn(N)
-w = randn(K, T)
-v = randn(L, T + 1)
+x_0 = rand(N)
+w = rand(K, T)
+v = rand(L, T + 1)
 
 # =============================================================================
 # Consistency tests
@@ -211,6 +215,9 @@ function scalar_ssm(x, y, f!, g!, x_0, w, v, p)
     simulate_ssm!(x, y, f!, g!, x_0, w, v, p)
     return mean(x) + mean(y)
 end
+
+scalar_lss(x, y, model, x_0, w, v)
+scalar_ssm(x, y, f_lss!, g_lss!, x_0, w, v, model)
 
 # Reverse-mode AD test functions
 function test_ADrev_lss(x, y, model, x_0, w, v, dx, dy, dx_0, dw)
@@ -333,6 +340,3 @@ println("Reverse AD: ssm")
 @btime test_ADrev_ssm($x, $y, $model, $x_0, $w, $v, $dx, $dy, $dx_0_rev, $dw);
 println("Reverse AD: ssm_oop")
 @btime test_ADrev_oop($x_oop, $y_oop, $model, $x_0, $w, $v, $dx_oop, $dy_oop, $dx0_oop, $dw_oop);
-
-# Reverse-mode gradient computed over N + K*T = $(N) + $(K)*$(T) = $(N + K*T) parameters
-# (x_0 has N elements, w has K*T elements)
