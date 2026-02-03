@@ -87,7 +87,7 @@ function simulate_lss!(x, y, model, x_0, w, v)
     @assert size(H, 1) == M
     @assert length(x_0) == N
 
-    @views copyto!(x[:,1], x_0)
+    # Enzyme has challenges with activity analysis on copyto!/broadcasting assignments
     @inbounds for i in 1:N
         x[i, 1] = x_0[i]
     end
@@ -108,13 +108,7 @@ end
 ```
 
 ```{note}
-The `copyto!` line will fail for certain combinations of `x_0` and `x` activity patterns in Enzyme.  In particular, if `Const(x_0)` with `Duplicated(x, dx)`.  It is usually innocuous to allocate a `Duplicated(x_0, dx_0)` that is unused, but you could also replace with a loop:
-```{code-block} julia
-    @inbounds for i in 1:N
-        x[i, 1] = x_0[i]
-    end
-```
-See the {doc}`auto-differentiation <../more_julia/auto_differentiation>` lecture for details.
+We use a manual loop instead of `copyto!` or broadcasting for the initial condition assignment because Enzyme has challenges with activity analysis on these operations. When `x_0` is `Const` but `x` is `Duplicated`, `copyto!` triggers a "Detected potential need for runtime activity" error. The explicit loop avoids this issue. See the {doc}`auto-differentiation <../more_julia/auto_differentiation>` lecture for details.
 ```
 
 Crucially, this function modifies the preallocated `x` and `y` arrays in place without any allocations.
