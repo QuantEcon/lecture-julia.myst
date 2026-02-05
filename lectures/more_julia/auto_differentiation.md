@@ -278,7 +278,7 @@ Enzyme-friendly code looks like ordinary Julia with a few discipline rules: muta
 
 In general, these practices also lead to very high-performance Julia code, so making code Enzyme-differentiable and high-performance often go hand-in-hand. However, these tend to be more advanced patterns than an introductory Julia user might be used to.
 
-A common pattern is `f!(out, inputs..., cache)` where `cache` holds temporary work arrays passed last.
+A common pattern is `f!(out, inputs..., params, cache)` where `params` holds model parameters (often as a named tuple) and `cache` holds temporary work arrays passed last.
 
 In many cases the biggest change is to use in-place linear algebra, many of which have corresponding highly optimized BLAS/LAPACK routines. For example:
 - `mul!(y, A, x)` implements the out-of-place math `y = A * x` without allocating
@@ -296,7 +296,10 @@ function step!(x_next, x, A, cache)
         # loops are encouraged, but be careful to avoid temp allocations
         cache.tmp[i] += 0.1 * i
     end
-    copy!(x_next, cache.tmp) # x_next = cache.tmp
+    # Enzyme can have activity analysis issues with copy!/copyto!
+    @inbounds for i in eachindex(cache.tmp)
+        x_next[i] = cache.tmp[i]
+    end
     return nothing
 end
 
@@ -337,6 +340,37 @@ Outside of a notebook environment, such as in the REPL, you can use `@allocated 
 
 The same patterns apply to more complex routines: keep buffers explicit, avoid temporary slices, and rely on in-place linear algebra to minimize allocations that can break reverse-mode AD.
 
+### Activity Analysis Pitfalls
+
+Enzyme performs static activity analysis to determine which values affect derivatives. Some operations confuse this analysis.
+
+#### The "Runtime Activity" Error
+You may encounter: "Detected potential need for runtime activity."
+
+This occurs when Enzyme cannot statically determine if memory is constant or active (differentiable). Common triggers:
+- `copyto!` or `copy!` between arrays with mixed activity (e.g., `Const` source to `Duplicated` destination)
+- Broadcasting assignments like `x[:, 1] .= x_0`
+- Closures capturing mutable state
+
+**Never** fix this by enabling runtime activity flags (e.g., `set_runtime_activity(Reverse)`). This masks the issue and can produce incorrect gradients. Always restructure your code.
+
+#### The Manual Loop Workaround
+Replace problematic assignments with explicit loops:
+
+```{code-block} julia
+# Instead of: copyto!(x[:, 1], x_0) or x[:, 1] .= x_0
+# Use:
+@inbounds for i in eachindex(x_0)
+    x[i, 1] = x_0[i]
+end
+```
+
+Enzyme handles explicit loops reliably because each scalar assignment has clear activity.
+
+#### General Tips
+- Keep array operations explicit when mixing `Const` and `Duplicated` arguments
+- Test with `EnzymeTestUtils.test_reverse` / `test_forward` to verify correctness
+- When in doubt, use a loop—Enzyme differentiates through loops efficiently
 
 ### Core Concepts & Terminology
 
@@ -418,8 +452,10 @@ f(x) = [(1.0 - x[1])^2 + 100.0 * (x[2] - x[1]^2)^2;
 
 See [here](https://enzymead.github.io/Enzyme.jl/dev/#Hessian-Vector-Product-Convenience-functions) for more examples such as Hessian-vector products.
 
-### Simple Forward Mode
+### Forward Mode
 Forward mode propagates derivatives alongside the primal calculation. It is ideal for low-dimensional inputs.
+
+**Key difference from Reverse mode:** In Forward mode, `dx` is the **input tangent** (seed direction), and the derivative is **returned**. In Reverse mode, gradients are **accumulated into** `dx`.
 
 ```{code-cell} julia
 using Enzyme, LinearAlgebra
@@ -429,18 +465,17 @@ f(x, y) = sum(x .* y)
 x = [1.0, 2.0, 3.0]
 y = [0.5, 1.0, 1.5]
 
-# We want ∂f/∂x (holding y constant).
-# 1. Create Shadow for x (seed with 1.0s to get full gradient)
+# Forward mode: dx is the INPUT tangent (seed), derivative is RETURNED
+# Seed with ones to get directional derivative in direction of all-ones
 dx = ones(size(x))
 
-# 2. Call autodiff with respect to x
-# Note: y is Const, x is Duplicated (Array)
-autodiff(Forward, f, Duplicated(x, dx), Const(y))
+# autodiff returns the derivative for scalar-valued functions
+result = autodiff(Forward, f, Duplicated(x, dx), Const(y))
 
-# Result: Returns nothing (void), but the function executed.
-print("∂f/∂x = ", dx)
+# result contains the directional derivative: ∂f/∂x · dx = sum(y .* dx) = 3.0
+@show result
 ```
-Note that in Forward mode for scalar outputs, you often examine the return value. However, for array inputs, Enzyme conventions typically focus on Reverse mode.
+For scalar outputs, Forward mode returns the directional derivative $\nabla f \cdot dx$. To get individual partial derivatives, you would need multiple passes with different seed vectors (e.g., unit vectors), which is why Reverse mode is preferred for gradients of scalar-valued functions with many inputs.
 
 
 ### Reverse Mode
