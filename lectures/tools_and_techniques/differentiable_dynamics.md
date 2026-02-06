@@ -218,14 +218,16 @@ end
 Finally, for complicated functions such as simulations, we cannot
 assume that Enzyme (or any AD system) will necessarily be correct.
 
-To aid in this, the `EnzymeTestUtils` provides utilities for this purpose which automatically check against finite-difference approximations using the appropriate seeding.
+To aid in this, `EnzymeTestUtils` provides utilities which automatically check AD against finite-difference approximations using the appropriate seeding.
 
-When using in-place functions mutating the arguments `test_forward` requires that you pass any mutated arguments as output of the function itself, which can be done by a small wrapper.
+`test_forward` validates forward-mode tangents. However, it computes finite-difference Jacobian-vector products **only on the function's return value**. If the function returns `nothing` (as most mutating `f!(out, x)` functions do), the check is vacuous because there is nothing to compare. The [`test_forward` docstring](https://github.com/EnzymeAD/Enzyme.jl/blob/main/lib/EnzymeTestUtils/src/test_forward.jl) states this explicitly: *"If [the function] mutates one of its arguments, it must return that argument."*
+
+A small wrapper achieves this.
 
 ```{code-cell} julia
 function test_forward_simulate_lss!(x, y, model, x_0, w, v)
     simulate_lss!(x, y, model, x_0, w, v)
-    return x, y
+    return x, y  # return mutated arrays so test_forward can check their tangents
 end
 test_forward(test_forward_simulate_lss!,
              Duplicated,
@@ -237,7 +239,7 @@ test_forward(test_forward_simulate_lss!,
              (v, Const))
 ```
 
-Unlike `test_forward`, the automatic checks on reverse-mode AD with `test_reverse` require a scalar output, which we discuss below in the calibration section.
+`test_reverse` does **not** have this limitation: internally it [wraps the function](https://github.com/EnzymeAD/Enzyme.jl/blob/main/lib/EnzymeTestUtils/src/finite_difference_calls.jl) to automatically include mutated arguments in the finite-difference output, so mutations are always checked. It does require a scalar return value, which we demonstrate below in the calibration section.
 
 ### Differentiating Functions of Simulation
 
@@ -279,6 +281,8 @@ autodiff(Reverse,
 
 dw_rev # sensitivity wrt evolution shock
 ```
+
+Note that `x_rev` and `y_rev` are marked `Duplicated` because Enzyme must propagate derivatives through these mutated buffers to reach `w` and `v`. However, after the call we only read `dw_rev` and `dv_rev` — the accumulated shadows `dx_rev` and `dy_rev` are unused. In such cases you can use `DuplicatedNoNeed` instead of `Duplicated` to signal that the shadow does not need to be preserved, which may allow Enzyme to skip unnecessary accumulation and improve performance.
 
 These examples mirror the larger workflow: write allocation-free, in-place simulations, seed tangents with `Duplicated`, and use forward or reverse mode depending on whether you want many outputs per input (forward) or many inputs to one scalar (reverse).
 
@@ -327,7 +331,7 @@ Reverse-mode in particular can be useful for calibration with simulated dynamics
 For example, consider if the our $A$ matrix was parameterized by a scalar $a$ in its upper left corner, and we wanted to calibrate $a$ so that the time average of the first observation matched a target value $y^* = 0$.
 
 
-For some technical reasons discussed below, we rewrite the simulation to take the model parameters individually rather than as a named tuple. A version that works with the original function is given below.
+Due to a [mixed activity](https://enzyme.mit.edu/julia/dev/faq/) issue discussed below, we first show a version that passes the model matrices individually rather than as a named tuple. A version that works with the original function using a `copy()` workaround is given afterwards.
 
 ```{code-cell} julia
 function simulate_lss!(x, y, A, C, G, H, x_0, w, v)
@@ -384,13 +388,12 @@ end
 ```
 
 
-There are a few tricks to note here, which work around challenges with using Enzyme in its current state.
+There are a few things to note here.
 
-- With the SciML packages, such as [Optimization.jl](https://github.com/SciML/Optimization.jl), the `AutoEnzyme()` automatically determines which variables to mark as `Active` following certain patterns
-- In particular, `p` holds parameters assumed to be constant during optimization, while `u` holds the optimization variables.
-- Enzyme generally avoids allocations, but allocation is necessary here since we need to create a new model with the appropriate `a` value.
-- For the buffers, note the use of `eltype(A)` to ensure the correct type, since the `A` matrix itself will be differentiable.
-
+- With the SciML packages, such as [Optimization.jl](https://github.com/SciML/Optimization.jl), `AutoEnzyme()` automatically determines which variables to mark as `Active` following certain patterns. In particular, `p` holds parameters assumed to be constant during optimization (`Const`), while `u` holds the optimization variables (`Active`).
+- Enzyme generally avoids allocations, but allocation is necessary here since we need to create a new `A` matrix from the current value of `a`.
+- For the buffers, note the use of `eltype(A)` to ensure the correct type, since `A` itself will be differentiable.
+- By passing `A`, `C`, `G`, `H` as separate arguments, each gets its own activity annotation. This sidesteps the **mixed activity** problem that would occur if we bundled them into a single named tuple (see [below](mixed-activity-section) and the [Enzyme FAQ](https://enzyme.mit.edu/julia/dev/faq/)).
 
 Using this setup, we can create the `p` parameter named tuple, none of which will be differentiable, and then use the LBFGS optimizer in OptimizationOptimJL to find the optimal `a` value.
 
@@ -414,7 +417,12 @@ sol = solve(prob, OptimizationOptimJL.LBFGS())
 println("Final a=$(sol.u[1]), Loss: $(loss(sol.u, p))")
 ```
 
-### Calibration with More Complicated Types
+(mixed-activity-section)=
+### Calibration with Mixed Activity Types
+
+Enzyme's compile-time **activity analysis** determines which values are *active* (participate in differentiation) versus *inactive* (constant). When a composite type such as a named tuple or struct has fields that trace back to both active and constant data, Enzyme encounters a **mixed activity** problem — it cannot assign a single activity to the container. See the [Enzyme FAQ on mixed activity](https://enzyme.mit.edu/julia/dev/faq/) and [this issue](https://github.com/EnzymeAD/Enzyme.jl/issues/1316) for details.
+
+In our case, `A` is active (it depends on the optimization variable `u`) while `C`, `G`, `H` are constant (they come from `p`, which is `Const`). Bundling them into `(; A, C, G, H)` directly would create a named tuple with mixed activity. One workaround is to `copy()` the constant matrices into fresh local arrays before building the tuple. From Enzyme's perspective, all fields then originate from local allocations within the function body, making the activity analysis straightforward.
 
 ```{code-cell} julia
 
@@ -425,11 +433,10 @@ function loss_2(u, p)
     T = size(w, 2)
     a = u[1]
 
-    A = parameterized_A(a) # A is Active (depends on u)
+    A = parameterized_A(a) # A is active (depends on u)
 
-    # Trick: "Launder" the constants by copying them.
-    # Creates new locals which Enzyme sees these as "Local Active Variables"
-    # Now build the struct with homogeneous (all local) variables
+    # Workaround for mixed activity: copy constant matrices so all fields
+    # are local variables, giving Enzyme a uniform activity for the tuple.
     model = (; A, C = copy(C), G = copy(G), H = copy(H))
 
     # Allocate buffers and simulate
@@ -442,9 +449,7 @@ function loss_2(u, p)
 end
 ```
 
-This version uses our original `simulate_lss!` function, which takes a named tuple for the model parameters. Note that it contains a trick where the constant parameters `C`, `G`, and `H` are "laundered" by copying them into new local variables before building the named tuple. This ensures that Enzyme can properly analyze which variables are active versus constant when creating the named tuple.
-
-The `simulate_lss!` approach that splits out the `A` matrix might be more efficient for large $C, G, H$ since it avoids the copies, but it may not matter in practice.
+The previous version that splits the matrices into separate arguments avoids the mixed activity issue entirely and is more efficient for large `C`, `G`, `H` since it avoids the copies — but the difference may not matter in practice.
 
 The other code is identical with this new loss.
 
