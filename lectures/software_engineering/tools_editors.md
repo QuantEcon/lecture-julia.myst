@@ -449,7 +449,12 @@ on:
 jobs:
   review:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
     steps:
+      - uses: actions/checkout@v4
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -457,7 +462,7 @@ jobs:
           claude_args: "--max-turns 5"
 ```
 
-See the [Claude Code GitHub Actions documentation](https://code.claude.com/docs/en/github-actions) and the [action repository](https://github.com/anthropics/claude-code-action) for the full set of configuration options, including use with AWS Bedrock and Google Vertex AI.
+See the [Claude Code GitHub Actions documentation](https://docs.anthropic.com/en/docs/claude-code/github-actions) and the [action repository](https://github.com/anthropics/claude-code-action) for the full set of configuration options, including use with AWS Bedrock and Google Vertex AI.
 
 (vscode_latex)=
 ## VS Code as a LaTeX Editor
