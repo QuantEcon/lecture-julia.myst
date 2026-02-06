@@ -378,6 +378,92 @@ With this setup, you only edit `AGENTS.md` and all other tools read the same con
 **Windows users**: Symlinks require extra setup.  Enable Developer Mode (Settings → Privacy & security → For developers → toggle "Developer Mode" on), then configure Git with `git config --global core.symlinks true`.  You must clone the repository fresh after enabling these settings for symlinks to work correctly.
 ```
 
+(claude_github_actions)=
+### Using Claude for Code Review with GitHub Actions
+
+Beyond using LLMs inside your editor, you can integrate Claude directly into your GitHub workflow so that it automatically reviews pull requests, responds to questions in issues, and even implements changes — all triggered by mentioning `@claude` in a comment.
+
+This is powered by [Claude Code GitHub Actions](https://github.com/anthropics/claude-code-action), an official GitHub Action maintained by Anthropic.  Once installed, any collaborator can tag `@claude` in a PR comment or issue and receive an AI-powered response that follows your project's `CLAUDE.md` guidelines.
+
+#### Quick Setup
+
+The fastest way to set up the action is from the Claude Code CLI:
+
+```{code-block} bash
+claude            # start Claude Code
+/install-github-app   # guided installer
+```
+
+This command walks you through installing the [Claude GitHub app](https://github.com/apps/claude), adding your `ANTHROPIC_API_KEY` as a repository secret, and creating the workflow file.
+
+```{note}
+You must be a **repository admin** to install the GitHub app and add secrets.  The app requests read & write permissions for Contents, Issues, and Pull requests.
+```
+
+#### Manual Setup
+
+If you prefer to configure things yourself:
+
+1. Install the Claude GitHub app at [github.com/apps/claude](https://github.com/apps/claude) and grant it access to your repository.
+2. Add your `ANTHROPIC_API_KEY` to the repository secrets (Settings → Secrets and variables → Actions).
+3. Create a workflow file at `.github/workflows/claude.yml`:
+
+```{code-block} yaml
+name: Claude Code
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+
+With this workflow in place, mentioning `@claude` in any PR or issue comment triggers the action.  For example:
+
+```{code-block} none
+@claude review this PR for correctness and style
+@claude how should I handle the edge case in this function?
+@claude fix the type instability in the inner loop
+```
+
+#### Automated Review on Every PR
+
+You can also configure Claude to review every pull request automatically, without needing an `@claude` mention:
+
+```{code-block} yaml
+name: Code Review
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: "/review"
+          claude_args: "--max-turns 5"
+```
+
+See the [Claude Code GitHub Actions documentation](https://docs.anthropic.com/en/docs/claude-code/github-actions) and the [action repository](https://github.com/anthropics/claude-code-action) for the full set of configuration options, including use with AWS Bedrock and Google Vertex AI.
+
 (vscode_latex)=
 ## VS Code as a LaTeX Editor
 
