@@ -64,17 +64,19 @@ using Test
 
 The best coding strategy for numerical algorithms depends on the size of the problem. Different array types and mutation patterns are appropriate at different scales.
 
-For large vectors and matrices, allocation of intermediate arrays can be a major bottleneck. In these cases, we want to write **in-place code** that mutates pre-allocated buffers to achieve zero allocations and maximum performance -- see {ref}`in-place-functions` for background. Writing zero-allocation code is also essential in practice for compatibility with reverse-mode AD tools such as Enzyme.
+For large vectors and matrices, allocation of intermediate arrays can be a major bottleneck. In these cases, we want to write **in-place code** that mutates pre-allocated buffers to achieve zero allocations and maximum performance -- see {ref}`in-place-functions` for background. Writing zero-allocation code is also essential in practice for compatibility with Enzyme.
 
-For small fixed-size problems, `StaticArrays` (stack-allocated, no heap) can be dramatically faster than standard `Vector`/`Matrix`. The [rule of thumb](https://juliaarrays.github.io/StaticArrays.jl/stable/) is that StaticArrays are beneficial when the **total number of elements** is under about 100 -- so an `SVector{10}` or an `SMatrix{3,3}` (64 elements) are good candidates, while an `SMatrix{20,20}` (400 elements) is not. The biggest wins (10x--100x) come at very small sizes (under ~20 elements); beyond 100 elements, compilation costs explode and the stack/register advantages disappear.
+For small fixed-size problems, `StaticArrays` (stack-allocated, no heap) can be dramatically faster than standard `Vector`/`Matrix`. The [rule of thumb](https://juliaarrays.github.io/StaticArrays.jl/stable/) is that StaticArrays are beneficial when the **total number of elements** is under about 100 -- so an `SVector{10}` or an `SMatrix{3,3}` are good candidates, while an `SMatrix{20,20}` (400 elements) is not. The biggest wins (10x--100x) come at very small sizes (under ~20 elements); beyond 100 elements, compilation costs explode and the stack/register advantages disappear.
 
 The challenge is that these two approaches seem incompatible: standard in-place operations (`mul!`, `ldiv!`, `copyto!`) only work with mutable arrays, while StaticArrays are immutable and require returning new values. Ideally, we want to write a **single algorithm** that works with both array types -- choosing the optimal strategy for each problem size without duplicating code.
 
 ### The `!!` Convention
 
+One approach is a pattern called the "bang-bang" convention.
+
 A function `f!!` **always returns its result** and **tries to mutate in-place when possible**.
 
-It checks if a type can be modified directly with `ismutable(Y)`.  For example, if mutable, call `mul!(Y, A, B)` and return `Y`; if immutable, return `A * B`.
+It checks if a type can be modified directly with `ismutable(Y)` and then modifies in place if possible.  For example, if mutable it might call `mul!(Y, A, B)` and return `Y`; if immutable it would simply return `A * B`.
 
 This makes the natural data structure **arrays of arrays** (e.g., `Vector{SVector{N}}`) rather than 2D matrices, since each element can be either mutable or immutable.
 
@@ -145,7 +147,7 @@ end
 end
 ```
 
-`assign!!` is the safer choice for code differentiated with Enzyme; `copyto!!` delegates to `Base.copyto!`, which can trigger runtime activity analysis errors in some contexts.
+`assign!!` in this pattern helps to avoid `copyto!!` since Enzyme can have issues with runtime activity analysis errors when overwriting an initial condition in an output buffer.
 
 ### Prototype-Based Allocation
 
@@ -269,6 +271,20 @@ time = 0:T
 plot(time, [x[t][1] for t in 1:(T + 1)], lw = 2, label = "x₁",
      xlabel = "t", ylabel = "state", title = "State Paths")
 plot!(time, [x[t][2] for t in 1:(T + 1)], lw = 2, label = "x₂")
+```
+
+### RecursiveArrayTools.jl
+
+With this pattern, accessing and slicing arrays of arrays can be burdensome.
+
+One package that makes this clearer is to use `RecursiveArrayTools.jl` to wrap the arrays in a `RecursiveArray` type, which provides convenient indexing and slicing while preserving the underlying array types.
+
+```{code-cell} julia
+x_arr = VectorOfArray(x)
+y_arr = VectorOfArray(y)
+
+@show x_arr[:,1], x_arr[1,1]
+@show x_arr[1, 5:10];
 ```
 
 ### Running with StaticArrays
