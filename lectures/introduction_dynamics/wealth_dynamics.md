@@ -197,6 +197,7 @@ plot!(a_vals, ginis_theoretical, label = "theoretical gini coefficient")
 
 The simulation shows that the fit is good.
 
+(in-place-functions)=
 ### In-place Functions, Preallocation, and Performance
 
 When working with large vectors and matrices, a performance advantage of Julia is its ability to manage allocations and perform in-place operations.
