@@ -47,7 +47,7 @@ The code in this section is significantly more advanced than some of the other l
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Random, Plots, Test, Enzyme, Statistics
+using LinearAlgebra, Random, Plots, Test, Enzyme, Statistics, RecursiveArrayTools
 using BenchmarkTools, EnzymeTestUtils, StaticArrays
 ```
 
@@ -198,7 +198,7 @@ $$
 
 where $f$ and $g$ can be **arbitrary nonlinear functions**, but the observation noise is assumed **additive Gaussian** with $v_t \sim N(0, I)$.
 
-To implement this for both static and preallocated arrays, the state transition callback `f!!(x_next, x, w, p, t)` implements the full $f(\cdot)$ (including process noise), while the observation callback `g!!(y, x, p, t)` implements only the noiseless $g(\cdot)$. The simulator adds the Gaussian observation noise $Hv_t$ separately via `muladd!!`. Both callbacks follow the `!!` convention -- they attempt to mutate the first argument in-place but always return the result. Passing `H = nothing` drops the observation noise entirely thanks to the no-op specializations above.
+To implement this for both static and preallocated arrays, the state transition callback `f!!(x_next, x, w, p, t)` implements the full $f(\cdot)$ (including process noise), while the observation callback `g!!(y, x, p, t)` implements only deterministic component $g(\cdot)$. The simulator adds the Gaussian observation noise $H v_t$ separately via `muladd!!`. Both callbacks follow the `!!` convention -- they attempt to mutate the first argument in-place but always return the result. Passing `H = nothing` drops the observation noise entirely thanks to the no-op specializations above.
 
 ```{code-cell} julia
 @inline function simulate_ssm!(x, y, f!!, g!!, x_0, w, v, H, p)
