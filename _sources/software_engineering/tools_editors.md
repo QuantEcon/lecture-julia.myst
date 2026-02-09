@@ -319,11 +319,12 @@ While not required for these lectures, consider installing the following extensi
 2. [GitHub Pull Requests and Issues](https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github): while VS Code supports the git {doc}`version control <../software_engineering/version_control>` natively, these extension provides additional features for working with repositories on GitHub itself.
 3. [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot): AI-assisted code completion.  See [GitHub Education Pack](https://education.github.com/pack) for free access if you are a student or educator.
 4. [OpenAI Codex](https://marketplace.visualstudio.com/items?itemName=openai.chatgpt): official ChatGPT-powered coding agent for VS Code.  Works best if you already have ChatGPT Plus/Pro (or higher) and provides Copilot-like chat, edits, and inline help inside the editor.
+5. [Claude Code](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code): Anthropic's agentic coding tool that can edit files, run commands, and search your codebase.  Available as a VS Code extension.  See the [Claude Code documentation](https://docs.anthropic.com/en/docs/claude-code) for setup and usage.
 
 (llm_instructions)=
 ## Using LLMs with VS Code
 
-GitHub Copilot, Google Gemini Code Assist, and OpenAI Codex can provide completions, refactors, and documentation suggestions directly in VS Code.
+GitHub Copilot, Google Gemini Code Assist, OpenAI Codex, and Claude Code can provide completions, refactors, and documentation suggestions directly in VS Code.
 
 For consistent answers across a project you can add short "instructions" files that the assistants read to understand your style and constraints:
 
@@ -332,8 +333,9 @@ For consistent answers across a project you can add short "instructions" files t
   - **VS Code**: Install the [Gemini Code Assist](https://cloud.google.com/code/docs/vscode/install) extension (part of Google Cloud Code). While Gemini does not yet auto-ingest a hidden config file, the convention is to place a `GEMINI.md` in your repo root and explicitly reference it (e.g., keep it open or `@mention` it) at the start of a session.
   - **CLI**: You can use the [Google Cloud CLI](https://cloud.google.com/sdk/gcloud/reference/gemini) (`gcloud gemini ...`) for pipe-based operations, or use the API directly. For repo-chat on the command line, many use community tools (like `llm` or `aider`) configured with a Gemini API key.
 - **OpenAI Codex**: Codex looks for `AGENTS.md` (or `AGENTS.override.md`) starting from your repo root and up to the current directory, plus a global copy at `~/.codex/AGENTS.md` (Codex home defaults to `~/.codex`, but you can point `CODEX_HOME` elsewhere if you want it under `~/.openai`). You can add other fallback names—such as `instructions.md` at the repo root—via `project_doc_fallback_filenames` in `~/.codex/config.toml`. See the [AGENTS.md guide](https://developers.openai.com/codex/guides/agents-md) for details.
+- **Claude Code**: Place a `CLAUDE.md` file in your repo root to provide project-specific instructions.  Claude Code automatically reads this file at the start of each session.  You can also create a personal `~/.claude/CLAUDE.md` for global defaults across all projects, and folder-level `CLAUDE.md` files for directory-specific guidance.  Beyond instructions, Claude Code supports "skills"—custom slash commands (e.g., `/commit`, `/review-pr`) that you define in `~/.claude/commands/` or `.claude/commands/` within a project. See the [Claude Code memory documentation](https://docs.anthropic.com/en/docs/claude-code/memory) for details on `CLAUDE.md` and the [slash commands guide](https://docs.anthropic.com/en/docs/claude-code/slash-commands) for creating custom skills.
 
-A minimal example you can adapt (drop this same content into `.github/copilot-instructions.md`, `GEMINI.md`, and/or `AGENTS.md`):
+A minimal example you can adapt (drop this same content into `.github/copilot-instructions.md`, `GEMINI.md`, `AGENTS.md`, and/or `CLAUDE.md`):
 
 ```markdown
 ## Project context
@@ -358,6 +360,109 @@ A minimal example you can adapt (drop this same content into `.github/copilot-in
 ## Safety
 - Avoid destructive git commands; prefer minimal diffs (apply_patch) and cite file paths/lines.
 ```
+
+### Sharing Instructions Across Tools with Symlinks
+
+To avoid maintaining duplicate content across multiple instruction files, you can create one canonical file and use symbolic links for the others.  For example, using `AGENTS.md` as the primary file:
+
+```{code-block} bash
+# Create symlinks (macOS/Linux)
+ln -s AGENTS.md CLAUDE.md
+ln -s AGENTS.md GEMINI.md
+mkdir -p .github && ln -s ../AGENTS.md .github/copilot-instructions.md
+```
+
+With this setup, you only edit `AGENTS.md` and all other tools read the same content through their symlinks.
+
+```{note}
+**Windows users**: Symlinks require extra setup.  Enable Developer Mode (Settings → Privacy & security → For developers → toggle "Developer Mode" on), then configure Git with `git config --global core.symlinks true`.  You must clone the repository fresh after enabling these settings for symlinks to work correctly.
+```
+
+(claude_github_actions)=
+### Using Claude for Code Review with GitHub Actions
+
+Beyond using LLMs inside your editor, you can integrate Claude directly into your GitHub workflow so that it automatically reviews pull requests, responds to questions in issues, and even implements changes — all triggered by mentioning `@claude` in a comment.
+
+This is powered by [Claude Code GitHub Actions](https://github.com/anthropics/claude-code-action), an official GitHub Action maintained by Anthropic.  Once installed, any collaborator can tag `@claude` in a PR comment or issue and receive an AI-powered response that follows your project's `CLAUDE.md` guidelines.
+
+#### Quick Setup
+
+The fastest way to set up the action is from the Claude Code CLI:
+
+```{code-block} bash
+claude            # start Claude Code
+/install-github-app   # guided installer
+```
+
+This command walks you through installing the [Claude GitHub app](https://github.com/apps/claude), adding your `ANTHROPIC_API_KEY` as a repository secret, and creating the workflow file.
+
+```{note}
+You must be a **repository admin** to install the GitHub app and add secrets.  The app requests read & write permissions for Contents, Issues, and Pull requests.
+```
+
+#### Manual Setup
+
+If you prefer to configure things yourself:
+
+1. Install the Claude GitHub app at [github.com/apps/claude](https://github.com/apps/claude) and grant it access to your repository.
+2. Add your `ANTHROPIC_API_KEY` to the repository secrets (Settings → Secrets and variables → Actions).
+3. Create a workflow file at `.github/workflows/claude.yml`:
+
+```{code-block} yaml
+name: Claude Code
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+jobs:
+  claude:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+
+With this workflow in place, mentioning `@claude` in any PR or issue comment triggers the action.  For example:
+
+```{code-block} none
+@claude review this PR for correctness and style
+@claude how should I handle the edge case in this function?
+@claude fix the type instability in the inner loop
+```
+
+#### Automated Review on Every PR
+
+You can also configure Claude to review every pull request automatically, without needing an `@claude` mention:
+
+```{code-block} yaml
+name: Code Review
+on:
+  pull_request:
+    types: [opened, synchronize]
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: "/review"
+          claude_args: "--max-turns 5"
+```
+
+See the [Claude Code GitHub Actions documentation](https://docs.anthropic.com/en/docs/claude-code/github-actions) and the [action repository](https://github.com/anthropics/claude-code-action) for the full set of configuration options, including use with AWS Bedrock and Google Vertex AI.
 
 (vscode_latex)=
 ## VS Code as a LaTeX Editor

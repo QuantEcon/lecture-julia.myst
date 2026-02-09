@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>29. Shortest Paths &#8212; Quantitative Economics with Julia</title>
+    <title>28. Shortest Paths &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -119,8 +119,8 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="30. Job Search I: The McCall Search Model" href="../dynamic_programming/mccall_model.html" />
-    <link rel="prev" title="28. A First Look at the Kalman Filter" href="kalman.html" />
+    <link rel="next" title="29. Job Search I: The McCall Search Model" href="../dynamic_programming/mccall_model.html" />
+    <link rel="prev" title="27. A First Look at the Kalman Filter" href="kalman.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -168,16 +168,16 @@ const thebe_selector_output = ".output, .cell_output"
 
                         <nav id="bd-toc-nav" class="qe-page__toc-nav">
                             <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">29.1. Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#outline-of-the-problem">29.2. Outline of the Problem</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-least-cost-paths">29.3. Finding Least-Cost Paths</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-for-j">29.4. Solving for <span class="math notranslate nohighlight">\(J\)</span></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">29.5. Exercises</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1">29.5.1. Exercise 1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">28.1. Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#outline-of-the-problem">28.2. Outline of the Problem</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-least-cost-paths">28.3. Finding Least-Cost Paths</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solving-for-j">28.4. Solving for <span class="math notranslate nohighlight">\(J\)</span></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">28.5. Exercises</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1">28.5.1. Exercise 1</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solutions">29.6. Solutions</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">29.6.1. Exercise 1</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#solutions">28.6. Solutions</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">28.6.1. Exercise 1</a></li>
 </ul>
 </li>
 </ul>
@@ -247,7 +247,7 @@ const thebe_selector_output = ".output, .cell_output"
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><section class="tex2jax_ignore mathjax_ignore" id="shortest-paths">
-<h1><a class="toc-backref" href="#id2"><span class="section-number">29. </span>Shortest Paths</a><a class="headerlink" href="#shortest-paths" title="Permalink to this heading">#</a></h1>
+<h1><a class="toc-backref" href="#id2"><span class="section-number">28. </span>Shortest Paths</a><a class="headerlink" href="#shortest-paths" title="Permalink to this heading">#</a></h1>
 <div class="contents topic" id="contents">
 <span id="index-0"></span><p class="topic-title">Contents</p>
 <ul class="simple">
@@ -264,7 +264,7 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 </div>
 <section id="overview">
-<h2><a class="toc-backref" href="#id3"><span class="section-number">29.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id3"><span class="section-number">28.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h2>
 <p>The shortest path problem is a <a class="reference external" href="https://en.wikipedia.org/wiki/Shortest_path">classic problem</a> in mathematics and computer science with applications in</p>
 <ul class="simple">
 <li><p>Economics (sequential decision making, analysis of social networks, etc.)</p></li>
@@ -282,7 +282,7 @@ const thebe_selector_output = ".output, .cell_output"
 <p>Dynamic programming is an extremely powerful optimization technique that we apply in many lectures on this site.</p>
 </section>
 <section id="outline-of-the-problem">
-<h2><a class="toc-backref" href="#id4"><span class="section-number">29.2. </span>Outline of the Problem</a><a class="headerlink" href="#outline-of-the-problem" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id4"><span class="section-number">28.2. </span>Outline of the Problem</a><a class="headerlink" href="#outline-of-the-problem" title="Permalink to this heading">#</a></h2>
 <p>The shortest path problem is one of finding how to traverse a <a class="reference external" href="https://en.wikipedia.org/wiki/Graph_%28mathematics%29">graph</a> from one specified node to another at minimum cost.</p>
 <p>Consider the following graph</p>
 <figure class="align-default">
@@ -314,7 +314,7 @@ const thebe_selector_output = ".output, .cell_output"
 </figure>
 </section>
 <section id="finding-least-cost-paths">
-<h2><a class="toc-backref" href="#id5"><span class="section-number">29.3. </span>Finding Least-Cost Paths</a><a class="headerlink" href="#finding-least-cost-paths" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id5"><span class="section-number">28.3. </span>Finding Least-Cost Paths</a><a class="headerlink" href="#finding-least-cost-paths" title="Permalink to this heading">#</a></h2>
 <p>For large graphs we need a systematic solution.</p>
 <p>Let <span class="math notranslate nohighlight">\(J(v)\)</span> denote the minimum cost-to-go from node <span class="math notranslate nohighlight">\(v\)</span>, understood as the total cost from <span class="math notranslate nohighlight">\(v\)</span> if we take the best route.</p>
 <p>Suppose that we know <span class="math notranslate nohighlight">\(J(v)\)</span> for each node <span class="math notranslate nohighlight">\(v\)</span>, as shown below for the graph from the preceding example</p>
@@ -328,7 +328,7 @@ const thebe_selector_output = ".output, .cell_output"
 <li><p>From node v, move to any node that solves</p></li>
 </ul>
 <div class="math notranslate nohighlight" id="equation-spprebell">
-<span class="eqno">(29.1)<a class="headerlink" href="#equation-spprebell" title="Permalink to this equation">#</a></span>\[\min_{w \in F_v} \{ c(v, w) + J(w) \}\]</div>
+<span class="eqno">(28.1)<a class="headerlink" href="#equation-spprebell" title="Permalink to this equation">#</a></span>\[\min_{w \in F_v} \{ c(v, w) + J(w) \}\]</div>
 <p>where</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(F_v\)</span> is the set of nodes that can be reached from <span class="math notranslate nohighlight">\(v\)</span> in one step</p></li>
@@ -339,14 +339,14 @@ const thebe_selector_output = ".output, .cell_output"
 <p>Some thought will convince you that, for every node <span class="math notranslate nohighlight">\(v\)</span>,
 the function <span class="math notranslate nohighlight">\(J\)</span> satisfies</p>
 <div class="math notranslate nohighlight" id="equation-spbell">
-<span class="eqno">(29.2)<a class="headerlink" href="#equation-spbell" title="Permalink to this equation">#</a></span>\[J(v) = \min_{w \in F_v} \{ c(v, w) + J(w) \}\]</div>
+<span class="eqno">(28.2)<a class="headerlink" href="#equation-spbell" title="Permalink to this equation">#</a></span>\[J(v) = \min_{w \in F_v} \{ c(v, w) + J(w) \}\]</div>
 <p>This is known as the <em>Bellman equation</em>, after the mathematician Richard Bellman.</p>
 </section>
 <section id="solving-for-j">
-<h2><a class="toc-backref" href="#id6"><span class="section-number">29.4. </span>Solving for <span class="math notranslate nohighlight">\(J\)</span></a><a class="headerlink" href="#solving-for-j" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id6"><span class="section-number">28.4. </span>Solving for <span class="math notranslate nohighlight">\(J\)</span></a><a class="headerlink" href="#solving-for-j" title="Permalink to this heading">#</a></h2>
 <p>The standard algorithm for finding <span class="math notranslate nohighlight">\(J\)</span> is to start with</p>
 <div class="math notranslate nohighlight" id="equation-spguess">
-<span class="eqno">(29.3)<a class="headerlink" href="#equation-spguess" title="Permalink to this equation">#</a></span>\[J_0(v) = M \text{ if } v \not= \text{ destination, else } J_0(v) = 0\]</div>
+<span class="eqno">(28.3)<a class="headerlink" href="#equation-spguess" title="Permalink to this equation">#</a></span>\[J_0(v) = M \text{ if } v \not= \text{ destination, else } J_0(v) = 0\]</div>
 <p>where <span class="math notranslate nohighlight">\(M\)</span> is some large number.</p>
 <p>Now we use the following algorithm</p>
 <ol class="arabic simple">
@@ -357,9 +357,9 @@ the function <span class="math notranslate nohighlight">\(J\)</span> satisfies</
 <p>In general, this sequence converges to <span class="math notranslate nohighlight">\(J\)</span>—the proof is omitted.</p>
 </section>
 <section id="exercises">
-<h2><a class="toc-backref" href="#id7"><span class="section-number">29.5. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id7"><span class="section-number">28.5. </span>Exercises</a><a class="headerlink" href="#exercises" title="Permalink to this heading">#</a></h2>
 <section id="exercise-1">
-<span id="short-path-ex1"></span><h3><span class="section-number">29.5.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this heading">#</a></h3>
+<span id="short-path-ex1"></span><h3><span class="section-number">28.5.1. </span>Exercise 1<a class="headerlink" href="#exercise-1" title="Permalink to this heading">#</a></h3>
 <p>Use the algorithm given above to find the optimal path (and its cost) for the
 following graph.</p>
 <p>The graph is <strong>directed</strong>: from each node you may move only to the destinations
@@ -518,9 +518,9 @@ edges to create an undirected version and compare the resulting path and cost.</
 </section>
 </section>
 <section id="solutions">
-<h2><a class="toc-backref" href="#id8"><span class="section-number">29.6. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id8"><span class="section-number">28.6. </span>Solutions</a><a class="headerlink" href="#solutions" title="Permalink to this heading">#</a></h2>
 <section id="id1">
-<h3><span class="section-number">29.6.1. </span>Exercise 1<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">28.6.1. </span>Exercise 1<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">value_iteration</span><span class="p">(</span><span class="n">graph</span><span class="p">;</span><span class="w"> </span><span class="n">dest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maximum</span><span class="p">(</span><span class="n">keys</span><span class="p">(</span><span class="n">graph</span><span class="p">)))</span>
@@ -792,11 +792,6 @@ Cost: 160.55
    21. Krylov Methods and Matrix Conditioning
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/differentiable_dynamics.html">
-   22. Differentiating Models of Economic Dynamics
-  </a>
- </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -806,37 +801,37 @@ Cost: 160.55
 <ul class="current nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="scalar_dynam.html">
-   23. Dynamics in One Dimension
+   22. Dynamics in One Dimension
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="ar1_processes.html">
-   24. AR1 Processes
+   23. AR1 Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="finite_markov.html">
-   25. Finite Markov Chains
+   24. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="linear_models.html">
-   26. Linear State Space Models
+   25. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="wealth_dynamics.html">
-   27. Wealth Distribution Dynamics
+   26. Wealth Distribution Dynamics
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="kalman.html">
-   28. A First Look at the Kalman Filter
+   27. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1 current active active">
   <a class="current reference internal" href="#">
-   29. Shortest Paths
+   28. Shortest Paths
   </a>
  </li>
 </ul>
@@ -848,82 +843,99 @@ Cost: 160.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   30. Job Search I: The McCall Search Model
+   29. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   31. Job Search II: Search and Separation
+   30. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   32. A Problem that Stumped Milton Friedman
+   31. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   33. Job Search III: Search with Learning
+   32. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   34. Job Search IV: Modeling Career Choice
+   33. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   35. Job Search V: On-the-Job Search
+   34. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   36. Optimal Growth I: The Stochastic Optimal Growth Model
+   35. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   37. Optimal Growth II: Time Iteration
+   36. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   38. Optimal Growth III: The Endogenous Grid Method
+   37. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   39. LQ Dynamic Programming Problems
+   38. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   40. Optimal Savings I: The Permanent Income Model
+   39. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   41. Optimal Savings II: LQ Techniques
+   40. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   42. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   41. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   43. Optimal Savings III: Occasionally Binding Constraints
+   42. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   44. Robustness
+   43. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   45. Discrete State Dynamic Programming
+   44. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Differentiable Economics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../differentiable_economics/differentiable_dynamics.html">
+   45. Differentiating Models of Economic Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../differentiable_economics/differentiable_filters.html">
+   46. Differentiable Filters
   </a>
  </li>
 </ul>
@@ -935,12 +947,12 @@ Cost: 160.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   46. Modeling COVID 19 with Differential Equations
+   47. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   47. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   48. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -952,57 +964,57 @@ Cost: 160.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   48. Schelling’s Segregation Model
+   49. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   49. A Lake Model of Employment and Unemployment
+   50. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   50. Rational Expectations Equilibrium
+   51. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   51. Markov Perfect Equilibrium
+   52. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   52. Asset Pricing I: Finite State Models
+   53. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   53. Asset Pricing II: The Lucas Asset Pricing Model
+   54. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   54. Asset Pricing III:  Incomplete Markets
+   55. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   55. Uncertainty Traps
+   56. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   56. The Aiyagari Model
+   57. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   57. Default Risk and Income Fluctuations
+   58. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   58. Globalization and Cycles
+   59. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1014,22 +1026,22 @@ Cost: 160.55
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   59. About these Lectures
+   60. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   60. Troubleshooting
+   61. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   61. References
+   62. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   62. Execution Statistics
+   63. Execution Statistics
   </a>
  </li>
 </ul>

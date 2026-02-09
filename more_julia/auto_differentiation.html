@@ -181,15 +181,21 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lux-jl-neural-networks-in-julia">7.3.2. Lux.jl: Neural Networks in Julia</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reactant-jl-the-bridge-to-tpus-and-xla">7.3.3. Reactant.jl: The Bridge to TPUs and XLA</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#writing-enzyme-differentiable-code">7.3.4. Writing Enzyme-Differentiable Code</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-concepts-terminology">7.3.5. Core Concepts &amp; Terminology</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-primal-vs-the-shadow">7.3.6. The Primal vs. The Shadow</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamental-rules-of-activity">7.3.7. Fundamental Rules of Activity</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#argument-wrappers-quick-reference">7.3.8. Argument Wrappers (Quick Reference)</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">7.3.9. Examples</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#convenience-functions">7.3.10. Convenience Functions</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simple-forward-mode">7.3.11. Simple Forward Mode</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-mode">7.3.12. Reverse Mode</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#handling-mutation-and-buffers">7.3.13. Handling Mutation and Buffers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#activity-analysis-pitfalls">7.3.5. Activity Analysis Pitfalls</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#the-runtime-activity-error">7.3.5.1. The “Runtime Activity” Error</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#the-manual-loop-workaround">7.3.5.2. The Manual Loop Workaround</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#general-tips">7.3.5.3. General Tips</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#core-concepts-terminology">7.3.6. Core Concepts &amp; Terminology</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-primal-vs-the-shadow">7.3.7. The Primal vs. The Shadow</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamental-rules-of-activity">7.3.8. Fundamental Rules of Activity</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#argument-wrappers-quick-reference">7.3.9. Argument Wrappers (Quick Reference)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#examples">7.3.10. Examples</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#convenience-functions">7.3.11. Convenience Functions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#forward-mode">7.3.12. Forward Mode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-mode">7.3.13. Reverse Mode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#handling-mutation-and-buffers">7.3.14. Handling Mutation and Buffers</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercises">7.4. Exercises</a><ul class="nav section-nav flex-column">
@@ -457,11 +463,11 @@ all of the basic operations.  Each definition then has the chain-rule built into
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>5-element Vector{Float64}:
- 1.0223895336213846
- 0.6381842072139465
- 0.9702628358435225
- 0.7435237800711872
- 1.1844121694582914
+ 1.0204823284695341
+ 0.9352087296809607
+ 0.8841469990146544
+ 1.0105434238122155
+ 0.9208738280802713
 </pre></div>
 </div>
 </div>
@@ -549,7 +555,7 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <h3><span class="section-number">7.3.4. </span>Writing Enzyme-Differentiable Code<a class="headerlink" href="#writing-enzyme-differentiable-code" title="Permalink to this heading">#</a></h3>
 <p>Enzyme-friendly code looks like ordinary Julia with a few discipline rules: mutate into preallocated buffers, avoid hidden allocations, and keep inputs type-stable.</p>
 <p>In general, these practices also lead to very high-performance Julia code, so making code Enzyme-differentiable and high-performance often go hand-in-hand. However, these tend to be more advanced patterns than an introductory Julia user might be used to.</p>
-<p>A common pattern is <code class="docutils literal notranslate"><span class="pre">f!(out,</span> <span class="pre">inputs...,</span> <span class="pre">cache)</span></code> where <code class="docutils literal notranslate"><span class="pre">cache</span></code> holds temporary work arrays passed last.</p>
+<p>A common pattern is <code class="docutils literal notranslate"><span class="pre">f!(out,</span> <span class="pre">inputs...,</span> <span class="pre">params,</span> <span class="pre">cache)</span></code> where <code class="docutils literal notranslate"><span class="pre">params</span></code> holds model parameters (often as a named tuple) and <code class="docutils literal notranslate"><span class="pre">cache</span></code> holds temporary work arrays passed last.</p>
 <p>In many cases the biggest change is to use in-place linear algebra, many of which have corresponding highly optimized BLAS/LAPACK routines. For example:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">mul!(y,</span> <span class="pre">A,</span> <span class="pre">x)</span></code> implements the out-of-place math <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">A</span> <span class="pre">*</span> <span class="pre">x</span></code> without allocating</p></li>
@@ -568,7 +574,10 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <span class="w">        </span><span class="c"># loops are encouraged, but be careful to avoid temp allocations</span>
 <span class="w">        </span><span class="n">cache</span><span class="o">.</span><span class="n">tmp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mf">0.1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">i</span>
 <span class="w">    </span><span class="k">end</span>
-<span class="w">    </span><span class="n">copy!</span><span class="p">(</span><span class="n">x_next</span><span class="p">,</span><span class="w"> </span><span class="n">cache</span><span class="o">.</span><span class="n">tmp</span><span class="p">)</span><span class="w"> </span><span class="c"># x_next = cache.tmp</span>
+<span class="w">    </span><span class="c"># Enzyme can have activity analysis issues with copy!/copyto!</span>
+<span class="w">    </span><span class="nd">@inbounds</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">eachindex</span><span class="p">(</span><span class="n">cache</span><span class="o">.</span><span class="n">tmp</span><span class="p">)</span>
+<span class="w">        </span><span class="n">x_next</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cache</span><span class="o">.</span><span class="n">tmp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="w">    </span><span class="k">end</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nb">nothing</span>
 <span class="k">end</span>
 
@@ -588,9 +597,9 @@ all of the basic operations.  Each definition then has the chain-rule built into
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
- 1.0961466536012916
- 0.39386860518948097
- 0.307118720351144
+ 1.8309403243491362
+ 0.2583502742273447
+ 0.17025585836507576
 </pre></div>
 </div>
 </div>
@@ -620,7 +629,7 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>68.040 ns (0 allocations: 0 bytes)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>72.561 ns (0 allocations: 0 bytes)
 </pre></div>
 </div>
 </div>
@@ -632,19 +641,54 @@ all of the basic operations.  Each definition then has the chain-rule built into
 </div>
 <p>The same patterns apply to more complex routines: keep buffers explicit, avoid temporary slices, and rely on in-place linear algebra to minimize allocations that can break reverse-mode AD.</p>
 </section>
+<section id="activity-analysis-pitfalls">
+<h3><span class="section-number">7.3.5. </span>Activity Analysis Pitfalls<a class="headerlink" href="#activity-analysis-pitfalls" title="Permalink to this heading">#</a></h3>
+<p>Enzyme performs static activity analysis to determine which values affect derivatives. Some operations confuse this analysis.</p>
+<section id="the-runtime-activity-error">
+<h4><span class="section-number">7.3.5.1. </span>The “Runtime Activity” Error<a class="headerlink" href="#the-runtime-activity-error" title="Permalink to this heading">#</a></h4>
+<p>You may encounter: “Detected potential need for runtime activity.”</p>
+<p>This occurs when Enzyme cannot statically determine if memory is constant or active (differentiable). Common triggers:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">copyto!</span></code> or <code class="docutils literal notranslate"><span class="pre">copy!</span></code> between arrays with mixed activity (e.g., <code class="docutils literal notranslate"><span class="pre">Const</span></code> source to <code class="docutils literal notranslate"><span class="pre">Duplicated</span></code> destination)</p></li>
+<li><p>Broadcasting assignments like <code class="docutils literal notranslate"><span class="pre">x[:,</span> <span class="pre">1]</span> <span class="pre">.=</span> <span class="pre">x_0</span></code></p></li>
+<li><p>Closures capturing mutable state</p></li>
+</ul>
+<p><strong>Never</strong> fix this by enabling runtime activity flags (e.g., <code class="docutils literal notranslate"><span class="pre">set_runtime_activity(Reverse)</span></code>). This masks the issue and can produce incorrect gradients. Always restructure your code.</p>
+</section>
+<section id="the-manual-loop-workaround">
+<h4><span class="section-number">7.3.5.2. </span>The Manual Loop Workaround<a class="headerlink" href="#the-manual-loop-workaround" title="Permalink to this heading">#</a></h4>
+<p>Replace problematic assignments with explicit loops:</p>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># Instead of: copyto!(x[:, 1], x_0) or x[:, 1] .= x_0</span>
+<span class="c"># Use:</span>
+<span class="nd">@inbounds</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">eachindex</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
+<span class="w">    </span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_0</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="k">end</span>
+</pre></div>
+</div>
+<p>Enzyme handles explicit loops reliably because each scalar assignment has clear activity.</p>
+</section>
+<section id="general-tips">
+<h4><span class="section-number">7.3.5.3. </span>General Tips<a class="headerlink" href="#general-tips" title="Permalink to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Keep array operations explicit when mixing <code class="docutils literal notranslate"><span class="pre">Const</span></code> and <code class="docutils literal notranslate"><span class="pre">Duplicated</span></code> arguments</p></li>
+<li><p>Test with <code class="docutils literal notranslate"><span class="pre">EnzymeTestUtils.test_reverse</span></code> / <code class="docutils literal notranslate"><span class="pre">test_forward</span></code> to verify correctness</p></li>
+<li><p>When in doubt, use a loop—Enzyme differentiates through loops efficiently</p></li>
+</ul>
+</section>
+</section>
 <section id="core-concepts-terminology">
-<h3><span class="section-number">7.3.5. </span>Core Concepts &amp; Terminology<a class="headerlink" href="#core-concepts-terminology" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">7.3.6. </span>Core Concepts &amp; Terminology<a class="headerlink" href="#core-concepts-terminology" title="Permalink to this heading">#</a></h3>
 <p>To use Enzyme effectively, you must manually annotate your function arguments to tell the compiler how to handle them for a particular derivative.</p>
 </section>
 <section id="the-primal-vs-the-shadow">
-<h3><span class="section-number">7.3.6. </span>The Primal vs. The Shadow<a class="headerlink" href="#the-primal-vs-the-shadow" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">7.3.7. </span>The Primal vs. The Shadow<a class="headerlink" href="#the-primal-vs-the-shadow" title="Permalink to this heading">#</a></h3>
 <ul class="simple">
 <li><p><strong>Primal:</strong> The values or variables used in the main computation (e.g., your input vector <code class="docutils literal notranslate"><span class="pre">x</span></code> or buffer <code class="docutils literal notranslate"><span class="pre">b</span></code>).</p></li>
 <li><p><strong>Shadow:</strong> The separate memory location where derivatives are accumulated (e.g., <code class="docutils literal notranslate"><span class="pre">dx</span></code> or <code class="docutils literal notranslate"><span class="pre">db</span></code>).</p></li>
 </ul>
 </section>
 <section id="fundamental-rules-of-activity">
-<h3><span class="section-number">7.3.7. </span>Fundamental Rules of Activity<a class="headerlink" href="#fundamental-rules-of-activity" title="Permalink to this heading">#</a></h3>
+<span id="enzyme-activity-rules"></span><h3><span class="section-number">7.3.8. </span>Fundamental Rules of Activity<a class="headerlink" href="#fundamental-rules-of-activity" title="Permalink to this heading">#</a></h3>
 <p>When calling <code class="docutils literal notranslate"><span class="pre">autodiff</span></code>, every argument needs an “Activity” wrapper to tell Enzyme how to handle it.</p>
 <ol class="arabic simple">
 <li><p><strong>Are you differentiating with respect to this argument?</strong></p>
@@ -664,7 +708,7 @@ all of the basic operations.  Each definition then has the chain-rule built into
 <p>This last point is important. As your functions are non-allocating, you need to ensure there is a “shadow” for any arguments that are used, even if they are just temporary buffers.</p>
 </section>
 <section id="argument-wrappers-quick-reference">
-<h3><span class="section-number">7.3.8. </span>Argument Wrappers (Quick Reference)<a class="headerlink" href="#argument-wrappers-quick-reference" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">7.3.9. </span>Argument Wrappers (Quick Reference)<a class="headerlink" href="#argument-wrappers-quick-reference" title="Permalink to this heading">#</a></h3>
 <div class="pst-scrollable-table-container"><table class="colwidths-auto table">
 <thead>
 <tr class="row-odd"><th class="text-left head"><p>Wrapper</p></th>
@@ -711,10 +755,10 @@ all of the basic operations.  Each definition then has the chain-rule built into
 </section>
 <hr class="docutils" />
 <section id="examples">
-<h3><span class="section-number">7.3.9. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">7.3.10. </span>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">#</a></h3>
 </section>
 <section id="convenience-functions">
-<h3><span class="section-number">7.3.10. </span>Convenience Functions<a class="headerlink" href="#convenience-functions" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">7.3.11. </span>Convenience Functions<a class="headerlink" href="#convenience-functions" title="Permalink to this heading">#</a></h3>
 <p>Enzyme provides <a class="reference external" href="https://enzymead.github.io/Enzyme.jl/dev/#Convenience-functions-(gradient,-jacobian,-hessian)">convenience functions</a> to create zero-initialized shadows for you and to call <code class="docutils literal notranslate"><span class="pre">autodiff</span></code> with common patterns.</p>
 <p>Following that documentation, we define a scalar valued function of a vector input.</p>
 <p>When using Reverse-mode AD the forward pass needs to calculate the “primal” value, and we can request the function to return both.</p>
@@ -806,9 +850,10 @@ jacobian(ReverseWithPrimal, f, x) = (derivs = ([-400.0 200.0; 2.0 1.0],), val = 
 </div>
 <p>See <a class="reference external" href="https://enzymead.github.io/Enzyme.jl/dev/#Hessian-Vector-Product-Convenience-functions">here</a> for more examples such as Hessian-vector products.</p>
 </section>
-<section id="simple-forward-mode">
-<h3><span class="section-number">7.3.11. </span>Simple Forward Mode<a class="headerlink" href="#simple-forward-mode" title="Permalink to this heading">#</a></h3>
+<section id="forward-mode">
+<h3><span class="section-number">7.3.12. </span>Forward Mode<a class="headerlink" href="#forward-mode" title="Permalink to this heading">#</a></h3>
 <p>Forward mode propagates derivatives alongside the primal calculation. It is ideal for low-dimensional inputs.</p>
+<p><strong>Key difference from Reverse mode:</strong> In Forward mode, <code class="docutils literal notranslate"><span class="pre">dx</span></code> is the <strong>input tangent</strong> (seed direction), and the derivative is <strong>returned</strong>. In Reverse mode, gradients are <strong>accumulated into</strong> <code class="docutils literal notranslate"><span class="pre">dx</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Enzyme</span><span class="p">,</span><span class="w"> </span><span class="n">LinearAlgebra</span>
@@ -818,32 +863,34 @@ jacobian(ReverseWithPrimal, f, x) = (derivs = ([-400.0 200.0; 2.0 1.0],), val = 
 <span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span><span class="w"> </span><span class="mf">3.0</span><span class="p">]</span>
 <span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.5</span><span class="p">]</span>
 
-<span class="c"># We want ∂f/∂x (holding y constant).</span>
-<span class="c"># 1. Create Shadow for x (seed with 1.0s to get full gradient)</span>
+<span class="c"># Forward mode: dx is the INPUT tangent (seed), derivative is RETURNED</span>
+<span class="c"># Seed with ones to get directional derivative in direction of all-ones</span>
 <span class="n">dx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ones</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 
-<span class="c"># 2. Call autodiff with respect to x</span>
-<span class="c"># Note: y is Const, x is Duplicated (Array)</span>
-<span class="n">autodiff</span><span class="p">(</span><span class="n">Forward</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">),</span><span class="w"> </span><span class="n">Const</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+<span class="c"># autodiff returns the derivative for scalar-valued functions</span>
+<span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">autodiff</span><span class="p">(</span><span class="n">Forward</span><span class="p">,</span><span class="w"> </span><span class="n">f</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">),</span><span class="w"> </span><span class="n">Const</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
 
-<span class="c"># Result: Returns nothing (void), but the function executed.</span>
-<span class="n">print</span><span class="p">(</span><span class="s">&quot;∂f/∂x = &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">)</span>
+<span class="c"># result contains the directional derivative: ∂f/∂x · dx = sum(y .* dx) = 3.0</span>
+<span class="nd">@show</span><span class="w"> </span><span class="n">result</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>∂f/∂x = 
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>result = (3.0,)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[1.0, 1.0, 1.0]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(3.0,)
 </pre></div>
 </div>
 </div>
 </div>
-<p>Note that in Forward mode for scalar outputs, you often examine the return value. However, for array inputs, Enzyme conventions typically focus on Reverse mode.</p>
+<p>For scalar outputs, Forward mode returns the directional derivative <span class="math notranslate nohighlight">\(\nabla f \cdot dx\)</span>. To get individual partial derivatives, you would need multiple passes with different seed vectors (e.g., unit vectors), which is why Reverse mode is preferred for gradients of scalar-valued functions with many inputs.</p>
 </section>
 <section id="reverse-mode">
-<h3><span class="section-number">7.3.12. </span>Reverse Mode<a class="headerlink" href="#reverse-mode" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">7.3.13. </span>Reverse Mode<a class="headerlink" href="#reverse-mode" title="Permalink to this heading">#</a></h3>
 <p>Reverse mode computes the gradient of the output with respect to <em>all</em> inputs in a single pass.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -892,7 +939,7 @@ jacobian(ReverseWithPrimal, f, x) = (derivs = ([-400.0 200.0; 2.0 1.0],), val = 
 </div>
 </section>
 <section id="handling-mutation-and-buffers">
-<h3><span class="section-number">7.3.13. </span>Handling Mutation and Buffers<a class="headerlink" href="#handling-mutation-and-buffers" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">7.3.14. </span>Handling Mutation and Buffers<a class="headerlink" href="#handling-mutation-and-buffers" title="Permalink to this heading">#</a></h3>
 <p>This is the most common pitfall. If a function modifies an argument (like <code class="docutils literal notranslate"><span class="pre">out</span></code> or a workspace buffer), both the Primal and Shadow must be valid.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1184,11 +1231,6 @@ jacobian(ReverseWithPrimal, f, x) = (derivs = ([-400.0 200.0; 2.0 1.0],), val = 
    21. Krylov Methods and Matrix Conditioning
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/differentiable_dynamics.html">
-   22. Differentiating Models of Economic Dynamics
-  </a>
- </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -1198,37 +1240,37 @@ jacobian(ReverseWithPrimal, f, x) = (derivs = ([-400.0 200.0; 2.0 1.0],), val = 
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
-   23. Dynamics in One Dimension
+   22. Dynamics in One Dimension
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
-   24. AR1 Processes
+   23. AR1 Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
-   25. Finite Markov Chains
+   24. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/linear_models.html">
-   26. Linear State Space Models
+   25. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
-   27. Wealth Distribution Dynamics
+   26. Wealth Distribution Dynamics
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/kalman.html">
-   28. A First Look at the Kalman Filter
+   27. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/short_path.html">
-   29. Shortest Paths
+   28. Shortest Paths
   </a>
  </li>
 </ul>
@@ -1240,82 +1282,99 @@ jacobian(ReverseWithPrimal, f, x) = (derivs = ([-400.0 200.0; 2.0 1.0],), val = 
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   30. Job Search I: The McCall Search Model
+   29. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   31. Job Search II: Search and Separation
+   30. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   32. A Problem that Stumped Milton Friedman
+   31. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   33. Job Search III: Search with Learning
+   32. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   34. Job Search IV: Modeling Career Choice
+   33. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   35. Job Search V: On-the-Job Search
+   34. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   36. Optimal Growth I: The Stochastic Optimal Growth Model
+   35. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   37. Optimal Growth II: Time Iteration
+   36. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   38. Optimal Growth III: The Endogenous Grid Method
+   37. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   39. LQ Dynamic Programming Problems
+   38. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   40. Optimal Savings I: The Permanent Income Model
+   39. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   41. Optimal Savings II: LQ Techniques
+   40. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   42. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   41. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   43. Optimal Savings III: Occasionally Binding Constraints
+   42. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   44. Robustness
+   43. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   45. Discrete State Dynamic Programming
+   44. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Differentiable Economics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../differentiable_economics/differentiable_dynamics.html">
+   45. Differentiating Models of Economic Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../differentiable_economics/differentiable_filters.html">
+   46. Differentiable Filters
   </a>
  </li>
 </ul>
@@ -1327,12 +1386,12 @@ jacobian(ReverseWithPrimal, f, x) = (derivs = ([-400.0 200.0; 2.0 1.0],), val = 
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   46. Modeling COVID 19 with Differential Equations
+   47. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   47. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   48. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1344,57 +1403,57 @@ jacobian(ReverseWithPrimal, f, x) = (derivs = ([-400.0 200.0; 2.0 1.0],), val = 
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   48. Schelling’s Segregation Model
+   49. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   49. A Lake Model of Employment and Unemployment
+   50. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   50. Rational Expectations Equilibrium
+   51. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   51. Markov Perfect Equilibrium
+   52. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   52. Asset Pricing I: Finite State Models
+   53. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   53. Asset Pricing II: The Lucas Asset Pricing Model
+   54. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   54. Asset Pricing III:  Incomplete Markets
+   55. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   55. Uncertainty Traps
+   56. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   56. The Aiyagari Model
+   57. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   57. Default Risk and Income Fluctuations
+   58. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   58. Globalization and Cycles
+   59. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1406,22 +1465,22 @@ jacobian(ReverseWithPrimal, f, x) = (derivs = ([-400.0 200.0; 2.0 1.0],), val = 
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   59. About these Lectures
+   60. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   60. Troubleshooting
+   61. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   61. References
+   62. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   62. Execution Statistics
+   63. Execution Statistics
   </a>
  </li>
 </ul>

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>22. Differentiating Models of Economic Dynamics &#8212; Quantitative Economics with Julia</title>
+    <title>45. Differentiating Models of Economic Dynamics &#8212; Quantitative Economics with Julia</title>
     <script src="https://unpkg.com/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://unpkg.com/tippy.js@6.3.1/dist/tippy-bundle.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
@@ -114,13 +114,13 @@ const thebe_selector_output = ".output, .cell_output"
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <script>window.MathJax = {"tex": {"macros": {"argmax": "arg\\,max", "argmin": "arg\\,min"}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'tools_and_techniques/differentiable_dynamics';</script>
-    <link rel="canonical" href="https://julia.quantecon.org/tools_and_techniques/differentiable_dynamics.html" />
+    <script>DOCUMENTATION_OPTIONS.pagename = 'differentiable_economics/differentiable_dynamics';</script>
+    <link rel="canonical" href="https://julia.quantecon.org/differentiable_economics/differentiable_dynamics.html" />
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="23. Dynamics in One Dimension" href="../introduction_dynamics/scalar_dynam.html" />
-    <link rel="prev" title="21. Krylov Methods and Matrix Conditioning" href="iterative_methods_sparsity.html" />
+    <link rel="next" title="46. Differentiable Filters" href="differentiable_filters.html" />
+    <link rel="prev" title="44. Discrete State Dynamic Programming" href="../dynamic_programming/discrete_dp.html" />
 
 <!-- Normal Meta Tags -->
 <meta name="author" context="Jesse Perla &amp; Thomas J. Sargent &amp; John Stachurski" />
@@ -138,7 +138,7 @@ const thebe_selector_output = ".output, .cell_output"
 <!-- Opengraph tags -->
 <meta property="og:title" content="Differentiating Models of Economic Dynamics" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://julia.quantecon.org/tools_and_techniques/differentiable_dynamics.html" />
+<meta property="og:url" content="https://julia.quantecon.org/differentiable_economics/differentiable_dynamics.html" />
 <meta property="og:image" content="https://assets.quantecon.org/img/qe-og-logo.png" />
 <meta property="og:description" content="This website presents a set of lectures on quantitative economic modeling, designed and written by Jesse Perla, Thomas J. Sargent and John Stachurski. The language instruction is Julia." />
 <meta property="og:site_name" content="Quantitative Economics with Julia" />
@@ -154,7 +154,7 @@ const thebe_selector_output = ".output, .cell_output"
 
         <div class="qe-main">
 
-            <div class="qe-page" id=tools_and_techniques/differentiable_dynamics>
+            <div class="qe-page" id=differentiable_economics/differentiable_dynamics>
 
                 <div class="qe-page__toc">
 
@@ -168,13 +168,13 @@ const thebe_selector_output = ".output, .cell_output"
 
                         <nav id="bd-toc-nav" class="qe-page__toc-nav">
                             <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">22.1. Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulating-a-linear-state-space-model">22.2. Simulating a Linear State Space Model</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differentiating-the-simulation">22.2.1. Differentiating the Simulation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-type-stability-and-allocations">22.2.2. Checking Type Stability and Allocations</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differentiating-functions-of-simulation">22.2.3. Differentiating Functions of Simulation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration">22.2.4. Calibration</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration-with-more-complicated-types">22.2.5. Calibration with More Complicated Types</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">45.1. Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulating-a-linear-state-space-model">45.2. Simulating a Linear State Space Model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differentiating-the-simulation">45.2.1. Differentiating the Simulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-type-stability-and-allocations">45.2.2. Checking Type Stability and Allocations</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differentiating-functions-of-simulation">45.2.3. Differentiating Functions of Simulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration">45.2.4. Calibration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration-with-more-complicated-types">45.2.5. Calibration with More Complicated Types</a></li>
 </ul>
 </li>
 </ul>
@@ -244,7 +244,7 @@ const thebe_selector_output = ".output, .cell_output"
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><section class="tex2jax_ignore mathjax_ignore" id="differentiating-models-of-economic-dynamics">
-<h1><a class="toc-backref" href="#id1"><span class="section-number">22. </span>Differentiating Models of Economic Dynamics</a><a class="headerlink" href="#differentiating-models-of-economic-dynamics" title="Permalink to this heading">#</a></h1>
+<h1><a class="toc-backref" href="#id1"><span class="section-number">45. </span>Differentiating Models of Economic Dynamics</a><a class="headerlink" href="#differentiating-models-of-economic-dynamics" title="Permalink to this heading">#</a></h1>
 <div class="contents topic" id="contents">
 <span id="index-0"></span><p class="topic-title">Contents</p>
 <ul class="simple">
@@ -257,7 +257,7 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 </div>
 <section id="overview">
-<h2><a class="toc-backref" href="#id2"><span class="section-number">22.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id2"><span class="section-number">45.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h2>
 <p>This lecture provides an introduction to differentiable simulation of dynamic systems in Julia using Enzyme.jl.  See <a class="reference internal" href="../more_julia/auto_differentiation.html"><span class="doc">auto-differentiation</span></a> for background on in-place patterns and Enzyme wrappers.</p>
 <p>It builds on the <strong>linear state space</strong> models we introduced in <a class="reference internal" href="../introduction_dynamics/linear_models.html"><span class="doc">linear models</span></a> and the <a class="reference internal" href="../introduction_dynamics/kalman.html"><span class="doc">kalman filter</span></a>.</p>
 <p>Example applications of these methods include:</p>
@@ -279,7 +279,7 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </section>
 <section id="simulating-a-linear-state-space-model">
-<span id="simm-lss"></span><h2><a class="toc-backref" href="#id3"><span class="section-number">22.2. </span>Simulating a Linear State Space Model</a><a class="headerlink" href="#simulating-a-linear-state-space-model" title="Permalink to this heading">#</a></h2>
+<span id="simm-lss"></span><h2><a class="toc-backref" href="#id3"><span class="section-number">45.2. </span>Simulating a Linear State Space Model</a><a class="headerlink" href="#simulating-a-linear-state-space-model" title="Permalink to this heading">#</a></h2>
 <p>Take the following parameterization of a linear state space model</p>
 <div class="math notranslate nohighlight">
 \[
@@ -304,7 +304,7 @@ y_t = G x_t + H v_t
 <span class="w">    </span><span class="nd">@assert</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">M</span>
 <span class="w">    </span><span class="nd">@assert</span><span class="w"> </span><span class="n">length</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">N</span>
 
-<span class="w">    </span><span class="c"># Enzyme has challenges with activity analysis on broadcasting assignments</span>
+<span class="w">    </span><span class="c"># Enzyme has challenges with activity analysis on copyto!/broadcasting assignments</span>
 <span class="w">    </span><span class="nd">@inbounds</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">1</span><span class="o">:</span><span class="n">N</span>
 <span class="w">        </span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x_0</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 <span class="w">    </span><span class="k">end</span>
@@ -330,6 +330,10 @@ y_t = G x_t + H v_t
 </pre></div>
 </div>
 </div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We use a manual loop instead of <code class="docutils literal notranslate"><span class="pre">copyto!</span></code> or broadcasting for the initial condition assignment because Enzyme has challenges with activity analysis on these operations. When <code class="docutils literal notranslate"><span class="pre">x_0</span></code> is <code class="docutils literal notranslate"><span class="pre">Const</span></code> but <code class="docutils literal notranslate"><span class="pre">x</span></code> is <code class="docutils literal notranslate"><span class="pre">Duplicated</span></code>, <code class="docutils literal notranslate"><span class="pre">copyto!</span></code> triggers a “Detected potential need for runtime activity” error. The explicit loop avoids this issue. See the <a class="reference internal" href="../more_julia/auto_differentiation.html"><span class="doc">auto-differentiation</span></a> lecture for details.</p>
 </div>
 <p>Crucially, this function modifies the preallocated <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> arrays in place without any allocations.</p>
 <p>We can use this function to simulate from example matrices and a sequence of shocks</p>
@@ -378,7 +382,7 @@ y_t = G x_t + H v_t
 <div class="output text_html"><img src="data:image/png;base64,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" /></div></div>
 </div>
 <section id="differentiating-the-simulation">
-<span id="simm-lss-diff"></span><h3><span class="section-number">22.2.1. </span>Differentiating the Simulation<a class="headerlink" href="#differentiating-the-simulation" title="Permalink to this heading">#</a></h3>
+<span id="simm-lss-diff"></span><h3><span class="section-number">45.2.1. </span>Differentiating the Simulation<a class="headerlink" href="#differentiating-the-simulation" title="Permalink to this heading">#</a></h3>
 <p>Forward-mode in Enzyme is convenient for impulse-style effects: for example, here we perturb only the <span class="math notranslate nohighlight">\(w_1\)</span> leaving everything else fixed and can see the change in the <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> paths</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -386,6 +390,7 @@ y_t = G x_t + H v_t
 <span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
 <span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
 <span class="n">dx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">dx_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">x_0</span><span class="p">)</span>
 <span class="n">dy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="n">dw</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enzyme</span><span class="o">.</span><span class="n">make_zero</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
 <span class="n">dw</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span><span class="w">                         </span><span class="c"># unit perturbation to first shock</span>
@@ -395,7 +400,7 @@ y_t = G x_t + H v_t
 <span class="w">         </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">dx</span><span class="p">),</span>
 <span class="w">         </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">dy</span><span class="p">),</span>
 <span class="w">         </span><span class="n">Const</span><span class="p">(</span><span class="n">model</span><span class="p">),</span><span class="w"> </span><span class="c"># leaving model fixed</span>
-<span class="w">         </span><span class="n">Const</span><span class="p">(</span><span class="n">x_0</span><span class="p">),</span><span class="w"> </span><span class="c"># leaving initial state fixed</span>
+<span class="w">         </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">dx_0</span><span class="p">),</span><span class="w"> </span><span class="c"># won&#39;t perturb</span>
 <span class="w">         </span><span class="n">Duplicated</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">dw</span><span class="p">),</span><span class="w"> </span><span class="c"># perturbing w</span>
 <span class="w">         </span><span class="n">Const</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
 
@@ -444,7 +449,7 @@ y_t = G x_t + H v_t
 </div>
 </section>
 <section id="checking-type-stability-and-allocations">
-<h3><span class="section-number">22.2.2. </span>Checking Type Stability and Allocations<a class="headerlink" href="#checking-type-stability-and-allocations" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">45.2.2. </span>Checking Type Stability and Allocations<a class="headerlink" href="#checking-type-stability-and-allocations" title="Permalink to this heading">#</a></h3>
 <p>With complicated code, we first need to ensure the code is type-stable.  The following call is silent, which indicates there are no type-stability issues.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -465,7 +470,7 @@ y_t = G x_t + H v_t
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.428 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.572 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -499,10 +504,10 @@ assume that Enzyme (or any AD system) will necessarily be correct.</p>
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
-test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  18  </span><span class=" -Color -Color-Cyan">   18  </span>4.7s
+test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  18  </span><span class=" -Color -Color-Cyan">   18  </span>4.8s
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 18, false, false, true, 1.766025397229417e9, 1.766025401978409e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_forward.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 18, false, false, true, 1.770666408855619e9, 1.770666413659608e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_forward.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
 </pre></div>
 </div>
 </div>
@@ -510,7 +515,7 @@ test_forward: test_forward_simulate_lss! with return activity Duplicated on (::M
 <p>Unlike <code class="docutils literal notranslate"><span class="pre">test_forward</span></code>, the automatic checks on reverse-mode AD with <code class="docutils literal notranslate"><span class="pre">test_reverse</span></code> require a scalar output, which we discuss below in the calibration section.</p>
 </section>
 <section id="differentiating-functions-of-simulation">
-<h3><span class="section-number">22.2.3. </span>Differentiating Functions of Simulation<a class="headerlink" href="#differentiating-functions-of-simulation" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">45.2.3. </span>Differentiating Functions of Simulation<a class="headerlink" href="#differentiating-functions-of-simulation" title="Permalink to this heading">#</a></h3>
 <p>Often we care about scalars of the simulated paths. For example, the average of the first observable is</p>
 <div class="math notranslate nohighlight">
 \[
@@ -594,15 +599,15 @@ g(w, v, \theta) = \frac{1}{T+1} \sum_{t=0}^T y_{1,t}.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
-test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Const), (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated) | <span class=" -Color -Color-Green">  25  </span><span class=" -Color -Color-Cyan">   25  </span>6.0s
+test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Const), (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated) | <span class=" -Color -Color-Green">  25  </span><span class=" -Color -Color-Cyan">   25  </span>6.3s
 <span class=" -Color -Color-Bold">Test Summary:                                                                                                                                                                                                                                                                                                         | </span>
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">Pass  </span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
-test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  29  </span><span class=" -Color -Color-Cyan">   29  </span>5.5s
+test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  29  </span><span class=" -Color -Color-Cyan">   29  </span>5.8s
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 29, false, false, true, 1.766025415730158e9, 1.766025421200565e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_reverse.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 29, false, false, true, 1.770666428046328e9, 1.770666433861307e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_reverse.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
 </pre></div>
 </div>
 </div>
@@ -630,7 +635,7 @@ test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), 
 </div>
 </section>
 <section id="calibration">
-<h3><span class="section-number">22.2.4. </span>Calibration<a class="headerlink" href="#calibration" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">45.2.4. </span>Calibration<a class="headerlink" href="#calibration" title="Permalink to this heading">#</a></h3>
 <p>Reverse-mode in particular can be useful for calibration with simulated dynamics.</p>
 <p>For example, consider if the our <span class="math notranslate nohighlight">\(A\)</span> matrix was parameterized by a scalar <span class="math notranslate nohighlight">\(a\)</span> in its upper left corner, and we wanted to calibrate <span class="math notranslate nohighlight">\(a\)</span> so that the time average of the first observation matched a target value <span class="math notranslate nohighlight">\(y^* = 0\)</span>.</p>
 <p>For some technical reasons discussed below, we rewrite the simulation to take the model parameters individually rather than as a named tuple. A version that works with the original function is given below.</p>
@@ -737,7 +742,7 @@ test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), 
 </div>
 </section>
 <section id="calibration-with-more-complicated-types">
-<h3><span class="section-number">22.2.5. </span>Calibration with More Complicated Types<a class="headerlink" href="#calibration-with-more-complicated-types" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">45.2.5. </span>Calibration with More Complicated Types<a class="headerlink" href="#calibration-with-more-complicated-types" title="Permalink to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">loss_2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span>
@@ -820,7 +825,7 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
         },
         kernelOptions: {
             name: "julia-1.12",
-            path: "./tools_and_techniques"
+            path: "./differentiable_economics"
         },
         predefinedOutput: true
     }
@@ -952,45 +957,40 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
   Tools and Techniques
  </span>
 </p>
-<ul class="current nav bd-sidenav nav sidenav_l1">
+<ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
-  <a class="reference internal" href="geom_series.html">
+  <a class="reference internal" href="../tools_and_techniques/geom_series.html">
    15. Geometric Series for Elementary Economics
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="linear_algebra.html">
+  <a class="reference internal" href="../tools_and_techniques/linear_algebra.html">
    16. Linear Algebra
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="orth_proj.html">
+  <a class="reference internal" href="../tools_and_techniques/orth_proj.html">
    17. Orthogonal Projections and Their Applications
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="lln_clt.html">
+  <a class="reference internal" href="../tools_and_techniques/lln_clt.html">
    18. LLN and CLT
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="stationary_densities.html">
+  <a class="reference internal" href="../tools_and_techniques/stationary_densities.html">
    19. Continuous State Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="numerical_linear_algebra.html">
+  <a class="reference internal" href="../tools_and_techniques/numerical_linear_algebra.html">
    20. Numerical Linear Algebra and Factorizations
   </a>
  </li>
  <li class="toctree-l1">
-  <a class="reference internal" href="iterative_methods_sparsity.html">
+  <a class="reference internal" href="../tools_and_techniques/iterative_methods_sparsity.html">
    21. Krylov Methods and Matrix Conditioning
-  </a>
- </li>
- <li class="toctree-l1 current active active">
-  <a class="current reference internal" href="#">
-   22. Differentiating Models of Economic Dynamics
   </a>
  </li>
 </ul>
@@ -1002,37 +1002,37 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
-   23. Dynamics in One Dimension
+   22. Dynamics in One Dimension
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
-   24. AR1 Processes
+   23. AR1 Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
-   25. Finite Markov Chains
+   24. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/linear_models.html">
-   26. Linear State Space Models
+   25. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
-   27. Wealth Distribution Dynamics
+   26. Wealth Distribution Dynamics
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/kalman.html">
-   28. A First Look at the Kalman Filter
+   27. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/short_path.html">
-   29. Shortest Paths
+   28. Shortest Paths
   </a>
  </li>
 </ul>
@@ -1044,82 +1044,99 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   30. Job Search I: The McCall Search Model
+   29. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   31. Job Search II: Search and Separation
+   30. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   32. A Problem that Stumped Milton Friedman
+   31. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   33. Job Search III: Search with Learning
+   32. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   34. Job Search IV: Modeling Career Choice
+   33. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   35. Job Search V: On-the-Job Search
+   34. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   36. Optimal Growth I: The Stochastic Optimal Growth Model
+   35. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   37. Optimal Growth II: Time Iteration
+   36. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   38. Optimal Growth III: The Endogenous Grid Method
+   37. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   39. LQ Dynamic Programming Problems
+   38. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   40. Optimal Savings I: The Permanent Income Model
+   39. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   41. Optimal Savings II: LQ Techniques
+   40. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   42. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   41. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   43. Optimal Savings III: Occasionally Binding Constraints
+   42. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   44. Robustness
+   43. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   45. Discrete State Dynamic Programming
+   44. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Differentiable Economics
+ </span>
+</p>
+<ul class="current nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1 current active active">
+  <a class="current reference internal" href="#">
+   45. Differentiating Models of Economic Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="differentiable_filters.html">
+   46. Differentiable Filters
   </a>
  </li>
 </ul>
@@ -1131,12 +1148,12 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   46. Modeling COVID 19 with Differential Equations
+   47. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   47. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   48. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -1148,57 +1165,57 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   48. Schelling’s Segregation Model
+   49. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   49. A Lake Model of Employment and Unemployment
+   50. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   50. Rational Expectations Equilibrium
+   51. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   51. Markov Perfect Equilibrium
+   52. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   52. Asset Pricing I: Finite State Models
+   53. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   53. Asset Pricing II: The Lucas Asset Pricing Model
+   54. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   54. Asset Pricing III:  Incomplete Markets
+   55. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   55. Uncertainty Traps
+   56. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   56. The Aiyagari Model
+   57. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   57. Default Risk and Income Fluctuations
+   58. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   58. Globalization and Cycles
+   59. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1210,22 +1227,22 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   59. About these Lectures
+   60. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   60. Troubleshooting
+   61. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   61. References
+   62. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   62. Execution Statistics
+   63. Execution Statistics
   </a>
  </li>
 </ul>
@@ -1261,10 +1278,10 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
                     <li data-tippy-content="Increase font size" class="btn__plus"><i data-feather="plus-circle"></i></li>
                     <li data-tippy-content="Decrease font size" class="btn__minus"><i data-feather="minus-circle"></i></li>
                     <li data-tippy-content="Change contrast" class="btn__contrast"><i data-feather="sunset"></i></li>
-                    <li data-tippy-content="Download Notebook"><a href="/_notebooks/tools_and_techniques/differentiable_dynamics.ipynb" download><i data-feather="download-cloud"></i></a></li>
+                    <li data-tippy-content="Download Notebook"><a href="/_notebooks/differentiable_economics/differentiable_dynamics.ipynb" download><i data-feather="download-cloud"></i></a></li>
                     <li class="settings-button" id="settingsButton"><div data-tippy-content="Launch Notebook"><i data-feather="play-circle"></i></div></li>
                         <li data-tippy-content="Download PDF" onClick="window.print()"><i data-feather="file"></i></li>
-                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/quantecon/lecture-julia.myst/blob/main/lectures/tools_and_techniques/differentiable_dynamics.md" download><i data-feather="github"></i></a></li>
+                    <li data-tippy-content="View Source"><a target="_blank" href="https://github.com/quantecon/lecture-julia.myst/blob/main/lectures/differentiable_economics/differentiable_dynamics.md" download><i data-feather="github"></i></a></li>
                 </ul>
 
             </div>
@@ -1293,18 +1310,18 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
                 <span class="label">Public</span>
                 <select id="launcher-public-input">
                 
-                    <option value="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/tools_and_techniques/differentiable_dynamics.ipynb">Colab</option>
+                    <option value="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/differentiable_economics/differentiable_dynamics.ipynb">Colab</option>
                 
                 </select>
                 <i class="fas fa-check-circle"></i>
             </li>
             <li class="launcher-private">
                 <span class="label">Private</span>
-                <input type="text" id="launcher-private-input" data-repourl="https://github.com/quantecon/lecture-julia.notebooks" data-urlpath="tree/lecture-julia.notebooks/tools_and_techniques/differentiable_dynamics.ipynb" data-branch=main>
+                <input type="text" id="launcher-private-input" data-repourl="https://github.com/quantecon/lecture-julia.notebooks" data-urlpath="tree/lecture-julia.notebooks/differentiable_economics/differentiable_dynamics.ipynb" data-branch=main>
                 <i class="fas fa-check-circle"></i>
             </li>
             </ul>
-            <p class="launch"><a href="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/tools_and_techniques/differentiable_dynamics.ipynb" id="advancedLaunchButton" target="_blank">Launch Notebook</a></p>
+            <p class="launch"><a href="https://colab.research.google.com/github/quantecon/lecture-julia.notebooks/blob/main/differentiable_economics/differentiable_dynamics.ipynb" id="advancedLaunchButton" target="_blank">Launch Notebook</a></p>
             <script>
                 // QuantEcon Notebook Launcher
                 const launcherTypeElements = document.querySelectorAll('#settingsModal .modal-servers li');
@@ -1334,9 +1351,9 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
                 }
                 const launcherPublic = document.getElementById('launcher-public-input');
                 const launcherPrivate = document.getElementById('launcher-private-input');
-                const pageName = "tools_and_techniques/differentiable_dynamics";
+                const pageName = "differentiable_economics/differentiable_dynamics";
                 const repoURL = "https://github.com/quantecon/lecture-julia.notebooks";
-                const urlPath = "tree/lecture-julia.notebooks/tools_and_techniques/differentiable_dynamics.ipynb";
+                const urlPath = "tree/lecture-julia.notebooks/differentiable_economics/differentiable_dynamics.ipynb";
                 const branch = "main"
                 const launchNotebookLink = document.getElementById('advancedLaunchButton');
 

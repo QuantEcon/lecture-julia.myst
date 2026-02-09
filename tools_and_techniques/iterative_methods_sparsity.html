@@ -119,7 +119,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="22. Differentiating Models of Economic Dynamics" href="differentiable_dynamics.html" />
+    <link rel="next" title="22. Dynamics in One Dimension" href="../introduction_dynamics/scalar_dynam.html" />
     <link rel="prev" title="20. Numerical Linear Algebra and Factorizations" href="numerical_linear_algebra.html" />
 
 <!-- Normal Meta Tags -->
@@ -969,6 +969,9 @@ L x^{k+1} = b - U x^k
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(v - v_direct, Inf) = 3.745356593753968e-7
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </div>
 <p>The accuracy is now <code class="docutils literal notranslate"><span class="pre">1E-7</span></code>.  If we change the parameter to <span class="math notranslate nohighlight">\(\omega = 1.2\)</span>, the accuracy further increases to <code class="docutils literal notranslate"><span class="pre">1E-9</span></code>.</p>
@@ -1266,10 +1269,9 @@ package is <a class="reference external" href="https://github.com/Jutho/LinearMa
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(A_map * x - A * x) = 0.0
-norm(y - A * x) = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(y - A * x) = 0.0
 size(A_map) = (100, 100)
 norm(Matrix(A_map) - A) = 
 </pre></div>
@@ -1338,7 +1340,9 @@ we would use the in-place <code class="docutils literal notranslate"><span class
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(A_map_2 * v - A * v) = 0.0
-Converged after 20 iterations.
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Converged after 20 iterations.
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
@@ -1587,7 +1591,7 @@ you do not need all of the eigenvalues.</p>
 <section id="krylov-methods-for-markov-chain-dynamics">
 <h2><a class="toc-backref" href="#id9"><span class="section-number">21.7. </span>Krylov Methods for Markov-Chain Dynamics</a><a class="headerlink" href="#krylov-methods-for-markov-chain-dynamics" title="Permalink to this heading">#</a></h2>
 <p>This example applies the methods in this lecture to a large continuous-time Markov chain, and provides some practice working with arrays of arbitrary dimensions.</p>
-<p>Consider a version of the Markov-chain dynamics in <span id="id1">[<a class="reference internal" href="../zreferences.html#id4" title="Jesse Perla. A model of product awareness and industry life cycles. Working Paper, University of British Columbia, 2019.">Per19</a>]</span>, where a firm has a discrete number of customers of different types.  To keep things as simple as possible, assume that there are <span class="math notranslate nohighlight">\(m=1, \ldots M\)</span> types of customers and that the firm may have <span class="math notranslate nohighlight">\(n = 1, \ldots N\)</span> customers of each type.</p>
+<p>Consider a version of the Markov-chain dynamics in <span id="id1">[<a class="reference internal" href="../zreferences.html#id5">CCPRB23</a>]</span>, where a firm has a discrete number of customers of different types.  To keep things as simple as possible, assume that there are <span class="math notranslate nohighlight">\(m=1, \ldots M\)</span> types of customers and that the firm may have <span class="math notranslate nohighlight">\(n = 1, \ldots N\)</span> customers of each type.</p>
 <p>To set the notation, let <span class="math notranslate nohighlight">\(n_m \in \{1, \ldots N\}\)</span> be the number of customers of type <span class="math notranslate nohighlight">\(m\)</span>, so that the state of a firm is <span class="math notranslate nohighlight">\(\{n_1, \ldots n_m \ldots, n_M\}\)</span>.  The cardinality of possible states is then <span class="math notranslate nohighlight">\(\mathbf{N}\equiv N^M\)</span>, which can blow up quickly as the number of types increases.</p>
 <p>The stochastic process is a simple counting/forgetting process, as follows:</p>
 <ol class="arabic simple">
@@ -1632,10 +1636,10 @@ approach is to enumerate them in the same order as the <span class="math notrans
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(v) = Array{Float64, 3}
-v(1, 1, 1) = 0.5101399848138988
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v(2, 1, 1) = 0.9467219466065451
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v(1, 1, 1) = 0.5101399848138988
+v(2, 1, 1) = 0.9467219466065451
 v(1, 2, 1) = 0.3075256595852508
 v(2, 2, 1) = 0.2556226174856472
 v(1, 1, 2) = 0.6216922083318245
@@ -1747,7 +1751,7 @@ parameters in a named tuple generator</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  42.926 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  43.191 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (2 allocations: 160 bytes)
@@ -1813,7 +1817,7 @@ of only 10,000 possible states.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  195.623 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  212.717 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (97 allocations: 181.55 MiB)
@@ -1823,22 +1827,22 @@ norm(gmres(A, r) - v_direct) = 2.3579330423718184e-5
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2.753 ms (69 allocations: 2.52 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.026 ms (69 allocations: 2.52 MiB)
 norm(bicgstabl(A, r) - v_direct) = 
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.2583147043505365e-6
-  6.538 ms
+  7.201 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (277 allocations: 7.94 MiB)
-norm(idrs(A, r) - v_direct) = 0.00034927028247709407
+norm(idrs(A, r) - v_direct) = 0.00013774555784360393
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.541 ms (310 allocations: 3.30 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.937 ms (310 allocations: 3.30 MiB)
 </pre></div>
 </div>
 </div>
@@ -1863,7 +1867,7 @@ norm(idrs(A, r) - v_direct) = 0.00034927028247709407
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  612.783 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  668.296 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (89 allocations: 274.67 MiB)
@@ -2019,15 +2023,15 @@ use GMRES since we do not have any structure.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  13.370 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  14.770 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (39 allocations: 2.27 MiB)
-  448.775 μs
+  488.562 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (289 allocations: 94.27 KiB)
-  107.412 μs
+  116.286 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (61 allocations: 50.48 KiB)
@@ -2052,7 +2056,7 @@ use GMRES since we do not have any structure.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  927.027 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.007 s
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (71 allocations: 19.08 MiB)
@@ -2245,11 +2249,6 @@ use GMRES since we do not have any structure.</p>
    21. Krylov Methods and Matrix Conditioning
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="differentiable_dynamics.html">
-   22. Differentiating Models of Economic Dynamics
-  </a>
- </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -2259,37 +2258,37 @@ use GMRES since we do not have any structure.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
-   23. Dynamics in One Dimension
+   22. Dynamics in One Dimension
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
-   24. AR1 Processes
+   23. AR1 Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
-   25. Finite Markov Chains
+   24. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/linear_models.html">
-   26. Linear State Space Models
+   25. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
-   27. Wealth Distribution Dynamics
+   26. Wealth Distribution Dynamics
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/kalman.html">
-   28. A First Look at the Kalman Filter
+   27. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/short_path.html">
-   29. Shortest Paths
+   28. Shortest Paths
   </a>
  </li>
 </ul>
@@ -2301,82 +2300,99 @@ use GMRES since we do not have any structure.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   30. Job Search I: The McCall Search Model
+   29. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   31. Job Search II: Search and Separation
+   30. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   32. A Problem that Stumped Milton Friedman
+   31. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   33. Job Search III: Search with Learning
+   32. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   34. Job Search IV: Modeling Career Choice
+   33. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   35. Job Search V: On-the-Job Search
+   34. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   36. Optimal Growth I: The Stochastic Optimal Growth Model
+   35. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   37. Optimal Growth II: Time Iteration
+   36. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   38. Optimal Growth III: The Endogenous Grid Method
+   37. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   39. LQ Dynamic Programming Problems
+   38. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   40. Optimal Savings I: The Permanent Income Model
+   39. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   41. Optimal Savings II: LQ Techniques
+   40. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   42. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   41. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   43. Optimal Savings III: Occasionally Binding Constraints
+   42. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   44. Robustness
+   43. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   45. Discrete State Dynamic Programming
+   44. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Differentiable Economics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../differentiable_economics/differentiable_dynamics.html">
+   45. Differentiating Models of Economic Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../differentiable_economics/differentiable_filters.html">
+   46. Differentiable Filters
   </a>
  </li>
 </ul>
@@ -2388,12 +2404,12 @@ use GMRES since we do not have any structure.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   46. Modeling COVID 19 with Differential Equations
+   47. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   47. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   48. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -2405,57 +2421,57 @@ use GMRES since we do not have any structure.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   48. Schelling’s Segregation Model
+   49. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   49. A Lake Model of Employment and Unemployment
+   50. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   50. Rational Expectations Equilibrium
+   51. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   51. Markov Perfect Equilibrium
+   52. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   52. Asset Pricing I: Finite State Models
+   53. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   53. Asset Pricing II: The Lucas Asset Pricing Model
+   54. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   54. Asset Pricing III:  Incomplete Markets
+   55. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   55. Uncertainty Traps
+   56. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   56. The Aiyagari Model
+   57. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   57. Default Risk and Income Fluctuations
+   58. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   58. Globalization and Cycles
+   59. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -2467,22 +2483,22 @@ use GMRES since we do not have any structure.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   59. About these Lectures
+   60. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   60. Troubleshooting
+   61. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   61. References
+   62. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   62. Execution Statistics
+   63. Execution Statistics
   </a>
  </li>
 </ul>

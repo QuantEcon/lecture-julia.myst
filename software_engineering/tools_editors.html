@@ -188,7 +188,16 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optional-extensions">11.5.1. Optional Extensions</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-llms-with-vs-code">11.6. Using LLMs with VS Code</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-llms-with-vs-code">11.6. Using LLMs with VS Code</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sharing-instructions-across-tools-with-symlinks">11.6.1. Sharing Instructions Across Tools with Symlinks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-claude-for-code-review-with-github-actions">11.6.2. Using Claude for Code Review with GitHub Actions</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-setup">11.6.2.1. Quick Setup</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#manual-setup">11.6.2.2. Manual Setup</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#automated-review-on-every-pr">11.6.2.3. Automated Review on Every PR</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#vs-code-as-a-latex-editor">11.7. VS Code as a LaTeX Editor</a></li>
 </ul>
                             <p class="logo">
@@ -518,12 +527,13 @@ Status `~/.julia/environments/v1.12/Project.toml`
 <li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=GitHub.vscode-pull-request-github">GitHub Pull Requests and Issues</a>: while VS Code supports the git <a class="reference internal" href="version_control.html"><span class="doc">version control</span></a> natively, these extension provides additional features for working with repositories on GitHub itself.</p></li>
 <li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot">GitHub Copilot</a>: AI-assisted code completion.  See <a class="reference external" href="https://education.github.com/pack">GitHub Education Pack</a> for free access if you are a student or educator.</p></li>
 <li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=openai.chatgpt">OpenAI Codex</a>: official ChatGPT-powered coding agent for VS Code.  Works best if you already have ChatGPT Plus/Pro (or higher) and provides Copilot-like chat, edits, and inline help inside the editor.</p></li>
+<li><p><a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code">Claude Code</a>: Anthropic’s agentic coding tool that can edit files, run commands, and search your codebase.  Available as a VS Code extension.  See the <a class="reference external" href="https://docs.anthropic.com/en/docs/claude-code">Claude Code documentation</a> for setup and usage.</p></li>
 </ol>
 </section>
 </section>
 <section id="using-llms-with-vs-code">
 <span id="llm-instructions"></span><h2><a class="toc-backref" href="#id9"><span class="section-number">11.6. </span>Using LLMs with VS Code</a><a class="headerlink" href="#using-llms-with-vs-code" title="Permalink to this heading">#</a></h2>
-<p>GitHub Copilot, Google Gemini Code Assist, and OpenAI Codex can provide completions, refactors, and documentation suggestions directly in VS Code.</p>
+<p>GitHub Copilot, Google Gemini Code Assist, OpenAI Codex, and Claude Code can provide completions, refactors, and documentation suggestions directly in VS Code.</p>
 <p>For consistent answers across a project you can add short “instructions” files that the assistants read to understand your style and constraints:</p>
 <ul class="simple">
 <li><p><strong>GitHub Copilot</strong>: Place <code class="docutils literal notranslate"><span class="pre">.github/copilot-instructions.md</span></code> in the repo root to define project-wide guidance (file name and location are fixed; see the <a class="reference external" href="https://docs.github.com/en/copilot/customizing-copilot/adding-custom-instructions-for-github-copilot">Copilot docs</a>). You can also create a personal <code class="docutils literal notranslate"><span class="pre">global-copilot-instructions.md</span></code> in your user settings directory if you want defaults across repos.</p></li>
@@ -534,8 +544,9 @@ Status `~/.julia/environments/v1.12/Project.toml`
 </ul>
 </li>
 <li><p><strong>OpenAI Codex</strong>: Codex looks for <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code> (or <code class="docutils literal notranslate"><span class="pre">AGENTS.override.md</span></code>) starting from your repo root and up to the current directory, plus a global copy at <code class="docutils literal notranslate"><span class="pre">~/.codex/AGENTS.md</span></code> (Codex home defaults to <code class="docutils literal notranslate"><span class="pre">~/.codex</span></code>, but you can point <code class="docutils literal notranslate"><span class="pre">CODEX_HOME</span></code> elsewhere if you want it under <code class="docutils literal notranslate"><span class="pre">~/.openai</span></code>). You can add other fallback names—such as <code class="docutils literal notranslate"><span class="pre">instructions.md</span></code> at the repo root—via <code class="docutils literal notranslate"><span class="pre">project_doc_fallback_filenames</span></code> in <code class="docutils literal notranslate"><span class="pre">~/.codex/config.toml</span></code>. See the <a class="reference external" href="https://developers.openai.com/codex/guides/agents-md">AGENTS.md guide</a> for details.</p></li>
+<li><p><strong>Claude Code</strong>: Place a <code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code> file in your repo root to provide project-specific instructions.  Claude Code automatically reads this file at the start of each session.  You can also create a personal <code class="docutils literal notranslate"><span class="pre">~/.claude/CLAUDE.md</span></code> for global defaults across all projects, and folder-level <code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code> files for directory-specific guidance.  Beyond instructions, Claude Code supports “skills”—custom slash commands (e.g., <code class="docutils literal notranslate"><span class="pre">/commit</span></code>, <code class="docutils literal notranslate"><span class="pre">/review-pr</span></code>) that you define in <code class="docutils literal notranslate"><span class="pre">~/.claude/commands/</span></code> or <code class="docutils literal notranslate"><span class="pre">.claude/commands/</span></code> within a project. See the <a class="reference external" href="https://docs.anthropic.com/en/docs/claude-code/memory">Claude Code memory documentation</a> for details on <code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code> and the <a class="reference external" href="https://docs.anthropic.com/en/docs/claude-code/slash-commands">slash commands guide</a> for creating custom skills.</p></li>
 </ul>
-<p>A minimal example you can adapt (drop this same content into <code class="docutils literal notranslate"><span class="pre">.github/copilot-instructions.md</span></code>, <code class="docutils literal notranslate"><span class="pre">GEMINI.md</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code>):</p>
+<p>A minimal example you can adapt (drop this same content into <code class="docutils literal notranslate"><span class="pre">.github/copilot-instructions.md</span></code>, <code class="docutils literal notranslate"><span class="pre">GEMINI.md</span></code>, <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code>, and/or <code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code>):</p>
 <div class="highlight-markdown notranslate"><div class="highlight"><pre><span></span><span class="gu">## Project context</span>
 <span class="k">-</span><span class="w"> </span>Julia lectures and demos targeting Julia 1.12.
 
@@ -559,6 +570,99 @@ Status `~/.julia/environments/v1.12/Project.toml`
 <span class="k">-</span><span class="w"> </span>Avoid destructive git commands; prefer minimal diffs (apply_patch) and cite file paths/lines.
 </pre></div>
 </div>
+<section id="sharing-instructions-across-tools-with-symlinks">
+<h3><span class="section-number">11.6.1. </span>Sharing Instructions Across Tools with Symlinks<a class="headerlink" href="#sharing-instructions-across-tools-with-symlinks" title="Permalink to this heading">#</a></h3>
+<p>To avoid maintaining duplicate content across multiple instruction files, you can create one canonical file and use symbolic links for the others.  For example, using <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code> as the primary file:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create symlinks (macOS/Linux)</span>
+ln<span class="w"> </span>-s<span class="w"> </span>AGENTS.md<span class="w"> </span>CLAUDE.md
+ln<span class="w"> </span>-s<span class="w"> </span>AGENTS.md<span class="w"> </span>GEMINI.md
+mkdir<span class="w"> </span>-p<span class="w"> </span>.github<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ln<span class="w"> </span>-s<span class="w"> </span>../AGENTS.md<span class="w"> </span>.github/copilot-instructions.md
+</pre></div>
+</div>
+<p>With this setup, you only edit <code class="docutils literal notranslate"><span class="pre">AGENTS.md</span></code> and all other tools read the same content through their symlinks.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Windows users</strong>: Symlinks require extra setup.  Enable Developer Mode (Settings → Privacy &amp; security → For developers → toggle “Developer Mode” on), then configure Git with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">config</span> <span class="pre">--global</span> <span class="pre">core.symlinks</span> <span class="pre">true</span></code>.  You must clone the repository fresh after enabling these settings for symlinks to work correctly.</p>
+</div>
+</section>
+<section id="using-claude-for-code-review-with-github-actions">
+<span id="claude-github-actions"></span><h3><span class="section-number">11.6.2. </span>Using Claude for Code Review with GitHub Actions<a class="headerlink" href="#using-claude-for-code-review-with-github-actions" title="Permalink to this heading">#</a></h3>
+<p>Beyond using LLMs inside your editor, you can integrate Claude directly into your GitHub workflow so that it automatically reviews pull requests, responds to questions in issues, and even implements changes — all triggered by mentioning <code class="docutils literal notranslate"><span class="pre">&#64;claude</span></code> in a comment.</p>
+<p>This is powered by <a class="reference external" href="https://github.com/anthropics/claude-code-action">Claude Code GitHub Actions</a>, an official GitHub Action maintained by Anthropic.  Once installed, any collaborator can tag <code class="docutils literal notranslate"><span class="pre">&#64;claude</span></code> in a PR comment or issue and receive an AI-powered response that follows your project’s <code class="docutils literal notranslate"><span class="pre">CLAUDE.md</span></code> guidelines.</p>
+<section id="quick-setup">
+<h4><span class="section-number">11.6.2.1. </span>Quick Setup<a class="headerlink" href="#quick-setup" title="Permalink to this heading">#</a></h4>
+<p>The fastest way to set up the action is from the Claude Code CLI:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>claude<span class="w">            </span><span class="c1"># start Claude Code</span>
+/install-github-app<span class="w">   </span><span class="c1"># guided installer</span>
+</pre></div>
+</div>
+<p>This command walks you through installing the <a class="reference external" href="https://github.com/apps/claude">Claude GitHub app</a>, adding your <code class="docutils literal notranslate"><span class="pre">ANTHROPIC_API_KEY</span></code> as a repository secret, and creating the workflow file.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You must be a <strong>repository admin</strong> to install the GitHub app and add secrets.  The app requests read &amp; write permissions for Contents, Issues, and Pull requests.</p>
+</div>
+</section>
+<section id="manual-setup">
+<h4><span class="section-number">11.6.2.2. </span>Manual Setup<a class="headerlink" href="#manual-setup" title="Permalink to this heading">#</a></h4>
+<p>If you prefer to configure things yourself:</p>
+<ol class="arabic simple">
+<li><p>Install the Claude GitHub app at <a class="reference external" href="https://github.com/apps/claude">github.com/apps/claude</a> and grant it access to your repository.</p></li>
+<li><p>Add your <code class="docutils literal notranslate"><span class="pre">ANTHROPIC_API_KEY</span></code> to the repository secrets (Settings → Secrets and variables → Actions).</p></li>
+<li><p>Create a workflow file at <code class="docutils literal notranslate"><span class="pre">.github/workflows/claude.yml</span></code>:</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Claude Code</span>
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">issue_comment</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">created</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">pull_request_review_comment</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">created</span><span class="p p-Indicator">]</span>
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">claude</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<span class="w">      </span><span class="nt">pull-requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<span class="w">      </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">anthropics/claude-code-action@v1</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">anthropic_api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.ANTHROPIC_API_KEY }}</span>
+</pre></div>
+</div>
+<p>With this workflow in place, mentioning <code class="docutils literal notranslate"><span class="pre">&#64;claude</span></code> in any PR or issue comment triggers the action.  For example:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>@claude review this PR for correctness and style
+@claude how should I handle the edge case in this function?
+@claude fix the type instability in the inner loop
+</pre></div>
+</div>
+</section>
+<section id="automated-review-on-every-pr">
+<h4><span class="section-number">11.6.2.3. </span>Automated Review on Every PR<a class="headerlink" href="#automated-review-on-every-pr" title="Permalink to this heading">#</a></h4>
+<p>You can also configure Claude to review every pull request automatically, without needing an <code class="docutils literal notranslate"><span class="pre">&#64;claude</span></code> mention:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Code Review</span>
+<span class="nt">on</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">opened</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">synchronize</span><span class="p p-Indicator">]</span>
+<span class="nt">jobs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">review</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+<span class="w">    </span><span class="nt">permissions</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">read</span>
+<span class="w">      </span><span class="nt">pull-requests</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<span class="w">      </span><span class="nt">issues</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v4</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">anthropics/claude-code-action@v1</span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">anthropic_api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.ANTHROPIC_API_KEY }}</span>
+<span class="w">          </span><span class="nt">prompt</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/review&quot;</span>
+<span class="w">          </span><span class="nt">claude_args</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;--max-turns</span><span class="nv"> </span><span class="s">5&quot;</span>
+</pre></div>
+</div>
+<p>See the <a class="reference external" href="https://docs.anthropic.com/en/docs/claude-code/github-actions">Claude Code GitHub Actions documentation</a> and the <a class="reference external" href="https://github.com/anthropics/claude-code-action">action repository</a> for the full set of configuration options, including use with AWS Bedrock and Google Vertex AI.</p>
+</section>
+</section>
 </section>
 <section id="vs-code-as-a-latex-editor">
 <span id="vscode-latex"></span><h2><a class="toc-backref" href="#id10"><span class="section-number">11.7. </span>VS Code as a LaTeX Editor</a><a class="headerlink" href="#vs-code-as-a-latex-editor" title="Permalink to this heading">#</a></h2>
@@ -807,11 +911,6 @@ Status `~/.julia/environments/v1.12/Project.toml`
    21. Krylov Methods and Matrix Conditioning
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../tools_and_techniques/differentiable_dynamics.html">
-   22. Differentiating Models of Economic Dynamics
-  </a>
- </li>
 </ul>
 <p aria-level="2" class="caption" role="heading">
  <span class="caption-text">
@@ -821,37 +920,37 @@ Status `~/.julia/environments/v1.12/Project.toml`
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/scalar_dynam.html">
-   23. Dynamics in One Dimension
+   22. Dynamics in One Dimension
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/ar1_processes.html">
-   24. AR1 Processes
+   23. AR1 Processes
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/finite_markov.html">
-   25. Finite Markov Chains
+   24. Finite Markov Chains
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/linear_models.html">
-   26. Linear State Space Models
+   25. Linear State Space Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/wealth_dynamics.html">
-   27. Wealth Distribution Dynamics
+   26. Wealth Distribution Dynamics
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/kalman.html">
-   28. A First Look at the Kalman Filter
+   27. A First Look at the Kalman Filter
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../introduction_dynamics/short_path.html">
-   29. Shortest Paths
+   28. Shortest Paths
   </a>
  </li>
 </ul>
@@ -863,82 +962,99 @@ Status `~/.julia/environments/v1.12/Project.toml`
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model.html">
-   30. Job Search I: The McCall Search Model
+   29. Job Search I: The McCall Search Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/mccall_model_with_separation.html">
-   31. Job Search II: Search and Separation
+   30. Job Search II: Search and Separation
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/wald_friedman.html">
-   32. A Problem that Stumped Milton Friedman
+   31. A Problem that Stumped Milton Friedman
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/odu.html">
-   33. Job Search III: Search with Learning
+   32. Job Search III: Search with Learning
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/career.html">
-   34. Job Search IV: Modeling Career Choice
+   33. Job Search IV: Modeling Career Choice
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/jv.html">
-   35. Job Search V: On-the-Job Search
+   34. Job Search V: On-the-Job Search
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/optgrowth.html">
-   36. Optimal Growth I: The Stochastic Optimal Growth Model
+   35. Optimal Growth I: The Stochastic Optimal Growth Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/coleman_policy_iter.html">
-   37. Optimal Growth II: Time Iteration
+   36. Optimal Growth II: Time Iteration
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/egm_policy_iter.html">
-   38. Optimal Growth III: The Endogenous Grid Method
+   37. Optimal Growth III: The Endogenous Grid Method
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/lqcontrol.html">
-   39. LQ Dynamic Programming Problems
+   38. LQ Dynamic Programming Problems
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income.html">
-   40. Optimal Savings I: The Permanent Income Model
+   39. Optimal Savings I: The Permanent Income Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/perm_income_cons.html">
-   41. Optimal Savings II: LQ Techniques
+   40. Optimal Savings II: LQ Techniques
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/smoothing.html">
-   42. Consumption and Tax Smoothing with Complete and Incomplete Markets
+   41. Consumption and Tax Smoothing with Complete and Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/ifp.html">
-   43. Optimal Savings III: Occasionally Binding Constraints
+   42. Optimal Savings III: Occasionally Binding Constraints
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/robustness.html">
-   44. Robustness
+   43. Robustness
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../dynamic_programming/discrete_dp.html">
-   45. Discrete State Dynamic Programming
+   44. Discrete State Dynamic Programming
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Differentiable Economics
+ </span>
+</p>
+<ul class="nav bd-sidenav nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../differentiable_economics/differentiable_dynamics.html">
+   45. Differentiating Models of Economic Dynamics
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../differentiable_economics/differentiable_filters.html">
+   46. Differentiable Filters
   </a>
  </li>
 </ul>
@@ -950,12 +1066,12 @@ Status `~/.julia/environments/v1.12/Project.toml`
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/seir_model.html">
-   46. Modeling COVID 19 with Differential Equations
+   47. Modeling COVID 19 with Differential Equations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../continuous_time/covid_sde.html">
-   47. Modeling Shocks in COVID 19 with Stochastic Differential Equations
+   48. Modeling Shocks in COVID 19 with Stochastic Differential Equations
   </a>
  </li>
 </ul>
@@ -967,57 +1083,57 @@ Status `~/.julia/environments/v1.12/Project.toml`
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   48. Schelling’s Segregation Model
+   49. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   49. A Lake Model of Employment and Unemployment
+   50. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   50. Rational Expectations Equilibrium
+   51. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   51. Markov Perfect Equilibrium
+   52. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   52. Asset Pricing I: Finite State Models
+   53. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   53. Asset Pricing II: The Lucas Asset Pricing Model
+   54. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   54. Asset Pricing III:  Incomplete Markets
+   55. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   55. Uncertainty Traps
+   56. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   56. The Aiyagari Model
+   57. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   57. Default Risk and Income Fluctuations
+   58. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   58. Globalization and Cycles
+   59. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1029,22 +1145,22 @@ Status `~/.julia/environments/v1.12/Project.toml`
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   59. About these Lectures
+   60. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   60. Troubleshooting
+   61. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   61. References
+   62. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   62. Execution Statistics
+   63. Execution Statistics
   </a>
  </li>
 </ul>
