@@ -31,7 +31,7 @@ kernelspec:
 
 This lecture builds on {doc}`differentiable dynamics <differentiable_dynamics>` (simulation + AD) and {doc}`the Kalman filter <../introduction_dynamics/kalman>` (filter theory). See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for background on Enzyme.
 
-Here we introduce **advanced techniques for high-performance computing** -- in particular, working with both in-place mutable operations and immutable StaticArrays, then applying these to a generic **nonlinear** state-space simulator and a zero-allocation Kalman filter, both compatible with Enzyme.jl.
+Here we introduce **advanced techniques for high-performance computing** -- in particular, working with both in-place mutable operations and immutable StaticArrays, then applying these to a generic **nonlinear** state-space simulator and a high-performance Kalman filter, both compatible with Enzyme.jl.
 
 **Unlike other lectures, this focuses on performance rather than simple clarity.**
 
@@ -62,7 +62,7 @@ using Test
 
 ### Motivation
 
-For small fixed-size problems (roughly $N \leq 10$), `StaticArrays` (stack-allocated, no heap) can be dramatically faster than standard `Vector`/`Matrix`. The exact crossover depends on the operations involved, but beyond about $10 \times 10$ matrices the benefits diminish and compilation costs increase.
+For small fixed-size problems, `StaticArrays` (stack-allocated, no heap) can be dramatically faster than standard `Vector`/`Matrix`. The [rule of thumb](https://juliaarrays.github.io/StaticArrays.jl/stable/) is that StaticArrays are beneficial when the **total number of elements** is under about 100 -- so an `SVector{50}` or an `SMatrix{8,8}` (64 elements) are good candidates, while an `SMatrix{20,20}` (400 elements) is not. The biggest wins (10x--100x) come at very small sizes (under ~20 elements); beyond 100 elements, compilation costs explode and the stack/register advantages disappear.
 
 The challenge is that standard in-place operations (`mul!`, `ldiv!`, `copyto!`) only work with mutable arrays. StaticArrays are immutable -- you must return new values.
 
@@ -84,6 +84,7 @@ This makes the natural data structure **arrays of arrays** (e.g., `Vector{SVecto
 | `mul!!(Y, A, B, α, β)` | `mul!(Y,A,B,α,β); return Y` | `return α*(A*B) + β*Y` | Accumulate: `Y = αAB + βY` |
 | `muladd!!(Y, A, B)` | `mul!(Y,A,B,1.0,1.0); return Y` | `return Y + A*B` | `Y += A*B` |
 | `copyto!!(Y, X)` | `copyto!(Y,X); return Y` | `return X` | Copy data |
+| `assign!!(Y, X)` | loop `Y[i]=X[i]; return Y` | `return X` | Enzyme-safe copy (avoids `Base.copyto!`) |
 
 ```{code-cell} julia
 @inline function mul!!(Y, A, B)
@@ -112,8 +113,11 @@ end
         return Y + A * B
     end
 end
+```
 
-# No-op specializations for nothing arguments (no observation noise)
+We also define **no-op specializations** for `nothing` arguments. This lets us write generic code that handles optional components -- for example, a model with or without observation noise -- using a single code path. If `H = nothing`, then `muladd!!(y, H, v)` simply returns `y` unchanged without any branching at runtime.
+
+```{code-cell} julia
 @inline muladd!!(Y, ::Nothing, B) = Y
 @inline muladd!!(Y, A, ::Nothing) = Y
 @inline muladd!!(Y, ::Nothing, ::Nothing) = Y
@@ -125,6 +129,52 @@ end
     else
         return X
     end
+end
+
+# Enzyme-safe alternative to copyto!! -- uses explicit loops to avoid
+# Base.copyto! which can trigger runtime activity analysis errors.
+@inline function assign!!(Y, X)
+    if ismutable(Y)
+        @inbounds for i in eachindex(X)
+            Y[i] = X[i]
+        end
+        return Y
+    else
+        return X
+    end
+end
+```
+
+`assign!!` is the safer choice for code differentiated with Enzyme; `copyto!!` delegates to `Base.copyto!`, which can trigger runtime activity analysis errors in some contexts.
+
+### Prototype-Based Allocation
+
+When writing generic code, we need to allocate workspace arrays that match the type family of the inputs -- mutable `Vector`/`Matrix` or immutable `SVector`/`SMatrix`. Rather than maintaining separate allocation functions for each case, we use **prototype-based allocation**: pass an existing array as a template, and `alloc_like` creates a new zeroed array of the same type. The `SVector`/`SMatrix` overloads are necessary because Julia's `similar` returns a mutable `MVector`/`MMatrix` for static arrays, which would lose immutability and stack allocation.
+
+```{code-cell} julia
+# Same shape as prototype
+@inline alloc_like(x::AbstractArray) = similar(x)
+@inline alloc_like(::SVector{N, T}) where {N, T} = zeros(SVector{N, T})
+@inline alloc_like(::SMatrix{N, M, T}) where {N, M, T} = zeros(SMatrix{N, M, T})
+
+# Different dimensions, same type family
+@inline alloc_like(x::AbstractArray, dims::Int...) = similar(x, dims...)
+@inline alloc_like(::SVector{<:Any, T}, n::Int) where {T} = zeros(SVector{n, T})
+@inline alloc_like(::SMatrix{<:Any, <:Any, T}, n::Int,
+                   m::Int) where {T} = zeros(SMatrix{n, m, T})
+@inline alloc_like(::SMatrix{<:Any, <:Any, T},
+                   n::Int) where {T} = zeros(SVector{n, T})
+```
+
+Similarly, `fill_zero!!` zeroes an array generically -- in-place for mutable, returning a new zeroed value for immutable. This is needed to reset workspace caches between AD calls.
+
+```{code-cell} julia
+@inline fill_zero!!(::SVector{N, T}) where {N, T} = zeros(SVector{N, T})
+@inline fill_zero!!(::SMatrix{N, M, T}) where {N, M,
+                                               T} = zeros(SMatrix{N, M, T})
+@inline function fill_zero!!(x::AbstractArray{T}) where {T}
+    fill!(x, zero(T))
+    return x
 end
 ```
 
@@ -139,23 +189,17 @@ With the `!!` pattern, the natural data structure is `Vector{Vector{Float64}}` o
 The model is
 
 $$
-x_{t+1} = f(x_t, w_{t+1}, p, t), \qquad y_t = g(x_t, p, t) + H v_t
+x_{t+1} = f(x_t, w_{t+1}, p, t), \qquad y_t = g(x_t, p, t) + H v_t, \quad v_t \sim N(0, I)
 $$
 
-where $f$ and $g$ can be **arbitrary nonlinear functions**. The state transition and observation functions are passed as callbacks `f!!(x_next, x, w, p, t)` and `g!!(y, x, p, t)`, which follow the `!!` convention -- they attempt to mutate the first argument in-place but always return the result. The observation noise $H v_t$ is added separately after the callback.
+where $f$ and $g$ can be **arbitrary nonlinear functions**, but the observation noise is assumed **additive Gaussian** with $v_t \sim N(0, I)$. The state transition callback `f!!(x_next, x, w, p, t)` implements the full $f(\cdot)$ (including process noise), while the observation callback `g!!(y, x, p, t)` implements only the noiseless $g(\cdot)$. The simulator adds the Gaussian observation noise $Hv_t$ separately via `muladd!!`. Both callbacks follow the `!!` convention -- they attempt to mutate the first argument in-place but always return the result. Passing `H = nothing` drops the observation noise entirely thanks to the no-op specializations above.
 
 ```{code-cell} julia
 @inline function simulate_ssm!(x, y, f!!, g!!, x_0, w, v, H, p)
     T = length(w)
 
     # Initialize first state
-    if ismutable(x[1])
-        @inbounds for i in eachindex(x_0)
-            x[1][i] = x_0[i]
-        end
-    else
-        x[1] = x_0
-    end
+    x[1] = assign!!(x[1], x_0)
 
     @inbounds for t in 1:T
         x[t + 1] = f!!(x[t + 1], x[t], w[t], p, t - 1)
@@ -173,7 +217,7 @@ end
 
 ### Linear State-Space Callbacks
 
-As a concrete example, we define callbacks implementing the linear model $x_{t+1} = Ax_t + Cw_{t+1}$ and $y_t = Gx_t$.
+As a concrete example, we define callbacks for the linear state-space model. The state transition callback implements $f(x_t, w_{t+1}) = Ax_t + Cw_{t+1}$, while the observation callback implements only the noiseless part $g(x_t) = Gx_t$. The full observation is $y_t = g(x_t) + Hv_t = Gx_t + Hv_t$, where the $Hv_t$ term is added by `simulate_ssm!`.
 
 ```{code-cell} julia
 @inline function f_lss!!(x_p, x, w, p, t)
@@ -186,18 +230,17 @@ end
 end
 ```
 
-### Example: Small Linearized RBC Model
+### Example: Small Linear State-Space Model
 
-We set up a small $N=2$ model with economic motivation: states are (capital deviation, TFP) and observables are (output, investment).
+We set up a small $N=2$ model with two coupled states and two observables. The transition matrix $A$ has off-diagonal terms, so both states interact and move jointly. Both states receive independent shocks through $C$, and both are directly observed through $G = I$ with small measurement noise $H$.
 
 ```{code-cell} julia
 Random.seed!(42)
 
-# Simple linearized RBC: states = (capital deviation, TFP)
-A = [0.95 0.0; 0.0 0.9]   # capital persistence, AR(1) TFP
-C = reshape([0.0; 0.1], 2, 1) # TFP shock only (N×K where K=1)
-G = [0.3 1.0; 1.0 0.0]    # output ≈ 0.3k + z, investment ≈ k
-H = [0.05 0.0; 0.0 0.05]  # observation noise
+A = [0.9 0.1; -0.1 0.8]    # coupled states: cross-feedback
+C = [0.1 0.0; 0.0 0.1]     # independent shocks to each state
+G = [1.0 0.0; 0.0 1.0]     # both states observed directly
+H = [0.05 0.0; 0.0 0.05]   # small observation noise
 model = (; A, C, G, H)
 
 N = size(A, 1)     # state dimension
@@ -212,16 +255,16 @@ x_0 = zeros(N)
 w = [randn(K) for _ in 1:T]
 v = [randn(L) for _ in 1:(T + 1)]
 
-# Allocate output arrays
-x = [zeros(N) for _ in 1:(T + 1)]
-y = [zeros(M) for _ in 1:(T + 1)]
+# Allocate output arrays using prototypes
+x = [alloc_like(x_0) for _ in 1:(T + 1)]
+y = [alloc_like(x_0, M) for _ in 1:(T + 1)]
 
 simulate_ssm!(x, y, f_lss!!, g_lss!!, x_0, w, v, H, model)
 
 time = 0:T
-plot(time, [x[t][1] for t in 1:(T + 1)], lw = 2, label = "capital deviation",
+plot(time, [x[t][1] for t in 1:(T + 1)], lw = 2, label = "x₁",
      xlabel = "t", ylabel = "state", title = "State Paths")
-plot!(time, [x[t][2] for t in 1:(T + 1)], lw = 2, label = "TFP")
+plot!(time, [x[t][2] for t in 1:(T + 1)], lw = 2, label = "x₂")
 ```
 
 ### Running with StaticArrays
@@ -238,8 +281,8 @@ model_s = (; A = A_s, C = C_s, G = G_s, H = H_s)
 x_0_s = SVector{N}(x_0)
 w_s = [SVector{K}(w[t]) for t in 1:T]
 v_s = [SVector{L}(v[t]) for t in 1:(T + 1)]
-x_s = [SVector{N}(zeros(N)) for _ in 1:(T + 1)]
-y_s = [SVector{M}(zeros(M)) for _ in 1:(T + 1)]
+x_s = [alloc_like(x_0_s) for _ in 1:(T + 1)]
+y_s = [alloc_like(x_0_s, M) for _ in 1:(T + 1)]
 
 simulate_ssm!(x_s, y_s, f_lss!!, g_lss!!, x_0_s, w_s, v_s, H_s, model_s)
 ```
@@ -277,7 +320,13 @@ end
 
 ### Forward-Mode AD: Impulse Response
 
-We perturb $w_1$ (the first shock) by a unit vector and see how states respond -- this is the impulse response function via AD.
+For the linear model $x_{t+1} = Ax_t + Cw_{t+1}$ starting from $x_1 = x_0$, a unit perturbation $\delta w_1 = e_k$ (the $k$-th standard basis vector) propagates through the dynamics as
+
+$$
+\frac{\partial x_{t+1}}{\partial w_{1,k}} = A^{t-1} C\, e_k, \qquad t \geq 1
+$$
+
+This is the **impulse response function** -- it shows how a one-time shock decays through the system. Forward-mode AD computes exactly these derivatives: by seeding $dw_1 = e_k$ and propagating tangents forward, the output `dx[t]` gives $\partial x_t / \partial w_{1,k}$ at every horizon.
 
 ```{code-cell} julia
 dx = Enzyme.make_zero(x)
@@ -300,6 +349,8 @@ plot!(time, [dx[t][2] for t in 1:(T + 1)], lw = 2, label = "dx₂/dw₁₁")
 
 Reverse mode gives the gradient with respect to **all** inputs in a single sweep, regardless of input dimension.
 
+To use `Enzyme.autodiff` in reverse mode we need a scalar-valued function and shadow (gradient) arrays for every `Duplicated` argument. First we define a scalar summary:
+
 ```{code-cell} julia
 function scalar_ssm(x, y, f!!, g!!, x_0, w, v, H, p)
     simulate_ssm!(x, y, f!!, g!!, x_0, w, v, H, p)
@@ -312,9 +363,13 @@ function scalar_ssm(x, y, f!!, g!!, x_0, w, v, H, p)
     end
     return total
 end
+```
 
-x_rev = [zeros(N) for _ in 1:(T + 1)]
-y_rev = [zeros(M) for _ in 1:(T + 1)]
+The raw `autodiff` call requires allocating shadow arrays for each `Duplicated` argument:
+
+```{code-cell} julia
+x_rev = [alloc_like(x_0) for _ in 1:(T + 1)]
+y_rev = [alloc_like(x_0, M) for _ in 1:(T + 1)]
 dx_rev = Enzyme.make_zero(x_rev)
 dy_rev = Enzyme.make_zero(y_rev)
 dx_0_rev = Enzyme.make_zero(x_0)
@@ -330,15 +385,41 @@ println("Gradient w.r.t. x_0: ", dx_0_rev)
 println("Gradient w.r.t. w[1]: ", dw_rev[1])
 ```
 
+In practice, it is convenient to wrap this boilerplate into a gradient function that handles all the shadow allocation internally:
+
+```{code-cell} julia
+function gradient_ssm(x_0, w; f!! = f_lss!!, g!! = g_lss!!, v, H, model)
+    T_s = length(w)
+    y_proto = alloc_like(x_0, size(H, 1))  # observation vector prototype
+    x = [alloc_like(x_0) for _ in 1:(T_s + 1)]
+    y = [alloc_like(y_proto) for _ in 1:(T_s + 1)]
+    dx = Enzyme.make_zero(x)
+    dy = Enzyme.make_zero(y)
+    dx_0 = Enzyme.make_zero(x_0)
+    dw = Enzyme.make_zero(w)
+
+    autodiff(Reverse, scalar_ssm,
+             Duplicated(x, dx), Duplicated(y, dy),
+             Const(f!!), Const(g!!),
+             Duplicated(x_0, dx_0), Duplicated(w, dw),
+             Const(v), Const(H), Const(model))
+
+    return (; grad_x_0 = dx_0, grad_w = dw)
+end
+
+grads = gradient_ssm(x_0, w; v, H, model)
+println("Gradient w.r.t. x_0: ", grads.grad_x_0)
+println("Gradient w.r.t. w[1]: ", grads.grad_w[1])
+```
+
 ```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 @testset "Reverse AD simulation" begin
-    grad_sum = sum(sum(abs, arr) for arr in dx_rev) +
-               sum(sum(abs, arr) for arr in dy_rev) +
-               sum(abs, dx_0_rev) +
-               sum(sum(abs, arr) for arr in dw_rev)
+    @test grads.grad_x_0 ≈ dx_0_rev rtol = 1e-10
+    @test grads.grad_w[1] ≈ dw_rev[1] rtol = 1e-10
+    grad_sum = sum(abs, grads.grad_x_0) + sum(sum(abs, g) for g in grads.grad_w)
     @test grad_sum > 0
     @test !isnan(grad_sum)
 end
@@ -353,7 +434,7 @@ Before the filter, we need utilities for Cholesky factorization, linear solves, 
 - **`cholesky!!(A, :U)`** -- Cholesky factorization of innovation covariance $S_t$
 - **`ldiv!!(y, F, x)`** and **`ldiv!!(F, x)`** -- solving $S_t^{-1} \nu_t$ for the log-likelihood and Kalman gain (the 2-arg form avoids internal allocation)
 - **`transpose!!(Y, X)`** -- computing $K_t$ via $S_t K_t' = (\hat\Sigma_t G')'$
-- **`symmetrize_upper!!(L, A, \epsilon)`** -- enforcing exact symmetry before Cholesky (numerical drift in $\hat\Sigma_t$ can break it); the $\epsilon$ diagonal perturbation ensures positive definiteness
+- **`symmetrize_upper!!(L, A, epsilon)`** -- enforcing exact symmetry before Cholesky (numerical drift in $\hat\Sigma_t$ can break it); the `epsilon` diagonal perturbation ensures positive definiteness
 - **`logdet_chol(F)`** -- allocation-free log-determinant from Cholesky factor
 
 | Function | Mutable path | Immutable path |
@@ -362,7 +443,7 @@ Before the filter, we need utilities for Cholesky factorization, linear solves, 
 | `ldiv!!(y, F, x)` | `ldiv!(y,F,x); return y` | `return F \ x` |
 | `ldiv!!(F, x)` | `ldiv!(F,x); return x` | `return F \ x` |
 | `transpose!!(Y, X)` | `transpose!(Y,X); return Y` | `return transpose(X)` |
-| `symmetrize_upper!!(L, A, ε)` | element-wise loop, zero lower | `(A+A')/2 + ε*I` |
+| `symmetrize_upper!!(L, A, epsilon)` | element-wise loop, zero lower | `(A+A')/2 + epsilon*I` |
 | `logdet_chol(F)` | `2*sum(log(diag(F.U)))` | same |
 
 ```{code-cell} julia
@@ -410,12 +491,12 @@ end
     return 2 * result
 end
 
-@noinline function symmetrize_upper!!(L, A, eps = 0.0)
+@noinline function symmetrize_upper!!(L, A, epsilon = 0.0)
     if ismutable(L)
         @inbounds for j in axes(A, 2)
             for i in 1:j
                 v = (A[i, j] + A[j, i]) * 0.5
-                L[i, j] = (i == j) ? v + eps : v
+                L[i, j] = (i == j) ? v + epsilon : v
             end
             for i in (j + 1):size(A, 1)
                 L[i, j] = 0
@@ -424,8 +505,8 @@ end
         return L
     else
         sym = (A + A') / 2
-        if eps != 0
-            return sym + eps * one(A)
+        if epsilon != 0
+            return sym + epsilon * one(A)
         else
             return sym
         end
@@ -468,104 +549,81 @@ $$
 
 ### Log-Likelihood
 
+Under the Gaussian assumption, the innovation $\nu_t = y_t - G\hat\mu_t$ is distributed as
+
 $$
-\ell = -\frac{1}{2}\sum_{t=1}^T \bigl(M\log 2\pi + \log|S_t| + \nu_t' S_t^{-1}\nu_t\bigr)
+\nu_t \sim N(0, S_t), \qquad S_t = G\hat\Sigma_t G' + HH'
 $$
 
-Here `logdet_chol(F)` computes $\log|S_t|$ from the Cholesky factor without allocation, and the quadratic form uses `ldiv!!` to solve $S_t^{-1}\nu_t$ then `dot`.
+so the log-density of $\nu_t$ under the multivariate normal $N(0, S_t)$ is
+
+$$
+\log p(\nu_t) = -\frac{1}{2}\bigl(M \log 2\pi + \log|S_t| + \nu_t' S_t^{-1} \nu_t\bigr)
+$$
+
+Summing over observations gives the log-likelihood:
+
+$$
+\ell = \sum_{t=1}^T \log p(\nu_t) = -\frac{1}{2}\sum_{t=1}^T \bigl(M\log 2\pi + \log|S_t| + \nu_t' S_t^{-1}\nu_t\bigr)
+$$
+
+In the code, we compute $\log|S_t|$ from its Cholesky factor $S_t = U'U$ via `logdet_chol(F)`, which sums $2\sum_i \log U_{ii}$ without any allocation. The quadratic form $\nu_t' S_t^{-1} \nu_t$ is computed by first solving $S_t^{-1}\nu_t$ with `ldiv!!`, then taking the inner product with `dot`.
 
 ### Workspace Cache
 
-Zero-allocation code requires preallocating **all** intermediate buffers. This is especially important for AD since mutations must be tracked. We provide two allocation functions: one for mutable arrays and one for StaticArrays.
+Zero-allocation code requires preallocating **all** intermediate buffers. This is especially important for AD since mutations must be tracked. Using `alloc_like`, a single allocation function handles both mutable and static arrays -- it infers all types and dimensions from the prototypes `mu_0`, `Sigma_0`, and `model.G`.
 
 ```{code-cell} julia
-function alloc_kalman_cache(N, M, T, ::Type{T_elem} = Float64) where {T_elem}
+function alloc_kalman_cache(mu_0, Sigma_0, model, T)
+    N = size(Sigma_0, 1)
+    M = size(model.G, 1)
     return (;
-            mu_pred = [zeros(T_elem, N) for _ in 1:T],
-            sigma_pred = [zeros(T_elem, N, N) for _ in 1:T],
-            A_sigma = [zeros(T_elem, N, N) for _ in 1:T],
-            sigma_Gt = [zeros(T_elem, N, M) for _ in 1:T],
-            innovation = [zeros(T_elem, M) for _ in 1:T],
-            innovation_cov = [zeros(T_elem, M, M) for _ in 1:T],
-            S_chol = [zeros(T_elem, M, M) for _ in 1:T],
-            innovation_solved = [zeros(T_elem, M) for _ in 1:T],
-            gain_rhs = [zeros(T_elem, M, N) for _ in 1:T],
-            gain = [zeros(T_elem, N, M) for _ in 1:T],
-            gainG = [zeros(T_elem, N, N) for _ in 1:T],
-            KgSigma = [zeros(T_elem, N, N) for _ in 1:T],
-            mu_update = [zeros(T_elem, N) for _ in 1:T])
-end
-
-function alloc_kalman_cache_static(::Val{N}, ::Val{M}, T) where {N, M}
-    return (;
-            mu_pred = [zeros(SVector{N, Float64}) for _ in 1:T],
-            sigma_pred = [zeros(SMatrix{N, N, Float64}) for _ in 1:T],
-            A_sigma = [zeros(SMatrix{N, N, Float64}) for _ in 1:T],
-            sigma_Gt = [zeros(SMatrix{N, M, Float64}) for _ in 1:T],
-            innovation = [zeros(SVector{M, Float64}) for _ in 1:T],
-            innovation_cov = [zeros(SMatrix{M, M, Float64}) for _ in 1:T],
-            S_chol = [zeros(SMatrix{M, M, Float64}) for _ in 1:T],
-            innovation_solved = [zeros(SVector{M, Float64}) for _ in 1:T],
-            gain_rhs = [zeros(SMatrix{M, N, Float64}) for _ in 1:T],
-            gain = [zeros(SMatrix{N, M, Float64}) for _ in 1:T],
-            gainG = [zeros(SMatrix{N, N, Float64}) for _ in 1:T],
-            KgSigma = [zeros(SMatrix{N, N, Float64}) for _ in 1:T],
-            mu_update = [zeros(SVector{N, Float64}) for _ in 1:T])
+            mu_pred = [alloc_like(mu_0) for _ in 1:T],
+            sigma_pred = [alloc_like(Sigma_0) for _ in 1:T],
+            A_sigma = [alloc_like(Sigma_0) for _ in 1:T],
+            sigma_Gt = [alloc_like(Sigma_0, N, M) for _ in 1:T],
+            innovation = [alloc_like(mu_0, M) for _ in 1:T],
+            innovation_cov = [alloc_like(Sigma_0, M, M) for _ in 1:T],
+            S_chol = [alloc_like(Sigma_0, M, M) for _ in 1:T],
+            innovation_solved = [alloc_like(mu_0, M) for _ in 1:T],
+            gain_rhs = [alloc_like(model.G) for _ in 1:T],
+            gain = [alloc_like(Sigma_0, N, M) for _ in 1:T],
+            gainG = [alloc_like(Sigma_0) for _ in 1:T],
+            KgSigma = [alloc_like(Sigma_0) for _ in 1:T],
+            mu_update = [alloc_like(mu_0) for _ in 1:T])
 end
 ```
 
-Since the cache is reused across calls, it must be zeroed at the start of each filter run to prevent gradient accumulation during AD.
+Since the cache is reused across calls, it must be zeroed at the start of each filter run to prevent gradient accumulation during AD. Using `fill_zero!!`, the same loop handles both mutable and immutable arrays without branching.
 
 ```{code-cell} julia
 function zero_kalman_cache!!(cache)
-    T = length(cache.mu_pred)
-    if ismutable(cache.mu_pred[1])
-        @inbounds for t in 1:T
-            fill!(cache.mu_pred[t], zero(eltype(cache.mu_pred[t])))
-            fill!(cache.sigma_pred[t], zero(eltype(cache.sigma_pred[t])))
-            fill!(cache.A_sigma[t], zero(eltype(cache.A_sigma[t])))
-            fill!(cache.sigma_Gt[t], zero(eltype(cache.sigma_Gt[t])))
-            fill!(cache.innovation[t], zero(eltype(cache.innovation[t])))
-            fill!(cache.innovation_cov[t],
-                  zero(eltype(cache.innovation_cov[t])))
-            fill!(cache.S_chol[t], zero(eltype(cache.S_chol[t])))
-            fill!(cache.innovation_solved[t],
-                  zero(eltype(cache.innovation_solved[t])))
-            fill!(cache.gain_rhs[t], zero(eltype(cache.gain_rhs[t])))
-            fill!(cache.gain[t], zero(eltype(cache.gain[t])))
-            fill!(cache.gainG[t], zero(eltype(cache.gainG[t])))
-            fill!(cache.KgSigma[t], zero(eltype(cache.KgSigma[t])))
-            fill!(cache.mu_update[t], zero(eltype(cache.mu_update[t])))
-        end
-        return cache
-    else
-        @inbounds for t in 1:T
-            cache.mu_pred[t] = zero(cache.mu_pred[t])
-            cache.sigma_pred[t] = zero(cache.sigma_pred[t])
-            cache.A_sigma[t] = zero(cache.A_sigma[t])
-            cache.sigma_Gt[t] = zero(cache.sigma_Gt[t])
-            cache.innovation[t] = zero(cache.innovation[t])
-            cache.innovation_cov[t] = zero(cache.innovation_cov[t])
-            cache.S_chol[t] = zero(cache.S_chol[t])
-            cache.innovation_solved[t] = zero(cache.innovation_solved[t])
-            cache.gain_rhs[t] = zero(cache.gain_rhs[t])
-            cache.gain[t] = zero(cache.gain[t])
-            cache.gainG[t] = zero(cache.gainG[t])
-            cache.KgSigma[t] = zero(cache.KgSigma[t])
-            cache.mu_update[t] = zero(cache.mu_update[t])
-        end
-        return cache
+    @inbounds for t in 1:length(cache.mu_pred)
+        cache.mu_pred[t] = fill_zero!!(cache.mu_pred[t])
+        cache.sigma_pred[t] = fill_zero!!(cache.sigma_pred[t])
+        cache.A_sigma[t] = fill_zero!!(cache.A_sigma[t])
+        cache.sigma_Gt[t] = fill_zero!!(cache.sigma_Gt[t])
+        cache.innovation[t] = fill_zero!!(cache.innovation[t])
+        cache.innovation_cov[t] = fill_zero!!(cache.innovation_cov[t])
+        cache.S_chol[t] = fill_zero!!(cache.S_chol[t])
+        cache.innovation_solved[t] = fill_zero!!(cache.innovation_solved[t])
+        cache.gain_rhs[t] = fill_zero!!(cache.gain_rhs[t])
+        cache.gain[t] = fill_zero!!(cache.gain[t])
+        cache.gainG[t] = fill_zero!!(cache.gainG[t])
+        cache.KgSigma[t] = fill_zero!!(cache.KgSigma[t])
+        cache.mu_update[t] = fill_zero!!(cache.mu_update[t])
     end
+    return cache
 end
 ```
 
-### The `kalman!!` Function
+### The `kalman!` Function
 
 The full Kalman filter implementation. Inline comments reference the math equations above.
 
 ```{code-cell} julia
-function kalman!!(mu, Sigma, y, mu_0, Sigma_0, model, cache;
-                  perturb_diagonal = 1e-8)
+function kalman!(mu, Sigma, y, mu_0, Sigma_0, model, cache;
+                 perturb_diagonal = 1e-8)
     (; A, C, G, H) = model
     T = length(y)
 
@@ -626,6 +684,10 @@ function kalman!!(mu, Sigma, y, mu_0, Sigma_0, model, cache;
         K = transpose!!(K, rhs)
 
         # Update mean: μ_{t+1} = μ̂_t + K_t ν_t
+        # Mutable: mu[t+1] aliases a heap array -- write elements directly.
+        # Immutable: μp and μu are new SVector values on the stack returned by
+        # the !! functions. Write them back to the cache so Enzyme's reverse
+        # pass can track them (otherwise the cache still holds stale zeros).
         μu = mul!!(μu, K, ν)
         if is_mutable
             for i in eachindex(μp)
@@ -638,6 +700,7 @@ function kalman!!(mu, Sigma, y, mu_0, Sigma_0, model, cache;
         end
 
         # Update covariance: Σ_{t+1} = Σ̂_t - K_t G Σ̂_t
+        # Same mutable/immutable cache-writeback logic as mean update above.
         KG = mul!!(KG, K, G)
         KGS = mul!!(KGS, KG, Σp)
         if is_mutable
@@ -662,19 +725,19 @@ function kalman!!(mu, Sigma, y, mu_0, Sigma_0, model, cache;
 end
 ```
 
-### Validation: Manual Kalman Filter Comparison
+### Running the Filter
 
-We run a manual (allocating, textbook) Kalman filter and compare against `kalman!!` output using the small RBC model from above.
+We generate synthetic observations from the model and run `kalman!`.
 
 ```{code-cell} julia
 # Generate synthetic observations
 Random.seed!(123)
 T_kf = 20
-x_true = [zeros(N) for _ in 1:(T_kf + 1)]
-y_obs = [zeros(M) for _ in 1:T_kf]
-
 mu_0 = zeros(N)
 Sigma_0 = Matrix{Float64}(I, N, N)
+
+x_true = [alloc_like(mu_0) for _ in 1:(T_kf + 1)]
+y_obs = [alloc_like(mu_0, M) for _ in 1:T_kf]
 
 # Simulate true states and noisy observations
 x_true[1] = mu_0 + cholesky(Sigma_0).L * randn(N)
@@ -685,68 +748,31 @@ for t in 1:T_kf
     y_obs[t] = G * x_true[t] + H * v_t
 end
 
-# Run our kalman!! filter
-mu_kf = [zeros(N) for _ in 1:(T_kf + 1)]
-Sigma_kf = [zeros(N, N) for _ in 1:(T_kf + 1)]
-cache_kf = alloc_kalman_cache(N, M, T_kf)
+# Run our kalman! filter
+mu_kf = [alloc_like(mu_0) for _ in 1:(T_kf + 1)]
+Sigma_kf = [alloc_like(Sigma_0) for _ in 1:(T_kf + 1)]
+cache_kf = alloc_kalman_cache(mu_0, Sigma_0, model, T_kf)
 
-loglik = kalman!!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)
+loglik = kalman!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)
 println("Log-likelihood: ", loglik)
-```
-
-```{code-cell} julia
-# Manual textbook Kalman filter for comparison
-R1 = C * C'  # process noise covariance
-R2 = H * H'  # measurement noise covariance
-
-T_check = 3
-mu_manual = [zeros(N) for _ in 1:(T_check + 1)]
-Sigma_manual = [zeros(N, N) for _ in 1:(T_check + 1)]
-mu_manual[1] = copy(mu_0)
-Sigma_manual[1] = copy(Sigma_0)
-
-perturb = 1e-8  # match kalman!! default
-for t in 1:T_check
-    mu_pred = A * mu_manual[t]
-    Sigma_pred = A * Sigma_manual[t] * A' + R1
-    S = Symmetric(G * Sigma_pred * G' + R2 + perturb * I)
-    K_man = Sigma_pred * G' / S
-    innovation = y_obs[t] - G * mu_pred
-    mu_manual[t + 1] = mu_pred + K_man * innovation
-    Sigma_manual[t + 1] = (I - K_man * G) * Sigma_pred
-end
-
-for t in 1:(T_check + 1)
-    println("t=$t: manual μ = $(round.(mu_manual[t]; digits=6)), " *
-            "kalman!! μ = $(round.(mu_kf[t]; digits=6))")
-end
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset "Manual vs kalman!! comparison" begin
-    for t in 1:(T_check + 1)
-        @test mu_kf[t] ≈ mu_manual[t] rtol = 1e-6
-        @test Sigma_kf[t] ≈ Sigma_manual[t] rtol = 1e-6
-    end
-end
 ```
 
 ### Validation: ControlSystems.jl Steady-State Comparison
 
-We run `kalman!!` for $T=200$ steps and compare the steady-state Kalman gain against `dkalman` from ControlSystems.jl.
+We run `kalman!` for $T=200$ steps and compare the steady-state Kalman gain against `dkalman` from ControlSystems.jl.
 
 ```{code-cell} julia
 using ControlSystems: dkalman
+
+R1 = C * C'  # process noise covariance
+R2 = H * H'  # measurement noise covariance
 
 T_long = 200
 Random.seed!(789)
 
 # Generate long observation sequence
-x_long = [zeros(N) for _ in 1:(T_long + 1)]
-y_long = [zeros(M) for _ in 1:T_long]
+x_long = [alloc_like(mu_0) for _ in 1:(T_long + 1)]
+y_long = [alloc_like(mu_0, M) for _ in 1:T_long]
 x_long[1] = randn(N)
 for t in 1:T_long
     x_long[t + 1] = A * x_long[t] + C * randn(K)
@@ -754,10 +780,10 @@ for t in 1:T_long
 end
 
 # Run our filter
-mu_long = [zeros(N) for _ in 1:(T_long + 1)]
-Sigma_long = [zeros(N, N) for _ in 1:(T_long + 1)]
-cache_long = alloc_kalman_cache(N, M, T_long)
-kalman!!(mu_long, Sigma_long, y_long, mu_0, Sigma_0, model, cache_long)
+mu_long = [alloc_like(mu_0) for _ in 1:(T_long + 1)]
+Sigma_long = [alloc_like(Sigma_0) for _ in 1:(T_long + 1)]
+cache_long = alloc_kalman_cache(mu_0, Sigma_0, model, T_long)
+kalman!(mu_long, Sigma_long, y_long, mu_0, Sigma_0, model, cache_long)
 
 # ControlSystems.jl steady-state gain
 # dkalman returns L in predictor form: x̂(k+1|k) = A*x̂(k|k-1) + L*(y(k) - G*x̂(k|k-1))
@@ -801,7 +827,7 @@ plot!(time_kf, [mu_kf[t][2] for t in 1:(T_kf + 1)], lw = 2,
 ### Type Stability
 
 ```{code-cell} julia
-@inferred kalman!!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)
+@inferred kalman!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)
 ```
 
 ```{code-cell} julia
@@ -809,28 +835,28 @@ plot!(time_kf, [mu_kf[t][2] for t in 1:(T_kf + 1)], lw = 2,
 tags: [remove-cell]
 ---
 @testset "Kalman zero allocations" begin
-    kalman!!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)
-    @test (@allocated kalman!!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)) == 0
+    kalman!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)
+    @test (@allocated kalman!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)) == 0
 end
 ```
 
 ### Benchmarks: Small Static vs Mutable
 
 ```{code-cell} julia
-@btime kalman!!($mu_kf, $Sigma_kf, $y_obs, $mu_0, $Sigma_0, $model, $cache_kf)
+@btime kalman!($mu_kf, $Sigma_kf, $y_obs, $mu_0, $Sigma_0, $model, $cache_kf)
 ```
 
 ```{code-cell} julia
-# Static version
+# Static version -- alloc_like infers SVector/SMatrix from prototypes
 mu_0_s = SVector{N}(mu_0)
 Sigma_0_s = SMatrix{N, N}(Sigma_0)
 y_obs_s = [SVector{M}(y_obs[t]) for t in 1:T_kf]
-mu_kf_s = [SVector{N}(zeros(N)) for _ in 1:(T_kf + 1)]
-Sigma_kf_s = [SMatrix{N, N}(zeros(N, N)) for _ in 1:(T_kf + 1)]
-cache_kf_s = alloc_kalman_cache_static(Val(N), Val(M), T_kf)
+mu_kf_s = [alloc_like(mu_0_s) for _ in 1:(T_kf + 1)]
+Sigma_kf_s = [alloc_like(Sigma_0_s) for _ in 1:(T_kf + 1)]
+cache_kf_s = alloc_kalman_cache(mu_0_s, Sigma_0_s, model_s, T_kf)
 
-@btime kalman!!($mu_kf_s, $Sigma_kf_s, $y_obs_s, $mu_0_s, $Sigma_0_s, $model_s,
-                $cache_kf_s)
+@btime kalman!($mu_kf_s, $Sigma_kf_s, $y_obs_s, $mu_0_s, $Sigma_0_s, $model_s,
+               $cache_kf_s)
 ```
 
 ```{code-cell} julia
@@ -838,8 +864,8 @@ cache_kf_s = alloc_kalman_cache_static(Val(N), Val(M), T_kf)
 tags: [remove-cell]
 ---
 @testset "Static vs mutable Kalman consistency" begin
-    loglik_mut = kalman!!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)
-    loglik_sta = kalman!!(mu_kf_s, Sigma_kf_s, y_obs_s, mu_0_s, Sigma_0_s, model_s, cache_kf_s)
+    loglik_mut = kalman!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)
+    loglik_sta = kalman!(mu_kf_s, Sigma_kf_s, y_obs_s, mu_0_s, Sigma_0_s, model_s, cache_kf_s)
     @test loglik_mut ≈ loglik_sta rtol = 1e-10
     for t in 1:(T_kf + 1)
         @test mu_kf[t] ≈ Vector(mu_kf_s[t]) rtol = 1e-10
@@ -864,12 +890,12 @@ mu_0_big = zeros(N_big)
 Sigma_0_big = Matrix{Float64}(I, N_big, N_big)
 
 y_big = [randn(M_big) for _ in 1:T_big]
-mu_big = [zeros(N_big) for _ in 1:(T_big + 1)]
-Sigma_big = [zeros(N_big, N_big) for _ in 1:(T_big + 1)]
-cache_big = alloc_kalman_cache(N_big, M_big, T_big)
+mu_big = [alloc_like(mu_0_big) for _ in 1:(T_big + 1)]
+Sigma_big = [alloc_like(Sigma_0_big) for _ in 1:(T_big + 1)]
+cache_big = alloc_kalman_cache(mu_0_big, Sigma_0_big, model_big, T_big)
 
-@btime kalman!!($mu_big, $Sigma_big, $y_big, $mu_0_big, $Sigma_0_big,
-                $model_big, $cache_big)
+@btime kalman!($mu_big, $Sigma_big, $y_big, $mu_0_big, $Sigma_0_big,
+               $model_big, $cache_big)
 ```
 
 ## Differentiating the Kalman Filter
@@ -880,9 +906,9 @@ We perturb the first element of $\mu_0$ by a unit tangent and observe how the fi
 
 ```{code-cell} julia
 # Set up fresh arrays for AD
-mu_fwd = [zeros(N) for _ in 1:(T_kf + 1)]
-Sigma_fwd = [zeros(N, N) for _ in 1:(T_kf + 1)]
-cache_fwd = alloc_kalman_cache(N, M, T_kf)
+mu_fwd = [alloc_like(mu_0) for _ in 1:(T_kf + 1)]
+Sigma_fwd = [alloc_like(Sigma_0) for _ in 1:(T_kf + 1)]
+cache_fwd = alloc_kalman_cache(mu_0, Sigma_0, model, T_kf)
 dmu_fwd = Enzyme.make_zero(mu_fwd)
 dSigma_fwd = Enzyme.make_zero(Sigma_fwd)
 dcache_fwd = Enzyme.make_zero(cache_fwd)
@@ -892,7 +918,7 @@ dmu_0_fwd[1] = 1.0  # perturb first state
 dy_fwd = Enzyme.make_zero(y_obs)
 
 @inline function scalar_kalman!(mu, Sigma, y, mu_0, Sigma_0, model, cache)
-    return kalman!!(mu, Sigma, y, mu_0, Sigma_0, model, cache)
+    return kalman!(mu, Sigma, y, mu_0, Sigma_0, model, cache)
 end
 
 result_fwd = autodiff(Forward, scalar_kalman!,
@@ -928,36 +954,43 @@ end
 
 Reverse mode gives gradients of the log-likelihood with respect to **all** model parameters and initial conditions in a single sweep, regardless of parameter dimension. This is what makes gradient-based MLE practical.
 
+As with the simulation, we can wrap the shadow allocation boilerplate into a reusable gradient function:
+
+```{code-cell} julia
+function gradient_kalman(y, mu_0, Sigma_0, model)
+    T_g = length(y)
+    mu = [alloc_like(mu_0) for _ in 1:(T_g + 1)]
+    Sigma = [alloc_like(Sigma_0) for _ in 1:(T_g + 1)]
+    cache = alloc_kalman_cache(mu_0, Sigma_0, model, T_g)
+    dmu = Enzyme.make_zero(mu)
+    dSigma = Enzyme.make_zero(Sigma)
+    dcache = Enzyme.make_zero(cache)
+    dmodel = Enzyme.make_zero(model)
+    dmu_0 = Enzyme.make_zero(mu_0)
+    dy = Enzyme.make_zero(y)
+
+    autodiff(Reverse, scalar_kalman!,
+             Duplicated(mu, dmu), Duplicated(Sigma, dSigma),
+             Duplicated(y, dy), Duplicated(copy(mu_0), dmu_0),
+             Const(Sigma_0), Duplicated(model, dmodel),
+             Duplicated(cache, dcache))
+
+    return (; grad_mu_0 = dmu_0, grad_model = dmodel)
+end
+```
+
 We use the larger $N=5$ model for this demonstration.
 
 ```{code-cell} julia
-# Generate observations for larger model
 Random.seed!(456)
 y_big_obs = [randn(M_big) for _ in 1:T_big]
-mu_rev = [zeros(N_big) for _ in 1:(T_big + 1)]
-Sigma_rev = [zeros(N_big, N_big) for _ in 1:(T_big + 1)]
-cache_rev = alloc_kalman_cache(N_big, M_big, T_big)
 
-dmu_rev = Enzyme.make_zero(mu_rev)
-dSigma_rev = Enzyme.make_zero(Sigma_rev)
-dcache_rev = Enzyme.make_zero(cache_rev)
-dmodel_rev = Enzyme.make_zero(model_big)
-dmu_0_rev = Enzyme.make_zero(mu_0_big)
-dy_rev_big = Enzyme.make_zero(y_big_obs)
-
-autodiff(Reverse, scalar_kalman!,
-         Duplicated(mu_rev, dmu_rev),
-         Duplicated(Sigma_rev, dSigma_rev),
-         Duplicated(y_big_obs, dy_rev_big),
-         Duplicated(copy(mu_0_big), dmu_0_rev),
-         Const(Sigma_0_big),
-         Duplicated(model_big, dmodel_rev),
-         Duplicated(cache_rev, dcache_rev))
+grads_kf = gradient_kalman(y_big_obs, mu_0_big, Sigma_0_big, model_big)
 
 println("Gradient of loglik w.r.t. μ₀:")
-println(round.(dmu_0_rev; digits = 4))
+println(round.(grads_kf.grad_mu_0; digits = 4))
 println("\nGradient of loglik w.r.t. A (first row):")
-println(round.(dmodel_rev.A[1, :]; digits = 4))
+println(round.(grads_kf.grad_model.A[1, :]; digits = 4))
 ```
 
 ```{code-cell} julia
@@ -965,10 +998,10 @@ println(round.(dmodel_rev.A[1, :]; digits = 4))
 tags: [remove-cell]
 ---
 @testset "Reverse AD Kalman" begin
-    @test sum(abs, dmu_0_rev) > 0
-    @test !any(isnan, dmu_0_rev)
-    @test sum(abs, dmodel_rev.A) > 0
-    @test !any(isnan, dmodel_rev.A)
+    @test sum(abs, grads_kf.grad_mu_0) > 0
+    @test !any(isnan, grads_kf.grad_mu_0)
+    @test sum(abs, grads_kf.grad_model.A) > 0
+    @test !any(isnan, grads_kf.grad_model.A)
 end
 ```
 
@@ -991,9 +1024,9 @@ mu_0_test = zeros(N_test)
 Sigma_0_test = Matrix{Float64}(I, N_test, N_test)
 y_test = [[0.5, 0.3], [0.2, 0.1]]
 
-mu_et = [zeros(N_test) for _ in 1:(T_test + 1)]
-Sigma_et = [zeros(N_test, N_test) for _ in 1:(T_test + 1)]
-cache_et = alloc_kalman_cache(N_test, M_test, T_test)
+mu_et = [alloc_like(mu_0_test) for _ in 1:(T_test + 1)]
+Sigma_et = [alloc_like(Sigma_0_test) for _ in 1:(T_test + 1)]
+cache_et = alloc_kalman_cache(mu_0_test, Sigma_0_test, model_test, T_test)
 
 test_forward(scalar_kalman!, Const,
              (mu_et, Duplicated),
