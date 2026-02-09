@@ -43,6 +43,11 @@ The code in this section is significantly more advanced than some of the other l
 [Enzyme.jl](https://enzyme.mit.edu/julia/stable/) is under active development and while state-of-the-art, it is often bleeding-edge. Some of the patterns shown here may change in future releases. See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for the latest best practices.
 ```
 
+A key application of these techniques are using Bayesian
+estimation methods with gradient-based samplers such as [Hamiltonian Monte Carlo](https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo) or [variational inference](https://en.wikipedia.org/wiki/Variational_inference).
+
+These techniques are used in {cite}`dssm`.
+
 ```{code-cell} julia
 ---
 tags: [hide-output]
@@ -57,6 +62,8 @@ tags: [remove-cell]
 ---
 using Test
 ```
+
+
 
 ## The Bang-Bang Pattern for Generic Arrays
 

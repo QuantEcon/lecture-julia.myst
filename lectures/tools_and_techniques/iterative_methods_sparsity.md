@@ -994,7 +994,7 @@ you do not need all of the eigenvalues.
 
 This example applies the methods in this lecture to a large continuous-time Markov chain, and provides some practice working with arrays of arbitrary dimensions.
 
-Consider a version of the Markov-chain dynamics in {cite}`Perla2019`, where a firm has a discrete number of customers of different types.  To keep things as simple as possible, assume that there are $m=1, \ldots M$ types of customers and that the firm may have $n = 1, \ldots N$ customers of each type.
+Consider a version of the Markov-chain dynamics in {cite}`productawareness`, where a firm has a discrete number of customers of different types.  To keep things as simple as possible, assume that there are $m=1, \ldots M$ types of customers and that the firm may have $n = 1, \ldots N$ customers of each type.
 
 To set the notation, let $n_m \in \{1, \ldots N\}$ be the number of customers of type $m$, so that the state of a firm is $\{n_1, \ldots n_m \ldots, n_M\}$.  The cardinality of possible states is then $\mathbf{N}\equiv N^M$, which can blow up quickly as the number of types increases.
 
