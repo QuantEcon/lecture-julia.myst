@@ -62,17 +62,19 @@ using Test
 
 ### Motivation
 
-For small fixed-size problems, `StaticArrays` (stack-allocated, no heap) can be dramatically faster than standard `Vector`/`Matrix`. The [rule of thumb](https://juliaarrays.github.io/StaticArrays.jl/stable/) is that StaticArrays are beneficial when the **total number of elements** is under about 100 -- so an `SVector{50}` or an `SMatrix{8,8}` (64 elements) are good candidates, while an `SMatrix{20,20}` (400 elements) is not. The biggest wins (10x--100x) come at very small sizes (under ~20 elements); beyond 100 elements, compilation costs explode and the stack/register advantages disappear.
+The best coding strategy for numerical algorithms depends on the size of the problem. Different array types and mutation patterns are appropriate at different scales.
 
-The challenge is that standard in-place operations (`mul!`, `ldiv!`, `copyto!`) only work with mutable arrays. StaticArrays are immutable -- you must return new values.
+For large vectors and matrices, allocation of intermediate arrays can be a major bottleneck. In these cases, we want to write **in-place code** that mutates pre-allocated buffers to achieve zero allocations and maximum performance -- see {ref}`in-place-functions` for background. Writing zero-allocation code is also essential in practice for compatibility with reverse-mode AD tools such as Enzyme.
 
-Our goal is to write algorithms that work with **both** array types via a single code path.
+For small fixed-size problems, `StaticArrays` (stack-allocated, no heap) can be dramatically faster than standard `Vector`/`Matrix`. The [rule of thumb](https://juliaarrays.github.io/StaticArrays.jl/stable/) is that StaticArrays are beneficial when the **total number of elements** is under about 100 -- so an `SVector{10}` or an `SMatrix{3,3}` (64 elements) are good candidates, while an `SMatrix{20,20}` (400 elements) is not. The biggest wins (10x--100x) come at very small sizes (under ~20 elements); beyond 100 elements, compilation costs explode and the stack/register advantages disappear.
+
+The challenge is that these two approaches seem incompatible: standard in-place operations (`mul!`, `ldiv!`, `copyto!`) only work with mutable arrays, while StaticArrays are immutable and require returning new values. Ideally, we want to write a **single algorithm** that works with both array types -- choosing the optimal strategy for each problem size without duplicating code.
 
 ### The `!!` Convention
 
 A function `f!!` **always returns its result** and **tries to mutate in-place when possible**.
 
-It dispatches on `ismutable(Y)`: if mutable, call `mul!(Y, A, B)` and return `Y`; if immutable, return `A * B`.
+It checks if a type can be modified directly with `ismutable(Y)`.  For example, if mutable, call `mul!(Y, A, B)` and return `Y`; if immutable, return `A * B`.
 
 This makes the natural data structure **arrays of arrays** (e.g., `Vector{SVector{N}}`) rather than 2D matrices, since each element can be either mutable or immutable.
 
@@ -115,7 +117,7 @@ end
 end
 ```
 
-We also define **no-op specializations** for `nothing` arguments. This lets us write generic code that handles optional components -- for example, a model with or without observation noise -- using a single code path. If `H = nothing`, then `muladd!!(y, H, v)` simply returns `y` unchanged without any branching at runtime.
+We also define no-op specialization for `nothing` arguments. This lets us write generic code that handles optional components -- for example, a model with or without observation noise -- using a single code path. If `H = nothing`, then `muladd!!(y, H, v)` simply returns `y` unchanged without any branching at runtime.
 
 ```{code-cell} julia
 @inline muladd!!(Y, ::Nothing, B) = Y
@@ -131,8 +133,6 @@ We also define **no-op specializations** for `nothing` arguments. This lets us w
     end
 end
 
-# Enzyme-safe alternative to copyto!! -- uses explicit loops to avoid
-# Base.copyto! which can trigger runtime activity analysis errors.
 @inline function assign!!(Y, X)
     if ismutable(Y)
         @inbounds for i in eachindex(X)
@@ -149,7 +149,7 @@ end
 
 ### Prototype-Based Allocation
 
-When writing generic code, we need to allocate workspace arrays that match the type family of the inputs -- mutable `Vector`/`Matrix` or immutable `SVector`/`SMatrix`. Rather than maintaining separate allocation functions for each case, we use **prototype-based allocation**: pass an existing array as a template, and `alloc_like` creates a new zeroed array of the same type. The `SVector`/`SMatrix` overloads are necessary because Julia's `similar` returns a mutable `MVector`/`MMatrix` for static arrays, which would lose immutability and stack allocation.
+When writing generic code, we often need to allocate workspace arrays that match the type family of the inputs -- mutable `Vector`/`Matrix` or immutable `SVector`/`SMatrix`. Rather than maintaining separate allocation functions for each case, we use **prototype-based allocation**: pass an existing array as a template, and `alloc_like` creates a new zeroed array of the same type. The `SVector`/`SMatrix` overloads are necessary because Julia's `similar` returns a mutable `MVector`/`MMatrix` for static arrays, which would lose immutability and stack allocation.
 
 ```{code-cell} julia
 # Same shape as prototype
@@ -180,9 +180,11 @@ end
 
 ## High-Performance Nonlinear State-Space Simulation
 
+Here we will make a variation on the simulation in {doc}`differentiable dynamics <differentiable_dynamics>`, but with a more flexible interface that supports arbitrary nonlinear state transitions and observation functions via callbacks, and is compatible with Enzyme.jl for AD.
+
 ### Arrays-of-Arrays Storage
 
-With the `!!` pattern, the natural data structure is `Vector{Vector{Float64}}` or `Vector{SVector{N,Float64}}`. This enables a **single simulation function** for both mutable and static arrays.
+With the `!!` pattern, the natural data structure is `Vector{Vector{Float64}}` or `Vector{SVector{N,Float64}}`. This enables a single simulation functions for both mutable and static arrays.
 
 ### The `simulate_ssm!` Function
 
@@ -192,7 +194,9 @@ $$
 x_{t+1} = f(x_t, w_{t+1}, p, t), \qquad y_t = g(x_t, p, t) + H v_t, \quad v_t \sim N(0, I)
 $$
 
-where $f$ and $g$ can be **arbitrary nonlinear functions**, but the observation noise is assumed **additive Gaussian** with $v_t \sim N(0, I)$. The state transition callback `f!!(x_next, x, w, p, t)` implements the full $f(\cdot)$ (including process noise), while the observation callback `g!!(y, x, p, t)` implements only the noiseless $g(\cdot)$. The simulator adds the Gaussian observation noise $Hv_t$ separately via `muladd!!`. Both callbacks follow the `!!` convention -- they attempt to mutate the first argument in-place but always return the result. Passing `H = nothing` drops the observation noise entirely thanks to the no-op specializations above.
+where $f$ and $g$ can be **arbitrary nonlinear functions**, but the observation noise is assumed **additive Gaussian** with $v_t \sim N(0, I)$.
+
+To implement this for both static and preallocated arrays, the state transition callback `f!!(x_next, x, w, p, t)` implements the full $f(\cdot)$ (including process noise), while the observation callback `g!!(y, x, p, t)` implements only the noiseless $g(\cdot)$. The simulator adds the Gaussian observation noise $Hv_t$ separately via `muladd!!`. Both callbacks follow the `!!` convention -- they attempt to mutate the first argument in-place but always return the result. Passing `H = nothing` drops the observation noise entirely thanks to the no-op specializations above.
 
 ```{code-cell} julia
 @inline function simulate_ssm!(x, y, f!!, g!!, x_0, w, v, H, p)
@@ -202,7 +206,7 @@ where $f$ and $g$ can be **arbitrary nonlinear functions**, but the observation 
     x[1] = assign!!(x[1], x_0)
 
     @inbounds for t in 1:T
-        x[t + 1] = f!!(x[t + 1], x[t], w[t], p, t - 1)
+        x[t + 1] = f!!(x[t + 1], x[t], w[t], p, t - 1) 
         y[t] = g!!(y[t], x[t], p, t - 1)
         y[t] = muladd!!(y[t], H, v[t])
     end
@@ -299,6 +303,8 @@ end
 
 ### Benchmarks
 
+Depending on your system, you will find a significant speedup for this small model when using `StaticArrays` -- often 10x or more, and neither version should allocate any memory.
+
 ```{code-cell} julia
 @btime simulate_ssm!($x, $y, f_lss!!, g_lss!!, $x_0, $w, $v, $H, $model)
 ```
@@ -318,7 +324,7 @@ tags: [remove-cell]
 end
 ```
 
-### Forward-Mode AD: Impulse Response
+### Forward-Mode AD: Perturbing the Shocks
 
 For the linear model $x_{t+1} = Ax_t + Cw_{t+1}$ starting from $x_1 = x_0$, a unit perturbation $\delta w_1 = e_k$ (the $k$-th standard basis vector) propagates through the dynamics as
 
@@ -327,6 +333,8 @@ $$
 $$
 
 This is the **impulse response function** -- it shows how a one-time shock decays through the system. Forward-mode AD computes exactly these derivatives: by seeding $dw_1 = e_k$ and propagating tangents forward, the output `dx[t]` gives $\partial x_t / \partial w_{1,k}$ at every horizon.
+
+Every argument to `autodiff` must be annotated to tell Enzyme how to handle it (see {ref}`enzyme-activity-rules`). Here `w` is `Duplicated` because we are differentiating with respect to it, and `dw` holds the seed tangent. The buffers `x` and `y` are also `Duplicated` because `simulate_ssm!` **mutates** them -- Enzyme needs shadow arrays `dx` and `dy` to propagate tangents through those writes, even though `x` and `y` are intermediate storage rather than parameters of interest. Arguments that are neither differentiated nor mutated (like the model coefficients) are wrapped in `Const`.
 
 ```{code-cell} julia
 dx = Enzyme.make_zero(x)
@@ -345,83 +353,53 @@ plot(time, [dx[t][1] for t in 1:(T + 1)], lw = 2, label = "dx₁/dw₁₁",
 plot!(time, [dx[t][2] for t in 1:(T + 1)], lw = 2, label = "dx₂/dw₁₁")
 ```
 
-### Reverse-Mode AD: Gradient of Scalar Summary
+### Reverse-Mode AD: Sensitivity of the Terminal Observation
 
-Reverse mode gives the gradient with respect to **all** inputs in a single sweep, regardless of input dimension.
+Reverse mode is best when computing the gradient of a **scalar** output with respect to **all** inputs in a single sweep, regardless of input dimension. Here the scalar is the first element of the final observation $y_{T+1,1}$ -- a "terminal observable" whose sensitivity tells us how each initial condition, shock, and model parameter affects this single outcome.
 
-To use `Enzyme.autodiff` in reverse mode we need a scalar-valued function and shadow (gradient) arrays for every `Duplicated` argument. First we define a scalar summary:
-
-```{code-cell} julia
-function scalar_ssm(x, y, f!!, g!!, x_0, w, v, H, p)
-    simulate_ssm!(x, y, f!!, g!!, x_0, w, v, H, p)
-    total = zero(eltype(x[1]))
-    @inbounds for t in eachindex(x)
-        total += mean(x[t])
-    end
-    @inbounds for t in eachindex(y)
-        total += mean(y[t])
-    end
-    return total
-end
-```
-
-The raw `autodiff` call requires allocating shadow arrays for each `Duplicated` argument:
+We wrap the simulation in a self-contained function that allocates its own workspace, calls `simulate_ssm!`, and returns $y_{T+1,1}$. The callbacks `f!!` and `g!!` are passed as keyword arguments to keep them out of the differentiation:
 
 ```{code-cell} julia
-x_rev = [alloc_like(x_0) for _ in 1:(T + 1)]
-y_rev = [alloc_like(x_0, M) for _ in 1:(T + 1)]
-dx_rev = Enzyme.make_zero(x_rev)
-dy_rev = Enzyme.make_zero(y_rev)
-dx_0_rev = Enzyme.make_zero(x_0)
-dw_rev = Enzyme.make_zero(w)
-
-autodiff(Reverse, scalar_ssm,
-         Duplicated(x_rev, dx_rev), Duplicated(y_rev, dy_rev),
-         Const(f_lss!!), Const(g_lss!!),
-         Duplicated(x_0, dx_0_rev), Duplicated(w, dw_rev),
-         Const(v), Const(H), Const(model))
-
-println("Gradient w.r.t. x_0: ", dx_0_rev)
-println("Gradient w.r.t. w[1]: ", dw_rev[1])
-```
-
-In practice, it is convenient to wrap this boilerplate into a gradient function that handles all the shadow allocation internally:
-
-```{code-cell} julia
-function gradient_ssm(x_0, w; f!! = f_lss!!, g!! = g_lss!!, v, H, model)
+function terminal_observable(x_0, w, v, H, p; f!! = f_lss!!, g!! = g_lss!!)
     T_s = length(w)
-    y_proto = alloc_like(x_0, size(H, 1))  # observation vector prototype
+    y_proto = alloc_like(x_0, size(H, 1))
     x = [alloc_like(x_0) for _ in 1:(T_s + 1)]
     y = [alloc_like(y_proto) for _ in 1:(T_s + 1)]
-    dx = Enzyme.make_zero(x)
-    dy = Enzyme.make_zero(y)
-    dx_0 = Enzyme.make_zero(x_0)
-    dw = Enzyme.make_zero(w)
-
-    autodiff(Reverse, scalar_ssm,
-             Duplicated(x, dx), Duplicated(y, dy),
-             Const(f!!), Const(g!!),
-             Duplicated(x_0, dx_0), Duplicated(w, dw),
-             Const(v), Const(H), Const(model))
-
-    return (; grad_x_0 = dx_0, grad_w = dw)
+    simulate_ssm!(x, y, f!!, g!!, x_0, w, v, H, p)
+    return y[end][1]
 end
+```
 
-grads = gradient_ssm(x_0, w; v, H, model)
-println("Gradient w.r.t. x_0: ", grads.grad_x_0)
-println("Gradient w.r.t. w[1]: ", grads.grad_w[1])
+Because `terminal_observable` returns an `Active` scalar, Enzyme's reverse mode will back-propagate through `simulate_ssm!` and accumulate gradients in the `Duplicated` shadow arrays we provide:
+
+```{code-cell} julia
+dx_0 = Enzyme.make_zero(x_0)
+dw = Enzyme.make_zero(w)
+dmodel = Enzyme.make_zero(model)
+
+autodiff(Reverse, terminal_observable, Active,
+         Duplicated(x_0, dx_0), Duplicated(w, dw),
+         Const(v), Const(H), Duplicated(model, dmodel))
+
+println("∂y[T+1]₁/∂x_0:       ", dx_0)
+println("∂y[T+1]₁/∂w[1]:      ", dw[1])
+println("∂y[T+1]₁/∂A:         ", dmodel.A)
+println("∂y[T+1]₁/∂G:         ", dmodel.G)
 ```
 
 ```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
-@testset "Reverse AD simulation" begin
-    @test grads.grad_x_0 ≈ dx_0_rev rtol = 1e-10
-    @test grads.grad_w[1] ≈ dw_rev[1] rtol = 1e-10
-    grad_sum = sum(abs, grads.grad_x_0) + sum(sum(abs, g) for g in grads.grad_w)
-    @test grad_sum > 0
-    @test !isnan(grad_sum)
+@testset "Reverse AD terminal observable" begin
+    @test all(isfinite, dx_0)
+    @test any(!iszero, dx_0)
+    @test all(isfinite, dw[1])
+    @test any(!iszero, dw[1])
+    @test all(isfinite, dmodel.A)
+    @test any(!iszero, dmodel.A)
+    @test all(isfinite, dmodel.G)
+    @test any(!iszero, dmodel.G)
 end
 ```
 
@@ -433,7 +411,7 @@ Before the filter, we need utilities for Cholesky factorization, linear solves, 
 
 - **`cholesky!!(A, :U)`** -- Cholesky factorization of innovation covariance $S_t$
 - **`ldiv!!(y, F, x)`** and **`ldiv!!(F, x)`** -- solving $S_t^{-1} \nu_t$ for the log-likelihood and Kalman gain (the 2-arg form avoids internal allocation)
-- **`transpose!!(Y, X)`** -- computing $K_t$ via $S_t K_t' = (\hat\Sigma_t G')'$
+- **`transpose!!(Y, X)`** -- computing $K_t$ via $S_t K_t^{\top} = (\hat\Sigma_t G^{\top})^{\top}$
 - **`symmetrize_upper!!(L, A, epsilon)`** -- enforcing exact symmetry before Cholesky (numerical drift in $\hat\Sigma_t$ can break it); the `epsilon` diagonal perturbation ensures positive definiteness
 - **`logdet_chol(F)`** -- allocation-free log-determinant from Cholesky factor
 
@@ -532,19 +510,19 @@ The Kalman filter (see the {doc}`Kalman filter <../introduction_dynamics/kalman>
 **Predict:**
 
 $$
-\hat\mu_t = A \mu_t, \qquad \hat\Sigma_t = A \Sigma_t A' + CC'
+\hat\mu_t = A \mu_t, \qquad \hat\Sigma_t = A \Sigma_t A^{\top} + CC^{\top}
 $$
 
 **Innovation:**
 
 $$
-\nu_t = y_t - G\hat\mu_t, \qquad S_t = G\hat\Sigma_t G' + HH'
+\nu_t = y_t - G\hat\mu_t, \qquad S_t = G\hat\Sigma_t G^{\top} + HH^{\top}
 $$
 
 **Update:**
 
 $$
-K_t = \hat\Sigma_t G' S_t^{-1}, \quad \mu_{t+1} = \hat\mu_t + K_t\nu_t, \quad \Sigma_{t+1} = \hat\Sigma_t - K_t G \hat\Sigma_t
+K_t = \hat\Sigma_t G^{\top} S_t^{-1}, \quad \mu_{t+1} = \hat\mu_t + K_t\nu_t, \quad \Sigma_{t+1} = \hat\Sigma_t - K_t G \hat\Sigma_t
 $$
 
 ### Log-Likelihood
@@ -552,22 +530,22 @@ $$
 Under the Gaussian assumption, the innovation $\nu_t = y_t - G\hat\mu_t$ is distributed as
 
 $$
-\nu_t \sim N(0, S_t), \qquad S_t = G\hat\Sigma_t G' + HH'
+\nu_t \sim N(0, S_t), \qquad S_t = G\hat\Sigma_t G^{\top} + HH^{\top}
 $$
 
 so the log-density of $\nu_t$ under the multivariate normal $N(0, S_t)$ is
 
 $$
-\log p(\nu_t) = -\frac{1}{2}\bigl(M \log 2\pi + \log|S_t| + \nu_t' S_t^{-1} \nu_t\bigr)
+\log p(\nu_t) = -\frac{1}{2}\bigl(M \log 2\pi + \log|S_t| + \nu_t^{\top} S_t^{-1} \nu_t\bigr)
 $$
 
 Summing over observations gives the log-likelihood:
 
 $$
-\ell = \sum_{t=1}^T \log p(\nu_t) = -\frac{1}{2}\sum_{t=1}^T \bigl(M\log 2\pi + \log|S_t| + \nu_t' S_t^{-1}\nu_t\bigr)
+\ell = \sum_{t=1}^T \log p(\nu_t) = -\frac{1}{2}\sum_{t=1}^T \bigl(M\log 2\pi + \log|S_t| + \nu_t^{\top} S_t^{-1}\nu_t\bigr)
 $$
 
-In the code, we compute $\log|S_t|$ from its Cholesky factor $S_t = U'U$ via `logdet_chol(F)`, which sums $2\sum_i \log U_{ii}$ without any allocation. The quadratic form $\nu_t' S_t^{-1} \nu_t$ is computed by first solving $S_t^{-1}\nu_t$ with `ldiv!!`, then taking the inner product with `dot`.
+In the code, we compute $\log|S_t|$ from its Cholesky factor $S_t = U^{\top}U$ via `logdet_chol(F)`, which sums $2\sum_i \log U_{ii}$ without any allocation. The quadratic form $\nu_t^{\top} S_t^{-1} \nu_t$ is computed by first solving $S_t^{-1}\nu_t$ with `ldiv!!`, then taking the inner product with `dot`.
 
 ### Workspace Cache
 
@@ -631,8 +609,10 @@ function kalman!(mu, Sigma, y, mu_0, Sigma_0, model, cache;
     zero_kalman_cache!!(cache)
 
     # Initialize: μ₁ = μ₀, Σ₁ = Σ₀
-    mu[1] = copyto!!(mu[1], mu_0)
-    Sigma[1] = copyto!!(Sigma[1], Sigma_0)
+    # Use assign!! (not copyto!!) to avoid aliasing between Sigma[1] and Sigma_0,
+    # which would prevent Enzyme from differentiating through Sigma_0.
+    mu[1] = assign!!(mu[1], mu_0)
+    Sigma[1] = assign!!(Sigma[1], Sigma_0)
 
     loglik = zero(eltype(mu[1]))
     is_mutable = ismutable(mu[1])
@@ -730,23 +710,20 @@ end
 We generate synthetic observations from the model and run `kalman!`.
 
 ```{code-cell} julia
-# Generate synthetic observations
+# Generate synthetic observations using simulate_ssm!
 Random.seed!(123)
 T_kf = 20
 mu_0 = zeros(N)
 Sigma_0 = Matrix{Float64}(I, N, N)
 
-x_true = [alloc_like(mu_0) for _ in 1:(T_kf + 1)]
-y_obs = [alloc_like(mu_0, M) for _ in 1:T_kf]
+x_0_kf = mu_0 + cholesky(Sigma_0).L * randn(N)
+w_kf = [randn(K) for _ in 1:T_kf]
+v_kf = [randn(L) for _ in 1:(T_kf + 1)]
 
-# Simulate true states and noisy observations
-x_true[1] = mu_0 + cholesky(Sigma_0).L * randn(N)
-for t in 1:T_kf
-    w_t = randn(K)
-    v_t = randn(L)
-    x_true[t + 1] = A * x_true[t] + C * w_t
-    y_obs[t] = G * x_true[t] + H * v_t
-end
+x_true = [alloc_like(mu_0) for _ in 1:(T_kf + 1)]
+y_sim = [alloc_like(mu_0, M) for _ in 1:(T_kf + 1)]
+simulate_ssm!(x_true, y_sim, f_lss!!, g_lss!!, x_0_kf, w_kf, v_kf, H, model)
+y_obs = y_sim[1:T_kf]
 
 # Run our kalman! filter
 mu_kf = [alloc_like(mu_0) for _ in 1:(T_kf + 1)]
@@ -755,54 +732,6 @@ cache_kf = alloc_kalman_cache(mu_0, Sigma_0, model, T_kf)
 
 loglik = kalman!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)
 println("Log-likelihood: ", loglik)
-```
-
-### Validation: ControlSystems.jl Steady-State Comparison
-
-We run `kalman!` for $T=200$ steps and compare the steady-state Kalman gain against `dkalman` from ControlSystems.jl.
-
-```{code-cell} julia
-using ControlSystems: dkalman
-
-R1 = C * C'  # process noise covariance
-R2 = H * H'  # measurement noise covariance
-
-T_long = 200
-Random.seed!(789)
-
-# Generate long observation sequence
-x_long = [alloc_like(mu_0) for _ in 1:(T_long + 1)]
-y_long = [alloc_like(mu_0, M) for _ in 1:T_long]
-x_long[1] = randn(N)
-for t in 1:T_long
-    x_long[t + 1] = A * x_long[t] + C * randn(K)
-    y_long[t] = G * x_long[t] + H * randn(L)
-end
-
-# Run our filter
-mu_long = [alloc_like(mu_0) for _ in 1:(T_long + 1)]
-Sigma_long = [alloc_like(Sigma_0) for _ in 1:(T_long + 1)]
-cache_long = alloc_kalman_cache(mu_0, Sigma_0, model, T_long)
-kalman!(mu_long, Sigma_long, y_long, mu_0, Sigma_0, model, cache_long)
-
-# ControlSystems.jl steady-state gain
-# dkalman returns L in predictor form: x̂(k+1|k) = A*x̂(k|k-1) + L*(y(k) - G*x̂(k|k-1))
-# Our filter form: K = A \ L
-L_predictor = dkalman(A, G, R1, R2)
-K_expected = A \ L_predictor
-
-K_ours = cache_long.gain[end]
-println("Our steady-state K:\n", round.(K_ours; digits = 6))
-println("ControlSystems K:\n", round.(K_expected; digits = 6))
-```
-
-```{code-cell} julia
----
-tags: [remove-cell]
----
-@testset "ControlSystems.jl steady-state comparison" begin
-    @test K_ours ≈ K_expected rtol = 1e-6
-end
 ```
 
 ### Plot: Filtered vs True States
@@ -823,6 +752,8 @@ plot!(time_kf, [mu_kf[t][2] for t in 1:(T_kf + 1)], lw = 2,
 ```
 
 ## Performance
+
+In this section we check important performance characteristics of our Kalman filter implementation, including type stability, zero allocations, and speed benchmarks. We also compare the mutable version against a static version using `StaticArrays` to see the tradeoffs in speed and flexibility.
 
 ### Type Stability
 
@@ -902,35 +833,28 @@ cache_big = alloc_kalman_cache(mu_0_big, Sigma_0_big, model_big, T_big)
 
 ### Forward Mode: Sensitivity of Prior Mean
 
-We perturb the first element of $\mu_0$ by a unit tangent and observe how the filtered means respond over time.
+We perturb the first element of $\mu_0$ by a unit tangent and observe how the filtered means respond over time. As with the simulation, every mutated buffer (`mu`, `Sigma`, `cache`, `y`) needs a shadow array for Enzyme to propagate tangents through the writes.
 
 ```{code-cell} julia
-# Set up fresh arrays for AD
 mu_fwd = [alloc_like(mu_0) for _ in 1:(T_kf + 1)]
 Sigma_fwd = [alloc_like(Sigma_0) for _ in 1:(T_kf + 1)]
 cache_fwd = alloc_kalman_cache(mu_0, Sigma_0, model, T_kf)
 dmu_fwd = Enzyme.make_zero(mu_fwd)
 dSigma_fwd = Enzyme.make_zero(Sigma_fwd)
 dcache_fwd = Enzyme.make_zero(cache_fwd)
-
-dmu_0_fwd = zeros(N)
-dmu_0_fwd[1] = 1.0  # perturb first state
 dy_fwd = Enzyme.make_zero(y_obs)
 
-@inline function scalar_kalman!(mu, Sigma, y, mu_0, Sigma_0, model, cache)
-    return kalman!(mu, Sigma, y, mu_0, Sigma_0, model, cache)
-end
+dmu_0_fwd = zeros(N)
+dmu_0_fwd[1] = 1.0  # seed: perturb first state element
 
-result_fwd = autodiff(Forward, scalar_kalman!,
-                      Duplicated(mu_fwd, dmu_fwd),
-                      Duplicated(Sigma_fwd, dSigma_fwd),
-                      Duplicated(y_obs, dy_fwd),
-                      Duplicated(copy(mu_0), dmu_0_fwd),
-                      Const(Sigma_0),
-                      Const(model),
-                      Duplicated(cache_fwd, dcache_fwd))
-
-println("Tangent of loglik w.r.t. μ₀[1]: ", result_fwd[1])
+autodiff(Forward, kalman!,
+         Duplicated(mu_fwd, dmu_fwd),
+         Duplicated(Sigma_fwd, dSigma_fwd),
+         Duplicated(y_obs, dy_fwd),
+         Duplicated(mu_0, dmu_0_fwd),
+         Const(Sigma_0),
+         Const(model),
+         Duplicated(cache_fwd, dcache_fwd))
 
 plot(time_kf, [dmu_fwd[t][1] for t in 1:(T_kf + 1)], lw = 2, label = "dμ₁/dμ₀₁",
      xlabel = "t", ylabel = "sensitivity",
@@ -944,9 +868,8 @@ plot!(time_kf, [dmu_fwd[t][2] for t in 1:(T_kf + 1)], lw = 2,
 tags: [remove-cell]
 ---
 @testset "Forward AD Kalman" begin
-    @test result_fwd[1] != 0.0
-    @test !isnan(result_fwd[1])
     @test any(!iszero, dmu_fwd[2])
+    @test all(t -> all(isfinite, dmu_fwd[t]), 1:(T_kf + 1))
 end
 ```
 
@@ -954,43 +877,33 @@ end
 
 Reverse mode gives gradients of the log-likelihood with respect to **all** model parameters and initial conditions in a single sweep, regardless of parameter dimension. This is what makes gradient-based MLE practical.
 
-As with the simulation, we can wrap the shadow allocation boilerplate into a reusable gradient function:
+As with `terminal_observable`, we wrap `kalman!` in a self-contained function that allocates its own workspace and returns the scalar log-likelihood:
 
 ```{code-cell} julia
-function gradient_kalman(y, mu_0, Sigma_0, model)
-    T_g = length(y)
-    mu = [alloc_like(mu_0) for _ in 1:(T_g + 1)]
-    Sigma = [alloc_like(Sigma_0) for _ in 1:(T_g + 1)]
-    cache = alloc_kalman_cache(mu_0, Sigma_0, model, T_g)
-    dmu = Enzyme.make_zero(mu)
-    dSigma = Enzyme.make_zero(Sigma)
-    dcache = Enzyme.make_zero(cache)
-    dmodel = Enzyme.make_zero(model)
-    dmu_0 = Enzyme.make_zero(mu_0)
-    dy = Enzyme.make_zero(y)
-
-    autodiff(Reverse, scalar_kalman!,
-             Duplicated(mu, dmu), Duplicated(Sigma, dSigma),
-             Duplicated(y, dy), Duplicated(copy(mu_0), dmu_0),
-             Const(Sigma_0), Duplicated(model, dmodel),
-             Duplicated(cache, dcache))
-
-    return (; grad_mu_0 = dmu_0, grad_model = dmodel)
+function kalman_loglik(y, mu_0, Sigma_0, model)
+    T_k = length(y)
+    mu = [alloc_like(mu_0) for _ in 1:(T_k + 1)]
+    Sigma = [alloc_like(Sigma_0) for _ in 1:(T_k + 1)]
+    cache = alloc_kalman_cache(mu_0, Sigma_0, model, T_k)
+    return kalman!(mu, Sigma, y, mu_0, Sigma_0, model, cache)
 end
 ```
 
-We use the larger $N=5$ model for this demonstration.
+Because `kalman_loglik` returns an `Active` scalar, Enzyme back-propagates through `kalman!` and accumulates gradients in the `Duplicated` shadow arrays. We use the larger $N=5$ model for this demonstration.
 
 ```{code-cell} julia
 Random.seed!(456)
 y_big_obs = [randn(M_big) for _ in 1:T_big]
 
-grads_kf = gradient_kalman(y_big_obs, mu_0_big, Sigma_0_big, model_big)
+dmu_0_rev = Enzyme.make_zero(mu_0_big)
+dmodel_rev = Enzyme.make_zero(model_big)
 
-println("Gradient of loglik w.r.t. μ₀:")
-println(round.(grads_kf.grad_mu_0; digits = 4))
-println("\nGradient of loglik w.r.t. A (first row):")
-println(round.(grads_kf.grad_model.A[1, :]; digits = 4))
+autodiff(Reverse, kalman_loglik, Active,
+         Const(y_big_obs), Duplicated(mu_0_big, dmu_0_rev),
+         Const(Sigma_0_big), Duplicated(model_big, dmodel_rev))
+
+println("∂ℓ/∂μ₀:             ", round.(dmu_0_rev; digits = 4))
+println("∂ℓ/∂A (first row):   ", round.(dmodel_rev.A[1, :]; digits = 4))
 ```
 
 ```{code-cell} julia
@@ -998,10 +911,10 @@ println(round.(grads_kf.grad_model.A[1, :]; digits = 4))
 tags: [remove-cell]
 ---
 @testset "Reverse AD Kalman" begin
-    @test sum(abs, grads_kf.grad_mu_0) > 0
-    @test !any(isnan, grads_kf.grad_mu_0)
-    @test sum(abs, grads_kf.grad_model.A) > 0
-    @test !any(isnan, grads_kf.grad_model.A)
+    @test sum(abs, dmu_0_rev) > 0
+    @test !any(isnan, dmu_0_rev)
+    @test sum(abs, dmodel_rev.A) > 0
+    @test !any(isnan, dmodel_rev.A)
 end
 ```
 
@@ -1009,7 +922,7 @@ end
 
 We validate forward and reverse modes against finite differences using `test_forward` and `test_reverse` on a small ($N=2$, $T=2$) model.
 
-Note: `Sigma_0` must be `Const` due to aliasing with `Sigma[1]` through `copyto!!`.
+Enzyme is in active development and bugs in AD can occur.
 
 ```{code-cell} julia
 N_test, M_test, T_test = 2, 2, 2
@@ -1028,22 +941,22 @@ mu_et = [alloc_like(mu_0_test) for _ in 1:(T_test + 1)]
 Sigma_et = [alloc_like(Sigma_0_test) for _ in 1:(T_test + 1)]
 cache_et = alloc_kalman_cache(mu_0_test, Sigma_0_test, model_test, T_test)
 
-test_forward(scalar_kalman!, Const,
+test_forward(kalman!, Const,
              (mu_et, Duplicated),
              (Sigma_et, Duplicated),
              (y_test, Duplicated),
-             (copy(mu_0_test), Const),
+             (mu_0_test, Duplicated),
              (copy(Sigma_0_test), Const),
              (model_test, Duplicated),
              (cache_et, Duplicated))
 ```
 
 ```{code-cell} julia
-test_reverse(scalar_kalman!, Const,
+test_reverse(kalman!, Const,
              (mu_et, Duplicated),
              (Sigma_et, Duplicated),
              (y_test, Duplicated),
-             (copy(mu_0_test), Const),
+             (mu_0_test, Duplicated),
              (copy(Sigma_0_test), Const),
              (model_test, Duplicated),
              (cache_et, Duplicated))

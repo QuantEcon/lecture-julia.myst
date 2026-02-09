@@ -381,6 +381,7 @@ To use Enzyme effectively, you must manually annotate your function arguments to
 * **Shadow:** The separate memory location where derivatives are accumulated (e.g., `dx` or `db`).
 
 
+(enzyme-activity-rules)=
 ### Fundamental Rules of Activity
 When calling `autodiff`, every argument needs an "Activity" wrapper to tell Enzyme how to handle it.
 
