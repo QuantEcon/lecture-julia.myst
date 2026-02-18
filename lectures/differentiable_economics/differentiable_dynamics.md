@@ -30,22 +30,27 @@ kernelspec:
 
 ## Overview
 
+Many problems in macroeconomics involve simulating dynamic models — whether to explore quantitative counterfactuals and perform numerical experiments (e.g., impulse response and conditional moments) or to estimate structural parameters.
 
-This lecture provides an introduction to differentiable simulation of dynamic systems in Julia using Enzyme.jl.  See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for background on in-place patterns and Enzyme wrappers.
+Typically these models are either analyzed as linearized systems, where derivatives and equations for estimation are available in closed form, or simulated as a black box with derivative-free optimizers used to calibrate and estimate parameters.
 
-It builds on the **linear state space** models we introduced in {doc}`linear models <../introduction_dynamics/linear_models>` and the {doc}`kalman filter <../introduction_dynamics/kalman>`. 
+This lecture shows a third path: using automatic differentiation (AD) to differentiate the entire simulation, enabling counterfactual experiments and estimation with gradient-based methods (e.g., optimization or gradient-based samplers such as [Hamiltonian Monte Carlo (HMC)](https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo)).
 
+Building on the **linear state space** models from {doc}`linear models <../introduction_dynamics/linear_models>` and the {doc}`kalman filter <../introduction_dynamics/kalman>`, we use [Enzyme.jl](https://enzyme.mit.edu/julia/stable/) to differentiate simulations end-to-end. See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for background on in-place patterns and Enzyme wrappers.
 
-Example applications of these methods include:
+Along the way, you will learn practical patterns for high-performance differentiable code:
 
-* calibration
-* simulated method of moments
-* estimation
+* Writing **allocation-free, in-place simulations** that AD can differentiate — a pattern that also provides maximum performance for many non-differentiable use cases
+* Choosing between **forward mode** (efficient for impulse responses and few-parameter sensitivities) and **reverse mode** (efficient for gradients of all structural model parameters with scalar objectives like loss functions)
+* Using **batch tangents** to compute multiple derivatives in a single pass
+* **Verifying correctness** with type-stability checks (`@inferred`), allocation profiling (`@btime`), and finite-difference testing (`EnzymeTestUtils`) — essential in practice for any high-performance code
+* **Calibrating economic models** by plugging AD gradients into optimization routines (e.g., L-BFGS via `Optimization.jl`)
 
+These techniques extend naturally to richer settings — nonlinear dynamics, heterogeneous agent models, and full structural estimation — wherever you need fast, exact gradients of simulated outcomes with respect to parameters.
 
-**Caution** : The code in this section is significantly more advanced than some of the other lectures, and requires some experience with both auto-differentiation concepts and a more detailed understanding of type-safety and memory management in Julia.
+**Caution**: The code in this lecture is significantly more advanced than some of the other lectures, and requires some experience with both auto-differentiation concepts and a more detailed understanding of type-safety and memory management in Julia.
 
-[Enzyme.jl](https://enzyme.mit.edu/julia/stable/) is under active development and while state-of-the-art, it is often bleeding-edge. Some of the patterns shown here may change in future releases. See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for the latest best practices.
+Enzyme.jl is under active development and while state-of-the-art, it is often bleeding-edge. Some of the patterns shown here may change in future releases. See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for the latest best practices.
 
 In practice, you may find using an LLM valuable for navigating the perplexing error messages of Enzyme.jl. Compilation times can be very slow, and performance intuition is not always straightforward.
 
@@ -61,7 +66,7 @@ using Optimization, OptimizationOptimJL, EnzymeTestUtils
 (simm_lss)=
 ## Simulating a Linear State Space Model
 
-Take the following parameterization of a linear state space model
+Take the following parameterization of a linear state space model.
 
 $$
 x_{t+1} = A x_t + C w_{t+1}, \qquad
@@ -70,7 +75,11 @@ $$
 
 where $w_{t+1}$ and $v_t$ are i.i.d. standard normal shocks. States $x_t \in \mathbb R^N$ and observations $y_t \in \mathbb R^M$ are stored column-wise.
 
-See the {doc}`auto-differentiation <../more_julia/auto_differentiation>`  lecture for more on efficient in-place operations and `mul!`.
+```{note}
+The implementation below uses `mul!` in two forms: the 3-argument version `mul!(Y, A, X)` computes $Y = A X$ in place, and the 5-argument version `mul!(Y, A, X, α, β)` computes $Y = \alpha A X + \beta Y$ in place. With $\alpha = \beta = 1$ this gives $Y \mathrel{+}= A X$, which lets us accumulate the shock term without a temporary. These operations dispatch to highly optimized, allocation-free, BLAS routines that Julia calls automatically for dense arrays.
+```
+
+See the {doc}`auto-differentiation <../more_julia/auto_differentiation>` lecture for more on efficient in-place operations and `mul!`.
 
 ```{code-cell} julia
 function simulate_lss!(x, y, model, x_0, w, v)
@@ -113,7 +122,7 @@ We use a manual loop instead of `copyto!` or broadcasting for the initial condit
 
 Crucially, this function modifies the preallocated `x` and `y` arrays in place without any allocations.
 
-We can use this function to simulate from example matrices and a sequence of shocks
+We can use this function to simulate from example matrices and a sequence of shocks.
 
 ```{code-cell} julia
 Random.seed!(1234)
@@ -152,7 +161,7 @@ plot(time, y', lw = 2, xlabel = "t", ylabel = "observation",
 (simm_lss_diff)=
 ### Differentiating the Simulation
 
-Forward-mode in Enzyme is convenient for impulse-style effects: for example, here we perturb only the $w_1$ leaving everything else fixed and can see the change in the $x$ and $y$ paths
+Forward-mode in Enzyme is convenient for impulse-style effects: for example, here we perturb only $w_1$, leaving everything else fixed, and can see the change in the $x$ and $y$ paths.
 
 ```{code-cell} julia
 # forward-mode on w[1]
@@ -196,48 +205,7 @@ autodiff(Forward,
 @show dy_batch[1], dy_batch[2];
 ```
 
-
-### Checking Type Stability and Allocations
-
-With complicated code, we first need to ensure the code is type-stable.  The following call is silent, which indicates there are no type-stability issues.
-
-```{code-cell} julia
-@inferred simulate_lss!(x, y, model, x_0, w, v)
-```
-
-Next we check that it does not allocate any memory during execution.
-
-```{code-cell} julia
-using BenchmarkTools
-function count_allocs()
-    return simulate_lss!(x, y, model, x_0, w, v)
-end
-@btime count_allocs()
-```
-
-Finally, for complicated functions such as simulations, we cannot
-assume that Enzyme (or any AD system) will necessarily be correct.
-
-To aid in this, the `EnzymeTestUtils` provides utilities for this purpose which automatically check against finite-difference approximations using the appropriate seeding.
-
-When using in-place functions mutating the arguments `test_forward` requires that you pass any mutated arguments as output of the function itself, which can be done by a small wrapper.
-
-```{code-cell} julia
-function test_forward_simulate_lss!(x, y, model, x_0, w, v)
-    simulate_lss!(x, y, model, x_0, w, v)
-    return x, y
-end
-test_forward(test_forward_simulate_lss!,
-             Duplicated,
-             (x, Duplicated),
-             (y, Duplicated),
-             (model, Const),
-             (x_0, Duplicated),
-             (w, Const),
-             (v, Const))
-```
-
-Unlike `test_forward`, the automatic checks on reverse-mode AD with `test_reverse` require a scalar output, which we discuss below in the calibration section.
+Note that in these cases we are able to see the effect of the perturbation on all calculated quantities through the simulation, and not simply a single scalar output.
 
 ### Differentiating Functions of Simulation
 
@@ -280,33 +248,9 @@ autodiff(Reverse,
 dw_rev # sensitivity wrt evolution shock
 ```
 
-These examples mirror the larger workflow: write allocation-free, in-place simulations, seed tangents with `Duplicated`, and use forward or reverse mode depending on whether you want many outputs per input (forward) or many inputs to one scalar (reverse).
+These examples mirror the larger workflow: write allocation-free, in-place simulations, seed tangents with `Duplicated`, and use forward or reverse mode depending on whether you want many outputs per input (forward) or many inputs to one scalar (reverse). In all cases, mutated arguments must be passed as `Duplicated`.
 
-As before, for complicated functions we may want to check that the gradients are correct using finite differences.
-
-```{code-cell} julia
-test_reverse(g,
-             Active,
-             (x_rev, Duplicated),
-             (y_rev, Duplicated),
-             (model, Const),
-             (x_0, Const),
-             (w, Duplicated),
-             (v, Duplicated))
-
-# Or with a different set of arguments
-test_reverse(g,
-             Active,
-             (x_rev, Duplicated),
-             (y_rev, Duplicated),
-             (model, Duplicated),
-             (x_0, Duplicated),
-             (w, Const),
-             (v, Const))
-```
-In all cases we must ensure the mutated arguments are passed as `Duplicated`.
-
-Functions which internally use buffers can allocate them, but will need to ensure that the buffers are of the appropriate type (i.e., duplicated if they are active).  This can be achieved with the `eltype`
+Functions which internally allocate buffers will need to ensure that those buffers have the appropriate element type (i.e., dual numbers when active). This can be achieved by propagating `eltype` from an active argument. The `gradient` convenience wrapper handles the `Duplicated` bookkeeping automatically, so the calling code is simpler than the manual `autodiff` pattern above.
 
 ```{code-cell} julia
 function g2(model, x_0, w, v)
@@ -324,10 +268,10 @@ gradient(Reverse, g2, model, x_0, w, v)
 
 Reverse-mode in particular can be useful for calibration with simulated dynamics.
 
-For example, consider if the our $A$ matrix was parameterized by a scalar $a$ in its upper left corner, and we wanted to calibrate $a$ so that the time average of the first observation matched a target value $y^* = 0$.
+For example, consider if our $A$ matrix was parameterized by a scalar $a$ in its upper left corner, and we wanted to calibrate $a$ so that the time average of the first observation matched a target value $y^* = 0$.
 
 
-For some technical reasons discussed below, we rewrite the simulation to take the model parameters individually rather than as a named tuple. A version that works with the original function is given below.
+For some technical reasons discussed below, we add a second method of `simulate_lss!` that takes the model parameters as individual matrices rather than a named tuple. A version that works with the original named-tuple method is given in the next subsection.
 
 ```{code-cell} julia
 function simulate_lss!(x, y, A, C, G, H, x_0, w, v)
@@ -416,8 +360,9 @@ println("Final a=$(sol.u[1]), Loss: $(loss(sol.u, p))")
 
 ### Calibration with More Complicated Types
 
-```{code-cell} julia
+The previous calibration used the individual-matrix method of `simulate_lss!` to sidestep a subtlety: when some fields of a named tuple are active (depend on the optimization variable) and others are constant, Enzyme needs help distinguishing them. The following version shows how to use the original named-tuple method by "laundering" the constant matrices through `copy`, so that Enzyme sees all fields as local variables with consistent activity.
 
+```{code-cell} julia
 function loss_2(u, p)
 
     # Unpack constants
@@ -428,7 +373,7 @@ function loss_2(u, p)
     A = parameterized_A(a) # A is Active (depends on u)
 
     # Trick: "Launder" the constants by copying them.
-    # Creates new locals which Enzyme sees these as "Local Active Variables"
+    # Creates new locals that Enzyme sees as "Local Active Variables"
     # Now build the struct with homogeneous (all local) variables
     model = (; A, C = copy(C), G = copy(G), H = copy(H))
 
@@ -466,4 +411,79 @@ prob = OptimizationProblem(optf, u_0, p)
 
 sol = solve(prob, OptimizationOptimJL.LBFGS())
 println("Final a=$(sol.u[1]), Loss: $(loss_2(sol.u, p))")
+```
+
+## Verifying High-Performance Differentiable Code
+
+For any high-performance differentiable simulation, it is important to verify that the code is type-stable, allocation-free, and that the AD produces correct gradients. This section collects the key checks in one place.
+
+### Type Stability
+
+Returning to the `simulate_lss!` function from {ref}`simm_lss`, we first verify that the code is type-stable. The following call is silent, which indicates there are no type-stability issues.
+
+```{code-cell} julia
+@inferred simulate_lss!(x, y, model, x_0, w, v)
+```
+
+### Allocation Checking
+
+Next we check that the simulation does not allocate any memory during execution.
+
+```{code-cell} julia
+using BenchmarkTools
+function count_allocs()
+    return simulate_lss!(x, y, model, x_0, w, v)
+end
+@btime count_allocs()
+```
+
+### AD Correctness with Finite Differences
+
+For complicated functions such as simulations, we cannot assume that Enzyme (or any AD system) will necessarily produce correct derivatives. The `EnzymeTestUtils` package provides utilities that automatically check AD results against finite-difference approximations using the appropriate seeding.
+
+#### Forward Mode
+
+Returning to the forward-mode differentiation from {ref}`simm_lss_diff`, we verify the tangents are correct. When using in-place functions that mutate their arguments, `test_forward` requires that the mutated arguments are returned as output, which can be done with a small wrapper.
+
+```{code-cell} julia
+function test_forward_simulate_lss!(x, y, model, x_0, w, v)
+    simulate_lss!(x, y, model, x_0, w, v)
+    return x, y
+end
+test_forward(test_forward_simulate_lss!,
+             Duplicated,
+             (x, Duplicated),
+             (y, Duplicated),
+             (model, Const),
+             (x_0, Duplicated),
+             (w, Const),
+             (v, Const))
+```
+
+#### Reverse Mode
+
+Unlike `test_forward`, the `test_reverse` utility requires a scalar-valued function. We can apply it to the `g` function defined in the reverse-mode section above.
+
+```{code-cell} julia
+x_rev = zeros(N, T + 1)
+y_rev = zeros(M, T + 1)
+
+test_reverse(g,
+             Active,
+             (x_rev, Duplicated),
+             (y_rev, Duplicated),
+             (model, Const),
+             (x_0, Const),
+             (w, Duplicated),
+             (v, Duplicated))
+
+# Or with a different set of active arguments
+test_reverse(g,
+             Active,
+             (x_rev, Duplicated),
+             (y_rev, Duplicated),
+             (model, Duplicated),
+             (x_0, Duplicated),
+             (w, Const),
+             (v, Const))
 ```
