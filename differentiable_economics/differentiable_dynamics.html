@@ -171,10 +171,19 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">45.1. Overview</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#simulating-a-linear-state-space-model">45.2. Simulating a Linear State Space Model</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differentiating-the-simulation">45.2.1. Differentiating the Simulation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#checking-type-stability-and-allocations">45.2.2. Checking Type Stability and Allocations</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differentiating-functions-of-simulation">45.2.3. Differentiating Functions of Simulation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration">45.2.4. Calibration</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration-with-more-complicated-types">45.2.5. Calibration with More Complicated Types</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#differentiating-functions-of-simulation">45.2.2. Differentiating Functions of Simulation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration">45.2.3. Calibration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calibration-with-more-complicated-types">45.2.4. Calibration with More Complicated Types</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verifying-high-performance-differentiable-code">45.3. Verifying High-Performance Differentiable Code</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#type-stability">45.3.1. Type Stability</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#allocation-checking">45.3.2. Allocation Checking</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ad-correctness-with-finite-differences">45.3.3. AD Correctness with Finite Differences</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#forward-mode">45.3.3.1. Forward Mode</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#reverse-mode">45.3.3.2. Reverse Mode</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -252,22 +261,28 @@ const thebe_selector_output = ".output, .cell_output"
 <ul>
 <li><p><a class="reference internal" href="#overview" id="id2">Overview</a></p></li>
 <li><p><a class="reference internal" href="#simulating-a-linear-state-space-model" id="id3">Simulating a Linear State Space Model</a></p></li>
+<li><p><a class="reference internal" href="#verifying-high-performance-differentiable-code" id="id4">Verifying High-Performance Differentiable Code</a></p></li>
 </ul>
 </li>
 </ul>
 </div>
 <section id="overview">
 <h2><a class="toc-backref" href="#id2"><span class="section-number">45.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h2>
-<p>This lecture provides an introduction to differentiable simulation of dynamic systems in Julia using Enzyme.jl.  See <a class="reference internal" href="../more_julia/auto_differentiation.html"><span class="doc">auto-differentiation</span></a> for background on in-place patterns and Enzyme wrappers.</p>
-<p>It builds on the <strong>linear state space</strong> models we introduced in <a class="reference internal" href="../introduction_dynamics/linear_models.html"><span class="doc">linear models</span></a> and the <a class="reference internal" href="../introduction_dynamics/kalman.html"><span class="doc">kalman filter</span></a>.</p>
-<p>Example applications of these methods include:</p>
+<p>Many problems in macroeconomics involve simulating dynamic models — whether to explore quantitative counterfactuals and perform numerical experiments (e.g., impulse response and conditional moments) or to estimate structural parameters.</p>
+<p>Typically these models are either analyzed as linearized systems, where derivatives and equations for estimation are available in closed form, or simulated as a black box with derivative-free optimizers used to calibrate and estimate parameters.</p>
+<p>This lecture shows a third path: using automatic differentiation (AD) to differentiate the entire simulation, enabling counterfactual experiments and estimation with gradient-based methods (e.g., optimization or gradient-based samplers such as <a class="reference external" href="https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo">Hamiltonian Monte Carlo (HMC)</a>).</p>
+<p>Building on the <strong>linear state space</strong> models from <a class="reference internal" href="../introduction_dynamics/linear_models.html"><span class="doc">linear models</span></a> and the <a class="reference internal" href="../introduction_dynamics/kalman.html"><span class="doc">kalman filter</span></a>, we use <a class="reference external" href="https://enzyme.mit.edu/julia/stable/">Enzyme.jl</a> to differentiate simulations end-to-end. See <a class="reference internal" href="../more_julia/auto_differentiation.html"><span class="doc">auto-differentiation</span></a> for background on in-place patterns and Enzyme wrappers.</p>
+<p>Along the way, you will learn practical patterns for high-performance differentiable code:</p>
 <ul class="simple">
-<li><p>calibration</p></li>
-<li><p>simulated method of moments</p></li>
-<li><p>estimation</p></li>
+<li><p>Writing <strong>allocation-free, in-place simulations</strong> that AD can differentiate — a pattern that also provides maximum performance for many non-differentiable use cases</p></li>
+<li><p>Choosing between <strong>forward mode</strong> (efficient for impulse responses and few-parameter sensitivities) and <strong>reverse mode</strong> (efficient for gradients of all structural model parameters with scalar objectives like loss functions)</p></li>
+<li><p>Using <strong>batch tangents</strong> to compute multiple derivatives in a single pass</p></li>
+<li><p><strong>Verifying correctness</strong> with type-stability checks (<code class="docutils literal notranslate"><span class="pre">&#64;inferred</span></code>), allocation profiling (<code class="docutils literal notranslate"><span class="pre">&#64;btime</span></code>), and finite-difference testing (<code class="docutils literal notranslate"><span class="pre">EnzymeTestUtils</span></code>) — essential in practice for any high-performance code</p></li>
+<li><p><strong>Calibrating economic models</strong> by plugging AD gradients into optimization routines (e.g., L-BFGS via <code class="docutils literal notranslate"><span class="pre">Optimization.jl</span></code>)</p></li>
 </ul>
-<p><strong>Caution</strong> : The code in this section is significantly more advanced than some of the other lectures, and requires some experience with both auto-differentiation concepts and a more detailed understanding of type-safety and memory management in Julia.</p>
-<p><a class="reference external" href="https://enzyme.mit.edu/julia/stable/">Enzyme.jl</a> is under active development and while state-of-the-art, it is often bleeding-edge. Some of the patterns shown here may change in future releases. See <a class="reference internal" href="../more_julia/auto_differentiation.html"><span class="doc">auto-differentiation</span></a> for the latest best practices.</p>
+<p>These techniques extend naturally to richer settings — nonlinear dynamics, heterogeneous agent models, and full structural estimation — wherever you need fast, exact gradients of simulated outcomes with respect to parameters.</p>
+<p><strong>Caution</strong>: The code in this lecture is significantly more advanced than some of the other lectures, and requires some experience with both auto-differentiation concepts and a more detailed understanding of type-safety and memory management in Julia.</p>
+<p>Enzyme.jl is under active development and while state-of-the-art, it is often bleeding-edge. Some of the patterns shown here may change in future releases. See <a class="reference internal" href="../more_julia/auto_differentiation.html"><span class="doc">auto-differentiation</span></a> for the latest best practices.</p>
 <p>In practice, you may find using an LLM valuable for navigating the perplexing error messages of Enzyme.jl. Compilation times can be very slow, and performance intuition is not always straightforward.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
@@ -280,14 +295,18 @@ const thebe_selector_output = ".output, .cell_output"
 </section>
 <section id="simulating-a-linear-state-space-model">
 <span id="simm-lss"></span><h2><a class="toc-backref" href="#id3"><span class="section-number">45.2. </span>Simulating a Linear State Space Model</a><a class="headerlink" href="#simulating-a-linear-state-space-model" title="Permalink to this heading">#</a></h2>
-<p>Take the following parameterization of a linear state space model</p>
+<p>Take the following parameterization of a linear state space model.</p>
 <div class="math notranslate nohighlight">
 \[
 x_{t+1} = A x_t + C w_{t+1}, \qquad
 y_t = G x_t + H v_t
 \]</div>
 <p>where <span class="math notranslate nohighlight">\(w_{t+1}\)</span> and <span class="math notranslate nohighlight">\(v_t\)</span> are i.i.d. standard normal shocks. States <span class="math notranslate nohighlight">\(x_t \in \mathbb R^N\)</span> and observations <span class="math notranslate nohighlight">\(y_t \in \mathbb R^M\)</span> are stored column-wise.</p>
-<p>See the <a class="reference internal" href="../more_julia/auto_differentiation.html"><span class="doc">auto-differentiation</span></a>  lecture for more on efficient in-place operations and <code class="docutils literal notranslate"><span class="pre">mul!</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The implementation below uses <code class="docutils literal notranslate"><span class="pre">mul!</span></code> in two forms: the 3-argument version <code class="docutils literal notranslate"><span class="pre">mul!(Y,</span> <span class="pre">A,</span> <span class="pre">X)</span></code> computes <span class="math notranslate nohighlight">\(Y = A X\)</span> in place, and the 5-argument version <code class="docutils literal notranslate"><span class="pre">mul!(Y,</span> <span class="pre">A,</span> <span class="pre">X,</span> <span class="pre">α,</span> <span class="pre">β)</span></code> computes <span class="math notranslate nohighlight">\(Y = \alpha A X + \beta Y\)</span> in place. With <span class="math notranslate nohighlight">\(\alpha = \beta = 1\)</span> this gives <span class="math notranslate nohighlight">\(Y \mathrel{+}= A X\)</span>, which lets us accumulate the shock term without a temporary. These operations dispatch to highly optimized, allocation-free, BLAS routines that Julia calls automatically for dense arrays.</p>
+</div>
+<p>See the <a class="reference internal" href="../more_julia/auto_differentiation.html"><span class="doc">auto-differentiation</span></a> lecture for more on efficient in-place operations and <code class="docutils literal notranslate"><span class="pre">mul!</span></code>.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">simulate_lss!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
@@ -336,7 +355,7 @@ y_t = G x_t + H v_t
 <p>We use a manual loop instead of <code class="docutils literal notranslate"><span class="pre">copyto!</span></code> or broadcasting for the initial condition assignment because Enzyme has challenges with activity analysis on these operations. When <code class="docutils literal notranslate"><span class="pre">x_0</span></code> is <code class="docutils literal notranslate"><span class="pre">Const</span></code> but <code class="docutils literal notranslate"><span class="pre">x</span></code> is <code class="docutils literal notranslate"><span class="pre">Duplicated</span></code>, <code class="docutils literal notranslate"><span class="pre">copyto!</span></code> triggers a “Detected potential need for runtime activity” error. The explicit loop avoids this issue. See the <a class="reference internal" href="../more_julia/auto_differentiation.html"><span class="doc">auto-differentiation</span></a> lecture for details.</p>
 </div>
 <p>Crucially, this function modifies the preallocated <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> arrays in place without any allocations.</p>
-<p>We can use this function to simulate from example matrices and a sequence of shocks</p>
+<p>We can use this function to simulate from example matrices and a sequence of shocks.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
@@ -383,7 +402,7 @@ y_t = G x_t + H v_t
 </div>
 <section id="differentiating-the-simulation">
 <span id="simm-lss-diff"></span><h3><span class="section-number">45.2.1. </span>Differentiating the Simulation<a class="headerlink" href="#differentiating-the-simulation" title="Permalink to this heading">#</a></h3>
-<p>Forward-mode in Enzyme is convenient for impulse-style effects: for example, here we perturb only the <span class="math notranslate nohighlight">\(w_1\)</span> leaving everything else fixed and can see the change in the <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> paths</p>
+<p>Forward-mode in Enzyme is convenient for impulse-style effects: for example, here we perturb only <span class="math notranslate nohighlight">\(w_1\)</span>, leaving everything else fixed, and can see the change in the <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> paths.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="c"># forward-mode on w[1]</span>
@@ -447,75 +466,10 @@ y_t = G x_t + H v_t
 </div>
 </div>
 </div>
-</section>
-<section id="checking-type-stability-and-allocations">
-<h3><span class="section-number">45.2.2. </span>Checking Type Stability and Allocations<a class="headerlink" href="#checking-type-stability-and-allocations" title="Permalink to this heading">#</a></h3>
-<p>With complicated code, we first need to ensure the code is type-stable.  The following call is silent, which indicates there are no type-stability issues.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@inferred</span><span class="w"> </span><span class="n">simulate_lss!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<p>Next we check that it does not allocate any memory during execution.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span>
-<span class="k">function</span><span class="w"> </span><span class="n">count_allocs</span><span class="p">()</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">simulate_lss!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
-<span class="k">end</span>
-<span class="nd">@btime</span><span class="w"> </span><span class="n">count_allocs</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.572 μs
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
-</pre></div>
-</div>
-</div>
-</div>
-<p>Finally, for complicated functions such as simulations, we cannot
-assume that Enzyme (or any AD system) will necessarily be correct.</p>
-<p>To aid in this, the <code class="docutils literal notranslate"><span class="pre">EnzymeTestUtils</span></code> provides utilities for this purpose which automatically check against finite-difference approximations using the appropriate seeding.</p>
-<p>When using in-place functions mutating the arguments <code class="docutils literal notranslate"><span class="pre">test_forward</span></code> requires that you pass any mutated arguments as output of the function itself, which can be done by a small wrapper.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">test_forward_simulate_lss!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
-<span class="w">    </span><span class="n">simulate_lss!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span>
-<span class="k">end</span>
-<span class="n">test_forward</span><span class="p">(</span><span class="n">test_forward_simulate_lss!</span><span class="p">,</span>
-<span class="w">             </span><span class="n">Duplicated</span><span class="p">,</span>
-<span class="w">             </span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">Test Summary:                                                                                                                                                                                                                                                                                                                                 | </span><span class=" -Color -Color-Bold -Color-Bold-Green">Pass  </span>
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
-test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  18  </span><span class=" -Color -Color-Cyan">   18  </span>4.8s
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 18, false, false, true, 1.770666408855619e9, 1.770666413659608e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_forward.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
-</pre></div>
-</div>
-</div>
-</div>
-<p>Unlike <code class="docutils literal notranslate"><span class="pre">test_forward</span></code>, the automatic checks on reverse-mode AD with <code class="docutils literal notranslate"><span class="pre">test_reverse</span></code> require a scalar output, which we discuss below in the calibration section.</p>
+<p>Note that in these cases we are able to see the effect of the perturbation on all calculated quantities through the simulation, and not simply a single scalar output.</p>
 </section>
 <section id="differentiating-functions-of-simulation">
-<h3><span class="section-number">45.2.3. </span>Differentiating Functions of Simulation<a class="headerlink" href="#differentiating-functions-of-simulation" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">45.2.2. </span>Differentiating Functions of Simulation<a class="headerlink" href="#differentiating-functions-of-simulation" title="Permalink to this heading">#</a></h3>
 <p>Often we care about scalars of the simulated paths. For example, the average of the first observable is</p>
 <div class="math notranslate nohighlight">
 \[
@@ -569,51 +523,8 @@ g(w, v, \theta) = \frac{1}{T+1} \sum_{t=0}^T y_{1,t}.
 </div>
 </div>
 </div>
-<p>These examples mirror the larger workflow: write allocation-free, in-place simulations, seed tangents with <code class="docutils literal notranslate"><span class="pre">Duplicated</span></code>, and use forward or reverse mode depending on whether you want many outputs per input (forward) or many inputs to one scalar (reverse).</p>
-<p>As before, for complicated functions we may want to check that the gradients are correct using finite differences.</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">test_reverse</span><span class="p">(</span><span class="n">g</span><span class="p">,</span>
-<span class="w">             </span><span class="n">Active</span><span class="p">,</span>
-<span class="w">             </span><span class="p">(</span><span class="n">x_rev</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">y_rev</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">))</span>
-
-<span class="c"># Or with a different set of arguments</span>
-<span class="n">test_reverse</span><span class="p">(</span><span class="n">g</span><span class="p">,</span>
-<span class="w">             </span><span class="n">Active</span><span class="p">,</span>
-<span class="w">             </span><span class="p">(</span><span class="n">x_rev</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">y_rev</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">),</span>
-<span class="w">             </span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">Test Summary:                                                                                                                                                                                                                                                                                                         | </span><span class=" -Color -Color-Bold -Color-Bold-Green">Pass  </span>
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
-test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Const), (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated) | <span class=" -Color -Color-Green">  25  </span><span class=" -Color -Color-Cyan">   25  </span>6.3s
-<span class=" -Color -Color-Bold">Test Summary:                                                                                                                                                                                                                                                                                                         | </span>
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">Pass  </span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
-test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  29  </span><span class=" -Color -Color-Cyan">   29  </span>5.8s
-</pre></div>
-</div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 29, false, false, true, 1.770666428046328e9, 1.770666433861307e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_reverse.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
-</pre></div>
-</div>
-</div>
-</div>
-<p>In all cases we must ensure the mutated arguments are passed as <code class="docutils literal notranslate"><span class="pre">Duplicated</span></code>.</p>
-<p>Functions which internally use buffers can allocate them, but will need to ensure that the buffers are of the appropriate type (i.e., duplicated if they are active).  This can be achieved with the <code class="docutils literal notranslate"><span class="pre">eltype</span></code></p>
+<p>These examples mirror the larger workflow: write allocation-free, in-place simulations, seed tangents with <code class="docutils literal notranslate"><span class="pre">Duplicated</span></code>, and use forward or reverse mode depending on whether you want many outputs per input (forward) or many inputs to one scalar (reverse). In all cases, mutated arguments must be passed as <code class="docutils literal notranslate"><span class="pre">Duplicated</span></code>.</p>
+<p>Functions which internally allocate buffers will need to ensure that those buffers have the appropriate element type (i.e., dual numbers when active). This can be achieved by propagating <code class="docutils literal notranslate"><span class="pre">eltype</span></code> from an active argument. The <code class="docutils literal notranslate"><span class="pre">gradient</span></code> convenience wrapper handles the <code class="docutils literal notranslate"><span class="pre">Duplicated</span></code> bookkeeping automatically, so the calling code is simpler than the manual <code class="docutils literal notranslate"><span class="pre">autodiff</span></code> pattern above.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">g2</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
@@ -635,10 +546,10 @@ test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), 
 </div>
 </section>
 <section id="calibration">
-<h3><span class="section-number">45.2.4. </span>Calibration<a class="headerlink" href="#calibration" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">45.2.3. </span>Calibration<a class="headerlink" href="#calibration" title="Permalink to this heading">#</a></h3>
 <p>Reverse-mode in particular can be useful for calibration with simulated dynamics.</p>
-<p>For example, consider if the our <span class="math notranslate nohighlight">\(A\)</span> matrix was parameterized by a scalar <span class="math notranslate nohighlight">\(a\)</span> in its upper left corner, and we wanted to calibrate <span class="math notranslate nohighlight">\(a\)</span> so that the time average of the first observation matched a target value <span class="math notranslate nohighlight">\(y^* = 0\)</span>.</p>
-<p>For some technical reasons discussed below, we rewrite the simulation to take the model parameters individually rather than as a named tuple. A version that works with the original function is given below.</p>
+<p>For example, consider if our <span class="math notranslate nohighlight">\(A\)</span> matrix was parameterized by a scalar <span class="math notranslate nohighlight">\(a\)</span> in its upper left corner, and we wanted to calibrate <span class="math notranslate nohighlight">\(a\)</span> so that the time average of the first observation matched a target value <span class="math notranslate nohighlight">\(y^* = 0\)</span>.</p>
+<p>For some technical reasons discussed below, we add a second method of <code class="docutils literal notranslate"><span class="pre">simulate_lss!</span></code> that takes the model parameters as individual matrices rather than a named tuple. A version that works with the original named-tuple method is given in the next subsection.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">simulate_lss!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="n">H</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
@@ -742,7 +653,8 @@ test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), 
 </div>
 </section>
 <section id="calibration-with-more-complicated-types">
-<h3><span class="section-number">45.2.5. </span>Calibration with More Complicated Types<a class="headerlink" href="#calibration-with-more-complicated-types" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">45.2.4. </span>Calibration with More Complicated Types<a class="headerlink" href="#calibration-with-more-complicated-types" title="Permalink to this heading">#</a></h3>
+<p>The previous calibration used the individual-matrix method of <code class="docutils literal notranslate"><span class="pre">simulate_lss!</span></code> to sidestep a subtlety: when some fields of a named tuple are active (depend on the optimization variable) and others are constant, Enzyme needs help distinguishing them. The following version shows how to use the original named-tuple method by “laundering” the constant matrices through <code class="docutils literal notranslate"><span class="pre">copy</span></code>, so that Enzyme sees all fields as local variables with consistent activity.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">loss_2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">)</span>
@@ -755,7 +667,7 @@ test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), 
 <span class="w">    </span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parameterized_A</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="c"># A is Active (depends on u)</span>
 
 <span class="w">    </span><span class="c"># Trick: &quot;Launder&quot; the constants by copying them.</span>
-<span class="w">    </span><span class="c"># Creates new locals which Enzyme sees these as &quot;Local Active Variables&quot;</span>
+<span class="w">    </span><span class="c"># Creates new locals that Enzyme sees as &quot;Local Active Variables&quot;</span>
 <span class="w">    </span><span class="c"># Now build the struct with homogeneous (all local) variables</span>
 <span class="w">    </span><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(;</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">C</span><span class="p">),</span><span class="w"> </span><span class="n">G</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">G</span><span class="p">),</span><span class="w"> </span><span class="n">H</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
 
@@ -808,6 +720,130 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
 </div>
 </div>
 </div>
+</section>
+</section>
+<section id="verifying-high-performance-differentiable-code">
+<h2><a class="toc-backref" href="#id4"><span class="section-number">45.3. </span>Verifying High-Performance Differentiable Code</a><a class="headerlink" href="#verifying-high-performance-differentiable-code" title="Permalink to this heading">#</a></h2>
+<p>For any high-performance differentiable simulation, it is important to verify that the code is type-stable, allocation-free, and that the AD produces correct gradients. This section collects the key checks in one place.</p>
+<section id="type-stability">
+<h3><span class="section-number">45.3.1. </span>Type Stability<a class="headerlink" href="#type-stability" title="Permalink to this heading">#</a></h3>
+<p>Returning to the <code class="docutils literal notranslate"><span class="pre">simulate_lss!</span></code> function from <a class="reference internal" href="#simm-lss"><span class="std std-ref">Simulating a Linear State Space Model</span></a>, we first verify that the code is type-stable. The following call is silent, which indicates there are no type-stability issues.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="nd">@inferred</span><span class="w"> </span><span class="n">simulate_lss!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="allocation-checking">
+<h3><span class="section-number">45.3.2. </span>Allocation Checking<a class="headerlink" href="#allocation-checking" title="Permalink to this heading">#</a></h3>
+<p>Next we check that the simulation does not allocate any memory during execution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span>
+<span class="k">function</span><span class="w"> </span><span class="n">count_allocs</span><span class="p">()</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">simulate_lss!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
+<span class="k">end</span>
+<span class="nd">@btime</span><span class="w"> </span><span class="n">count_allocs</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.551 μs
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="ad-correctness-with-finite-differences">
+<h3><span class="section-number">45.3.3. </span>AD Correctness with Finite Differences<a class="headerlink" href="#ad-correctness-with-finite-differences" title="Permalink to this heading">#</a></h3>
+<p>For complicated functions such as simulations, we cannot assume that Enzyme (or any AD system) will necessarily produce correct derivatives. The <code class="docutils literal notranslate"><span class="pre">EnzymeTestUtils</span></code> package provides utilities that automatically check AD results against finite-difference approximations using the appropriate seeding.</p>
+<section id="forward-mode">
+<h4><span class="section-number">45.3.3.1. </span>Forward Mode<a class="headerlink" href="#forward-mode" title="Permalink to this heading">#</a></h4>
+<p>Returning to the forward-mode differentiation from <a class="reference internal" href="#simm-lss-diff"><span class="std std-ref">Differentiating the Simulation</span></a>, we verify the tangents are correct. When using in-place functions that mutate their arguments, <code class="docutils literal notranslate"><span class="pre">test_forward</span></code> requires that the mutated arguments are returned as output, which can be done with a small wrapper.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">test_forward_simulate_lss!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
+<span class="w">    </span><span class="n">simulate_lss!</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">v</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span>
+<span class="k">end</span>
+<span class="n">test_forward</span><span class="p">(</span><span class="n">test_forward_simulate_lss!</span><span class="p">,</span>
+<span class="w">             </span><span class="n">Duplicated</span><span class="p">,</span>
+<span class="w">             </span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">Test Summary:                                                                                                                                                                                                                                                                                                                                 | </span><span class=" -Color -Color-Bold -Color-Bold-Green">Pass  </span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
+test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  18  </span><span class=" -Color -Color-Cyan">   18  </span>4.7s
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 18, false, false, true, 1.771448529970186e9, 1.771448534712801e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_forward.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="reverse-mode">
+<h4><span class="section-number">45.3.3.2. </span>Reverse Mode<a class="headerlink" href="#reverse-mode" title="Permalink to this heading">#</a></h4>
+<p>Unlike <code class="docutils literal notranslate"><span class="pre">test_forward</span></code>, the <code class="docutils literal notranslate"><span class="pre">test_reverse</span></code> utility requires a scalar-valued function. We can apply it to the <code class="docutils literal notranslate"><span class="pre">g</span></code> function defined in the reverse-mode section above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="n">x_rev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+<span class="n">y_rev</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zeros</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">T</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">test_reverse</span><span class="p">(</span><span class="n">g</span><span class="p">,</span>
+<span class="w">             </span><span class="n">Active</span><span class="p">,</span>
+<span class="w">             </span><span class="p">(</span><span class="n">x_rev</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">y_rev</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">))</span>
+
+<span class="c"># Or with a different set of active arguments</span>
+<span class="n">test_reverse</span><span class="p">(</span><span class="n">g</span><span class="p">,</span>
+<span class="w">             </span><span class="n">Active</span><span class="p">,</span>
+<span class="w">             </span><span class="p">(</span><span class="n">x_rev</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">y_rev</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span><span class="w"> </span><span class="n">Duplicated</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">),</span>
+<span class="w">             </span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="w"> </span><span class="n">Const</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">Test Summary:                                                                                                                                                                                                                                                                                                         | </span><span class=" -Color -Color-Bold -Color-Bold-Green">Pass  </span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
+test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Const), (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated) | <span class=" -Color -Color-Green">  25  </span><span class=" -Color -Color-Cyan">   25  </span>5.9s
+<span class=" -Color -Color-Bold">Test Summary:                                                                                                                                                                                                                                                                                                         | </span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">Pass  </span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
+test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  29  </span><span class=" -Color -Color-Cyan">   29  </span>5.6s
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 29, false, false, true, 1.77144854134328e9, 1.771448546985266e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_reverse.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
+</pre></div>
+</div>
+</div>
+</div>
+</section>
 </section>
 </section>
 </section>

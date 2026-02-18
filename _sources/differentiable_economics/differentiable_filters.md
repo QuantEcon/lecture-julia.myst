@@ -29,24 +29,27 @@ kernelspec:
 
 ## Overview
 
-This lecture builds on {doc}`differentiable dynamics <differentiable_dynamics>` (simulation + AD) and {doc}`the Kalman filter <../introduction_dynamics/kalman>` (filter theory). See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for background on Enzyme.
+Many problems in economics involve state-space models with unobserved states and noisy observations. For example, when estimating dynamic models an econometrician might have an unobserved TFP process and only observe noisy functions of aggregates such as capital and consumption from national accounts. Or within a model, an agent might have an unobserved state such as a belief about the state of the world, or a hidden match quality they are trying to learn -- as in {cite}`Jovanovic1979matching`'s model of job matching and turnover, {cite}`Jovanovic1982`'s model of firm selection and industry dynamics, and {cite}`Moscarini2005`'s equilibrium search model with learning about match quality.
 
-Here we introduce **advanced techniques for high-performance computing** -- in particular, working with both in-place mutable operations and immutable StaticArrays, then applying these to a generic **nonlinear** state-space simulator and a high-performance Kalman filter, both compatible with Enzyme.jl.
+The mathematical problem of estimating these unobserved states is called "filtering", where the {doc}`Kalman filter <../introduction_dynamics/kalman>` is the optimal filter given certain assumptions (e.g., a linear state-space model with Gaussian shocks).
 
-**Unlike other lectures, this focuses on performance rather than simple clarity.**
+One immediate application is estimation: the Kalman filter also computes the likelihood of a linear state-space model given observed data. If we can differentiate through the filter, we unlock gradient-based methods for estimation -- maximum likelihood via algorithms such as L-BFGS, Bayesian inference via [Hamiltonian Monte Carlo (HMC)](https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo) or [variational inference](https://en.wikipedia.org/wiki/Variational_inference), and sensitivity analysis of filtered states with respect to model parameters. These techniques are used in {cite}`dssm`.
 
-The simulation framework supports arbitrary nonlinear state transitions and observation functions via callbacks, though the Kalman filter itself applies to the linear case.
+This lecture builds on {doc}`differentiable dynamics <differentiable_dynamics>` (differentiable simulation) and the {doc}`Kalman filter <../introduction_dynamics/kalman>` (filter theory). See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for background on Enzyme.
+
+Along the way, you will learn several patterns for writing high-performance numerical code that is both generic and AD-compatible:
+
+* The **bang-bang (`!!`) convention** -- a single algorithm that works with both heap-allocated mutable arrays (for large problems) and stack-allocated `StaticArrays` (for dramatic speedups on small problems)
+* **Prototype-based allocation** for writing generic code that infers array types from inputs
+* A **nonlinear state-space simulator** with callback-based transitions and observations, compatible with Enzyme
+* A **high-performance zero-allocation Kalman filter** with forward- and reverse-mode AD, enabling gradient-based estimation of all model parameters in a single sweep
+* Examples of auto-differentiation of more complicated functions, such as in-place solutions to linear systems (i.e., `ldiv!`) and matrix factorizations (i.e., `cholesky!`), which are common in many likelihoods
 
 ```{caution}
-The code in this section is significantly more advanced than some of the other lectures, and requires some experience with both auto-differentiation concepts and a more detailed understanding of type-safety and memory management in Julia.
+The code in this lecture is significantly more advanced than some of the other lectures, and requires some experience with both auto-differentiation concepts and a more detailed understanding of type-safety and memory management in Julia.
 
-[Enzyme.jl](https://enzyme.mit.edu/julia/stable/) is under active development and while state-of-the-art, it is often bleeding-edge. Some of the patterns shown here may change in future releases. See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for the latest best practices.
+Enzyme.jl is under active development and while state-of-the-art, it is often bleeding-edge. Some of the patterns shown here may change in future releases. See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for the latest best practices.
 ```
-
-A key application of these techniques are using Bayesian
-estimation methods with gradient-based samplers such as [Hamiltonian Monte Carlo](https://en.wikipedia.org/wiki/Hamiltonian_Monte_Carlo) or [variational inference](https://en.wikipedia.org/wiki/Variational_inference).
-
-These techniques are used in {cite}`dssm`.
 
 ```{code-cell} julia
 ---
@@ -83,7 +86,7 @@ One approach is a pattern called the "bang-bang" convention.
 
 A function `f!!` **always returns its result** and **tries to mutate in-place when possible**.
 
-It checks if a type can be modified directly with `ismutable(Y)` and then modifies in place if possible.  For example, if mutable it might call `mul!(Y, A, B)` and return `Y`; if immutable it would simply return `A * B`.
+It checks if a type can be modified directly with `ismutable(Y)` and then modifies in place if possible. For example, if mutable it might call `mul!(Y, A, B)` and return `Y`; if immutable it would simply return `A * B`.
 
 This makes the natural data structure **arrays of arrays** (e.g., `Vector{SVector{N}}`) rather than 2D matrices, since each element can be either mutable or immutable.
 
@@ -126,7 +129,7 @@ end
 end
 ```
 
-We also define no-op specialization for `nothing` arguments. This lets us write generic code that handles optional components -- for example, a model with or without observation noise -- using a single code path. If `H = nothing`, then `muladd!!(y, H, v)` simply returns `y` unchanged without any branching at runtime.
+We also define no-op specializations for `nothing` arguments. This lets us write generic code that handles optional components -- for example, a model with or without observation noise -- using a single code path. If `H = nothing`, then `muladd!!(y, H, v)` simply returns `y` unchanged without any branching at runtime.
 
 ```{code-cell} julia
 @inline muladd!!(Y, ::Nothing, B) = Y
@@ -193,7 +196,7 @@ Here we will make a variation on the simulation in {doc}`differentiable dynamics
 
 ### Arrays-of-Arrays Storage
 
-With the `!!` pattern, the natural data structure is `Vector{Vector{Float64}}` or `Vector{SVector{N,Float64}}`. This enables a single simulation functions for both mutable and static arrays.
+With the `!!` pattern, the natural data structure is `Vector{Vector{Float64}}` or `Vector{SVector{N,Float64}}`. This enables a single simulation function for both mutable and static arrays.
 
 ### The `simulate_ssm!` Function
 
@@ -205,7 +208,7 @@ $$
 
 where $f$ and $g$ can be **arbitrary nonlinear functions**, but the observation noise is assumed **additive Gaussian** with $v_t \sim N(0, I)$.
 
-To implement this for both static and preallocated arrays, the state transition callback `f!!(x_next, x, w, p, t)` implements the full $f(\cdot)$ (including process noise), while the observation callback `g!!(y, x, p, t)` implements only deterministic component $g(\cdot)$. The simulator adds the Gaussian observation noise $H v_t$ separately via `muladd!!`. Both callbacks follow the `!!` convention -- they attempt to mutate the first argument in-place but always return the result. Passing `H = nothing` drops the observation noise entirely thanks to the no-op specializations above.
+To implement this for both static and preallocated arrays, the state transition callback `f!!(x_next, x, w, p, t)` implements the full $f(\cdot)$ (including process noise), while the observation callback `g!!(y, x, p, t)` implements only the deterministic component $g(\cdot)$. The simulator adds the Gaussian observation noise $H v_t$ separately via `muladd!!`. Both callbacks follow the `!!` convention -- they attempt to mutate the first argument in-place but always return the result. Passing `H = nothing` drops the observation noise entirely thanks to the no-op specializations above.
 
 ```{code-cell} julia
 @inline function simulate_ssm!(x, y, f!!, g!!, x_0, w, v, H, p)
@@ -284,7 +287,7 @@ plot!(time, [x[t][2] for t in 1:(T + 1)], lw = 2, label = "x₂")
 
 With this pattern, accessing and slicing arrays of arrays can be burdensome.
 
-One package that makes this clearer is to use `RecursiveArrayTools.jl` to wrap the arrays in a `RecursiveArray` type, which provides convenient indexing and slicing while preserving the underlying array types.
+The `RecursiveArrayTools.jl` package helps by wrapping the arrays in a `VectorOfArray` type, which provides convenient indexing and slicing while preserving the underlying array types.
 
 ```{code-cell} julia
 x_arr = VectorOfArray(x)
