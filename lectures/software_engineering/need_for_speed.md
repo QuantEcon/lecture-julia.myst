@@ -62,6 +62,7 @@ You should read our {doc}`earlier lecture <../more_julia/generic_programming>` o
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
+using BenchmarkTools
 ```
 
 ## Understanding Multiple Dispatch in Julia

@@ -48,6 +48,7 @@ Background readings on the linear-quadratic-Gaussian permanent income model are 
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
+using Plots, Random
 ```
 
 ## The Savings Problem

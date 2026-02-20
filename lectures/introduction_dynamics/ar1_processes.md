@@ -43,6 +43,7 @@ partly because they help us understand important concepts.
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings, Plots
+using Random, StatsPlots
 ```
 
 ## The AR(1) Model

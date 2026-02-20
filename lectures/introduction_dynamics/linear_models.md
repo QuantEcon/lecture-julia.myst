@@ -56,6 +56,7 @@ Its many applications include:
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
+using LaTeXStrings, Plots, QuantEcon, Random
 ```
 
 ## The Linear State Space Model

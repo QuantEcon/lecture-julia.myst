@@ -40,6 +40,7 @@ using ForwardDiff, Optim, Roots, NLsolve
 using FixedPointAcceleration, NonlinearSolve
 using Optimization, OptimizationOptimJL, ForwardDiff, Enzyme
 using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
+using StaticArrays
 ```
 
 ## Optimization

@@ -40,6 +40,7 @@ In this lecture we give more details on
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
+using BenchmarkTools, ForwardDiff, Plots, Polynomials, QuadGK
 ```
 
 ## Finding and Interpreting Types

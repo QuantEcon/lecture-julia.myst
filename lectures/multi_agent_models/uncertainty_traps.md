@@ -227,6 +227,7 @@ The method to evaluate the number of active firms generates $F_1,
 tags: [remove-cell]
 ---
 using Test, Random
+using DataFrames, LaTeXStrings, LinearAlgebra, Plots, Statistics
 ```
 
 ```{code-cell} julia

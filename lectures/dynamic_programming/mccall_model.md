@@ -293,6 +293,7 @@ tags: [hide-output]
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings
 using NLsolve, Roots, Random, Plots
+using StatsPlots
 ```
 
 ```{code-cell} julia

@@ -66,6 +66,7 @@ tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
 using Distributions, Plots, QuadGK, Polynomials, Interpolations
+using StatsPlots
 
 ```
 

@@ -58,6 +58,7 @@ The Harrison-Kreps model illustrates the following notion of a bubble that attra
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
+using QuantEcon
 ```
 
 ## Structure of the Model

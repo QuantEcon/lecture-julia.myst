@@ -144,6 +144,7 @@ Our discussion in this lecture is based on
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
+using Interpolations, Plots, QuantEcon
 ```
 
 ## The Model

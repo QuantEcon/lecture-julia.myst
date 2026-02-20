@@ -222,6 +222,7 @@ using Test
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using LaTeXStrings, Plots, Distributions, Random, Statistics
+using StatsPlots
 ```
 
 ```{code-cell} julia

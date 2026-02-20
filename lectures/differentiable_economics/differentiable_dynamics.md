@@ -61,6 +61,7 @@ tags: [hide-output]
 ---
 using LinearAlgebra, Random, Plots, Test, Enzyme, Statistics
 using Optimization, OptimizationOptimJL, EnzymeTestUtils
+using BenchmarkTools
 ```
 
 ```{code-cell} julia

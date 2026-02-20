@@ -38,6 +38,7 @@ Topics:
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics, Plots
+using BenchmarkTools
 ```
 
 ## Common Data Types

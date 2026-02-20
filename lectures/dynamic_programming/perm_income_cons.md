@@ -68,6 +68,7 @@ The model will prove useful for illustrating concepts such as
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
+using LaTeXStrings, Plots, QuantEcon, Random
 ```
 
 ## Introduction

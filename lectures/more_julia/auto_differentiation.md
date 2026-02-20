@@ -36,6 +36,7 @@ tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
 using ForwardDiff, Enzyme, Test
+using BenchmarkTools
 ```
 
 ## Introduction to Differentiable Programming

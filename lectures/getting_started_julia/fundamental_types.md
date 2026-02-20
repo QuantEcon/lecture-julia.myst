@@ -48,6 +48,7 @@ In this lecture we give more details on
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
+using MatrixEquations, StaticArrays
 ```
 
 ## Array Basics

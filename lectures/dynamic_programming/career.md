@@ -44,6 +44,7 @@ This exposition draws on the presentation in {cite}`Ljungqvist2012`, section 6.5
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics, NLsolve
+using Distributions, LaTeXStrings, Plots, Random
 ```
 
 ## Model

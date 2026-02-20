@@ -103,6 +103,7 @@ After the installation and activation, `using` provides a way to say that a part
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics, Plots, LaTeXStrings
+using Distributions, ForwardDiff, NLsolve, StaticArrays
 ```
 
 ```{warning}

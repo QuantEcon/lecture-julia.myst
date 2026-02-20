@@ -162,6 +162,7 @@ using Test # At the head of every lecture.
 ```{code-cell} julia
 using LinearAlgebra, Statistics, SpecialFunctions
 using Distributions, LaTeXStrings, Plots, Interpolations, FastGaussQuadrature, NLsolve
+using Random
 
 w_max = 2
 x = range(0, w_max, length = 200)

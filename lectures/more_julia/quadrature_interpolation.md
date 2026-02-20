@@ -36,6 +36,7 @@ tags: [hide-output]
 using LinearAlgebra, Statistics, Distributions
 using QuadGK, FastGaussQuadrature, SpecialFunctions
 using Interpolations, Plots
+using QuantEcon
 ```
 
 ## Numerical Integration

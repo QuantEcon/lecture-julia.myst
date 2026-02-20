@@ -144,6 +144,7 @@ then increase the number of agents.
 tags: [remove-cell]
 ---
 using Test, Random
+using LinearAlgebra, Plots, Statistics
 ```
 
 ```{code-cell} julia

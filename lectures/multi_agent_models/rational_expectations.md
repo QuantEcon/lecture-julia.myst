@@ -150,6 +150,7 @@ References for this lecture include
 
 ```{code-cell} julia
 using LinearAlgebra, Statistics
+using QuantEcon
 ```
 
 ## Defining Rational Expectations Equilibrium

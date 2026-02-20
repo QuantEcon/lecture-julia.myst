@@ -405,6 +405,7 @@ Run the following cell
 
 ```{code-cell} julia
 using Plots
+using LinearAlgebra
 plot(sin, -2π, 2π, label = "sin(x)")
 ```
 

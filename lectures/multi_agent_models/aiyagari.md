@@ -196,6 +196,7 @@ The object also includes a default set of parameters that we'll adopt unless oth
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using LaTeXStrings, Plots, QuantEcon
+using Random
 ```
 
 ```{code-cell} julia
