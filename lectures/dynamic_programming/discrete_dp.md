@@ -416,7 +416,7 @@ The following code sets up these objects for us.
 tags: [hide-output]
 ---
 using BenchmarkTools, LaTeXStrings, LinearAlgebra, Plots, QuantEcon, Statistics
-using SparseArrays
+using Random, SparseArrays
 ```
 
 ```{code-cell} julia
@@ -535,9 +535,9 @@ results.v
 tags: [remove-cell]
 ---
 @testset "Value Function Tests" begin
-    #test results.v[2] ≈ 20.017402216959912
-    #test results.v[4] ≈ 20.749453024528794
-    #test results.v[end] ≈ 23.277617618874903 # Also an implicit length check
+    @test results.v[2] ≈ 20.017402216959912
+    @test results.v[4] ≈ 20.749453024528787
+    @test results.v[end] ≈ 23.277617618874903 # Also an implicit length check
 end
 ```
 
@@ -593,7 +593,7 @@ tags: [remove-cell]
 @testset "Stationary Distributions Test" begin
     @test stationary_distributions(results.mc)[1][10] ≈ 0.09090909090909091
     @test stationary_distributions(results.mc)[1][14] ≈ 0.033169533169533166
-    # Only one element of this `mc` field.
+    @test stationary_distributions(results.mc)[1][5] ≈ 0.08095823095823096 # canary
 end
 ```
 
@@ -621,7 +621,7 @@ std_2 = stationary_distributions(results_2.mc)[1]
 tags: [remove-cell]
 ---
 @testset "Patience Shock Tests" begin
-    #test std_2[3] ≈ 0.03147788040836169
+    @test std_2[3] ≈ 0.031477880408361684
 end
 ```
 
@@ -683,7 +683,7 @@ results = solve(ddp, PFI)
 tags: [remove-cell]
 ---
 @testset "State-Action Pair Tests" begin
-    #test results.v[4] ≈ 20.749453024528794 # Some checks on the returned solutions.
+    @test results.v[4] ≈ 20.749453024528787
     @test results.sigma == [1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 6, 6, 6, 6]
 end
 ```
@@ -774,7 +774,7 @@ R = u_log.(C[C .> 0]);
 tags: [remove-cell]
 ---
 @testset "R Tests" begin
-    #test R[4] ≈ -2.873514275079717
+    @test R[4] ≈ -2.873514275079717
     @test length(R) == 118841
 end
 ```
@@ -809,7 +809,7 @@ num_iter
 tags: [remove-cell]
 ---
 @testset "Results Test" begin
-    #test v[4] ≈ -42.301381867365954
+    @test v[4] ≈ -42.30138186736594
     @test sigma[4] == 10
     @test num_iter <= 10
 end
@@ -836,9 +836,9 @@ c_star(k) = (1 - alpha * beta) * k .^ alpha
 tags: [remove-cell]
 ---
 @testset "Comparison Tests" begin
-    #test c2 ≈ 1.699346405228758
-    #test c_star(c2) ≈ 0.5399016884304844
-    #test ab ≈ 0.6174999999999999
+    @test c2 ≈ 1.699346405228758
+    @test c_star(c2) ≈ 0.5399016884304844
+    @test ab ≈ 0.6174999999999999
 end
 ```
 
@@ -904,6 +904,8 @@ tags: [remove-cell]
 ---
 @testset "Monotonicity Test" begin
     @test all(x -> x >= 0, diff(v))
+    @test v[end] ≈ -33.6080334907116 # canary: depends on full grid solution
+    @test sigma[250] == 155 # canary: mid-grid policy check
 end
 ```
 
@@ -936,7 +938,7 @@ sigma == res1.sigma
 tags: [remove-cell]
 ---
 @testset "Equivalence Test" begin
-    #test sigma == res1.sigma
+    @test sigma == res1.sigma
 end
 ```
 
@@ -958,7 +960,7 @@ sigma == res2.sigma
 tags: [remove-cell]
 ---
 @testset "Other Equivalence Test" begin
-    #test sigma == res2.sigma
+    @test sigma == res2.sigma
 end
 ```
 
@@ -996,8 +998,8 @@ plot!(grid, v_star.(grid), label = "true value function", color = :red, lw = 2)
 tags: [remove-cell]
 ---
 @testset "Plots Test" begin
-    #test ws[4][5] ≈ -37.93858578025213
-    #test v_star.(grid)[4] ≈ -42.29801689484901
+    @test ws[4][5] ≈ -37.93858578025213
+    @test v_star.(grid)[4] ≈ -42.29801689484901
 end
 ```
 
@@ -1046,10 +1048,10 @@ plot(grid,
 tags: [remove-cell]
 ---
 @testset "New Tests" begin
-    #test true_c[5] ≈ 0.026055057901168556
-    #test c_policies[1][5] ≈ 0.016012616069698123
-    #test c_policies[2][5] ≈ 0.02402864412581035
-    #test c_policies[3][5] ≈ 0.02402864412581035
+    @test true_c[5] ≈ 0.026055057901168556
+    @test c_policies[1][5] ≈ 0.016012616069698123
+    @test c_policies[2][5] ≈ 0.02402864412581035
+    @test c_policies[3][5] ≈ 0.02402864412581035
 end
 ```
 
@@ -1062,6 +1064,8 @@ factors, $0.9$, $0.94$, and $0.98$, with initial
 condition $k_0 = 0.1$.
 
 ```{code-cell} julia
+Random.seed!(42)
+
 discount_factors = (0.9, 0.94, 0.98)
 k_init = 0.1
 
@@ -1097,9 +1101,9 @@ tags: [remove-cell]
 ---
 @testset "Final Tests" begin
     @test k_init_ind == 26
-    #test k_paths[3][2] ≈ 0.14829751903807614
-    #test k_paths[2][5] ≈ 0.21242574348697396
-    #test k_paths[1][7] ≈ 0.20841772945891784
+    @test k_paths[3][2] ≈ 0.14829751903807614
+    @test k_paths[2][5] ≈ 0.21242574348697396
+    @test k_paths[1][7] ≈ 0.20841772945891784
 end
 ```
 

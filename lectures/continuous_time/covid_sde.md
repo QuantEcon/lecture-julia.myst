@@ -265,11 +265,40 @@ x_0 = [s_0, i_0, r_0, d_0, R_bar_0_0, delta_0]
 prob = SDEProblem(F, G, x_0, (0, p.T), p)
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Initial Conditions and Parameters" begin
+    @test p.gamma == 1.0 / 18
+    @test p.eta == 1.0 / 20
+    @test p.delta_bar == 0.01
+    @test i_0 == 25000 / 3.3E8
+    @test s_0 + i_0 + r_0 + d_0 ≈ 1.0
+    @test length(x_0) == 6
+    @test length(F(x_0, p, 0.0)) == 6
+    @test length(G(x_0, p, 0.0)) == 6
+end
+```
+
 We solve the problem with the [SOSRI](https://docs.sciml.ai/stable/solvers/sde_solve/#Full-List-of-Methods-1) algorithm (Adaptive strong order 1.5 methods for diagonal noise Ito and Stratonovich SDEs).
 
 ```{code-cell} julia
+Random.seed!(42)
 sol_1 = solve(prob, SOSRI());
 @show length(sol_1.t);
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "sol_1 Trajectory (seed=42)" begin
+    @test sol_1[1, end] ≈ 0.34813470404712177
+    @test sol_1[4, end] ≈ 0.006459495184292572
+    @test sol_1[5, end] ≈ 1.5159227863101612
+    @test sum(sol_1[end][1:4]) ≈ 1.0 atol = 1e-6
+end
 ```
 
 As in the deterministic case of the previous lecture, we are using an adaptive time-stepping method.  However, since this is an SDE, (1) you will tend to see more timesteps required due to the greater curvature; and (2) the number of timesteps will change with different shock realizations.
@@ -279,11 +308,23 @@ With stochastic differential equations, a "solution" is akin to a simulation for
 If we take two solutions and plot the number of infections, we will see differences over time:
 
 ```{code-cell} julia
+Random.seed!(123)
 sol_2 = solve(prob, SOSRI())
 plot(sol_1; idxs = [2], title = "Number of Infections", label = "Trajectory 1",
      lm = 2, xlabel = L"t", ylabel = L"i(t)")
 plot!(sol_2; idxs = [2], label = "Trajectory 2", lm = 2, xlabel = L"t",
       ylabel = L"i(t)")
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "sol_2 Trajectory (seed=123)" begin
+    @test sol_2[1, end] ≈ 0.3383165512940125
+    @test sol_2[4, end] ≈ 0.006569594223641659
+    @test sol_2[5, end] ≈ 1.594762263086552
+end
 ```
 
 The same holds for other variables such as the cumulative deaths, mortality, and $R_0$:
@@ -323,6 +364,7 @@ To do this, use the `EnsembleProblem` in order to have the solution compute mult
 For example:
 
 ```{code-cell} julia
+Random.seed!(42)
 ensembleprob = EnsembleProblem(prob)
 sol = solve(ensembleprob, SOSRI(), EnsembleSerial(), trajectories = 10)
 plot(sol; idxs = [2], title = "Infection Simulations", ylabel = L"i(t)",
@@ -332,6 +374,7 @@ plot(sol; idxs = [2], title = "Infection Simulations", ylabel = L"i(t)",
 Or, more frequently, you may want to run many trajectories and plot quantiles, which can be automatically run in [parallel](https://docs.sciml.ai/stable/features/ensemble/) using multiple threads, processes, or GPUs. Here we showcase `EnsembleSummary` which calculates summary information from an ensemble and plots the mean of the solution along with calculated quantiles of the simulation:
 
 ```{code-cell} julia
+Random.seed!(42)
 trajectories = 100  # choose larger for smoother quantiles
 sol = solve(ensembleprob, SOSRI(), EnsembleThreads(); trajectories)
 summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.95 quantiles
@@ -343,6 +386,7 @@ plot(summ; idxs = (2,), title = "Quantiles of Infections Ensemble",
 In addition, you can calculate more quantiles and stack graphs
 
 ```{code-cell} julia
+Random.seed!(42)
 sol = solve(ensembleprob, SOSRI(), EnsembleThreads(); trajectories)
 summ = EnsembleSummary(sol) # defaults to saving 0.05, 0.95 quantiles
 summ2 = EnsembleSummary(sol, quantiles = (0.25, 0.75))
@@ -386,6 +430,7 @@ end
 # Evaluate two different lockdown scenarios
 eta_1 = 1 / 50
 eta_2 = 1 / 20
+Random.seed!(42)
 summ_1 = generate_eta_experiment(eta_1)
 summ_2 = generate_eta_experiment(eta_2)
 
@@ -440,9 +485,22 @@ prob_early = SDEProblem(F, G, x_0, (0, p_early.T), p_early)
 prob_late = SDEProblem(F, G, x_0, (0, p_late.T), p_late)
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Lockdown Initial Conditions" begin
+    @test i_0 == 100000 / p_early.N
+    @test s_0 + i_0 + r_0 + d_0 ≈ 1.0
+    @test x_0[5] == R_0_L  # starts in lockdown
+    @test x_0[6] == p_early.delta_bar
+end
+```
+
 Simulating for a single realization of the shocks, we see the results are qualitatively similar to what we had before
 
 ```{code-cell} julia
+Random.seed!(42)
 sol_early = solve(prob_early, SOSRI())
 sol_late = solve(prob_late, SOSRI())
 plot(sol_early; idxs = [5, 1, 2, 4],
@@ -456,9 +514,23 @@ plot!(sol_late; idxs = [5, 1, 2, 4],
       label = ["Late" "Late" "Late" "Late"], xlabel = L"t")
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Lockdown Trajectories (seed=42)" begin
+    @test sol_early[1, end] ≈ 0.21759884096926546
+    @test sol_early[4, end] ≈ 0.0076782625797112885
+    @test sol_late[1, end] ≈ 0.2176937939731066
+    @test sol_late[4, end] ≈ 0.007802737034823627
+    @test sum(sol_early[end][1:4]) ≈ 1.0 atol = 1e-6
+end
+```
+
 However, note that this masks highly volatile values induced by the in $R_0$ variation, as seen in the ensemble
 
 ```{code-cell} julia
+Random.seed!(42)
 trajectories = 100
 saveat = 1.0
 ensemble_sol_early = solve(EnsembleProblem(prob_early), SOSRI(),
@@ -568,6 +640,7 @@ p_re_early = p_re_gen(R_bar_0 = R_bar_0_lift_early, eta = eta_experiment,
 p_re_late = p_re_gen(R_bar_0 = R_bar_0_lift_late, eta = eta_experiment,
                      sigma = sigma_experiment)
 
+Random.seed!(42)
 trajectories = 100
 saveat = 1.0
 prob_re_early = SDEProblem(F_reinfect, G, x_0, (0, p_re_early.T), p_re_early)

@@ -200,6 +200,18 @@ plot(sol; labels = [L"s" L"e" L"i" L"r"], title = "SEIR Dynamics", lw = 2,
      xlabel = L"t")
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Simple SEIR final proportions at t=350" begin
+    final = sol(350.0)
+    @test final[1] ≈ 0.0602743373967341   # s(350)
+    @test final[3] ≈ 0.003230220071360714  # i(350)
+    @test final[4] ≈ 0.9362776591899299    # r(350)
+end
+```
+
 We did not provide either a set of time steps or a `dt` time step size to the `solve`.  Most accurate and high-performance ODE solvers appropriate for this problem use adaptive time-stepping, changing the step size based the degree of curvature in the derivatives.
 
 Or, as an alternative visualization, the proportions in each state over time
@@ -347,6 +359,20 @@ sol = solve(prob, Tsit5())
 @show length(sol.t);
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Extended SEIR model at t=550" begin
+    final = sol[end]
+    @test final[1] ≈ 0.7103789575823904     # s(550)
+    @test final[4] ≈ 0.21372260795540207     # r(550)
+    @test final[5] ≈ 1.6                     # R_0(550)
+    @test final[6] ≈ 0.27108550658253744     # c(550) cumulative cases
+    @test final[7] ≈ 0.002137226079554021    # d(550) cumulative deaths
+end
+```
+
 We see that the adaptive time-stepping used approximately 45 time-steps to solve this problem to the desired accuracy.  Evaluating the solver at points outside of those time-steps uses an interpolator consistent with the solution to the ODE.
 
 While it may seem that 45 time intervals is extremely small for that range, for much of the $t$, the functions are very flat - and hence adaptive time-stepping algorithms can move quickly and interpolate accurately.
@@ -375,6 +401,21 @@ We calculate the time path of infected people under different assumptions of $R_
 R_0_n_vals = range(1.6, 3.0, length = 6)
 sols = [solve(ODEProblem(F, x_0, tspan, p_gen(R_0_n = R_0_n)),
               Tsit5(); saveat = 0.5) for R_0_n in R_0_n_vals];
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Experiment 1: constant R_0_n peak infections" begin
+    # R_0_n = 3.0 (last element)
+    peak_i_R3 = maximum(sols[end][3, :])
+    @test peak_i_R3 ≈ 0.23015033105130497
+    # R_0_n = 1.6 (first element) — final cumulative deaths
+    @test sols[1][7, end] ≈ 0.002137226079554021
+    # R_0_n = 3.0 — final cumulative cases
+    @test sols[end][6, end] ≈ 0.9404785122952245
+end
 ```
 
 Here we chose `saveat=0.5` to get solutions that were evenly spaced every `0.5`.
@@ -429,6 +470,18 @@ Let's calculate the time path of infected people, current cases, and mortality
 x_0 = [s_0, e_0, i_0, 0.0, 3.0, 0.0, 0.0]
 sols = [solve(ODEProblem(F, x_0, tspan, p_gen(eta = eta)), Tsit5();
               saveat = 0.5) for eta in eta_vals];
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Experiment 2: changing mitigation" begin
+    # eta = 1/100 (slowest, last) — highest cumulative deaths
+    @test sols[end][7, end] ≈ 0.006410891784404453
+    # eta = 1/5 (fastest, first) — lowest cumulative cases
+    @test sols[1][6, end] ≈ 0.298142921853557
+end
 ```
 
 Next, plot the $R_0$ over time:
@@ -497,6 +550,22 @@ sol_late = solve(prob_late, Tsit5(); tstops = [30.0, 120.0])
 plot(sol_early; idxs = [7], title = "Total Mortality", label = "Lift Early",
      legend = :topleft)
 plot!(sol_late; idxs = [7], label = "Lift Late", xlabel = L"t")
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Lockdown scenarios: final mortality and cases" begin
+    # Early lockdown — final cumulative deaths d(550)
+    @test sol_early[end][7] ≈ 0.007966114600318952
+    # Late lockdown — final cumulative deaths d(550)
+    @test sol_late[end][7] ≈ 0.007853885442145327
+    # Early lockdown — final susceptible fraction
+    @test sol_early[end][1] ≈ 0.20329486766013935
+    # Late lockdown — final susceptible fraction
+    @test sol_late[end][1] ≈ 0.20799782866737643
+end
 ```
 
 Next we examine the daily deaths, $\frac{d D(t)}{dt} = N \delta \gamma i(t)$.
