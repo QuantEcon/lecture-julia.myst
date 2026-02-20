@@ -314,8 +314,10 @@ plot(mcm.w, [V U_vec], lw = 2, alpha = 0.7, label = [L"V" L"U"])
 tags: [remove-cell]
 ---
 @testset "First Plot Tests" begin
-    #test U ≈ 45.623683796824146 atol = 1e-3 # U value
-    #test V[3] ≈ 45.58110859220982 atol = 1e-3 # Arbitrary V
+    @test U ≈ 45.62368379729247 atol = 1e-3 # U value
+    @test V[3] ≈ 45.5811085926348 atol = 1e-3 # Arbitrary V
+    @test V[end] ≈ 45.797410960576535 atol = 1e-3 # Canary: endpoint of V
+    @test solve_mccall_model(mcm).w_bar ≈ 11.525423728813559 # Canary: reservation wage
 end
 ```
 
@@ -449,9 +451,9 @@ w_bar_vals = [solve_mccall_model(mcall_model(c = cval)).w_bar
 tags: [remove-cell]
 ---
 @testset "Solutions 1 Tests" begin
-    #test w_bar_vals[10] ≈ 11.35593220338983
+    @test w_bar_vals[10] ≈ 11.35593220338983
     @test c_vals[1] == 2 && c_vals[end] == 12 && length(c_vals) == 25
-    #test w_bar_vals[17] - c_vals[17] ≈ 4.72316384180791
+    @test w_bar_vals[17] - c_vals[17] ≈ 4.72316384180791
     # Just a sanity check on how these things relate.
 end
 ```
@@ -477,7 +479,7 @@ plot(gamma_vals, w_bar_vals, lw = 2, alpha = 0.7, xlabel = "job offer rate",
 tags: [remove-cell]
 ---
 @testset "Solutions 2 Tests" begin
-    #test w_bar_vals[17] ≈ 11.35593220338983 # same as w_bar_vals[10] before.
+    @test w_bar_vals[17] ≈ 11.35593220338983 # same as w_bar_vals[10] before.
     @test gamma_vals[1] ≈ 0.05 && gamma_vals[end] ≈ 0.95 && length(gamma_vals) == 25
 end
 ```

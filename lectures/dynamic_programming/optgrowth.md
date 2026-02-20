@@ -643,8 +643,8 @@ plot!(plt, legend = :bottomright)
 ---
 tags: [remove-cell]
 ---
-@testset begin
-    #test v_star(grid_y[2];OptimalGrowthModel()) ≈ -33.370496456772266
+@testset "Analytical value function" begin
+    @test v_star(p.y[2]; p) ≈ -33.370496456772266
 end
 ```
 
@@ -712,8 +712,10 @@ plot!(plt, legend = :bottomright)
 ---
 tags: [remove-cell]
 ---
-@testset begin
-    #test c_star.(p.y; p)[102] ≈ 1.2505758978894472
+@testset "Policy function and convergence" begin
+    @test c_star.(p.y; p)[102] ≈ 1.2505758978894472
+    @test v_star_approx[end] ≈ -25.001919822329
+    @test sol.sigma[end] ≈ 2.4641570099288597
 end
 ```
 

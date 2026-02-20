@@ -150,7 +150,7 @@ Here's a figure showing the effect of different shape parameters when $n=50$.
 ---
 tags: [remove-cell]
 ---
-using Test
+using Test, Random
 ```
 
 ```{code-cell} julia
@@ -387,6 +387,7 @@ function gen_path(T = 20)
     return wp.theta[theta_ind], wp.epsilon[epsilon_ind]
 end
 
+Random.seed!(42)
 plot_array = Any[]
 for i in 1:2
     theta_path, epsilon_path = gen_path()
@@ -402,9 +403,13 @@ plot(plot_array..., layout = (2, 1))
 ---
 tags: [remove-cell]
 ---
-@testset begin
-  #test v[10] ≈ 160.04576665086336
+@testset "Exercise 1 - Value Function and Policy" begin
+  @test v[10] ≈ 160.04729142153064
   @test optimal_policy[30] ≈ 3.0
+  @test v[50, 50] ≈ 200.00000000222818
+  @test count(==(1.0), optimal_policy) == 144
+  @test count(==(2.0), optimal_policy) == 451
+  @test count(==(3.0), optimal_policy) == 1905
 end
 ```
 
@@ -428,6 +433,7 @@ function gen_first_passage_time(optimal_policy)
     end
 end
 
+Random.seed!(42)
 M = 25000
 samples = zeros(M)
 for i in 1:M
@@ -454,6 +460,7 @@ wp2 = CareerWorkerProblem(beta = 0.99)
 
 v2, optimal_policy2 = solve_wp(wp2)
 
+Random.seed!(42)
 samples2 = zeros(M)
 for i in 1:M
     samples2[i] = gen_first_passage_time(optimal_policy2)
