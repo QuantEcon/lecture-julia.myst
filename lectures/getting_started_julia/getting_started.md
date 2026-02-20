@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (getting_started)=
@@ -46,7 +46,7 @@ Julia and the lecture notebooks can be installed without Jupyter or Python:
 5. In VS Code, open the command palette with `<Ctrl+Shift+P>` and type `> Git: Clone` to clone the repository `https://github.com/quantecon/lecture-julia.notebooks` in a new window
 6. Start a Julia REPL in the integrated terminal with `> Julia: Start REPL` from the command palette, then enter package mode with `]` and then type `instantiate`.
   - That process will take several minutes to download and compile all of the packages used in the lectures.
-7. Open any of the `.ipynb` files in VS Code and select the `Julia` in the `Julia 1.12 channel` challenge (i.e., not the Jupyter channels if you have them installed) when prompted to run the notebooks directly within VS Code
+7. Open any of the `.ipynb` files in VS Code and select the `Julia` channel (i.e., not the Jupyter channels if you have them installed) when prompted to run the notebooks directly within VS Code
 
 At that point, you can directly move o the {doc}`julia by example <../getting_started_julia/julia_by_example>` lecture.
 
@@ -536,7 +536,7 @@ To do so, click on the `Choose Kernel` or `Select Another Kernel...` which may d
    :width: 80%
    ```
 
-Choose the `Julia`  kernel, rather than the `Jupyter Kernel...` to bypass the Python Jupyter setup.  If successful, you will see the kernel name as `Julia 1.12 channel` or something similar.
+Choose the `Julia`  kernel, rather than the `Jupyter Kernel...` to bypass the Python Jupyter setup.  If successful, you will see the kernel name as `Julia channel` or something similar.
 
 With the kernel selected, you will be able to run cells in the VS Code UI with similar features to Jupyter Lab.  For example, below shows the results of play icon next to a code cell, which will `Execute Cell` and display the results inline.
 
