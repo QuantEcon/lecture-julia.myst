@@ -601,8 +601,6 @@ The values of $y_T$ are represented by black dots in the left-hand figure
 In the right-hand figure, these values are converted into a rotated histogram
 that shows relative frequencies from our sample of 20 $y_T$'s.
 
-(The parameters and source code for the figures can be found in file [linear_models/paths_and_hist.jl](https://github.com/QuantEcon/lecture-julia.myst/blob/main/lectures/_static/code/linear_models/paths_and_hist.jl))
-
 Here is another figure, this time with 100 observations
 
 ```{figure} /_static/figures/tsh.png
