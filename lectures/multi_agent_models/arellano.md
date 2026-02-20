@@ -738,14 +738,17 @@ plot(plots)
 ---
 tags: [remove-cell]
 ---
-@testset begin
-    # @test def_end == [62, 157, 198]
-    # @test def_start == [60, 154, 196]
-    # @test def_breaks == Bool[false, false, true, false, false, false, true, false, false]
-    # @test defs == [60, 61, 62, 154, 155, 156, 157, 196, 197, 198]
-    # @test y_vec[4] ≈ 1.0712139563752547
-    # @test B_vec[40] ≈ -0.0768
-    # @test q_vec[140] ≈ 0.9738927780828847
-    # @test default_vec[240] == false
+@testset "Simulation Tests" begin
+    @test def_end == [17, 53, 197]
+    @test def_start == [14, 50, 193]
+    @test def_breaks == Bool[false, false, false, true, false, false, false, true, false, false, false, false]
+    @test defs == [14, 15, 16, 17, 50, 51, 52, 53, 193, 194, 195, 196, 197]
+    @test y_vec[4] ≈ 1.1214856057385236
+    @test B_vec[40] ≈ -0.1408
+    @test q_vec[140] ≈ 0.9819935238430755
+    @test default_vec[240] == false
+    # canary tests: depend on full simulation path
+    @test length(defs) == 13
+    @test q_vec[end] ≈ 0.9710323321533535
 end
 ```

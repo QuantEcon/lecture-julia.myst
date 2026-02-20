@@ -793,6 +793,7 @@ tags: [remove-cell]
 ---
 @testset "Test Py1" begin
     @test Py1 ≈ [-0.56521739, 3.26086956, -2.2173913]
+    @test norm(Py1) ≈ 3.9836622870659237  # canary: depends on all components
 end
 ```
 
@@ -836,6 +837,9 @@ tags: [remove-cell]
 ---
 @testset "Test Py3" begin
     @test Py1 ≈ Py3
+    # canary: Pythagorean identity TSS = ESS + SSR, residual from annihilator M = I - P
+    M = I - X * inv(X'X) * X'
+    @test norm(M * y)^2 + norm(Py1)^2 ≈ norm(y)^2
 end
 ```
 

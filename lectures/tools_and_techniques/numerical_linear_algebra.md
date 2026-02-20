@@ -58,6 +58,13 @@ using LinearAlgebra, Statistics, BenchmarkTools, SparseArrays, Random
 Random.seed!(42);  # seed random numbers for reproducibility
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+using Test
+```
+
 ### Computational Complexity
 
 Ask yourself whether the following is a **computationally expensive** operation as the matrix **size increases**
@@ -306,6 +313,15 @@ This system is especially easy to solve using [back substitution](https://en.wik
 
 ```{code-cell} julia
 U \ b
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Triangular Back Substitution" begin
+    @test U \ b ≈ [0.0, 0.0, 1/3] atol=1e-14
+end
 ```
 
 A `LowerTriangular` matrix has similar properties and can be solved with forward substitution.
@@ -652,6 +668,18 @@ linear problem.
 v = A \ r
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "CTMC Value Function" begin
+    @test v[1] ≈ 38.15384615384615
+    @test v[end] ≈ 161.84615384615384
+    @test v ≈ [38.15384615384615, 57.23076923076923, 84.92307692307693,
+               115.07692307692311, 142.76923076923077, 161.84615384615384]
+end
+```
+
 The $Q$ is also used to calculate the evolution of the Markov chain, in direct analogy to the $\psi_{t+k} = \psi_t P^k$ evolution with the transition matrix $P$ of the discrete case.
 
 In the continuous case, this becomes the system of linear differential equations
@@ -736,6 +764,16 @@ v = (rho * I - L) \ r
 reshape(v, N, M)
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "2D Markov Chain Value Function" begin
+    @test v[1] ≈ 87.89915966386557
+    @test v[end] ≈ 120.67226890756302
+end
+```
+
 The `reshape` helps to rearrange it back to being two-dimensional.
 
 To find the stationary distribution, we calculate the eigenvalue and choose the eigenvector associated with $\lambda=0$ .  In this
@@ -747,6 +785,18 @@ L_eig = eigen(Matrix(L'))
 
 psi = L_eig.vectors[:, end]
 psi = psi / sum(psi)
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "2D Markov Chain Stationary Distribution" begin
+    @test sum(psi) ≈ 1.0
+    @test psi[1] ≈ 1/6 atol=1e-10
+    @test psi[end] ≈ 1/12 atol=1e-10
+    @test all(x -> x >= 0, psi)
+end
 ```
 
 Reshape this to be two-dimensional if it is helpful for visualization.

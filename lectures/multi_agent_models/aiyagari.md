@@ -299,6 +299,8 @@ tags: [remove-cell]
     @test a_star[4] ≈ 0.2010050252246231
     @test results.v[4] ≈ -27.48291672016239
     @test z_vals ≈ [0.1, 1.0]
+    @test results.v[end] ≈ 4.643796227930035
+    @test a_star[end, 1] ≈ 19.29648241206382
 end
 ```
 
@@ -373,4 +375,15 @@ plot(k_vals, [r_inverse_demand_vals r_vals], label = labels, lw = 2,
      alpha = 0.6)
 plot!(xlabel = "capital", ylabel = "interest rate", xlim = (2, 14),
       ylim = (0.0, 0.1))
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset begin
+    @test k_vals[1] ≈ 3.5498729204008814
+    @test k_vals[end] ≈ 12.566683133027787
+    @test r_inverse_demand_vals[end] ≈ 0.010539118730251179
+end
 ```
