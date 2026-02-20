@@ -580,10 +580,14 @@ tags: [remove-cell]
 ---
 price_valsA = price_single_beliefs(qa, dividendreturn)
 price_valsB = price_single_beliefs(qb, dividendreturn)
+price_valsOpt = price_single_beliefs(qopt, dividendreturn)
+price_valsPess = price_single_beliefs(qpess, dividendreturn)
 
 @testset begin
   @test price_valsA ≈ [1.3333333333333335, 1.2222222222222223]
   @test price_valsB ≈ [1.4545454545454544, 1.9090909090909092]
+  @test price_valsOpt ≈ [1.8461538461538467, 2.0769230769230775]
+  @test price_valsPess ≈ [1.0, 1.0]
 end
 ```
 

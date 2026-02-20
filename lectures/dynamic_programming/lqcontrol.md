@@ -633,19 +633,16 @@ The shocks $\{w_t\}$ were taken to be iid and standard normal.
 ---
 tags: [remove-cell]
 ---
-using Test, Random
+using Test
 ```
 
 ```{code-cell} julia
-using LinearAlgebra, Statistics
+using LinearAlgebra, Statistics, Random
 using LaTeXStrings, Plots, Plots.PlotMeasures, QuantEcon
 
 ```
 
 ```{code-cell} julia
----
-tags: [remove-cell]
----
 Random.seed!(42);
 ```
 
@@ -691,8 +688,10 @@ p = plot([assets, c, zeros(T + 1), income, cumsum(income .- mu)],
 tags: [remove-cell]
 ---
 @testset "First Plots Tests" begin
-    # @test income[3] ≈ 0.9812822443525681 # test determinism and intermediate calculations
-    # @test up[4] ≈ -1.010200105783321 # test downstream invariance
+    @test income[3] ≈ 0.9805467249172237 # test determinism and intermediate calculations
+    @test up[4] ≈ -1.0053910031945128 # test downstream invariance
+    @test assets[end] ≈ 0.24141396102800722 # canary: terminal assets depend on full path
+    @test c[1] ≈ 1.0000000065749655 # canary: initial consumption from LQ policy
 end
 ```
 
@@ -724,9 +723,6 @@ This consumer is slightly more patient than the last one, and hence puts
 relatively more weight on later consumption values
 
 ```{code-cell} julia
----
-tags: [remove-cell]
----
 Random.seed!(42);
 ```
 
@@ -1468,6 +1464,10 @@ $$
 Our solution code is
 
 ```{code-cell} julia
+Random.seed!(42);
+```
+
+```{code-cell} julia
 # model parameters
 a0 = 5.0
 a1 = 0.5
@@ -1511,9 +1511,12 @@ p3 = plot(eachindex(q), [q̄ q],
 ---
 tags: [remove-cell]
 ---
-@testset begin
-    #test xp[20] ≈ 2.8378651501210808
-    #test q̄[25] ≈ 2.4544719934172132
+P_inf, F_inf, d_inf = stationary_values(lq)
+@testset "Monopolist Tests" begin
+    @test xp[20] ≈ 3.042478574488359
+    @test q̄[25] ≈ 3.4037395663905183
+    @test P_inf[1, 1] ≈ 0.8516135671263027 # canary: deterministic Riccati solution
+    @test F_inf[2] ≈ 0.48286167035535027 # canary: deterministic policy coefficient
 end
 ```
 

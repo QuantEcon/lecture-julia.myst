@@ -507,7 +507,7 @@ theory
 tags: [remove-cell]
 ---
 @testset "Shock Tests" begin
-    #test shocks[4] ≈ 0.9704956010607036
+    @test shocks[4] ≈ 0.9693541634296934
     @test length(shocks) == 250 == shock_size
 end
 ```
@@ -535,7 +535,8 @@ verify_true_policy(m, shocks, c_star)
 tags: [remove-cell]
 ---
 @testset "Verify True Policy Tests" begin
-    #test c_star[4] ≈ 0.023065703366834174
+    @test c_star[4] ≈ 0.023065703366834174
+    @test c_star[200] ≈ 1.5300000000000002
     @test length(c_star) == 200
     # The plot should look like a 45-degree line.
 end
@@ -604,8 +605,8 @@ function compare_error(m, shocks, g_init, w_init; sim_length = 20)
     bellman_single_arg(w) = T(w, grid, beta, u, f, shocks)
     coleman_single_arg(g) = K(g, grid, beta, dudc, f, f_prime, shocks)
 
-    g = iterate_updating(coleman_single_arg, grid, sim_length = 20)
-    w = iterate_updating(bellman_single_arg, u.(grid), sim_length = 20)
+    g = iterate_updating(coleman_single_arg, g_init, sim_length = 20)
+    w = iterate_updating(bellman_single_arg, w_init, sim_length = 20)
     new_w, vf_g = T(w, grid, beta, u, f, shocks, compute_policy = true)
 
     pf_error = c_star - g
@@ -620,6 +621,19 @@ end
 
 ```{code-cell} julia
 compare_error(m, shocks, m.grid, m.u.(m.grid), sim_length = 20)
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Coleman Convergence Canary" begin
+    (; grid, beta, dudc, f, f_prime) = m
+    coleman_single_arg(g) = K(g, grid, beta, dudc, f, f_prime, shocks)
+    g_converged = iterate_updating(coleman_single_arg, m.grid, sim_length = 20)
+    @test g_converged[100] ≈ 0.7611865109825631
+    @test g_converged[200] ≈ 1.5300613882221756
+end
 ```
 
 As you can see, time iteration is much more accurate for a given
@@ -751,8 +765,8 @@ function exercise2(m, shocks, g_init = m.grid, w_init = m.u.(m.grid);
     bellman_single_arg(w) = T(w, grid, beta, u, f, shocks)
     coleman_single_arg(g) = K(g, grid, beta, dudc, f, f_prime, shocks)
 
-    g = iterate_updating(coleman_single_arg, grid, sim_length = 20)
-    w = iterate_updating(bellman_single_arg, u.(m.grid), sim_length = 20)
+    g = iterate_updating(coleman_single_arg, g_init, sim_length = 20)
+    w = iterate_updating(bellman_single_arg, w_init, sim_length = 20)
     new_w, vf_g = T(w, grid, beta, u, f, shocks, compute_policy = true)
 
     plot(grid, g, lw = 2, alpha = 0.6, label = "policy iteration")
@@ -791,6 +805,17 @@ end
 ```
 
 ```{code-cell} julia
-@benchmark bellman(m_ex, shocks)
+@benchmark coleman(m_ex, shocks)
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Exercise Coleman CRRA Canary" begin
+    g_ex = coleman(m_ex, shocks)
+    @test g_ex[100] ≈ 0.5975132315136479
+    @test g_ex[200] ≈ 1.0678117763817765
+end
 ```
 

@@ -290,7 +290,8 @@ tags: [remove-cell]
 ---
 @testset "Sample Path Test" begin
     @test P ≈ [0.4 0.6; 0.2 0.8] # Make sure the primitive doesn't change.
-    # @test X[1:5] == [1, 2, 2, 1, 1]
+    @test X[1:5] == [1, 2, 2, 2, 2]
+    @test mu_1 ≈ 0.25 atol = 0.02 # canary: sample frequency near stationary prob
 end
 ```
 
@@ -878,6 +879,7 @@ tags: [remove-cell]
 @testset "testing convergence to stationary" begin
     @test x_vals[12] ≈ 0.6401278316658368
     @test y_vals[7] ≈ 0.4773682392284884
+    @test psi_star[1] ≈ 0.8128 # canary: Hamilton stationary dist (normal growth)
 end
 ```
 
@@ -1284,9 +1286,10 @@ tags: [remove-cell]
 @testset "Exercise 2 Tests" begin
     # 'g' should be the highest ranked page (~0.16)
     @test ranked_pages['g'] ≈ 0.16 atol=0.01
-    
+
     # 'a' should be the lowest (~0.003)
     @test ranked_pages['a'] ≈ 0.003 atol=0.001
     @test sum(values(ranked_pages)) ≈ 1.0
+    @test ranked_pages['j'] ≈ 0.15936158342833584 # canary: 2nd-ranked page
 end
 ```

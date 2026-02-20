@@ -678,9 +678,10 @@ plot(c_vals, stop_times, label = "mean unemployment duration",
 ---
 tags: [remove-cell]
 ---
-# Just eyeball the plot pending undeprecation and rewrite.
-@testset begin
-    # @test stop_times[4] ≈ 8.1822
+@testset "Stopping Time Tests" begin
+    @test stop_times[4] ≈ 8.215
+    @test stop_times[end] ≈ 25.4813
+    @test stop_times[13] ≈ 13.9394
 end
 ```
 
