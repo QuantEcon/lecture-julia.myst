@@ -392,16 +392,15 @@ end
 ---
 tags: [remove-cell]
 ---
-# using Test, QuantEcon
-# @testset begin
-#   # Use same parameters
-#   mc_qe = QuantEcon.tauchen(N, rho, sigma, mu)
-#   P_qe = mc_qe.p
-#   x_qe = mc_qe.state_values
-#   # Check they match up to numerical precision
-#   @test maximum(abs.(P - P_qe)) < 1e-10
-#   @test maximum(abs.(x - x_qe)) < 1e-10
-# end
+using Test, QuantEcon
+@testset "Tauchen vs QuantEcon" begin
+    mc_qe = QuantEcon.tauchen(N, rho, sigma, mu)
+    P_qe = mc_qe.p
+    x_qe = mc_qe.state_values
+    @test maximum(abs.(P - P_qe)) < 1e-10
+    @test maximum(abs.(x - x_qe)) < 1e-10
+    @test P[3, 3] ≈ 0.6578982972494045  # canary: central transition probability
+end
 ```
 
 
