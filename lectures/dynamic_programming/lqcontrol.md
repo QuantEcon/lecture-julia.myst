@@ -633,19 +633,16 @@ The shocks $\{w_t\}$ were taken to be iid and standard normal.
 ---
 tags: [remove-cell]
 ---
-using Test, Random
+using Test
 ```
 
 ```{code-cell} julia
-using LinearAlgebra, Statistics
+using LinearAlgebra, Statistics, Random
 using LaTeXStrings, Plots, Plots.PlotMeasures, QuantEcon
 
 ```
 
 ```{code-cell} julia
----
-tags: [remove-cell]
----
 Random.seed!(42);
 ```
 
@@ -726,9 +723,6 @@ This consumer is slightly more patient than the last one, and hence puts
 relatively more weight on later consumption values
 
 ```{code-cell} julia
----
-tags: [remove-cell]
----
 Random.seed!(42);
 ```
 
@@ -1470,9 +1464,6 @@ $$
 Our solution code is
 
 ```{code-cell} julia
----
-tags: [remove-cell]
----
 Random.seed!(42);
 ```
 
