@@ -322,11 +322,11 @@ First we create the objects for the optimal linear regulator
 ---
 tags: [remove-cell]
 ---
-using Test, Random
+using Test
 ```
 
 ```{code-cell} julia
-using QuantEcon, LinearAlgebra
+using QuantEcon, LinearAlgebra, Random
 using LaTeXStrings, Plots
 
 # Set parameters

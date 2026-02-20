@@ -150,11 +150,11 @@ Here's a figure showing the effect of different shape parameters when $n=50$.
 ---
 tags: [remove-cell]
 ---
-using Test, Random
+using Test
 ```
 
 ```{code-cell} julia
-using LaTeXStrings, Plots, Distributions
+using LaTeXStrings, Plots, Distributions, Random
 
 n = 50
 a_vals = [0.5, 1, 100]
