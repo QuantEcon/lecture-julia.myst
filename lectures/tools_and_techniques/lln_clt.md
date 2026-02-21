@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (lln_clt)=
@@ -222,6 +222,7 @@ using Test
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using LaTeXStrings, Plots, Distributions, Random, Statistics
+using StatsPlots
 ```
 
 ```{code-cell} julia

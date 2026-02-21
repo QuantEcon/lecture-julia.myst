@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (uncertainty_traps)=
@@ -227,6 +227,7 @@ The method to evaluate the number of active firms generates $F_1,
 tags: [remove-cell]
 ---
 using Test, Random
+using DataFrames, LaTeXStrings, LinearAlgebra, Plots, Statistics
 ```
 
 ```{code-cell} julia

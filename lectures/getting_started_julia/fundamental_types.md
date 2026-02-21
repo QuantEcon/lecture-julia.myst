@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12    
+  name: julia    
 ---
 
 (fundamental_types)=
@@ -47,7 +47,11 @@ In this lecture we give more details on
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using MatrixEquations, StaticArrays
 ```
 
 ## Array Basics

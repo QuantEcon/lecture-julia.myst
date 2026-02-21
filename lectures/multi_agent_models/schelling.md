@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 (schelling)=
 ```{raw} html
@@ -144,6 +144,7 @@ then increase the number of agents.
 tags: [remove-cell]
 ---
 using Test, Random
+using LinearAlgebra, Plots, Statistics
 ```
 
 ```{code-cell} julia

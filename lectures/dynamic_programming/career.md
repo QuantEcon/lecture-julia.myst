@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (career)=
@@ -43,7 +43,11 @@ This exposition draws on the presentation in {cite}`Ljungqvist2012`, section 6.5
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics, NLsolve
+using Distributions, LaTeXStrings, Plots, Random
 ```
 
 ## Model

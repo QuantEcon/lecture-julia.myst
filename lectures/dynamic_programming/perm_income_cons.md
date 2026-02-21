@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (perm_income_cons)=
@@ -67,7 +67,11 @@ The model will prove useful for illustrating concepts such as
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using LaTeXStrings, Plots, QuantEcon, Random
 ```
 
 ## Introduction

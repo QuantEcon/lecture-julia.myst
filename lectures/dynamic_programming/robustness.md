@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (rob)=
@@ -143,7 +143,11 @@ Our discussion in this lecture is based on
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using Interpolations, Plots, QuantEcon
 ```
 
 ## The Model

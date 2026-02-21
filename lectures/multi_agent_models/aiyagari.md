@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (aiyagari)=
@@ -194,8 +194,12 @@ The object also includes a default set of parameters that we'll adopt unless oth
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using LaTeXStrings, Plots, QuantEcon
+using Random
 ```
 
 ```{code-cell} julia

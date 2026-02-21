@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (harrison_kreps)=
@@ -57,7 +57,11 @@ The Harrison-Kreps model illustrates the following notion of a bubble that attra
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using QuantEcon
 ```
 
 ## Structure of the Model

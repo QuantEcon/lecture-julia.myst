@@ -41,12 +41,33 @@ jobs:
       - name: Install IJulia and Setup Project
         shell: bash
         run: |
-          julia -e 'using Pkg; Pkg.add("IJulia");'
+          julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia; installkernel("Julia", "--project=@.", specname="julia")'
           julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
+      - name: Clear stale error logs
+        shell: bash
+        run: rm -rf _build/html/reports
       - name: Build HTML
         shell: bash -l {0}
         run: |
-          jb build lectures --path-output ./ 
+          jb build lectures --path-output ./
+      - name: Check for notebook execution errors
+        if: always()
+        shell: bash
+        run: |
+          errors=0
+          for f in $(find _build/html/reports -name '*.err.log' 2>/dev/null); do
+            if grep -q 'CellExecutionError' "$f"; then
+              echo "::error::Notebook execution failed: $f"
+              cat "$f"
+              echo ""
+              errors=$((errors + 1))
+            fi
+          done
+          if [ "$errors" -gt 0 ]; then
+            echo "::error::$errors notebook(s) failed execution. See above for details."
+            exit 1
+          fi
+          echo "No notebook execution errors found."
       - name: Upload the "_build" folder (cache)
         uses: actions/upload-artifact@v6
         with:

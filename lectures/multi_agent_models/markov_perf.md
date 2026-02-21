@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (markov_perf)=
@@ -47,7 +47,11 @@ We will focus on settings with
 Other references include chapter 7 of {cite}`Ljungqvist2012`.
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics, QuantEcon
+using LaTeXStrings, Plots
 ```
 
 ## Background

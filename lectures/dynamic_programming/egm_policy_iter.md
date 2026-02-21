@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (egm_policy_iter)=
@@ -142,6 +142,9 @@ Here's an implementation of $K$ using EGM as described above.
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using BenchmarkTools, Interpolations, LaTeXStrings, Plots, Random, Roots
 

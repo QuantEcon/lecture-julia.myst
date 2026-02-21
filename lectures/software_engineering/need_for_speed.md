@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (types_methods)=
@@ -61,7 +61,11 @@ You should read our {doc}`earlier lecture <../more_julia/generic_programming>` o
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using BenchmarkTools
 ```
 
 ## Understanding Multiple Dispatch in Julia

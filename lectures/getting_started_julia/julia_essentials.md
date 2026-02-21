@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (julia_essentials)=
@@ -37,7 +37,11 @@ Topics:
 * Comparisons and logic
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics, Plots
+using BenchmarkTools
 ```
 
 ## Common Data Types

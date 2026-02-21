@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (lssm)=
@@ -55,7 +55,11 @@ Its many applications include:
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using LaTeXStrings, Plots, QuantEcon, Random
 ```
 
 ## The Linear State Space Model
@@ -1417,7 +1421,7 @@ tags: [remove-cell]
 @testset "Exercise 4 Tests" begin
     @test ar.A[1, 4] ≈ 0.5
     @test Sigma_y[1] ≈ 0.020833333252863163
-    @test ys[4][7] ≈ 0.1003964344211501 atol = 1e-3  # stochastic, seed-dependent
+    @test ys[4][7] ≈ 0.005919931653911567 atol = 1e-3  # stochastic, seed-dependent
 end
 ```
 

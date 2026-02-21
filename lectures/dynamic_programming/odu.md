@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (odu)=
@@ -162,6 +162,7 @@ using Test # At the head of every lecture.
 ```{code-cell} julia
 using LinearAlgebra, Statistics, SpecialFunctions
 using Distributions, LaTeXStrings, Plots, Interpolations, FastGaussQuadrature, NLsolve
+using Random
 
 w_max = 2
 x = range(0, w_max, length = 200)

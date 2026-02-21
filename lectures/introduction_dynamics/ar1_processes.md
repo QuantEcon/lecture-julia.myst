@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (ar1)=
@@ -41,8 +41,12 @@ We are going to study AR(1) processes partly because they are useful and
 partly because they help us understand important concepts.
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings, Plots
+using Random, StatsPlots
 ```
 
 ## The AR(1) Model

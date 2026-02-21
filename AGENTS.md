@@ -4,6 +4,11 @@ This repository builds QuantEcon Julia lectures using JupyterBook + MyST Markdow
 
 ## Quick Reference
 
+**Install version-free Julia kernel (one-time setup):**
+```bash
+julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia; installkernel("Julia", "--project=@.", specname="julia")'
+```
+
 **Build lectures:**
 ```bash
 source .venv/bin/activate

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12 
+  name: julia 
 ---
 
 (auto_differentiation)=
@@ -36,6 +36,7 @@ tags: [hide-output]
 ---
 using LinearAlgebra, Statistics
 using ForwardDiff, Enzyme, Test
+using BenchmarkTools
 ```
 
 ## Introduction to Differentiable Programming

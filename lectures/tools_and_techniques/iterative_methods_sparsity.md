@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (iterative_methods_sparsity)=
@@ -37,6 +37,7 @@ ill-conditioned matrices.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics, BenchmarkTools, Random
+using Arpack, IncompleteLU, IterativeSolvers, LaTeXStrings, LinearMaps, Plots, Preconditioners, SparseArrays
 Random.seed!(42);  # seed random numbers for reproducibility
 ```
 

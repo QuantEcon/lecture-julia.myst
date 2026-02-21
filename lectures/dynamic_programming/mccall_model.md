@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (mccall)=
@@ -293,6 +293,7 @@ tags: [hide-output]
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings
 using NLsolve, Roots, Random, Plots
+using StatsPlots
 ```
 
 ```{code-cell} julia

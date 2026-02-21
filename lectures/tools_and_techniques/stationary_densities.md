@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (statd)=
@@ -67,7 +67,7 @@ Markov process.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics, Distributions, LaTeXStrings, Plots, StatsPlots,
-      Random
+      KernelDensity, Random
 ```
 
 (statd_density_case)=
