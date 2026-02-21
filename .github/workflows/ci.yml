@@ -49,6 +49,20 @@ jobs:
           branch: main
           name: build-cache
           path: _build
+      # Invalidate cached doctrees for files changed in this PR so Sphinx
+      # regenerates their HTML even when only markdown (not code) changed.
+      - name: Invalidate cache for changed lectures
+        shell: bash
+        run: |
+          for f in $(git diff --name-only origin/main -- 'lectures/**/*.md'); do
+            base="${f#lectures/}"
+            base="${base%.md}"
+            rm -f "_build/.doctrees/${base}.doctree"
+            rm -f "_build/html/${base}.html"
+            rm -f "_build/html/_sources/${base}.md"
+            rm -f "_build/html/_sources/${base}.ipynb"
+            echo "Invalidated cache for ${base}"
+          done
       # Build Assets (Download Notebooks and PDF via LaTeX)
       # - name: Build PDF from LaTeX
       #   shell: bash -l {0}
