@@ -545,3 +545,28 @@ With the kernel selected, you will be able to run cells in the VS Code UI with s
    ```{figure} /_static/figures/vscode_jupyter_kernel_execute.png
    :width: 100%
    ```
+
+(running_colab)=
+## Running on Google Colab
+
+[Google Colab](https://colab.research.google.com/) provides a hosted Julia runtime that can run the lecture notebooks directly in your browser with no local installation.
+
+1. Navigate to the [notebook repository](https://github.com/quantecon/lecture-julia.notebooks) on GitHub
+2. Open any `.ipynb` file and click the "Open in Colab" badge, or go to [colab.research.google.com](https://colab.research.google.com) and choose **File > Open notebook > GitHub**, then enter `quantecon/lecture-julia.notebooks`
+3. Colab should automatically detect the Julia kernel
+4. Before running the notebook, you will need to install the required packages.  Look at the first code cell for the list of packages, and add a new cell **above** it with the installation command.  For example, if the first cell is
+
+   ```{code-block} julia
+   using LinearAlgebra, Statistics, Plots, LaTeXStrings
+   ```
+
+   then add a cell above it with
+
+   ```{code-block} julia
+   using Pkg
+   Pkg.add(["LinearAlgebra", "Statistics", "Plots", "LaTeXStrings"])
+   ```
+
+   This only needs to be done once per package — Colab will remember installed packages for the duration of the session.
+
+5. After installation completes, run the first cell and continue through the notebook as usual
