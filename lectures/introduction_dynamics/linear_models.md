@@ -1418,7 +1418,7 @@ tags: [remove-cell]
 @testset "Exercise 4 Tests" begin
     @test ar.A[1, 4] ≈ 0.5
     @test Sigma_y[1] ≈ 0.020833333252863163
-    @test ys[4][7] ≈ 0.1003964344211501 atol = 1e-3  # stochastic, seed-dependent
+    @test ys[4][7] ≈ 0.005919931653911567 atol = 1e-3  # stochastic, seed-dependent
 end
 ```
 

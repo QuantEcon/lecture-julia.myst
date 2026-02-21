@@ -67,8 +67,7 @@ Markov process.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics, Distributions, LaTeXStrings, Plots, StatsPlots,
-using KernelDensity
-      Random
+      KernelDensity, Random
 ```
 
 (statd_density_case)=

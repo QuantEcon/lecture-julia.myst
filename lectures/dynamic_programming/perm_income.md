@@ -840,9 +840,9 @@ const sigma2 = 0.15
 
 function time_path(permanent = false)
     w1 = zeros(T2 + 1)
-    w2 = similar(w1)
-    b = similar(w1)
-    c = similar(w1)
+    w2 = zeros(T2 + 1)
+    b = zeros(T2 + 1)
+    c = zeros(T2 + 1)
 
     if permanent === false
         w2[S + 2] = 1.0
