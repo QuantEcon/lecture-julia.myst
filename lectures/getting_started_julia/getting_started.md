@@ -318,24 +318,24 @@ With the kernel selected, you will be able to run cells in the VS Code UI with s
 
 [Google Colab](https://colab.research.google.com/) provides a hosted Julia runtime that can run the lecture notebooks directly in your browser with no local installation.
 
-The easiest way to launch any lecture notebook in Colab is to click the {fas}`rocket` icon at the top of the page and select **Colab** from the Notebook Launcher:
+The easiest way to launch any lecture notebook in Colab is to click the {fas}`circle-play` icon at the top of the page and select **Colab** from the Notebook Launcher:
 
 ```{figure} /_static/figures/colab_launcher.png
 :width: 60%
 ```
 
-Alternatively, you can navigate to the [notebook repository](https://github.com/quantecon/lecture-julia.notebooks) on GitHub, open any `.ipynb` file and click the "Open in Colab" badge, or go to [colab.research.google.com](https://colab.research.google.com) and choose **File > Open notebook > GitHub**, then enter `quantecon/lecture-julia.notebooks`.
+Alternatively, you can navigate to the [notebook repository](https://github.com/quantecon/lecture-julia.notebooks) and download or copy the URL.  Then log in to [colab.research.google.com](https://colab.research.google.com) and choose **File > Open notebook > GitHub** or the **Upload** tab to open the notebook.
 
 Once the notebook is open in Colab:
 
 1. Colab should automatically detect the Julia kernel
-2. Before running the notebook, you will need to install the required packages.  Look at the first code cell for the list of packages, and add a new cell **above** it with the installation command.  For example, if the first cell is
+2. Before running the notebook, you will need to install the required packages.  Look at the first code cell for the list of packages and modify the cell to include a call to `Pkg.add`.  For example, if the first cell is
 
    ```{code-block} julia
    using LinearAlgebra, Statistics, Plots, LaTeXStrings
    ```
 
-   then add a cell above it with
+   then modify this cell, or add a cell above, with
 
    ```{code-block} julia
    using Pkg
@@ -344,7 +344,7 @@ Once the notebook is open in Colab:
 
    This only needs to be done once per package — Colab will remember installed packages for the duration of the session.
 
-   Alternatively, you can modify the first cell directly to install any unavailable packages, or ask Gemini to install the packages and it will generate the installation code for you.
+   Alternatively, you can ask Gemini to install the packages and it will generate the installation code for you within the cell.
 
    ```{figure} /_static/figures/colab_install.png
    :width: 100%
