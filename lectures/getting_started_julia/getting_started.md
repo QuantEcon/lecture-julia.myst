@@ -410,4 +410,10 @@ With the kernel selected, you will be able to run cells in the VS Code UI with s
 
    This only needs to be done once per package — Colab will remember installed packages for the duration of the session.
 
+   Alternatively, you can modify the first cell directly to install any unavailable packages, or ask Gemini to install the packages and it will generate the installation code for you.
+
+   ```{figure} /_static/figures/colab_install.png
+   :width: 100%
+   ```
+
 5. After installation completes, run the first cell and continue through the notebook as usual
