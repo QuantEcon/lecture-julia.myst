@@ -28,55 +28,18 @@ kernelspec:
 
 We're now ready to start learning the Julia language itself.
 
-### Level
-
-Our approach is aimed at those who already have at least some knowledge of programming --- perhaps experience with Python, MATLAB, Fortran, C or similar.
-
-In particular, we assume you have some familiarity with fundamental programming concepts such as
-
-* variables
-* arrays or vectors
-* loops
-* conditionals (if/else)
+We assume some familiarity with programming --- variables, arrays, loops, and conditionals --- in any language (Python, MATLAB, Fortran, C, etc.).
 
 (intro_resources)=
-### (Optional) Resources for Introductory Programming
-
-If Julia is your first programming language, then you may want to examine other resources before proceeding through these chapters.
-
-First, you will want to ensure that you have [installed Conda](install_jupyter), [Julia](intro_repl) in the previous section, and are able to [launch Jupyter Lab](running_jupyterlab).  Then, even without downloading these lecture notes you can start learning Julia.
-
-Some resources for users with little to no programming experience are the:
-1. [Introduction to Julia](https://juliaacademy.com/p/intro-to-julia) which is appropriate for those with little programming experience.
-   - You will need to sign up for this course to access it, but it is free.
-   - Avoid the initial lecture on the installation of Julia and nteract.
-   - The Jupyter Notebooks for this class are available [online](https://github.com/JuliaAcademy/Introduction-to-Julia)
-2. [Julia for Beginners](https://www.youtube.com/playlist?list=PLhQ2JMBcfAsi_3g2AFJ6B84d8c5jw5kXp) from the [julia for talented amateurs](https://www.youtube.com/c/juliafortalentedamateurs) channel.
-   - If you watch these, ignore the environment.  It is using a different open-source editor (i.e. Atom, which is being slowly phased out) and the REPL.  However the content itself is independent of the environment. Skip any setup instructions and just use Jupyter.
-3. [Julia Programming for Nervous Beginners](https://www.youtube.com/playlist?list=PLP8iPy9hna6Qpx0MgGyElJ5qFlaIXYf1R) youtube tutorials.
-   - These get advanced fairly quickly, but have plenty of great content.
-   - This may be less gentle of an introduction for new users given the tooling choices.
-
-However, if you have even introductory experience with any programming language (e.g. you do not need to review what a loop, array, variable, or conditional "if" statement is), you should be able to start directly with these lectures.
-
 As you progress into modeling with differential equations and the broader SciML ecosystem, keep the [Scientific Modeling Cheat Sheet](https://sciml.github.io/Scientific_Modeling_Cheatsheet/scientific_modeling_cheatsheet) handy; it summarizes common modeling patterns, solver options, and callbacks you'll use later in the notes.
+
 ### Approach
 
-In this lecture we will write and then pick apart small Julia programs.
+In this lecture we will write and then pick apart small Julia programs to introduce basic syntax and data structures, with deeper concepts covered in later lectures.
 
-At this stage the objective is to introduce you to basic syntax and data structures.
+We often start with a direct MATLAB/FORTRAN approach --- which is **poor coding style** in Julia --- then move towards more **elegant code** tightly connected to the mathematics.
 
-Deeper concepts---how things work---will be covered in later lectures.
-
-Since we are looking for simplicity the examples are a little contrived
-
-In this lecture, we will often start with a direct MATLAB/FORTRAN approach which often is **poor coding style** in Julia, but then move towards more **elegant code** which is tightly connected to the mathematics.
-
-We assume that you've worked your way through {doc}`our getting started lecture <../getting_started_julia/getting_started>` already.
-
-The definitive reference is [Julia's own documentation](https://docs.julialang.org/).  The manual is thoughtfully written but is also quite dense.
-
-The presentation in this and our remaining lectures is more of a tutorial style based around examples.
+We assume you've worked through {doc}`our getting started lecture <../getting_started_julia/getting_started>`. The definitive reference is [Julia's own documentation](https://docs.julialang.org/).
 
 ## Example: Plotting a White Noise Process
 
