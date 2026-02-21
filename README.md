@@ -38,9 +38,12 @@ It is straightforward to install the Jupyter Book and Julia software necessary f
     - Choose the interpreter with `lecture-julia.myst` which should now be automatically activated in the terminal.
     - If the interpreter does not show up in the drop-down, close and reopen VS Code, then try again. Alternatively, you can run this step at the end of the setup process.
         - Whenever reopening VS Code, re-run `conda activate lecture-julia.myst` to ensure the environment remains active.
-9.  Ensure that IJulia is installed for the main Julia environment
-    - Ensure you have the conda environment activated with `conda activate lecture-julia.myst`
-    - To do this, run `julia` in the terminal and then `] add IJulia` in the Julia REPL.  You will want to do this in the main environment and not the `lectures` environment, as used below.
+9.  Install the version-free Julia Jupyter kernel.  This registers a kernel named `julia` (without a version suffix) that the notebooks expect, and includes `--project=@.` so it automatically activates the nearest `Project.toml`.
+
+     ```bash
+     julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia; installkernel("Julia", "--project=@.", specname="julia")'
+     ```
+
 10.  Install the Julia packages required for the lecture notes.
 
      ```bash
@@ -69,13 +72,13 @@ From a built jupyterbook, you can navigate to the `.ipynb` used for the generati
 
 There are two options:
 
-1. With the Julia vscode extension installed, open the file and run code cells.
+1. With the Julia VS Code extension installed, open the file and run code cells.
   - The formatting will be incorrect, but the code will be.
-  - The first time you run this you may need to choose the kernel.  Assuming you installed with juliaup, you should be able to choose `Julia` as the kernel and the juliaup installed julia version
-  - This will automatically activate the appropriate project and manifest file.
+  - The first time you run this you may need to choose the kernel.  Choose the `Julia` kernel (not a versioned `Julia 1.x` kernel) to use the version-free kernel installed during setup.
+  - This will automatically activate the appropriate project and manifest file via `--project=@.`.
 2. With your conda environment activated, go `cd lectures` then `jupyter lab`
   - Navigate to the files in jupyter itself.  Because you ran this in the environment with the `Project.toml` and `Manifest.toml` files, the environment should be activated correctly.
-  - If you have any issues, it is likely that you need to activate the environment in the terminal, or that you have note done the `] add IJulia` step from a julia REPL (whihc must be done in the default environment, i.e. not activated in `lectures`).
+  - If you have any issues, it is likely that you need to activate the environment in the terminal, or that you have not installed the version-free kernel (see step 9 in Setup above).
 
 ## Example Operations
 ### Building the lectures

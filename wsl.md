@@ -80,9 +80,11 @@ bash Anaconda3-2024.06-1-Linux-x86_64.sh
     pip install -r requirements.txt
     ```
 7. Can try `> Python: Select Interpreter` and choose the `lecture-julia.myst` environment to make it automatic, but it does not always work.
-8. Start a WSL terminal, make sure that the `lecture-julia.myst` is activated (and use `conda activate lecture-julia.myst` if not) then
-    - Start `julia`, which be in your global environment with nothing installed.  Can check with `]st`
-    - Then install the Julia jupyter kernel with `] add IJulia`
+8. Start a WSL terminal, make sure that the `lecture-julia.myst` is activated (and use `conda activate lecture-julia.myst` if not) then install the version-free Julia Jupyter kernel:
+    ```bash
+    julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia; installkernel("Julia", "--project=@.", specname="julia")'
+    ```
+    This registers a kernel named `julia` (without a version suffix) that the notebooks expect, and includes `--project=@.` so it automatically activates the nearest `Project.toml`.
 9. Install the Julia packages required for the lecture notes, running in a terminal (assuming still at the root)
     ```bash
     julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
