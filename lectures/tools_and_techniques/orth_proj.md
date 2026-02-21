@@ -740,6 +740,9 @@ algorithm given in the lecture.
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 ```
 

@@ -65,6 +65,9 @@ The project provides the environment for running code is **reproducible**, so th
 After the installation and activation, `using` provides a way to say that a particular code or notebook will use the package.
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics, Plots, LaTeXStrings
 using Distributions, ForwardDiff, NLsolve, StaticArrays
 ```

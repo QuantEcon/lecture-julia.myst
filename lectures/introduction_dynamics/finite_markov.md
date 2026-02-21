@@ -40,6 +40,9 @@ In this lecture we review some of the theory of Markov chains.
 Prerequisite knowledge is basic probability and linear algebra.
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using Distributions, Plots, Random, Graphs
 ```

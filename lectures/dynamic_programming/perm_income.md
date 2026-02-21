@@ -47,6 +47,9 @@ Background readings on the linear-quadratic-Gaussian permanent income model are 
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using Plots, Random
 ```

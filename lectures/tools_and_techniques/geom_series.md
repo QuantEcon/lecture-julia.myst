@@ -46,6 +46,9 @@ These and other applications prove the truth of the wise crack that
 Below we'll use the following packages:
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings, Plots, Random, Symbolics, Latexify
 ```

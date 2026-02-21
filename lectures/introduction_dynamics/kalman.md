@@ -45,6 +45,9 @@ Required knowledge: Familiarity with matrix manipulations, multivariate normal d
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings, Plots, QuantEcon, Random
 ```

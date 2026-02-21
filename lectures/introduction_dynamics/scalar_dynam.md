@@ -38,6 +38,9 @@ intuition.
 We'll use the following packages:
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LaTeXStrings, LinearAlgebra, Plots
 ```
 

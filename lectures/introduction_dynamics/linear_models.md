@@ -55,6 +55,9 @@ Its many applications include:
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using LaTeXStrings, Plots, QuantEcon, Random
 ```

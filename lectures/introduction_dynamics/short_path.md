@@ -162,6 +162,9 @@ edges to create an undirected version and compare the resulting path and cost.
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 ```
 

@@ -149,6 +149,9 @@ References for this lecture include
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using QuantEcon
 ```

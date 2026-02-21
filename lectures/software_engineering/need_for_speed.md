@@ -61,6 +61,9 @@ You should read our {doc}`earlier lecture <../more_julia/generic_programming>` o
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using BenchmarkTools
 ```

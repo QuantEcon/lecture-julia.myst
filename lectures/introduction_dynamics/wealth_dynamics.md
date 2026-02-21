@@ -63,6 +63,9 @@ We do this to more easily explore the implications of different specifications o
 At the same time, all of the techniques discussed here can be plugged into models that use optimization to obtain savings rules.
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using Distributions, Plots, LaTeXStrings, LinearAlgebra, BenchmarkTools, Random
 using LoopVectorization
 ```

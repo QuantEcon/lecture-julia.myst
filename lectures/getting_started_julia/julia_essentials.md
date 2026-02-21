@@ -37,6 +37,9 @@ Topics:
 * Comparisons and logic
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics, Plots
 using BenchmarkTools
 ```

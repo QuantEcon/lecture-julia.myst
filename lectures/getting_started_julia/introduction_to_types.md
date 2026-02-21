@@ -39,6 +39,9 @@ In this lecture we give more details on
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using BenchmarkTools, ForwardDiff, Plots, Polynomials, QuadGK
 ```

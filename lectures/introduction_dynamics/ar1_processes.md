@@ -41,6 +41,9 @@ We are going to study AR(1) processes partly because they are useful and
 partly because they help us understand important concepts.
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings, Plots
 using Random, StatsPlots
