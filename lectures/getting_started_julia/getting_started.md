@@ -48,70 +48,57 @@ Julia and the lecture notebooks can be installed without Jupyter or Python:
   - That process will take several minutes to download and compile all of the packages used in the lectures.
 7. Open any of the `.ipynb` files in VS Code and select the `Julia` channel (i.e., not the Jupyter channels if you have them installed) when prompted to run the notebooks directly within VS Code
 
-At that point, you can directly move o the {doc}`julia by example <../getting_started_julia/julia_by_example>` lecture.
+At that point, you can directly move to the {doc}`julia by example <../getting_started_julia/julia_by_example>` lecture.
 
 
 ## A Note on Jupyter
 
-Like Python and R, and unlike products such as Matlab and Stata, there is a looser connection between Julia as a programming language and Julia as a specific development environment.
-
-While you will eventually use other editors, there are some advantages to starting with the [Jupyter](http://jupyter.org/) environment while learning Julia.
-
-* The ability to mix formatted text (including mathematical expressions) and code in a single document.
-* Nicely formatted output including tables, figures, animation, video, etc.
-* Conversion tools to generate PDF slides, static HTML, etc.
-
-We'll discuss the workflow on these features in the [next section](julia_environment)
+[Jupyter](http://jupyter.org/) notebooks are an alternative way to work with Julia, letting you mix code, formatted text, and output in a single document.  However, the recommended workflow for these lectures is VS Code (see {ref}`Setting up Git and VS Code <initial_vscode_setup>`).  If you prefer standalone Jupyter Lab, see the [installation instructions below](jl_jupyterlocal).
 
 For those with little to no programming experience (e.g. you have never used a loop or "if" statement) see the list of [introductory resources](intro_resources).
 
 (jl_jupyterlocal)=
 ## Desktop Installation of Julia and Jupyter
 
-In this section, we will describe the installation of Julia and Jupyter on your desktop.
-
+```{note}
+This section is **only needed if you want the standalone Jupyter Lab workflow**.  If you plan to use VS Code (recommended) or Google Colab, you can skip to {ref}`Setting up Git and VS Code <initial_vscode_setup>`.
+```
 
 (install_jupyter)=
 ### Installing Jupyter
-[Anaconda](https://www.anaconda.com/) provides an easy to install package of jupyter, python, and many data science tools.
+[Anaconda](https://www.anaconda.com/) provides an easy way to install Jupyter, Python, and many data science tools.
 
-If you have not previously installed Conda or Jupyter, then 
 1. Download the binary (<https://www.anaconda.com/download/>) and follow the [installation instructions](https://conda.io/projects/conda/en/latest/user-guide/install/index.html) for your platform.
-2. If given the option for your operating system, let Conda add Python to your PATH environment variables.
+2. If given the option, let Conda add Python to your PATH environment variables.
 
 ```{note}
-While Conda is the easiest way to install jupyter, it is not strictly required.  With any python you can install with `pip install jupyter`.  More advanced users should consider switching to the [uv](https://github.com/astral-sh/uv) package manager.
-
-In addition, there is direct support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) with **no Python installation**. See {ref}`VS Code Julia Kernel  <running_vscode_kernel>`.
-
+There is direct support for [Jupyter notebooks in VS Code](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) with **no Python installation**. See {ref}`VS Code Julia Kernel <running_vscode_kernel>`.
 ```
 
 (intro_repl)=
 ### Install Julia
-After Jupyter is installed, you can install Julia.
 
 ```{note}
-The "official" installation for Julia is now [Juliaup](https://github.com/JuliaLang/juliaup), which makes it easier to upgrade and manage concurrent Julia versions.  See [here](https://github.com/JuliaLang/juliaup#using-juliaup) for a list of commands, such as `juliaup update` to upgrade to the latest available Julia version after installation, or ways to switch to newer Julia versions after they are released.
+The "official" installation for Julia is now [Juliaup](https://github.com/JuliaLang/juliaup), which makes it easier to upgrade and manage concurrent Julia versions.  See [here](https://github.com/JuliaLang/juliaup#using-juliaup) for a list of commands, such as `juliaup update` to upgrade to the latest available Julia version.
 
-**Troubleshooting:** On Mac/Linux, if you have permissions issues on the installation use `sudo curl -fsSL https://install.julialang.org | sh`.  If there are still permissions issus, [see here](https://github.com/JuliaLang/juliaup/wiki/Permission-problems-during-setup) suggests executing `sudo chown $(id -u):$(id -g) ~/.bashrc`, `sudo chown $(id -u):$(id -g) ~/.zshrc`, and `sudo chown $(id -u):$(id -g) ~/.bash_profile` then retry the installation.
+**Troubleshooting:** On Mac/Linux, if you have permissions issues on the installation use `sudo curl -fsSL https://install.julialang.org | sh`.  If there are still permissions issues, [see here](https://github.com/JuliaLang/juliaup/wiki/Permission-problems-during-setup) for further steps.
 ```
 
 1. Download and install Julia following the [Juliaup instructions](https://github.com/JuliaLang/juliaup#installation)
-    - Windows: easiest method is `winget install julia -s msstore` in a terminal
-    - Linux/Mac: in a terminal use `curl -fsSL https://install.julialang.org | sh`.  To open a terminal on macOS press `Cmd + Space` to open Spotlight, then type `Terminal`, or use the Launchpad
-    - If you have previously installed Julia manually, you will need to uninstall previous versions before switching to `juliaup`.
-    - Alternatively, can manually install from [download page](http://julialang.org/downloads/), accepting all default options
+    - Windows: `winget install julia -s msstore` in a terminal
+    - Linux/Mac: `curl -fsSL https://install.julialang.org | sh` in a terminal
+    - If you have previously installed Julia manually, you will need to uninstall previous versions before switching to `juliaup`
 
 2. Open Julia, by either
     - Navigating to Julia through your menus or desktop icons (Windows, Mac), or
-    - Opening a terminal and type `julia` (which should work for all OS if you used `juliaup`.  Otherwise see [here](https://julialang.org/downloads/platform/))
+    - Opening a terminal and typing `julia`
 
    You should now be looking at something like this
-   
+
    ```{figure} /_static/figures/julia_term_1.png
    :width: 100%
    ```
-   
+
    This is called the JULIA *REPL* (Read-Evaluate-Print-Loop), which we discuss more {ref}`later <repl_main>`.
 
 3. In the Julia REPL, hit `]` to enter package mode and then enter:
@@ -120,29 +107,18 @@ The "official" installation for Julia is now [Juliaup](https://github.com/JuliaL
    add IJulia
    ```
 
-   This adds packages for the `IJulia` kernel which links Julia to Jupyter you previously installed with Anaconda (i.e., allows your browser to run Julia code, manage Julia packages, etc.).
+   This adds the `IJulia` kernel which links Julia to Jupyter (i.e., allows your browser to run Julia code, manage Julia packages, etc.).
 
-4. You can exit the julia REPL by hitting backspace to exit the package mode, and then 
-
-   ```{code-block} julia
-   exit()
-   ```
+4. Exit the package mode with backspace and then quit with `exit()`.
 
 ```{note}
-As entering of the package mode is so common in these notes, we will denote this with a `] IJulia`, etc.  On Windows and in Jupyter, you can directly copy this into your terminal, whereas on Linux and macOS you may need to manually enter the package mode.
+As entering package mode is common in these notes, we will denote this with `] add IJulia`, etc.
 ```
 
 (initial_vscode_setup)=
 ## Setting up Git and VS Code
 
-A primary benefit of using [open-source](https://en.wikipedia.org/wiki/Open-source_software) languages such as Julia, Python, and R is that they can enable far better workflows for both collaboration and [reproducible research](https://en.wikipedia.org/wiki/Reproducibility#Reproducible_research).
-
-Reproducibility will ensure that you, your future self, your collaborators, and eventually the public will be able to run the exact code with the identical environment with which you provided the results - or even roll back to a snapshot in the past where the results may have been different in order to compare.
-
-We will explore these topics in detail in the lectures on {doc}`source code control <../software_engineering/version_control>` and {doc}`continuous integration and test-driven development <../software_engineering/testing>`, but it is worth installing and beginning to use these tools immediately.
-
-
-First, we will install [Git](more_on_git), which has become the industry standard open-source version-control tool.  This lets you download both the files and the entire version history from a server (e.g. on GitHub) to your desktop.
+First, install [Git](more_on_git), the industry standard version-control tool, which lets you download files and their entire version history from a server (e.g. on GitHub) to your desktop.  We cover Git in detail in the lectures on {doc}`source code control <../software_engineering/version_control>` and {doc}`testing <../software_engineering/testing>`.
 
 
 1. Install [Git](https://git-scm.com/install/) and accept the default arguments.
@@ -192,27 +168,21 @@ Becoming comfortable with VS Code and tools for source code control/software eng
 
 Next, let's install the QuantEcon lecture notes to our machine and run them (for more details on the tools we'll use, see our lecture on {doc}`version control <../software_engineering/version_control>`).
 
-With VS Code installed, you can easily clone the lecture notes repository
-
 1. Open the command palette with `<Ctrl+Shift+P>` and type `> Git: Clone`
-2. For the Repository URL, provide enter `https://github.com/quantecon/lecture-julia.notebooks`
-Alternatively, if you are already a user of Visual Studio Code, you can clone within VS Code by using the `> Git: Clone` command from the [command palette](command_palette).  See the lectures on [tools](../software_engineering/tools_editors.md) and [source code control](../software_engineering/version_control.md) for more details.
+2. For the Repository URL, enter `https://github.com/quantecon/lecture-julia.notebooks`
 3. Choose the location to clone when prompted
-   - The workflow will be easiest if you clone the repo to the default location relative to the home folder for your user.
-   - For example, on Windows a good choice might be `c:\Users\YOURUSERNAME\Documents\GitHub` or simply `c:\Users\YOURUSERNAME\Documents`.  On linux and macOS, your home directory `~` or `~/GitHub`.
+   - For example, on Windows a good choice is `c:\Users\YOURUSERNAME\Documents\GitHub`.  On Linux and macOS, `~` or `~/GitHub`.
 4. Accept the option to open in a new window when prompted
 
 ```{admonition} Cloning without VS Code
+:class: dropdown
 
-To use the command-line to begin the introduction to source control tools.
+Alternatively, you can clone from the command line:
 
-1. Choose and create if necessary a convenient parent folder where you would like the notebooks directory, see above for suggestions.
-2. Open a new terminal for your machine and navigate to the parent folder of where you wish to store the notebooks.
-   - On Windows: if using the [Windows Terminal](https://aka.ms/terminal) you can simply right-click on the directory in the File Explorer and choose to "Open in Microsoft Terminal" or, alternatively "Git Bash Here" to use the terminal provided by Git.  On macOS, see [here](https://apple.stackexchange.com/questions/11323/how-can-i-open-a-terminal-window-directly-from-my-current-finder-location) for a discussion of different approaches.
-3. Execute the following code in the terminal to download the entire suite of notebooks associated with these lectures with `git clone https://github.com/quantecon/lecture-julia.notebooks`
-   This will download the repository with the notebooks into the directory `lecture-julia.notebooks` within your working directory.
-4. Then, `cd` to that location in your terminal with `cd lecture-julia.notebooks`
-5. Finally, you can open this directory from your terminal in VS Code with `code .` or manually opening
+1. Open a terminal and navigate to a convenient parent folder (see above for suggestions).
+2. Run `git clone https://github.com/quantecon/lecture-julia.notebooks`
+3. `cd lecture-julia.notebooks`
+4. Open the directory in VS Code with `code .`, or open it manually.
 ```
 
 If you have opened this in VS Code, it should look something like
@@ -252,7 +222,7 @@ Recall that you can start this directly from the [command palette](command_palet
 This process will take several minutes to download and compile all of the files used by the lectures.
 
 ```{attention}
-If the cursor is instead `(@v1.12) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
+If the cursor is instead `(@v1.x) pkg>` then you may not have started the integrated terminal in the correct location, or you used an external REPL.  Assuming that you are in the correct location, if you type `activate .` in the package mode, the cursor should change to `(quantecon-notebooks-julia) pkg>` as it activates this project file.
 
 One benefit of using the integrated REPL is that it will set important options for launching Julia (e.g. the number of threads) and activate the local project files (i.e. the `Project.toml` file in the notebooks directory) automatically.  If you use an external REPL, you will need to set these manually.  Here you would want to run the REPL with `julia --project --threads auto`  to tell Julia to set the number of threads equal to your local machine's number of cores, and to activate the existing project.  See [here](repl_main) for more details.
 ```
@@ -261,39 +231,23 @@ One benefit of using the integrated REPL is that it will set important options f
 (running_jupyterlab)=
 ## Running JupyterLab
 
-You can start Jupyter within any directory by executing the following in a terminal
+```{note}
+This section is only needed for the standalone Jupyter Lab workflow.  If you use VS Code, you can run notebooks directly --- see {ref}`VS Code Julia Kernel <running_vscode_kernel>`.
+```
+
+Open a terminal in the notebook directory and run:
 
 ```{code-block} bash
 jupyter lab
 ```
 
-This runs a process giving Jupyter permission to access this directory, but not its parents.  This is especially convenient to do in VS Code since we have already navigated to this directory:
-
-1. If the Julia REPL is still open, create a new terminal by clicking on the `+` button on the terminal pane and create a new terminal appropriate for your operating system.  Close the Julia REPL if you wish.
-   ```{figure} /_static/figures/vscode_intro_5.png
-   :width: 75%
-   ```
-
-   - [As before](command_palette), if the terminal pane is not available, use ``<Ctrl+`>`` or `>View: Toggle Terminal` to see the pane.
-   - You can close the Julia REPL if you wish, or create multiple terminals in this interface
-
-2. Within the new terminal, execute `jupyter lab`.  This should run in the background in this terminal, with output such as
-   ```{figure} /_static/figures/vscode_intro_6.png
-   :width: 100%
-   ```
-
-
-
-The process should launch a webpage on your desktop, which may look like
+This launches Jupyter with access to the current directory.  A browser tab should open automatically; if not, follow the link shown in the terminal output.
 
 ```{figure} /_static/figures/jupyterlab_first.png
 :width: 100%
 ```
 
-If it does not start automatically, use the link at the bottom of the output in the terminal (which should show with `Follow link (ctrl + click`).
-
-
-Proceed to the next section on [Jupyter](julia_environment) to explore this interface and start writing code.
+Proceed to the next section on [using Jupyter](julia_environment) to explore this interface and start writing code.
 
 (reset_notebooks)=
 ## Refreshing the Notebooks after Modification
@@ -328,7 +282,7 @@ For example,
 - Some universities may have JupyterHub installations available - which provide a hosted Jupyter environment.  However, it would require the hub to have explicit Julia support.
 - VS Code has rapidly progressing [support for Jupyter](https://code.visualstudio.com/docs/datascience/jupyter-notebooks) using an existing Jupyter installation.
 - The combination of the new [VS Code Jupyter](optional_extensions) and [VS Code Julia](install_vscode) extensions supports Jupyter notebooks without even a fragile Conda/python installation
-- Online services such as [JuliaHub](https://juliahub.com/lp/) provide a tailored experience for Julia.  Be warned, however, that [Colab](https://colab.research.google.com/) and others are only designed for Python, and adding Julia requires a great deal of effort.
+- Online services such as [JuliaHub](https://juliahub.com/lp/) provide a tailored experience for Julia.  [Google Colab](https://colab.research.google.com/) now has {ref}`native Julia support <running_colab>`.
 
 ## Using Jupyter
 
@@ -336,68 +290,14 @@ For example,
 ### Getting Started
 
 ```{note}
-The easiest way to get started with these notebooks is to follow the {ref}`cloning instructions <clone_lectures>` earlier.  
+The easiest way to get started with these notebooks is to follow the {ref}`cloning instructions <clone_lectures>` earlier.
 ```
 
-Launch `jupyter lab` and navigate to this notebook(i.e. `getting_started_julia/getting_started.ipynb` )
+Launch `jupyter lab` and navigate to this notebook (i.e. `getting_started_julia/getting_started.ipynb`).
 
-See [here](running_jupyterlab) for the previous instructions on launching Jupyter Lab.  
+See [here](running_jupyterlab) for instructions on launching Jupyter Lab.
 
-Your web browser should open to a page that looks something like this
-
-```{figure} /_static/figures/starting_nb_julia.png
-:width: 100%
-```
-
-The page you are looking at is called the "dashboard".
-
-If you click on "Julia 1.x.x" under "Notebook" you should have the option to start a Julia notebook.
-
-Here's what your Julia notebook should look like
-
-```{figure} /_static/figures/nb2_julia.png
-:width: 100%
-```
-
-The notebook displays an *active cell*, into which you can type Julia commands.
-
-### Notebook Basics
-
-Notice that in the previous figure the cell is surrounded by a blue border.
-
-This means that the cell is selected, and double-clicking will place it in edit mode.
-
-As a result, you can type in Julia code and it will appear in the cell.
-
-When you're ready to execute these commands, hit `Shift-Enter`
-
-```{figure} /_static/figures/nb3_julia.png
-:width: 100%
-```
-
-#### Modal Editing
-
-The next thing to understand about the Jupyter notebook is that it uses a *modal* editing system.
-
-This means that the effect of typing at the keyboard **depends on which mode you are in**.
-
-The two modes are
-
-1. Edit mode
-    * Indicated by a blue border around one cell, as in the pictures above.
-    * Whatever you type appears as is in that cell.
-1. Command mode
-    * The blue border disappears and turns into a plain grey border.
-    * Key strokes are interpreted as commands --- for example, typing b adds a new cell below  the current one.
-
-(To learn about other commands available in command mode, go to "Keyboard Shortcuts" in the "Help" menu)
-
-#### Switching modes
-
-* To switch to command mode from edit mode, hit the `Esc` key.
-* To switch to edit mode from command mode, hit `Enter` or click in a cell.
-
-The modal behavior of the Jupyter notebook is a little tricky at first but very efficient when you get used to it.
+The notebook displays *cells* into which you can type Julia commands.  Type code and hit `Shift-Enter` to execute.  For a thorough introduction to the Jupyter interface (modal editing, markdown cells, keyboard shortcuts, etc.) see the [Jupyter documentation](https://docs.jupyter.org/).
 
 #### Plots
 
@@ -407,13 +307,6 @@ Run the following cell
 using Plots
 using LinearAlgebra
 plot(sin, -2π, 2π, label = "sin(x)")
-```
-
-You'll see something like this (although the style of plot depends on your
-installation)
-
-```{figure} /_static/figures/nb4_julia.png
-:width: 100%
 ```
 
 ```{attention}
@@ -427,8 +320,6 @@ If this code fails to work because the `Plots` package is missing, then either y
 ```
 
 ### Working with the Notebook
-
-Let's go over some more Jupyter notebook features --- enough so that we can press ahead with programming.
 
 #### Tab Completion
 
@@ -452,27 +343,6 @@ Documentation should now appear in the browser
 :width: 100%
 ```
 
-#### Other Content
-
-In addition to executing code, the Jupyter notebook allows you to embed text, equations, figures and even videos in the page.
-
-For example, here we enter a mixture of plain text and LaTeX instead of code
-
-```{figure} /_static/figures/nb6_julia.png
-:width: 100%
-```
-
-Next we `Esc` to enter command mode and then type `m` to indicate that we
-are writing [Markdown](http://daringfireball.net/projects/markdown/), a mark-up language similar to (but simpler than) LaTeX.
-
-(You can also use your mouse to select `Markdown` from the `Code` drop-down box just below the list of menu items)
-
-Now we `Shift + Enter` to produce this
-
-```{figure} /_static/figures/nb7_julia.png
-:width: 100%
-```
-
 #### Inserting Unicode (e.g. Greek letters)
 
 Julia supports the use of [unicode characters](https://docs.julialang.org/en/v1/manual/unicode-input/)
@@ -482,7 +352,7 @@ Unicode characters can be typed quickly in Jupyter using the `tab` key.
 
 Try creating a new code cell and typing `\alpha`, then hitting the `tab` key on your keyboard.
 
-There are other operators with a mathematical notation.  For example, the `LinearAlgebra` package has a `dot` function as identical to the latex `\cdot`.
+There are other operators with a mathematical notation.  For example, the `LinearAlgebra` package has a `dot` function identical to the LaTeX `\cdot`.
 
 ```{code-cell} julia
 using LinearAlgebra
@@ -492,38 +362,9 @@ y = [3, 4]
 @show x ⋅ y;
 ```
 
-#### Shell Commands
+#### Shell and Package Commands
 
-You can execute shell commands (system commands) in Jupyter by prepending a semicolon.
-
-For example, `; ls` will execute the UNIX style shell command `ls`,
-which --- at least for UNIX style operating systems --- lists the
-contents of the current working directory.
-
-These shell commands are handled by your default system shell and hence are platform specific.
-
-#### Package Operations
-
-You can execute package operations in the notebook by prepending a `]`.
-
-For example, `] st` will give the status of installed packages in the current environment.
-
-**Note**: Cells where you use `;` and `]` must not have any other instructions in them (i.e., they should be one-liners).
-
-### Sharing Notebooks
-
-Notebook files are just text files structured in [JSON](https://en.wikipedia.org/wiki/JSON) and typically end with `.ipynb`.
-
-A notebook can easily be saved and shared between users --- you just need to
-pass around the `ipynb` file.
-
-To open an existing `ipynb` file, import it from the dashboard (the first
-browser page that opens when you start Jupyter notebook) and run the cells or edit as discussed above.
-
-The Jupyter organization has a site for sharing notebooks called [nbviewer](http://nbviewer.jupyter.org/)
-which provides a static HTML representations of notebooks.
-
-QuantEcon also hosts the [QuantEcon Notes](http://notes.quantecon.org/) website, where you can upload and share your notebooks with other economists and the QuantEcon community.
+You can execute shell commands in the REPL or a notebook cell by prepending `;` (e.g., `; ls`), and package operations by prepending `]` (e.g., `] st`).  Cells using `;` or `]` must be one-liners.
 
 (running_vscode_kernel)=
 ## Running the VS Code Julia Kernel
