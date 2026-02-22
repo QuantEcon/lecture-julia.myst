@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (lssm)=
@@ -55,7 +55,11 @@ Its many applications include:
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using LaTeXStrings, Plots, QuantEcon, Random
 ```
 
 ## The Linear State Space Model
@@ -600,8 +604,6 @@ The values of $y_T$ are represented by black dots in the left-hand figure
 
 In the right-hand figure, these values are converted into a rotated histogram
 that shows relative frequencies from our sample of 20 $y_T$'s.
-
-(The parameters and source code for the figures can be found in file [linear_models/paths_and_hist.jl](https://github.com/QuantEcon/lecture-julia.myst/blob/main/lectures/_static/code/linear_models/paths_and_hist.jl))
 
 Here is another figure, this time with 100 observations
 
@@ -1255,7 +1257,7 @@ tags: [remove-cell]
 ---
 @testset "Testing Exercise 1" begin
     @test x[10] ≈ 1.
-    #test y[13] ≈ 1.0889186488319997 atol = 1e-6
+    @test y[13] ≈ 1.088918648832
 end
 ```
 
@@ -1290,8 +1292,8 @@ plot!(xlabel = "time", ylabel = L"y_t", legend = :none)
 tags: [remove-cell]
 ---
 @testset "Exercise 2 tests" begin
-    #test x[1, 2] ≈ 1.155572219611465 atol = 1e-10
-    #test x[1, :]' == y
+    @test x[1, 2] ≈ 0.9632613529864655
+    @test x[1, :]' == y
 end
 ```
 
@@ -1350,9 +1352,10 @@ plot!(ylims = (ymin, ymax), xlabel = "time", ylabel = L"y_t", legendfont = font(
 tags: [remove-cell]
 ---
 @testset "Exercise 3 tests" begin
-    #test pop_means[3] ≈ 0.7
-    #test m.lss.A[1, 2] ≈ -0.2
-    #test pop_means[end] ≈ 0.01665357418047883
+    @test pop_means[3] ≈ 0.7
+    @test m.lss.A[1, 2] ≈ -0.2
+    @test pop_means[end] ≈ 0.016653574180478824
+    @test pop_means[1] ≈ 1.0  # canary: initial population mean
 end
 ```
 
@@ -1416,9 +1419,9 @@ plot!(annotations = [(T0 + 1, -0.55, L"T"); (T1 + 1, -0.55, L"T^\prime");
 tags: [remove-cell]
 ---
 @testset "Exercise 4 Tests" begin
-    # #test ys[4][7] ≈ 0.011484225879516554 atol = 1e-3
-    #test ar.A[1, 4] ≈ 0.5 atol = 1e-3
-    #test Sigma_y[1] ≈ 0.020833333252863163 atol = 1e-3
+    @test ar.A[1, 4] ≈ 0.5
+    @test Sigma_y[1] ≈ 0.020833333252863163
+    @test ys[4][7] ≈ 0.005919931653911567 atol = 1e-3  # stochastic, seed-dependent
 end
 ```
 

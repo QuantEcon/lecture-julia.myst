@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (ifp)=
@@ -437,9 +437,9 @@ end
 
 T(cp, V; ret_policy = false) = T!(cp, V, similar(V); ret_policy = ret_policy)
 
-get_greedy!(cp, V, out) = update_bellman!(cp, V, out, ret_policy = true)
+get_greedy!(cp, V, out) = T!(cp, V, out, ret_policy = true)
 
-get_greedy(cp, V) = update_bellman(cp, V, ret_policy = true)
+get_greedy(cp, V) = T(cp, V, ret_policy = true)
 
 function K!(cp, c, out)
     # simplify names, set up arrays
@@ -605,6 +605,7 @@ tags: [remove-cell]
 @testset begin
     @test c[3,1] ≈ 0.6425652598985643 rtol = 1e-3
     @test c[end,end] ≈ 1.283999183488841 rtol = 1e-3
+    @test c[25,1] ≈ 1.0307188403814795 rtol = 1e-3  # canary: mid-grid converged policy
 end
 ```
 
@@ -702,6 +703,7 @@ tags: [remove-cell]
 @testset begin
     @test c2[3,1] ≈ 0.8371006275720512
     @test c2[15,2] ≈ 1.5155277331860886
+    @test c2[end, 2] ≈ 2.2815588806465343  # canary: TI endpoint, high-asset high-income
 end
 ```
 

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (ar1)=
@@ -41,8 +41,12 @@ We are going to study AR(1) processes partly because they are useful and
 partly because they help us understand important concepts.
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings, Plots
+using Random, StatsPlots
 ```
 
 ## The AR(1) Model
@@ -485,6 +489,21 @@ plot!(plt, k_vals, sample_moments, label = "sample moments")
 plt
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+using Test
+@testset "Exercise 1: Sample Moments" begin
+    # true_moments are deterministic (exact formula)
+    @test true_moments[2] ≈ 1.3157894736842108
+    @test true_moments[4] ≈ 5.193905817174518
+    # sample_moments are deterministic (seed=1234 inside the function)
+    @test sample_moments[2] ≈ 1.3288994594779333
+    @test sample_moments[6] ≈ 34.457207373778544
+end
+```
+
 ### Exercise 2
 
 Here is one solution:
@@ -510,6 +529,8 @@ end
 ```
 
 ```{code-cell} julia
+Random.seed!(42)
+
 n = 500
 parameter_pairs = [(2, 2), (2, 5), (0.5, 0.5)]
 plt = plot(layout = (3, 1))
@@ -521,6 +542,22 @@ plt
 
 We see that the kernel density estimator is effective when the underlying
 distribution is smooth but less so otherwise.
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Exercise 2: KDE on Beta Distributions" begin
+    # Test the KDE function on a seeded sample from Beta(2,2)
+    Random.seed!(42)
+    x_test = rand(Beta(2, 2), 500)
+    h_test = 1.06 * std(x_test) * 500^(-1 / 5)
+    kde_at_05 = f(0.5, x_test, h_test)
+    @test kde_at_05 ≈ 1.5897308799089738
+    # KDE near the mode should be close to the true density
+    @test abs(kde_at_05 - pdf(Beta(2, 2), 0.5)) < 0.15
+end
+```
 
 ### Exercise 3
 
@@ -549,6 +586,8 @@ end
 ```
 
 ```{code-cell} julia
+Random.seed!(42)
+
 n = 2000
 x_draws = rand(psi, n)
 x_draws_next = a * x_draws .+ b + c * randn(n)
@@ -564,6 +603,20 @@ plot!(plt, x_grid, f.(x_grid, Ref(x_draws_next), h),
       label = L"estimate of $\psi_{t+1}$")
 
 plt
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Exercise 3: AR(1) Distribution Update" begin
+    # Deterministic: theoretical next-period moments
+    @test mu_next ≈ -2.7
+    @test s_next ≈ 0.20591260281974003
+    # Seeded stochastic: sample mean should be close to theoretical
+    @test mean(x_draws_next) ≈ -2.7061558569522948
+    @test std(x_draws_next) ≈ 0.21077820101616013
+end
 ```
 
 The simulated distribution approximately coincides with the theoretical

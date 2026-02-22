@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (lssm)=
@@ -61,6 +61,14 @@ tags: [hide-output]
 ---
 using LinearAlgebra, Random, Plots, Test, Enzyme, Statistics
 using Optimization, OptimizationOptimJL, EnzymeTestUtils
+using BenchmarkTools
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+using Test
 ```
 
 (simm_lss)=
@@ -158,6 +166,19 @@ plot(time, y', lw = 2, xlabel = "t", ylabel = "observation",
      label = ["y1" "y2"], title = "Observation Paths")
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Simulation deterministic output" begin
+    @test x[1, end] ≈ 0.27597784589218405
+    @test x[2, end] ≈ 0.4164300190792034
+    @test x[3, end] ≈ -0.3079828870279393
+    @test y[1, end] ≈ 0.32136061393561194
+    @test y[2, end] ≈ 0.31677784739948384
+end
+```
+
 (simm_lss_diff)=
 ### Differentiating the Simulation
 
@@ -183,6 +204,17 @@ autodiff(Forward,
          Const(v))
 
 dx[:, 1:3]   # early-state sensitivities (impulse response flavor)
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Forward-mode AD (w perturbation)" begin
+    @test dx[1, 2] ≈ -0.03597289068234817
+    @test dx[2, 2] ≈ 0.10872084924285859
+    @test dx[1, 3] ≈ -0.017906227621592677
+end
 ```
 
 Batch tangents let us reuse one primal evaluation while seeding multiple partials. Below we differentiate with respect to two entries of $A$ in one call; Enzyme accumulates the tangents into separate shadow arrays.
@@ -246,6 +278,18 @@ autodiff(Reverse,
 @show g(x, y, model, x_0, w, v)
 
 dw_rev # sensitivity wrt evolution shock
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Reverse-mode AD (mean first observation)" begin
+    g_val = g(x, y, model, x_0, w, v)
+    @test g_val ≈ -0.14416898118888172
+    @test dw_rev[1, 1] ≈ -0.0033941452461219487
+    @test dw_rev[2, 1] ≈ 0.032381219205478144
+end
 ```
 
 These examples mirror the larger workflow: write allocation-free, in-place simulations, seed tangents with `Duplicated`, and use forward or reverse mode depending on whether you want many outputs per input (forward) or many inputs to one scalar (reverse). In all cases, mutated arguments must be passed as `Duplicated`.
@@ -358,6 +402,17 @@ sol = solve(prob, OptimizationOptimJL.LBFGS())
 println("Final a=$(sol.u[1]), Loss: $(loss(sol.u, p))")
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Calibration (scalar-parameterized A)" begin
+    @test sol.u[1] ≈ -0.3793575810829518 rtol = 1e-4
+    @test loss(sol.u, p) ≈ 0.0006086293962801094 rtol = 1e-4
+    @test loss(sol.u, p) < 0.01
+end
+```
+
 ### Calibration with More Complicated Types
 
 The previous calibration used the individual-matrix method of `simulate_lss!` to sidestep a subtlety: when some fields of a named tuple are active (depend on the optimization variable) and others are constant, Enzyme needs help distinguishing them. The following version shows how to use the original named-tuple method by "laundering" the constant matrices through `copy`, so that Enzyme sees all fields as local variables with consistent activity.
@@ -411,6 +466,16 @@ prob = OptimizationProblem(optf, u_0, p)
 
 sol = solve(prob, OptimizationOptimJL.LBFGS())
 println("Final a=$(sol.u[1]), Loss: $(loss_2(sol.u, p))")
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Calibration v2 (named-tuple loss)" begin
+    @test sol.u[1] ≈ -0.3793575810829518 rtol = 1e-4
+    @test loss_2(sol.u, p) ≈ loss(sol.u, p) rtol = 1e-8
+end
 ```
 
 ## Verifying High-Performance Differentiable Code

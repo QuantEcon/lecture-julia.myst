@@ -294,6 +294,7 @@ ill-conditioned matrices.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">BenchmarkTools</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Arpack</span><span class="p">,</span><span class="w"> </span><span class="n">IncompleteLU</span><span class="p">,</span><span class="w"> </span><span class="n">IterativeSolvers</span><span class="p">,</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">LinearMaps</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Preconditioners</span><span class="p">,</span><span class="w"> </span><span class="n">SparseArrays</span>
 <span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span><span class="w">  </span><span class="c"># seed random numbers for reproducibility</span>
 </pre></div>
 </div>
@@ -918,9 +919,6 @@ x^{k+1} = D^{-1}(b - R x^k)
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(v - v_direct, Inf) = 0.022858373200932647
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.022858373200932647
 </pre></div>
 </div>
@@ -950,6 +948,9 @@ L x^{k+1} = b - U x^k
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(v - v_direct, Inf) = 1.5616376089155892e-5
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </div>
 <p>The accuracy increases substantially. After 40 iterations, we see that the error is of the order of <code class="docutils literal notranslate"><span class="pre">1E-5</span></code></p>
@@ -970,9 +971,6 @@ L x^{k+1} = b - U x^k
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(v - v_direct, Inf) = 3.745356593753968e-7
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>
@@ -1272,10 +1270,9 @@ package is <a class="reference external" href="https://github.com/Jutho/LinearMa
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(A_map * x - A * x) = 0.0
-norm(y - A * x) = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.0
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>norm(y - A * x) = 0.0
 size(A_map) = (100, 100)
 norm(Matrix(A_map) - A) = 
 </pre></div>
@@ -1638,11 +1635,13 @@ approach is to enumerate them in the same order as the <span class="math notrans
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(v) = Array{Float64, 3}
-v(1, 1, 1) = 0.5101399848138988
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v(2, 1, 1) = 0.9467219466065451
-v(1, 2, 1) = 0.3075256595852508
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v(1, 1, 1) = 0.5101399848138988
+v(2, 1, 1) = 0.9467219466065451
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>v(1, 2, 1) = 0.3075256595852508
 v(2, 2, 1) = 0.2556226174856472
 v(1, 1, 2) = 0.6216922083318245
 v(2, 1, 2) = 0.5382928993318764
@@ -1753,7 +1752,7 @@ parameters in a named tuple generator</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  43.311 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  43.329 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (2 allocations: 160 bytes)
@@ -1819,7 +1818,7 @@ of only 10,000 possible states.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  215.264 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  233.551 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (97 allocations: 181.55 MiB)
@@ -1829,22 +1828,22 @@ norm(gmres(A, r) - v_direct) = 2.3579330423718184e-5
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.011 ms (69 allocations: 2.52 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.066 ms (69 allocations: 2.52 MiB)
 norm(bicgstabl(A, r) - v_direct) = 
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4.2583147043505365e-6
-  7.151 ms
+  7.274 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (277 allocations: 7.94 MiB)
-norm(idrs(A, r) - v_direct) = 5.9544458612855135e-5
+norm(idrs(A, r) - v_direct) = 0.00022727150295295234
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.855 ms (310 allocations: 3.30 MiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.930 ms (310 allocations: 3.30 MiB)
 </pre></div>
 </div>
 </div>
@@ -1869,7 +1868,7 @@ norm(idrs(A, r) - v_direct) = 5.9544458612855135e-5
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  647.408 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  668.855 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (89 allocations: 274.67 MiB)
@@ -2025,15 +2024,15 @@ use GMRES since we do not have any structure.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  14.646 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  14.739 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (39 allocations: 2.27 MiB)
-  488.140 μs
+  487.611 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (289 allocations: 94.27 KiB)
-  116.447 μs
+  116.318 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (61 allocations: 50.48 KiB)
@@ -2058,7 +2057,7 @@ use GMRES since we do not have any structure.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  997.144 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.004 s
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (71 allocations: 19.08 MiB)
@@ -2079,16 +2078,16 @@ use GMRES since we do not have any structure.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.12"
+            mode: "julia"
         },
         kernelOptions: {
-            name: "julia-1.12",
+            name: "julia",
             path: "./tools_and_techniques"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.12'</script>
+    <script>kernelName = 'julia'</script>
 
                     </div>
                     

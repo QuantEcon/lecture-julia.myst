@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (uncertainty_traps)=
@@ -227,6 +227,7 @@ The method to evaluate the number of active firms generates $F_1,
 tags: [remove-cell]
 ---
 using Test, Random
+using DataFrames, LaTeXStrings, LinearAlgebra, Plots, Statistics
 ```
 
 ```{code-cell} julia
@@ -489,16 +490,20 @@ end
 
 plot(plt)
 ```
-<!-- 
 ```{code-cell} julia
 ---
 tags: [remove-cell]
 ---
 mdf = DataFrame(t = eachindex(df.theta), theta = df.theta, mu = df.mu, gamma = df.gamma, M = df.M)
 
-@testset begin
-    @test stack(mdf, collect(2:5))[:value][3] ≈ -0.49742498224730913 atol = 1e-3
-    @test stack(mdf, collect(2:5))[:value][30] ≈ -3.674770452701049 atol = 1e-3
+@testset "Uncertainty Traps Simulation" begin
+    @test stack(mdf, collect(2:5))[:, :value][3] ≈ -0.0539933455315153 atol = 1e-3
+    @test stack(mdf, collect(2:5))[:, :value][30] ≈ 1.0740239800006401 atol = 1e-3
+    # canary tests: endpoint values depend on full simulation history
+    @test df.theta[end] ≈ -1.3672437957464458
+    @test df.mu[end] ≈ -1.9970861443368142
+    @test df.gamma[end] ≈ 3.7155278878696496
+    @test df.M[end] == 97
 end
-``` -->
+```
 

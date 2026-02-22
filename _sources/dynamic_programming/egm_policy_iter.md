@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (egm_policy_iter)=
@@ -142,6 +142,9 @@ Here's an implementation of $K$ using EGM as described above.
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 using BenchmarkTools, Interpolations, LaTeXStrings, Plots, Random, Roots
 
@@ -256,8 +259,8 @@ shocks = exp.(mlog.mu .+ mlog.s * randn(shock_size));
 tags: [remove-cell]
 ---
 @testset "Shocks Test" begin
-    #test shocks[3] ≈ 1.0027192242025453
-    #test shocks[19] ≈ 1.041920180552774
+    @test shocks[3] ≈ 0.9689921220372906
+    @test shocks[19] ≈ 1.4354948252431825
 end
 ```
 
@@ -335,6 +338,8 @@ tags: [remove-cell]
     @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) < 1.3322676295501878e-13
     # test that the error is objectively very small
     @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) < 1e-5
+    # canary: EGM fixed-point discrepancy should be near machine epsilon
+    @test maximum(abs(c_star_new(g) - c_star(g)) for g in mlog.grid) < 1e-14
 end
 ```
 
@@ -395,7 +400,7 @@ tags: [remove-cell]
 ---
 @testset "U Prime Tests" begin
     # test that the behavior of this function is invariant
-    @test u_prime_inv(3) ≈ 0.4807498567691362
+    @test u_prime_inv(3) ≈ 0.4807498567691361
 end
 ```
 
@@ -430,6 +435,18 @@ end
 
 ```{code-cell} julia
 @benchmark egm($mcrra)
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "EGM CRRA Canary" begin
+    # canary: converged CRRA policy at end of grid depends on all prior computations
+    g_crra = egm(mcrra)
+    @test g_crra[100] ≈ 0.5974943831299212
+    @test g_crra[end] ≈ 1.067786554505152
+end
 ```
 
 We see that the EGM version is about 30 times faster.

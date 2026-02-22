@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (linear_algebra)=
@@ -260,6 +260,7 @@ sqrt(sum(abs2, x))         # Gives the same result
 tags: [remove-cell]
 ---
 @test norm(x) ≈ 1.7320508
+@test dot(x, y) ≈ 12.0
 ```
 
 ### Span
@@ -944,6 +945,8 @@ tags: [remove-cell]
 @testset "eigvals" begin
     @test eig_1[2,2] ≈ 0.7071067811865475
     @test eig_2[2,2] ≈ 0.7071067811865475
+    @test a1 ≈ -1.0
+    @test a2 ≈ 3.0
 end
 ```
 

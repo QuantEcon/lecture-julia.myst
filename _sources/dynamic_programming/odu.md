@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (odu)=
@@ -162,6 +162,7 @@ using Test # At the head of every lecture.
 ```{code-cell} julia
 using LinearAlgebra, Statistics, SpecialFunctions
 using Distributions, LaTeXStrings, Plots, Interpolations, FastGaussQuadrature, NLsolve
+using Random
 
 w_max = 2
 x = range(0, w_max, length = 200)
@@ -378,6 +379,25 @@ end
 plot_policy_function()
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "VFI Value Function and Policy" begin
+    # Canary: mid-grid value depends on entire VFI convergence
+    @test v[50, 50] ≈ 32.13518832831757
+    # Corner: highest wage, lowest pi => accept immediately, v = w_max/(1-β) = 40
+    @test v[end, 1] ≈ 40.0 atol = 1e-10
+    # Canary: low wage, high pi (pessimistic prior)
+    @test v[1, end] ≈ 31.019488537886197
+    # Policy: total accept cells on 100×100 grid
+    @test sum(policy) == 1999
+    # Policy spot checks
+    @test policy[50, 50] == false
+    @test policy[100, 100] == true
+end
+```
+
 The code takes several minutes to run.
 
 The results fit well with our intuition from section {ref}`looking forward <looking_forward>`.
@@ -573,6 +593,20 @@ plot!(ylims = (0, 2),
           (0.7, 1.8, "accept")])
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Reservation Wage (RWFE)" begin
+    # Canary: endpoints and midpoint of w_bar on 50-point pi grid
+    @test w_bar[1] ≈ 1.6621015443934533
+    @test w_bar[25] ≈ 1.6072467334823612
+    @test w_bar[end] ≈ 1.5503726080138507
+    # w_bar should be decreasing in pi (higher pi = more weight on worse dist)
+    @test all(diff(w_bar) .< 0)
+end
+```
+
 The next piece of code is not one of the exercises from QuantEcon -- it's
 just a fun simulation to see what the effect of a change in the
 underlying distribution on the unemployment rate is.
@@ -655,4 +689,21 @@ end
 
 plot(unempl_rate, linewidth = 2, label = "unemployment rate")
 vline!([change_date], color = :red, label = "")
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Unemployment Simulation" begin
+    # Pre-change mean unemployment (periods 1–200, distribution G)
+    @test mean(unempl_rate[1:200]) ≈ 0.044989 atol = 1e-6
+    # Post-change mean unemployment (periods 201–600, distribution F is worse)
+    @test mean(unempl_rate[201:600]) ≈ 0.085332 atol = 1e-6
+    # Spot checks at specific periods
+    @test unempl_rate[100] ≈ 0.047599999999999976
+    @test unempl_rate[300] ≈ 0.09199999999999997
+    # Post-change unemployment should be higher on average
+    @test mean(unempl_rate[201:600]) > mean(unempl_rate[1:200])
+end
 ```

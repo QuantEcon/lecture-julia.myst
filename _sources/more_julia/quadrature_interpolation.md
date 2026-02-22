@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (quadrature_interpolation)=
@@ -36,6 +36,7 @@ tags: [hide-output]
 using LinearAlgebra, Statistics, Distributions
 using QuadGK, FastGaussQuadrature, SpecialFunctions
 using Interpolations, Plots
+using QuantEcon
 ```
 
 ## Numerical Integration
@@ -392,16 +393,15 @@ end
 ---
 tags: [remove-cell]
 ---
-# using Test, QuantEcon
-# @testset begin
-#   # Use same parameters
-#   mc_qe = QuantEcon.tauchen(N, rho, sigma, mu)
-#   P_qe = mc_qe.p
-#   x_qe = mc_qe.state_values
-#   # Check they match up to numerical precision
-#   @test maximum(abs.(P - P_qe)) < 1e-10
-#   @test maximum(abs.(x - x_qe)) < 1e-10
-# end
+using Test, QuantEcon
+@testset "Tauchen vs QuantEcon" begin
+    mc_qe = QuantEcon.tauchen(N, rho, sigma, mu)
+    P_qe = mc_qe.p
+    x_qe = mc_qe.state_values
+    @test maximum(abs.(P - P_qe)) < 1e-10
+    @test maximum(abs.(x - x_qe)) < 1e-10
+    @test P[3, 3] ≈ 0.914679835764538  # canary: central transition probability
+end
 ```
 
 

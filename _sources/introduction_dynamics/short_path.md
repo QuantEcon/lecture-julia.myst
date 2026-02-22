@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (short_path)=
@@ -162,6 +162,9 @@ edges to create an undirected version and compare the resulting path and cost.
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
 ```
 
@@ -363,4 +366,6 @@ end
 sum_costs = round(sum_costs, digits = 2)
 
 @test sum_costs ≈ 160.55
+@test path == [0, 8, 11, 18, 23, 33, 41, 53, 56, 57, 60, 67, 70, 73, 76, 85, 87, 88, 93, 94, 96, 97, 98, 99]
+@test J[0] ≈ 160.55
 ```

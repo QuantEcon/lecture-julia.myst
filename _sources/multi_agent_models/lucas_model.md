@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (lucas_asset)=
@@ -456,6 +456,8 @@ tags: [remove-cell]
     @test price_vals[57] ≈ 44.53930835369383
     @test price_vals[78] ≈ 68.48080295548888
     @test price_vals[13] ≈ 9.886241027004147
+    @test price_vals[1] ≈ 4.3962421840468 rtol = 1e-5   # canary: low-end price depends on full fixed-point iteration
+    @test price_vals[end] ≈ 98.37795548258525 rtol = 1e-5  # canary: high-end price depends on full fixed-point iteration
 end
 ```
 
@@ -523,6 +525,8 @@ tags: [remove-cell]
     price_vals = solve_lucas_model(LucasTree(beta = 0.98))
     @test price_vals[20] ≈ 35.03700398163009
     @test price_vals[57] ≈ 124.46814606174088
+    @test price_vals[1] ≈ 9.845325901007191 rtol = 1e-5   # canary: low-end price for beta=0.98
+    @test price_vals[end] ≈ 292.7460603755693 rtol = 1e-5  # canary: high-end price for beta=0.98
 end
 ```
 

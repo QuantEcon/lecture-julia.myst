@@ -323,9 +323,10 @@ consensus is irrelevant. What is relevant is reproducible results.” – Michae
 <li><p>ranges</p></li>
 <li><p>nothing, missing, and unions</p></li>
 </ul>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">MatrixEquations</span><span class="p">,</span><span class="w"> </span><span class="n">StaticArrays</span>
 </pre></div>
 </div>
 </div>
@@ -627,9 +628,9 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Int64}:
- 140374259799248
- 140374260595680
- 140374363156944
+ 140707953061072
+ 140707953070496
+ 140707780100104
 </pre></div>
 </div>
 </div>
@@ -645,9 +646,9 @@ respectively</p>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Int64}:
       4311810048
-               1
- 140374369615472
-               0
+            -255
+ 140707918276144
+ 140707780100104
 </pre></div>
 </div>
 </div>
@@ -662,8 +663,8 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Int64}:
- 268435456  0
-         0  0
+ 140707738543328  140707738543344
+ 140707953069440  140707953061136
 </pre></div>
 </div>
 </div>
@@ -907,7 +908,7 @@ respectively</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.2096660742584384
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-0.1762531663754456
 </pre></div>
 </div>
 </div>
@@ -920,8 +921,8 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
- 1.2096660742584384
- 0.8250236970446382
+ -0.1762531663754456
+ -0.22507060891507713
 </pre></div>
 </div>
 </div>
@@ -934,8 +935,8 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
- 1.2096660742584384
- 0.7175730517633837
+ -0.1762531663754456
+  0.8140346629200528
 </pre></div>
 </div>
 </div>
@@ -949,8 +950,8 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2×2 Matrix{Float64}:
- -0.0229507  0.971777
-  0.56225    0.0181849
+ 1.03495   -0.152823
+ 0.423979  -1.57909
 </pre></div>
 </div>
 </div>
@@ -977,8 +978,8 @@ respectively</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
- -0.022950668936469288
-  0.018184938479641793
+  1.0349515561369451
+ -1.5790907981142255
 </pre></div>
 </div>
 </div>
@@ -1189,7 +1190,7 @@ typeof(b) = SubArray{Int64, 1, Matrix{Int64}, Tuple{Base.Slice{Base.OneTo{Int64}
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>b * a = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.5826343320155899 1.7081609313253738; 0.7384217620030812 1.1121248617316262]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.021615457927050885 0.3610213724262048; 0.5996698309346182 0.6834293477143873]
 </pre></div>
 </div>
 </div>
@@ -1366,8 +1367,8 @@ typeof(b) = SubArray{Int64, 1, Matrix{Int64}, Tuple{Base.Slice{Base.OneTo{Int64}
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Int64}:
- 140374519542016
- 140374519542000
+ 0
+ 0
 </pre></div>
 </div>
 </div>
@@ -1440,14 +1441,12 @@ typeof(b) = SubArray{Int64, 1, Matrix{Int64}, Tuple{Base.Slice{Base.OneTo{Int64}
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f(xdynamic) = [2, 4]
+f(xstatic) = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>f(xstatic) = [2, 4]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[2, 4]
 xdynamic = [1, 2]
-g(xdynamic) = 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&quot;Success!&quot;
+g(xdynamic) = &quot;Success!&quot;
 xdynamic = [2, 4]
 </pre></div>
 </div>
@@ -1478,9 +1477,7 @@ already seen</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>length(a) = 3
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sum(a) = 0
+sum(a) = 0
 mean(a) = 0.0
 std(a) = 
 </pre></div>
@@ -1684,10 +1681,10 @@ The function `*` exists, but no method is defined for this combination of argume
 Closest candidates are:
   *(::Any, ::Any, ::Any, ::Any...)
    @ Base operators.jl:642
-  *(::Number, ::AbstractArray)
-   @ Base arraymath.jl:21
-  *(::Number, ::AbstractVector, ::Union{Adjoint{T, V}, Transpose{T, V}} where {T, V&lt;:(AbstractVector)})
-   @ LinearAlgebra /opt/hostedtoolcache/julia/1.12.3/x64/share/julia/stdlib/v1.12/LinearAlgebra/src/matmul.jl:1267
+  *(::LinearMaps.FunctionMap, ::AbstractVector)
+   @ LinearMaps ~/.julia/packages/LinearMaps/KV78T/src/functionmap.jl:89
+  *(::LinearMaps.AdjointMap{&lt;:Any, &lt;:LinearMaps.FunctionMap}, ::AbstractVector)
+   @ LinearMaps ~/.julia/packages/LinearMaps/KV78T/src/functionmap.jl:94
   ...
 
 
@@ -1994,10 +1991,10 @@ further in the <a class="reference internal" href="introduction_to_types.html"><
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Float64}:
- -1.3179401972668854
-  0.22928313962677477
- -1.3477994809310259
-  0.42307904303947347
+ 0.9254475034696001
+ 0.27797044916348
+ 1.232327540900272
+ 1.106910125043445
 </pre></div>
 </div>
 </div>
@@ -2010,9 +2007,9 @@ further in the <a class="reference internal" href="introduction_to_types.html"><
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element BitVector:
- 1
  0
- 1
+ 0
+ 0
  0
 </pre></div>
 </div>
@@ -2025,9 +2022,7 @@ further in the <a class="reference internal" href="introduction_to_types.html"><
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2-element Vector{Float64}:
- -1.3179401972668854
- -1.3477994809310259
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Float64[]
 </pre></div>
 </div>
 </div>
@@ -3088,16 +3083,16 @@ into matrices and vectors, and directly use the equations for
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.12"
+            mode: "julia"
         },
         kernelOptions: {
-            name: "julia-1.12",
+            name: "julia",
             path: "./getting_started_julia"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.12'</script>
+    <script>kernelName = 'julia'</script>
 
                     </div>
                     

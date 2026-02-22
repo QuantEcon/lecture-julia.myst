@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (mass)=
@@ -450,6 +450,7 @@ tags: [remove-cell]
 @testset begin
     @test v[2] ≈ 3.4594684257743284
     @test K[8] ≈ 8.887213530262768e-10
+    @test v[end] ≈ 265.2980536975664  # canary: endpoint of full 25-state matrix solve
 end
 ```
 
@@ -811,6 +812,7 @@ tags: [remove-cell]
 @testset begin
     @test p[17] ≈ 9.302197030956606
     @test w[20] ≈ 0.4610168409491948
+    @test sum(p) ≈ 670.2609839405653  # canary: sum across full 25-state consol price solution
 end
 ```
 

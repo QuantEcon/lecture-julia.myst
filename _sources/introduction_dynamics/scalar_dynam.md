@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (scalar_dynam)=
@@ -38,6 +38,9 @@ intuition.
 We'll use the following packages:
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LaTeXStrings, LinearAlgebra, Plots
 ```
 

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (lake_model)=
@@ -807,6 +807,7 @@ tags: [remove-cell]
     @test tau_vec[2] ≈ 0.859664806251665
     @test u_vec[10] ≈ 0.22587607040020583
     @test e_vec[4] ≈ 0.8527180941230578
+    @test welfare_vec[30] ≈ 49.07402077476878  # canary: mid-range welfare from McCall + lake + budget solver chain
 end
 ```
 
@@ -926,6 +927,8 @@ tags: [remove-cell]
 @testset begin
     @test x_path[1,3] ≈ 0.09471014989625384
     @test x_path[2,7] ≈ 0.8936171021324064
+    @test x_path[1,end] ≈ 0.11309281318217912  # canary: converged unemployment rate after policy shock
+    @test x_path[2,end] ≈ 0.8869071868178201   # canary: converged employment rate after policy shock
 end
 ```
 

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (diff_filters)=
@@ -283,6 +283,18 @@ plot(time, [x[t][1] for t in 1:(T + 1)], lw = 2, label = "x₁",
 plot!(time, [x[t][2] for t in 1:(T + 1)], lw = 2, label = "x₂")
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Simulation regression values" begin
+    @test x[end][1] ≈ 0.10265193580241357
+    @test x[end][2] ≈ 0.02444692249574301
+    @test y[end][1] ≈ 0.028265020918149895
+    @test y[end][2] ≈ -0.05342589068431139
+end
+```
+
 ### RecursiveArrayTools.jl
 
 With this pattern, accessing and slicing arrays of arrays can be burdensome.
@@ -418,14 +430,10 @@ println("∂y[T+1]₁/∂G:         ", dmodel.G)
 tags: [remove-cell]
 ---
 @testset "Reverse AD terminal observable" begin
-    @test all(isfinite, dx_0)
-    @test any(!iszero, dx_0)
-    @test all(isfinite, dw[1])
-    @test any(!iszero, dw[1])
-    @test all(isfinite, dmodel.A)
-    @test any(!iszero, dmodel.A)
-    @test all(isfinite, dmodel.G)
-    @test any(!iszero, dmodel.G)
+    @test dx_0[1] ≈ -7.010566685527678e-5
+    @test dx_0[2] ≈ -0.0004130964112403158
+    @test dmodel.A[1, 1] ≈ -1.442574419229336
+    @test dmodel.G[1, 1] ≈ 0.10265193580241357
 end
 ```
 
@@ -760,6 +768,17 @@ loglik = kalman!(mu_kf, Sigma_kf, y_obs, mu_0, Sigma_0, model, cache_kf)
 println("Log-likelihood: ", loglik)
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Kalman filter regression values" begin
+    @test loglik ≈ 26.518326073316906
+    @test mu_kf[end][1] ≈ -0.06300502070665298
+    @test mu_kf[end][2] ≈ 0.05513998852768426
+end
+```
+
 ### Plot: Filtered vs True States
 
 ```{code-cell} julia
@@ -894,8 +913,8 @@ plot!(time_kf, [dmu_fwd[t][2] for t in 1:(T_kf + 1)], lw = 2,
 tags: [remove-cell]
 ---
 @testset "Forward AD Kalman" begin
-    @test any(!iszero, dmu_fwd[2])
-    @test all(t -> all(isfinite, dmu_fwd[t]), 1:(T_kf + 1))
+    @test dmu_fwd[2][1] ≈ 0.0026986699332962605
+    @test dmu_fwd[2][2] ≈ -0.00033662535441628116
 end
 ```
 
@@ -937,10 +956,9 @@ println("∂ℓ/∂A (first row):   ", round.(dmodel_rev.A[1, :]; digits = 4))
 tags: [remove-cell]
 ---
 @testset "Reverse AD Kalman" begin
-    @test sum(abs, dmu_0_rev) > 0
-    @test !any(isnan, dmu_0_rev)
-    @test sum(abs, dmodel_rev.A) > 0
-    @test !any(isnan, dmodel_rev.A)
+    @test dmu_0_rev[1] ≈ 1.6721832674300914
+    @test dmu_0_rev[2] ≈ 0.2633814453617159
+    @test dmodel_rev.A[1, 1] ≈ 682.6310040254984
 end
 ```
 

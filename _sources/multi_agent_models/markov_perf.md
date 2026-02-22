@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (markov_perf)=
@@ -47,7 +47,11 @@ We will focus on settings with
 Other references include chapter 7 of {cite}`Ljungqvist2012`.
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics, QuantEcon
+using LaTeXStrings, Plots
 ```
 
 ## Background
@@ -468,6 +472,8 @@ tags: [remove-cell]
 @testset begin
   @test F1 ≈ [-0.6684661455442794 0.295124817744414 0.07584666305807419]
   @test F2 ≈ [-0.6684661455442794 0.07584666305807419 0.295124817744414]
+  @test P1[2, 2] ≈ 5.441368457863285  # canary: Riccati solution converged correctly
+  @test P2[1, 3] ≈ -13.283701011340527  # canary: cross-player Riccati term
 end
 ```
 

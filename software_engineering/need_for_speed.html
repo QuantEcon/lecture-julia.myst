@@ -326,9 +326,10 @@ both high productivity and high performance with relatively little fuss.</p>
 <section id="requirements">
 <h3><span class="section-number">14.1.1. </span>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading">#</a></h3>
 <p>You should read our <a class="reference internal" href="../more_julia/generic_programming.html"><span class="doc">earlier lecture</span></a> on types, methods and multiple dispatch before this one.</p>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span>
 </pre></div>
 </div>
 </div>
@@ -714,7 +715,9 @@ Body<span class=" -Color -Color-Bold -Color-Bold-Yellow">::Union{Float64, Int64}
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>zero(2.3) = 0.0
 zero(4) = 0
 zero(2.0 + 3im) = 0.0 + 0.0im
-MethodInstance for f(::Float64)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MethodInstance for f(::Float64)
   from f(x) @ Main In[18]:5
 Arguments
   #self#<span class=" -Color -Color-Cyan">::Core.Const(Main.f)</span>
@@ -892,10 +895,10 @@ stores it in memory.</p>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.text
 	.file	&quot;f&quot;
 	.section	.ltext,&quot;axl&quot;,@progbits
-	.globl	julia_f_5416                    # -- Begin function julia_f_5416
+	.globl	julia_f_5645                    # -- Begin function julia_f_5645
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
-	.type	julia_f_5416,@function
-julia_f_5416:                           # @julia_f_5416
+	.type	julia_f_5645,@function
+julia_f_5645:                           # @julia_f_5645
 ; Function Signature: f(Int64, Int64)
 ; ┌ @ In[20]:1 within `f`
 # %bb.0:                                # %top
@@ -919,7 +922,7 @@ julia_f_5416:                           # @julia_f_5416
 	<span class=" -Color -Color-Bold">pop</span>	rbp
 	<span class=" -Color -Color-Bold">ret</span>
 .Lfunc_end0:
-	.size	julia_f_5416, .Lfunc_end0-julia_f_5416
+	.size	julia_f_5645, .Lfunc_end0-julia_f_5645
 ; └
                                         # -- End function
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
@@ -942,16 +945,16 @@ julia_f_5416:                           # @julia_f_5416
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
 	.file	&quot;f&quot;
 	.section	.rodata.cst8,&quot;aM&quot;,@progbits,<span class=" -Color -Color-Yellow">8</span>
-	.p2align	<span class=" -Color -Color-Yellow">3</span>, <span class=" -Color -Color-Yellow">0x0</span>                          # -- Begin function julia_f_5504
+	.p2align	<span class=" -Color -Color-Yellow">3</span>, <span class=" -Color -Color-Yellow">0x0</span>                          # -- Begin function julia_f_5733
 .LCPI0_0:
 	.quad	<span class=" -Color -Color-Yellow">0x4020000000000000</span>              # double 8
 .LCPI0_1:
 	.quad	<span class=" -Color -Color-Yellow">0x401c000000000000</span>              # double 7
 	.section	.ltext,&quot;axl&quot;,@progbits
-	.globl	julia_f_5504
+	.globl	julia_f_5733
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
-	.type	julia_f_5504,@function
-julia_f_5504:                           # @julia_f_5504
+	.type	julia_f_5733,@function
+julia_f_5733:                           # @julia_f_5733
 ; Function Signature: f(Float64, Float64)
 ; ┌ @ In[20]:1 within `f`
 # %bb.0:                                # %top
@@ -979,18 +982,18 @@ julia_f_5504:                           # @julia_f_5504
 	<span class=" -Color -Color-Bold">pop</span>	rbp
 	<span class=" -Color -Color-Bold">ret</span>
 .Lfunc_end0:
-	.size	julia_f_5504, .Lfunc_end0-julia_f_5504
+	.size	julia_f_5733, .Lfunc_end0-julia_f_5733
 ; └
                                         # -- End function
-	.type	&quot;.L+Core.Float64#5506&quot;,@object  # @&quot;+Core.Float64#5506&quot;
+	.type	&quot;.L+Core.Float64#5735&quot;,@object  # @&quot;+Core.Float64#5735&quot;
 	.section	.lrodata,&quot;al&quot;,@progbits
 	.p2align	<span class=" -Color -Color-Yellow">3</span>, <span class=" -Color -Color-Yellow">0x0</span>
-&quot;.L+Core.Float64#5506&quot;:
-	.quad	&quot;.L+Core.Float64#5506.jit&quot;
-	.size	&quot;.L+Core.Float64#5506&quot;, <span class=" -Color -Color-Yellow">8</span>
+&quot;.L+Core.Float64#5735&quot;:
+	.quad	&quot;.L+Core.Float64#5735.jit&quot;
+	.size	&quot;.L+Core.Float64#5735&quot;, <span class=" -Color -Color-Yellow">8</span>
 
-.set &quot;.L+Core.Float64#5506.jit&quot;, <span class=" -Color -Color-Yellow">139677074926064</span>
-	.size	&quot;.L+Core.Float64#5506.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
+.set &quot;.L+Core.Float64#5735.jit&quot;, <span class=" -Color -Color-Yellow">139647022737904</span>
+	.size	&quot;.L+Core.Float64#5735.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
 </pre></div>
 </div>
@@ -1069,7 +1072,7 @@ variable, or even that the type will stay constant while a given function runs.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  45.871 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  46.021 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (3000001 allocations: 45.78 MiB)
@@ -1088,10 +1091,7 @@ variable, or even that the type will stay constant while a given function runs.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.text
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
 	.file	&quot;g&quot;
 	.section	.ltext,&quot;axl&quot;,@progbits
 	.globl	julia_g_6613                    # -- Begin function julia_g_6613
@@ -1118,7 +1118,7 @@ julia_g_6613:                           # @julia_g_6613
 	<span class=" -Color -Color-Bold">mov</span>	rax, qword ptr fs:<span class=" -Color -Color-Yellow">[0]</span>
 	#NO_APP
 	<span class=" -Color -Color-Bold">lea</span>	rdi, <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">112]</span>
-	<span class=" -Color -Color-Bold">movabs</span>	rbx, <span class=" -Color -Color-Yellow">139677074926064</span>
+	<span class=" -Color -Color-Bold">movabs</span>	rbx, <span class=" -Color -Color-Yellow">139647022737904</span>
 	<span class=" -Color -Color-Bold">mov</span>	esi, <span class=" -Color -Color-Yellow">360</span>
 	<span class=" -Color -Color-Bold">mov</span>	edx, <span class=" -Color -Color-Yellow">16</span>
 	<span class=" -Color -Color-Bold">mov</span>	rcx, qword ptr <span class=" -Color -Color-Yellow">[</span>rax - <span class=" -Color -Color-Yellow">8]</span>
@@ -1157,7 +1157,7 @@ julia_g_6613:                           # @julia_g_6613
 ; │┌ @ operators.jl:642 within `+`
 	<span class=" -Color -Color-Bold">mov</span>	esi, <span class=" -Color -Color-Yellow">360</span>
 	<span class=" -Color -Color-Bold">mov</span>	edx, <span class=" -Color -Color-Yellow">16</span>
-	<span class=" -Color -Color-Bold">movabs</span>	r15, <span class=" -Color -Color-Yellow">139677074926064</span>
+	<span class=" -Color -Color-Bold">movabs</span>	r15, <span class=" -Color -Color-Yellow">139647022737904</span>
 	<span class=" -Color -Color-Bold">movabs</span>	rax, offset ijl_gc_small_alloc
 	<span class=" -Color -Color-Bold">mov</span>	rdi, qword ptr <span class=" -Color -Color-Yellow">[</span>rcx + <span class=" -Color -Color-Yellow">16]</span>
 	<span class=" -Color -Color-Bold">mov</span>	rcx, r15
@@ -1220,15 +1220,15 @@ julia_g_6613:                           # @julia_g_6613
 	.size	julia_g_6613, .Lfunc_end0-julia_g_6613
 ; └
                                         # -- End function
-.set &quot;.L*Main.b#6615.jit&quot;, <span class=" -Color -Color-Yellow">139676851050608</span>
+.set &quot;.L*Main.b#6615.jit&quot;, <span class=" -Color -Color-Yellow">139646842892736</span>
 	.size	&quot;.L*Main.b#6615.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
-.set &quot;.Ljl_sym#b#6616.jit&quot;, <span class=" -Color -Color-Yellow">139676902511200</span>
+.set &quot;.Ljl_sym#b#6616.jit&quot;, <span class=" -Color -Color-Yellow">139646850323040</span>
 	.size	&quot;.Ljl_sym#b#6616.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
-.set &quot;.Ljl_global#6618.jit&quot;, <span class=" -Color -Color-Yellow">139677000858320</span>
+.set &quot;.Ljl_global#6618.jit&quot;, <span class=" -Color -Color-Yellow">139646948670160</span>
 	.size	&quot;.Ljl_global#6618.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
-.set &quot;.Ljl_global#6617.jit&quot;, <span class=" -Color -Color-Yellow">139677071083504</span>
+.set &quot;.Ljl_global#6617.jit&quot;, <span class=" -Color -Color-Yellow">139647018895344</span>
 	.size	&quot;.Ljl_global#6617.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
-.set &quot;.L+Core.Float64#6619.jit&quot;, <span class=" -Color -Color-Yellow">139677074926064</span>
+.set &quot;.L+Core.Float64#6619.jit&quot;, <span class=" -Color -Color-Yellow">139647022737904</span>
 	.size	&quot;.L+Core.Float64#6619.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
 </pre></div>
@@ -1282,13 +1282,13 @@ julia_g_6613:                           # @julia_g_6613
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 2678 samples with 1 evaluation per sample.
- Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">1.858 ms</span> … <span class=" -Color -Color-Magenta">1.934 ms</span>  ┊ GC (min … max): 0.00% … 0.00%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">1.866 ms             </span>┊ GC (median):    0.00%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">1.866 ms</span> ± <span class=" -Color -Color-Green">4.166 μs</span>  ┊ GC (mean ± σ):  0.00% ± 0.00%
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 2679 samples with 1 evaluation per sample.
+ Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">1.857 ms</span> … <span class=" -Color -Color-Magenta">1.979 ms</span>  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">1.865 ms             </span>┊ GC (median):    0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">1.865 ms</span> ± <span class=" -Color -Color-Green">5.656 μs</span>  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-                         ▂ █<span class=" -Color -Color-Blue">▃</span>▄▄                              
-  ▃▄▃▅▃▄▃▂▃▂▃▂▂▂▁▂▂▂▂▂▂▃▆█▇█<span class=" -Color -Color-Blue">█</span>██▇▆▅▅▄▄▃▃▃▂▂▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂ ▃
+                ▇█▆<span class=" -Color -Color-Blue">▇</span><span class=" -Color -Color-Green">▃</span>                                        
+  ▄▄▅▄▄▃▃▂▂▂▂▂▂▅███<span class=" -Color -Color-Blue">█</span><span class=" -Color -Color-Green">█</span>▆▆▅▄▄▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂▂▂ ▃
   1.86 ms        Histogram: frequency by time       1.88 ms <span class=" -Color -Color-Bold">&lt;</span>
 
  Memory estimate: <span class=" -Color -Color-Yellow">0 bytes</span>, allocs estimate: <span class=" -Color -Color-Yellow">0</span>.
@@ -1678,7 +1678,7 @@ julia_g_7589:                           # @julia_g_7589
 	.quad	&quot;.L+Core.Float64#7591.jit&quot;
 	.size	&quot;.L+Core.Float64#7591&quot;, <span class=" -Color -Color-Yellow">8</span>
 
-.set &quot;.L+Core.Float64#7591.jit&quot;, <span class=" -Color -Color-Yellow">139677074926064</span>
+.set &quot;.L+Core.Float64#7591.jit&quot;, <span class=" -Color -Color-Yellow">139647022737904</span>
 	.size	&quot;.L+Core.Float64#7591.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
 </pre></div>
@@ -1818,7 +1818,7 @@ fields with abstract types.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24.185 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24.938 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (1999489 allocations: 30.51 MiB)
@@ -1896,7 +1896,7 @@ julia_f_7676:                           # @julia_f_7676
 	.size	julia_f_7676, .Lfunc_end0-julia_f_7676
 ; └
                                         # -- End function
-.set &quot;.Ljl_global#7678.jit&quot;, <span class=" -Color -Color-Yellow">139677000858320</span>
+.set &quot;.Ljl_global#7678.jit&quot;, <span class=" -Color -Color-Yellow">139646948670160</span>
 	.size	&quot;.Ljl_global#7678.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
 </pre></div>
@@ -1911,7 +1911,7 @@ julia_f_7676:                           # @julia_f_7676
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  23.801 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24.441 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (1999489 allocations: 30.51 MiB)
@@ -1932,7 +1932,7 @@ julia_f_7676:                           # @julia_f_7676
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.785 ns
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3.095 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -1989,7 +1989,7 @@ julia_f_7712:                           # @julia_f_7712
 	.quad	&quot;.L+Core.Float64#7714.jit&quot;
 	.size	&quot;.L+Core.Float64#7714&quot;, <span class=" -Color -Color-Yellow">8</span>
 
-.set &quot;.L+Core.Float64#7714.jit&quot;, <span class=" -Color -Color-Yellow">139677074926064</span>
+.set &quot;.L+Core.Float64#7714.jit&quot;, <span class=" -Color -Color-Yellow">139647022737904</span>
 	.size	&quot;.L+Core.Float64#7714.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
 </pre></div>
@@ -2129,7 +2129,7 @@ julia_f_no_return_7715:                 # @julia_f_no_return_7715
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  12.163 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  12.092 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -2148,7 +2148,7 @@ julia_f_no_return_7715:                 # @julia_f_no_return_7715
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  11.021 ns
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  11.011 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -2190,7 +2190,7 @@ similar speed as the function with type information.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  92.542 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  92.552 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -2237,7 +2237,7 @@ type.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  17.520 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  17.996 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (1000000 allocations: 15.26 MiB)
@@ -2277,16 +2277,16 @@ type.</p>
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.12"
+            mode: "julia"
         },
         kernelOptions: {
-            name: "julia-1.12",
+            name: "julia",
             path: "./software_engineering"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.12'</script>
+    <script>kernelName = 'julia'</script>
 
                     </div>
                     

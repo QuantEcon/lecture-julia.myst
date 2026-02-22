@@ -313,6 +313,7 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
 <span class="k">using</span><span class="w"> </span><span class="n">Distributions</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">QuadGK</span><span class="p">,</span><span class="w"> </span><span class="n">Polynomials</span><span class="p">,</span><span class="w"> </span><span class="n">Interpolations</span>
+<span class="k">using</span><span class="w"> </span><span class="n">StatsPlots</span>
 </pre></div>
 </div>
 </div>
@@ -380,8 +381,9 @@ typeof(x) &lt;: Any = true
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Any}:
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Any}:
  Bool
+ SentinelArrays.ChainedVectorIndex
  Signed
  Unsigned
 </pre></div>
@@ -466,6 +468,9 @@ typeof(x) &lt;: Any = true
             FixedPointNumbers.Normed
         Integer
             Bool
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>            SentinelArrays.ChainedVectorIndex
             Signed
                 BigInt
                 Int128
@@ -475,9 +480,7 @@ typeof(x) &lt;: Any = true
                 Int8
             Unsigned
                 UInt128
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                UInt16
+                UInt16
                 UInt32
                 UInt64
                 UInt8
@@ -512,7 +515,9 @@ typeof(x) &lt;: Any = true
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>myval = MyType(2.0)
-typeof(myval) = MyType
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(myval) = MyType
 supertype(typeof(myval)) = Any
 typeof(myval) &lt;: Any = true
 </pre></div>
@@ -693,7 +698,7 @@ to the creation of the <a class="reference external" href="https://github.com/Ju
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>rand(d1) = 0.8164605128147182
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>rand(d1) = 1.0898610458323688
 </pre></div>
 </div>
 </div>
@@ -720,7 +725,7 @@ iid shocks, where you did not need to assume an existing pdf etc., this is a nat
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>simulateprocess(0.0, d = Normal(0.2, 2.0)) = [0.0, 0.23563243491338395, -0.616324963328429, -1.3238883502097072, -2.336320780388965, -1.2363070652499948]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>simulateprocess(0.0, d = Normal(0.2, 2.0)) = [0.0, -3.77973720009478, -6.382980063103762, -6.321453557669429, -8.19314710621227, -9.646566229358962]
 </pre></div>
 </div>
 </div>
@@ -752,12 +757,12 @@ iid shocks, where you did not need to assume an existing pdf etc., this is a nat
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>d1 = Normal{Float64}(μ=1.0, σ=2.0)
-d2 = Exponential{Float64}(θ=0.1)
-supertype(typeof(d1)) = Distribution{Univariate, Continuous}
-supertype(typeof(d2)) = 
+d2 = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Distribution{Univariate, Continuous}
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Exponential{Float64}(θ=0.1)
+supertype(typeof(d1)) = Distribution{Univariate, Continuous}
+supertype(typeof(d2)) = Distribution{Univariate, Continuous}
 pdf(d1, 0.1) = 0.18026348123082397
 pdf(d2, 0.1) = 3.6787944117144233
 cdf(d1, 0.1) = 0.32635522028792
@@ -816,9 +821,7 @@ displays the <code class="docutils literal notranslate"><span class="pre">pdf</s
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(minimum(d), maximum(d)) = (0, 2.0)
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>support(d) = RealInterval{Float64}(0.0, 2.0)
+support(d) = RealInterval{Float64}(0.0, 2.0)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>RealInterval{Float64}(0.0, 2.0)
@@ -951,7 +954,9 @@ a * b = 40
 -a = -10
 a - b = 6
 zero(a) = 0
-one(a) = 1
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>one(a) = 1
 </pre></div>
 </div>
 </div>
@@ -973,7 +978,10 @@ one(a) = 1
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(x, typeof(x)) = (4.0 + 1.0im, ComplexF64)
-(xbig, typeof(xbig)) = (4.0 + 1.0im, Complex{BigFloat})
+(xbig, typeof(xbig)) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(4.0 + 1.0im, Complex{BigFloat})
 </pre></div>
 </div>
 </div>
@@ -1314,16 +1322,16 @@ implement the modified <code class="docutils literal notranslate"><span class="p
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.12"
+            mode: "julia"
         },
         kernelOptions: {
-            name: "julia-1.12",
+            name: "julia",
             path: "./more_julia"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.12'</script>
+    <script>kernelName = 'julia'</script>
 
                     </div>
                     

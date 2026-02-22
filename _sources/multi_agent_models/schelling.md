@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 (schelling)=
 ```{raw} html
@@ -144,6 +144,7 @@ then increase the number of agents.
 tags: [remove-cell]
 ---
 using Test, Random
+using LinearAlgebra, Plots, Statistics
 ```
 
 ```{code-cell} julia
@@ -250,5 +251,9 @@ plot(plot_array...,
 tags: [remove-cell]
 ---
 @test sum(agent.kind for agent in agents) == 250
+@test all(is_happy(a) for a in agents)  # all agents reach happiness
+@test length(plot_array) == 4  # simulation converges in 4 cycles
+@test agents[1].location ≈ [0.2320787147900396, 0.8628736413754278]  # canary: first agent final position
+@test agents[300].location ≈ [0.9556195633385127, 0.024356371098195773]  # canary: mid-sim agent final position
 ```
 

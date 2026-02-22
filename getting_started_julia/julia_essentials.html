@@ -322,9 +322,10 @@ of the essential features of the language.</p>
 <li><p>More on user-defined functions</p></li>
 <li><p>Comparisons and logic</p></li>
 </ul>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span>
+<span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span>
 </pre></div>
 </div>
 </div>
@@ -1049,7 +1050,9 @@ neater code.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1
-4
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4
 9
 16
 25
@@ -1093,9 +1096,7 @@ The capital of China is Beijing
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The capital of Japan is Tokyo
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The capital of Korea is Seoul
+The capital of Korea is Seoul
 The capital of China is Beijing
 </pre></div>
 </div>
@@ -1251,10 +1252,7 @@ within the <code class="docutils literal notranslate"><span class="pre">sum</spa
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sum(f_x2) = 333383335000
-sum([f(x) for x = xs]) = 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>333383335000
+sum([f(x) for x = xs]) = 333383335000
 </pre></div>
 </div>
 </div>
@@ -1287,11 +1285,11 @@ with any function that accepts iterators.  All you need to do is drop the <code 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4.096 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4.059 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (3 allocations: 78.20 KiB)
-  3.406 μs
+  3.780 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (3 allocations: 78.20 KiB)
@@ -1503,9 +1501,9 @@ without the <code class="docutils literal notranslate"><span class="pre">functio
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
-  0.9359681247387743
- -0.8245012108529228
-  0.6917455836059023
+ -0.5696465304783218
+ -0.7616181912228326
+  0.9978792747525995
 </pre></div>
 </div>
 </div>
@@ -1683,7 +1681,7 @@ they are parsed and bounded by name rather than the order in the function call.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.183165188898449
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.7304835228867756
 </pre></div>
 </div>
 </div>
@@ -1719,9 +1717,9 @@ the function body.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
- 0.6545700094925171
- 8.42118554598222
- 7.036589743392389
+ 1.353861471332209
+ 1.2895335968938557
+ 2.816485998136168
 </pre></div>
 </div>
 </div>
@@ -2206,6 +2204,9 @@ twice(g, 2.0) = 50.0
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>val = 0.001953125
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </div>
 </section>
@@ -2493,7 +2494,9 @@ returns <code class="docutils literal notranslate"><span class="pre">true</span>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
-false
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>false
 </pre></div>
 </div>
 </div>
@@ -2510,9 +2513,7 @@ false
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>false
+false
 </pre></div>
 </div>
 </div>
@@ -2612,16 +2613,16 @@ false
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.12"
+            mode: "julia"
         },
         kernelOptions: {
-            name: "julia-1.12",
+            name: "julia",
             path: "./getting_started_julia"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.12'</script>
+    <script>kernelName = 'julia'</script>
 
                     </div>
                     

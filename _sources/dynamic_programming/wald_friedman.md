@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (wald_friedman)=
@@ -532,6 +532,8 @@ tags: [remove-cell]
     @test choices[1] == 2
     @test choices[2] == 3
     @test choices[3] == 1
+    # Canary: value function at p=0.5 depends on entire Bellman solution
+    @test rule.values[div(length(model.belief_grid) + 1, 2)] ≈ 0.6002908019548725
 end
 ```
 

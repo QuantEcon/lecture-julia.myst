@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (matsuyama)=
@@ -618,6 +618,8 @@ abvec = [plot_attraction_basis(p...) for p in params]
     @test abvec[2][17] ≈ 102.0
     @test abvec[3][50] ≈ 76.0
     @test abvec[4][end-1] ≈ 86.0
+    @test data_ns[end, 1] ≈ 0.5031633831235558  # final n1 of non-sync trajectory
+    @test data_s[end, 2] ≈ 0.3534981867912893   # final n2 of sync trajectory
 end
 ```
 

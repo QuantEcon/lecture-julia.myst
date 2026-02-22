@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (kalman)=
@@ -45,7 +45,11 @@ Required knowledge: Familiarity with matrix manipulations, multivariate normal d
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using Distributions, LaTeXStrings, Plots, QuantEcon, Random
 ```
 
 ## The Basic Idea
@@ -711,9 +715,12 @@ plot!(1:T, e2, color = :green, linewidth = 2, alpha = 0.6,
 tags: [remove-cell]
 ---
 @testset "Solution 3 Tests" begin
-    #test e1[2] ≈ 2.3089149699078493
-    #test e2[19] ≈ 0.0059756062750286705
-    #test x[1] ≈ 0.35144174682463053 && x[2] ≈ 0.5818007751668824
+    @test e1[2] ≈ 2.356927289084444
+    @test e2[19] ≈ 0.7366590565260244
+    @test x[1] ≈ -0.42022944810307017 && x[2] ≈ -1.268924020803054
+    # canary: cumulative errors depend on entire trajectory
+    @test sum(e1) ≈ 53.64698853548485
+    @test e1[end] ≈ 0.5147066720719895
 end
 ```
 

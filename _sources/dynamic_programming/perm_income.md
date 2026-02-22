@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (perm_income)=
@@ -47,7 +47,11 @@ Background readings on the linear-quadratic-Gaussian permanent income model are 
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using Plots, Random
 ```
 
 ## The Savings Problem
@@ -511,9 +515,10 @@ plot!(xlabel = "Time", linewidth = 2, alpha = 0.7,
 tags: [remove-cell]
 ---
 @testset "First Plots Test" begin
-  #test w[3] ≈ 0.027155338009193845
-  #test c[4] ≈ 0.9927414557155834
-  #test b[5] ≈ -0.1591723482896868
+  @test w[3] ≈ -0.31498797116895605
+  @test c[4] ≈ 0.995101746012546
+  @test b[5] ≈ -0.06627054120197697
+  @test c[end] ≈ 0.9979946312253974  # canary: end-of-path consumption
 end
 ```
 
@@ -545,8 +550,9 @@ plot!(xlabel = "Time", ylabel = "Consumption", xlims = (0, T))
 tags: [remove-cell]
 ---
 @testset "Second Plot Tests" begin
-  #test time_paths[12][14] ≈ 1.0032735614765316
-  #test time_paths[4][20] ≈ 1.0405721547541182
+  @test time_paths[12][14] ≈ 0.9942292374856675
+  @test time_paths[4][20] ≈ 1.0180319362502217
+  @test time_paths[250][end] ≈ 1.0355818286199148  # canary: last path endpoint
 end
 ```
 
@@ -837,9 +843,9 @@ const sigma2 = 0.15
 
 function time_path(permanent = false)
     w1 = zeros(T2 + 1)
-    w2 = similar(w1)
-    b = similar(w1)
-    c = similar(w1)
+    w2 = zeros(T2 + 1)
+    b = zeros(T2 + 1)
+    c = zeros(T2 + 1)
 
     if permanent === false
         w2[S + 2] = 1.0
@@ -874,8 +880,9 @@ vline!([S S], color = :black, layout = (2, 1), label = "")
 tags: [remove-cell]
 ---
 @testset "Third Plot Tests" begin
-  #test c1[14] ≈ 0.0071428571428571504
-  #test c2[13] ≈ 0.15
+  @test c1[14] ≈ 0.0071428571428571504
+  @test c2[13] ≈ 0.15
+  @test b1[end] ≈ -0.15  # canary: final debt from transitory shock
 end
 ```
 

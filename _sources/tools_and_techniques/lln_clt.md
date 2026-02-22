@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (lln_clt)=
@@ -222,6 +222,7 @@ using Test
 ```{code-cell} julia
 using LinearAlgebra, Statistics
 using LaTeXStrings, Plots, Distributions, Random, Statistics
+using StatsPlots
 ```
 
 ```{code-cell} julia
@@ -806,6 +807,26 @@ end
 exercise1()
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Exercise 1 Delta Method" begin
+    # Deterministic: asymptotic std is g'(mu) * sigma for Uniform(0, pi/2)
+    dist_ex1 = Uniform(0, π / 2)
+    @test cos(mean(dist_ex1)) * std(dist_ex1) ≈ 0.320637457540466
+
+    # Empirical: re-run with seed to verify convergence to asymptotic distribution
+    Random.seed!(0)
+    n, k = 250, 10_000
+    y = rand(dist_ex1, n, k)
+    y = mean(y, dims = 1)
+    error_obs_ex1 = sqrt(n) .* (sin.(vec(y)) .- sin(mean(dist_ex1)))
+    @test mean(error_obs_ex1) ≈ -0.008739900470985327
+    @test std(error_obs_ex1) ≈ 0.3216877145852296
+end
+```
+
 What happens when you replace $[0, \pi / 2]$ with
 $[0, \pi]$?
 
@@ -891,5 +912,33 @@ function exercise2(; n = 250, k = 50_000, dw = Uniform(-1, 1), du = Uniform(-2, 
                  label = "Chi-squared with 2 degrees of freedom", grid = false)
 end
 exercise2()
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Exercise 2 Chi-squared Convergence" begin
+    # Deterministic: verify Sigma and Q*Sigma*Q' = I
+    dw_ex2, du_ex2 = Uniform(-1, 1), Uniform(-2, 2)
+    Sigma_ex2 = [var(dw_ex2) var(dw_ex2); var(dw_ex2) var(dw_ex2)+var(du_ex2)]
+    Q_ex2 = inv(sqrt(Sigma_ex2))
+    @test Sigma_ex2[1, 1] ≈ 1/3
+    @test Sigma_ex2[2, 2] ≈ 5/3
+    @test Q_ex2 * Sigma_ex2 * Q_ex2' ≈ I
+
+    # Empirical: chi-squared(2) has mean=2 and std=2; verify with seed
+    Random.seed!(0)
+    function gen_data_ex2(dw, du, n)
+        s = rand(dw, n)
+        X = [s s + rand(du, n)]
+        return sqrt(n) * mean(X, dims = 1)
+    end
+    X_ex2 = mapreduce(x -> gen_data_ex2(dw_ex2, du_ex2, 250), vcat, 1:50_000)
+    X_ex2 = Q_ex2 * X_ex2'
+    X_ex2 = vec(sum(abs2, X_ex2, dims = 1))
+    @test mean(X_ex2) ≈ 1.9888138731202234
+    @test std(X_ex2) ≈ 2.007070612841371
+end
 ```
 

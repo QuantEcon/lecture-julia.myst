@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (iterative_methods_sparsity)=
@@ -37,7 +37,15 @@ ill-conditioned matrices.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics, BenchmarkTools, Random
+using Arpack, IncompleteLU, IterativeSolvers, LaTeXStrings, LinearMaps, Plots, Preconditioners, SparseArrays
 Random.seed!(42);  # seed random numbers for reproducibility
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+using Test
 ```
 
 ### Applications
@@ -568,6 +576,33 @@ sor!(v, A, r, 1.1, maxiter = 40)
 @show norm(v - v_direct, Inf);
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Stationary Iterative Methods" begin
+    # v_direct: exact solution for rho*v = r + Q*v with tridiagonal Q
+    @test mean(v_direct) ≈ 100.0 atol = 1e-8
+    @test v_direct[1] ≈ 2.02020202020202
+    @test v_direct[end] ≈ 197.97979797979798
+
+    # Jacobi: ~1E-2 error after 40 iterations
+    v_jac = zeros(N)
+    jacobi!(v_jac, A, r, maxiter = 40)
+    @test norm(v_jac - v_direct, Inf) ≈ 0.022858373200932647 rtol = 1e-5
+
+    # Gauss-Seidel: ~1E-5 error after 40 iterations
+    v_gs = zeros(N)
+    gauss_seidel!(v_gs, A, r, maxiter = 40)
+    @test norm(v_gs - v_direct, Inf) ≈ 1.5616376089155892e-5 rtol = 1e-5
+
+    # SOR (omega=1.1): ~1E-7 error after 40 iterations
+    v_sor = zeros(N)
+    sor!(v_sor, A, r, 1.1, maxiter = 40)
+    @test norm(v_sor - v_direct, Inf) ≈ 3.745356593753968e-7 rtol = 1e-5
+end
+```
+
 The accuracy is now `1E-7`.  If we change the parameter to $\omega = 1.2$, the accuracy further increases to `1E-9`.
 
 This technique is common with iterative methods:  Frequently, adding a damping or a relaxation parameter will counterintuitively speed up the convergence process.
@@ -907,6 +942,16 @@ X_T_func(v) = X' * v  # i.e., adjoint-vector product
 X_map = LinearMap(X_func, X_T_func, N, M)
 results = lsmr(X_map, y, log = true)
 println("$(results[end])")
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "LSMR Least Squares" begin
+    # LSMR and direct solver should agree closely for the large sparse least-squares problem
+    @test norm(beta_direct - beta_lsmr) < 1e-4
+end
 ```
 
 ## Iterative Methods for Eigensystems
@@ -1268,6 +1313,21 @@ psi = fill(1 / (p.N^p.M), p.N^p.M) # can't use 0 as initial guess
 sol = gmres!(psi, Q_T, zeros(p.N^p.M))  # i.e., solve Ax = 0 iteratively
 psi = psi / sum(psi)
 @show norm(psi - direct_psi);
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Markov Chain Steady State" begin
+    # direct_psi: stationary distribution via full eigendecomposition (N=5, M=4)
+    @test sum(direct_psi) ≈ 1.0
+    @test direct_psi[end] ≈ 0.07096319412335986 rtol = 1e-6
+    @test mean(direct_psi) ≈ 0.0016 rtol = 1e-8
+
+    # GMRES nullspace trick should match the direct eigendecomposition
+    @test norm(psi - direct_psi) < 1e-8
+end
 ```
 
 The speed and memory differences between these methods can be orders of magnitude.

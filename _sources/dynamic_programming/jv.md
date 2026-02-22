@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (jv)=
@@ -335,6 +335,9 @@ tags: [remove-cell]
 ---
 @testset "First Plot Tests" begin
   @test [s_policy[4], phi_policy[4]] ≈ [0.0001, 0.9285785714285715]
+  # Canary: value function endpoints depend on full convergence
+  @test sol_V[1] ≈ 9.782149056468151
+  @test sol_V[end] ≈ 12.041010496888022
 end
 ```
 
@@ -425,7 +428,7 @@ tags: [remove-cell]
 ---
 @testset "Solutions 1 Tests" begin
   @test s(3) ≈ 0.0001
-  #test phi(4) ≈ 0.2857857142857143
+  @test phi(4) ≈ 0.2857857142857143
 end
 ```
 
@@ -461,10 +464,13 @@ plot!(xlabel = L"x_t", ylabel = L"x_{t+1}", guidefont = font(16))
 tags: [remove-cell]
 ---
 @testset "More Solutions 1 Tests" begin
-  # @test round(ys[4], digits = 5) ≈ 0.30717
+  @test round(ys[4], digits = 5) ≈ 0.26326
   @test ticks ≈ [0.25, 0.5, 0.75, 1.0]
   @test plot_grid[1] ≈ 0.0 && plot_grid[end] == plot_grid_max && plot_grid_max ≈ 1.2
   @test length(plot_grid) == plot_grid_size && plot_grid_size == 100
+  # Canary: stochastic endpoints depend on many prior draws
+  @test ys[1] ≈ 0.46419758957634827
+  @test ys[end] ≈ 1.030492516550024
 end
 ```
 

@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (smoothing)=
@@ -625,9 +625,11 @@ plot(plt_cons, plt_debt, layout = (1, 2), size = (800, 400))
 tags: [remove-cell]
 ---
 @testset "First Plot Tests" begin
-    #test c_path[4] ≈ 1.7436363636363656
-    #test debt_path[2] ≈ 2.8376623376623398
-    #test debt_complete ≈  [3.0, 2.188311688311688]
+    @test c_path[4] ≈ 1.7436363636363648
+    @test debt_path[2] ≈ 2.837662337662339
+    @test debt_complete ≈ [3.0, 2.188311688311688]
+    @test c_path[end] ≈ 1.9514285714285657  # canary: endpoint consumption
+    @test debt_path[end] ≈ -2.6818181818180022  # canary: endpoint debt
 end
 ```
 
@@ -773,11 +775,12 @@ println("Ex ante returns to purchase of Arrow securities = $exant")
 tags: [remove-cell]
 ---
 @testset "Peace and War Debt Tests" begin
-    #test c_bar ≈ 1.3116883116883118
-    #test G2 ≈ 2.9350649350649354
-    #test G1 ≈ 1.3116883116883118
-    #test AS2 ≈ 0.9350649350649349
-    #test AS1 ≈ 0.3116883116883117
+    @test c_bar ≈ 1.3116883116883118
+    @test G2 ≈ 2.935064935064935
+    @test G1 ≈ 1.3116883116883118
+    @test AS2 ≈ 0.9350649350649349
+    @test AS1 ≈ 0.3116883116883117
+    @test debt_complete ≈ [0.0, 1.6233766233766234]  # canary: full debt vector
 end
 ```
 
@@ -1010,10 +1013,11 @@ plot!(legend = :bottomleft)
 tags: [remove-cell]
 ---
 @testset "Final Plot Tests" begin
-    #test y_hist_com[3] ≈ 102.50832541673434
-    #test c_hist_com[3] ≈ 101.50000000000003
-    #test b_hist_com[3] ≈ 0.4022442533400863
-    #test x_hist_com[3] ≈ 100.00000000000003
+    @test y_hist_com[3] ≈ 101.53617960374036
+    @test c_hist_com[3] ≈ 101.50000000000003
+    @test b_hist_com[3] ≈ -6.3022096293768755
+    @test x_hist_com[3] ≈ 100.00000000000003
+    @test b_hist_com[end] ≈ -2.214816359101178  # canary: endpoint debt
 end
 ```
 

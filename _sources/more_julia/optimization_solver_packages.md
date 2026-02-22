@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12 
+  name: julia 
 ---
 
 (optimization_solver_packages)=
@@ -40,6 +40,7 @@ using ForwardDiff, Optim, Roots, NLsolve
 using FixedPointAcceleration, NonlinearSolve
 using Optimization, OptimizationOptimJL, ForwardDiff, Enzyme
 using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
+using StaticArrays
 ```
 
 ## Optimization

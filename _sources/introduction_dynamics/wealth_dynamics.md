@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (wd)=
@@ -63,8 +63,18 @@ We do this to more easily explore the implications of different specifications o
 At the same time, all of the techniques discussed here can be plugged into models that use optimization to obtain savings rules.
 
 ```{code-cell} julia
-using Distributions, Plots, LaTeXStrings, LinearAlgebra, BenchmarkTools
+---
+tags: [hide-output]
+---
+using Distributions, Plots, LaTeXStrings, LinearAlgebra, BenchmarkTools, Random
 using LoopVectorization
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+using Test
 ```
 
 ## Lorenz Curves and the Gini Coefficient
@@ -479,6 +489,7 @@ We have used a look with a few modifications to help with efficiency.  To summar
 To use this function, we pass in parameters and can access the resulting wealth distribution and inequality measures.
 
 ```{code-cell} julia
+Random.seed!(42)
 p = wealth_dynamics_model()
 N = 100_000
 T = 500
@@ -487,12 +498,24 @@ res = simulate_panel(N, T, p)
 @show res.gini;
 ```
 
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Panel simulation: default parameters" begin
+    @test res.gini ≈ 0.7565265082727877
+    @test median(res.w) ≈ 38.75516865291324
+    @test res.L[50_000] ≈ 0.07781920427682903
+    @test res.L[80_000] ≈ 0.2063089323199632
+end
+```
+
 Now we investigate how the Lorenz curves associated with the wealth distribution change as return to savings varies.
 
 The code below simulates the wealth distribution, Lorenz curve, and gini for multiple values of $\mu_r$.
 
 ```{code-cell} julia
-
+Random.seed!(42)
 mu_r_vals = range(0.0, 0.075, 5)
 results = map(mu_r -> simulate_panel(N, T, wealth_dynamics_model(; mu_r)),
               mu_r_vals);
@@ -516,12 +539,25 @@ Now let’s check the Gini coefficient.
 ginis = [res.gini for res in results]
 plot(mu_r_vals, ginis, label = "Gini coefficient", xlabel = L"\mu_r")
 ```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Inequality vs mu_r" begin
+    @test ginis[1] ≈ 0.463815823027959
+    @test ginis[end] ≈ 0.6564492183235681
+    @test issorted(ginis) # inequality increases with mu_r
+end
+```
+
 Once again, we see that inequality increases as returns on financial income rise, and the relationship is roughly linear.
 
 Let's finish this section by investigating what happens when we change the
 volatility term $\sigma_r$ in financial returns.
 
 ```{code-cell} julia
+Random.seed!(42)
 sigma_r_vals = range(0.35, 0.53, 5)
 results = map(sigma_r -> simulate_panel(N, T, wealth_dynamics_model(; sigma_r)),
               sigma_r_vals);
@@ -537,6 +573,17 @@ We see that greater volatility has the effect of increasing inequality in this m
 ```{code-cell} julia
 ginis = [res.gini for res in results]
 plot(sigma_r_vals, ginis, label = "Gini coefficient", xlabel = L"\sigma_r")
+```
+
+```{code-cell} julia
+---
+tags: [remove-cell]
+---
+@testset "Inequality vs sigma_r" begin
+    @test ginis[1] ≈ 0.4076958831277769
+    @test ginis[end] ≈ 0.8628488340344393
+    @test issorted(ginis) # inequality increases with sigma_r
+end
 ```
 
 Similarly, the Gini coefficient shows that greater volatility increases inequality and approaches a Gini of 1 (i.e., perfect inequality) as the volatility increases where a $\sigma_r \approx 0.53$ is close to the maximum value fixing the other parameters at their default values.

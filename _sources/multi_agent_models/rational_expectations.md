@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (ree)=
@@ -149,7 +149,11 @@ References for this lecture include
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using QuantEcon
 ```
 
 ## Defining Rational Expectations Equilibrium
@@ -702,6 +706,7 @@ tags: [remove-cell]
   @test F[1] ≈ -2.3625545964023384e-15
   @test F[2] ≈ 0.04628205128205243
   @test h0 ≈ 96.94871794872053
+  @test h2 ≈ -0.04628205128205243  # canary: firm's response to aggregate output
 end
 ```
 
@@ -901,6 +906,7 @@ tags: [remove-cell]
 ---
 @testset begin
   @test m0 ≈ 73.47294403502833
+  @test m1 ≈ 0.9265270559649701  # canary: monopolist law-of-motion slope
 end
 ```
 

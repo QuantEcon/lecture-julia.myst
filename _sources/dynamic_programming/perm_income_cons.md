@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (perm_income_cons)=
@@ -67,7 +67,11 @@ The model will prove useful for illustrating concepts such as
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using LaTeXStrings, Plots, QuantEcon, Random
 ```
 
 ## Introduction
@@ -326,7 +330,7 @@ using Test
 ```
 
 ```{code-cell} julia
-using QuantEcon, LinearAlgebra
+using QuantEcon, LinearAlgebra, Random
 using LaTeXStrings, Plots
 
 # Set parameters
@@ -365,8 +369,9 @@ sxbewley = sxo
 ---
 tags: [remove-cell]
 ---
-@testset begin
-  #test sxbewley[6] ≈ 5.263157894733971
+@testset "Stationary Covariance Matrix" begin
+    @test sxbewley[6] ≈ 5.263157894733971
+    @test mu_z[2] ≈ 99.99992612520906
 end
 ```
 
@@ -416,8 +421,10 @@ ABF = ALQ - BLQ * F    #  form closed loop system
 ---
 tags: [remove-cell]
 ---
-@testset "First Plot Tests" begin
-    #test ABF[4,2] ≈ -0.6896550772889927
+@testset "LQ Solution" begin
+    @test ABF[4, 2] ≈ -0.6896550772889927
+    @test P[1, 1] ≈ 85850.18337468962
+    @test d ≈ 45.1843139291517
 end
 ```
 
@@ -631,6 +638,7 @@ end
 Now let's create figures with initial conditions of zero for $y_0$ and $b_0$
 
 ```{code-cell} julia
+Random.seed!(42)
 out = income_consumption_debt_series(A_LSS, C_LSS, G_LSS, mu_0, Sigma_0)
 bsim0, csim0, ysim0 = out[1:3]
 cons_mean0, cons_var0, debt_mean0, debt_var0 = out[4:end]
@@ -753,6 +761,7 @@ There is no need for foreigners to lend to our group.
 Let's have a look at the corresponding figures
 
 ```{code-cell} julia
+Random.seed!(42)
 out = income_consumption_debt_series(A_LSS, C_LSS, G_LSS, mxbewley, sxbewley)
 bsimb, csimb, ysimb = out[1:3]
 cons_meanb, cons_varb, debt_meanb, debt_varb = out[4:end]

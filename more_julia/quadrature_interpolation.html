@@ -280,6 +280,7 @@ const thebe_selector_output = ".output, .cell_output"
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">Distributions</span>
 <span class="k">using</span><span class="w"> </span><span class="n">QuadGK</span><span class="p">,</span><span class="w"> </span><span class="n">FastGaussQuadrature</span><span class="p">,</span><span class="w"> </span><span class="n">SpecialFunctions</span>
 <span class="k">using</span><span class="w"> </span><span class="n">Interpolations</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span>
+<span class="k">using</span><span class="w"> </span><span class="n">QuantEcon</span>
 </pre></div>
 </div>
 </div>
@@ -379,10 +380,10 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(F, 1000)))) = (0.29999999999999993, 0.30065834854407086)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(F, 1000)))) = (0.29999999999999993, 0.2947785575037843)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w2, f.(x2)), mean(f.(rand(F2, 1000)))) = (0.16339869281045832, 0.1572614805179805)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w2, f.(x2)), mean(f.(rand(F2, 1000)))) = (0.16339869281045832, 0.15385088761558777)
 </pre></div>
 </div>
 </div>
@@ -414,10 +415,10 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Normal(1.0, 0.1), 1000)))) = (1.01, 1.0115162192857063)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Normal(1.0, 0.1), 1000)))) = (1.01, 1.024484062013655)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w2, f.(x2)), mean(f.(rand(Normal(0.0, 0.05), 1000)))) = (0.0024999999999999996, 0.002493944154102779)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w2, f.(x2)), mean(f.(rand(Normal(0.0, 0.05), 1000)))) = (0.0024999999999999996, 0.0026770767239797217)
 </pre></div>
 </div>
 </div>
@@ -445,13 +446,13 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Exponential(theta), 1000)))) = (1.499999999999965, 1.5272416155421031)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Exponential(theta), 1000)))) = (1.499999999999965, 1.4660558338372618)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1.499999999999965, 1.5272416155421031)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1.499999999999965, 1.4660558338372618)
 </pre></div>
 </div>
 </div>
@@ -484,13 +485,13 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Gamma(alpha, theta), 100000)))) = (68.76000000000175, 68.69856565393246)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Gamma(alpha, theta), 100000)))) = (68.76000000000175, 68.63000764356177)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(68.76000000000175, 68.69856565393246)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(68.76000000000175, 68.63000764356177)
 </pre></div>
 </div>
 </div>
@@ -600,7 +601,10 @@ for regular grids since <code class="docutils literal notranslate"><span class="
 interp_cubic(3, 2) = 1.6094379124341
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>interp_cubic(3.1, 2.1) = 1.6486586594237707
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>interp_cubic(3.1, 2.1) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.6486586594237707
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.6486586594237707
@@ -790,16 +794,16 @@ Transition probabilities from state x = 2.0000000000000004:
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.12"
+            mode: "julia"
         },
         kernelOptions: {
-            name: "julia-1.12",
+            name: "julia",
             path: "./more_julia"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.12'</script>
+    <script>kernelName = 'julia'</script>
 
                     </div>
                     

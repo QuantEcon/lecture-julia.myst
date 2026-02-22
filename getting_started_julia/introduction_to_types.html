@@ -305,9 +305,10 @@ const thebe_selector_output = ".output, .cell_output"
 <li><p>multiple dispatch</p></li>
 <li><p>building user-defined types</p></li>
 </ul>
-<div class="cell docutils container">
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span><span class="p">,</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Polynomials</span><span class="p">,</span><span class="w"> </span><span class="n">QuadGK</span>
 </pre></div>
 </div>
 </div>
@@ -327,7 +328,9 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(1) = Int64
-typeof(1.0) = Float64
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(1.0) = Float64
 </pre></div>
 </div>
 </div>
@@ -581,7 +584,7 @@ Complex{Float64} &lt;: Number = true
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>subtypes(Real) = Any[AbstractFloat, AbstractIrrational, Integer, Rational]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>subtypes(Real) = Any[AbstractFloat, AbstractIrrational, FixedPointNumbers.FixedPoint, ForwardDiff.Dual, Integer, Rational, StatsBase.PValue, StatsBase.TestStat]
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>subtypes(AbstractFloat) = Any[BigFloat, Core.BFloat16, Float16, Float32, Float64]
@@ -1269,9 +1272,6 @@ abs(-1.0) = 1.0
 abs(0.0 - 1.0im) = 1.0
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
-</pre></div>
-</div>
 </div>
 </div>
 <p>In all of these cases, the <code class="docutils literal notranslate"><span class="pre">abs</span></code> function has specialized code depending on the type passed in.</p>
@@ -1300,7 +1300,9 @@ abs(0.0 - 1.0im) = 1.0
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ourabs(-1) = 1
-ourabs(-1.0) = 1.0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ourabs(-1.0) = 1.0
 ourabs(1.0 - 2.0im) = 2.23606797749979
 </pre></div>
 </div>
@@ -1351,9 +1353,7 @@ f'(x_n) \approx \frac{f(x_{n+1}) - f(x_n)}{x_{n+1} - x_n}
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x) = StepRangeLen{Float64, Base.TwicePrecision{Float64}, Base.TwicePrecision{Float64}, Int64}
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(x_2) = StepRange{Int64, Int64}
+typeof(x_2) = StepRange{Int64, Int64}
 supertype(typeof(x)) = AbstractRange{Float64}
 </pre></div>
 </div>
@@ -1439,7 +1439,9 @@ step(x) = 0.05263157894736842
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>typeof(f_x) = Vector{Float64}
-supertype(typeof(f_x)) = DenseVector{Float64}
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>supertype(typeof(f_x)) = DenseVector{Float64}
 supertype(supertype(typeof(f_x))) = AbstractVector{Float64}
 length(f_x) = 20
 </pre></div>
@@ -1579,20 +1581,20 @@ compared to the following for a dense array for <code class="docutils literal no
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  48.978 ns
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  49.485 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (2 allocations: 80 bytes)
-  483.113 ns
+  491.124 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (7 allocations: 1.88 KiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3×3 Matrix{Float64}:
- -0.321737  -1.11063   1.1112
- -2.44236    3.42869  -0.237732
-  2.44033   -1.68921   0.0836974
+ 22.6059   26.0433   -58.8946
+ -5.75221  -9.15484   19.2338
+ -8.28025  -5.08307   16.3894
 </pre></div>
 </div>
 </div>
@@ -1615,7 +1617,7 @@ compared to the following for a dense array for <code class="docutils literal no
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  588.848 ns
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  601.678 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (17 allocations: 1.86 KiB)
@@ -1766,16 +1768,16 @@ f(0.0, 3.1) = 1.55
         },
         codeMirrorConfig: {
             theme: "abcdef",
-            mode: "julia-1.12"
+            mode: "julia"
         },
         kernelOptions: {
-            name: "julia-1.12",
+            name: "julia",
             path: "./getting_started_julia"
         },
         predefinedOutput: true
     }
     </script>
-    <script>kernelName = 'julia-1.12'</script>
+    <script>kernelName = 'julia'</script>
 
                     </div>
                     

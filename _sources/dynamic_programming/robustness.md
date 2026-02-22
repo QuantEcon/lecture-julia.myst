@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (rob)=
@@ -143,7 +143,11 @@ Our discussion in this lecture is based on
 
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
 using LinearAlgebra, Statistics
+using Interpolations, Plots, QuantEcon
 ```
 
 ## The Model
@@ -1042,6 +1046,10 @@ tags: [remove-cell]
     @test egrid_data[2][5] ≈ 49167.71218127703
     @test egrid_data[3][5] ≈ 24507.292661112777
     @test egrid_data[4][5] ≈ 16270.141967201153
+    # Canary: worst-case shock depends on full robust Riccati solve and policy
+    @test Kb[1] ≈ -391.8748067167833
+    # Canary: robust best-case at midpoint covers policy, evaluate_F, and interpolation
+    @test egrid_data[3][50] ≈ 34695.14617533909
 end
 ```
 

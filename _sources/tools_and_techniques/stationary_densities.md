@@ -6,7 +6,7 @@ jupytext:
 kernelspec:
   display_name: Julia
   language: julia
-  name: julia-1.12
+  name: julia
 ---
 
 (statd)=
@@ -67,7 +67,7 @@ Markov process.
 tags: [hide-output]
 ---
 using LinearAlgebra, Statistics, Distributions, LaTeXStrings, Plots, StatsPlots,
-      Random
+      KernelDensity, Random
 ```
 
 (statd_density_case)=
@@ -503,9 +503,10 @@ plot!(title = t)
 tags: [remove-cell]
 ---
 @testset "First Figure Tests" begin
-    # @test laes[2][4] ≈ 2.606090690969538
+    @test laes[2][4] ≈ 2.8665915765284966
     @test length(ygrid) == 200 && ygrid[1] ≈ 0.01 && ygrid[end] ≈ 4.0
-    # @test k[5, 5] ≈ 0.8597155601089135
+    @test mean(laes[1]) ≈ 2.819871989291165
+    @test mean(laes[30]) ≈ 0.2512486313471454
 end
 ```
 
@@ -945,8 +946,9 @@ tags: [remove-cell]
 ---
 @testset "Solution 1 Tests" begin
     @test length(ys) == 200 && ys[1] ≈ -3.0 && ys[end] ≈ 3.0
-    # @test X[7] ≈ 0.2729845006695114
-    # @test Z[3] ≈ 0.027155338009193845
+    @test X[7] ≈ 0.760849576105531
+    @test Z[3] ≈ -0.31498797116895605
+    @test mean(X) ≈ 0.5983214298825352
 end
 ```
 
@@ -1017,8 +1019,9 @@ plot(ygrid, laes_plot, layout = (2, 2), color = colors,
 tags: [remove-cell]
 ---
 @testset "Solution 2 Tests" begin
-    # @test laes[3].X[4] ≈ 3.165182625666698
+    @test laes[3][4] ≈ 3.4544045546418998
     @test length(ygrid) == 150 && ygrid[end] ≈ 6.5 && ygrid[1] ≈ 0.01
+    @test laes_plot[75, 80] ≈ 0.17910393584617842
 end
 ```
 
