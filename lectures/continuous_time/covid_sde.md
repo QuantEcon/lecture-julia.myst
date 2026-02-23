@@ -112,9 +112,10 @@ others covered in previous lectures
 ---
 tags: [hide-output]
 ---
-using Pkg; pkgs = ["LaTeXStrings", "OrdinaryDiffEq", "StochasticDiffEq"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using Pkg; pkgs = ["LaTeXStrings", "OrdinaryDiffEq", "Plots", "StochasticDiffEq"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LaTeXStrings, LinearAlgebra, Random, SparseArrays, Statistics
 using OrdinaryDiffEq, StochasticDiffEq
+using Plots
 ```
 
 ## The Basic SIR/SIRD Model

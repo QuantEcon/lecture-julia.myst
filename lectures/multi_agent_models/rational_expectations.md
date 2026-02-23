@@ -152,9 +152,10 @@ References for this lecture include
 ---
 tags: [hide-output]
 ---
-using Pkg; pkgs = ["QuantEcon"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using Pkg; pkgs = ["Plots", "QuantEcon"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using QuantEcon
+using Plots
 ```
 
 ## Defining Rational Expectations Equilibrium

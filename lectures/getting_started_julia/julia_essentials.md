@@ -40,9 +40,10 @@ Topics:
 ---
 tags: [hide-output]
 ---
-using Pkg; pkgs = ["BenchmarkTools"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using Pkg; pkgs = ["BenchmarkTools", "Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using BenchmarkTools
+using Plots
 ```
 
 ## Common Data Types

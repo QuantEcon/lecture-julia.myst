@@ -49,9 +49,10 @@ Below we'll use the following packages:
 ---
 tags: [hide-output]
 ---
-using Pkg; pkgs = ["Distributions", "LaTeXStrings", "Latexify", "Symbolics"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using Pkg; pkgs = ["Distributions", "LaTeXStrings", "Latexify", "Plots", "Symbolics"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings, Random, Symbolics, Latexify
+using Plots
 ```
 
 ## Key Formulas

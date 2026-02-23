@@ -66,9 +66,10 @@ At the same time, all of the techniques discussed here can be plugged into model
 ---
 tags: [hide-output]
 ---
-using Pkg; pkgs = ["BenchmarkTools", "Distributions", "LaTeXStrings", "LoopVectorization"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using Pkg; pkgs = ["BenchmarkTools", "Distributions", "LaTeXStrings", "LoopVectorization", "Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using Distributions, LaTeXStrings, LinearAlgebra, BenchmarkTools, Random
 using LoopVectorization
+using Plots
 ```
 
 ```{code-cell} julia

@@ -41,8 +41,9 @@ We'll use the following packages:
 ---
 tags: [hide-output]
 ---
-using Pkg; pkgs = ["LaTeXStrings"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using Pkg; pkgs = ["LaTeXStrings", "Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LaTeXStrings, LinearAlgebra
+using Plots
 ```
 
 ## Some Definitions

@@ -196,9 +196,10 @@ Here's the code:
 ---
 tags: [hide-output]
 ---
-using Pkg; pkgs = ["Distributions", "NLsolve", "Roots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using Pkg; pkgs = ["Distributions", "NLsolve", "Plots", "Roots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics, Distributions
 using NLsolve, Roots, Random
+using Plots
 ```
 
 ```{code-cell} julia
