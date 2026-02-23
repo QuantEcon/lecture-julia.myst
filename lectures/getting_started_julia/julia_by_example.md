@@ -68,6 +68,7 @@ After the installation and activation, `using` provides a way to say that a part
 ---
 tags: [hide-output]
 ---
+using Pkg; Pkg.add(["Plots", "LaTeXStrings", "Distributions", "ForwardDiff", "NLsolve", "StaticArrays"])
 using LinearAlgebra, Statistics, Plots, LaTeXStrings
 using Distributions, ForwardDiff, NLsolve, StaticArrays
 ```
