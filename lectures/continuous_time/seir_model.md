@@ -66,7 +66,7 @@ For a compact overview of the modeling patterns, solver options, and callbacks u
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["LaTeXStrings", "OrdinaryDiffEq", "Plots"])
+using Pkg; pkgs = ["LaTeXStrings", "OrdinaryDiffEq", "Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LaTeXStrings, LinearAlgebra, Random, SparseArrays, Statistics
 using OrdinaryDiffEq, Plots
 ```

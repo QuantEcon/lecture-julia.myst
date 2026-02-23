@@ -234,7 +234,7 @@ using DataFrames, LaTeXStrings, LinearAlgebra, Plots, Statistics
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["DataFrames", "LaTeXStrings", "Plots"])
+using Pkg; pkgs = ["DataFrames", "LaTeXStrings", "Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using DataFrames, LaTeXStrings, Plots
 

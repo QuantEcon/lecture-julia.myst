@@ -42,7 +42,7 @@ In this lecture we give more details on
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BenchmarkTools", "ForwardDiff", "Plots", "Polynomials", "QuadGK"])
+using Pkg; pkgs = ["BenchmarkTools", "ForwardDiff", "Plots", "Polynomials", "QuadGK"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using BenchmarkTools, ForwardDiff, Plots, Polynomials, QuadGK
 ```

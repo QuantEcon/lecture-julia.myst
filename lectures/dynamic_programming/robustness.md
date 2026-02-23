@@ -146,7 +146,7 @@ Our discussion in this lecture is based on
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Interpolations", "Plots", "QuantEcon"])
+using Pkg; pkgs = ["Interpolations", "Plots", "QuantEcon"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using Interpolations, Plots, QuantEcon
 ```

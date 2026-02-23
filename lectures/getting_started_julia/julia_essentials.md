@@ -40,8 +40,8 @@ Topics:
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Plots", "BenchmarkTools"])
-using LinearAlgebra, Statistics, Plots
+using Pkg; pkgs = ["BenchmarkTools"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using LinearAlgebra, Statistics
 using BenchmarkTools
 ```
 

@@ -355,9 +355,9 @@ using Test
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "Plots", "QuantEcon"])
+using Pkg; pkgs = ["Distributions", "QuantEcon"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
-using Plots, Random, QuantEcon
+using Random, QuantEcon
 using Distributions
 ```
 

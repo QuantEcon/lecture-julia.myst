@@ -48,7 +48,7 @@ Required knowledge: Familiarity with matrix manipulations, multivariate normal d
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "LaTeXStrings", "Plots", "QuantEcon"])
+using Pkg; pkgs = ["Distributions", "LaTeXStrings", "Plots", "QuantEcon"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings, Plots, QuantEcon, Random
 ```

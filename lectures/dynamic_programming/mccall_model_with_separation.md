@@ -46,7 +46,7 @@ Once separation enters the picture, the agent comes to view
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "LaTeXStrings", "NLsolve", "Plots"])
+using Pkg; pkgs = ["Distributions", "LaTeXStrings", "NLsolve", "Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings, NLsolve, Plots
 ```

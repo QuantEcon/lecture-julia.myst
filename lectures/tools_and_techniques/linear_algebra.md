@@ -102,8 +102,8 @@ using Test # Should put this near the top of every notebook.
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["LaTeXStrings", "Plots"])
-using LaTeXStrings, LinearAlgebra, Statistics, Plots
+using Pkg; pkgs = ["LaTeXStrings"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using LaTeXStrings, LinearAlgebra, Statistics
 ```
 
 ```{code-cell} julia

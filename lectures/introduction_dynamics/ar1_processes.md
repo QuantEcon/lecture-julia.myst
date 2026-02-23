@@ -44,9 +44,9 @@ partly because they help us understand important concepts.
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "LaTeXStrings", "Plots", "StatsPlots"])
+using Pkg; pkgs = ["Distributions", "LaTeXStrings", "StatsPlots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
-using Distributions, LaTeXStrings, Plots
+using Distributions, LaTeXStrings
 using Random, StatsPlots
 ```
 

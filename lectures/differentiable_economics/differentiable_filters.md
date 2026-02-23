@@ -55,8 +55,8 @@ Enzyme.jl is under active development and while state-of-the-art, it is often bl
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BenchmarkTools", "Enzyme", "EnzymeTestUtils", "Plots", "RecursiveArrayTools", "StaticArrays"])
-using LinearAlgebra, Random, Plots, Test, Enzyme, Statistics, RecursiveArrayTools
+using Pkg; pkgs = ["BenchmarkTools", "Enzyme", "EnzymeTestUtils", "RecursiveArrayTools", "StaticArrays"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using LinearAlgebra, Random, Test, Enzyme, Statistics, RecursiveArrayTools
 using BenchmarkTools, EnzymeTestUtils, StaticArrays
 ```
 

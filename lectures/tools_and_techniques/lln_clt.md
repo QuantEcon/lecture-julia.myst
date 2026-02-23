@@ -223,9 +223,9 @@ using Test
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "LaTeXStrings", "Plots", "StatsPlots"])
+using Pkg; pkgs = ["Distributions", "LaTeXStrings", "StatsPlots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
-using LaTeXStrings, Plots, Distributions, Random, Statistics
+using LaTeXStrings, Distributions, Random, Statistics
 using StatsPlots
 ```
 

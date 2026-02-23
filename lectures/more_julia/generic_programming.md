@@ -64,9 +64,9 @@ This lecture has the dual role of giving an introduction into the design of gene
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "Interpolations", "Plots", "Polynomials", "QuadGK", "StatsPlots"])
+using Pkg; pkgs = ["Distributions", "Interpolations", "Polynomials", "QuadGK", "StatsPlots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
-using Distributions, Plots, QuadGK, Polynomials, Interpolations
+using Distributions, QuadGK, Polynomials, Interpolations
 using StatsPlots
 
 ```

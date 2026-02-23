@@ -50,8 +50,8 @@ In this lecture we give more details on
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["MatrixEquations", "Plots", "StaticArrays"])
-using LinearAlgebra, Statistics, Plots
+using Pkg; pkgs = ["MatrixEquations", "StaticArrays"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using LinearAlgebra, Statistics
 using MatrixEquations, StaticArrays
 ```
 

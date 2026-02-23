@@ -640,7 +640,7 @@ using Test
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["LaTeXStrings", "Plots", "QuantEcon"])
+using Pkg; pkgs = ["LaTeXStrings", "Plots", "QuantEcon"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics, Random
 using LaTeXStrings, Plots, Plots.PlotMeasures, QuantEcon
 

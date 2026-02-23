@@ -378,9 +378,9 @@ using Test
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BenchmarkTools", "Distributions", "Interpolations", "LaTeXStrings", "NLsolve", "Optim", "Plots"])
+using Pkg; pkgs = ["BenchmarkTools", "Distributions", "Interpolations", "LaTeXStrings", "NLsolve", "Optim"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics, Interpolations, NLsolve
-using BenchmarkTools, LaTeXStrings, Optim, Plots, Random
+using BenchmarkTools, LaTeXStrings, Optim, Random
 using Distributions
 using Optim: converged, maximum, maximizer, minimizer, iterations
 

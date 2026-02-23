@@ -33,7 +33,7 @@ In this section we will explore the related concepts of quadrature, interpolatio
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "FastGaussQuadrature", "Interpolations", "Plots", "QuadGK", "QuantEcon", "SpecialFunctions"])
+using Pkg; pkgs = ["Distributions", "FastGaussQuadrature", "Interpolations", "Plots", "QuadGK", "QuantEcon", "SpecialFunctions"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics, Distributions
 using QuadGK, FastGaussQuadrature, SpecialFunctions
 using Interpolations, Plots

@@ -68,7 +68,7 @@ After the installation and activation, `using` provides a way to say that a part
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Plots", "LaTeXStrings", "Distributions", "ForwardDiff", "NLsolve", "StaticArrays"])
+using Pkg; pkgs = ["Distributions", "ForwardDiff", "LaTeXStrings", "NLsolve", "Plots", "StaticArrays"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics, Plots, LaTeXStrings
 using Distributions, ForwardDiff, NLsolve, StaticArrays
 ```

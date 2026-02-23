@@ -390,7 +390,7 @@ using Plots
 ---
 tags: [hide-output]
 ---
-using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "Interpolations", "LaTeXStrings", "NLsolve", "Plots"])
+using Pkg; pkgs = ["Distributions", "Interpolations", "LaTeXStrings", "NLsolve", "Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics, Random
 using Distributions, Interpolations, LaTeXStrings, Plots, NLsolve
 
