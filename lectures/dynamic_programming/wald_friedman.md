@@ -164,9 +164,9 @@ The bottom panel presents mixtures of these distributions, with various mixing p
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "FastGaussQuadrature", "Interpolations", "LaTeXStrings", "NLsolve", "Plots", "SpecialFunctions", "StatsPlots"])
 using LinearAlgebra, Statistics, Interpolations, NLsolve
 using Distributions, LaTeXStrings, Random, Plots, FastGaussQuadrature, SpecialFunctions, StatsPlots
-
 ```
 
 ```{code-cell} julia

@@ -329,8 +329,13 @@ Alternatively, you can navigate to the [notebook repository](https://github.com/
 Once the notebook is open in Colab:
 
 1. Colab should automatically detect the Julia kernel
-2. At the top of the first code cell there is a `using Pkg; Pkg.add([...])` cell to install the required packages.
-  - Run this cell or the entire notebook to install the packages in the Colab environment.  It will be very slow the first time.
-  - After installation completes, the code checks if a key package is already installed, and then will be instantaneous otherwise.
+2. At the top of the first code cell there is a `using Pkg; Pkg.add([...])` cell to install the required packages after first checking if a key package is already installed.
+ 
+   - Run this cell or the entire notebook to install the packages in the Colab environment.  It will be very slow the first time.
+   - After installation completes, the code checks if a key package is already installed, and then will be instantaneous otherwise.
+
+   ```{figure} /_static/figures/colab_install.png
+   :width: 100%
+   ```
 
 If there are errors or warnings, then there may be package incompatibilities with the latest released packages.  In that case, go back to the traditional method of using a `Project.toml` and `Manifest.toml` with the `instantiate` command.

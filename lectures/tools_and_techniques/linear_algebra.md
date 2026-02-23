@@ -99,8 +99,11 @@ using Test # Should put this near the top of every notebook.
 ```
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["LaTeXStrings", "Plots"])
 using LaTeXStrings, LinearAlgebra, Statistics, Plots
-
 ```
 
 ```{code-cell} julia

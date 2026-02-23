@@ -220,6 +220,10 @@ using Test
 ```
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "LaTeXStrings", "Plots", "StatsPlots"])
 using LinearAlgebra, Statistics
 using LaTeXStrings, Plots, Distributions, Random, Statistics
 using StatsPlots

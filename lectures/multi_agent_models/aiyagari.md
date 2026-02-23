@@ -197,6 +197,7 @@ The object also includes a default set of parameters that we'll adopt unless oth
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["LaTeXStrings", "Plots", "QuantEcon"])
 using LinearAlgebra, Statistics
 using LaTeXStrings, Plots, QuantEcon
 using Random

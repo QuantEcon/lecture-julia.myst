@@ -376,6 +376,7 @@ Here's some code that implements the Coleman operator.
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BenchmarkTools", "Interpolations", "LaTeXStrings", "Optim", "Plots", "Roots"])
 using LinearAlgebra, Statistics
 using BenchmarkTools, Interpolations, LaTeXStrings,  Plots, Roots
 using Optim, Random

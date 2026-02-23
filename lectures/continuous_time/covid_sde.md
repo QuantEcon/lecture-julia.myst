@@ -64,6 +64,10 @@ In addition, we will be exploring packages within the [SciML ecosystem](https://
 others covered in previous lectures
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["LaTeXStrings", "OrdinaryDiffEq", "Plots", "StochasticDiffEq"])
 using LaTeXStrings, LinearAlgebra, Random, SparseArrays, Statistics
 using OrdinaryDiffEq, StochasticDiffEq, Plots
 ```

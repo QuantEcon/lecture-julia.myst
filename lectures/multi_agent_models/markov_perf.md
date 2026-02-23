@@ -50,6 +50,7 @@ Other references include chapter 7 of {cite}`Ljungqvist2012`.
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["LaTeXStrings", "Plots", "QuantEcon"])
 using LinearAlgebra, Statistics, QuantEcon
 using LaTeXStrings, Plots
 ```

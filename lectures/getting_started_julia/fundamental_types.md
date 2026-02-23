@@ -50,7 +50,8 @@ In this lecture we give more details on
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["MatrixEquations", "Plots", "StaticArrays"])
+using LinearAlgebra, Statistics, Plots
 using MatrixEquations, StaticArrays
 ```
 

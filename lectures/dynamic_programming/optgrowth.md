@@ -463,6 +463,7 @@ The next figure illustrates piecewise linear interpolation of an arbitrary funct
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Interpolations", "LaTeXStrings", "NLsolve", "Optim", "Plots"])
 using LinearAlgebra, Statistics
 using LaTeXStrings, Plots, Interpolations, NLsolve, Optim, Random
 using Optim: maximum, maximizer

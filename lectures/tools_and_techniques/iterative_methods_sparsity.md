@@ -36,6 +36,7 @@ ill-conditioned matrices.
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Arpack", "BenchmarkTools", "IncompleteLU", "IterativeSolvers", "LaTeXStrings", "LinearMaps", "Plots", "Preconditioners"])
 using LinearAlgebra, Statistics, BenchmarkTools, Random
 using Arpack, IncompleteLU, IterativeSolvers, LaTeXStrings, LinearMaps, Plots, Preconditioners, SparseArrays
 Random.seed!(42);  # seed random numbers for reproducibility

@@ -59,6 +59,7 @@ In practice, you may find using an LLM valuable for navigating the perplexing er
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BenchmarkTools", "Enzyme", "EnzymeTestUtils", "Optimization", "OptimizationOptimJL", "Plots"])
 using LinearAlgebra, Random, Plots, Test, Enzyme, Statistics
 using Optimization, OptimizationOptimJL, EnzymeTestUtils
 using BenchmarkTools

@@ -66,6 +66,7 @@ Markov process.
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "KernelDensity", "LaTeXStrings", "Plots", "StatsPlots"])
 using LinearAlgebra, Statistics, Distributions, LaTeXStrings, Plots, StatsPlots,
       KernelDensity, Random
 ```

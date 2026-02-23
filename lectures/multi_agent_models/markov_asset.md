@@ -291,9 +291,14 @@ The next figure shows a simulation, where
 tags: [remove-cell]
 ---
 using Test
+using Plots
 ```
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "LaTeXStrings", "NLsolve", "Plots"])
 using LinearAlgebra, Statistics, Random
 using LaTeXStrings, Plots, NLsolve
 using Distributions

@@ -49,6 +49,7 @@ Below we'll use the following packages:
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "LaTeXStrings", "Latexify", "Plots", "Symbolics"])
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings, Plots, Random, Symbolics, Latexify
 ```

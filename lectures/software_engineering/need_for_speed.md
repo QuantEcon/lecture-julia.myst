@@ -64,8 +64,10 @@ You should read our {doc}`earlier lecture <../more_julia/generic_programming>` o
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BenchmarkTools", "Plots"])
 using LinearAlgebra, Statistics
 using BenchmarkTools
+using Plots
 ```
 
 ## Understanding Multiple Dispatch in Julia

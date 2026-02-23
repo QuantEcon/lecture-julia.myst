@@ -34,9 +34,11 @@ In this lecture, we discuss auto-differentiation in Julia and introduce some key
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BenchmarkTools", "Enzyme", "ForwardDiff", "Plots"])
 using LinearAlgebra, Statistics
 using ForwardDiff, Enzyme, Test
 using BenchmarkTools
+using Plots
 ```
 
 ## Introduction to Differentiable Programming

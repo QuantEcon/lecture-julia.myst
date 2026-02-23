@@ -378,6 +378,7 @@ using Test
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BenchmarkTools", "Distributions", "Interpolations", "LaTeXStrings", "NLsolve", "Optim", "Plots"])
 using LinearAlgebra, Statistics, Interpolations, NLsolve
 using BenchmarkTools, LaTeXStrings, Optim, Plots, Random
 using Distributions

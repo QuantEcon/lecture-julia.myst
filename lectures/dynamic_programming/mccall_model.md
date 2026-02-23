@@ -290,6 +290,7 @@ generates a sequence that converges to the fixed point.
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "LaTeXStrings", "NLsolve", "Plots", "Roots", "StatsPlots"])
 using LinearAlgebra, Statistics
 using Distributions, LaTeXStrings
 using NLsolve, Roots, Random, Plots

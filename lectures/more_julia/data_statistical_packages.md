@@ -39,7 +39,9 @@ This list is not exhaustive, and others can be found in organizations such as [J
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["DataFrames", "Plots"])
 using LinearAlgebra, Statistics, DataFrames
+using Plots
 ```
 
 ## DataFrames

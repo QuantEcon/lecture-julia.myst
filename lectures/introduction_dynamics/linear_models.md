@@ -58,6 +58,7 @@ Its many applications include:
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["LaTeXStrings", "Plots", "QuantEcon"])
 using LinearAlgebra, Statistics
 using LaTeXStrings, Plots, QuantEcon, Random
 ```

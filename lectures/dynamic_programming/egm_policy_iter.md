@@ -145,9 +145,9 @@ Here's an implementation of $K$ using EGM as described above.
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BenchmarkTools", "Interpolations", "LaTeXStrings", "Plots", "Roots"])
 using LinearAlgebra, Statistics
 using BenchmarkTools, Interpolations, LaTeXStrings, Plots, Random, Roots
-
 ```
 
 ```{code-cell} julia

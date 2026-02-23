@@ -300,6 +300,7 @@ The code can be found below:
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["DataFrames", "Distributions", "LaTeXStrings", "Plots"])
 using LinearAlgebra, Statistics
 using LaTeXStrings, DataFrames, Plots, Random
 using Distributions

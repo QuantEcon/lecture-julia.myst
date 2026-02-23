@@ -383,9 +383,14 @@ Some code to implement the iterative computational procedure can be found below:
 tags: [remove-cell]
 ---
 using Test
+using Plots
 ```
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "Interpolations", "LaTeXStrings", "NLsolve", "Plots"])
 using LinearAlgebra, Statistics, Random
 using Distributions, Interpolations, LaTeXStrings, Plots, NLsolve
 

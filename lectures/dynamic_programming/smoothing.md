@@ -352,10 +352,13 @@ using Test
 ```
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "Plots", "QuantEcon"])
 using LinearAlgebra, Statistics
 using Plots, Random, QuantEcon
 using Distributions
-
 ```
 
 ```{code-cell} julia

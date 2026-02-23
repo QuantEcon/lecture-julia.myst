@@ -415,6 +415,7 @@ The following code sets up these objects for us.
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BenchmarkTools", "LaTeXStrings", "Plots", "QuantEcon"])
 using BenchmarkTools, LaTeXStrings, LinearAlgebra, Plots, QuantEcon, Statistics
 using Random, SparseArrays
 ```

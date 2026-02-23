@@ -196,6 +196,7 @@ Here's the code:
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Distributions", "NLsolve", "Plots", "Roots"])
 using LinearAlgebra, Statistics, Distributions
 using NLsolve, Plots, Roots, Random
 ```

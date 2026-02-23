@@ -54,6 +54,7 @@ The theme of this lecture, and numerical linear algebra in general, comes down t
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BandedMatrices", "BenchmarkTools", "Graphs", "Plots"])
 using LinearAlgebra, Statistics, BenchmarkTools, SparseArrays, Random
 using BandedMatrices, Graphs, Plots
 Random.seed!(42);  # seed random numbers for reproducibility

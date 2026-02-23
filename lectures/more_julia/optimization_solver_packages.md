@@ -35,12 +35,14 @@ See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for more on
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["BenchmarkTools", "Enzyme", "FixedPointAcceleration", "ForwardDiff", "NLsolve", "NonlinearSolve", "Optim", "Optimization", "OptimizationOptimJL", "Plots", "Roots", "StaticArrays"])
 using LinearAlgebra, Statistics, BenchmarkTools
 using ForwardDiff, Optim, Roots, NLsolve
 using FixedPointAcceleration, NonlinearSolve
 using Optimization, OptimizationOptimJL, ForwardDiff, Enzyme
 using Optim: converged, maximum, maximizer, minimizer, iterations #some extra functions
 using StaticArrays
+using Plots
 ```
 
 ## Optimization

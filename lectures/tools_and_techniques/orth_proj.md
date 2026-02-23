@@ -743,7 +743,9 @@ algorithm given in the lecture.
 ---
 tags: [hide-output]
 ---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["Plots"])
 using LinearAlgebra, Statistics
+using Plots
 ```
 
 ```{code-cell} julia

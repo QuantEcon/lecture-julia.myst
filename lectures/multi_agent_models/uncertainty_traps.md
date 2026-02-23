@@ -231,6 +231,10 @@ using DataFrames, LaTeXStrings, LinearAlgebra, Plots, Statistics
 ```
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["DataFrames", "LaTeXStrings", "Plots"])
 using LinearAlgebra, Statistics
 using DataFrames, LaTeXStrings, Plots
 

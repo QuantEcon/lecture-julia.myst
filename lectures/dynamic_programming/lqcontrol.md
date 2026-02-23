@@ -637,6 +637,10 @@ using Test
 ```
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["LaTeXStrings", "Plots", "QuantEcon"])
 using LinearAlgebra, Statistics, Random
 using LaTeXStrings, Plots, Plots.PlotMeasures, QuantEcon
 

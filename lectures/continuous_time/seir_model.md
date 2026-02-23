@@ -63,6 +63,10 @@ In addition, we will be exploring the [Ordinary Differential Equations](https://
 For a compact overview of the modeling patterns, solver options, and callbacks used in SciML, see the [Scientific Modeling Cheat Sheet](https://sciml.github.io/Scientific_Modeling_Cheatsheet/scientific_modeling_cheatsheet).
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; haskey(Pkg.project().dependencies, "Plots") || Pkg.add(["LaTeXStrings", "OrdinaryDiffEq", "Plots"])
 using LaTeXStrings, LinearAlgebra, Random, SparseArrays, Statistics
 using OrdinaryDiffEq, Plots
 ```
