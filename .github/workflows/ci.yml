@@ -92,7 +92,7 @@ jobs:
         shell: bash
         run: |
           errors=0
-          for f in $(find _build/html/reports -name '*.err.log' 2>/dev/null); do
+          for f in $(find _build/html/reports _build/jupyter/reports -name '*.err.log' 2>/dev/null | sort -u); do
             if grep -q 'CellExecutionError' "$f"; then
               echo "::error::Notebook execution failed: $f"
               cat "$f"
