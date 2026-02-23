@@ -329,25 +329,7 @@ Alternatively, you can navigate to the [notebook repository](https://github.com/
 Once the notebook is open in Colab:
 
 1. Colab should automatically detect the Julia kernel
-2. Before running the notebook, you will need to install the required packages.  Look at the first code cell for the list of packages and modify the cell to include a call to `Pkg.add`.  For example, if the first cell is
+2. At the top of the first code cell there is a `using Pkg; Pkg.add([...])` cell to install the required packages.  Run this cell to install the packages in the Colab environment.  It will be very slow the first time.
+3. After installation completes, the cells should execute as normal (and rerunning the installation cell will be nearly instantaneous).
 
-   ```{code-block} julia
-   using LinearAlgebra, Statistics, Plots, LaTeXStrings
-   ```
-
-   then modify this cell, or add a cell above, with
-
-   ```{code-block} julia
-   using Pkg
-   Pkg.add(["LinearAlgebra", "Statistics", "Plots", "LaTeXStrings"])
-   ```
-
-   This only needs to be done once per package — Colab will remember installed packages for the duration of the session.
-
-   Alternatively, you can ask Gemini to install the packages and it will generate the installation code for you within the cell.
-
-   ```{figure} /_static/figures/colab_install.png
-   :width: 100%
-   ```
-
-3. After installation completes, run the first cell and continue through the notebook as usual
+If there are errors or warnings, then there may be package incompatibilities with the latest released packages.  In that case, go back to the traditional method of using a `Project.toml` and `Manifest.toml` with the `instantiate` command.

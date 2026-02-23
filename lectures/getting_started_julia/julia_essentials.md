@@ -40,6 +40,7 @@ Topics:
 ---
 tags: [hide-output]
 ---
+using Pkg; Pkg.add(["Plots", "BenchmarkTools"])
 using LinearAlgebra, Statistics, Plots
 using BenchmarkTools
 ```
