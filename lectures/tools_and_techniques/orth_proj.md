@@ -743,6 +743,7 @@ algorithm given in the lecture.
 ---
 tags: [hide-output]
 ---
+using Pkg; pkgs = []; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 ```
 

@@ -35,6 +35,7 @@ See {doc}`auto-differentiation <../more_julia/auto_differentiation>` for more on
 ---
 tags: [hide-output]
 ---
+using Pkg; pkgs = ["BenchmarkTools", "Enzyme", "FixedPointAcceleration", "ForwardDiff", "NLsolve", "NonlinearSolve", "Optim", "Optimization", "OptimizationOptimJL", "Roots", "StaticArrays"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics, BenchmarkTools
 using ForwardDiff, Optim, Roots, NLsolve
 using FixedPointAcceleration, NonlinearSolve

@@ -60,8 +60,10 @@ The Harrison-Kreps model illustrates the following notion of a bubble that attra
 ---
 tags: [hide-output]
 ---
+using Pkg; pkgs = ["Plots", "QuantEcon"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using QuantEcon
+using Plots
 ```
 
 ## Structure of the Model

@@ -66,7 +66,8 @@ Markov process.
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Statistics, Distributions, LaTeXStrings, Plots, StatsPlots,
+using Pkg; pkgs = ["Distributions", "LaTeXStrings", "StatsPlots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using LinearAlgebra, Statistics, Distributions, LaTeXStrings, StatsPlots, 
       KernelDensity, Random
 ```
 

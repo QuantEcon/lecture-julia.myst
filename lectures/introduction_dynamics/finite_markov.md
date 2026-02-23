@@ -43,8 +43,9 @@ Prerequisite knowledge is basic probability and linear algebra.
 ---
 tags: [hide-output]
 ---
+using Pkg; pkgs = ["Distributions", "Graphs"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
-using Distributions, Plots, Random, Graphs
+using Distributions, Random, Graphs
 ```
 
 ## Definitions

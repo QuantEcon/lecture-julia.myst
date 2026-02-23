@@ -40,7 +40,9 @@ jobs:
         shell: bash
         run: |
           julia -e 'using Pkg; Pkg.add("IJulia"); using IJulia; installkernel("Julia", "--project=@.", specname="julia")'
-          julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate();'
+          julia --project=lectures --threads auto -e 'using Pkg; Pkg.instantiate()'
+          # Workaround: load IJulia+Plots together to trigger IJuliaExt precompilation before notebooks run
+          julia --project=lectures --threads auto --startup-file=no -e 'using IJulia, Plots; using Pkg; Pkg.precompile()'
       # Download Jupyter Book Cache
       - name: Download "build" folder (cache)
         uses: dawidd6/action-download-artifact@v14

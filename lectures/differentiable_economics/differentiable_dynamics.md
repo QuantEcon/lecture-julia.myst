@@ -59,9 +59,11 @@ In practice, you may find using an LLM valuable for navigating the perplexing er
 ---
 tags: [hide-output]
 ---
-using LinearAlgebra, Random, Plots, Test, Enzyme, Statistics
+using Pkg; pkgs = ["BenchmarkTools", "Enzyme", "EnzymeTestUtils", "Optimization", "OptimizationOptimJL", "Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
+using LinearAlgebra, Random, Test, Enzyme, Statistics
 using Optimization, OptimizationOptimJL, EnzymeTestUtils
 using BenchmarkTools
+using Plots
 ```
 
 ```{code-cell} julia

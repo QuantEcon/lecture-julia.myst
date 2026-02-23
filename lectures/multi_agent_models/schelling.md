@@ -148,6 +148,10 @@ using LinearAlgebra, Plots, Statistics
 ```
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; pkgs = ["Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using Plots, LinearAlgebra, Statistics
 
 ```

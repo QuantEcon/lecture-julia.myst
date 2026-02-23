@@ -197,9 +197,11 @@ The object also includes a default set of parameters that we'll adopt unless oth
 ---
 tags: [hide-output]
 ---
+using Pkg; pkgs = ["LaTeXStrings", "Plots", "QuantEcon"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
-using LaTeXStrings, Plots, QuantEcon
+using LaTeXStrings, QuantEcon
 using Random
+using Plots
 ```
 
 ```{code-cell} julia

@@ -46,6 +46,7 @@ This exposition draws on the presentation in {cite}`Ljungqvist2012`, section 6.5
 ---
 tags: [hide-output]
 ---
+using Pkg; pkgs = ["Distributions", "LaTeXStrings", "NLsolve", "Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics, NLsolve
 using Distributions, LaTeXStrings, Plots, Random
 ```

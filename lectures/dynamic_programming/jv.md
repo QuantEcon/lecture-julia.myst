@@ -43,6 +43,7 @@ kernelspec:
 ---
 tags: [hide-output]
 ---
+using Pkg; pkgs = ["Distributions", "FastGaussQuadrature", "Interpolations", "LaTeXStrings", "NLsolve", "Plots", "SpecialFunctions"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using Distributions, Interpolations
 using FastGaussQuadrature, SpecialFunctions
