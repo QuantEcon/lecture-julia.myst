@@ -328,7 +328,8 @@ both high productivity and high performance with relatively little fuss.</p>
 <p>You should read our <a class="reference internal" href="../more_julia/generic_programming.html"><span class="doc">earlier lecture</span></a> on types, methods and multiple dispatch before this one.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span><span class="p">;</span><span class="w"> </span><span class="n">pkgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;BenchmarkTools&quot;</span><span class="p">];</span><span class="w"> </span><span class="n">all</span><span class="p">(</span><span class="n">haskey</span><span class="o">.</span><span class="p">(</span><span class="kt">Ref</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">project</span><span class="p">()</span><span class="o">.</span><span class="n">dependencies</span><span class="p">),</span><span class="w"> </span><span class="n">pkgs</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pkgs</span><span class="p">)</span>
+<span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
 <span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span>
 </pre></div>
 </div>
@@ -634,11 +635,11 @@ Arguments
   x<span class=" -Color -Color-Cyan">::Int64</span>
 Body<span class=" -Color -Color-Bold -Color-Bold-Yellow">::Union{Nothing, Int64}</span>
 1 ─ %1 = Main.:&gt;<span class=" -Color -Color-Cyan">::Core.Const(&gt;)</span>
-│   %2 = (%1)(x, 0.0)
+│   %2 = (%1)(x, 0.0)<span class=" -Color -Color-Cyan">::Bool</span>
+└──      goto #
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Cyan">::Bool</span>
-└──      goto #3 if not %2
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3 if not %2
 2 ─ %4 = x<span class=" -Color -Color-Cyan">::Int64</span>
 └──      return %4
 3 ─ %6 = Main.nothing<span class=" -Color -Color-Cyan">::Core.Const(nothing)</span>
@@ -715,9 +716,7 @@ Body<span class=" -Color -Color-Bold -Color-Bold-Yellow">::Union{Float64, Int64}
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>zero(2.3) = 0.0
 zero(4) = 0
 zero(2.0 + 3im) = 0.0 + 0.0im
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MethodInstance for f(::Float64)
+MethodInstance for f(::Float64)
   from f(x) @ Main In[18]:5
 Arguments
   #self#<span class=" -Color -Color-Cyan">::Core.Const(Main.f)</span>
@@ -895,20 +894,20 @@ stores it in memory.</p>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>.text
 	.file	&quot;f&quot;
 	.section	.ltext,&quot;axl&quot;,@progbits
-	.globl	julia_f_5645                    # -- Begin function julia_f_5645
+	.globl	julia_f_5890                    # -- Begin function julia_f_5890
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
-	.type	julia_f_5645,@function
-julia_f_5645:                           # @julia_f_5645
+	.type	julia_f_5890,@function
+julia_f_5890:                           # @julia_f_5890
 ; Function Signature: f(Int64, Int64)
 ; ┌ @ In[20]:1 within `f`
 # %bb.0:                                # %top
 	#DEBUG_VALUE: <span class=" -Color -Color-Bold">f</span>:a &lt;- $rdi
 	#DEBUG_VALUE: <span class=" -Color -Color-Bold">f</span>:b &lt;- $rsi
 	<span class=" -Color -Color-Bold">push</span>	rbp
+	<span class=" -Color -Color-Bold">mov</span>	rbp, rsp
 ; │ @ In[20]:2 within `f`
 ; │┌ @ int.jl:87 within `+`
 	<span class=" -Color -Color-Bold">lea</span>	rcx, <span class=" -Color -Color-Yellow">[</span>rdi + <span class=" -Color -Color-Yellow">8</span>*rsi<span class=" -Color -Color-Yellow">]</span>
-	<span class=" -Color -Color-Bold">mov</span>	rbp, rsp
 ; │└
 ; │┌ @ intfuncs.jl:437 within `literal_pow`
 ; ││┌ @ int.jl:88 within `*`
@@ -922,7 +921,7 @@ julia_f_5645:                           # @julia_f_5645
 	<span class=" -Color -Color-Bold">pop</span>	rbp
 	<span class=" -Color -Color-Bold">ret</span>
 .Lfunc_end0:
-	.size	julia_f_5645, .Lfunc_end0-julia_f_5645
+	.size	julia_f_5890, .Lfunc_end0-julia_f_5890
 ; └
                                         # -- End function
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
@@ -945,28 +944,27 @@ julia_f_5645:                           # @julia_f_5645
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
 	.file	&quot;f&quot;
 	.section	.rodata.cst8,&quot;aM&quot;,@progbits,<span class=" -Color -Color-Yellow">8</span>
-	.p2align	<span class=" -Color -Color-Yellow">3</span>, <span class=" -Color -Color-Yellow">0x0</span>                          # -- Begin function julia_f_5733
+	.p2align	<span class=" -Color -Color-Yellow">3</span>, <span class=" -Color -Color-Yellow">0x0</span>                          # -- Begin function julia_f_5978
 .LCPI0_0:
 	.quad	<span class=" -Color -Color-Yellow">0x4020000000000000</span>              # double 8
 .LCPI0_1:
 	.quad	<span class=" -Color -Color-Yellow">0x401c000000000000</span>              # double 7
 	.section	.ltext,&quot;axl&quot;,@progbits
-	.globl	julia_f_5733
+	.globl	julia_f_5978
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
-	.type	julia_f_5733,@function
-julia_f_5733:                           # @julia_f_5733
+	.type	julia_f_5978,@function
+julia_f_5978:                           # @julia_f_5978
 ; Function Signature: f(Float64, Float64)
 ; ┌ @ In[20]:1 within `f`
 # %bb.0:                                # %top
 	#DEBUG_VALUE: <span class=" -Color -Color-Bold">f</span>:a &lt;- $xmm0
 	#DEBUG_VALUE: <span class=" -Color -Color-Bold">f</span>:b &lt;- $xmm1
 	<span class=" -Color -Color-Bold">push</span>	rbp
-	<span class=" -Color -Color-Bold">movabs</span>	rax, offset .LCPI0_0
 	<span class=" -Color -Color-Bold">mov</span>	rbp, rsp
+	<span class=" -Color -Color-Bold">movabs</span>	rax, offset .LCPI0_0
 ; │ @ In[20]:2 within `f`
 ; │┌ @ promotion.jl:434 within `*` @ float.jl:497
 	<span class=" -Color -Color-Bold">vmulsd</span>	xmm1, xmm1, qword ptr <span class=" -Color -Color-Yellow">[</span>rax<span class=" -Color -Color-Yellow">]</span>
-	<span class=" -Color -Color-Bold">movabs</span>	rax, offset .LCPI0_1
 ; │└
 ; │┌ @ float.jl:495 within `+`
 	<span class=" -Color -Color-Bold">vaddsd</span>	xmm0, xmm1, xmm0
@@ -974,6 +972,7 @@ julia_f_5733:                           # @julia_f_5733
 ; │┌ @ intfuncs.jl:437 within `literal_pow`
 ; ││┌ @ float.jl:497 within `*`
 	<span class=" -Color -Color-Bold">vmulsd</span>	xmm0, xmm0, xmm0
+	<span class=" -Color -Color-Bold">movabs</span>	rax, offset .LCPI0_1
 ; │└└
 ; │ @ In[20]:3 within `f`
 ; │┌ @ promotion.jl:434 within `*` @ float.jl:497
@@ -982,18 +981,18 @@ julia_f_5733:                           # @julia_f_5733
 	<span class=" -Color -Color-Bold">pop</span>	rbp
 	<span class=" -Color -Color-Bold">ret</span>
 .Lfunc_end0:
-	.size	julia_f_5733, .Lfunc_end0-julia_f_5733
+	.size	julia_f_5978, .Lfunc_end0-julia_f_5978
 ; └
                                         # -- End function
-	.type	&quot;.L+Core.Float64#5735&quot;,@object  # @&quot;+Core.Float64#5735&quot;
+	.type	&quot;.L+Core.Float64#5980&quot;,@object  # @&quot;+Core.Float64#5980&quot;
 	.section	.lrodata,&quot;al&quot;,@progbits
 	.p2align	<span class=" -Color -Color-Yellow">3</span>, <span class=" -Color -Color-Yellow">0x0</span>
-&quot;.L+Core.Float64#5735&quot;:
-	.quad	&quot;.L+Core.Float64#5735.jit&quot;
-	.size	&quot;.L+Core.Float64#5735&quot;, <span class=" -Color -Color-Yellow">8</span>
+&quot;.L+Core.Float64#5980&quot;:
+	.quad	&quot;.L+Core.Float64#5980.jit&quot;
+	.size	&quot;.L+Core.Float64#5980&quot;, <span class=" -Color -Color-Yellow">8</span>
 
-.set &quot;.L+Core.Float64#5735.jit&quot;, <span class=" -Color -Color-Yellow">139647022737904</span>
-	.size	&quot;.L+Core.Float64#5735.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
+.set &quot;.L+Core.Float64#5980.jit&quot;, <span class=" -Color -Color-Yellow">139810153900528</span>
+	.size	&quot;.L+Core.Float64#5980.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
 </pre></div>
 </div>
@@ -1072,7 +1071,7 @@ variable, or even that the type will stay constant while a given function runs.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  46.021 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  44.535 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (3000001 allocations: 45.78 MiB)
@@ -1094,10 +1093,10 @@ variable, or even that the type will stay constant while a given function runs.<
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
 	.file	&quot;g&quot;
 	.section	.ltext,&quot;axl&quot;,@progbits
-	.globl	julia_g_6613                    # -- Begin function julia_g_6613
+	.globl	julia_g_6853                    # -- Begin function julia_g_6853
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
-	.type	julia_g_6613,@function
-julia_g_6613:                           # @julia_g_6613
+	.type	julia_g_6853,@function
+julia_g_6853:                           # @julia_g_6853
 ; Function Signature: g(Float64)
 ; ┌ @ In[23]:2 within `g`
 # %bb.0:                                # %top
@@ -1111,89 +1110,85 @@ julia_g_6613:                           # @julia_g_6613
 	<span class=" -Color -Color-Bold">push</span>	rbx
 	<span class=" -Color -Color-Bold">sub</span>	rsp, <span class=" -Color -Color-Yellow">72</span>
 	<span class=" -Color -Color-Bold">vmovsd</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">56]</span>, xmm0      # 8-byte Spill
+	<span class=" -Color -Color-Bold">movabs</span>	rbx, <span class=" -Color -Color-Yellow">139810153900528</span>
 	<span class=" -Color -Color-Bold">vxorps</span>	xmm0, xmm0, xmm0
 	<span class=" -Color -Color-Bold">vmovups</span>	ymmword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">112]</span>, ymm0
 	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">80]</span>, <span class=" -Color -Color-Yellow">0</span>
 	#APP
 	<span class=" -Color -Color-Bold">mov</span>	rax, qword ptr fs:<span class=" -Color -Color-Yellow">[0]</span>
 	#NO_APP
-	<span class=" -Color -Color-Bold">lea</span>	rdi, <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">112]</span>
-	<span class=" -Color -Color-Bold">movabs</span>	rbx, <span class=" -Color -Color-Yellow">139647022737904</span>
-	<span class=" -Color -Color-Bold">mov</span>	esi, <span class=" -Color -Color-Yellow">360</span>
-	<span class=" -Color -Color-Bold">mov</span>	edx, <span class=" -Color -Color-Yellow">16</span>
 	<span class=" -Color -Color-Bold">mov</span>	rcx, qword ptr <span class=" -Color -Color-Yellow">[</span>rax - <span class=" -Color -Color-Yellow">8]</span>
 	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">112]</span>, <span class=" -Color -Color-Yellow">12</span>
 	<span class=" -Color -Color-Bold">mov</span>	rax, qword ptr <span class=" -Color -Color-Yellow">[</span>rcx<span class=" -Color -Color-Yellow">]</span>
-	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">48]</span>, rcx       # 8-byte Spill
 	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">104]</span>, rax
-	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rcx<span class=" -Color -Color-Yellow">]</span>, rdi
-	<span class=" -Color -Color-Bold">movabs</span>	rax, offset ijl_gc_small_alloc
+	<span class=" -Color -Color-Bold">lea</span>	rax, <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">112]</span>
+	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rcx<span class=" -Color -Color-Yellow">]</span>, rax
+	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">48]</span>, rcx       # 8-byte Spill
 	<span class=" -Color -Color-Bold">mov</span>	rdi, qword ptr <span class=" -Color -Color-Yellow">[</span>rcx + <span class=" -Color -Color-Yellow">16]</span>
+	<span class=" -Color -Color-Bold">movabs</span>	rax, offset ijl_gc_small_alloc
+	<span class=" -Color -Color-Bold">mov</span>	esi, <span class=" -Color -Color-Yellow">360</span>
+	<span class=" -Color -Color-Bold">mov</span>	edx, <span class=" -Color -Color-Yellow">16</span>
 	<span class=" -Color -Color-Bold">mov</span>	rcx, rbx
 	<span class=" -Color -Color-Bold">vzeroupper</span>
 	<span class=" -Color -Color-Bold">call</span>	rax
+	<span class=" -Color -Color-Bold">mov</span>	r13, rax
+	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rax - <span class=" -Color -Color-Yellow">8]</span>, rbx
 	<span class=" -Color -Color-Bold">vmovsd</span>	xmm0, qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">56]</span>      # 8-byte Reload
                                         # xmm0 = mem[0],zero
-	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rax - <span class=" -Color -Color-Yellow">8]</span>, rbx
+	<span class=" -Color -Color-Bold">vmovsd</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rax<span class=" -Color -Color-Yellow">]</span>, xmm0
 	<span class=" -Color -Color-Bold">mov</span>	ebx, <span class=" -Color -Color-Yellow">1000000</span>
 	<span class=" -Color -Color-Bold">lea</span>	r12, <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">72]</span>
-	<span class=" -Color -Color-Bold">mov</span>	r13, rax
-	<span class=" -Color -Color-Bold">vmovsd</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rax<span class=" -Color -Color-Yellow">]</span>, xmm0
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
 .LBB0_1:                                # %L2
                                         # =&gt;This Inner Loop Header: Depth=1
-; │ @ In[23]:6 within `g`
-	<span class=" -Color -Color-Bold">movabs</span>	rdi, offset &quot;.L*Main.b#6615.jit&quot;
-	<span class=" -Color -Color-Bold">movabs</span>	rax, offset jl_get_binding_value_seqcst
 	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">88]</span>, r13
+; │ @ In[23]:6 within `g`
+	<span class=" -Color -Color-Bold">movabs</span>	rdi, offset &quot;.L*Main.b#6855.jit&quot;
+	<span class=" -Color -Color-Bold">movabs</span>	rax, offset jl_get_binding_value_seqcst
 	<span class=" -Color -Color-Bold">call</span>	rax
 	<span class=" -Color -Color-Bold">test</span>	rax, rax
 	<span class=" -Color -Color-Bold">je</span>	.LBB0_4
 # %bb.2:                                # %ok
                                         #   in Loop: Header=BB0_1 Depth=1
-	<span class=" -Color -Color-Bold">mov</span>	rcx, qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">48]</span>       # 8-byte Reload
-	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">80]</span>, rax
 	<span class=" -Color -Color-Bold">mov</span>	r14, rax
+	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">80]</span>, rax
+	<span class=" -Color -Color-Bold">mov</span>	rax, qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">48]</span>       # 8-byte Reload
 ; │┌ @ operators.jl:642 within `+`
+	<span class=" -Color -Color-Bold">mov</span>	rdi, qword ptr <span class=" -Color -Color-Yellow">[</span>rax + <span class=" -Color -Color-Yellow">16]</span>
 	<span class=" -Color -Color-Bold">mov</span>	esi, <span class=" -Color -Color-Yellow">360</span>
 	<span class=" -Color -Color-Bold">mov</span>	edx, <span class=" -Color -Color-Yellow">16</span>
-	<span class=" -Color -Color-Bold">movabs</span>	r15, <span class=" -Color -Color-Yellow">139647022737904</span>
-	<span class=" -Color -Color-Bold">movabs</span>	rax, offset ijl_gc_small_alloc
-	<span class=" -Color -Color-Bold">mov</span>	rdi, qword ptr <span class=" -Color -Color-Yellow">[</span>rcx + <span class=" -Color -Color-Yellow">16]</span>
+	<span class=" -Color -Color-Bold">movabs</span>	r15, <span class=" -Color -Color-Yellow">139810153900528</span>
 	<span class=" -Color -Color-Bold">mov</span>	rcx, r15
+	<span class=" -Color -Color-Bold">movabs</span>	rax, offset ijl_gc_small_alloc
 	<span class=" -Color -Color-Bold">call</span>	rax
+	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rax - <span class=" -Color -Color-Yellow">8]</span>, r15
 	<span class=" -Color -Color-Bold">vmovsd</span>	xmm0, qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">56]</span>      # 8-byte Reload
                                         # xmm0 = mem[0],zero
-	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rax - <span class=" -Color -Color-Yellow">8]</span>, r15
+	<span class=" -Color -Color-Bold">vmovsd</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rax<span class=" -Color -Color-Yellow">]</span>, xmm0
+	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">96]</span>, rax
 	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">72]</span>, r13
-	<span class=" -Color -Color-Bold">movabs</span>	r15, offset &quot;.Ljl_global#6618.jit&quot;
+	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">64]</span>, rax
+	<span class=" -Color -Color-Bold">movabs</span>	r15, offset &quot;.Ljl_global#6858.jit&quot;
+	<span class=" -Color -Color-Bold">mov</span>	rdi, r15
+	<span class=" -Color -Color-Bold">mov</span>	rsi, r12
 	<span class=" -Color -Color-Bold">mov</span>	edx, <span class=" -Color -Color-Yellow">2</span>
 	<span class=" -Color -Color-Bold">movabs</span>	r13, offset ijl_apply_generic
-	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">96]</span>, rax
-	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">64]</span>, rax
-	<span class=" -Color -Color-Bold">mov</span>	rsi, r12
-	<span class=" -Color -Color-Bold">mov</span>	rdi, r15
-	<span class=" -Color -Color-Bold">vmovsd</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rax<span class=" -Color -Color-Yellow">]</span>, xmm0
 	<span class=" -Color -Color-Bold">call</span>	r13
-	<span class=" -Color -Color-Bold">mov</span>	edx, <span class=" -Color -Color-Yellow">2</span>
 	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">88]</span>, <span class=" -Color -Color-Yellow">0</span>
-	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">72]</span>, rax
 	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">96]</span>, rax
+	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">72]</span>, rax
 	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">64]</span>, r14
 	<span class=" -Color -Color-Bold">mov</span>	rdi, r15
 	<span class=" -Color -Color-Bold">mov</span>	rsi, r12
+	<span class=" -Color -Color-Bold">mov</span>	edx, <span class=" -Color -Color-Yellow">2</span>
 	<span class=" -Color -Color-Bold">call</span>	r13
+	<span class=" -Color -Color-Bold">mov</span>	r13, rax
 ; │└
 ; │ @ In[23]:7 within `g`
 ; │┌ @ range.jl:921 within `iterate`
 ; ││┌ @ promotion.jl:637 within `==`
 	<span class=" -Color -Color-Bold">dec</span>	rbx
 ; │└└
-; │ @ In[23]:6 within `g`
-; │┌ @ operators.jl:642 within `+`
-	<span class=" -Color -Color-Bold">mov</span>	r13, rax
-; │└
-; │ @ In[23]:7 within `g`
 	<span class=" -Color -Color-Bold">jne</span>	.LBB0_1
 # %bb.3:                                # %L17
 	<span class=" -Color -Color-Bold">mov</span>	rax, qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">104]</span>
@@ -1210,26 +1205,26 @@ julia_g_6613:                           # @julia_g_6613
 	<span class=" -Color -Color-Bold">pop</span>	rbp
 	<span class=" -Color -Color-Bold">ret</span>
 .LBB0_4:                                # %err
-; │ @ In[23]:6 within `g`
-	<span class=" -Color -Color-Bold">movabs</span>	rdi, offset &quot;.Ljl_sym#b#6616.jit&quot;
-	<span class=" -Color -Color-Bold">movabs</span>	rsi, offset &quot;.Ljl_global#6617.jit&quot;
-	<span class=" -Color -Color-Bold">movabs</span>	rax, offset ijl_undefined_var_error
 	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">88]</span>, <span class=" -Color -Color-Yellow">0</span>
+; │ @ In[23]:6 within `g`
+	<span class=" -Color -Color-Bold">movabs</span>	rdi, offset &quot;.Ljl_sym#b#6856.jit&quot;
+	<span class=" -Color -Color-Bold">movabs</span>	rsi, offset &quot;.Ljl_global#6857.jit&quot;
+	<span class=" -Color -Color-Bold">movabs</span>	rax, offset ijl_undefined_var_error
 	<span class=" -Color -Color-Bold">call</span>	rax
 .Lfunc_end0:
-	.size	julia_g_6613, .Lfunc_end0-julia_g_6613
+	.size	julia_g_6853, .Lfunc_end0-julia_g_6853
 ; └
                                         # -- End function
-.set &quot;.L*Main.b#6615.jit&quot;, <span class=" -Color -Color-Yellow">139646842892736</span>
-	.size	&quot;.L*Main.b#6615.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
-.set &quot;.Ljl_sym#b#6616.jit&quot;, <span class=" -Color -Color-Yellow">139646850323040</span>
-	.size	&quot;.Ljl_sym#b#6616.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
-.set &quot;.Ljl_global#6618.jit&quot;, <span class=" -Color -Color-Yellow">139646948670160</span>
-	.size	&quot;.Ljl_global#6618.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
-.set &quot;.Ljl_global#6617.jit&quot;, <span class=" -Color -Color-Yellow">139647018895344</span>
-	.size	&quot;.Ljl_global#6617.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
-.set &quot;.L+Core.Float64#6619.jit&quot;, <span class=" -Color -Color-Yellow">139647022737904</span>
-	.size	&quot;.L+Core.Float64#6619.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
+.set &quot;.L*Main.b#6855.jit&quot;, <span class=" -Color -Color-Yellow">139809068087520</span>
+	.size	&quot;.L*Main.b#6855.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
+.set &quot;.Ljl_sym#b#6856.jit&quot;, <span class=" -Color -Color-Yellow">139809981485664</span>
+	.size	&quot;.Ljl_sym#b#6856.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
+.set &quot;.Ljl_global#6858.jit&quot;, <span class=" -Color -Color-Yellow">139810079832784</span>
+	.size	&quot;.Ljl_global#6858.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
+.set &quot;.Ljl_global#6857.jit&quot;, <span class=" -Color -Color-Yellow">139810150057968</span>
+	.size	&quot;.Ljl_global#6857.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
+.set &quot;.L+Core.Float64#6859.jit&quot;, <span class=" -Color -Color-Yellow">139810153900528</span>
+	.size	&quot;.L+Core.Float64#6859.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
 </pre></div>
 </div>
@@ -1262,7 +1257,7 @@ julia_g_6613:                           # @julia_g_6613
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.857 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.299 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -1282,14 +1277,14 @@ julia_g_6613:                           # @julia_g_6613
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 2679 samples with 1 evaluation per sample.
- Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">1.857 ms</span> … <span class=" -Color -Color-Magenta">1.979 ms</span>  ┊ GC (min … max): 0.00% … 0.00%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">1.865 ms             </span>┊ GC (median):    0.00%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">1.865 ms</span> ± <span class=" -Color -Color-Green">5.656 μs</span>  ┊ GC (mean ± σ):  0.00% ± 0.00%
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 2171 samples with 1 evaluation per sample.
+ Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">2.299 ms</span> … <span class=" -Color -Color-Magenta">2.342 ms</span>  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">2.301 ms             </span>┊ GC (median):    0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">2.302 ms</span> ± <span class=" -Color -Color-Green">3.367 μs</span>  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-                ▇█▆<span class=" -Color -Color-Blue">▇</span><span class=" -Color -Color-Green">▃</span>                                        
-  ▄▄▅▄▄▃▃▂▂▂▂▂▂▅███<span class=" -Color -Color-Blue">█</span><span class=" -Color -Color-Green">█</span>▆▆▅▄▄▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂▂▂ ▃
-  1.86 ms        Histogram: frequency by time       1.88 ms <span class=" -Color -Color-Bold">&lt;</span>
+  ▄█▆▄▃▅<span class=" -Color -Color-Blue">▅</span>▄▃▂▁<span class=" -Color -Color-Green"> </span>▁   ▁▄▆▄▃▂▄▂▁▁▁▁                              ▁
+  ██████<span class=" -Color -Color-Blue">█</span>████<span class=" -Color -Color-Green">█</span>██▇▇████████████▇█▇▇▇█▆▅▄▇▅▄▆▆▆▁▁▄▄▅▄▄▅▄▅▁▄▁▄ █
+  2.3 ms      Histogram: <span class=" -Color -Color-Bold">log(</span>frequency<span class=" -Color -Color-Bold">)</span> by time     2.31 ms <span class=" -Color -Color-Bold">&lt;</span>
 
  Memory estimate: <span class=" -Color -Color-Yellow">0 bytes</span>, allocs estimate: <span class=" -Color -Color-Yellow">0</span>.
 </pre></div>
@@ -1307,360 +1302,62 @@ julia_g_6613:                           # @julia_g_6613
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
 	.file	&quot;g&quot;
 	.section	.ltext,&quot;axl&quot;,@progbits
-	.globl	julia_g_7589                    # -- Begin function julia_g_7589
+	.globl	julia_g_7710                    # -- Begin function julia_g_7710
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
-	.type	julia_g_7589,@function
-julia_g_7589:                           # @julia_g_7589
+	.type	julia_g_7710,@function
+julia_g_7710:                           # @julia_g_7710
 ; Function Signature: g(Float64, Float64)
 ; ┌ @ In[26]:1 within `g`
 # %bb.0:                                # %top
 	#DEBUG_VALUE: <span class=" -Color -Color-Bold">g</span>:a &lt;- $xmm0
 	#DEBUG_VALUE: <span class=" -Color -Color-Bold">g</span>:b &lt;- $xmm1
 	<span class=" -Color -Color-Bold">push</span>	rbp
+	<span class=" -Color -Color-Bold">mov</span>	rbp, rsp
 	<span class=" -Color -Color-Bold">mov</span>	eax, <span class=" -Color -Color-Yellow">1000000</span>
 	<span class=" -Color -Color-Bold">vmovapd</span>	xmm2, xmm0
-	<span class=" -Color -Color-Bold">mov</span>	rbp, rsp
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
 .LBB0_1:                                # %L2
                                         # =&gt;This Inner Loop Header: Depth=1
 ; │ @ In[26]:4 within `g`
 ; │┌ @ operators.jl:642 within `+` @ float.jl:495
 	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
+	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
 ; │└
 ; │ @ In[26]:5 within `g`
 ; │┌ @ range.jl:921 within `iterate`
 ; ││┌ @ promotion.jl:637 within `==`
-	<span class=" -Color -Color-Bold">add</span>	rax, <span class=" -Color -Color-Yellow">-160</span>
+	<span class=" -Color -Color-Bold">add</span>	rax, <span class=" -Color -Color-Yellow">-16</span>
 ; │└└
-; │ @ In[26]:4 within `g`
-; │┌ @ operators.jl:642 within `+` @ float.jl:495
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm0
-	<span class=" -Color -Color-Bold">vaddsd</span>	xmm2, xmm2, xmm1
-; │└
-; │ @ In[26]:5 within `g`
 	<span class=" -Color -Color-Bold">jne</span>	.LBB0_1
 # %bb.2:                                # %L16
 ; │ @ In[26]:6 within `g`
@@ -1668,18 +1365,18 @@ julia_g_7589:                           # @julia_g_7589
 	<span class=" -Color -Color-Bold">pop</span>	rbp
 	<span class=" -Color -Color-Bold">ret</span>
 .Lfunc_end0:
-	.size	julia_g_7589, .Lfunc_end0-julia_g_7589
+	.size	julia_g_7710, .Lfunc_end0-julia_g_7710
 ; └
                                         # -- End function
-	.type	&quot;.L+Core.Float64#7591&quot;,@object  # @&quot;+Core.Float64#7591&quot;
+	.type	&quot;.L+Core.Float64#7712&quot;,@object  # @&quot;+Core.Float64#7712&quot;
 	.section	.lrodata,&quot;al&quot;,@progbits
 	.p2align	<span class=" -Color -Color-Yellow">3</span>, <span class=" -Color -Color-Yellow">0x0</span>
-&quot;.L+Core.Float64#7591&quot;:
-	.quad	&quot;.L+Core.Float64#7591.jit&quot;
-	.size	&quot;.L+Core.Float64#7591&quot;, <span class=" -Color -Color-Yellow">8</span>
+&quot;.L+Core.Float64#7712&quot;:
+	.quad	&quot;.L+Core.Float64#7712.jit&quot;
+	.size	&quot;.L+Core.Float64#7712&quot;, <span class=" -Color -Color-Yellow">8</span>
 
-.set &quot;.L+Core.Float64#7591.jit&quot;, <span class=" -Color -Color-Yellow">139647022737904</span>
-	.size	&quot;.L+Core.Float64#7591.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
+.set &quot;.L+Core.Float64#7712.jit&quot;, <span class=" -Color -Color-Yellow">139810153900528</span>
+	.size	&quot;.L+Core.Float64#7712.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
 </pre></div>
 </div>
@@ -1704,7 +1401,7 @@ hence can optimize accordingly.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.857 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.299 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -1818,7 +1515,7 @@ fields with abstract types.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24.938 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24.510 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (1999489 allocations: 30.51 MiB)
@@ -1841,10 +1538,10 @@ fields with abstract types.</p>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
 	.file	&quot;f&quot;
 	.section	.ltext,&quot;axl&quot;,@progbits
-	.globl	julia_f_7676                    # -- Begin function julia_f_7676
+	.globl	julia_f_7797                    # -- Begin function julia_f_7797
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
-	.type	julia_f_7676,@function
-julia_f_7676:                           # @julia_f_7676
+	.type	julia_f_7797,@function
+julia_f_7797:                           # @julia_f_7797
 ; Function Signature: f(Main.Foo_any)
 ; ┌ @ In[36]:1 within `f`
 # %bb.0:                                # %top
@@ -1859,21 +1556,21 @@ julia_f_7676:                           # @julia_f_7676
 	<span class=" -Color -Color-Bold">sub</span>	rsp, <span class=" -Color -Color-Yellow">24</span>
 	<span class=" -Color -Color-Bold">mov</span>	r12, qword ptr <span class=" -Color -Color-Yellow">[</span>rdi<span class=" -Color -Color-Yellow">]</span>
 	<span class=" -Color -Color-Bold">mov</span>	ebx, <span class=" -Color -Color-Yellow">1</span>
-	<span class=" -Color -Color-Bold">movabs</span>	r14, offset &quot;.Ljl_global#7678.jit&quot;
+	<span class=" -Color -Color-Bold">movabs</span>	r14, offset &quot;.Ljl_global#7799.jit&quot;
 	<span class=" -Color -Color-Bold">movabs</span>	r13, offset ijl_apply_generic
 	<span class=" -Color -Color-Bold">lea</span>	r15, <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">56]</span>
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
 .LBB0_1:                                # %L2
                                         # =&gt;This Inner Loop Header: Depth=1
 ; │ @ In[36]:4 within `f`
-	<span class=" -Color -Color-Bold">movabs</span>	rax, offset ijl_box_int64
 	<span class=" -Color -Color-Bold">mov</span>	rdi, rbx
+	<span class=" -Color -Color-Bold">movabs</span>	rax, offset ijl_box_int64
 	<span class=" -Color -Color-Bold">call</span>	rax
-	<span class=" -Color -Color-Bold">mov</span>	edx, <span class=" -Color -Color-Yellow">2</span>
 	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">56]</span>, rax
 	<span class=" -Color -Color-Bold">mov</span>	qword ptr <span class=" -Color -Color-Yellow">[</span>rbp - <span class=" -Color -Color-Yellow">48]</span>, r12
 	<span class=" -Color -Color-Bold">mov</span>	rdi, r14
 	<span class=" -Color -Color-Bold">mov</span>	rsi, r15
+	<span class=" -Color -Color-Bold">mov</span>	edx, <span class=" -Color -Color-Yellow">2</span>
 	<span class=" -Color -Color-Bold">call</span>	r13
 ; │ @ In[36]:5 within `f`
 ; │┌ @ range.jl:921 within `iterate`
@@ -1893,11 +1590,11 @@ julia_f_7676:                           # @julia_f_7676
 	<span class=" -Color -Color-Bold">pop</span>	rbp
 	<span class=" -Color -Color-Bold">ret</span>
 .Lfunc_end0:
-	.size	julia_f_7676, .Lfunc_end0-julia_f_7676
+	.size	julia_f_7797, .Lfunc_end0-julia_f_7797
 ; └
                                         # -- End function
-.set &quot;.Ljl_global#7678.jit&quot;, <span class=" -Color -Color-Yellow">139646948670160</span>
-	.size	&quot;.Ljl_global#7678.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
+.set &quot;.Ljl_global#7799.jit&quot;, <span class=" -Color -Color-Yellow">139810079832784</span>
+	.size	&quot;.Ljl_global#7799.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
 </pre></div>
 </div>
@@ -1911,7 +1608,7 @@ julia_f_7676:                           # @julia_f_7676
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24.441 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24.493 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (1999489 allocations: 30.51 MiB)
@@ -1932,7 +1629,7 @@ julia_f_7676:                           # @julia_f_7676
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  3.095 ns
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.872 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -1955,42 +1652,42 @@ julia_f_7676:                           # @julia_f_7676
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
 	.file	&quot;f&quot;
 	.section	.rodata.cst8,&quot;aM&quot;,@progbits,<span class=" -Color -Color-Yellow">8</span>
-	.p2align	<span class=" -Color -Color-Yellow">3</span>, <span class=" -Color -Color-Yellow">0x0</span>                          # -- Begin function julia_f_7712
+	.p2align	<span class=" -Color -Color-Yellow">3</span>, <span class=" -Color -Color-Yellow">0x0</span>                          # -- Begin function julia_f_7833
 .LCPI0_0:
 	.quad	<span class=" -Color -Color-Yellow">0x412e848000000000</span>              # double 1.0E+6
 	.section	.ltext,&quot;axl&quot;,@progbits
-	.globl	julia_f_7712
+	.globl	julia_f_7833
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
-	.type	julia_f_7712,@function
-julia_f_7712:                           # @julia_f_7712
+	.type	julia_f_7833,@function
+julia_f_7833:                           # @julia_f_7833
 ; Function Signature: f(Main.Foo_concrete{Float64})
 ; ┌ @ In[36]:1 within `f`
 # %bb.0:                                # %top
 	#DEBUG_VALUE: <span class=" -Color -Color-Bold">f</span>:foo &lt;- <span class=" -Color -Color-Yellow">[</span>$rdi+0<span class=" -Color -Color-Yellow">]</span>
 	<span class=" -Color -Color-Bold">push</span>	rbp
+	<span class=" -Color -Color-Bold">mov</span>	rbp, rsp
 ; │ @ In[36]:4 within `f`
 ; │┌ @ promotion.jl:433 within `+` @ float.jl:495
 	<span class=" -Color -Color-Bold">vmovsd</span>	xmm0, qword ptr <span class=" -Color -Color-Yellow">[</span>rdi<span class=" -Color -Color-Yellow">]</span>           # xmm0 = mem[0],zero
 	<span class=" -Color -Color-Bold">movabs</span>	rax, offset .LCPI0_0
-	<span class=" -Color -Color-Bold">mov</span>	rbp, rsp
 	<span class=" -Color -Color-Bold">vaddsd</span>	xmm0, xmm0, qword ptr <span class=" -Color -Color-Yellow">[</span>rax<span class=" -Color -Color-Yellow">]</span>
 ; │└
 ; │ @ In[36]:6 within `f`
 	<span class=" -Color -Color-Bold">pop</span>	rbp
 	<span class=" -Color -Color-Bold">ret</span>
 .Lfunc_end0:
-	.size	julia_f_7712, .Lfunc_end0-julia_f_7712
+	.size	julia_f_7833, .Lfunc_end0-julia_f_7833
 ; └
                                         # -- End function
-	.type	&quot;.L+Core.Float64#7714&quot;,@object  # @&quot;+Core.Float64#7714&quot;
+	.type	&quot;.L+Core.Float64#7835&quot;,@object  # @&quot;+Core.Float64#7835&quot;
 	.section	.lrodata,&quot;al&quot;,@progbits
 	.p2align	<span class=" -Color -Color-Yellow">3</span>, <span class=" -Color -Color-Yellow">0x0</span>
-&quot;.L+Core.Float64#7714&quot;:
-	.quad	&quot;.L+Core.Float64#7714.jit&quot;
-	.size	&quot;.L+Core.Float64#7714&quot;, <span class=" -Color -Color-Yellow">8</span>
+&quot;.L+Core.Float64#7835&quot;:
+	.quad	&quot;.L+Core.Float64#7835.jit&quot;
+	.size	&quot;.L+Core.Float64#7835&quot;, <span class=" -Color -Color-Yellow">8</span>
 
-.set &quot;.L+Core.Float64#7714.jit&quot;, <span class=" -Color -Color-Yellow">139647022737904</span>
-	.size	&quot;.L+Core.Float64#7714.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
+.set &quot;.L+Core.Float64#7835.jit&quot;, <span class=" -Color -Color-Yellow">139810153900528</span>
+	.size	&quot;.L+Core.Float64#7835.jit&quot;, <span class=" -Color -Color-Yellow">8</span>
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
 </pre></div>
 </div>
@@ -2014,10 +1711,10 @@ julia_f_7712:                           # @julia_f_7712
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>	.text
 	.file	&quot;f_no_return&quot;
 	.section	.ltext,&quot;axl&quot;,@progbits
-	.globl	julia_f_no_return_7715          # -- Begin function julia_f_no_return_7715
+	.globl	julia_f_no_return_7836          # -- Begin function julia_f_no_return_7836
 	.p2align	<span class=" -Color -Color-Yellow">4</span>, <span class=" -Color -Color-Yellow">0x90</span>
-	.type	julia_f_no_return_7715,@function
-julia_f_no_return_7715:                 # @julia_f_no_return_7715
+	.type	julia_f_no_return_7836,@function
+julia_f_no_return_7836:                 # @julia_f_no_return_7836
 ; Function Signature: f_no_return(Main.Foo_concrete{Float64})
 ; ┌ @ In[42]:1 within `f_no_return`
 # %bb.0:                                # %top
@@ -2028,7 +1725,7 @@ julia_f_no_return_7715:                 # @julia_f_no_return_7715
 	<span class=" -Color -Color-Bold">pop</span>	rbp
 	<span class=" -Color -Color-Bold">ret</span>
 .Lfunc_end0:
-	.size	julia_f_no_return_7715, .Lfunc_end0-julia_f_no_return_7715
+	.size	julia_f_no_return_7836, .Lfunc_end0-julia_f_no_return_7836
 ; └
                                         # -- End function
 	.section	&quot;.note.GNU-stack&quot;,&quot;&quot;,@progbits
@@ -2082,7 +1779,7 @@ julia_f_no_return_7715:                 # @julia_f_no_return_7715
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  92.542 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  114.576 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -2109,7 +1806,7 @@ julia_f_no_return_7715:                 # @julia_f_no_return_7715
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  92.542 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  114.576 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -2129,7 +1826,7 @@ julia_f_no_return_7715:                 # @julia_f_no_return_7715
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  12.092 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  9.926 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -2148,7 +1845,7 @@ julia_f_no_return_7715:                 # @julia_f_no_return_7715
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  11.011 ns
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  15.198 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -2190,7 +1887,7 @@ similar speed as the function with type information.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  92.552 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  114.576 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -2237,7 +1934,7 @@ type.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  17.996 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  16.778 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (1000000 allocations: 15.26 MiB)
@@ -2621,57 +2318,57 @@ type.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   49. Schelling’s Segregation Model
+   50. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   50. A Lake Model of Employment and Unemployment
+   51. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   51. Rational Expectations Equilibrium
+   52. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   52. Markov Perfect Equilibrium
+   53. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   53. Asset Pricing I: Finite State Models
+   54. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   54. Asset Pricing II: The Lucas Asset Pricing Model
+   55. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   55. Asset Pricing III:  Incomplete Markets
+   56. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   56. Uncertainty Traps
+   57. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   57. The Aiyagari Model
+   58. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   58. Default Risk and Income Fluctuations
+   59. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   59. Globalization and Cycles
+   60. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -2683,22 +2380,22 @@ type.</p>
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   60. About these Lectures
+   61. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   61. Troubleshooting
+   62. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   62. References
+   63. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   63. Execution Statistics
+   64. Execution Statistics
   </a>
  </li>
 </ul>

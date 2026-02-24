@@ -64,6 +64,7 @@ You should read our {doc}`earlier lecture <../more_julia/generic_programming>` o
 ---
 tags: [hide-output]
 ---
+using Pkg; pkgs = ["BenchmarkTools"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using BenchmarkTools
 ```

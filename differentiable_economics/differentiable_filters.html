@@ -315,8 +315,10 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Test</span><span class="p">,</span><span class="w"> </span><span class="n">Enzyme</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">RecursiveArrayTools</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span><span class="p">;</span><span class="w"> </span><span class="n">pkgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;BenchmarkTools&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Enzyme&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;EnzymeTestUtils&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Plots&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;RecursiveArrayTools&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;StaticArrays&quot;</span><span class="p">];</span><span class="w"> </span><span class="n">all</span><span class="p">(</span><span class="n">haskey</span><span class="o">.</span><span class="p">(</span><span class="kt">Ref</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">project</span><span class="p">()</span><span class="o">.</span><span class="n">dependencies</span><span class="p">),</span><span class="w"> </span><span class="n">pkgs</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pkgs</span><span class="p">)</span>
+<span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">Test</span><span class="p">,</span><span class="w"> </span><span class="n">Enzyme</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">RecursiveArrayTools</span>
 <span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span><span class="p">,</span><span class="w"> </span><span class="n">EnzymeTestUtils</span><span class="p">,</span><span class="w"> </span><span class="n">StaticArrays</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Plots</span>
 </pre></div>
 </div>
 </div>
@@ -666,7 +668,7 @@ x_{t+1} = f(x_t, w_{t+1}, p, t), \qquad y_t = g(x_t, p, t) + H v_t, \quad v_t \s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6.458 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  6.084 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -682,7 +684,7 @@ x_{t+1} = f(x_t, w_{t+1}, p, t), \qquad y_t = g(x_t, p, t) + H v_t, \quad v_t \s
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  314.462 ns
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  253.301 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -773,8 +775,8 @@ x_{t+1} = f(x_t, w_{t+1}, p, t), \qquad y_t = g(x_t, p, t) + H v_t, \quad v_t \s
 ∂y[T+1]₁/∂A:         
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-1.4425744192293366 -0.24466267876037887; -0.6798350405037201 -0.1482539575527481]
-∂y[T+1]₁/∂G:         [0.10265193580241351 0.024446922495743033; 0.0 0.0]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-1.4425744192293355 -0.2446626787603792; -0.6798350405037199 -0.1482539575527482]
+∂y[T+1]₁/∂G:         [0.1026519358024136 0.02444692249574299; 0.0 0.0]
 </pre></div>
 </div>
 </div>
@@ -1167,7 +1169,7 @@ K_t = \hat\Sigma_t G^{\top} S_t^{-1}, \quad \mu_{t+1} = \hat\mu_t + K_t\nu_t, \q
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Log-likelihood: 26.518326073316906
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Log-likelihood: 26.51832607331691
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
@@ -1212,7 +1214,7 @@ K_t = \hat\Sigma_t G^{\top} S_t^{-1}, \quad \mu_{t+1} = \hat\mu_t + K_t\nu_t, \q
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>26.518326073316906
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>26.51832607331691
 </pre></div>
 </div>
 </div>
@@ -1227,13 +1229,13 @@ K_t = \hat\Sigma_t G^{\top} S_t^{-1}, \quad \mu_{t+1} = \hat\mu_t + K_t\nu_t, \q
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  18.033 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  19.013 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>26.518326073316906
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>26.51832607331691
 </pre></div>
 </div>
 </div>
@@ -1254,7 +1256,7 @@ K_t = \hat\Sigma_t G^{\top} S_t^{-1}, \quad \mu_{t+1} = \hat\mu_t + K_t\nu_t, \q
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.900 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.487 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -1294,13 +1296,13 @@ K_t = \hat\Sigma_t G^{\top} S_t^{-1}, \quad \mu_{t+1} = \hat\mu_t + K_t\nu_t, \q
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  191.217 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  153.012 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-1216.353337537032
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-1216.3533375370314
 </pre></div>
 </div>
 </div>
@@ -1434,11 +1436,11 @@ K_t = \hat\Sigma_t G^{\top} S_t^{-1}, \quad \mu_{t+1} = \hat\mu_t + K_t\nu_t, \q
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold">Test Summary:                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | </span><span class=" -Color -Color-Bold -Color-Bold-Green">Pass  </span>
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold"> Time</span>
-test_forward: kalman! with return activity Const on (::Vector{Vector{Float64}}, Duplicated), (::Vector{Matrix{Float64}}, Duplicated), (::Vector{Vector{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::@NamedTuple{mu_pred::Vector{Vector{Float64}}, sigma_pred::Vector{Matrix{Float64}}, A_sigma::Vector{Matrix{Float64}}, sigma_Gt::Vector{Matrix{Float64}}, innovation::Vector{Vector{Float64}}, innovation_cov::Vector{Matrix{Float64}}, S_chol::Vector{Matrix{Float64}}, innovation_solved::Vector{Vector{Float64}}, gain_rhs::Vector{Matrix{Float64}}, gain::Vector{Matrix{Float64}}, gainG::Vector{Matrix{Float64}}, KgSigma::Vector{Matrix{Float64}}, mu_update::Vector{Vector{Float64}}}, Duplicated) | <span class=" -Color -Color-Green">  62  </span><span class=" -Color -Color-Cyan">   62  </span>12.7s
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
+test_forward: kalman! with return activity Const on (::Vector{Vector{Float64}}, Duplicated), (::Vector{Matrix{Float64}}, Duplicated), (::Vector{Vector{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::@NamedTuple{mu_pred::Vector{Vector{Float64}}, sigma_pred::Vector{Matrix{Float64}}, A_sigma::Vector{Matrix{Float64}}, sigma_Gt::Vector{Matrix{Float64}}, innovation::Vector{Vector{Float64}}, innovation_cov::Vector{Matrix{Float64}}, S_chol::Vector{Matrix{Float64}}, innovation_solved::Vector{Vector{Float64}}, gain_rhs::Vector{Matrix{Float64}}, gain::Vector{Matrix{Float64}}, gainG::Vector{Matrix{Float64}}, KgSigma::Vector{Matrix{Float64}}, mu_update::Vector{Vector{Float64}}}, Duplicated) | <span class=" -Color -Color-Green">  62  </span><span class=" -Color -Color-Cyan">   62  </span>9.0s
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_forward: kalman! with return activity Const on (::Vector{Vector{Float64}}, Duplicated), (::Vector{Matrix{Float64}}, Duplicated), (::Vector{Vector{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::@NamedTuple{mu_pred::Vector{Vector{Float64}}, sigma_pred::Vector{Matrix{Float64}}, A_sigma::Vector{Matrix{Float64}}, sigma_Gt::Vector{Matrix{Float64}}, innovation::Vector{Vector{Float64}}, innovation_cov::Vector{Matrix{Float64}}, S_chol::Vector{Matrix{Float64}}, innovation_solved::Vector{Vector{Float64}}, gain_rhs::Vector{Matrix{Float64}}, gain::Vector{Matrix{Float64}}, gainG::Vector{Matrix{Float64}}, KgSigma::Vector{Matrix{Float64}}, mu_update::Vector{Vector{Float64}}}, Duplicated)&quot;, Any[], 62, false, false, true, 1.77171372024495e9, 1.771713732990018e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_forward.jl&quot;, Xoshiro(0x67ee04b076833a4b, 0xf08ba7386ea77850, 0xbbb0dce8549bf925, 0xdeb6475526b824ae, 0xfb013e37788e81b6))
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_forward: kalman! with return activity Const on (::Vector{Vector{Float64}}, Duplicated), (::Vector{Matrix{Float64}}, Duplicated), (::Vector{Vector{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::@NamedTuple{mu_pred::Vector{Vector{Float64}}, sigma_pred::Vector{Matrix{Float64}}, A_sigma::Vector{Matrix{Float64}}, sigma_Gt::Vector{Matrix{Float64}}, innovation::Vector{Vector{Float64}}, innovation_cov::Vector{Matrix{Float64}}, S_chol::Vector{Matrix{Float64}}, innovation_solved::Vector{Vector{Float64}}, gain_rhs::Vector{Matrix{Float64}}, gain::Vector{Matrix{Float64}}, gainG::Vector{Matrix{Float64}}, KgSigma::Vector{Matrix{Float64}}, mu_update::Vector{Vector{Float64}}}, Duplicated)&quot;, Any[], 62, false, false, true, 1.771894034831438e9, 1.771894043851744e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_forward.jl&quot;, Xoshiro(0x67ee04b076833a4b, 0xf08ba7386ea77850, 0xbbb0dce8549bf925, 0xdeb6475526b824ae, 0xfb013e37788e81b6))
 </pre></div>
 </div>
 </div>
@@ -1461,10 +1463,10 @@ test_forward: kalman! with return activity Const on (::Vector{Vector{Float64}}, 
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold"> Time</span>
-test_reverse: kalman! with return activity Const on (::Vector{Vector{Float64}}, Duplicated), (::Vector{Matrix{Float64}}, Duplicated), (::Vector{Vector{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::@NamedTuple{mu_pred::Vector{Vector{Float64}}, sigma_pred::Vector{Matrix{Float64}}, A_sigma::Vector{Matrix{Float64}}, sigma_Gt::Vector{Matrix{Float64}}, innovation::Vector{Vector{Float64}}, innovation_cov::Vector{Matrix{Float64}}, S_chol::Vector{Matrix{Float64}}, innovation_solved::Vector{Vector{Float64}}, gain_rhs::Vector{Matrix{Float64}}, gain::Vector{Matrix{Float64}}, gainG::Vector{Matrix{Float64}}, KgSigma::Vector{Matrix{Float64}}, mu_update::Vector{Vector{Float64}}}, Duplicated) | <span class=" -Color -Color-Green"> 127  </span><span class=" -Color -Color-Cyan">  127  </span>19.4s
+test_reverse: kalman! with return activity Const on (::Vector{Vector{Float64}}, Duplicated), (::Vector{Matrix{Float64}}, Duplicated), (::Vector{Vector{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::@NamedTuple{mu_pred::Vector{Vector{Float64}}, sigma_pred::Vector{Matrix{Float64}}, A_sigma::Vector{Matrix{Float64}}, sigma_Gt::Vector{Matrix{Float64}}, innovation::Vector{Vector{Float64}}, innovation_cov::Vector{Matrix{Float64}}, S_chol::Vector{Matrix{Float64}}, innovation_solved::Vector{Vector{Float64}}, gain_rhs::Vector{Matrix{Float64}}, gain::Vector{Matrix{Float64}}, gainG::Vector{Matrix{Float64}}, KgSigma::Vector{Matrix{Float64}}, mu_update::Vector{Vector{Float64}}}, Duplicated) | <span class=" -Color -Color-Green"> 127  </span><span class=" -Color -Color-Cyan">  127  </span>14.6s
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_reverse: kalman! with return activity Const on (::Vector{Vector{Float64}}, Duplicated), (::Vector{Matrix{Float64}}, Duplicated), (::Vector{Vector{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::@NamedTuple{mu_pred::Vector{Vector{Float64}}, sigma_pred::Vector{Matrix{Float64}}, A_sigma::Vector{Matrix{Float64}}, sigma_Gt::Vector{Matrix{Float64}}, innovation::Vector{Vector{Float64}}, innovation_cov::Vector{Matrix{Float64}}, S_chol::Vector{Matrix{Float64}}, innovation_solved::Vector{Vector{Float64}}, gain_rhs::Vector{Matrix{Float64}}, gain::Vector{Matrix{Float64}}, gainG::Vector{Matrix{Float64}}, KgSigma::Vector{Matrix{Float64}}, mu_update::Vector{Vector{Float64}}}, Duplicated)&quot;, Any[], 127, false, false, true, 1.771713733526131e9, 1.771713752917262e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_reverse.jl&quot;, Xoshiro(0x67ee04b076833a4b, 0xf08ba7386ea77850, 0xbbb0dce8549bf925, 0xdeb6475526b824ae, 0xfb013e37788e81b6))
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_reverse: kalman! with return activity Const on (::Vector{Vector{Float64}}, Duplicated), (::Vector{Matrix{Float64}}, Duplicated), (::Vector{Vector{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::@NamedTuple{mu_pred::Vector{Vector{Float64}}, sigma_pred::Vector{Matrix{Float64}}, A_sigma::Vector{Matrix{Float64}}, sigma_Gt::Vector{Matrix{Float64}}, innovation::Vector{Vector{Float64}}, innovation_cov::Vector{Matrix{Float64}}, S_chol::Vector{Matrix{Float64}}, innovation_solved::Vector{Vector{Float64}}, gain_rhs::Vector{Matrix{Float64}}, gain::Vector{Matrix{Float64}}, gainG::Vector{Matrix{Float64}}, KgSigma::Vector{Matrix{Float64}}, mu_update::Vector{Vector{Float64}}}, Duplicated)&quot;, Any[], 127, false, false, true, 1.771894044306138e9, 1.771894058918129e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_reverse.jl&quot;, Xoshiro(0x67ee04b076833a4b, 0xf08ba7386ea77850, 0xbbb0dce8549bf925, 0xdeb6475526b824ae, 0xfb013e37788e81b6))
 </pre></div>
 </div>
 </div>
@@ -1826,57 +1828,57 @@ test_reverse: kalman! with return activity Const on (::Vector{Vector{Float64}}, 
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   49. Schelling’s Segregation Model
+   50. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   50. A Lake Model of Employment and Unemployment
+   51. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   51. Rational Expectations Equilibrium
+   52. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   52. Markov Perfect Equilibrium
+   53. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   53. Asset Pricing I: Finite State Models
+   54. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   54. Asset Pricing II: The Lucas Asset Pricing Model
+   55. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   55. Asset Pricing III:  Incomplete Markets
+   56. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   56. Uncertainty Traps
+   57. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   57. The Aiyagari Model
+   58. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   58. Default Risk and Income Fluctuations
+   59. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   59. Globalization and Cycles
+   60. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1888,22 +1890,22 @@ test_reverse: kalman! with return activity Const on (::Vector{Vector{Float64}}, 
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   60. About these Lectures
+   61. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   61. Troubleshooting
+   62. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   62. References
+   63. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   63. Execution Statistics
+   64. Execution Statistics
   </a>
  </li>
 </ul>

@@ -286,9 +286,11 @@ const thebe_selector_output = ".output, .cell_output"
 <p>In practice, you may find using an LLM valuable for navigating the perplexing error messages of Enzyme.jl. Compilation times can be very slow, and performance intuition is not always straightforward.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span><span class="p">,</span><span class="w"> </span><span class="n">Test</span><span class="p">,</span><span class="w"> </span><span class="n">Enzyme</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span><span class="p">;</span><span class="w"> </span><span class="n">pkgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;BenchmarkTools&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Enzyme&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;EnzymeTestUtils&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Optimization&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;OptimizationOptimJL&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Plots&quot;</span><span class="p">];</span><span class="w"> </span><span class="n">all</span><span class="p">(</span><span class="n">haskey</span><span class="o">.</span><span class="p">(</span><span class="kt">Ref</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">project</span><span class="p">()</span><span class="o">.</span><span class="n">dependencies</span><span class="p">),</span><span class="w"> </span><span class="n">pkgs</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pkgs</span><span class="p">)</span>
+<span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">Test</span><span class="p">,</span><span class="w"> </span><span class="n">Enzyme</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
 <span class="k">using</span><span class="w"> </span><span class="n">Optimization</span><span class="p">,</span><span class="w"> </span><span class="n">OptimizationOptimJL</span><span class="p">,</span><span class="w"> </span><span class="n">EnzymeTestUtils</span>
 <span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Plots</span>
 </pre></div>
 </div>
 </div>
@@ -459,7 +461,7 @@ y_t = G x_t + H v_t
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dy_batch[1], dy_batch[2]) = ([0.0 -0.8449577163759787 -1.2511430013904163 -1.3687125396869666 -1.2862527573807614 -1.127182293237571 -0.9065081617463366 -0.7031373354359588 -0.41070713205552856 -0.22893611820925336 0.01811071037541087; 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0], [0.0 0.0 -0.08449577163759787 -0.18426134028536015 -0.26585419216844874 -0.3147232102559902 -0.3330244765029502 -0.32376794972669876 -0.29695129835228495 -0.2489366220521523 -0.1971492472574319; 0.0 -0.8449577163759787 -1.1666472297528183 -1.1844511994016063 -1.0203985652123122 -0.8124590829815805 -0.5734836852433861 -0.37936938570925977 -0.1137558337032433 0.02000050384289924 0.21525995763284303])
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dy_batch[1], dy_batch[2]) = ([0.0 -0.8449577163759787 -1.2511430013904163 -1.3687125396869666 -1.2862527573807614 -1.127182293237571 -0.9065081617463366 -0.7031373354359588 -0.41070713205552856 -0.22893611820925336 0.0181107103754109; 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0 0.0], [0.0 0.0 -0.08449577163759787 -0.18426134028536015 -0.26585419216844874 -0.3147232102559902 -0.3330244765029502 -0.32376794972669876 -0.296951298352285 -0.24893662205215233 -0.19714924725743194; 0.0 -0.8449577163759787 -1.1666472297528183 -1.1844511994016063 -1.0203985652123122 -0.8124590829815805 -0.5734836852433861 -0.37936938570925977 -0.1137558337032433 0.02000050384289924 0.21525995763284306])
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
@@ -540,7 +542,7 @@ g(w, v, \theta) = \frac{1}{T+1} \sum_{t=0}^T y_{1,t}.
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>((A = [-0.7372205768312146 1.5196565304240475 -0.3215079246189682; -0.20446946438535596 0.3321736601370444 -0.05152341036087862; -0.03725460586984415 0.052907253636102144 -0.006038474038815886], C = [1.8213798041590912 1.9974233310121958; 0.3400772654166607 0.35938265277705433; 0.047579521263242976 0.05076566679947853], G = [-0.12103807771237807 0.46627565243299396 -0.1434392076888752; 0.0 0.0 0.0], H = [-0.22308685072343123 0.013864981851811497; 0.0 0.0]), [0.415500297309091, 0.1184618935, 0.023935839100000002], [-0.003394145246121948 -0.0037616670331938515 … -0.0048981016639946225 -0.003270262789304379; 0.032381219205478144 0.03134361649886693 … 0.012146023683800623 0.006535544886053993], [0.009339832073018348 0.009339832073018348 … 0.009339832073018348 0.009339832073018348; -0.0013859147963474192 -0.0013859147963474192 … -0.0013859147963474192 -0.0013859147963474192])
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>((A = [-0.7372205768312146 1.5196565304240475 -0.32150792461896827; -0.20446946438535596 0.3321736601370444 -0.05152341036087862; -0.037254605869844144 0.052907253636102144 -0.006038474038815886], C = [1.8213798041590914 1.9974233310121956; 0.3400772654166607 0.35938265277705433; 0.04757952126324298 0.05076566679947853], G = [-0.12103807771237807 0.4662756524329939 -0.1434392076888752; 0.0 0.0 0.0], H = [-0.22308685072343135 0.013864981851811503; 0.0 0.0]), [0.415500297309091, 0.1184618935, 0.023935839100000002], [-0.003394145246121948 -0.0037616670331938515 … -0.0048981016639946225 -0.003270262789304379; 0.032381219205478144 0.03134361649886693 … 0.012146023683800623 0.006535544886053993], [0.009339832073018348 0.009339832073018348 … 0.009339832073018348 0.009339832073018348; -0.0013859147963474192 -0.0013859147963474192 … -0.0013859147963474192 -0.0013859147963474192])
 </pre></div>
 </div>
 </div>
@@ -647,7 +649,7 @@ g(w, v, \theta) = \frac{1}{T+1} \sum_{t=0}^T y_{1,t}.
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial a=0.8, Loss: 0.02078469513704013
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final a=-0.379357581082952, Loss: 0.0006086293962801088
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Final a=-0.37935758108295203, Loss: 0.0006086293962801088
 </pre></div>
 </div>
 </div>
@@ -716,7 +718,7 @@ g(w, v, \theta) = \frac{1}{T+1} \sum_{t=0}^T y_{1,t}.
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial a=0.8, Loss: 0.02078469513704013
-Final a=-0.379357581082952, Loss: 0.0006086293962801088
+Final a=-0.37935758108295203, Loss: 0.0006086293962801088
 </pre></div>
 </div>
 </div>
@@ -751,7 +753,7 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.561 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.520 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -788,10 +790,10 @@ Final a=-0.379357581082952, Loss: 0.0006086293962801088
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
-test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  18  </span><span class=" -Color -Color-Cyan">   18  </span>4.3s
+test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  18  </span><span class=" -Color -Color-Cyan">   18  </span>3.8s
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 18, false, false, true, 1.771713530926396e9, 1.771713535249351e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_forward.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_forward: test_forward_simulate_lss! with return activity Duplicated on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 18, false, false, true, 1.771893872300886e9, 1.77189387610052e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_forward.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
 </pre></div>
 </div>
 </div>
@@ -831,15 +833,15 @@ test_forward: test_forward_simulate_lss! with return activity Duplicated on (::M
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
-test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Const), (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated) | <span class=" -Color -Color-Green">  25  </span><span class=" -Color -Color-Cyan">   25  </span>6.1s
+test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Const), (::Vector{Float64}, Const), (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated) | <span class=" -Color -Color-Green">  25  </span><span class=" -Color -Color-Cyan">   25  </span>4.2s
 <span class=" -Color -Color-Bold">Test Summary:                                                                                                                                                                                                                                                                                                         | </span>
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Green">Pass  </span><span class=" -Color -Color-Bold -Color-Bold-Cyan">Total  </span><span class=" -Color -Color-Bold">Time</span>
-test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  29  </span><span class=" -Color -Color-Cyan">   29  </span>5.9s
+test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const) | <span class=" -Color -Color-Green">  29  </span><span class=" -Color -Color-Cyan">   29  </span>3.7s
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 29, false, false, true, 1.771713541817964e9, 1.771713547707474e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_reverse.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Test.DefaultTestSet(&quot;test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), (::Matrix{Float64}, Duplicated), (::@NamedTuple{A::Matrix{Float64}, C::Matrix{Float64}, G::Matrix{Float64}, H::Matrix{Float64}}, Duplicated), (::Vector{Float64}, Duplicated), (::Matrix{Float64}, Const), (::Matrix{Float64}, Const)&quot;, Any[], 29, false, false, true, 1.771893880742064e9, 1.771893884481176e9, false, &quot;/home/runner/.julia/packages/EnzymeTestUtils/yGBt1/src/test_reverse.jl&quot;, Xoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661))
 </pre></div>
 </div>
 </div>
@@ -1202,57 +1204,57 @@ test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), 
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   49. Schelling’s Segregation Model
+   50. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   50. A Lake Model of Employment and Unemployment
+   51. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   51. Rational Expectations Equilibrium
+   52. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   52. Markov Perfect Equilibrium
+   53. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   53. Asset Pricing I: Finite State Models
+   54. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   54. Asset Pricing II: The Lucas Asset Pricing Model
+   55. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   55. Asset Pricing III:  Incomplete Markets
+   56. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   56. Uncertainty Traps
+   57. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   57. The Aiyagari Model
+   58. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   58. Default Risk and Income Fluctuations
+   59. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   59. Globalization and Cycles
+   60. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1264,22 +1266,22 @@ test_reverse: g with return activity Active on (::Matrix{Float64}, Duplicated), 
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   60. About these Lectures
+   61. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   61. Troubleshooting
+   62. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   62. References
+   63. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   63. Execution Statistics
+   64. Execution Statistics
   </a>
  </li>
 </ul>

@@ -324,8 +324,10 @@ of the essential features of the language.</p>
 </ul>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span><span class="p">;</span><span class="w"> </span><span class="n">pkgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;BenchmarkTools&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Plots&quot;</span><span class="p">];</span><span class="w"> </span><span class="n">all</span><span class="p">(</span><span class="n">haskey</span><span class="o">.</span><span class="p">(</span><span class="kt">Ref</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">project</span><span class="p">()</span><span class="o">.</span><span class="n">dependencies</span><span class="p">),</span><span class="w"> </span><span class="n">pkgs</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pkgs</span><span class="p">)</span>
+<span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
 <span class="k">using</span><span class="w"> </span><span class="n">BenchmarkTools</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Plots</span>
 </pre></div>
 </div>
 </div>
@@ -1050,9 +1052,7 @@ neater code.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4
+4
 9
 16
 25
@@ -1096,7 +1096,9 @@ The capital of China is Beijing
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The capital of Japan is Tokyo
-The capital of Korea is Seoul
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>The capital of Korea is Seoul
 The capital of China is Beijing
 </pre></div>
 </div>
@@ -1285,15 +1287,15 @@ with any function that accepts iterators.  All you need to do is drop the <code 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4.059 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  4.637 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (3 allocations: 78.20 KiB)
-  3.780 μs
+  4.369 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (3 allocations: 78.20 KiB)
-  4.337 ns
+  3.176 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -1501,9 +1503,9 @@ without the <code class="docutils literal notranslate"><span class="pre">functio
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
- -0.5696465304783218
- -0.7616181912228326
-  0.9978792747525995
+ -0.8163946367813141
+  0.6379206858253473
+  0.9382882747136857
 </pre></div>
 </div>
 </div>
@@ -1681,7 +1683,7 @@ they are parsed and bounded by name rather than the order in the function call.<
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.7304835228867756
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.8950967213079446
 </pre></div>
 </div>
 </div>
@@ -1717,9 +1719,9 @@ the function body.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
- 1.353861471332209
- 1.2895335968938557
- 2.816485998136168
+ 0.5558010058319596
+ 2.408089371185618
+ 5.085914314236599
 </pre></div>
 </div>
 </div>
@@ -2075,7 +2077,10 @@ code defines <code class="docutils literal notranslate"><span class="pre">a</spa
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>twice(f, 2.0) = 16.0
-twice(g, 2.0) = 50.0
+twice(g, 2.0) = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>50.0
 </pre></div>
 </div>
 </div>
@@ -2202,9 +2207,6 @@ twice(g, 2.0) = 50.0
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>val = 0.001953125
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
 </div>
@@ -2494,9 +2496,7 @@ returns <code class="docutils literal notranslate"><span class="pre">true</span>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>false
+false
 </pre></div>
 </div>
 </div>
@@ -2513,7 +2513,9 @@ returns <code class="docutils literal notranslate"><span class="pre">true</span>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>true
-false
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>false
 </pre></div>
 </div>
 </div>
@@ -2957,57 +2959,57 @@ false
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   49. Schelling’s Segregation Model
+   50. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   50. A Lake Model of Employment and Unemployment
+   51. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   51. Rational Expectations Equilibrium
+   52. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   52. Markov Perfect Equilibrium
+   53. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   53. Asset Pricing I: Finite State Models
+   54. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   54. Asset Pricing II: The Lucas Asset Pricing Model
+   55. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   55. Asset Pricing III:  Incomplete Markets
+   56. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   56. Uncertainty Traps
+   57. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   57. The Aiyagari Model
+   58. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   58. Default Risk and Income Fluctuations
+   59. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   59. Globalization and Cycles
+   60. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -3019,22 +3021,22 @@ false
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   60. About these Lectures
+   61. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   61. Troubleshooting
+   62. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   62. References
+   63. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   63. Execution Statistics
+   64. Execution Statistics
   </a>
  </li>
 </ul>

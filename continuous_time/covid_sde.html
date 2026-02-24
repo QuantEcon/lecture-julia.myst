@@ -119,7 +119,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="shortcut icon" href="../_static/lectures-favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="49. Schelling’s Segregation Model" href="../multi_agent_models/schelling.html" />
+    <link rel="next" title="50. Schelling’s Segregation Model" href="../multi_agent_models/schelling.html" />
     <link rel="prev" title="47. Modeling COVID 19 with Differential Equations" href="seir_model.html" />
 
 <!-- Normal Meta Tags -->
@@ -168,26 +168,37 @@ const thebe_selector_output = ".output, .cell_output"
 
                         <nav id="bd-toc-nav" class="qe-page__toc-nav">
                             <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">48. Modeling Shocks in COVID 19 with Stochastic Differential Equations</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">48.1. Overview</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#continuous-time-stochastic-processes">48.1.1. Continuous-Time Stochastic Processes</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-basic-sir-sird-model">48.2. The Basic SIR/SIRD Model</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transition-rates">48.2.1. Transition Rates</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-sdes">48.3. Introduction to SDEs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shocks-to-transmission-rates">48.3.1. Shocks to Transmission Rates</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mortality-rates">48.3.2. Mortality Rates</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#system-of-sdes">48.3.3. System of SDEs</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">48.3.4. Implementation</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ensembles">48.3.5. Ensembles</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-mitigation">48.3.6. Changing Mitigation</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">49. Modeling Shocks in COVID 19 with Stochastic Differential Equations</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">49.1. Overview</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">49.1.1. Continuous-Time Stochastic Processes</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ending-lockdown">48.4. Ending Lockdown</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reinfection">48.5. Reinfection</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-basic-sir-sird-model">49.2. The Basic SIR/SIRD Model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transition-rates">49.2.1. Transition Rates</a></li>
 </ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#introduction-to-sdes">49.3. Introduction to SDEs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shocks-to-transmission-rates">49.3.1. Shocks to Transmission Rates</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mortality-rates">49.3.2. Mortality Rates</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#system-of-sdes">49.3.3. System of SDEs</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation">49.3.4. Implementation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ensembles">49.3.5. Ensembles</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#changing-mitigation">49.3.6. Changing Mitigation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ending-lockdown">49.4. Ending Lockdown</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reinfection">49.5. Reinfection</a></li>
+</ul>
+</li>
+</ul>
+
                             <p class="logo">
                                 
                                     
@@ -254,23 +265,28 @@ const thebe_selector_output = ".output, .cell_output"
                 <img style="width:250px;display:inline;" src="https://assets.quantecon.org/img/qe-menubar-logo.svg" alt="QuantEcon">
         </a>
 </div><section class="tex2jax_ignore mathjax_ignore" id="modeling-shocks-in-covid-19-with-stochastic-differential-equations">
-<h1><a class="toc-backref" href="#id2"><span class="section-number">48. </span><span class="target" id="index-0"></span>Modeling Shocks in COVID 19 with Stochastic Differential Equations</a><a class="headerlink" href="#modeling-shocks-in-covid-19-with-stochastic-differential-equations" title="Permalink to this heading">#</a></h1>
+<h1><a class="toc-backref" href="#id14"><span class="section-number">48. </span><span class="target" id="index-0"></span>Modeling Shocks in COVID 19 with Stochastic Differential Equations</a><a class="headerlink" href="#modeling-shocks-in-covid-19-with-stochastic-differential-equations" title="Permalink to this heading">#</a></h1>
 <div class="contents topic" id="contents">
 <p class="topic-title">Contents</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#modeling-shocks-in-covid-19-with-stochastic-differential-equations" id="id2">Modeling Shocks in COVID 19 with Stochastic Differential Equations</a></p>
+<li><p><a class="reference internal" href="#modeling-shocks-in-covid-19-with-stochastic-differential-equations" id="id6">Modeling Shocks in COVID 19 with Stochastic Differential Equations</a></p>
 <ul>
-<li><p><a class="reference internal" href="#overview" id="id3">Overview</a></p></li>
-<li><p><a class="reference internal" href="#the-basic-sir-sird-model" id="id4">The Basic SIR/SIRD Model</a></p></li>
-<li><p><a class="reference internal" href="#introduction-to-sdes" id="id5">Introduction to SDEs</a></p></li>
-<li><p><a class="reference internal" href="#ending-lockdown" id="id6">Ending Lockdown</a></p></li>
-<li><p><a class="reference internal" href="#reinfection" id="id7">Reinfection</a></p></li>
+<li><p><a class="reference internal" href="#overview" id="id7">Overview</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id1" id="id8">Modeling Shocks in COVID 19 with Stochastic Differential Equations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id3" id="id9">Overview</a></p></li>
+<li><p><a class="reference internal" href="#the-basic-sir-sird-model" id="id10">The Basic SIR/SIRD Model</a></p></li>
+<li><p><a class="reference internal" href="#introduction-to-sdes" id="id11">Introduction to SDEs</a></p></li>
+<li><p><a class="reference internal" href="#ending-lockdown" id="id12">Ending Lockdown</a></p></li>
+<li><p><a class="reference internal" href="#reinfection" id="id13">Reinfection</a></p></li>
 </ul>
 </li>
 </ul>
 </div>
 <section id="overview">
-<h2><a class="toc-backref" href="#id3"><span class="section-number">48.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id15"><span class="section-number">48.1. </span>Overview</a><a class="headerlink" href="#overview" title="Permalink to this heading">#</a></h2>
 <p>Coauthored with Chris Rackauckas</p>
 <p>This lecture continues the analyzing of the COVID-19 pandemic established in <a class="reference internal" href="seir_model.html"><span class="doc">this lecture</span></a>.</p>
 <p>As before, the model is inspired by</p>
@@ -294,22 +310,61 @@ const thebe_selector_output = ".output, .cell_output"
 <p>In this lecture, we will examine shocks driven by transformations of Brownian motion, as the prototypical Stochastic Differential Equation (SDE).</p>
 <p>In addition, we will be exploring packages within the <a class="reference external" href="https://github.com/SciML/">SciML ecosystem</a> and
 others covered in previous lectures</p>
-<div class="cell docutils container">
+</section>
+</section>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1><a class="toc-backref" href="#id16"><span class="section-number">49. </span><span class="target" id="index-1"></span>Modeling Shocks in COVID 19 with Stochastic Differential Equations</a><a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h1>
+<div class="contents topic" id="id2">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#modeling-shocks-in-covid-19-with-stochastic-differential-equations" id="id14">Modeling Shocks in COVID 19 with Stochastic Differential Equations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id15">Overview</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#id1" id="id16">Modeling Shocks in COVID 19 with Stochastic Differential Equations</a></p>
+<ul>
+<li><p><a class="reference internal" href="#id3" id="id17">Overview</a></p></li>
+<li><p><a class="reference internal" href="#the-basic-sir-sird-model" id="id18">The Basic SIR/SIRD Model</a></p></li>
+<li><p><a class="reference internal" href="#introduction-to-sdes" id="id19">Introduction to SDEs</a></p></li>
+<li><p><a class="reference internal" href="#ending-lockdown" id="id20">Ending Lockdown</a></p></li>
+<li><p><a class="reference internal" href="#reinfection" id="id21">Reinfection</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="id3">
+<h2><a class="toc-backref" href="#id17"><span class="section-number">49.1. </span>Overview</a><a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<p>Coauthored with Chris Rackauckas</p>
+<p>This lecture continues the analyzing of the COVID-19 pandemic established in <a class="reference internal" href="seir_model.html"><span class="doc">this lecture</span></a>.</p>
+<p>As before, the model is inspired by</p>
+<ul class="simple">
+<li><p>Notes from <a class="reference external" href="https://sites.google.com/site/andyatkeson/">Andrew Atkeson</a> and <a class="reference external" href="https://www.nber.org/papers/w26867">NBER Working Paper No. 26867</a></p></li>
+<li><p><a class="reference external" href="https://www.nber.org/papers/w27335">Estimating and Forecasting Disease Scenarios for COVID-19 with an SIR Model</a> by Andrew Atkeson, Karen Kopecky and Tao Zha</p></li>
+<li><p><a class="reference external" href="https://www.nber.org/papers/w27128">Estimating and Simulating a SIRD Model of COVID-19 for Many Countries, States, and Cities</a> by Jesús Fernández-Villaverde and Charles I. Jones</p></li>
+<li><p>Further variations on the classic SIR model in Julia  <a class="reference external" href="https://github.com/epirecipes/sir-julia">here</a>.</p></li>
+</ul>
+<p>Here we extend the model to include policy-relevant aggregate shocks.</p>
+<section id="id4">
+<h3><span class="section-number">49.1.1. </span>Continuous-Time Stochastic Processes<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h3>
+<p>In continuous-time, there is an important distinction between randomness that leads to continuous paths vs. those which have (<a class="reference external" href="https://en.wikipedia.org/wiki/C%C3%A0dl%C3%A0g">almost surely right-continuous</a>) jumps in their paths.  The most tractable of these includes the theory of <a class="reference external" href="https://en.wikipedia.org/wiki/L%C3%A9vy_process">Levy Processes</a>.</p>
+<p>Among the appealing features of Levy Processes is that they fit well into the sorts of Markov modeling techniques that economists tend to use in discrete time, and usually fulfill the measurability required for calculating expected present discounted values.</p>
+<p>Unlike in discrete-time, where a modeller has license to be creative, the rules of continuous-time stochastic processes are much stricter.  One can show that a Levy process’s noise can be decomposed into two portions:</p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Wiener_process">Weiner Processes</a> (as known as Brownian Motion) which leads to a diffusion equations, and is the only continuous-time Levy process with continuous paths</p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Poisson_point_process">Poisson Processes</a> with an arrival rate of jumps in the variable.</p></li>
+</ol>
+<p>Every other Levy Process can be represented by these building blocks (e.g. a <a class="reference external" href="https://en.wikipedia.org/wiki/Diffusion_process">Diffusion Process</a> such as Geometric Brownian Motion is a transformation of a Weiner process, a <a class="reference external" href="https://en.wikipedia.org/wiki/Jump_diffusion#In_economics_and_finance">jump diffusion</a> is a diffusion process with a Poisson arrival of jumps, and a continuous-time markov chain (CMTC) is a Poisson process jumping between a finite number of states).</p>
+<p>In this lecture, we will examine shocks driven by transformations of Brownian motion, as the prototypical Stochastic Differential Equation (SDE).</p>
+<p>In addition, we will be exploring packages within the <a class="reference external" href="https://github.com/SciML/">SciML ecosystem</a> and
+others covered in previous lectures</p>
+<div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">SparseArrays</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
-<span class="k">using</span><span class="w"> </span><span class="n">OrdinaryDiffEq</span><span class="p">,</span><span class="w"> </span><span class="n">StochasticDiffEq</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">[ Info: </span>Precompiling IJuliaExt [64482eec-cc57-5312-bea1-9f24eb636db7] 
-
-SYSTEM: caught exception of type :MethodError while trying to print a failed Task notice; giving up
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Bold -Color-Bold-Cyan">[ Info: </span>Precompiling IJuliaExt [2f4121a4-3b3a-5ce6-9c5e-1f2673ce168a] 
-
-SYSTEM: caught exception of type :MethodError while trying to print a failed Task notice; giving up
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span><span class="p">;</span><span class="w"> </span><span class="n">pkgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;LaTeXStrings&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;OrdinaryDiffEq&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Plots&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;StochasticDiffEq&quot;</span><span class="p">];</span><span class="w"> </span><span class="n">all</span><span class="p">(</span><span class="n">haskey</span><span class="o">.</span><span class="p">(</span><span class="kt">Ref</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">project</span><span class="p">()</span><span class="o">.</span><span class="n">dependencies</span><span class="p">),</span><span class="w"> </span><span class="n">pkgs</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pkgs</span><span class="p">)</span>
+<span class="k">using</span><span class="w"> </span><span class="n">LaTeXStrings</span><span class="p">,</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span><span class="p">,</span><span class="w"> </span><span class="n">SparseArrays</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span>
+<span class="k">using</span><span class="w"> </span><span class="n">OrdinaryDiffEq</span><span class="p">,</span><span class="w"> </span><span class="n">StochasticDiffEq</span>
+<span class="k">using</span><span class="w"> </span><span class="n">Plots</span>
 </pre></div>
 </div>
 </div>
@@ -317,7 +372,7 @@ SYSTEM: caught exception of type :MethodError while trying to print a failed Tas
 </section>
 </section>
 <section id="the-basic-sir-sird-model">
-<h2><a class="toc-backref" href="#id4"><span class="section-number">48.2. </span>The Basic SIR/SIRD Model</a><a class="headerlink" href="#the-basic-sir-sird-model" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id18"><span class="section-number">49.2. </span>The Basic SIR/SIRD Model</a><a class="headerlink" href="#the-basic-sir-sird-model" title="Permalink to this heading">#</a></h2>
 <p>To demonstrate another common <a class="reference external" href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#Elaborations_on_the_basic_SIR_model">compartmentalized model</a> we will change the <a class="reference internal" href="seir_model.html"><span class="doc">previous SEIR</span></a> model to remove the exposed state, and more carefully manage the death state, D.</p>
 <p>The states are are now: susceptible (S), infected (I), resistant (R), or dead (D).</p>
 <p>Comments:</p>
@@ -327,7 +382,7 @@ SYSTEM: caught exception of type :MethodError while trying to print a failed Tas
 <li><p>Later, we could consider transitions from R to S if resistance is not permanent due to virus mutation, etc.</p></li>
 </ul>
 <section id="transition-rates">
-<h3><span class="section-number">48.2.1. </span>Transition Rates<a class="headerlink" href="#transition-rates" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">49.2.1. </span>Transition Rates<a class="headerlink" href="#transition-rates" title="Permalink to this heading">#</a></h3>
 <p>See the <a class="reference internal" href="seir_model.html"><span class="doc">previous lecture</span></a>, for a more detailed development of the model.</p>
 <ul class="simple">
 <li><p><span class="math notranslate nohighlight">\(\beta(t)\)</span> is called the <em>transmission rate</em> or <em>effective contact rate</em> (the rate at which individuals bump into others and expose them to the virus)</p></li>
@@ -337,7 +392,7 @@ SYSTEM: caught exception of type :MethodError while trying to print a failed Tas
 </ul>
 <p>Jumping directly to the equations in <span class="math notranslate nohighlight">\(s, i, r, d\)</span> already normalized by <span class="math notranslate nohighlight">\(N\)</span>,</p>
 <div class="math notranslate nohighlight" id="equation-sird">
-<span class="eqno">(48.1)<a class="headerlink" href="#equation-sird" title="Permalink to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(49.1)<a class="headerlink" href="#equation-sird" title="Permalink to this equation">#</a></span>\[\begin{split}\begin{aligned}
      d s  &amp; = - \gamma \, R_0 \, s \,  i \, dt
      \\
       d i  &amp; = \left(\gamma \, R_0 \, s \,  i  - \gamma  \, i \right) dt
@@ -351,11 +406,11 @@ SYSTEM: caught exception of type :MethodError while trying to print a failed Tas
 </section>
 </section>
 <section id="introduction-to-sdes">
-<h2><a class="toc-backref" href="#id5"><span class="section-number">48.3. </span>Introduction to SDEs</a><a class="headerlink" href="#introduction-to-sdes" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id19"><span class="section-number">49.3. </span>Introduction to SDEs</a><a class="headerlink" href="#introduction-to-sdes" title="Permalink to this heading">#</a></h2>
 <p>We start by extending our model to include randomness in <span class="math notranslate nohighlight">\(R_0(t)\)</span> and then the mortality rate <span class="math notranslate nohighlight">\(\delta(t)\)</span>.</p>
 <p>The result is a system of Stochastic Differential Equations (SDEs).</p>
 <section id="shocks-to-transmission-rates">
-<h3><span class="section-number">48.3.1. </span>Shocks to Transmission Rates<a class="headerlink" href="#shocks-to-transmission-rates" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">49.3.1. </span>Shocks to Transmission Rates<a class="headerlink" href="#shocks-to-transmission-rates" title="Permalink to this heading">#</a></h3>
 <p>As before, we assume that the basic reproduction number, <span class="math notranslate nohighlight">\(R_0(t)\)</span>, follows a process with a reversion to a value <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> which could conceivably be influenced by policy.  The intuition is that even if the targeted <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> was changed through social distancing/etc., lags in behavior and implementation would smooth out the transition, where <span class="math notranslate nohighlight">\(\eta\)</span> governs the speed of <span class="math notranslate nohighlight">\(R_0(t)\)</span> moves towards <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span>.</p>
 <p>Beyond changes in policy, randomness in <span class="math notranslate nohighlight">\(R_0(t)\)</span> may come from shocks to the <span class="math notranslate nohighlight">\(\beta(t)\)</span> process.  For example,</p>
 <ul class="simple">
@@ -372,7 +427,7 @@ SYSTEM: caught exception of type :MethodError while trying to print a failed Tas
 </ul>
 <p>The notation for this <a class="reference external" href="https://en.wikipedia.org/wiki/Stochastic_differential_equation#Use_in_probability_and_mathematical_finance">SDE</a> is then</p>
 <div class="math notranslate nohighlight" id="equation-rsde">
-<span class="eqno">(48.2)<a class="headerlink" href="#equation-rsde" title="Permalink to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(49.2)<a class="headerlink" href="#equation-rsde" title="Permalink to this equation">#</a></span>\[\begin{split}\begin{aligned}
 d R_{0t} &amp;= \eta (\bar{R}_{0t} - R_{0t}) dt + \sigma \sqrt{R_{0t}} dW_t\\
 \end{aligned}\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(W\)</span> is standard Brownian motion (i.e a <a class="reference external" href="https://en.wikipedia.org/wiki/Wiener_process">Weiner Process</a>.</p>
@@ -381,7 +436,7 @@ d R_{0t} &amp;= \eta (\bar{R}_{0t} - R_{0t}) dt + \sigma \sqrt{R_{0t}} dW_t\\
 <p>Even after lockdowns are first implemented, we see variation between 0.5 and 1.5.  Since countries are made of interconnecting cities with such variable contact rates, a high <span class="math notranslate nohighlight">\(\sigma\)</span> seems reasonable both intuitively and empirically.</p>
 </section>
 <section id="mortality-rates">
-<h3><span class="section-number">48.3.2. </span>Mortality Rates<a class="headerlink" href="#mortality-rates" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">49.3.2. </span>Mortality Rates<a class="headerlink" href="#mortality-rates" title="Permalink to this heading">#</a></h3>
 <p>Unlike the previous lecture, we will build up towards mortality rates which change over time.</p>
 <p>Imperfect mixing of different demographic groups could lead to aggregate shocks in mortality (e.g. if a retirement home is afflicted vs. an elementary school).  These sorts of relatively small changes might be best modeled as a continuous path process.</p>
 <p>Let <span class="math notranslate nohighlight">\(\delta(t)\)</span> be the mortality rate and in addition,</p>
@@ -393,14 +448,14 @@ d R_{0t} &amp;= \eta (\bar{R}_{0t} - R_{0t}) dt + \sigma \sqrt{R_{0t}} dW_t\\
 </ul>
 <p>Given this, the stochastic process for the mortality rate is,</p>
 <div class="math notranslate nohighlight" id="equation-dmt">
-<span class="eqno">(48.3)<a class="headerlink" href="#equation-dmt" title="Permalink to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(49.3)<a class="headerlink" href="#equation-dmt" title="Permalink to this equation">#</a></span>\[\begin{split}\begin{aligned}
 d \delta_t &amp; = \theta (\bar{\delta} - \delta_t) dt + \xi \sqrt{(\delta_t (1-\delta_t)} d W_t\\
 \end{aligned}\end{split}\]</div>
 <p>Where the <span class="math notranslate nohighlight">\(W_t\)</span> Brownian motion is independent from the previous process.</p>
 </section>
 <section id="system-of-sdes">
-<h3><span class="section-number">48.3.3. </span>System of SDEs<a class="headerlink" href="#system-of-sdes" title="Permalink to this heading">#</a></h3>
-<p>The system <a class="reference internal" href="#equation-sird">(48.1)</a> can be written in vector form <span class="math notranslate nohighlight">\(x := [s, i, r, d, R₀, \delta]\)</span> with parameter tuple parameter tuple <span class="math notranslate nohighlight">\(p := (\gamma, \eta, \sigma, \theta, \xi, \bar{R}_0(\cdot), \bar{ \delta})\)</span></p>
+<h3><span class="section-number">49.3.3. </span>System of SDEs<a class="headerlink" href="#system-of-sdes" title="Permalink to this heading">#</a></h3>
+<p>The system <a class="reference internal" href="#equation-sird">(49.1)</a> can be written in vector form <span class="math notranslate nohighlight">\(x := [s, i, r, d, R₀, \delta]\)</span> with parameter tuple parameter tuple <span class="math notranslate nohighlight">\(p := (\gamma, \eta, \sigma, \theta, \xi, \bar{R}_0(\cdot), \bar{ \delta})\)</span></p>
 <p>The general form of the SDE is.</p>
 <div class="math notranslate nohighlight">
 \[
@@ -410,7 +465,7 @@ d x_t &amp;= F(x_t,t;p)dt + G(x_t,t;p) dW
 \]</div>
 <p>With the drift,</p>
 <div class="math notranslate nohighlight" id="equation-dfcvsde">
-<span class="eqno">(48.4)<a class="headerlink" href="#equation-dfcvsde" title="Permalink to this equation">#</a></span>\[\begin{split}F(x,t;p) := \begin{bmatrix}
+<span class="eqno">(49.4)<a class="headerlink" href="#equation-dfcvsde" title="Permalink to this equation">#</a></span>\[\begin{split}F(x,t;p) := \begin{bmatrix}
     -\gamma \, R_0 \, s \,  i
     \\
     \gamma \, R_0 \,  s \,  i  - \gamma i
@@ -427,13 +482,13 @@ d x_t &amp;= F(x_t,t;p)dt + G(x_t,t;p) dW
 <p>Here, it is convenient but not necessary for <span class="math notranslate nohighlight">\(d W\)</span> to have the same dimension as <span class="math notranslate nohighlight">\(x\)</span>.  If so, then we can use a square matrix <span class="math notranslate nohighlight">\(G(x,t;p)\)</span> to associate the shocks with the appropriate <span class="math notranslate nohighlight">\(x\)</span> (e.g. diagonal noise, or using a covariance matrix).</p>
 <p>As the two independent sources of Brownian motion only affect the <span class="math notranslate nohighlight">\(d R_0\)</span> and <span class="math notranslate nohighlight">\(d \delta\)</span> terms (i.e. the 5th and 6th equations), define the covariance matrix as</p>
 <div class="math notranslate nohighlight" id="equation-dg">
-<span class="eqno">(48.5)<a class="headerlink" href="#equation-dg" title="Permalink to this equation">#</a></span>\[\begin{aligned}
+<span class="eqno">(49.5)<a class="headerlink" href="#equation-dg" title="Permalink to this equation">#</a></span>\[\begin{aligned}
 G(x, t) &amp;:= diag\left(\begin{bmatrix} 0 &amp; 0 &amp; 0 &amp; 0 &amp; \sigma \sqrt{R_0} &amp; \xi \sqrt{\delta (1-\delta)} \end{bmatrix}\right)
 \end{aligned}\]</div>
 </section>
 <section id="implementation">
-<h3><span class="section-number">48.3.4. </span>Implementation<a class="headerlink" href="#implementation" title="Permalink to this heading">#</a></h3>
-<p>First, construct our <span class="math notranslate nohighlight">\(F\)</span> from <a class="reference internal" href="#equation-dfcvsde">(48.4)</a> and <span class="math notranslate nohighlight">\(G\)</span> from <a class="reference internal" href="#equation-dg">(48.5)</a></p>
+<h3><span class="section-number">49.3.4. </span>Implementation<a class="headerlink" href="#implementation" title="Permalink to this heading">#</a></h3>
+<p>First, construct our <span class="math notranslate nohighlight">\(F\)</span> from <a class="reference internal" href="#equation-dfcvsde">(49.4)</a> and <span class="math notranslate nohighlight">\(G\)</span> from <a class="reference internal" href="#equation-dg">(49.5)</a></p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">function</span><span class="w"> </span><span class="n">F</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">)</span>
@@ -569,7 +624,7 @@ u0: 6-element Vector{Float64}:
 </ul>
 </section>
 <section id="ensembles">
-<h3><span class="section-number">48.3.5. </span>Ensembles<a class="headerlink" href="#ensembles" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">49.3.5. </span>Ensembles<a class="headerlink" href="#ensembles" title="Permalink to this heading">#</a></h3>
 <p>While individual simulations are useful, you often want to look at an ensemble of trajectories of the SDE in order to get an accurate picture of how the system evolves.</p>
 <p>To do this, use the <code class="docutils literal notranslate"><span class="pre">EnsembleProblem</span></code> in order to have the solution compute multiple trajectories at once. The returned <code class="docutils literal notranslate"><span class="pre">EnsembleSolution</span></code> acts like an array of solutions but is imbued to plot recipes to showcase aggregate quantities.</p>
 <p>For example:</p>
@@ -634,7 +689,7 @@ u0: 6-element Vector{Float64}:
 </ul>
 </section>
 <section id="changing-mitigation">
-<h3><span class="section-number">48.3.6. </span>Changing Mitigation<a class="headerlink" href="#changing-mitigation" title="Permalink to this heading">#</a></h3>
+<h3><span class="section-number">49.3.6. </span>Changing Mitigation<a class="headerlink" href="#changing-mitigation" title="Permalink to this heading">#</a></h3>
 <p>Consider a policy maker who wants to consider the impact of relaxing lockdown at various speeds.</p>
 <p>We will shut down the shocks to the mortality rate (i.e. <span class="math notranslate nohighlight">\(\xi = 0\)</span>) to focus on the variation caused by the volatility in <span class="math notranslate nohighlight">\(R_0(t)\)</span>.</p>
 <p>Consider <span class="math notranslate nohighlight">\(\eta = 1/50\)</span> and <span class="math notranslate nohighlight">\(\eta = 1/20\)</span>, where we start at the same initial condition of <span class="math notranslate nohighlight">\(R_0(0) = 0.5\)</span>.</p>
@@ -676,13 +731,13 @@ u0: 6-element Vector{Float64}:
 </section>
 </section>
 <section id="ending-lockdown">
-<h2><a class="toc-backref" href="#id6"><span class="section-number">48.4. </span>Ending Lockdown</a><a class="headerlink" href="#ending-lockdown" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id20"><span class="section-number">49.4. </span>Ending Lockdown</a><a class="headerlink" href="#ending-lockdown" title="Permalink to this heading">#</a></h2>
 <p>As in the deterministic lecture, we can consider two mitigation scenarios</p>
 <ol class="arabic simple">
 <li><p>choose <span class="math notranslate nohighlight">\(\bar{R}_0(t)\)</span> to target <span class="math notranslate nohighlight">\(R_0 = 0.5\)</span> for 30 days and then <span class="math notranslate nohighlight">\(R_0 = 2\)</span> for the remaining 17 months. This corresponds to lifting lockdown in 30 days.</p></li>
 <li><p>target <span class="math notranslate nohighlight">\(R_0 = 0.5\)</span> for 120 days and then <span class="math notranslate nohighlight">\(R_0 = 2\)</span> for the remaining 14 months. This corresponds to lifting lockdown in 4 months.</p></li>
 </ol>
-<p>Since empirical estimates of <span class="math notranslate nohighlight">\(R_0(t)\)</span> discussed in <span id="id1">[<a class="reference internal" href="../zreferences.html#id7" title="Jesús Fernández-Villaverde and Charles I Jones. Estimating and simulating a sird model of covid-19 for many countries, states, and cities. Working Paper 27128, National Bureau of Economic Research, May 2020. URL: http://www.nber.org/papers/w27128, doi:10.3386/w27128.">FVJ20</a>]</span> and other papers show it to have wide variation, we will maintain a fairly larger <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
+<p>Since empirical estimates of <span class="math notranslate nohighlight">\(R_0(t)\)</span> discussed in <span id="id5">[<a class="reference internal" href="../zreferences.html#id7" title="Jesús Fernández-Villaverde and Charles I Jones. Estimating and simulating a sird model of covid-19 for many countries, states, and cities. Working Paper 27128, National Bureau of Economic Research, May 2020. URL: http://www.nber.org/papers/w27128, doi:10.3386/w27128.">FVJ20</a>]</span> and other papers show it to have wide variation, we will maintain a fairly larger <span class="math notranslate nohighlight">\(\sigma\)</span>.</p>
 <p>We start the model with 100,000 active infections.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -816,12 +871,12 @@ u0: 6-element Vector{Float64}:
 </ul>
 </section>
 <section id="reinfection">
-<h2><a class="toc-backref" href="#id7"><span class="section-number">48.5. </span>Reinfection</a><a class="headerlink" href="#reinfection" title="Permalink to this heading">#</a></h2>
+<h2><a class="toc-backref" href="#id21"><span class="section-number">49.5. </span>Reinfection</a><a class="headerlink" href="#reinfection" title="Permalink to this heading">#</a></h2>
 <p>As a final experiment, consider a model where the immunity is only temporary, and individuals become susceptible again.</p>
 <p>In particular, assume that at rate <span class="math notranslate nohighlight">\(\nu\)</span> immunity is lost.  For illustration, we will examine the case if the average immunity lasts 12 months (i.e. <span class="math notranslate nohighlight">\(1/\nu = 360\)</span>)</p>
-<p>The transition modifies the differential equation <a class="reference internal" href="#equation-sird">(48.1)</a> to become</p>
+<p>The transition modifies the differential equation <a class="reference internal" href="#equation-sird">(49.1)</a> to become</p>
 <div class="math notranslate nohighlight" id="equation-sirdre">
-<span class="eqno">(48.6)<a class="headerlink" href="#equation-sirdre" title="Permalink to this equation">#</a></span>\[\begin{split}\begin{aligned}
+<span class="eqno">(49.6)<a class="headerlink" href="#equation-sirdre" title="Permalink to this equation">#</a></span>\[\begin{split}\begin{aligned}
      d s  &amp; = \left(- \gamma \, R_0 \, s \,  i + \nu \, r \right) dt
      \\
       d i  &amp; = \left(\gamma \, R_0 \, s \,  i  - \gamma i \right) dt
@@ -1287,57 +1342,57 @@ Float64
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   49. Schelling’s Segregation Model
+   50. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   50. A Lake Model of Employment and Unemployment
+   51. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   51. Rational Expectations Equilibrium
+   52. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   52. Markov Perfect Equilibrium
+   53. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   53. Asset Pricing I: Finite State Models
+   54. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   54. Asset Pricing II: The Lucas Asset Pricing Model
+   55. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   55. Asset Pricing III:  Incomplete Markets
+   56. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   56. Uncertainty Traps
+   57. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   57. The Aiyagari Model
+   58. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   58. Default Risk and Income Fluctuations
+   59. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   59. Globalization and Cycles
+   60. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1349,22 +1404,22 @@ Float64
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   60. About these Lectures
+   61. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   61. Troubleshooting
+   62. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   62. References
+   63. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   63. Execution Statistics
+   64. Execution Statistics
   </a>
  </li>
 </ul>

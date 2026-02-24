@@ -308,7 +308,8 @@ look at are <a class="reference external" href="https://github.com/JuliaMatrices
 </ol>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">BenchmarkTools</span><span class="p">,</span><span class="w"> </span><span class="n">SparseArrays</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span><span class="p">;</span><span class="w"> </span><span class="n">pkgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;BandedMatrices&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;BenchmarkTools&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Graphs&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Plots&quot;</span><span class="p">];</span><span class="w"> </span><span class="n">all</span><span class="p">(</span><span class="n">haskey</span><span class="o">.</span><span class="p">(</span><span class="kt">Ref</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">project</span><span class="p">()</span><span class="o">.</span><span class="n">dependencies</span><span class="p">),</span><span class="w"> </span><span class="n">pkgs</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pkgs</span><span class="p">)</span>
+<span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">BenchmarkTools</span><span class="p">,</span><span class="w"> </span><span class="n">SparseArrays</span><span class="p">,</span><span class="w"> </span><span class="n">Random</span>
 <span class="k">using</span><span class="w"> </span><span class="n">BandedMatrices</span><span class="p">,</span><span class="w"> </span><span class="n">Graphs</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span>
 <span class="n">Random</span><span class="o">.</span><span class="n">seed!</span><span class="p">(</span><span class="mi">42</span><span class="p">);</span><span class="w">  </span><span class="c"># seed random numbers for reproducibility</span>
 </pre></div>
@@ -444,7 +445,9 @@ that might come out of a Markov chain or a discretization of a diffusion process
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>nnz(A) / 20 ^ 2 = 0.34
-nnz(A&#39; * A) / 21 ^ 2 = 
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>nnz(A&#39; * A) / 21 ^ 2 = 
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.9229024943310657
@@ -493,17 +496,17 @@ have a lower computational order than unstructured dense, or even unstructured s
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A\b for typeof(A) = Tridiagonal{Float64, Vector{Float64}}
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  24.125 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  23.802 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (20 allocations: 47.39 KiB)
 A\b for typeof(A) = SparseMatrixCSC{Float64, Int64}
-  521.554 μs
+  529.231 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (95 allocations: 1.03 MiB)
 A\b for typeof(A) = Matrix{Float64}
-  12.373 ms
+  15.814 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (9 allocations: 7.64 MiB)
@@ -639,9 +642,9 @@ x = A^{-1} b
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Float64}:
- -0.4172203630414311
-  0.01047937208058601
-  9.118506847017617
+ -0.4172203630414315
+  0.010479372080586132
+  9.118506847017615
  -4.99195905422948
 </pre></div>
 </div>
@@ -683,15 +686,15 @@ x = A^{-1} b
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  201.426 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  218.374 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (132 allocations: 207.12 KiB)
-  162.714 μs
+  163.799 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (159 allocations: 157.52 KiB)
-  90.539 μs
+  108.697 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (8 allocations: 102.64 KiB)
@@ -729,8 +732,8 @@ x = A^{-1} b
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
- 0.0
- 0.0
+ 1.1102230246251563e-17
+ 2.2204460492503132e-17
  0.3333333333333333
 </pre></div>
 </div>
@@ -803,7 +806,7 @@ U factor:
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4-element Vector{Float64}:
-  0.3734712417577136
+  0.3734712417577138
  -2.072936783435963
  -0.08980746803909484
   1.8007954892470772
@@ -885,7 +888,7 @@ U x &amp;= y
   0.6455522128314688
  -0.2655926740726696
   5.327941090151101
-  0.47333580651201723
+  0.47333580651201745
 </pre></div>
 </div>
 </div>
@@ -945,12 +948,12 @@ so will the sparse solvers</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A\b for typeof(A) = Tridiagonal{Float64, Vector{Float64}}
-  24.405 μs
+  24.138 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (20 allocations: 47.39 KiB)
 A\b for typeof(A) = SparseMatrixCSC{Float64, Int64}
-  514.890 μs
+  535.261 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (95 allocations: 1.03 MiB)
@@ -1012,16 +1015,16 @@ Cholesky, because Julia doesn’t know that the matrix is positive semi-definite
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A\b for typeof(A) = Symmetric{Float64, Matrix{Float64}}
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  1.829 ms
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  2.101 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (13 allocations: 2.16 MiB)
 A\b for typeof(A) = Matrix{Float64}
-  2.738 ms
+  3.078 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (9 allocations: 1.92 MiB)
-  1.115 ms
+  1.638 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (6 allocations: 1.91 MiB)
@@ -1063,9 +1066,9 @@ R x = Q' b
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
- -0.5238169732680477
- -0.12063059869195494
-  0.8918137920710699
+ -0.5238169732680474
+ -0.1206305986919548
+  0.8918137920710696
 </pre></div>
 </div>
 </div>
@@ -1087,7 +1090,7 @@ R x = Q' b
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3-element Vector{Float64}:
- -0.5238169732680475
+ -0.5238169732680474
  -0.12063059869195454
   0.8918137920710694
 </pre></div>
@@ -1132,11 +1135,11 @@ factorization with <code class="docutils literal notranslate"><span class="pre">
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A \ b = [-1.0375649582146846, -12.139453854554883, 6.356088063778175, 3.8473591088663284, 2.045532886550066]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A \ b = [-1.0375649582146824, -12.13945385455487, 6.3560880637781665, 3.8473591088663253, 2.045532886550064]
 qr(A) \ b = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-1.0375649582146882, -12.13945385455488, 6.356088063778179, 3.8473591088663257, 2.045532886550066]
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[-1.0375649582146873, -12.139453854554878, 6.356088063778177, 3.8473591088663257, 2.045532886550066]
 </pre></div>
 </div>
 </div>
@@ -1163,7 +1166,7 @@ A = Q \Lambda Q^{-1}
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.9801437366711736e-15
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>3.3961189709663296e-15
 </pre></div>
 </div>
 </div>
@@ -1462,14 +1465,14 @@ case, we can verify that it is the last one.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8-element Vector{Float64}:
- 0.16666666666666669
+ 0.16666666666666677
  0.1666666666666665
- 0.16666666666666669
- 0.1666666666666668
- 0.08333333333333327
- 0.08333333333333344
- 0.08333333333333331
- 0.0833333333333334
+ 0.16666666666666682
+ 0.16666666666666666
+ 0.08333333333333325
+ 0.08333333333333345
+ 0.0833333333333333
+ 0.08333333333333337
 </pre></div>
 </div>
 </div>
@@ -1651,12 +1654,12 @@ total width of main-, sub-, and super-diagonals is called the bandwidth.  For ex
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>7-element Vector{Float64}:
- -1.6369592693831976
+ -1.6369592693831965
   1.6204127338847327
-  1.6129642421666923
-  2.2654589446799656
- -1.015461108463952
- -1.0012568753722138
+  1.6129642421666908
+  2.2654589446799647
+ -1.0154611084639515
+ -1.0012568753722133
   0.9146445743712437
 </pre></div>
 </div>
@@ -1724,7 +1727,7 @@ smaller matrices/vectors since it can lead to better <a class="reference externa
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  368.380 ns
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  223.763 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (2 allocations: 944 bytes)
@@ -1765,11 +1768,11 @@ is by convention the modified variable.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  368.249 ns
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  217.833 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (2 allocations: 944 bytes)
-  329.819 ns
+  188.602 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -1807,16 +1810,16 @@ solution vector.</p>
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>10-element Vector{Float64}:
-  2.3013974055322075
-  0.0846873817770798
-  0.7473201607390058
- -2.747417513346127
- -1.693278785858056
-  0.12375574392037846
- -1.4428955275936808
-  1.3411435637041682
-  2.761463941320383
-  0.07288425762859393
+  2.301397405532209
+  0.08468738177707942
+  0.7473201607390055
+ -2.747417513346128
+ -1.6932787858580565
+  0.12375574392037789
+ -1.4428955275936803
+  1.3411435637041675
+  2.761463941320385
+  0.07288425762859364
 </pre></div>
 </div>
 </div>
@@ -1900,7 +1903,9 @@ appropriate <code class="docutils literal notranslate"><span class="pre">Abstrac
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>A[2, 1] = 100.0
-B[1] = 100.0
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>B[1] = 100.0
 </pre></div>
 </div>
 </div>
@@ -2411,57 +2416,57 @@ C_{ij} = A_{i,:} \cdot B_{:,j}
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   49. Schelling’s Segregation Model
+   50. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   50. A Lake Model of Employment and Unemployment
+   51. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   51. Rational Expectations Equilibrium
+   52. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   52. Markov Perfect Equilibrium
+   53. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   53. Asset Pricing I: Finite State Models
+   54. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   54. Asset Pricing II: The Lucas Asset Pricing Model
+   55. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   55. Asset Pricing III:  Incomplete Markets
+   56. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   56. Uncertainty Traps
+   57. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   57. The Aiyagari Model
+   58. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   58. Default Risk and Income Fluctuations
+   59. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   59. Globalization and Cycles
+   60. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -2473,22 +2478,22 @@ C_{ij} = A_{i,:} \cdot B_{:,j}
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   60. About these Lectures
+   61. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   61. Troubleshooting
+   62. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   62. References
+   63. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   63. Execution Statistics
+   64. Execution Statistics
   </a>
  </li>
 </ul>

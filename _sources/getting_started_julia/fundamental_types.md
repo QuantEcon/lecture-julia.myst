@@ -50,6 +50,7 @@ In this lecture we give more details on
 ---
 tags: [hide-output]
 ---
+using Pkg; pkgs = ["MatrixEquations", "StaticArrays"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using MatrixEquations, StaticArrays
 ```

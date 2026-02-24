@@ -282,7 +282,8 @@ const thebe_selector_output = ".output, .cell_output"
 <p>See <a class="reference internal" href="auto_differentiation.html"><span class="doc">auto-differentiation</span></a> for more on calculating gradients and Jacobians for these types of algorithms.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">BenchmarkTools</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span><span class="p">;</span><span class="w"> </span><span class="n">pkgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;BenchmarkTools&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Enzyme&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;FixedPointAcceleration&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;ForwardDiff&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NLsolve&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NonlinearSolve&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Optim&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Optimization&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;OptimizationOptimJL&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Roots&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;StaticArrays&quot;</span><span class="p">];</span><span class="w"> </span><span class="n">all</span><span class="p">(</span><span class="n">haskey</span><span class="o">.</span><span class="p">(</span><span class="kt">Ref</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">project</span><span class="p">()</span><span class="o">.</span><span class="n">dependencies</span><span class="p">),</span><span class="w"> </span><span class="n">pkgs</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pkgs</span><span class="p">)</span>
+<span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">BenchmarkTools</span>
 <span class="k">using</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="p">,</span><span class="w"> </span><span class="n">Optim</span><span class="p">,</span><span class="w"> </span><span class="n">Roots</span><span class="p">,</span><span class="w"> </span><span class="n">NLsolve</span>
 <span class="k">using</span><span class="w"> </span><span class="n">FixedPointAcceleration</span><span class="p">,</span><span class="w"> </span><span class="n">NonlinearSolve</span>
 <span class="k">using</span><span class="w"> </span><span class="n">Optimization</span><span class="p">,</span><span class="w"> </span><span class="n">OptimizationOptimJL</span><span class="p">,</span><span class="w"> </span><span class="n">ForwardDiff</span><span class="p">,</span><span class="w"> </span><span class="n">Enzyme</span>
@@ -392,7 +393,7 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>minimum = 5.378388330692143e-17 with argmin = [0.9999999926662504, 0.9999999853325008] in 24 iterations
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>minimum = 5.3784046148998115e-17 with argmin = [0.9999999926662393, 0.9999999853324786] in 24 iterations
 </pre></div>
 </div>
 </div>
@@ -452,7 +453,7 @@ defaults to a robust hybrid optimization routine called <a class="reference exte
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> * Status: failure (reached maximum number of iterations)
 
  * Candidate solution
-    Final objective value:     4.626740e-02
+    Final objective value:     1.595707e-03
 
  * Found with
     Algorithm:     Simulated Annealing
@@ -575,8 +576,8 @@ u: 2-element Vector{Float64}:
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>retcode: Success
 u: 2-element Vector{Float64}:
- 0.9999999999373614
- 0.999999999868622
+ 0.9999999999373603
+ 0.99999999986862
 </pre></div>
 </div>
 </div>
@@ -593,8 +594,8 @@ u: 2-element Vector{Float64}:
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>retcode: Success
 u: 2-element Vector{Float64}:
- 0.9999999999373613
- 0.9999999998686219
+ 0.9999999999373603
+ 0.9999999998686199
 </pre></div>
 </div>
 </div>
@@ -640,9 +641,10 @@ u: 2-element Vector{Float64}:
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sol.u = [1.4142135623730951, 1.4142135623730951]
+sol.retcode = 
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>sol.retcode = SciMLBase.ReturnCode.Success
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SciMLBase.ReturnCode.Success
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>SciMLBase.NLStats
@@ -685,15 +687,15 @@ Number of nonlinear solver iterations:             5
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>BenchmarkTools.Trial: 10000 samples with 1 evaluation per sample.
- Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">17.733 μs</span> … <span class=" -Color -Color-Magenta">91.611 μs</span>  ┊ GC (min … max): 0.00% … 0.00%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">18.544 μs              </span>┊ GC (median):    0.00%
- Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">18.888 μs</span> ± <span class=" -Color -Color-Green"> 1.991 μs</span>  ┊ GC (mean ± σ):  0.00% ± 0.00%
+ Range (<span class=" -Color -Color-Bold -Color-Bold-Cyan">min</span> … <span class=" -Color -Color-Magenta">max</span>):  <span class=" -Color -Color-Bold -Color-Bold-Cyan">16.200 μs</span> … <span class=" -Color -Color-Magenta">92.086 μs</span>  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Blue">median</span>):     <span class=" -Color -Color-Bold -Color-Bold-Blue">16.701 μs              </span>┊ GC (median):    0.00%
+ Time  (<span class=" -Color -Color-Bold -Color-Bold-Green">mean</span> ± <span class=" -Color -Color-Green">σ</span>):   <span class=" -Color -Color-Bold -Color-Bold-Green">16.912 μs</span> ± <span class=" -Color -Color-Green"> 1.407 μs</span>  ┊ GC (mean ± σ):  0.00% ± 0.00%
 
-    ▆█<span class=" -Color -Color-Blue">▇</span>▄<span class=" -Color -Color-Green"> </span>                                                      
-  ▃▇██<span class=" -Color -Color-Blue">█</span>█<span class=" -Color -Color-Green">█</span>▆▅▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂▂▂▂▂▂▂▂▁▂▂▁▂▁▂▁▁▁▂▂▂▂▂▂▂▂▂ ▃
-  17.7 μs         Histogram: frequency by time        28.6 μs <span class=" -Color -Color-Bold">&lt;</span>
+    ▅█▆<span class=" -Color -Color-Blue">▄</span>▂<span class=" -Color -Color-Green"> </span>                                                     
+  ▂▅███<span class=" -Color -Color-Blue">█</span>█<span class=" -Color -Color-Green">▇</span>▆▅▄▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▂▂▁▁▁▁▁▂▁▁▁▁▁▁▂▂▂▂▂▂▂▂▂▂▂ ▃
+  16.2 μs         Histogram: frequency by time        22.1 μs <span class=" -Color -Color-Bold">&lt;</span>
 
- Memory estimate: <span class=" -Color -Color-Yellow">7.05 KiB</span>, allocs estimate: <span class=" -Color -Color-Yellow">132</span>.
+ Memory estimate: <span class=" -Color -Color-Yellow">7.06 KiB</span>, allocs estimate: <span class=" -Color -Color-Yellow">132</span>.
 </pre></div>
 </div>
 </div>
@@ -730,10 +732,10 @@ u0: 2-element Vector{Float64}:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  10.089 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  9.689 μs
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (99 allocations: 6.05 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (99 allocations: 6.06 KiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>retcode: Success
@@ -758,10 +760,10 @@ u: 2-element Vector{Float64}:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  8.997 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  8.703 μs
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (65 allocations: 4.42 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (65 allocations: 4.44 KiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>retcode: Success
@@ -792,10 +794,10 @@ u: 2-element Vector{Float64}:
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  10.038 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  9.682 μs
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (99 allocations: 6.05 KiB)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (99 allocations: 6.06 KiB)
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>retcode: Success
@@ -837,7 +839,7 @@ u0: 2-element SVector{2, Float64} with indices SOneTo(2):
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  47.315 ns
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  49.624 ns
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (0 allocations: 0 bytes)
@@ -871,11 +873,11 @@ u: 2-element SVector{2, Float64} with indices SOneTo(2):
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  48.760 μs
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  48.319 μs
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (862 allocations: 323.65 KiB)
-  2.507 ms
+  2.101 ms
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> (21324 allocations: 16.03 MiB)
@@ -913,7 +915,7 @@ u: 2-element Vector{Float64}:
 </div>
 <div class="cell_output docutils container">
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>retcode: Success
-u: 1.4142135623730951
+u: 1.414213562373095
 </pre></div>
 </div>
 </div>
@@ -994,7 +996,7 @@ u: 1.4142135623730951
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged=true at root=[-3.7818049096324184e-16, 1.0000000000000002] in 4 iterations and 5 function calls
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged=true at root=[-3.487552479724522e-16, 1.0000000000000002] in 4 iterations and 5 function calls
 </pre></div>
 </div>
 </div>
@@ -1015,7 +1017,7 @@ u: 1.4142135623730951
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged=true at root=[-3.7818049096324184e-16, 1.0000000000000002] in 4 iterations and 5 function calls
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>converged=true at root=[-3.487552479724522e-16, 1.0000000000000002] in 4 iterations and 5 function calls
 </pre></div>
 </div>
 </div>
@@ -1377,57 +1379,57 @@ u: 1.4142135623730951
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   49. Schelling’s Segregation Model
+   50. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   50. A Lake Model of Employment and Unemployment
+   51. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   51. Rational Expectations Equilibrium
+   52. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   52. Markov Perfect Equilibrium
+   53. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   53. Asset Pricing I: Finite State Models
+   54. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   54. Asset Pricing II: The Lucas Asset Pricing Model
+   55. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   55. Asset Pricing III:  Incomplete Markets
+   56. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   56. Uncertainty Traps
+   57. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   57. The Aiyagari Model
+   58. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   58. Default Risk and Income Fluctuations
+   59. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   59. Globalization and Cycles
+   60. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1439,22 +1441,22 @@ u: 1.4142135623730951
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   60. About these Lectures
+   61. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   61. Troubleshooting
+   62. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   62. References
+   63. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   63. Execution Statistics
+   64. Execution Statistics
   </a>
  </li>
 </ul>

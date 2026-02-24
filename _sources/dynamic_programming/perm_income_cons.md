@@ -70,6 +70,7 @@ The model will prove useful for illustrating concepts such as
 ---
 tags: [hide-output]
 ---
+using Pkg; pkgs = ["LaTeXStrings", "Plots", "QuantEcon"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using LaTeXStrings, Plots, QuantEcon, Random
 ```

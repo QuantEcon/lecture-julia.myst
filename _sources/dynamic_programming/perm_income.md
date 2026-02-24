@@ -50,6 +50,7 @@ Background readings on the linear-quadratic-Gaussian permanent income model are 
 ---
 tags: [hide-output]
 ---
+using Pkg; pkgs = ["Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics
 using Plots, Random
 ```

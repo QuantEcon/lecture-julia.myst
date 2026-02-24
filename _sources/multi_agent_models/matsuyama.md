@@ -333,9 +333,14 @@ Here's the main body of code.
 tags: [remove-cell]
 ---
 using Test
+using Plots
 ```
 
 ```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; pkgs = ["Plots"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LinearAlgebra, Statistics, Plots
 
 ```

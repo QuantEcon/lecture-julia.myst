@@ -63,9 +63,59 @@ using Test # Put this before any code in the lecture.
 In addition, we will be exploring packages within the [SciML ecosystem](https://github.com/SciML/) and
 others covered in previous lectures
 
+# {index}`Modeling Shocks in COVID 19 with Stochastic Differential Equations <single: Modeling Shocks in COVID 19 with Stochastic Differential Equations>`
+
+```{contents} Contents
+:depth: 2
+```
+
+## Overview
+
+Coauthored with Chris Rackauckas
+
+This lecture continues the analyzing of the COVID-19 pandemic established in {doc}`this lecture <seir_model>`.
+
+As before, the model is inspired by
+*  Notes from [Andrew Atkeson](https://sites.google.com/site/andyatkeson/) and [NBER Working Paper No. 26867](https://www.nber.org/papers/w26867)
+* [Estimating and Forecasting Disease Scenarios for COVID-19 with an SIR Model](https://www.nber.org/papers/w27335) by Andrew Atkeson, Karen Kopecky and Tao Zha
+* [Estimating and Simulating a SIRD Model of COVID-19 for Many Countries, States, and Cities](https://www.nber.org/papers/w27128) by Jesús Fernández-Villaverde and Charles I. Jones
+* Further variations on the classic SIR model in Julia  [here](https://github.com/epirecipes/sir-julia).
+
+Here we extend the model to include policy-relevant aggregate shocks.
+
+### Continuous-Time Stochastic Processes
+
+In continuous-time, there is an important distinction between randomness that leads to continuous paths vs. those which have ([almost surely right-continuous](https://en.wikipedia.org/wiki/C%C3%A0dl%C3%A0g)) jumps in their paths.  The most tractable of these includes the theory of [Levy Processes](https://en.wikipedia.org/wiki/L%C3%A9vy_process).
+
+Among the appealing features of Levy Processes is that they fit well into the sorts of Markov modeling techniques that economists tend to use in discrete time, and usually fulfill the measurability required for calculating expected present discounted values.
+
+Unlike in discrete-time, where a modeller has license to be creative, the rules of continuous-time stochastic processes are much stricter.  One can show that a Levy process's noise can be decomposed into two portions:
+
+1. [Weiner Processes](https://en.wikipedia.org/wiki/Wiener_process) (as known as Brownian Motion) which leads to a diffusion equations, and is the only continuous-time Levy process with continuous paths
+1. [Poisson Processes](https://en.wikipedia.org/wiki/Poisson_point_process) with an arrival rate of jumps in the variable.
+
+Every other Levy Process can be represented by these building blocks (e.g. a [Diffusion Process](https://en.wikipedia.org/wiki/Diffusion_process) such as Geometric Brownian Motion is a transformation of a Weiner process, a [jump diffusion](https://en.wikipedia.org/wiki/Jump_diffusion#In_economics_and_finance) is a diffusion process with a Poisson arrival of jumps, and a continuous-time markov chain (CMTC) is a Poisson process jumping between a finite number of states).
+
+In this lecture, we will examine shocks driven by transformations of Brownian motion, as the prototypical Stochastic Differential Equation (SDE).
+
 ```{code-cell} julia
+---
+tags: [remove-cell]
+---
+using Test # Put this before any code in the lecture.
+```
+
+In addition, we will be exploring packages within the [SciML ecosystem](https://github.com/SciML/) and
+others covered in previous lectures
+
+```{code-cell} julia
+---
+tags: [hide-output]
+---
+using Pkg; pkgs = ["LaTeXStrings", "OrdinaryDiffEq", "Plots", "StochasticDiffEq"]; all(haskey.(Ref(Pkg.project().dependencies), pkgs)) || Pkg.add(pkgs)
 using LaTeXStrings, LinearAlgebra, Random, SparseArrays, Statistics
-using OrdinaryDiffEq, StochasticDiffEq, Plots
+using OrdinaryDiffEq, StochasticDiffEq
+using Plots
 ```
 
 ## The Basic SIR/SIRD Model

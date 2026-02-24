@@ -277,7 +277,8 @@ const thebe_selector_output = ".output, .cell_output"
 <p>In this section we will explore the related concepts of quadrature, interpolation, and discretization of continuous functions and distributions.</p>
 <div class="cell tag_hide-output docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">Distributions</span>
+<div class="highlight-julia notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="n">Pkg</span><span class="p">;</span><span class="w"> </span><span class="n">pkgs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;Distributions&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;FastGaussQuadrature&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Interpolations&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Plots&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;QuadGK&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;QuantEcon&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SpecialFunctions&quot;</span><span class="p">];</span><span class="w"> </span><span class="n">all</span><span class="p">(</span><span class="n">haskey</span><span class="o">.</span><span class="p">(</span><span class="kt">Ref</span><span class="p">(</span><span class="n">Pkg</span><span class="o">.</span><span class="n">project</span><span class="p">()</span><span class="o">.</span><span class="n">dependencies</span><span class="p">),</span><span class="w"> </span><span class="n">pkgs</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">Pkg</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pkgs</span><span class="p">)</span>
+<span class="k">using</span><span class="w"> </span><span class="n">LinearAlgebra</span><span class="p">,</span><span class="w"> </span><span class="n">Statistics</span><span class="p">,</span><span class="w"> </span><span class="n">Distributions</span>
 <span class="k">using</span><span class="w"> </span><span class="n">QuadGK</span><span class="p">,</span><span class="w"> </span><span class="n">FastGaussQuadrature</span><span class="p">,</span><span class="w"> </span><span class="n">SpecialFunctions</span>
 <span class="k">using</span><span class="w"> </span><span class="n">Interpolations</span><span class="p">,</span><span class="w"> </span><span class="n">Plots</span>
 <span class="k">using</span><span class="w"> </span><span class="n">QuantEcon</span>
@@ -330,7 +331,7 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dot(w, f.(x)) = 0.6666666666666665
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dot(w, f.(x)) = 0.6666666666666667
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
@@ -380,10 +381,10 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(F, 1000)))) = (0.29999999999999993, 0.2947785575037843)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(F, 1000)))) = (0.29999999999999993, 0.29640862560340747)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w2, f.(x2)), mean(f.(rand(F2, 1000)))) = (0.16339869281045832, 0.15385088761558777)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w2, f.(x2)), mean(f.(rand(F2, 1000)))) = (0.1633986928104583, 0.16368028079398225)
 </pre></div>
 </div>
 </div>
@@ -415,10 +416,10 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Normal(1.0, 0.1), 1000)))) = (1.01, 1.024484062013655)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Normal(1.0, 0.1), 1000)))) = (1.0100000000000002, 1.0047319848651577)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w2, f.(x2)), mean(f.(rand(Normal(0.0, 0.05), 1000)))) = (0.0024999999999999996, 0.0026770767239797217)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w2, f.(x2)), mean(f.(rand(Normal(0.0, 0.05), 1000)))) = (0.002499999999999999, 0.002500849093881434)
 </pre></div>
 </div>
 </div>
@@ -446,13 +447,13 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Exponential(theta), 1000)))) = (1.499999999999965, 1.4660558338372618)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Exponential(theta), 1000)))) = (1.499999999999965, 1.4694835324099949)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1.499999999999965, 1.4660558338372618)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(1.499999999999965, 1.4694835324099949)
 </pre></div>
 </div>
 </div>
@@ -485,13 +486,13 @@ const thebe_selector_output = ".output, .cell_output"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Gamma(alpha, theta), 100000)))) = (68.76000000000175, 68.63000764356177)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(dot(w, f.(x)), mean(f.(rand(Gamma(alpha, theta), 100000)))) = (68.76000000000177, 68.97347780863942)
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
 </pre></div>
 </div>
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(68.76000000000175, 68.63000764356177)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(68.76000000000177, 68.97347780863942)
 </pre></div>
 </div>
 </div>
@@ -601,10 +602,7 @@ for regular grids since <code class="docutils literal notranslate"><span class="
 interp_cubic(3, 2) = 1.6094379124341
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>interp_cubic(3.1, 2.1) = 
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.6486586594237707
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>interp_cubic(3.1, 2.1) = 1.6486586594237707
 </pre></div>
 </div>
 <div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.6486586594237707
@@ -1138,57 +1136,57 @@ Transition probabilities from state x = 2.0000000000000004:
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/schelling.html">
-   49. Schelling’s Segregation Model
+   50. Schelling’s Segregation Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lake_model.html">
-   50. A Lake Model of Employment and Unemployment
+   51. A Lake Model of Employment and Unemployment
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/rational_expectations.html">
-   51. Rational Expectations Equilibrium
+   52. Rational Expectations Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_perf.html">
-   52. Markov Perfect Equilibrium
+   53. Markov Perfect Equilibrium
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/markov_asset.html">
-   53. Asset Pricing I: Finite State Models
+   54. Asset Pricing I: Finite State Models
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/lucas_model.html">
-   54. Asset Pricing II: The Lucas Asset Pricing Model
+   55. Asset Pricing II: The Lucas Asset Pricing Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/harrison_kreps.html">
-   55. Asset Pricing III:  Incomplete Markets
+   56. Asset Pricing III:  Incomplete Markets
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/uncertainty_traps.html">
-   56. Uncertainty Traps
+   57. Uncertainty Traps
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/aiyagari.html">
-   57. The Aiyagari Model
+   58. The Aiyagari Model
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/arellano.html">
-   58. Default Risk and Income Fluctuations
+   59. Default Risk and Income Fluctuations
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../multi_agent_models/matsuyama.html">
-   59. Globalization and Cycles
+   60. Globalization and Cycles
   </a>
  </li>
 </ul>
@@ -1200,22 +1198,22 @@ Transition probabilities from state x = 2.0000000000000004:
 <ul class="nav bd-sidenav nav sidenav_l1">
  <li class="toctree-l1">
   <a class="reference internal" href="../about_lectures.html">
-   60. About these Lectures
+   61. About these Lectures
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../troubleshooting.html">
-   61. Troubleshooting
+   62. Troubleshooting
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../zreferences.html">
-   62. References
+   63. References
   </a>
  </li>
  <li class="toctree-l1">
   <a class="reference internal" href="../status.html">
-   63. Execution Statistics
+   64. Execution Statistics
   </a>
  </li>
 </ul>
