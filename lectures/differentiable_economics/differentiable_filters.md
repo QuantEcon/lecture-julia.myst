@@ -100,7 +100,6 @@ This makes the natural data structure **arrays of arrays** (e.g., `Vector{SVecto
 | `mul!!(Y, A, B, α, β)` | `mul!(Y,A,B,α,β); return Y` | `return α*(A*B) + β*Y` | Accumulate: `Y = αAB + βY` |
 | `muladd!!(Y, A, B)` | `mul!(Y,A,B,1.0,1.0); return Y` | `return Y + A*B` | `Y += A*B` |
 | `copyto!!(Y, X)` | `copyto!(Y,X); return Y` | `return X` | Copy data |
-| `assign!!(Y, X)` | loop `Y[i]=X[i]; return Y` | `return X` | Enzyme-safe copy (avoids `Base.copyto!`) |
 
 ```{code-cell} julia
 @inline function mul!!(Y, A, B)
@@ -146,20 +145,7 @@ We also define no-op specializations for `nothing` arguments. This lets us write
         return X
     end
 end
-
-@inline function assign!!(Y, X)
-    if ismutable(Y)
-        @inbounds for i in eachindex(X)
-            Y[i] = X[i]
-        end
-        return Y
-    else
-        return X
-    end
-end
 ```
-
-`assign!!` in this pattern helps to avoid `copyto!!` since Enzyme can have issues with runtime activity analysis errors when overwriting an initial condition in an output buffer.
 
 ### Prototype-Based Allocation
 
@@ -217,7 +203,7 @@ To implement this for both static and preallocated arrays, the state transition 
     T = length(w)
 
     # Initialize first state
-    x[1] = assign!!(x[1], x_0)
+    x[1] = copyto!!(x[1], x_0)
 
     @inbounds for t in 1:T
         x[t + 1] = f!!(x[t + 1], x[t], w[t], p, t - 1) 
@@ -645,10 +631,8 @@ function kalman!(mu, Sigma, y, mu_0, Sigma_0, model, cache;
     zero_kalman_cache!!(cache)
 
     # Initialize: μ₁ = μ₀, Σ₁ = Σ₀
-    # Use assign!! (not copyto!!) to avoid aliasing between Sigma[1] and Sigma_0,
-    # which would prevent Enzyme from differentiating through Sigma_0.
-    mu[1] = assign!!(mu[1], mu_0)
-    Sigma[1] = assign!!(Sigma[1], Sigma_0)
+    mu[1] = copyto!!(mu[1], mu_0)
+    Sigma[1] = copyto!!(Sigma[1], Sigma_0)
 
     loglik = zero(eltype(mu[1]))
     is_mutable = ismutable(mu[1])

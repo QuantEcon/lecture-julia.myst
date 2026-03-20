@@ -299,10 +299,9 @@ function step!(x_next, x, A, cache)
         # loops are encouraged, but be careful to avoid temp allocations
         cache.tmp[i] += 0.1 * i
     end
-    # Enzyme can have activity analysis issues with copy!/copyto!
-    @inbounds for i in eachindex(cache.tmp)
-        x_next[i] = cache.tmp[i]
-    end
+    # Plain copyto! compiles to memcpy which Enzyme handles natively.
+    # Broadcasting (.=) into views/slices is what triggers activity analysis issues.
+    copyto!(x_next, cache.tmp)
     return nothing
 end
 
@@ -351,24 +350,26 @@ Enzyme performs static activity analysis to determine which values affect deriva
 You may encounter: "Detected potential need for runtime activity."
 
 This occurs when Enzyme cannot statically determine if memory is constant or active (differentiable). Common triggers:
-- `copyto!` or `copy!` between arrays with mixed activity (e.g., `Const` source to `Duplicated` destination)
+- Broadcasting assignments (`.=`) between arrays with mixed activity (e.g., `Const` source to `Duplicated` destination)
 - Broadcasting assignments like `x[:, 1] .= x_0`
 - Closures capturing mutable state
 
 **Never** fix this by enabling runtime activity flags (e.g., `set_runtime_activity(Reverse)`). This masks the issue and can produce incorrect gradients. Always restructure your code.
 
 #### The Manual Loop Workaround
-Replace problematic assignments with explicit loops:
+Plain `Base.copyto!(dest, src)` between two arrays compiles to `memcpy`/`memmove` at the LLVM level, which Enzyme handles natively. The issue is specifically with **broadcasting** assignments (`.=`), which go through `broadcast_unalias` → `mightalias` and confuse activity analysis.
+
+When writing into a view or slice (e.g., a column of a matrix), replace the broadcast with an explicit loop:
 
 ```{code-block} julia
-# Instead of: copyto!(x[:, 1], x_0) or x[:, 1] .= x_0
+# Instead of: x[:, 1] .= x_0
 # Use:
 @inbounds for i in eachindex(x_0)
     x[i, 1] = x_0[i]
 end
 ```
 
-Enzyme handles explicit loops reliably because each scalar assignment has clear activity.
+Enzyme handles explicit loops reliably because each scalar assignment has clear activity. For plain array-to-array copies, `copyto!(dest, src)` works fine.
 
 #### General Tips
 - Keep array operations explicit when mixing `Const` and `Duplicated` arguments

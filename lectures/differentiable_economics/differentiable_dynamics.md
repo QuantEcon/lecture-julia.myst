@@ -106,7 +106,7 @@ function simulate_lss!(x, y, model, x_0, w, v)
     @assert size(H, 1) == M
     @assert length(x_0) == N
 
-    # Enzyme has challenges with activity analysis on copyto!/broadcasting assignments
+    # Enzyme has challenges with activity analysis on broadcasting (.=) assignments
     @inbounds for i in 1:N
         x[i, 1] = x_0[i]
     end
@@ -127,7 +127,7 @@ end
 ```
 
 ```{note}
-We use a manual loop instead of `copyto!` or broadcasting for the initial condition assignment because Enzyme has challenges with activity analysis on these operations. When `x_0` is `Const` but `x` is `Duplicated`, `copyto!` triggers a "Detected potential need for runtime activity" error. The explicit loop avoids this issue. See the {doc}`auto-differentiation <../more_julia/auto_differentiation>` lecture for details.
+We use a manual loop instead of broadcasting (`.=`) for the initial condition assignment because Enzyme has challenges with activity analysis on broadcasting assignments into views/slices. When `x_0` is `Const` but `x` is `Duplicated`, `x[:, 1] .= x_0` triggers a "Detected potential need for runtime activity" error. Plain `Base.copyto!(dest, src)` between two arrays compiles to `memcpy`/`memmove` at the LLVM level, which Enzyme handles natively -- but here we are writing into a column slice of a 2D matrix, so the explicit loop is the cleanest approach. See the {doc}`auto-differentiation <../more_julia/auto_differentiation>` lecture for details.
 ```
 
 Crucially, this function modifies the preallocated `x` and `y` arrays in place without any allocations.
@@ -333,7 +333,7 @@ function simulate_lss!(x, y, A, C, G, H, x_0, w, v)
     @assert size(H, 1) == M
     @assert length(x_0) == N
 
-    # Enzyme has challenges with activity analysis on broadcasting assignments
+    # Enzyme has challenges with activity analysis on broadcasting (.=) assignments
     @inbounds for i in 1:N
         x[i, 1] = x_0[i]
     end
