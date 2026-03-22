@@ -99,6 +99,8 @@ This makes the natural data structure **arrays of arrays** (e.g., `Vector{SVecto
 | `mul!!(Y, A, B)` | `mul!(Y,A,B); return Y` | `return A*B` | Matrix/vector multiply |
 | `mul!!(Y, A, B, α, β)` | `mul!(Y,A,B,α,β); return Y` | `return α*(A*B) + β*Y` | Accumulate: `Y = αAB + βY` |
 | `muladd!!(Y, A, B)` | `mul!(Y,A,B,1.0,1.0); return Y` | `return Y + A*B` | `Y += A*B` |
+| `mul_aat!!(Y, A, A_t)` | `transpose!(A_t,A); mul!(Y,A,A_t)` | `return A*A'` | `Y = A*A'` (syrk workaround) |
+| `muladd_aat!!(Y, A, A_t)` | `transpose!(A_t,A); mul!(Y,A,A_t,1,1)` | `return Y + A*A'` | `Y += A*A'` (syrk workaround) |
 | `copyto!!(Y, X)` | `copyto!(Y,X); return Y` | `return X` | Copy data |
 
 ```{code-cell} julia
@@ -444,6 +446,8 @@ Before the filter, we need utilities for Cholesky factorization, linear solves, 
 | `ldiv!!(F, x)` | `ldiv!(F,x); return x` | `return F \ x` |
 | `transpose!!(Y, X)` | `transpose!(Y,X); return Y` | `return transpose(X)` |
 | `symmetrize_upper!!(L, A, epsilon)` | element-wise loop, zero lower | `(A+A')/2 + epsilon*I` |
+| `mul_aat!!(Y, A, A_t)` | `transpose!(A_t,A); mul!(Y,A,A_t)` | `return A*A'` |
+| `muladd_aat!!(Y, A, A_t)` | `transpose!(A_t,A); mul!(Y,A,A_t,1,1)` | `return Y + A*A'` |
 | `logdet_chol(F)` | `2*sum(log(diag(F.U)))` | same |
 
 ```{code-cell} julia
@@ -514,6 +518,30 @@ end
 end
 ```
 
+When computing $AA^\top$ in-place, `mul!(Y, A, transpose(A))` can dispatch to the BLAS `syrk` path, which has a [known Enzyme adjoint bug](https://github.com/EnzymeAD/Enzyme.jl/issues/2355) for rectangular matrices. The following helpers materialize the transpose into a pre-allocated buffer to avoid this.
+
+```{code-cell} julia
+@inline function mul_aat!!(Y, A, A_t)
+    if ismutable(Y)
+        transpose!(A_t, A)
+        mul!(Y, A, A_t)
+        return Y
+    else
+        return A * transpose(A)
+    end
+end
+
+@inline function muladd_aat!!(Y, A, A_t)
+    if ismutable(Y)
+        transpose!(A_t, A)
+        mul!(Y, A, A_t, 1.0, 1.0)
+        return Y
+    else
+        return Y + A * transpose(A)
+    end
+end
+```
+
 ### State-Space Model
 
 The linear state-space model (see {doc}`linear models <../introduction_dynamics/linear_models>`) is
@@ -577,6 +605,8 @@ Zero-allocation code requires preallocating **all** intermediate buffers. This i
 function alloc_kalman_cache(mu_0, Sigma_0, model, T)
     N = size(Sigma_0, 1)
     M = size(model.G, 1)
+    K = size(model.C, 2)
+    L = size(model.H, 2)
     return (;
             mu_pred = [alloc_like(mu_0) for _ in 1:T],
             sigma_pred = [alloc_like(Sigma_0) for _ in 1:T],
@@ -590,7 +620,9 @@ function alloc_kalman_cache(mu_0, Sigma_0, model, T)
             gain = [alloc_like(Sigma_0, N, M) for _ in 1:T],
             gainG = [alloc_like(Sigma_0) for _ in 1:T],
             KgSigma = [alloc_like(Sigma_0) for _ in 1:T],
-            mu_update = [alloc_like(mu_0) for _ in 1:T])
+            mu_update = [alloc_like(mu_0) for _ in 1:T],
+            C_t = alloc_like(Sigma_0, K, N),
+            H_t = alloc_like(Sigma_0, L, M))
 end
 ```
 
@@ -598,6 +630,8 @@ Since the cache is reused across calls, it must be zeroed at the start of each f
 
 ```{code-cell} julia
 function zero_kalman_cache!!(cache)
+    fill_zero!!(cache.C_t)
+    fill_zero!!(cache.H_t)
     @inbounds for t in 1:length(cache.mu_pred)
         cache.mu_pred[t] = fill_zero!!(cache.mu_pred[t])
         cache.sigma_pred[t] = fill_zero!!(cache.sigma_pred[t])
@@ -662,7 +696,7 @@ function kalman!(mu, Sigma, y, mu_0, Sigma_0, model, cache;
         # Predict covariance: Σ̂_t = A Σ_t A' + CC'
         AΣ = mul!!(AΣ, A, Σt)
         Σp = mul!!(Σp, AΣ, transpose(A))
-        Σp = muladd!!(Σp, C, transpose(C))
+        Σp = muladd_aat!!(Σp, C, cache.C_t)
 
         # Innovation: ν_t = y_t - G μ̂_t
         ν = copyto!!(ν, y[t])
@@ -671,7 +705,7 @@ function kalman!(mu, Sigma, y, mu_0, Sigma_0, model, cache;
         # Innovation covariance: S_t = G Σ̂_t G' + HH'
         ΣGt = mul!!(ΣGt, Σp, transpose(G))
         S = mul!!(S, G, ΣGt)
-        S = muladd!!(S, H, transpose(H))
+        S = muladd_aat!!(S, H, cache.H_t)
 
         # Symmetrize and Cholesky factorize S_t
         S_chol_buf = symmetrize_upper!!(S_chol_buf, S, perturb_diagonal)
